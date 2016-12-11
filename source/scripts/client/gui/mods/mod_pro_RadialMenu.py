@@ -49,9 +49,7 @@ class _Config(object):
         self.version = '2.0.0 (%s)' % time.strftime('%d.%m.%Y', time.localtime(
             os.stat('%s/%s' % (BigWorld.curCV, self.filePath)).st_mtime))
         self.fileDir = '%s/%s/' % (BigWorld.curCV, os.path.dirname(self.filePath))
-        self.configPath = '%s%s/' % (self.fileDir, self.ID)
         self.author = 'by Polyacov_Yury (PROTanki edition)'
-        self.data = {}
         self.defaultKeys = {'mapMenu_key': [Keys.KEY_LALT], 'mapMenu_Key': ['KEY_LALT']}
         self.data = {'enabled': True,
                      'mapMenu_key': self.defaultKeys['mapMenu_key'],
@@ -59,7 +57,6 @@ class _Config(object):
                      'chatDelay': 550,
                      'hotDelay': 350}
         self.commands = {}
-        self.conf_changed = False
         self.wasAltMenuPressed = False
 
     def update_data(self):
