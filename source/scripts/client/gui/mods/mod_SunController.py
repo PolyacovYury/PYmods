@@ -4,14 +4,14 @@ import time
 import traceback
 
 import BigWorld
-import Keys
 import ResMgr
 
+import Keys
+import PYmodsCore
 from Avatar import PlayerAvatar
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.app_loader.loader import g_appLoader
-from gui.mods import PYmodsCore
 
 try:
     from gui.mods import mod_PYmodsGUI

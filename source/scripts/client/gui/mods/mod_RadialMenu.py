@@ -12,6 +12,7 @@ import ResMgr
 
 import CommandMapping
 import Keys
+import PYmodsCore
 from constants import ARENA_BONUS_TYPE
 from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared import radial_menu
@@ -20,7 +21,6 @@ from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.genConsts.BATTLE_ICONS_CONSTS import BATTLE_ICONS_CONSTS
 from gui.app_loader.loader import g_appLoader
 from gui.battle_control.controllers.chat_cmd_ctrl import CHAT_COMMANDS
-from gui.mods import PYmodsCore
 from gui.shared.utils.key_mapping import getScaleformKey
 from helpers import isPlayerAvatar
 

@@ -1,57 +1,11 @@
 # -*- coding: utf-8 -*-
-import marshal
-import os
 import traceback
 
 import BigWorld
 import ResMgr
 
+import PYmodsCore
 from debug_utils import LOG_ERROR
-
-
-class _Config(object):
-    def __init__(self, _):
-        self.ID = ''
-        self.version = ''
-        self.configPath = ''
-        self.i18n = {}
-        self.tooltipSubs = {}
-
-    def loadLang(self):
-        pass
-
-    def apply_settings(self, _):
-        pass
-
-    def update_data(self, _=False):
-        pass
-
-    # noinspection PyMethodMayBeStatic
-    def loadJson(self, *_):
-        return {}
-
-    def load(self):
-        pass
-
-    def update_settings(self, doPrint=False):
-        pass
-
-
-class Analytics(object):
-    def start(self):
-        pass
-
-    def end(self):
-        pass
-
-
-def loadPYmodsCore():
-    originalFilePath = '%s/scripts/client/gui/mods/PYmodsCore.pyc' % BigWorld.curCV
-    if os.path.exists(originalFilePath) and os.path.isfile(originalFilePath):
-        with open(originalFilePath, 'rb') as originalFile:
-            exec marshal.loads(originalFile.read()[8:]) in globals()
-    else:
-        raise ImportError('cannot import name PYmodsCore')
 
 
 res = ResMgr.openSection('../paths.xml')
@@ -59,14 +13,13 @@ sb = res['Paths']
 vl = sb.values()[0]
 if vl is not None and not hasattr(BigWorld, 'curCV'):
     BigWorld.curCV = vl.asString
-loadPYmodsCore()
 
 
 def __dir__():
     return ['i18n_hook_makeString']
 
 
-class _HP_Config(_Config):
+class _HP_Config(PYmodsCore._Config):
     def __init__(self):
         super(_HP_Config, self).__init__(__file__)
         self.version = '1.0.0 (%s)' % self.version
@@ -302,7 +255,7 @@ def i18n_hook_makeString(key, *args, **kwargs):
         return old_makeString(key, *args, **kwargs)
 
 
-class _Analytics(Analytics):
+class _Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(_Analytics, self).__init__()
         self.mod_description = 'HangarPainter'

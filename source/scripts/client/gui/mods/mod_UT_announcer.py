@@ -19,6 +19,7 @@ import BigWorld
 import ResMgr
 
 import ClientArena
+import PYmodsCore
 import SoundGroups
 from Avatar import PlayerAvatar
 from constants import ARENA_PERIOD
@@ -29,7 +30,6 @@ from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 from gui.app_loader import g_appLoader
 from gui.app_loader.settings import GUI_GLOBAL_SPACE_ID
-from gui.mods import PYmodsCore
 
 try:
     from gui.mods import mod_PYmodsGUI

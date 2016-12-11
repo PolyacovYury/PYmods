@@ -3,15 +3,15 @@ import traceback
 from functools import partial
 
 import BigWorld
-import Keys
 import ResMgr
 
+import Keys
+import PYmodsCore
 import Vehicle
+from PYmodsCore import Sound
 from gui import InputHandler
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.app_loader.loader import g_appLoader
-from gui.mods import PYmodsCore
-from gui.mods.PYmodsCore import Sound
 
 try:
     from gui.mods import mod_PYmodsGUI

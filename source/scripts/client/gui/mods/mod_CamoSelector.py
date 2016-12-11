@@ -10,6 +10,7 @@ import BigWorld
 import ResMgr
 
 import Keys
+import PYmodsCore
 import items.vehicles
 import nations
 from Account import Account
@@ -25,7 +26,6 @@ from gui.app_loader import g_appLoader
 from gui.customization import g_customizationController
 from gui.customization.data_aggregator import DataAggregator
 from gui.customization.shared import CUSTOMIZATION_TYPE
-from gui.mods import PYmodsCore
 from helpers import i18n
 from items import _xml
 from items.vehicles import CAMOUFLAGE_KINDS, CAMOUFLAGE_KIND_INDICES

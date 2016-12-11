@@ -18,6 +18,7 @@ import ResMgr
 
 import GUI
 import Keys
+import PYmodsCore
 import material_kinds
 from AvatarInputHandler import mathUtils
 from CurrentVehicle import g_currentPreviewVehicle
@@ -29,7 +30,6 @@ from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
 from gui.app_loader.loader import g_appLoader
-from gui.mods import PYmodsCore
 from helpers import getClientVersion
 from items import vehicles
 from vehicle_systems import appearance_cache

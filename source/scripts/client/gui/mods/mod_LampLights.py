@@ -6,10 +6,11 @@ import traceback
 from functools import partial
 
 import BigWorld
-import Keys
 import Math
 import ResMgr
 
+import Keys
+import PYmodsCore
 from Avatar import PlayerAvatar
 from AvatarInputHandler import mathUtils
 from Vehicle import Vehicle
@@ -18,7 +19,6 @@ from debug_utils import LOG_ERROR, LOG_NOTE
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.app_loader.loader import g_appLoader
-from gui.mods import PYmodsCore
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 

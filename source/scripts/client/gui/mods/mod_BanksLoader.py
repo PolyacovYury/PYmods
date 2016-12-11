@@ -7,10 +7,10 @@ import zipfile
 import BigWorld
 import ResMgr
 
+import PYmodsCore
 from debug_utils import LOG_ERROR
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
-from gui.mods import PYmodsCore
 
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']

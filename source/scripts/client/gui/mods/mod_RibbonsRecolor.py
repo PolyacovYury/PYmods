@@ -4,11 +4,11 @@ import traceback
 import BigWorld
 import ResMgr
 
+import PYmodsCore
 from gui.Scaleform.daapi.view.battle.shared.ribbons_panel import BattleRibbonsPanel
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.genConsts.BATTLE_EFFICIENCY_TYPES import BATTLE_EFFICIENCY_TYPES as _BET
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
-from gui.mods import PYmodsCore
 from helpers import i18n
 
 res = ResMgr.openSection('../paths.xml')
