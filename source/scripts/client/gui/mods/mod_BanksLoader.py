@@ -22,7 +22,7 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '1.1.0 (%s)' % self.version
+        self.version = '1.2.0 (%s)' % self.version
         self.author = '%s and Ekspoint' % self.author
         self.data = {'defaultPool': 48,
                      'lowEnginePool': 36,
@@ -46,8 +46,11 @@ class _Config(PYmodsCore._Config):
         self.was_declined = False
         self.loadLang()
 
+    def updateMod(self):
+        pass
+
     def update_data(self, doPrint=False):
-        super(_Config, self).update_data(doPrint)
+        super(_Config, self).update_data()
         if not os.path.isdir(self.configPath):
             return
         for configPath in glob.iglob(self.configPath + '*.json'):
@@ -151,8 +154,6 @@ class _Config(PYmodsCore._Config):
                             continue
                         if bankName in self.bankGroupsConfig[groupName]:
                             active_profile[groupName].createSection('project').writeString('name', bankName)
-                elif bankName.endswith('.bnk') and active_profile['SFX_soundbanks_common'] is not None:
-                    active_profile['SFX_soundbanks_common'].createSection('project').writeString('name', bankName)
                 else:
                     active_profile['SFX_soundbanks_loadonce'].createSection('project').writeString('name', bankName)
         if not any(self.editedBanks.values()):
@@ -197,9 +198,9 @@ LoginView._populate = new_Login_populate
 class Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(Analytics, self).__init__()
-        self.mod_description = 'BanksLoader'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-9'
-        self.mod_version = '1.1.0'
 
 
 statistic_mod = Analytics()

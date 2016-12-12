@@ -16,7 +16,7 @@ def __dir__():
 class _BR_Config(PYmodsCore._Config):
     def __init__(self):
         super(_BR_Config, self).__init__(__file__)
-        self.version = '2.0.0 (%s)' % self.version
+        self.version = '2.1.0 (%s)' % self.version
         self.configPath = './res_mods/configs/%s/' % self.ID
         self.data = {'enabled': True,
                      'reReadAtEnd': True}
@@ -63,16 +63,8 @@ class _BR_Config(PYmodsCore._Config):
                              'tooltip': self.i18n['UI_setting_reReadAtEnd_tooltip'],
                              'varName': 'reReadAtEnd'}]}
 
-    def apply_settings(self, settings):
-        super(_BR_Config, self).apply_settings(settings)
-        _gui_config.update_template('%s' % self.ID, self.template_settings)
-
-    def update_settings(self, doPrint=False):
-        super(_BR_Config, self).update_settings()
-        _gui_config.updateFile('%s' % self.ID, self.data, self.template_settings)
-
     def update_data(self, doPrint=False):
-        super(_BR_Config, self).update_data(doPrint)
+        super(_BR_Config, self).update_data()
         self.configsList = []
         self.confMeta = {}
         self.sectDict = {}
@@ -183,9 +175,9 @@ def new_destroyGUI(self):
 class _Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(_Analytics, self).__init__()
-        self.mod_description = 'ButtonReplacer'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-1'
-        self.mod_version = '2.0.0'
         self.analytics_started = False
         self.playerName = ''
         self.old_playerName = ''
@@ -252,16 +244,7 @@ def new_populate(self):
 
 # noinspection PyGlobalUndefined
 def ButtonReplacer_hooks():
-    global old_fini, old_destroyGUI, old_populate, _gui_config
-    try:
-        from gui.mods import mod_PYmodsGUI
-    except ImportError:
-        mod_PYmodsGUI = None
-        print 'ButtonReplacer: no-GUI mode activated'
-    except StandardError:
-        mod_PYmodsGUI = None
-        traceback.print_exc()
-    _gui_config = getattr(mod_PYmodsGUI, 'g_gui', None)
+    global old_fini, old_destroyGUI, old_populate
     import game
     old_fini = game.fini
     game.fini = new_fini

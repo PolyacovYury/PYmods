@@ -35,15 +35,6 @@ from items import vehicles
 from vehicle_systems import appearance_cache
 from vehicle_systems.tankStructure import TankPartNames
 
-try:
-    from gui.mods import mod_PYmodsGUI
-except ImportError:
-    mod_PYmodsGUI = None
-    print 'RemodEnabler: no-GUI mode activated'
-except StandardError:
-    mod_PYmodsGUI = None
-    traceback.print_exc()
-
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
 vl = sb.values()[0]
@@ -162,7 +153,7 @@ class OSDescriptor(object):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.0.0 (%s)' % self.version
+        self.version = '2.1.0 (%s)' % self.version
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'enabled': True,
@@ -359,11 +350,9 @@ class _Config(PYmodsCore._Config):
                 OSDict[key[0].lower() + key[1:]] = self.data.get(
                     'curSkin%s' % key, getattr(self.OSDesc, key[0].lower() + key[1:]))
             self.loadJson(self.OSDesc.name, OSDict, '%sskins/' % self.configPath, True, False)
-        _gui_config.update_template('%s' % self.ID, self.template_settings)
 
-    def update_settings(self, doPrint=False):
-        super(_Config, self).update_settings(self.data['isDebug'])
-        _gui_config.updateFile('%s' % self.ID, self.data, self.template_settings)
+    def update_settings(self):
+        super(_Config, self).update_settings()
 
     def onWindowClose(self):
         g_currentPreviewVehicle.refreshModel()
@@ -376,7 +365,7 @@ class _Config(PYmodsCore._Config):
             g_appLoader.showLobby()'''
 
     def update_data(self, doPrint=False):
-        super(_Config, self).update_data(doPrint)
+        super(_Config, self).update_data()
         self.OM.enabled = os.path.isdir('%s/vehicles/remods/' % BigWorld.curCV) and len(
             glob.glob('%s/vehicles/remods/*' % BigWorld.curCV))
         if self.OM.enabled:
@@ -590,7 +579,6 @@ class _Config(PYmodsCore._Config):
             self.loadJson('skinsPriority', self.OS.priorities, self.configPath, True)
 
 
-_gui_config = getattr(mod_PYmodsGUI, 'g_gui', None)
 _config = _Config()
 _config.load()
 texReplaced = {'': False, '_dynamic': False}
@@ -1448,9 +1436,9 @@ def delCollisionGUI(self):
 class Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(Analytics, self).__init__()
-        self.mod_description = 'RemodEnabler'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-4'
-        self.mod_version = '2.0.0'
 
 
 statistic_mod = Analytics()

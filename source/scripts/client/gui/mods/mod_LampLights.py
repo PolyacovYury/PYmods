@@ -22,18 +22,6 @@ from gui.app_loader.loader import g_appLoader
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 
-profile = cProfile.Profile()
-profile.enable()
-
-try:
-    from gui.mods import mod_PYmodsGUI
-except ImportError:
-    mod_PYmodsGUI = None
-    print 'LampLights: no-GUI mode activated'
-except StandardError:
-    mod_PYmodsGUI = None
-    traceback.print_exc()
-
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
 vl = sb.values()[0]
@@ -48,7 +36,7 @@ def listToTuple(seq):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.1.0 (%s)' % self.version
+        self.version = '2.2.0 (%s)' % self.version
         self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
         self.data = {'enabled': True,
                      'enableAtStartup': True,
@@ -150,11 +138,6 @@ class _Config(PYmodsCore._Config):
             self.isLampsVisible = self.data['enableAtStartup'] and self.isLampsVisible
         else:
             self.isLampsVisible = False
-        _gui_config.update_template('%s' % self.ID, self.template_settings)
-
-    def update_settings(self, doPrint=False):
-        super(_Config, self).update_settings(self.data['Debug'])
-        _gui_config.updateFile('%s' % self.ID, self.data, self.template_settings)
 
     def readConfDict(self, doPrint, confdict, configPath, sourceModel=None, upperName=''):
         confPath = configPath.replace('%s/' % BigWorld.curCV, '')
@@ -218,7 +201,7 @@ class _Config(PYmodsCore._Config):
     def update_data(self, doPrint=False):
         self.configsDict = {}
         self.modes = {'constant': [], 'stop': [], 'turn_left': [], 'turn_right': [], 'back': [], 'target': [], 'spot': []}
-        super(_Config, self).update_data(doPrint)
+        super(_Config, self).update_data()
 
         if self.data['DebugModel']:
             if self.data['DebugPath']:
@@ -296,7 +279,6 @@ class _Config(PYmodsCore._Config):
             self.isLampsVisible = False
 
 
-_gui_config = getattr(mod_PYmodsGUI, 'g_gui', None)
 _config = _Config()
 _config.load()
 if _config.data['enableMessage']:
@@ -308,7 +290,13 @@ if _config.data['enableMessage']:
     def new_populate(self):
         global isLogin
         old_populate(self)
-        if isLogin and _config.ID not in getattr(_gui_config, 'gui', {}):
+        try:
+            # noinspection PyUnresolvedReferences
+            from gui.mods.vxSettingsApi import vxSettingsApi
+            isRegistered = vxSettingsApi.isRegistered('PYmodsGUI')
+        except ImportError:
+            isRegistered = False
+        if isLogin and not isRegistered:
             SystemMessages.pushMessage(LOGIN_TEXT_MESSAGE, type=SystemMessages.SM_TYPE.Information)
             isLogin = False
 
@@ -836,17 +824,15 @@ if _config.modes['target']:
 class Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(Analytics, self).__init__()
-        self.mod_description = 'LampLights'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-2'
-        self.mod_version = '2.1.0'
 
 
 statistic_mod = Analytics()
 
 
 def fini():
-    profile.disable()
-    profile.dump_stats('./LampLights.prof')
     try:
         statistic_mod.end()
     except StandardError:

@@ -31,15 +31,6 @@ from items import _xml
 from items.vehicles import CAMOUFLAGE_KINDS, CAMOUFLAGE_KIND_INDICES
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 
-try:
-    from gui.mods import mod_PYmodsGUI
-except ImportError:
-    mod_PYmodsGUI = None
-    print 'CamoSelector: no-GUI mode activated'
-except StandardError:
-    mod_PYmodsGUI = None
-    traceback.print_exc()
-
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
 vl = sb.values()[0]
@@ -214,7 +205,7 @@ class CamoSelectorUI(AbstractWindowView):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.3.0 (%s)' % self.version
+        self.version = '2.4.0 (%s)' % self.version
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'selectHotKey': ['KEY_F5', ['KEY_LCONTROL', 'KEY_RCONTROL']]}
@@ -336,11 +327,6 @@ class _Config(PYmodsCore._Config):
     def apply_settings(self, settings):
         super(_Config, self).apply_settings(settings)
         BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
-        _gui_config.update_template('%s' % self.ID, self.template_settings)
-
-    def update_settings(self, doPrint=False):
-        super(_Config, self).update_settings()
-        _gui_config.updateFile('%s' % self.ID, self.data, self.template_settings)
 
     def readCamouflages(self, doShopCheck):
         self.camouflages = {'modded': {}}
@@ -403,8 +389,8 @@ class _Config(PYmodsCore._Config):
             newSettings[nation] = settings[nation]
         self.loadJson('settings', newSettings, self.configPath, True)
 
-    def do_config_delayed(self):
-        super(_Config, self).do_config_delayed()
+    def do_config(self):
+        super(_Config, self).do_config()
         BigWorld.g_modsListApi.addMod(
             id='CamoSelectorUI', name=self.i18n['UI_flash_header'],
             description=self.i18n['UI_flash_header_tooltip'],
@@ -444,7 +430,6 @@ def new_vehicleValues(xmlCtx, section, sectionName, defNationID):
 
 items.vehicles._vehicleValues = new_vehicleValues
 
-_gui_config = getattr(mod_PYmodsGUI, 'g_gui', None)
 _config = _Config()
 _config.load()
 
@@ -812,9 +797,9 @@ ClientHangarSpace.recreateVehicle = new_cs_recreateVehicle
 class Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(Analytics, self).__init__()
-        self.mod_description = 'CamoSelector'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-7'
-        self.mod_version = '2.3.0'
 
 
 statistic_mod = Analytics()

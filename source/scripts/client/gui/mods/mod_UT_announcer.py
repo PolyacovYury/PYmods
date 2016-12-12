@@ -31,15 +31,6 @@ from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 from gui.app_loader import g_appLoader
 from gui.app_loader.settings import GUI_GLOBAL_SPACE_ID
 
-try:
-    from gui.mods import mod_PYmodsGUI
-except ImportError:
-    mod_PYmodsGUI = None
-    print 'UT_announcer: no-GUI mode activated'
-except StandardError:
-    mod_PYmodsGUI = None
-    traceback.print_exc()
-
 sb = ResMgr.openSection('../paths.xml')['Paths']
 vl = sb.values()[0]
 if vl is not None and not hasattr(BigWorld, 'curCV'):
@@ -49,7 +40,7 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.3.0 (%s)' % self.version
+        self.version = '2.4.0 (%s)' % self.version
         self.author = '%s (orig by locastan)' % self.author
         self.colours = OrderedDict([
             ('UI_color_red', '#FF0000'), ('UI_color_nice_red', '#FA8072'), ('UI_color_chocolate', '#D3691E'),
@@ -199,6 +190,7 @@ class _Config(PYmodsCore._Config):
                              'tooltip': self.i18n['UI_setting_textLength_tooltip'],
                              'minimum': 0,
                              'maximum': 5,
+                             'stepSize': 1,
                              'canManualInput': False,
                              'value': self.data['textLength'],
                              'varName': 'textLength'},
@@ -288,16 +280,14 @@ class _Config(PYmodsCore._Config):
     def apply_settings(self, settings):
         self.data['textStyle']['colour'] = self.colours.values()[settings['textColour']]
         super(_Config, self).apply_settings(settings)
-        _gui_config.update_template('%s' % self.ID, self.template_settings)
 
-    def update_settings(self, doPrint=False):
+    def update_settings(self):
         super(_Config, self).update_settings()
         colour = self.data['textStyle']['colour']
         colours = self.colours.values()
         self.data['textColour'] = colours.index(colour) if colour in colours else 10
         self.data['textStyle']['colour'] = self.colours.values()[self.data['textColour']]
         super(_Config, self).apply_settings(self.data)
-        _gui_config.updateFile('%s' % self.ID, self.data, self.template_settings)
 
 
 class _Flash(object):
@@ -435,7 +425,6 @@ class _Flash(object):
         BigWorld.callback(0.5, self.onTextRemovalComplete)
 
 
-_gui_config = getattr(mod_PYmodsGUI, 'g_gui', None)
 _config = _Config()
 _config.load()
 PlayerAvatar.sounds = None
@@ -805,9 +794,9 @@ DamagePanelMeta.DamagePanelMeta.as_setVehicleDestroyedS = new_onVehicleDestroyed
 class Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(Analytics, self).__init__()
-        self.mod_description = 'UT_announcer'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-8'
-        self.mod_version = '2.3.0'
 
 
 statistic_mod = Analytics()

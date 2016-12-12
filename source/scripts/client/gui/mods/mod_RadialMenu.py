@@ -22,24 +22,10 @@ from gui.Scaleform.genConsts.BATTLE_ICONS_CONSTS import BATTLE_ICONS_CONSTS
 from gui.app_loader.loader import g_appLoader
 from gui.battle_control.controllers.chat_cmd_ctrl import CHAT_COMMANDS
 from gui.shared.utils.key_mapping import getScaleformKey
-from helpers import isPlayerAvatar
+from helpers import dependency, isPlayerAvatar
+from skeletons.gui.battle_session import IBattleSessionProvider
 
-try:
-    from gui.battle_control import g_sessionProvider
-except ImportError:
-    from helpers import dependency
-    from skeletons.gui.battle_session import IBattleSessionProvider
-
-    g_sessionProvider = dependency.instance(IBattleSessionProvider)
-
-try:
-    from gui.mods import mod_PYmodsGUI
-except ImportError:
-    mod_PYmodsGUI = None
-    print 'RadialMenu: no-GUI mode activated'
-except StandardError:
-    mod_PYmodsGUI = None
-    traceback.print_exc()
+g_sessionProvider = dependency.instance(IBattleSessionProvider)
 
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
@@ -51,7 +37,7 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.0.0 (%s)' % self.version
+        self.version = '2.1.0 (%s)' % self.version
         self.author = '%s (orig by locastan/tehHedger/TRJ_VoRoN)' % self.author
         self.defaultKeys = {'mapMenu_key': [Keys.KEY_LALT], 'mapMenu_Key': ['KEY_LALT']}
         self.data = {'enabled': True,
@@ -103,14 +89,9 @@ class _Config(PYmodsCore._Config):
     def apply_settings(self, settings):
         super(_Config, self).apply_settings(settings)
         self.update_data()
-        _gui_config.update_template('%s' % self.ID, self.template_settings)
-
-    def update_settings(self, doPrint=False):
-        super(_Config, self).update_settings()
-        _gui_config.updateFile('%s' % self.ID, self.data, self.template_settings)
 
     def update_data(self, doPrint=False):
-        super(_Config, self).update_data(doPrint)
+        super(_Config, self).update_data()
         self.activeConfigs = ['default']
         self.configsMeta = {'default': self.i18n['UI_setting_selectedConfig_defaultMeta']}
         # noinspection SpellCheckingInspection
@@ -302,7 +283,6 @@ class CustomMenuCommand:
             traceback.print_exc()
 
 
-_gui_config = getattr(mod_PYmodsGUI, 'g_gui', None)
 _config = _Config()
 _config.load()
 
@@ -472,9 +452,9 @@ radial_menu.RadialMenu.onAction = new_onAction
 class Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(Analytics, self).__init__()
-        self.mod_description = 'RadialMenu'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-10'
-        self.mod_version = '2.0.0'
 
 
 statistic_mod = Analytics()

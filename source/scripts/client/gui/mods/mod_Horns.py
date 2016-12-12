@@ -13,15 +13,6 @@ from gui import InputHandler
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.app_loader.loader import g_appLoader
 
-try:
-    from gui.mods import mod_PYmodsGUI
-except ImportError:
-    mod_PYmodsGUI = None
-    print 'Horns: no-GUI mode activated'
-except StandardError:
-    mod_PYmodsGUI = None
-    traceback.print_exc()
-
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
 vl = sb.values()[0]
@@ -32,7 +23,7 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.2.0 (%s)' % self.version
+        self.version = '2.3.0 (%s)' % self.version
         self.defaultKeys = {'hotkey': [Keys.KEY_G], 'hotKey': ['KEY_G']}
         self.data = {'enabled': True,
                      'event': 4,
@@ -65,10 +56,10 @@ class _Config(PYmodsCore._Config):
         self.lastRandID = {'ally': -1,
                            'enemy': -1,
                            'default': -1}
-        self.doSoundPlay = False
         self.hornSoundEvent = None
         self.soundCallback = None
         self.count = 0
+        self.onButtonPress += self.buttonHandler
         self.loadLang()
 
     def template_settings(self):
@@ -94,6 +85,7 @@ class _Config(PYmodsCore._Config):
                              'minimum': 1,
                              'maximum': 8,
                              'snapInterval': 1,
+                             'button': {'iconSource': '../maps/icons/buttons/sound.png'},
                              'value': self.data['event'],
                              'format': '{{value}}',
                              'varName': 'event'}],
@@ -109,35 +101,26 @@ class _Config(PYmodsCore._Config):
                              'minimum': 0.1,
                              'maximum': 6.0,
                              'snapInterval': 0.1,
+                             'button': {'iconSource': '../maps/icons/buttons/sound.png'},
                              'value': self.data['playTime'],
                              'format': '{{value}}',
                              'varName': 'playTime'}]}
 
-    def apply_settings(self, settings):
-        for setting in settings:
-            if setting in self.data:
-                if setting in ('playTime', 'event') and self.data[setting] != settings[setting]:
-                    self.doSoundPlay = True
-
-        super(_Config, self).apply_settings(settings)
-        _gui_config.update_template('%s' % self.ID, self.template_settings)
-
-    def update_settings(self, doPrint=False):
-        super(_Config, self).update_settings()
-        _gui_config.updateFile('%s' % self.ID, self.data, self.template_settings)
-
-    def onApply(self):
+    def buttonHandler(self, container, linkage, vName, index):
+        if container != 'PYmodsGUI' or linkage != self.ID or vName not in ('event', 'playTime'):
+            return
+        self.data[vName] = int(index) if vName == 'event' else index
         self.hornSoundEvent = Sound('event_%shorn' % self.data['event'])
         self.count = self.data['playTime']
-        SoundLoop(self.doSoundPlay)
-        self.doSoundPlay = False
+        SoundLoop(False)
+        SoundLoop(True)
         BigWorld.callback(self.data['playTime'] + 0.1, partial(SoundLoop, False))
 
     def onWindowClose(self):
         SoundLoop(False)
+        self.update_data()
 
 
-_gui_config = getattr(mod_PYmodsGUI, 'g_gui', None)
 _config = _Config()
 _config.load()
 
@@ -225,9 +208,9 @@ InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 class Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(Analytics, self).__init__()
-        self.mod_description = 'Horns'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-5'
-        self.mod_version = '2.2.0'
 
 
 statistic_mod = Analytics()
