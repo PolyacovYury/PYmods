@@ -1,79 +1,34 @@
 # -*- coding: utf-8 -*-
-import marshal
-import os
+import json
 import traceback
+import urllib2
 
 import BigWorld
 import ResMgr
 
+import PYmodsCore
 from debug_utils import LOG_ERROR
-
-
-class _Config(object):
-    def __init__(self, _):
-        self.ID = ''
-        self.version = ''
-        self.configPath = ''
-        self.i18n = {}
-        self.tooltipSubs = {}
-
-    def loadLang(self):
-        pass
-
-    def apply_settings(self, _):
-        pass
-
-    def update_data(self, _=False):
-        pass
-
-    # noinspection PyMethodMayBeStatic
-    def loadJson(self, *_):
-        return {}
-
-    def load(self):
-        pass
-
-    def update_settings(self, doPrint=False):
-        pass
-
-
-class Analytics(object):
-    def start(self):
-        pass
-
-    def end(self):
-        pass
-
-
-def loadPYmodsCore():
-    originalFilePath = '%s/scripts/client/gui/mods/PYmodsCore.pyc' % BigWorld.curCV
-    if os.path.exists(originalFilePath) and os.path.isfile(originalFilePath):
-        with open(originalFilePath, 'rb') as originalFile:
-            exec marshal.loads(originalFile.read()[8:]) in globals()
-    else:
-        raise ImportError('cannot import name PYmodsCore')
-
 
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
 vl = sb.values()[0]
 if vl is not None and not hasattr(BigWorld, 'curCV'):
     BigWorld.curCV = vl.asString
-loadPYmodsCore()
 
 
 def __dir__():
     return ['i18n_hook_makeString']
 
 
-class _HP_Config(_Config):
+class _HP_Config(PYmodsCore._Config):
     def __init__(self):
         super(_HP_Config, self).__init__(__file__)
-        self.version = '1.0.0 (%s)' % self.version
+        self.version = '1.1.0 (%s)' % self.version
         self.data = {'enabled': True,
                      'debug': True,
                      'debugColour': True,
                      'crewColour': True,
+                     'cleanColour': False,
                      'colour': '0097FA'}
         self.backupData = {}
         self.i18n = {
@@ -87,10 +42,10 @@ class _HP_Config(_Config):
             'UI_setting_crewColour_tooltip': (
                 '{HEADER}Description:{/HEADER}{BODY}Crew names, ranks and roles will be coloured, but this sometimes '
                 'does not function properly.\n\n<b>WARNING!</b> Restart required for this setting to be applied.{/BODY}'),
-            'UI_setting_debug_text': 'Enable debug mode',
-            'UI_setting_debug_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}All texts are replaced with their corresponding keys.\n'
-                'This setting is used for fixing purposes only.{/BODY}'),
+            'UI_setting_cleanColour_text': 'Enable clean mode',
+            'UI_setting_cleanColour_tooltip': (
+                '{HEADER}Description:{/HEADER}{BODY}If disabled, all available texts will be coloured.\nIf enabled, rare '
+                'cases of "unreadable" texts will be fixed, but these texts will not be coloured.{/BODY}'),
             'UI_restart_header': 'Restart request',
             'UI_restart_text': 'Hangar Painter: {reason}. Client restart required to accept changes.',
             'UI_restart_reason_colourChanged': 'text colour was changed',
@@ -98,89 +53,10 @@ class _HP_Config(_Config):
             'UI_restart_reason_modEnabled': 'mod was enabled',
             'UI_restart_reason_crewDisabled': 'crew colouring was disabled',
             'UI_restart_reason_crewEnabled': 'crew colouring was enabled',
+            'UI_restart_reason_cleanDisabled': 'clean colouring was disabled',
+            'UI_restart_reason_cleanEnabled': 'clean colouring was enabled',
             'UI_restart': 'Restart'}
-        self.whitelists = {
-            '#menu': ['headerButtons/battle', 'headerButtons/ready', 'training/info/timeout/label',
-                      'awardWindow/personalMission/nextButtonAward/tooltip/header'],
-            '#retrain_crew': ['label/result', 'label/crewMembers']}
-        self.crewBlacklist = {'tankmen': [], '#item_types': ['tankman/roles']}
-        # noinspection SpellCheckingInspection
-        self.blacklists = {
-            '#achievements': ['marksOnGun/descr/param/label'],
-            '#arenas': [],
-            '#artefacts': ['name', 'descr'],
-            '#battle_results': ['finish', 'research', 'newSkill', 'purchase'],
-            '#battle_tutorial': [],
-            '#clans': ['clanProfile/mainWindow/title', 'personnelView/clanStats/avg',
-                       'section/fort/view/statistics/sorties/detailed/header',
-                       'section/fort/view/statistics/battles/detailed/header',
-                       'clanInvitesWindow/tabRequests', 'clanInvitesWindow/tabInvites',
-                       'clanInvitesWindow/table/inviteButton', 'clanProfile/sendInvitesWindow/title',
-                       'search/info/stats/', 'search/info/clanProfileBtn'],
-            '#clubs_quests': [],
-            '#crew_operations': [],
-            '#cyberSport': ['window/intro/search/btn', 'window/intro/create/btn',
-                            'window/clubsListView/foundTeamsDescription', 'window/title'],
-            '#dialogs': ['quitBattle', 'addSkillWindow/label', 'disconnected', 'title', 'EULA', 'eula',
-                         'replayStopped', 'questsConfirmDialog', 'buyVehicleDialog/cancelBtn',
-                         'buyVehicleDialog/submitBtn', '/vehicle/level', '/headerButtons/crew',
-                         'vehicleSellDialog/count', 'confirmModuleDialog', 'elite/header',
-                         'sellModuleConfirmation', 'common/'],
-            '#fortifications': ['levelsLbl', 'General/directionName', 'BuildingDirection/label',
-                                'fortNotCommanderFirstEnterWindow/windowTitle',
-                                'fortNotCommanderFirstEnterWindow/applyBtnLabel',
-                                'clanStats/params/sortie/', 'clanStats/params/periodDefence/',
-                                'FortClanListWindow/title', '/windowTitle',
-                                'clanStats/params/sortie/battlesCount/tooltip/body',
-                                '/buildingName', 'FixedPlayers/header/', 'BuildingPopover/defResActions'],
-            '#ingame_gui': [],
-            '#ingame_help': [],
-            '#invites': ['button'],
-            '#item_types': ['tankman/skills', 'shell', '/name'],
-            '#menu': ['login', 'headerButtons', 'loading', 'clan', 'tuningBtn', 'maitenanceBtn',
-                      'shop/table/find', 'ingame_menu', 'promo/toArchive', 'promo/patch/title',
-                      'label', 'descriptions', 'barracks/btnBuyBerthDecs',
-                      'barracks/barracksRenderer/placesCount', 'lobby_menu/title',
-                      'boostersWindow/title', 'boostersWindow/tabs', 'training/info/states',
-                      'customization/buttons/apply', 'exchange/rate', 'copy',
-                      'boostersWindow/boostersTableRenderer/activateBtnLabel',
-                      'boostersWindow/boostersTableRenderer/buyBtnLabel',
-                      'finalStatistic/window/title', 'tankCarousel/vehicleStates',
-                      'contextMenu/appeal', 'legal', 'awardWindow/title', 'opponents',
-                      'research/premium/benefits/head', 'awardWindow/closeButton',
-                      'awardWindow/okButton', 'awardWindow/takeNextButton',
-                      'awardWindow/personalMission/nextButton', 'boostersTableRenderer/goToQuestBtnLabel',
-                      'dateTime/weekDays/short/', 'moduleInfo/title', 'moduleInfo/compatible',
-                      'moduleInfo/additionalInfo', 'contextMenu/personalCase/statsBlockTitle',
-                      'tankmanPersonalCase/title', 'training/info/observer', 'training/info/timeout/value'],
-            '#messenger': ['listView/title', 'messenger/contacts/title',
-                           'dialogs/searchChannel/labels/result', 'searchInput',
-                           'battle', 'dialogs/contacts/tree', 'client/dynSquad',
-                           'mainGrops/Other/', 'messenger/contacts/mainGroups/other/',
-                           'messenger/contacts/dropContactPrompt',
-                           'messenger/contacts/searchUsers/', 'dialogs/searchContact/labels/result',
-                           'messenger/contacts/view/manageGroup/deleteGroup/groupName/Label',
-                           'listView/emptyList'],
-            '#nations': [],
-            '#prebattle': ['labels/company/division', 'title/battleSession/startTime'],
-            '#profile': ['section', 'note', 'attention', 'btnLabel'],
-            '#quests': ['tileChainsView/buttonBack/text', 'item/type/', 'item/timer/tillStart/',
-                        'details/status/notAvailable', 'details/status/completed',
-                        'details/header/completion/', 'details/conditions/',
-                        'quests/table', 'details/dossier', 'tileChainsView/taskType/inProgress',
-                        'tileChainsView/taskType/awardNotReceived'],
-            '#readable_key_names': [],
-            '#retrain_crew': ['label', 'window'],
-            '#settings': [],
-            '#tank_carousel_filter': ['defaultButton'],
-            '#tips': [],
-            '#tooltips': ['note', 'attention', 'login', '/text', 'clanCommonInfo/ClanName',
-                          '/vehicleType'],
-            '#vehicle_customization': ['customization/bottomPanel/backBtn'],
-            '#veh_compare': ['cartPopover/gotoCompareBtn', 'cartPopover/moduleType',
-                             'addVehPopover/btnAdd', 'modulesView/windowTitle'],
-            'vehicles': [],
-            '#waiting': []}
+        self.blacklists = {}
         self.needRestart = False
         self.loadLang()
 
@@ -188,12 +64,12 @@ class _HP_Config(_Config):
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [{'type': 'TextInputField',
+                'column1': [{'type': 'Label',
                              'text': self.i18n['UI_setting_colour_text'],
                              'tooltip': self.i18n['UI_setting_colour_tooltip'].format(colour=self.data['colour'],
-                                                                                      **self.tooltipSubs),
+                                                                                      **self.tooltipSubs)},
+                            {'type': 'TextInputColor',
                              'value': self.data['colour'],
-                             'width': 60,
                              'varName': 'colour'}],
                 'column2': [{'type': 'CheckBox',
                              'text': self.i18n['UI_setting_crewColour_text'],
@@ -201,24 +77,27 @@ class _HP_Config(_Config):
                              'tooltip': self.i18n['UI_setting_crewColour_tooltip'],
                              'varName': 'crewColour'},
                             {'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_debug_text'],
-                             'value': self.data['debug'],
-                             'tooltip': self.i18n['UI_setting_debug_tooltip'],
-                             'varName': 'debug'}]}
+                             'text': self.i18n['UI_setting_cleanColour_text'],
+                             'value': self.data['cleanColour'],
+                             'tooltip': self.i18n['UI_setting_cleanColour_tooltip'],
+                             'varName': 'cleanColour'}]}
 
     def apply_settings(self, settings):
         for setting in settings:
-            if setting in ('colour', 'enabled', 'crewColour') and setting not in self.backupData:
+            if setting in ('colour', 'enabled', 'crewColour', 'cleanColour') and setting not in self.backupData:
                 self.backupData[setting] = self.data[setting]
 
         super(_HP_Config, self).apply_settings(settings)
-        _gui_config.update_template('%s' % self.ID, self.template_settings)
 
     def onWindowClose(self):
         if any(self.data[setting] != self.backupData[setting] for setting in self.backupData):
             self.onRequestRestart(self.data[key] != self.backupData.get(key, self.data[key]) for key in
-                                  ('colour', 'enabled', 'crewColour'))
+                                  ('colour', 'enabled', 'crewColour', 'cleanColour'))
         self.backupData = {}
+
+    def update_data(self, doPrint=False):
+        super(_HP_Config, self).update_data(doPrint)
+        self.blacklists = self.loadJson('HangarPainter_blacklist', self.blacklists, self.fileDir)
 
     @staticmethod
     def onRestartConfirmed(*_):
@@ -226,7 +105,7 @@ class _HP_Config(_Config):
         BigWorld.restartGame()
 
     def onRequestRestart(self, reason):
-        colourChanged, toggled, crewChanged = reason
+        colourChanged, toggled, crewChanged, cleanChanged = reason
         reasons = []
         if colourChanged:
             reasons.append(self.i18n['UI_restart_reason_colourChanged'])
@@ -235,6 +114,9 @@ class _HP_Config(_Config):
         if crewChanged:
             reasons.append(
                 self.i18n['UI_restart_reason_crew%s' % ('Enabled' if self.data['crewColour'] else 'Disabled')])
+        if cleanChanged:
+            reasons.append(
+                self.i18n['UI_restart_reason_clean%s' % ('Enabled' if self.data['cleanColour'] else 'Disabled')])
         dialogText = self.i18n['UI_restart_text'].format(reason='; '.join(reasons))
         from gui import DialogsInterface
         from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta, InfoDialogButtons
@@ -242,10 +124,18 @@ class _HP_Config(_Config):
                                                      InfoDialogButtons(self.i18n['UI_restart']), None),
                                     self.onRestartConfirmed)
 
-    def update_settings(self, doPrint=False):
-        super(_HP_Config, self).update_settings(doPrint)
-        _gui_config.updateFile('%s' % self.ID, self.data, self.template_settings)
-
+    def load(self):
+        try:
+            webConf_url = ('https://gist.githubusercontent.com/PolyacovYury/220e5da411d78e598687b23ab130e922/raw'
+                           '/a818f83b6e482d3f21fe22e41732e1250ccd8cdb/HangarPainter_blacklist.json')
+            webConf = self.byte_ify(json.loads(urllib2.urlopen(webConf_url).read()))
+            self.loadJson('HangarPainter_blacklist', webConf, self.fileDir, True)
+        except urllib2.URLError as e:
+            if hasattr(e, 'reason'):
+                print '%s: blacklists config download failed: ' % self.ID, e.reason
+            elif hasattr(e, 'code'):
+                print '%s: GitHub internal error: ' % self.ID, e.code
+        super(_HP_Config, self).load()
 
 _config = _HP_Config()
 _config.load()
@@ -266,22 +156,18 @@ def i18n_hook_makeString(key, *args, **kwargs):
             if not moName or not subkey:
                 return key
             moFile = '#' + moName
-            isBlack = any(moKey in moFile and (
-                not _config.blacklists[moKey] or any(x in subkey for x in _config.blacklists[moKey])) for moKey in
-                          _config.blacklists)
-            isBlack = isBlack or (
+            identity = {listType: any(
+                    moKey in moFile and (not idList[moKey] or any(x in subkey for x in idList[moKey])) for moKey in idList)
+                for listType, idList in _config.blacklists.iteritems()}
+            identity['commonBlacklist'] = identity['commonBlacklist'] or (
                 '#messenger' in moFile and subkey.startswith('server/errors/') and subkey.endswith('/title'))
-            isNoCrew = any(moKey in moFile and (
-                not _config.crewBlacklist[moKey] or any(x in subkey for x in _config.crewBlacklist[moKey])) for moKey in
-                           _config.crewBlacklist)
-            isWhite = any(moKey in moFile and any(x == subkey for x in _config.whitelists[moKey]) for moKey in
-                          _config.whitelists)
-            if 'TEST_FEATURE_NOT_IN_CLIENT' in subkey:
-                print moFile, not isBlack, not isNoCrew, isWhite
-                print tuple((moKey in moFile,
-                             not _config.blacklists[moKey], tuple((x, x in subkey) for x in _config.blacklists[moKey]))
-                            for moKey in _config.blacklists)
-            if not (isBlack or isNoCrew and not _config.data['crewColour']) or isWhite:
+            whitelist = _config.blacklists['commonWhitelist']
+            identity['commonWhitelist'] = any(
+                moKey in moFile and any(x == subkey for x in whitelist[moKey]) for moKey in whitelist)
+            if not (identity['commonBlacklist'] or
+                    identity['crewBlacklist'] and not _config.data['crewColour'] or
+                    identity['cleanBlacklist'] and not identity['cleanWhitelist'] and _config.data[
+                            'cleanColour']) or identity['commonWhitelist']:
                 if not _config.data['debug']:
                     translation = old_makeString(key, *args, **kwargs)
                     if translation.strip() and not translation == subkey:
@@ -302,12 +188,12 @@ def i18n_hook_makeString(key, *args, **kwargs):
         return old_makeString(key, *args, **kwargs)
 
 
-class _Analytics(Analytics):
+class _Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(_Analytics, self).__init__()
-        self.mod_description = 'HangarPainter'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-6'
-        self.mod_version = '1.0.0'
 
 
 statistic_mod = _Analytics()
@@ -331,16 +217,7 @@ def new_populate(self):
 
 # noinspection PyGlobalUndefined
 def HangarPainter_hooks():
-    global old_populate, old_fini, _gui_config
-    try:
-        from gui.mods import mod_PYmodsGUI
-    except ImportError:
-        mod_PYmodsGUI = None
-        print 'HangarPainter: no-GUI mode activated'
-    except StandardError:
-        mod_PYmodsGUI = None
-        traceback.print_exc()
-    _gui_config = getattr(mod_PYmodsGUI, 'g_gui', None)
+    global old_populate, old_fini
     from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
     old_populate = LobbyView._populate
     LobbyView._populate = new_populate

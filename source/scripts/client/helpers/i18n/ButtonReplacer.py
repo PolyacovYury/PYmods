@@ -1,82 +1,22 @@
 # -*- coding: utf-8 -*-
 import glob
-import marshal
 import os
 import traceback
 
 import BigWorld
-import ResMgr
 
+import PYmodsCore
 from debug_utils import LOG_ERROR, LOG_WARNING
-
-
-def remDups(*_):
-    return []
-
-
-def pickRandomPart(*_):
-    return 0, ''
-
-
-class _Config(object):
-    def __init__(self, _):
-        self.ID = ''
-        self.version = ''
-        self.i18n = {}
-
-    def loadLang(self):
-        pass
-
-    def apply_settings(self, _):
-        pass
-
-    def update_data(self, doPrint=False):
-        pass
-
-    # noinspection PyMethodMayBeStatic
-    def loadJson(self, *_):
-        return {}
-
-    def load(self):
-        pass
-
-    def update_settings(self, doPrint=False):
-        pass
-
-
-class Analytics(object):
-    def start(self):
-        pass
-
-    def end(self):
-        pass
-
-
-def loadPYmodsCore():
-    originalFilePath = '%s/scripts/client/gui/mods/PYmodsCore.pyc' % BigWorld.curCV
-    if os.path.exists(originalFilePath) and os.path.isfile(originalFilePath):
-        with open(originalFilePath, 'rb') as originalFile:
-            exec marshal.loads(originalFile.read()[8:]) in globals()
-    else:
-        raise ImportError('cannot import name PYmodsCore')
-
-
-res = ResMgr.openSection('../paths.xml')
-sb = res['Paths']
-vl = sb.values()[0]
-if vl is not None and not hasattr(BigWorld, 'curCV'):
-    BigWorld.curCV = vl.asString
-loadPYmodsCore()
 
 
 def __dir__():
     return ['i18n_hook_makeString']
 
 
-class _BR_Config(_Config):
+class _BR_Config(PYmodsCore._Config):
     def __init__(self):
         super(_BR_Config, self).__init__(__file__)
-        self.version = '2.0.0 (%s)' % self.version
+        self.version = '2.1.0 (%s)' % self.version
         self.configPath = './res_mods/configs/%s/' % self.ID
         self.data = {'enabled': True,
                      'reReadAtEnd': True}
@@ -123,16 +63,8 @@ class _BR_Config(_Config):
                              'tooltip': self.i18n['UI_setting_reReadAtEnd_tooltip'],
                              'varName': 'reReadAtEnd'}]}
 
-    def apply_settings(self, settings):
-        super(_BR_Config, self).apply_settings(settings)
-        _gui_config.update_template('%s' % self.ID, self.template_settings)
-
-    def update_settings(self, doPrint=False):
-        super(_BR_Config, self).update_settings()
-        _gui_config.updateFile('%s' % self.ID, self.data, self.template_settings)
-
     def update_data(self, doPrint=False):
-        super(_BR_Config, self).update_data(doPrint)
+        super(_BR_Config, self).update_data()
         self.configsList = []
         self.confMeta = {}
         self.sectDict = {}
@@ -178,7 +110,7 @@ class _BR_Config(_Config):
             print '%s: config directory not found: %s' % (self.ID, self.configPath)
 
         for key in self.sectDict:
-            self.sectDict[key]['textList'] = remDups(self.sectDict[key]['textList'])
+            self.sectDict[key]['textList'] = PYmodsCore.remDups(self.sectDict[key]['textList'])
 
 
 _config = _BR_Config()
@@ -197,13 +129,11 @@ def i18n_hook_makeString(key, *args, **kwargs):
                 _config.textStack[key], _config.textId[key] = (_config.sectDict[key]['textList'][0], 0) if len(
                     _config.sectDict[key]['textList']) else ('', -1)
             elif _config.sectDict[key]['mode'] == 'random':
-                _config.textStack[key], _config.textId[key] = pickRandomPart(
-                    _config.sectDict[key]['textList'],
-                    _config.textId.get(key, -1))
+                _config.textStack[key], _config.textId[key] = PYmodsCore.pickRandomPart(
+                    _config.sectDict[key]['textList'], _config.textId.get(key, -1))
             elif _config.sectDict[key]['mode'] == 'circle':
-                _config.textStack[key], _config.textId[key] = pickRandomPart(
-                    _config.sectDict[key]['textList'],
-                    _config.textId.get(key, -1), True)
+                _config.textStack[key], _config.textId[key] = PYmodsCore.pickRandomPart(
+                    _config.sectDict[key]['textList'], _config.textId.get(key, -1), True)
             elif _config.sectDict[key]['mode'] == 'bindToKey':
                 _config.textStack[key] = _config.sectDict[key]['textList'][
                     min(_config.textId.get(_config.sectDict[key].get('bindToKey', key), 0),
@@ -242,12 +172,12 @@ def new_destroyGUI(self):
         _config.wasReplaced = dict.fromkeys(_config.wasReplaced.keys(), False)
 
 
-class _Analytics(Analytics):
+class _Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(_Analytics, self).__init__()
-        self.mod_description = 'ButtonReplacer'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-1'
-        self.mod_version = '2.0.0'
         self.analytics_started = False
         self.playerName = ''
         self.old_playerName = ''
@@ -314,16 +244,7 @@ def new_populate(self):
 
 # noinspection PyGlobalUndefined
 def ButtonReplacer_hooks():
-    global old_fini, old_destroyGUI, old_populate, _gui_config
-    try:
-        from gui.mods import mod_PYmodsGUI
-    except ImportError:
-        mod_PYmodsGUI = None
-        print 'ButtonReplacer: no-GUI mode activated'
-    except StandardError:
-        mod_PYmodsGUI = None
-        traceback.print_exc()
-    _gui_config = getattr(mod_PYmodsGUI, 'g_gui', None)
+    global old_fini, old_destroyGUI, old_populate
     import game
     old_fini = game.fini
     game.fini = new_fini

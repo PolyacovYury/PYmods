@@ -24,15 +24,10 @@ from gui.Scaleform.genConsts.BATTLE_ICONS_CONSTS import BATTLE_ICONS_CONSTS
 from gui.app_loader.loader import g_appLoader
 from gui.battle_control.controllers.chat_cmd_ctrl import CHAT_COMMANDS
 from gui.shared.utils.key_mapping import getScaleformKey
-from helpers import isPlayerAvatar
+from helpers import dependency, isPlayerAvatar
+from skeletons.gui.battle_session import IBattleSessionProvider
 
-try:
-    from gui.battle_control import g_sessionProvider
-except ImportError:
-    from helpers import dependency
-    from skeletons.gui.battle_session import IBattleSessionProvider
-
-    g_sessionProvider = dependency.instance(IBattleSessionProvider)
+g_sessionProvider = dependency.instance(IBattleSessionProvider)
 
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
@@ -46,7 +41,7 @@ class _Config(object):
     def __init__(self):
         self.filePath = __file__
         self.ID = os.path.basename(self.filePath).split('.')[0].replace('mod_', '')
-        self.version = '2.0.0 (%s)' % time.strftime('%d.%m.%Y', time.localtime(
+        self.version = '2.1.0 (%s)' % time.strftime('%d.%m.%Y', time.localtime(
             os.stat('%s/%s' % (BigWorld.curCV, self.filePath)).st_mtime))
         self.fileDir = '%s/%s/' % (BigWorld.curCV, os.path.dirname(self.filePath))
         self.author = 'by Polyacov_Yury (PROTanki edition)'

@@ -12,9 +12,10 @@ import urllib2
 from functools import partial
 
 import BigWorld
-import Keys
 import ResMgr
 
+import Event
+import Keys
 from constants import AUTH_REALM, DEFAULT_LANGUAGE
 from debug_utils import LOG_CURRENT_EXCEPTION
 
@@ -25,8 +26,8 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
     BigWorld.curCV = vl.asString
 if not hasattr(BigWorld, 'PMC_wasPrint'):
     BigWorld.PMC_wasPrint = True
-    print 'Current PYmodsCore version: 1.1.0 (%s)' % time.strftime('%d.%m.%Y', time.localtime(
-        os.stat('%s/scripts/client/gui/mods/PYmodsCore.pyc' % BigWorld.curCV).st_mtime))
+    print 'Current PYmodsCore version: 2.0.0 (%s)' % time.strftime('%d.%m.%Y', time.localtime(
+        os.stat('%s/scripts/client/PYmodsCore.pyc' % BigWorld.curCV).st_mtime))
 MAX_CHAT_MESSAGE_LENGTH = 220
 
 
@@ -159,6 +160,10 @@ def checkKeys(keys):
 
 
 class _Config(object):
+    onMSAPopulate = Event.Event()
+    onMSAWindowClose = Event.Event()
+    onButtonPress = Event.Event()
+
     def __init__(self, filePath=''):
         self.filePath = filePath
         self.ID = os.path.basename(self.filePath).split('.')[0].replace('mod_', '')
@@ -173,6 +178,8 @@ class _Config(object):
         self.conf_changed = False
         self.tooltipSubs = {'HEADER': '{HEADER}', '/HEADER': '{/HEADER}', 'BODY': '{BODY}', '/BODY': '{/BODY}'}
         self.lang = DEFAULT_LANGUAGE
+        self.onMSAPopulate += self.update_settings
+        self.onMSAWindowClose += self.onWindowClose
 
     def loadLang(self):
         newConfig = self.loadJson(self.lang, self.i18n, self.langPath)
@@ -183,31 +190,23 @@ class _Config(object):
     def template_settings(self):
         return {}
 
+    def updateMod(self):
+        # noinspection PyUnresolvedReferences
+        from gui.mods.vxSettingsApi import vxSettingsApi
+        vxSettingsApi.updateMod('PYmodsGUI', self.ID, self.template_settings)
+
     def apply_settings(self, settings):
         for setting in settings:
             if setting in self.data:
                 self.data[setting] = settings[setting]
 
-        for key in self.data:
-            if 'Key' not in key:
-                continue
-            self.data[key] = []
-            for keySet in self.data[key.replace('Key', 'key')]:
-                if isinstance(keySet, list):
-                    self.data[key].append([])
-                    for hotKey in keySet:
-                        hotKeyName = BigWorld.keyToString(hotKey)
-                        self.data[key][-1].append(hotKeyName if 'KEY_' in hotKeyName else 'KEY_' + hotKeyName)
-                else:
-                    hotKeyName = BigWorld.keyToString(keySet)
-                    self.data[key].append(hotKeyName if 'KEY_' in hotKeyName else 'KEY_' + hotKeyName)
+        self.writeHotKeys(self.data)
         self.loadJson(os.path.basename(self.filePath).split('.')[0], self.data, self.fileDir, True, False)
+        self.updateMod()
 
-    def update_settings(self, doPrint=False):
-        self.update_data(doPrint)
-
-    def onApply(self):
-        pass
+    def update_settings(self):
+        self.update_data()
+        self.updateMod()
 
     def onWindowClose(self):
         pass
@@ -235,6 +234,22 @@ class _Config(object):
                 else:
                     hotKeyName = keySet if 'KEY_' in keySet else 'KEY_' + keySet
                     data[key].append(getattr(Keys, hotKeyName))
+
+    @staticmethod
+    def writeHotKeys(data):
+        for key in data:
+            if 'Key' not in key:
+                continue
+            data[key] = []
+            for keySet in data[key.replace('Key', 'key')]:
+                if isinstance(keySet, list):
+                    data[key].append([])
+                    for hotKey in keySet:
+                        hotKeyName = BigWorld.keyToString(hotKey)
+                        data[key][-1].append(hotKeyName if 'KEY_' in hotKeyName else 'KEY_' + hotKeyName)
+                else:
+                    hotKeyName = BigWorld.keyToString(keySet)
+                    data[key].append(hotKeyName if 'KEY_' in hotKeyName else 'KEY_' + hotKeyName)
 
     def byte_ify(self, inputs):
         if inputs:
@@ -396,13 +411,87 @@ class _Config(object):
             LOG_CURRENT_EXCEPTION()
         try:
             # noinspection PyUnresolvedReferences
-            from gui.mods import mod_PYmodsGUI
-            mod_PYmodsGUI.g_gui.register('%s' % self.ID, self.template_settings, self.data, self.apply_settings,
-                                         self.update_settings, self.onApply, self.onWindowClose)
+            from gui.mods.vxSettingsApi import vxSettingsApi
+            vxSettingsApi.addMod('PYmodsGUI', self.ID, self.template_settings, self.data, self.apply_settings,
+                                 self.onButtonPress)
         except ImportError:
-            print '%s: no-GUI mode confirmed' % self.ID
+            print '%s: no-GUI mode activated' % self.ID
         except StandardError:
             LOG_CURRENT_EXCEPTION()
+
+
+class ModSettingsConfig(_Config):
+    def __init__(self):
+        super(self.__class__, self).__init__(__file__)
+        self.ID = 'PYmodsGUI'
+        self.version = '2.0.0 (%s)' % self.version
+        self.author = 'by spoter, satel1te (fork %s)' % self.author
+        self.configPath = './res_mods/configs/PYmods/'
+        self.langPath = '%si18n/GUI/' % self.configPath
+        self.i18n = {'gui_name': "PY's mods settings",
+                     'gui_description': "<font color='#DD7700'><b>Polyacov_Yury</b></font>'s modifications enabling and "
+                                        "settings",
+                     'gui_windowTitle': "Polyacov_Yury's mods settings",
+                     'gui_buttonOK': 'OK',
+                     'gui_buttonCancel': 'Cancel',
+                     'gui_buttonApply': 'Apply',
+                     'gui_enableButtonTooltip': '{HEADER}ON/OFF{/HEADER}{BODY}Enable/disable this mod{/BODY}'}
+        self.loadLang()
+
+    def update_settings(self):
+        pass
+
+    def feedbackHandler(self, container, eventType, *_):
+        if container != self.ID:
+            return
+        # noinspection PyUnresolvedReferences
+        from gui.mods.vxSettingsApi import vxSettingsApiEvents
+        if eventType == vxSettingsApiEvents.WINDOW_CLOSED:
+            self.onMSAWindowClose()
+
+    def MSAPopulate(self):
+        # noinspection PyUnresolvedReferences
+        from gui.mods.vxSettingsApi import vxSettingsApi
+        self.onMSAPopulate()
+        vxSettingsApi.loadWindow(self.ID)
+
+    def modsListRegister(self):
+        BigWorld.g_modsListApi.addMod(id=self.ID, name=self.i18n['gui_name'],
+                                      description=self.i18n['gui_description'], icon='scripts/client/PYmodsLogo.png',
+                                      enabled=True, login=True, lobby=True, callback=self.MSAPopulate)
+
+    def load(self):
+        BigWorld.callback(0.0, self.do_config_delayed)
+
+    def do_config(self):
+        try:
+            from helpers import getClientLanguage
+            newLang = str(getClientLanguage()).lower()
+            if newLang != self.lang:
+                self.lang = newLang
+                self.loadLang()
+        except StandardError:
+            LOG_CURRENT_EXCEPTION()
+        try:
+            # noinspection PyUnresolvedReferences
+            from gui.mods.modsListApi import g_modsListApi
+            if not hasattr(BigWorld, 'g_modsListApi'):
+                BigWorld.g_modsListApi = g_modsListApi
+            # noinspection PyUnresolvedReferences
+            from gui.mods.vxSettingsApi import vxSettingsApi
+            keys = ('windowTitle', 'buttonOK', 'buttonCancel', 'buttonApply', 'enableButtonTooltip')
+            userSettings = {key: self.i18n['gui_%s' % key] for key in keys}
+            vxSettingsApi.addContainer(self.ID, userSettings)
+            vxSettingsApi.onFeedbackReceived += self.feedbackHandler
+            BigWorld.callback(0.0, self.modsListRegister)
+        except ImportError:
+            print '%s: no-GUI mode activated' % self.ID
+        except StandardError:
+            LOG_CURRENT_EXCEPTION()
+
+
+_modSettingsConfig = ModSettingsConfig()
+_modSettingsConfig.load()
 
 
 class Analytics(object):

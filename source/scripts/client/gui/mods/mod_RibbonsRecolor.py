@@ -4,11 +4,11 @@ import traceback
 import BigWorld
 import ResMgr
 
+import PYmodsCore
 from gui.Scaleform.daapi.view.battle.shared.ribbons_panel import BattleRibbonsPanel
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.genConsts.BATTLE_EFFICIENCY_TYPES import BATTLE_EFFICIENCY_TYPES as _BET
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
-from gui.mods import PYmodsCore
 from helpers import i18n
 
 res = ResMgr.openSection('../paths.xml')
@@ -26,6 +26,9 @@ class _Config(PYmodsCore._Config):
                      'colour': 'FF0000'}
         self.i18n = {'UI_description': 'Ribbons Recolor'}
         self.loadLang()
+
+    def updateMod(self):
+        pass
 
     def load(self):
         self.update_data(True)
@@ -70,9 +73,9 @@ BattleRibbonsPanel._BattleRibbonsPanel__setupView = new_setupView
 class Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(Analytics, self).__init__()
-        self.mod_description = 'RibbonsRecolor'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-'
-        self.mod_version = '1.0.0'
 
 
 statistic_mod = Analytics()

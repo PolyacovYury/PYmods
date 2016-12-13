@@ -16,9 +16,6 @@ def loadOriginalFile():
         with zipfile.ZipFile(scriptsPkgPath) as scriptsPkg:
             originalFile = scriptsPkg.read(originalFilePath)
             exec marshal.loads(originalFile[8:]) in globals()
-    elif os.path.exists('./res/' + originalFilePath) and os.path.isfile('./res/' + originalFilePath):
-        with open('./res/' + originalFilePath, 'rb') as originalFile:
-            exec marshal.loads(originalFile.read()[8:]) in globals()
 
 
 loadOriginalFile()

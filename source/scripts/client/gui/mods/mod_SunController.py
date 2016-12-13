@@ -4,23 +4,14 @@ import time
 import traceback
 
 import BigWorld
-import Keys
 import ResMgr
 
+import Keys
+import PYmodsCore
 from Avatar import PlayerAvatar
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.app_loader.loader import g_appLoader
-from gui.mods import PYmodsCore
-
-try:
-    from gui.mods import mod_PYmodsGUI
-except ImportError:
-    mod_PYmodsGUI = None
-    print 'SunController: no-GUI mode activated'
-except StandardError:
-    mod_PYmodsGUI = None
-    traceback.print_exc()
 
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
@@ -32,7 +23,7 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.1.0 (%s)' % self.version
+        self.version = '2.2.0 (%s)' % self.version
         self.author = '%s (orig by Lp()rtii/Dellux) (thx to LSD_MAX/Delysid :P)' % self.author
         self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
         self.data = {'enabled': True,
@@ -97,35 +88,32 @@ class _Config(PYmodsCore._Config):
         global isSunControlled
         super(_Config, self).apply_settings(settings)
         isSunControlled = _config.data['enableAtStartup']
-        _gui_config.update_template('%s' % self.ID, self.template_settings)
-
-    def update_settings(self, doPrint=False):
-        super(_Config, self).update_settings()
-        _gui_config.updateFile('%s' % self.ID, self.data, self.template_settings)
 
 
-_gui_config = getattr(mod_PYmodsGUI, 'g_gui', None)
 _config = _Config()
 _config.load()
 if _config.data['enableMessage']:
     isLogin = True
-    LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAll'].format(
-        author='<font color="#DD7700">Polyacov_Yury</font>')
-    if os.path.isfile('%s/%s/mod_LampLights.pyc' % (BigWorld.curCV, os.path.dirname(__file__))):
-        try:
-            from gui.mods import mod_LampLights
-
-            if mod_LampLights._config.ID not in getattr(_gui_config, 'gui', {}) and \
-                    mod_LampLights._config.data['enableMessage']:
-                LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAnd']
-        except StandardError:
-            pass
-
 
     def new_populate(self):
+        LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAll'].format(
+            author='<font color="#DD7700">Polyacov_Yury</font>')
+        try:
+            # noinspection PyUnresolvedReferences
+            from gui.mods.vxSettingsApi import vxSettingsApi
+            isRegistered = vxSettingsApi.isRegistered('PYmodsGUI')
+        except ImportError:
+            isRegistered = False
+        if os.path.isfile('%s/%s/mod_LampLights.pyc' % (BigWorld.curCV, os.path.dirname(__file__))):
+            try:
+                from gui.mods import mod_LampLights
+                if not isRegistered and mod_LampLights._config.data['enableMessage']:
+                    LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAnd']
+            except StandardError:
+                pass
         global isLogin
         old_populate(self)
-        if isLogin and _config.ID not in getattr(_gui_config, 'gui', {}):
+        if isLogin and not isRegistered:
             SystemMessages.pushMessage(LOGIN_TEXT_MESSAGE, type=SystemMessages.SM_TYPE.Information)
             isLogin = False
 
@@ -207,9 +195,9 @@ InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 class Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(Analytics, self).__init__()
-        self.mod_description = 'SunController'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-3'
-        self.mod_version = '2.1.0'
 
 
 statistic_mod = Analytics()

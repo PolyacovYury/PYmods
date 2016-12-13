@@ -10,6 +10,7 @@ import BigWorld
 import ResMgr
 
 import Keys
+import PYmodsCore
 import items.vehicles
 import nations
 from Account import Account
@@ -25,20 +26,10 @@ from gui.app_loader import g_appLoader
 from gui.customization import g_customizationController
 from gui.customization.data_aggregator import DataAggregator
 from gui.customization.shared import CUSTOMIZATION_TYPE
-from gui.mods import PYmodsCore
 from helpers import i18n
 from items import _xml
 from items.vehicles import CAMOUFLAGE_KINDS, CAMOUFLAGE_KIND_INDICES
 from vehicle_systems.CompoundAppearance import CompoundAppearance
-
-try:
-    from gui.mods import mod_PYmodsGUI
-except ImportError:
-    mod_PYmodsGUI = None
-    print 'CamoSelector: no-GUI mode activated'
-except StandardError:
-    mod_PYmodsGUI = None
-    traceback.print_exc()
 
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
@@ -100,6 +91,7 @@ class CamoSelectorUI(AbstractWindowView):
                     camoSettings = {'randomOption': camouflage.get('random_mode', 2),
                                     'camoInShop': g_customizationController.dataAggregator._elementIsInShop(
                                         camoID, 0, nationID),
+                                    'isInternational': camoName in _config.internationalCamouflages,
                                     'useFor': {'ally': camouflage.get('useForAlly', True),
                                                'enemy': camouflage.get('useForEnemy', True)},
                                     'kinds': {}}
@@ -143,6 +135,7 @@ class CamoSelectorUI(AbstractWindowView):
                 camoID = camoNames[camoName]
                 camouflageDesc = camouflages[camoID]
                 camoInShop = g_customizationController.dataAggregator._elementIsInShop(camoID, 0, nationID)
+                isInter = camoName in _config.internationalCamouflages
                 newSettings = settings[idx][camoNum]
                 nationConf[camoName]['random_mode'] = newSettings.randomOption
                 nationConf[camoName]['useForAlly'] = newSettings.useFor.ally
@@ -157,7 +150,7 @@ class CamoSelectorUI(AbstractWindowView):
                         _config.loadJson('settings', dict(
                             (key, nationConf[key]) for key in _config.configFolders[confFolderName]),
                                          _config.configPath + confFolderName + '/', True, False)
-                if nationConf[camoName]['random_mode'] == 2:
+                if nationConf[camoName]['random_mode'] == 2 or nationConf[camoName]['random_mode'] == 1 and not isInter:
                     del nationConf[camoName]['random_mode']
                 kindNames = filter(None, nationConf[camoName]['kinds'].split(','))
                 if len(kindNames) == 1 and kindNames[0] == CAMOUFLAGE_KIND_INDICES[camouflageDesc['kind']] or camoInShop:
@@ -214,7 +207,7 @@ class CamoSelectorUI(AbstractWindowView):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.3.0 (%s)' % self.version
+        self.version = '2.4.0 (%s)' % self.version
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'selectHotKey': ['KEY_F5', ['KEY_LCONTROL', 'KEY_RCONTROL']]}
@@ -291,7 +284,8 @@ class _Config(PYmodsCore._Config):
         self.camouflagesCache = {}
         self.camouflages = {}
         self.configFolders = {}
-        self.currentOverriders = dict.fromkeys((('modded', 'isModded') + nations.NAMES), dict.fromkeys(('Ally', 'Enemy')))
+        self.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
+        self.internationalCamouflages = []
         self.activePreviewCamo = None
         self.loadLang()
 
@@ -336,11 +330,6 @@ class _Config(PYmodsCore._Config):
     def apply_settings(self, settings):
         super(_Config, self).apply_settings(settings)
         BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
-        _gui_config.update_template('%s' % self.ID, self.template_settings)
-
-    def update_settings(self, doPrint=False):
-        super(_Config, self).update_settings()
-        _gui_config.updateFile('%s' % self.ID, self.data, self.template_settings)
 
     def readCamouflages(self, doShopCheck):
         self.camouflages = {'modded': {}}
@@ -356,6 +345,12 @@ class _Config(PYmodsCore._Config):
         except StandardError:
             traceback.print_exc()
 
+        self.internationalCamouflages = [camouflage['name'] for camouflage in
+                                         items.vehicles.g_cache.customization(0)['camouflages'].itervalues()]
+        for nationID in xrange(1, len(nations.NAMES)):
+            camouflages = items.vehicles.g_cache.customization(nationID)['camouflages']
+            camoNames = [camouflage['name'] for camouflage in camouflages.itervalues()]
+            self.internationalCamouflages = filter(lambda x: x in camoNames, self.internationalCamouflages)
         settings = self.loadJson('settings', {}, self.configPath)
         if 'disable' in settings:
             if not settings['disable']:
@@ -377,7 +372,8 @@ class _Config(PYmodsCore._Config):
                     continue
                 camoInShop = not doShopCheck or g_customizationController.dataAggregator._elementIsInShop(
                     camoID, 0, nations.INDICES[nation])
-                if nationConf[camoName].get('random_mode') == 2:
+                if nationConf[camoName].get('random_mode') == 2 or nationConf[camoName].get(
+                        'random_mode') == 1 and camoName not in self.internationalCamouflages:
                     del nationConf[camoName]['random_mode']
                 kinds = nationConf[camoName].get('kinds')
                 if kinds is not None:
@@ -403,8 +399,8 @@ class _Config(PYmodsCore._Config):
             newSettings[nation] = settings[nation]
         self.loadJson('settings', newSettings, self.configPath, True)
 
-    def do_config_delayed(self):
-        super(_Config, self).do_config_delayed()
+    def do_config(self):
+        super(_Config, self).do_config()
         BigWorld.g_modsListApi.addMod(
             id='CamoSelectorUI', name=self.i18n['UI_flash_header'],
             description=self.i18n['UI_flash_header_tooltip'],
@@ -444,7 +440,6 @@ def new_vehicleValues(xmlCtx, section, sectionName, defNationID):
 
 items.vehicles._vehicleValues = new_vehicleValues
 
-_gui_config = getattr(mod_PYmodsGUI, 'g_gui', None)
 _config = _Config()
 _config.load()
 
@@ -644,7 +639,7 @@ items.vehicles.Cache.customization = new_customization
 def new_onBecomeNonPlayer(self):
     old_onBecomeNonPlayer(self)
     _config.hangarCamoCache.clear()
-    _config.currentOverriders = dict.fromkeys((('modded', 'isModded') + nations.NAMES), dict.fromkeys(('Ally', 'Enemy')))
+    _config.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
 
 
 old_onBecomeNonPlayer = Account.onBecomeNonPlayer
@@ -697,22 +692,12 @@ def new_ca_getCamouflageParams(self, vDesc, vID):
                 print 'CamoSelector: a vehicle was not whitelisted and (or) blacklisted, but is missing:', vehName
                 print camouflage['tiling']
     if overriders:
-        isModded = _config.currentOverriders['isModded']
-        if isModded[curTeam] is None:
-            camoID = random.choice(overriders)
-            modded = isModded[curTeam] = camouflages[camoID]['name'] in _config.camouflages['modded']
-            key = 'modded' if modded else nationName
-            _config.currentOverriders[key][curTeam] = camoID
-        modded = isModded[curTeam]
-        key = 'modded' if modded else nationName
-        if _config.currentOverriders[key][curTeam] is None:
-            overriders = filter(lambda x: modded == (camouflages[x]['name'] in _config.camouflages['modded']), overriders)
-            otherOverrider = _config.currentOverriders[key][otherTeam]
+        if _config.currentOverriders[curTeam] is None:
+            otherOverrider = _config.currentOverriders[otherTeam]
             if len(overriders) > 1 and otherOverrider in overriders:
                 overriders.remove(otherOverrider)
-            _config.currentOverriders[key][curTeam] = random.choice(overriders) if overriders else None
-        if _config.currentOverriders[key][curTeam] is not None:
-            selectedCamouflages = [_config.currentOverriders[key][curTeam]]
+            _config.currentOverriders[curTeam] = random.choice(overriders)
+        selectedCamouflages = [_config.currentOverriders[curTeam]]
     if _config.data['doRandom'] and not selectedCamouflages:
         for camoID, camouflage in camouflages.items():
             camoName = camouflage['name']
@@ -812,9 +797,9 @@ ClientHangarSpace.recreateVehicle = new_cs_recreateVehicle
 class Analytics(PYmodsCore.Analytics):
     def __init__(self):
         super(Analytics, self).__init__()
-        self.mod_description = 'CamoSelector'
+        self.mod_description = _config.ID
+        self.mod_version = _config.version.split(' ', 1)[0]
         self.mod_id_analytics = 'UA-76792179-7'
-        self.mod_version = '2.3.0'
 
 
 statistic_mod = Analytics()
