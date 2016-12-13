@@ -20,6 +20,7 @@ from gui import InputHandler, SystemMessages
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.app_loader.loader import g_appLoader
 from vehicle_systems.CompoundAppearance import CompoundAppearance
+from vehicle_systems.components.engine_state import DetailedEngineStateWWISE
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 
 res = ResMgr.openSection('../paths.xml')
@@ -27,6 +28,7 @@ sb = res['Paths']
 vl = sb.values()[0]
 if vl is not None and not hasattr(BigWorld, 'curCV'):
     BigWorld.curCV = vl.asString
+entity = BigWorld.entity
 
 
 def listToTuple(seq):
@@ -36,6 +38,7 @@ def listToTuple(seq):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
+        self.isTickRequired = True
         self.version = '2.2.0 (%s)' % self.version
         self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
         self.data = {'enabled': True,
@@ -277,6 +280,7 @@ class _Config(PYmodsCore._Config):
         else:
             LOG_NOTE('LampLights mod fully disabled via main config.')
             self.isLampsVisible = False
+        self.isTickRequired = any(self.modes[key] for key in ('stop', 'turn_left', 'turn_right', 'back'))
 
 
 _config = _Config()
@@ -326,7 +330,7 @@ def findWheelNodes(vehicleID, place):
     wheelsCount = 0
     wheelNodeStr = 'W_%s' % place
     subWheelNodeStr = 'WD_%s' % place
-    vEntity = BigWorld.entity(vehicleID)
+    vEntity = entity(vehicleID)
     vDesc = vEntity.typeDescriptor
     chassisSource = vDesc.chassis['models']['undamaged']
     modelSec = ResMgr.openSection(chassisSource)
@@ -411,7 +415,7 @@ fakeMotorsDict = {}
 def lightsCreate(vehicleID, callPlace=''):
     try:
         vehicle = BigWorld.player().arena.vehicles[vehicleID]
-        vEntity = BigWorld.entity(vehicleID)
+        vEntity = entity(vehicleID)
         if vEntity is None:
             return
         vDesc = vEntity.typeDescriptor
@@ -677,7 +681,7 @@ def battleKeyControl(event):
             if _config.isLampsVisible:
                 _config.update_data(_config.data['Debug'])
                 for vehicleID in BigWorld.player().arena.vehicles:
-                    curVehicle = BigWorld.entity(vehicleID)
+                    curVehicle = entity(vehicleID)
                     if curVehicle is not None and curVehicle.isAlive():
                         lightsCreate(vehicleID, 'keyPress')
 
@@ -730,45 +734,40 @@ Vehicle.startVisual = new_startVisual
 old_oVHC = CompoundAppearance.onVehicleHealthChanged
 CompoundAppearance.onVehicleHealthChanged = new_oVHC
 curSpeedsDict = {}
-old_onTick = VGR._VehicleGunRotator__onTick
 
 
-def new_onTick(self):
-    old_onTick(self)
-    if not _config.isLampsVisible:
+def new_refresh(self, dt):
+    old_refresh(self, dt)
+    if self._vehicle is None:
         return
-    if not any(_config.modes[key] for key in ('stop', 'turn_left', 'turn_right', 'back')):
+    if not _config.data['enabled'] or not _config.isLampsVisible or not _config.isTickRequired:
         return
-    entity = BigWorld.entity
-    for vehicleID in lightDBDict:
-        curSpeeds = curSpeedsDict.setdefault(vehicleID, {})
-        oldSpeed = curSpeeds.setdefault('curSpeed', 0.0)
-        oldRSpeed = curSpeeds.setdefault('curRSpeed', 0.0)
-        curEntity = entity(vehicleID)
-        if curEntity is not None:
-            speedValue = curEntity.filter.speedInfo.value
-            curSpeed = round(speedValue[0], 1)
-            curRSpeed = round(speedValue[1], 1)
-        else:
-            curSpeed = oldSpeed
-            curRSpeed = oldRSpeed
-        doVisible = {'back': curSpeed < 0,
-                     'turn_left': curRSpeed != 0 and ((curRSpeed > 0) != (curSpeed >= 0)),
-                     'turn_right': curRSpeed != 0 and ((curRSpeed > 0) == (curSpeed >= 0)),
-                     'stop': abs(oldSpeed) - abs(curSpeed) > 0.6}
-        lightDB = lightDBDict[vehicleID]
-        for curKey in lightDB:
-            lightInstance = lightDB[curKey]
-            for modeName in doVisible:
-                for confKey in _config.modes[modeName]:
-                    if confKey in curKey:
-                        lightInstance.visible = doVisible[modeName]
+    vehicleID = self._vehicle.id
+    if vehicleID not in lightDBDict:
+        return
+    curSpeeds = curSpeedsDict.setdefault(vehicleID, {})
+    oldSpeed = curSpeeds.setdefault('curSpeed', 0.0)
+    speedValue = self._vehicle.filter.speedInfo.value
+    curSpeed = round(speedValue[0], 1)
+    curRSpeed = round(speedValue[1], 1)
+    doVisible = {'back': curSpeed < 0,
+                 'turn_left': curRSpeed != 0 and ((curRSpeed > 0) != (curSpeed >= 0)),
+                 'turn_right': curRSpeed != 0 and ((curRSpeed > 0) == (curSpeed >= 0)),
+                 'stop': abs(oldSpeed) - abs(curSpeed) > 0.6}
+    lightDB = lightDBDict[vehicleID]
+    for curKey in lightDB:
+        lightInstance = lightDB[curKey]
+        for modeName in doVisible:
+            for confKey in _config.modes[modeName]:
+                if confKey in curKey:
+                    lightInstance.visible = doVisible[modeName]
 
-        curSpeeds['curSpeed'] = curSpeed
-        curSpeeds['curRSpeed'] = curRSpeed
+    curSpeeds['curSpeed'] = curSpeed
+    curSpeeds['curRSpeed'] = curRSpeed
 
 
-VGR._VehicleGunRotator__onTick = new_onTick
+old_refresh = DetailedEngineStateWWISE.refresh
+DetailedEngineStateWWISE.refresh = new_refresh
 
 
 def spotToggle(vehicleID, lightIdx, status):
@@ -786,39 +785,34 @@ def spotToggle(vehicleID, lightIdx, status):
                         else False
 
 
-if _config.modes['target']:
-    old_targetFocus = PlayerAvatar.targetFocus
+def new_targetFocus(self, entity):
+    old_targetFocus(self, entity)
+    if entity not in self._PlayerAvatar__vehicles:
+        return
+    if _config.isLampsVisible:
+        for confKey in _config.modes['target']:
+            for vehicleID in lightDBDict:
+                for curKey in lightDBDict[vehicleID]:
+                    if confKey in curKey:
+                        lightDBDict[vehicleID][curKey].visible = vehicleID == entity.id
 
 
-    def new_targetFocus(self, entity):
-        old_targetFocus(self, entity)
-        if entity not in self._PlayerAvatar__vehicles:
-            return
-        if _config.isLampsVisible:
-            for confKey in _config.modes['target']:
-                for vehicleID in lightDBDict:
-                    for curKey in lightDBDict[vehicleID]:
-                        if confKey in curKey:
-                            lightDBDict[vehicleID][curKey].visible = vehicleID == entity.id
+def new_targetBlur(self, prevEntity):
+    old_targetBlur(self, prevEntity)
+    if prevEntity not in self._PlayerAvatar__vehicles:
+        return
+    if _config.isLampsVisible:
+        for confKey in _config.modes['target']:
+            for vehicleID in lightDBDict:
+                for curKey in lightDBDict[vehicleID]:
+                    if confKey in curKey:
+                        lightDBDict[vehicleID][curKey].visible = False
 
 
-    PlayerAvatar.targetFocus = new_targetFocus
-    old_targetBlur = PlayerAvatar.targetBlur
-
-
-    def new_targetBlur(self, prevEntity):
-        old_targetBlur(self, prevEntity)
-        if prevEntity not in self._PlayerAvatar__vehicles:
-            return
-        if _config.isLampsVisible:
-            for confKey in _config.modes['target']:
-                for vehicleID in lightDBDict:
-                    for curKey in lightDBDict[vehicleID]:
-                        if confKey in curKey:
-                            lightDBDict[vehicleID][curKey].visible = False
-
-
-    PlayerAvatar.targetBlur = new_targetBlur
+old_targetFocus = PlayerAvatar.targetFocus
+PlayerAvatar.targetFocus = new_targetFocus
+old_targetBlur = PlayerAvatar.targetBlur
+PlayerAvatar.targetBlur = new_targetBlur
 
 
 class Analytics(PYmodsCore.Analytics):
