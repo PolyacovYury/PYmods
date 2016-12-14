@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import cProfile
 import glob
 import os
 import traceback
@@ -14,7 +13,6 @@ import PYmodsCore
 from Avatar import PlayerAvatar
 from AvatarInputHandler import mathUtils
 from Vehicle import Vehicle
-from VehicleGunRotator import VehicleGunRotator as VGR
 from debug_utils import LOG_ERROR, LOG_NOTE
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
@@ -785,6 +783,7 @@ def spotToggle(vehicleID, lightIdx, status):
                         else False
 
 
+# noinspection PyShadowingNames
 def new_targetFocus(self, entity):
     old_targetFocus(self, entity)
     if entity not in self._PlayerAvatar__vehicles:
