@@ -762,10 +762,9 @@ def newAVK(self, argStr):
 
 
 def new_onVehicleDestroyed(self):
-    if _config.data['enabled']:
-        if not hasattr(BigWorld.player().arena, 'UT'):
-            initial()
-            checkSquadMan()
+    if _config.data['enabled'] and not hasattr(BigWorld.player().arena, 'UT'):
+        initial()
+        checkSquadMan()
         BigWorld.player().arena.killerCallBackId = BigWorld.callback(0.5, checkOwnKiller)
     old_onVehicleDestroyed(self)
 
