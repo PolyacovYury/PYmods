@@ -5,10 +5,12 @@ import os
 import random
 import time
 import traceback
+import weakref
 
 import BigWorld
 import ResMgr
 
+import CurrentVehicle
 import Keys
 import PYmodsCore
 import items.vehicles
@@ -42,72 +44,94 @@ class CamoSelectorUI(AbstractWindowView):
     def _populate(self):
         super(CamoSelectorUI, self)._populate()
         if self._isDAAPIInited():
-            if g_currentPreviewVehicle.isPresent():
-                vDesc = g_currentPreviewVehicle.item.descriptor
-            elif g_currentVehicle.isPresent():
-                vDesc = g_currentVehicle.item.descriptor
-            else:
-                return
-            nationID = vDesc.type.customizationNationID
-            # noinspection PyUnresolvedReferences
-            texts = {'header': _config.i18n['UI_flash_header'],
-                     'nations': (
-                     _config.i18n['UI_flash_camoNation_modded'], i18n.makeString('#nations:%s' % nations.NAMES[nationID])),
-                     'camouflages': [[] for _ in xrange(len(nations.NAMES) + 1)],
-                     'randomOptions': {'label': _config.i18n['UI_flash_randomOptions_text'],
-                                       'tooltip': _config.i18n['UI_flash_randomOptions_tooltip'],
-                                       'options': [_config.i18n['UI_flash_randomOptions_OFF'],
-                                                   _config.i18n['UI_flash_randomOptions_overrideRandom'],
-                                                   _config.i18n['UI_flash_randomOptions_includeInRandom']]},
-                     'useFor': {'header': {'label': _config.i18n['UI_flash_useFor_header_label'],
-                                           'tooltip': _config.i18n['UI_flash_useFor_header_tooltip']},
-                                'ally': {'label': _config.i18n['UI_flash_useFor_ally_label'],
-                                         'tooltip': _config.i18n['UI_flash_useFor_ally_tooltip']},
-                                'enemy': {'label': _config.i18n['UI_flash_useFor_enemy_label'],
-                                          'tooltip': _config.i18n['UI_flash_useFor_enemy_tooltip']}},
-                     'kinds': {'header': {'label': _config.i18n['UI_flash_kinds_header_label'],
-                                          'tooltip': _config.i18n['UI_flash_kinds_header_tooltip']},
-                               'winter': {'label': _config.i18n['UI_flash_kinds_winter_label'],
-                                          'tooltip': _config.i18n['UI_flash_kinds_winter_tooltip']},
-                               'summer': {'label': _config.i18n['UI_flash_kinds_summer_label'],
-                                          'tooltip': _config.i18n['UI_flash_kinds_summer_tooltip']},
-                               'desert': {'label': _config.i18n['UI_flash_kinds_desert_label'],
-                                          'tooltip': _config.i18n['UI_flash_kinds_desert_tooltip']}},
-                     'installTooltip': _config.i18n['UI_flash_installTooltip'],
-                     'save': _config.i18n['UI_flash_save']}
-            settings = [[], []]
+            self.createData()
+            _config.UIProxy = weakref.proxy(self)
+
+    def createData(self):
+        # noinspection PyUnresolvedReferences
+        texts = {
+            'header': _config.i18n['UI_flash_header'],
+            'nations': map(lambda x: i18n.makeString('#nations:%s' % x), nations.NAMES) + [
+                _config.i18n['UI_flash_camoMode_modded'], _config.i18n['UI_flash_camoMode_international']],
+            'camouflages': [[] for _ in xrange(len(nations.NAMES) + 2)],
+            'randomOptions': {'label': _config.i18n['UI_flash_randomOptions_text'],
+                              'tooltip': _config.i18n['UI_flash_randomOptions_tooltip'],
+                              'options': [_config.i18n['UI_flash_randomOptions_OFF'],
+                                          _config.i18n['UI_flash_randomOptions_overrideRandom'],
+                                          _config.i18n['UI_flash_randomOptions_includeInRandom']]},
+            'useFor': {'header': {'label': _config.i18n['UI_flash_useFor_header_label'],
+                                  'tooltip': _config.i18n['UI_flash_useFor_header_tooltip']},
+                       'ally': {'label': _config.i18n['UI_flash_useFor_ally_label'],
+                                'tooltip': _config.i18n['UI_flash_useFor_ally_tooltip']},
+                       'enemy': {'label': _config.i18n['UI_flash_useFor_enemy_label'],
+                                 'tooltip': _config.i18n['UI_flash_useFor_enemy_tooltip']}},
+            'kinds': {'header': {'label': _config.i18n['UI_flash_kinds_header_label'],
+                                 'tooltip': _config.i18n['UI_flash_kinds_header_tooltip']},
+                      'winter': {'label': _config.i18n['UI_flash_kinds_winter_label'],
+                                 'tooltip': _config.i18n['UI_flash_kinds_winter_tooltip']},
+                      'summer': {'label': _config.i18n['UI_flash_kinds_summer_label'],
+                                 'tooltip': _config.i18n['UI_flash_kinds_summer_tooltip']},
+                      'desert': {'label': _config.i18n['UI_flash_kinds_desert_label'],
+                                 'tooltip': _config.i18n['UI_flash_kinds_desert_tooltip']}},
+            'installTooltip': _config.i18n['UI_flash_installTooltip'],
+            'save': _config.i18n['UI_flash_save']}
+        settings = [[] for _ in xrange(len(nations.NAMES) + 2)]
+        for idx, nation in enumerate(nations.NAMES + ('modded', 'international')):
+            nationID = min(idx, len(nations.NAMES) - 1)
             camouflages = items.vehicles.g_cache.customization(nationID)['camouflages']
-            for idx, nation in enumerate(('modded', nations.NAMES[nationID])):
-                camoNames = {camouflage['name']: camoID for camoID, camouflage in camouflages.items()}
-                for camoName in camoNames.keys():
-                    if (nation != 'modded') == (camoName in _config.camouflages['modded']):
+            camoNames = {camouflage['name']: camoID for camoID, camouflage in camouflages.items()}
+            for camoName in camoNames.keys():
+                if nation == 'modded':
+                    if camoName not in _config.camouflages['modded']:
                         del camoNames[camoName]
-                for camoName in sorted(camoNames.keys()):
-                    camoID = camoNames[camoName]
-                    camouflageDesc = camouflages[camoID]
-                    _config.camouflages.get(nation, {})
-                    camouflage = _config.camouflages.get(nation, {}).get(camoName, {})
-                    texts['camouflages'][idx].append(camoName)
-                    camoSettings = {'randomOption': camouflage.get('random_mode', 2),
-                                    'camoInShop': g_customizationController.dataAggregator._elementIsInShop(
-                                        camoID, 0, nationID),
-                                    'isInternational': camoName in _config.internationalCamouflages,
-                                    'useFor': {'ally': camouflage.get('useForAlly', True),
-                                               'enemy': camouflage.get('useForEnemy', True)},
-                                    'kinds': {}}
-                    for key, kind in CAMOUFLAGE_KINDS.items():
-                        if camouflage.get('kinds') is not None:
-                            camoSettings['kinds'][key] = key in camouflage['kinds']
-                        else:
-                            camoSettings['kinds'][key] = kind == camouflageDesc['kind']
-                    settings[idx].append(camoSettings)
-            self.flashObject.as_syncData({'texts': texts, 'settings': settings})
+                elif nation == 'international':
+                    if camoName not in _config.origInterCamo:
+                        del camoNames[camoName]
+                elif camoName in _config.interCamo:
+                    del camoNames[camoName]
+            for camoName in sorted(camoNames.keys()):
+                camoID = camoNames[camoName]
+                camouflageDesc = camouflages[camoID]
+                _config.camouflages.get(nation, {})
+                camouflage = _config.camouflages.get(nation, {}).get(camoName, {})
+                texts['camouflages'][idx].append(camoName)
+                camoSettings = {'randomOption': camouflage.get('random_mode', 2),
+                                'camoInShop': g_customizationController.dataAggregator._elementIsInShop(
+                                    camoID, 0, nationID),
+                                'isInternational': camoName in _config.interCamo,
+                                'useFor': {'ally': camouflage.get('useForAlly', True),
+                                           'enemy': camouflage.get('useForEnemy', True)},
+                                'kinds': {}}
+                for key, kind in CAMOUFLAGE_KINDS.items():
+                    if camouflage.get('kinds') is not None:
+                        camoSettings['kinds'][key] = key in camouflage['kinds']
+                    else:
+                        camoSettings['kinds'][key] = kind == camouflageDesc['kind']
+                settings[idx].append(camoSettings)
+        self.flashObject.as_syncData({'texts': texts, 'settings': settings, 'ids': _config.backup})
+        self.changeNation(self.getCurrentNation())
+
+    @staticmethod
+    def getCurrentNation():
+        if g_currentPreviewVehicle.isPresent():
+            vDesc = g_currentPreviewVehicle.item.descriptor
+        elif g_currentVehicle.isPresent():
+            vDesc = g_currentVehicle.item.descriptor
+        else:
+            raise AttributeError('g_currentVehicle.item.descriptor not found')
+        return vDesc.type.customizationNationID
+
+    def changeNation(self, nationID):
+        _config.backupNationID = nationID
+        if self._isDAAPIInited():
+            self.flashObject.as_changeNation(nationID)
 
     def onWindowClose(self):
         _config.activePreviewCamo = None
         SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflageRestore'],
                                    SystemMessages.SM_TYPE.CustomizationForGold)
         g_currentPreviewVehicle.refreshModel()
+        _config.UIProxy = None
         self.destroy()
 
     def as_isModalS(self):
@@ -116,26 +140,26 @@ class CamoSelectorUI(AbstractWindowView):
 
     @staticmethod
     def py_onSettings(settings):
-        if g_currentPreviewVehicle.isPresent():
-            vDesc = g_currentPreviewVehicle.item.descriptor
-        elif g_currentVehicle.isPresent():
-            vDesc = g_currentVehicle.item.descriptor
-        else:
-            return
-        nationID = vDesc.type.customizationNationID
-        camouflages = items.vehicles.g_cache.customization(nationID)['camouflages']
-        for idx, nation in enumerate(('modded', nations.NAMES[nationID])):
+        for idx, nation in enumerate(nations.NAMES + ('modded', 'international')):
+            nationID = min(idx, len(nations.NAMES) - 1)
+            camouflages = items.vehicles.g_cache.customization(nationID)['camouflages']
             nationConf = _config.camouflages.setdefault(nation, {})
             camoNames = {camouflage['name']: camoID for camoID, camouflage in camouflages.items()}
             for camoName in camoNames.keys():
-                if (nation != 'modded') == (camoName in _config.camouflages['modded']):
+                if nation == 'modded':
+                    if camoName not in _config.camouflages['modded']:
+                        del camoNames[camoName]
+                elif nation == 'international':
+                    if camoName not in _config.origInterCamo:
+                        del camoNames[camoName]
+                elif camoName in _config.interCamo:
                     del camoNames[camoName]
             for camoNum, camoName in enumerate(sorted(camoNames.keys())):
                 nationConf.setdefault(camoName, {})
                 camoID = camoNames[camoName]
                 camouflageDesc = camouflages[camoID]
                 camoInShop = g_customizationController.dataAggregator._elementIsInShop(camoID, 0, nationID)
-                isInter = camoName in _config.internationalCamouflages
+                isInter = camoName in _config.interCamo
                 newSettings = settings[idx][camoNum]
                 nationConf[camoName]['random_mode'] = newSettings.randomOption
                 nationConf[camoName]['useForAlly'] = newSettings.useFor.ally
@@ -176,27 +200,29 @@ class CamoSelectorUI(AbstractWindowView):
 
     @staticmethod
     def py_printLog(*args):
-        print args
+        print (arg for arg in args)
 
     @staticmethod
-    def py_onShowPreset(idx, camoID):
-        if g_currentPreviewVehicle.isPresent():
-            vDesc = g_currentPreviewVehicle.item.descriptor
-        elif g_currentVehicle.isPresent():
-            vDesc = g_currentVehicle.item.descriptor
-        else:
-            return
-        nationID = vDesc.type.customizationNationID
-        nationName = ('modded', nations.NAMES[nationID])[idx]
+    def py_onShowPreset(nationID, mode, camoID):
+        nationName = ('modded', 'international', nations.NAMES[nationID])[mode]
         camouflages = items.vehicles.g_cache.customization(nationID)['camouflages']
         camoNames = {camouflage['name']: camoID for camoID, camouflage in camouflages.items()}
         for camoName in camoNames.keys():
-            if (nationName != 'modded') == (camoName in _config.camouflages['modded']):
+            if nationName == 'modded':
+                if camoName not in _config.camouflages['modded']:
+                    del camoNames[camoName]
+            elif nationName == 'international':
+                if camoName not in _config.origInterCamo:
+                    del camoNames[camoName]
+            elif camoName in _config.interCamo:
                 del camoNames[camoName]
         _config.activePreviewCamo = sorted(camoNames.keys())[int(camoID)]
         SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflagePreview'] +
                                    _config.activePreviewCamo.join(('<b>', '</b>')),
                                    SystemMessages.SM_TYPE.CustomizationForGold)
+        _config.backup['mode'] = mode
+        newIdx = nationID if mode == 2 else (len(nations.NAMES) + mode - 2)
+        _config.backup['camoID'][newIdx] = camoID
         g_currentPreviewVehicle.refreshModel()
 
     @staticmethod
@@ -207,7 +233,7 @@ class CamoSelectorUI(AbstractWindowView):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.4.0 (%s)' % self.version
+        self.version = '2.5.0 (%s)' % self.version
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'selectHotKey': ['KEY_F5', ['KEY_LCONTROL', 'KEY_RCONTROL']]}
@@ -219,7 +245,8 @@ class _Config(PYmodsCore._Config):
             'UI_flash_header': 'Camouflages setup',
             'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
                                         '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),
-            'UI_flash_camoNation_modded': 'Modded',
+            'UI_flash_camoMode_modded': 'Modded',
+            'UI_flash_camoMode_international': 'International',
             'UI_flash_randomOptions_text': 'Random selection mode',
             'UI_flash_randomOptions_tooltip': (
                 '{HEADER}Description:{/HEADER}{BODY} • <b>OFF</b>: camouflage is disabled.\n • <b>Override random '
@@ -285,8 +312,12 @@ class _Config(PYmodsCore._Config):
         self.camouflages = {}
         self.configFolders = {}
         self.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
-        self.internationalCamouflages = []
+        self.interCamo = []
+        self.origInterCamo = []
         self.activePreviewCamo = None
+        self.UIProxy = None
+        self.backupNationID = None
+        self.backup = {'mode': 0, 'camoID': (len(nations.NAMES) + 2) * [0]}
         self.loadLang()
 
     def template_settings(self):
@@ -345,12 +376,12 @@ class _Config(PYmodsCore._Config):
         except StandardError:
             traceback.print_exc()
 
-        self.internationalCamouflages = [camouflage['name'] for camouflage in
-                                         items.vehicles.g_cache.customization(0)['camouflages'].itervalues()]
+        self.interCamo = map(lambda x: x['name'], items.vehicles.g_cache.customization(0)['camouflages'].itervalues())
         for nationID in xrange(1, len(nations.NAMES)):
             camouflages = items.vehicles.g_cache.customization(nationID)['camouflages']
-            camoNames = [camouflage['name'] for camouflage in camouflages.itervalues()]
-            self.internationalCamouflages = filter(lambda x: x in camoNames, self.internationalCamouflages)
+            camoNames = map(lambda x: x['name'], camouflages.itervalues())
+            self.interCamo = filter(lambda x: x in camoNames, self.interCamo)
+        self.origInterCamo = filter(lambda x: x not in self.camouflages['modded'], self.interCamo)
         settings = self.loadJson('settings', {}, self.configPath)
         if 'disable' in settings:
             if not settings['disable']:
@@ -358,7 +389,7 @@ class _Config(PYmodsCore._Config):
             else:
                 self.disable = settings['disable']
         for nation in settings.keys():
-            if nation not in nations.NAMES:
+            if nation not in nations.NAMES + ('international',):
                 continue
             camouflages = items.vehicles.g_cache.customization(nations.INDICES[nation])['camouflages']
             nationConf = settings[nation]
@@ -373,7 +404,7 @@ class _Config(PYmodsCore._Config):
                 camoInShop = not doShopCheck or g_customizationController.dataAggregator._elementIsInShop(
                     camoID, 0, nations.INDICES[nation])
                 if nationConf[camoName].get('random_mode') == 2 or nationConf[camoName].get(
-                        'random_mode') == 1 and camoName not in self.internationalCamouflages:
+                        'random_mode') == 1 and camoName not in self.interCamo:
                     del nationConf[camoName]['random_mode']
                 kinds = nationConf[camoName].get('kinds')
                 if kinds is not None:
@@ -494,8 +525,10 @@ def new_elementIsInShop(self, criteria, cType, nationID):
 def readInstalledCamouflages(self):
     if g_currentPreviewVehicle.isPresent():
         vDesc = g_currentPreviewVehicle.item.descriptor
+    elif g_currentVehicle.isPresent():
+        vDesc = g_currentVehicle.item.descriptor
     else:
-        vDesc = g_currentVehicle.item.getCustomizedDescriptor()
+        return
     nationName, vehName = vDesc.name.split(':')
     if _config.camouflagesCache.get(nationName, {}).get(vehName) is None:
         return
@@ -544,10 +577,16 @@ def installSelectedCamo():
         camouflage = customization['camouflages'][camoID]
         camoName = camouflage['name']
         nationConf = _config.camouflages.get(nations.NAMES[nationID])
+        interConf = _config.camouflages.get('international', {})
         camoKindNums = (camouflage['kind'],)
         if camoName in _config.camouflages['modded']:
             camoKindNames = filter(None, _config.camouflages['modded'].get(camoName, {}).get('kinds', '').split(','))
             camoKindNums = tuple(CAMOUFLAGE_KINDS[name] for name in camoKindNames)
+        elif camoName in interConf:
+            kindsStr = interConf.get(camoName, {}).get('kinds')
+            if kindsStr is not None:
+                camoKindNames = filter(None, kindsStr.split(','))
+                camoKindNums = tuple(CAMOUFLAGE_KINDS[name] for name in camoKindNames)
         elif nationConf is not None:
             kindsStr = nationConf.get(camoName, {}).get('kinds')
             if kindsStr is not None:
@@ -624,6 +663,34 @@ def new_MV_populate(self):
         readInstalledCamouflages(self)
 
 
+def updateGUIState():
+    if _config.UIProxy is None:
+        return
+    if g_currentPreviewVehicle.isPresent():
+        vDesc = g_currentPreviewVehicle.item.descriptor
+    elif g_currentVehicle.isPresent():
+        vDesc = g_currentVehicle.item.descriptor
+    else:
+        return
+    nationID = vDesc.type.customizationNationID
+    if _config.backupNationID != nationID:
+        _config.UIProxy.changeNation(nationID)
+
+
+def new_selectVehicle(self, vehInvID=0):
+    old_selectVehicle(self, vehInvID)
+    updateGUIState()
+
+
+def new_selectPreviewVehicle(self, vehicleCD):
+    old_selectPreviewVehicle(self, vehicleCD)
+    updateGUIState()
+
+
+old_selectVehicle = CurrentVehicle._CurrentVehicle.selectVehicle
+CurrentVehicle._CurrentVehicle.selectVehicle = new_selectVehicle
+old_selectPreviewVehicle = CurrentVehicle._CurrentPreviewVehicle.selectVehicle
+CurrentVehicle._CurrentPreviewVehicle.selectVehicle = new_selectPreviewVehicle
 old_removeSlot = MainView.removeSlot
 MainView.removeSlot = new_removeSlot
 old_subViewTransferStop = LobbyView._LobbyView__subViewTransferStop
@@ -671,7 +738,7 @@ def new_ca_getCamouflageParams(self, vDesc, vID):
                 return camoNames[camoName], int(time.time()), 7
     selectedCamouflages = []
     overriders = []
-    for key in ('modded', nationName):
+    for key in ('modded', 'international', nationName):
         for camoName in _config.camouflages.get(key, {}):
             if camoName not in camoNames:
                 continue
@@ -701,8 +768,8 @@ def new_ca_getCamouflageParams(self, vDesc, vID):
     if _config.data['doRandom'] and not selectedCamouflages:
         for camoID, camouflage in camouflages.items():
             camoName = camouflage['name']
-            checked = {'modded': False, nationName: False}
-            for key in ('modded', nationName):
+            checked = {'modded': False, 'international': False, nationName: False}
+            for key in checked:
                 if camoName not in _config.camouflages.get(key, {}):
                     continue
                 checked[key] = True
@@ -758,9 +825,14 @@ def new_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback=None):
             for camoID, camouflage in customization['camouflages'].items():
                 camoName = camouflage['name']
                 nationConf = _config.camouflages.get(nationName)
+                interConf = _config.camouflages.get('international', {})
                 camoKindNames = (CAMOUFLAGE_KIND_INDICES[camouflage['kind']],)
                 if camoName in _config.camouflages['modded']:
                     camoKindNames = filter(None, _config.camouflages['modded'].get(camoName, {}).get('kinds', '').split(','))
+                elif camoName in interConf:
+                    kindsStr = interConf.get(camoName, {}).get('kinds')
+                    if kindsStr is not None:
+                        camoKindNames = filter(None, kindsStr.split(','))
                 elif nationConf is not None:
                     kindsStr = nationConf.get(camoName, {}).get('kinds')
                     if kindsStr is not None:
