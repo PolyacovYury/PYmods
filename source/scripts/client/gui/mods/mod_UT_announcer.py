@@ -77,37 +77,30 @@ class _Config(PYmodsCore._Config):
         self.i18n = {
             'UI_description': 'Time and frags announcer',
             'UI_setting_textColour_text': 'Battle text messages colour',
-            'UI_setting_textColour_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This colour will be applied to all mod\'s text messages.\n'
-                'Text examples:\n'),
+            'UI_setting_textColour_tooltip': 'This colour will be applied to all mod\'s text messages.\nText examples:\n',
             'UI_setting_textLength_text': 'Number of lines of in-battle text messages',
             'UI_setting_textLength_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This is the maximum number of lines of text messages you will see '
-                'in battle simultaneously.\n<b>0</b> completely disables the text messages.{/BODY}'),
+                'This is the maximum number of lines of text messages you will see in battle simultaneously.\n'
+                '<b>0</b> completely disables the text messages.'),
             'UI_setting_colourBlind_text': 'Enable "colour blindness" mode',
-            'UI_setting_colourBlind_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This setting changes the enemy text colour from red to purple.{'
-                '/BODY}'),
+            'UI_setting_colourBlind_tooltip': 'This setting changes the enemy text colour from red to purple.',
             'UI_setting_textLock_text': 'Disable text mouse dragging',
             'UI_setting_textLock_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This setting controls whether you are able to move text window with a '
-                'mouse or not.{/BODY}'),
+                'This setting controls whether you are able to move text window with a mouse or not.'),
             'UI_setting_logging_text': 'Enable full logging',
-            'UI_setting_logging_tooltip': ('{HEADER}Description:{/HEADER}{BODY}Allow the mod to oveflow your '
-                                           'python.log with debug information.{/BODY}'),
+            'UI_setting_logging_tooltip': 'Allow the mod to oveflow your python.log with debug information.',
             'UI_setting_battleTimer_text': 'Enable voice notifications about battle time',
             'UI_setting_battleTimer_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}Enables voice notification about remaining time in battle:'
+                'Enables voice notification about remaining time in battle:'
                 '\n • 15 minutes remaining (battle start);\n • 5 minutes remaining;\n • 3 minutes remaining;'
                 '\n • 2 minutes remaining;\n • 1 minute remaining;\n • 30 seconds remaining;\n • 10 seconds remaining;'
-                '\n • 5 seconds countdown;\n • Battle is over.{/BODY}'),
+                '\n • 5 seconds countdown;\n • Battle is over.'),
             'UI_setting_firstOption_text': 'First Blood notification mode',
             'UI_setting_firstOption_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}• <b>First</b> - only the first First Blood on arena will be '
-                'notified.\n• <b>Player</b> - text message only appears if you drew the First Blood.\n• <b>Ally</b> - '
-                'only the First Blood drown by allies and player will be notified.\n• <b>Enemy</b> - only the First '
-                'Blood drown by enemies will be notified.\n• <b>All</b> - both ally and enemy First Bloods will be '
-                'notified.{/BODY}'),
+                ' • <b>First</b> - only the first First Blood on arena will be notified.\n • <b>Player</b> - text message '
+                'only appears if you drew the First Blood.\n • <b>Ally</b> - only the First Blood drown by allies and '
+                'player will be notified.\n • <b>Enemy</b> - only the First Blood drown by enemies will be notified.\n'
+                ' • <b>All</b> - both ally and enemy First Bloods will be notified.'),
             'UI_setting_firstOption_first': 'First',
             'UI_setting_firstOption_player': 'Player',
             'UI_setting_firstOption_ally': 'Ally',
@@ -115,10 +108,10 @@ class _Config(PYmodsCore._Config):
             'UI_setting_firstOption_all': 'All',
             'UI_setting_checkMedals_text': 'Notify about frag-related medals like Pool or Radley-Walters',
             'UI_setting_checkMedals_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}• <b>OFF</b> - medal notification disabled.\n• <b>Player</b> - only '
-                'medals received by player will be notified.\n• <b>Ally</b> - only medals received by allies and player '
-                'will be notified.\n• <b>Enemy</b> - only medals received by enemies will be notified.\n• <b>All</b> - '
-                'all frag-related medals on arena will be notified.{/BODY}'),
+                ' • <b>OFF</b> - medal notification disabled.\n • <b>Player</b> - only '
+                'medals received by player will be notified.\n • <b>Ally</b> - only medals received by allies and player '
+                'will be notified.\n • <b>Enemy</b> - only medals received by enemies will be notified.\n • <b>All</b> - '
+                'all frag-related medals on arena will be notified.'),
             'UI_setting_checkMedals_none': 'OFF',
             'UI_setting_checkMedals_player': 'Player',
             'UI_setting_checkMedals_ally': 'Ally',
@@ -126,18 +119,16 @@ class _Config(PYmodsCore._Config):
             'UI_setting_checkMedals_all': 'All',
             'UI_setting_allKill_text': 'Other players\' frag sound notifying',
             'UI_setting_allKill_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}• <b>None</b> - only player frags are sounded.\n• <b>Bigger</b> - '
-                'all frag capacities which are bigger than player\'s are sounded.\n• <b>All</b> - all frag capacities '
-                'on arena are sounded.{/BODY}'),
+                ' • <b>None</b> - only player frags are sounded.\n • <b>Bigger</b> - all frag capacities which are bigger '
+                'than player\'s are sounded.\n • <b>All</b> - all frag capacities on arena are sounded.'),
             'UI_setting_allKill_none': 'None',
             'UI_setting_allKill_bigger': 'Bigger',
             'UI_setting_allKill_every': 'All',
             'UI_setting_disStand_text': 'Disable default frag sound notifications',
-            'UI_setting_disStand_tooltip': ('{HEADER}Description:{/HEADER}{BODY}Disable notifications about '
-                                            'frags so that they do not overlap on modded sounds.{/BODY}'),
+            'UI_setting_disStand_tooltip': (
+                'Disable default notifications about frags so that they do not overlap on modded sounds.'),
             'UI_setting_delay_text': 'Time before text message disappears',
-            'UI_setting_delay_tooltip': ('{HEADER}Description:{/HEADER}{BODY}Text message remains for this '
-                                         'amount of seconds on screen before fading out.{/BODY}'),
+            'UI_setting_delay_tooltip': 'Text message remains on screen for this amount of seconds before fading out.',
             'UI_setting_delay_seconds': 'sec.',
             'UI_setting_ally': 'Ally', 'UI_setting_enemy': 'Enemy', 'UI_setting_player': 'Player',
             'UI_setting_squadMan': 'Squadman',
@@ -182,100 +173,29 @@ class _Config(PYmodsCore._Config):
                 _config.data['textStyle']['size'], _config.data['textStyle']['font'],
                 _config.data['textStyle']['colour'], textFormat)
             textExamples.append(text)
+        colourDropdown = self.createOptions(
+            'textColour', map(lambda x: '<font color="%s">%s</font>' % (x[1], self.i18n[x[0]]), self.colours.iteritems()))
+        colourDropdown['tooltip'] = colourDropdown['tooltip'].replace('{/BODY}', '\n'.join(textExamples) + '{/BODY}')
+        firstKey = 'UI_setting_firstOption_'
+        firstList = ('first', 'player', 'ally', 'enemy', 'all')
+        medalsKey = 'UI_setting_checkMedals_'
+        medalsList = ('none', 'player', 'ally', 'enemy', 'all')
+        allKey = 'UI_setting_allKill_'
+        allList = ('none', 'bigger', 'every')
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [{'type': 'NumericStepper',
-                             'label': self.i18n['UI_setting_textLength_text'],
-                             'tooltip': self.i18n['UI_setting_textLength_tooltip'],
-                             'minimum': 0,
-                             'maximum': 5,
-                             'stepSize': 1,
-                             'canManualInput': False,
-                             'value': self.data['textLength'],
-                             'varName': 'textLength'},
-                            {'type': 'Dropdown',
-                             'text': self.i18n['UI_setting_textColour_text'],
-                             'tooltip': self.i18n['UI_setting_textColour_tooltip'] + '\n'.join(textExamples) + '{/BODY}',
-                             'itemRenderer': 'DropDownListItemRendererSound',
-                             'options': self.colourDropdown(),
-                             'width': 200,
-                             'value': self.data['textColour'],
-                             'varName': 'textColour'},
-                            {'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_colourBlind_text'],
-                             'value': self.data['colourBlind'],
-                             'tooltip': self.i18n['UI_setting_colourBlind_tooltip'],
-                             'varName': 'colourBlind'},
-                            {'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_textLock_text'],
-                             'value': self.data['textLock'],
-                             'tooltip': self.i18n['UI_setting_textLock_tooltip'],
-                             'varName': 'textLock'},
-                            {'type': 'Slider',
-                             'text': self.i18n['UI_setting_delay_text'],
-                             'tooltip': self.i18n['UI_setting_delay_tooltip'],
-                             'minimum': 0,
-                             'maximum': 5,
-                             'snapInterval': 0.1,
-                             'value': self.data['delay'],
-                             'format': '{{value}} %s' % self.i18n['UI_setting_delay_seconds'],
-                             'varName': 'delay'},
-                            {'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_logging_text'],
-                             'value': self.data['logging'],
-                             'tooltip': self.i18n['UI_setting_logging_tooltip'],
-                             'varName': 'logging'}],
-                'column2': [{'type': 'Dropdown',
-                             'text': self.i18n['UI_setting_firstOption_text'],
-                             'tooltip': self.i18n['UI_setting_firstOption_tooltip'],
-                             'itemRenderer': 'DropDownListItemRendererSound',
-                             'options': [{'label': self.i18n['UI_setting_firstOption_first']},
-                                         {'label': self.i18n['UI_setting_firstOption_player']},
-                                         {'label': self.i18n['UI_setting_firstOption_ally']},
-                                         {'label': self.i18n['UI_setting_firstOption_enemy']},
-                                         {'label': self.i18n['UI_setting_firstOption_all']}],
-                             'width': 200,
-                             'value': self.data['firstOption'],
-                             'varName': 'firstOption'},
-                            {'type': 'Dropdown',
-                             'text': self.i18n['UI_setting_checkMedals_text'],
-                             'tooltip': self.i18n['UI_setting_checkMedals_tooltip'],
-                             'itemRenderer': 'DropDownListItemRendererSound',
-                             'options': [{'label': self.i18n['UI_setting_checkMedals_none']},
-                                         {'label': self.i18n['UI_setting_checkMedals_player']},
-                                         {'label': self.i18n['UI_setting_checkMedals_ally']},
-                                         {'label': self.i18n['UI_setting_checkMedals_enemy']},
-                                         {'label': self.i18n['UI_setting_checkMedals_all']}],
-                             'width': 200,
-                             'value': self.data['checkMedals'],
-                             'varName': 'checkMedals'},
-                            {'type': 'Dropdown',
-                             'text': self.i18n['UI_setting_allKill_text'],
-                             'tooltip': self.i18n['UI_setting_allKill_tooltip'],
-                             'itemRenderer': 'DropDownListItemRendererSound',
-                             'options': [{'label': self.i18n['UI_setting_allKill_none']},
-                                         {'label': self.i18n['UI_setting_allKill_bigger']},
-                                         {'label': self.i18n['UI_setting_allKill_every']}],
-                             'width': 200,
-                             'value': self.data['allKill'],
-                             'varName': 'allKill'},
-                            {'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_battleTimer_text'],
-                             'value': self.data['battleTimer'],
-                             'tooltip': self.i18n['UI_setting_battleTimer_tooltip'],
-                             'varName': 'battleTimer'},
-                            {'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_disStand_text'],
-                             'value': self.data['disStand'],
-                             'tooltip': self.i18n['UI_setting_disStand_tooltip'],
-                             'varName': 'disStand'}]}
-
-    def colourDropdown(self):
-        result = []
-        for key, colour in self.colours.iteritems():
-            result.append({'label': '<font color="%s">%s</font>' % (colour, self.i18n[key])})
-        return result
+                'column1': [self.createStepper('textLength', 0, 5, 1),
+                            colourDropdown,
+                            self.createControl('colourBlind'),
+                            self.createControl('textLock'),
+                            self.createSlider('delay', 0, 5, 0.1, '{{value}} %s' % self.i18n['UI_setting_delay_seconds']),
+                            self.createControl('logging')],
+                'column2': [self.createOptions('firstOption', map(lambda x: self.i18n[firstKey + x], firstList)),
+                            self.createOptions('checkMedals', map(lambda x: self.i18n[medalsKey + x], medalsList)),
+                            self.createOptions('allKill', map(lambda x: self.i18n[allKey + x], allList)),
+                            self.createControl('battleTimer'),
+                            self.createControl('disStand')]}
 
     def apply_settings(self, settings):
         self.data['textStyle']['colour'] = self.colours.values()[settings['textColour']]

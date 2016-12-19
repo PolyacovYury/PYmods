@@ -33,23 +33,19 @@ class _Config(PYmodsCore._Config):
                      'hotKey': self.defaultKeys['hotKey']}
         self.i18n = {
             'UI_description': 'Horns',
-            'UI_setting_hornEvent_text': 'Number of horn sound',
-            'UI_setting_hornEvent_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This setting changes the number of horn sound event.\nSound will '
-                'be previewed upon pressing "Apply" button.{/BODY}'),
+            'UI_setting_event_text': 'Number of horn sound',
+            'UI_setting_event_tooltip': 'This setting changes the number of horn sound event.',
             'UI_setting_hotkey_text': 'Horn activation hotkey',
-            'UI_setting_hotkey_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}Pressing this button in-battle creates a horn sound.{/BODY}'),
+            'UI_setting_hotkey_tooltip': 'Pressing this button in-battle plays a horn sound.',
             'UI_setting_chatEnable_text': 'Enable chat writing module',
             'UI_setting_chatEnable_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}If toggled on, pressing a hotkey causes the mod to send a '
-                'message in chat.\n<b>Current message variants:</b>\nWhen an ally tank is a target:\n{ally}\n'
-                'When an enemy tank is a target:\n{enemy}\nWhen no tank is a target:\n{default}{/BODY}'),
+                'If toggled on, pressing a hotkey causes the mod to send a message in chat.\n<b>Current message '
+                'variants:</b>\nWhen an ally tank is a target:\n%(ally)s\nWhen an enemy tank is a target:\n%(enemy)s\n'
+                'When no tank is a target:\n%(default)s'),
             'UI_setting_chatEnable_tooltip_empty': ' • No text will be sent.',
             'UI_setting_playTime_text': 'Time of event playback (cycle period)',
-            'UI_setting_playTime_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This setting changes time between starting a horn playback '
-                'and rolling back to the beginning if a key is still pressed.{/BODY}'),
+            'UI_setting_playTime_tooltip': ('This setting changes time between starting a horn playback and rolling back '
+                                            'to the beginning if a key is still pressed.'),
             'allyText': ['{name}, what are you doing, man?'],
             'enemyText': ['{name}, ahoy!'],
             'defaultText': ['Hello everyone!']}
@@ -63,48 +59,22 @@ class _Config(PYmodsCore._Config):
         self.loadLang()
 
     def template_settings(self):
-        tooltipStr = self.i18n['UI_setting_chatEnable_tooltip']
-        tooltipVariants = self.tooltipSubs
+        tooltipVariants = {}
         for chatID in ('ally', 'enemy', 'default'):
             if self.i18n['%sText' % chatID]:
                 tooltipVariants[chatID] = ' • ' + '\n • '.join(self.i18n['%sText' % chatID])
             else:
                 tooltipVariants[chatID] = self.i18n['UI_setting_chatEnable_tooltip_empty']
-        tooltipStr = tooltipStr.format(**tooltipVariants)
+        chatCB = self.createControl('chatEnable')
+        chatCB['tooltip'] %= tooltipVariants
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [{'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_chatEnable_text'],
-                             'value': self.data['chatEnable'],
-                             'tooltip': tooltipStr,
-                             'varName': 'chatEnable'},
-                            {'type': 'Slider',
-                             'text': self.i18n['UI_setting_hornEvent_text'],
-                             'tooltip': self.i18n['UI_setting_hornEvent_tooltip'],
-                             'minimum': 1,
-                             'maximum': 8,
-                             'snapInterval': 1,
-                             'button': {'iconSource': '../maps/icons/buttons/sound.png'},
-                             'value': self.data['event'],
-                             'format': '{{value}}',
-                             'varName': 'event'}],
-                'column2': [{'type': 'HotKey',
-                             'text': self.i18n['UI_setting_hotkey_text'],
-                             'tooltip': self.i18n['UI_setting_hotkey_tooltip'],
-                             'value': self.data['hotkey'],
-                             'defaultValue': self.defaultKeys['hotkey'],
-                             'varName': 'hotkey'},
-                            {'type': 'Slider',
-                             'text': self.i18n['UI_setting_playTime_text'],
-                             'tooltip': self.i18n['UI_setting_playTime_tooltip'],
-                             'minimum': 0.1,
-                             'maximum': 6.0,
-                             'snapInterval': 0.1,
-                             'button': {'iconSource': '../maps/icons/buttons/sound.png'},
-                             'value': self.data['playTime'],
-                             'format': '{{value}}',
-                             'varName': 'playTime'}]}
+                'column1': [chatCB,
+                            self.createSlider('event', 1, 8, 1, button={'iconSource': '../maps/icons/buttons/sound.png'})],
+                'column2': [self.createHotKey('hotkey'),
+                            self.createSlider('playTime', 0.1, 6.0, 0.1,
+                                              button={'iconSource': '../maps/icons/buttons/sound.png'})]}
 
     def buttonHandler(self, container, linkage, vName, index):
         if container != 'PYmodsGUI' or linkage != self.ID or vName not in ('event', 'playTime'):

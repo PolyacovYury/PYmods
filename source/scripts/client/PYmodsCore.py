@@ -173,10 +173,10 @@ class _Config(object):
         self.configPath = '%s%s/' % (self.fileDir, self.ID)
         self.langPath = './res_mods/configs/PYmods/i18n/%s/' % self.ID
         self.author = 'by Polyacov_Yury'
+        self.defaultKeys = {}
         self.data = {}
         self.i18n = {}
         self.conf_changed = False
-        self.tooltipSubs = {'HEADER': '{HEADER}', '/HEADER': '{/HEADER}', 'BODY': '{BODY}', '/BODY': '{/BODY}'}
         self.lang = DEFAULT_LANGUAGE
         self.onMSAPopulate += self.update_settings
         self.onMSAWindowClose += self.onWindowClose
@@ -195,19 +195,48 @@ class _Config(object):
         from gui.mods.vxSettingsApi import vxSettingsApi
         vxSettingsApi.updateMod('PYmodsGUI', self.ID, self.template_settings)
 
-    def makeTooltip(self, varName, ctx='setting'):
-        return '{HEADER}%s{/HEADER}{BODY}%s{/BODY}' % tuple(
-            self.i18n['UI_%s_%s_%s' % (ctx, varName, strType)] for strType in ('text', 'tooltip'))
-
     def getLabel(self, varName, ctx='setting'):
         return self.i18n['UI_%s_%s_text' % (ctx, varName)]
 
-    def createLabel(self, varName, ctx='setting'):
-        return {'type': 'Label', 'text': self.getLabel(varName, ctx), 'tooltip': self.makeTooltip(varName, ctx)}
+    def createTooltip(self, varName, ctx='setting'):
+        return ('{HEADER}%s{/HEADER}{BODY}%s{/BODY}' % tuple(
+            self.i18n['UI_%s_%s_%s' % (ctx, varName, strType)] for strType in ('text', 'tooltip'))) if self.i18n.get(
+            'UI_%s_%s_tooltip' % (ctx, varName), '') else ''
 
-    def createCheckbox(self, varName, ctx='setting'):
-        result = self.createLabel(varName, ctx)
-        result.update({'type': 'CheckBox', 'value': self.data[varName], 'varName': varName})
+    def createLabel(self, varName, ctx='setting'):
+        return {'type': 'Label', 'text': self.getLabel(varName, ctx), 'tooltip': self.createTooltip(varName, ctx)}
+
+    def createControl(self, varName, contType='CheckBox', empty=False, button=None):
+        result = self.createLabel(varName) if not empty else {}
+        result.update({'type': contType, 'value': self.data[varName], 'varName': varName})
+        if button is not None:
+            result['button'] = button
+        return result
+
+    def createOptions(self, varName, options, contType='Dropdown', empty=False, width=200, button=None):
+        result = self.createControl(varName, contType, empty, button)
+        result.update({'width': width, 'itemRenderer': 'DropDownListItemRendererSound',
+                       'options': map(lambda x: {'label': x}, options)})
+        return result
+
+    def createHotKey(self, varName, empty=False):
+        result = self.createControl(varName, 'HotKey', empty)
+        result['defaultValue'] = self.defaultKeys[varName]
+        return result
+
+    def _createNumeric(self, varName, contType, vMin=0, vMax=0, empty=False, button=None):
+        result = self.createControl(varName, contType, empty, button)
+        result.update({'minimum': vMin, 'maximum': vMax})
+        return result
+
+    def createStepper(self, varName, vMin, vMax, step, manual=False, empty=False, button=None):
+        result = self._createNumeric(varName, 'NumericStepper', vMin, vMax, empty, button)
+        result.update({'stepSize': step, 'canManualInput': manual})
+        return result
+
+    def createSlider(self, varName, vMin, vMax, step, formatStr='{{value}}', empty=False, button=None):
+        result = self._createNumeric(varName, 'Slider', vMin, vMax, empty, button)
+        result.update({'snapInterval': step, 'format': formatStr})
         return result
 
     def apply_settings(self, settings):

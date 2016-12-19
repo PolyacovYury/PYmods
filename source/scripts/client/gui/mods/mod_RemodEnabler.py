@@ -182,61 +182,50 @@ class _Config(PYmodsCore._Config):
         self.i18n = {
             'UI_description': 'Remod Enabler',
             'UI_setting_isDebug_text': 'Enable extended log printing',
-            'UI_setting_isDebug_tooltip': ('{HEADER}Description:{/HEADER}{BODY}If enabled, your python.log '
-                                           'will be harassed with mod\'s debug information.{/BODY}'),
+            'UI_setting_isDebug_tooltip': 'If enabled, your python.log will be harassed with mod\'s debug information.',
             'UI_setting_remod_text': 'Enable all remods preview mode',
-            'UI_setting_remod_tooltip': ('{HEADER}Description:{/HEADER}{BODY}If disabled, all remods preview '
-                                         'mode will not be active.{/BODY}'),
-            'UI_setting_changeView_text': 'View mode switch hotkey',
-            'UI_setting_changeView_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This hotkey will switch the preview mode in hangar.\n<b>Possible '
-                'modes:</b>\n • Player tank\n • Ally tank\n • Enemy tank{remod}{/BODY}'),
-            'UI_setting_changeView_remod': '\n • Remod preview',
-            'UI_setting_collision_text': 'Collision view switch hotkey',
-            'UI_setting_collision_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This hotkey will switch collision preview mode in hangar.\n'
-                '<b>Possible modes:</b>\n • OFF\n • Model replace\n • Model add{/BODY}'),
-            'UI_setting_switchRemod_text': 'Remod switch hotkey',
-            'UI_setting_switchRemod_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This hotkey will cycle through all remods (ignoring whitelists in '
-                'remod preview mode).{/BODY}'),
-            'UI_setting_curRemodSwapPlayer_text': 'Enable current remod to player tanks',
+            'UI_setting_remod_tooltip': 'If disabled, all remods preview mode will not be active.',
+            'UI_setting_ChangeViewHotkey_text': 'View mode switch hotkey',
+            'UI_setting_ChangeViewHotkey_tooltip': (
+                'This hotkey will switch the preview mode in hangar.\n<b>Possible modes:</b>\n'
+                ' • Player tank\n • Ally tank\n • Enemy tank%(remod)s'),
+            'UI_setting_ChangeViewHotkey_remod': '\n • Remod preview',
+            'UI_setting_CollisionHotkey_text': 'Collision view switch hotkey',
+            'UI_setting_CollisionHotkey_tooltip': (
+                'This hotkey will switch collision preview mode in hangar.\n'
+                '<b>Possible modes:</b>\n • OFF\n • Model replace\n • Model add'),
+            'UI_setting_SwitchRemodHotkey_text': 'Remod switch hotkey',
+            'UI_setting_SwitchRemodHotkey_tooltip': (
+                'This hotkey will cycle through all remods (ignoring whitelists in remod preview mode).'),
+            'UI_setting_curRemodSwapPlayer_text': 'Apply current remod to player tanks',
             'UI_setting_curRemodSwapPlayer_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}Current remod will be able to be applied to player tanks according '
-                'to its whitelist settings.{/BODY}'),
+                'Current remod will be able to be applied to player tanks according to its whitelist settings.'),
             'UI_setting_curRemodUsePlayerWhitelist_text': 'Enable player whitelist usage of current remod',
             'UI_setting_curRemodUsePlayerWhitelist_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}If disabled, this remod will be whitelisted for all player tanks.\n'
-                '<b>Current whitelist:</b>\n'),
-            'UI_setting_curRemodSwapAlly_text': 'Enable current remod to ally tanks',
+                'If disabled, this remod will be whitelisted for all player tanks.\n<b>Current whitelist:</b>\n'),
+            'UI_setting_curRemodSwapAlly_text': 'Apply current remod to ally tanks',
             'UI_setting_curRemodSwapAlly_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}Current remod will be able to be applied to ally tanks according to '
-                'its whitelist settings.{/BODY}'),
+                'Current remod will be able to be applied to ally tanks according to '
+                'its whitelist settings.'),
             'UI_setting_curRemodUseAllyWhitelist_text': 'Enable ally whitelist usage of current remod',
             'UI_setting_curRemodUseAllyWhitelist_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}If disabled, this remod will be whitelisted for all ally tanks.\n'
-                '<b>Current whitelist:</b>\n'),
-            'UI_setting_curRemodSwapEnemy_text': 'Enable current remod to enemy tanks',
+                'If disabled, this remod will be whitelisted for all ally tanks.\n<b>Current whitelist:</b>\n'),
+            'UI_setting_curRemodSwapEnemy_text': 'Apply current remod to enemy tanks',
             'UI_setting_curRemodSwapEnemy_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}Current remod will be able to be applied to enemy tanks according '
-                'to its whitelist settings.{/BODY}'),
+                'Current remod will be able to be applied to enemy tanks according to its whitelist settings.'),
             'UI_setting_curRemodUseEnemyWhitelist_text': 'Enable enemy whitelist usage of current remod',
             'UI_setting_curRemodUseEnemyWhitelist_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}If disabled, this remod will be whitelisted for all enemy tanks.\n'
-                '<b>Current whitelist:</b>\n'),
+                'If disabled, this remod will be whitelisted for all enemy tanks.\n<b>Current whitelist:</b>\n'),
             'UI_setting_curRemodEmptyWhitelist': ' • This remod\'s whitelist is empty, so all tanks will be affected.{/BODY}',
-            'UI_setting_curSkinSwapPlayer_text': 'Enable current skin to player tanks',
+            'UI_setting_curSkinSwapPlayer_text': 'Apply current skin to player tanks',
             'UI_setting_curSkinSwapPlayer_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}Current skin will be able to be applied to player tanks according '
-                'to its whitelist.{/BODY}'),
-            'UI_setting_curSkinSwapAlly_text': 'Enable current skin to ally tanks',
+                'Current skin will be able to be applied to player tanks according to its whitelist.'),
+            'UI_setting_curSkinSwapAlly_text': 'Apply current skin to ally tanks',
             'UI_setting_curSkinSwapAlly_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}Current skin will be able to be applied to ally tanks according to '
-                'its whitelist.{/BODY}'),
+                'Current skin will be able to be applied to ally tanks according to its whitelist.'),
             'UI_setting_curSkinSwapEnemy_text': 'Enable current skin to enemy tanks',
             'UI_setting_curSkinSwapEnemy_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}Current skin will be able to be applied to enemy tanks according '
-                'to its whitelist.{/BODY}'),
+                'Current skin will be able to be applied to enemy tanks according to its whitelist.'),
             'UI_disableCollisionComparison': '<b>RemodEnabler:</b>\nDisabling collision comparison mode.',
             'UI_enableCollisionComparison': '<b>RemodEnabler:</b>\nEnabling collision comparison mode.',
             'UI_enableCollision': '<b>RemodEnabler:</b>\nEnabling collision mode.',
@@ -259,71 +248,37 @@ class _Config(PYmodsCore._Config):
         self.loadLang()
 
     def template_settings(self):
+        viewKey = self.createHotKey('ChangeViewHotkey')
+        viewKey['tooltip'] %= {'remod': self.i18n['UI_setting_ChangeViewHotkey_remod'] if self.data['remod'] else ''}
         template = {'modDisplayName': self.i18n['UI_description'],
                     'settingsVersion': 200,
                     'enabled': True,
                     'column1': [],
-                    'column2': [{'type': 'HotKey',
-                                 'text': self.i18n['UI_setting_changeView_text'],
-                                 'tooltip': self.i18n['UI_setting_changeView_tooltip'].format(
-                                     remod=self.i18n['UI_setting_changeView_remod'] if self.data['remod'] else '',
-                                     **self.tooltipSubs),
-                                 'value': self.data['ChangeViewHotkey'],
-                                 'defaultValue': self.defaultKeys['ChangeViewHotkey'],
-                                 'varName': 'ChangeViewHotkey'},
-                                {'type': 'HotKey',
-                                 'text': self.i18n['UI_setting_switchRemod_text'],
-                                 'tooltip': self.i18n['UI_setting_switchRemod_tooltip'],
-                                 'value': self.data['SwitchRemodHotkey'],
-                                 'defaultValue': self.defaultKeys['SwitchRemodHotkey'],
-                                 'varName': 'SwitchRemodHotkey'},
-                                {'type': 'HotKey',
-                                 'text': self.i18n['UI_setting_collision_text'],
-                                 'tooltip': self.i18n['UI_setting_collision_tooltip'],
-                                 'value': self.data['CollisionHotkey'],
-                                 'defaultValue': self.defaultKeys['CollisionHotkey'],
-                                 'varName': 'CollisionHotkey'}]}
+                    'column2': [viewKey,
+                                self.createHotKey('SwitchRemodHotkey'),
+                                self.createHotKey('CollisionHotkey')]}
         if self.OMDesc is not None:
             for key in ('SwapPlayer', 'Player', 'SwapAlly', 'Ally', 'SwapEnemy', 'Enemy'):
                 if 'Swap' in key:
                     self.data['curRemod%s' % key] = getattr(self.OMDesc, key[0].lower() + key[1:])
-                    template['column1'].append({'type': 'CheckBox',
-                                                'text': self.i18n['UI_setting_curRemod%s_text' % key],
-                                                'value': self.data['curRemod%s' % key],
-                                                'tooltip': self.i18n['UI_setting_curRemod%s_tooltip' % key],
-                                                'varName': 'curRemod%s' % key})
+                    template['column1'].append(self.createControl('curRemod%s' % key))
                 else:
                     self.data['curRemodUse%sWhitelist' % key] = not self.OMDesc.swapAll[key]
-                    tooltipStr = self.i18n['UI_setting_curRemodUse%sWhitelist_tooltip' % key]
+                    checkbox = self.createControl('curRemodUse%sWhitelist' % key)
                     whitelist = self.OMDesc.whitelists[key]
-                    if len(whitelist):
-                        tooltipStr += ' • ' + '\n • '.join(whitelist) + '{/BODY}'
+                    if whitelist:
+                        tooltipStr = ' • ' + '\n • '.join(whitelist) + '{/BODY}'
                     else:
-                        tooltipStr += self.i18n['UI_setting_curRemodEmptyWhitelist']
-                    template['column1'].append({'type': 'CheckBox',
-                                                'text': self.i18n['UI_setting_curRemodUse%sWhitelist_text' % key],
-                                                'value': self.data['curRemodUse%sWhitelist' % key],
-                                                'tooltip': tooltipStr,
-                                                'varName': 'curRemodUse%sWhitelist' % key})
+                        tooltipStr = self.i18n['UI_setting_curRemodEmptyWhitelist']
+                    checkbox['tooltip'] = checkbox['tooltip'].replace('{/BODY}', tooltipStr)
+                    template['column1'].append(checkbox)
         elif self.OSDesc is not None:
             for key in ('SwapPlayer', 'SwapAlly', 'SwapEnemy'):
                 self.data['curSkin%s' % key] = getattr(self.OSDesc, key[0].lower() + key[1:])
-                template['column1'].append({'type': 'CheckBox',
-                                            'text': self.i18n['UI_setting_curSkin%s_text' % key],
-                                            'value': self.data['curSkin%s' % key],
-                                            'tooltip': self.i18n['UI_setting_curSkin%s_tooltip' % key],
-                                            'varName': 'curSkin%s' % key})
+                template['column1'].append(self.createControl('curSkin%s' % key))
         else:
-            template['column1'].extend(({'type': 'CheckBox',
-                                         'text': self.i18n['UI_setting_isDebug_text'],
-                                         'value': self.data['isDebug'],
-                                         'tooltip': self.i18n['UI_setting_isDebug_tooltip'],
-                                         'varName': 'isDebug'},
-                                        {'type': 'CheckBox',
-                                         'text': self.i18n['UI_setting_remod_text'],
-                                         'value': self.data['remod'],
-                                         'tooltip': self.i18n['UI_setting_remod_tooltip'],
-                                         'varName': 'remod'}))
+            template['column1'].extend((self.createControl('isDebug'),
+                                        self.createControl('remod')))
         return template
 
     def apply_settings(self, settings):

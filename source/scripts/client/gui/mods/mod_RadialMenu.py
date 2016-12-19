@@ -49,14 +49,13 @@ class _Config(PYmodsCore._Config):
                      'analyticsFull': True}
         self.i18n = {
             'UI_description': 'Radial Menu',
-            'UI_setting_info': 'Special for ',
-            'UI_setting_mapMenuKey_text': 'Alternative menu hotkey',
-            'UI_setting_mapMenuKey_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}When Radial menu is activated while this key is pressed, an '
-                'alternative map-specific menu is loaded if the config provides one.{/BODY}'),
+            'UI_setting_info_text': 'Special for ',
+            'UI_setting_mapMenu_key_text': 'Alternative menu hotkey',
+            'UI_setting_mapMenu_key_tooltip': (
+                'When Radial menu is activated while this key is pressed, an alternative map-specific menu is loaded if '
+                'the config provides one.'),
             'UI_setting_selectedConfig_text': 'Active config:',
-            'UI_setting_selectedConfig_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This config will be used when Radial menu is activated.{/BODY}'),
+            'UI_setting_selectedConfig_tooltip': 'This config will be used when Radial menu is activated.',
             'UI_setting_selectedConfig_defaultMeta': 'Default messages'}
         self.configsMeta = {}
         self.activeConfigs = []
@@ -65,26 +64,15 @@ class _Config(PYmodsCore._Config):
         self.loadLang()
 
     def template_settings(self):
-        optionsList = [{'label': self.configsMeta.get(confName, confName)} for confName in self.activeConfigs]
+        optionsList = map(lambda x: self.configsMeta.get(x, x), self.activeConfigs)
+        infoLabel = self.createLabel('info')
+        infoLabel['text'] += 'wotspeak.ru'
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [{'type': 'Dropdown',
-                             'text': self.i18n['UI_setting_selectedConfig_text'],
-                             'tooltip': self.i18n['UI_setting_selectedConfig_tooltip'],
-                             'itemRenderer': 'DropDownListItemRendererSound',
-                             'options': optionsList,
-                             'width': 200,
-                             'value': self.data['selectedConfig'],
-                             'varName': 'selectedConfig'}],
-                'column2': [{'type': 'HotKey',
-                             'text': self.i18n['UI_setting_mapMenuKey_text'],
-                             'tooltip': self.i18n['UI_setting_mapMenuKey_tooltip'],
-                             'value': self.data['mapMenu_key'],
-                             'defaultValue': self.defaultKeys['mapMenu_key'],
-                             'varName': 'mapMenu_key'},
-                            {'type': 'Label',
-                             'text': self.i18n['UI_setting_info'] + 'wotspeak.ru'}]}
+                'column1': [self.createOptions('selectedConfig', optionsList)],
+                'column2': [self.createHotKey('mapMenu_key'),
+                            infoLabel]}
 
     def apply_settings(self, settings):
         super(_Config, self).apply_settings(settings)

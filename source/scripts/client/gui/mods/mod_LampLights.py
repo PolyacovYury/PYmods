@@ -51,20 +51,17 @@ class _Config(PYmodsCore._Config):
             'UI_description': 'Lamp Lights Enabler',
             'UI_activLamps': 'Lamps ENABLED',
             'UI_deactivLamps': 'Lamps DISABLED',
-            'UI_setting_enableAtStart_text': 'Lamps are enabled by default',
-            'UI_setting_enableAtStart_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}Lamp lights will be added after battle loads.{/BODY}'),
+            'UI_setting_enableAtStartup_text': 'Lamps are enabled by default',
+            'UI_setting_enableAtStartup_tooltip': 'Lamp lights will be added after battle loads.',
             'UI_setting_hotkey_text': 'LampLights hotkey',
-            'UI_setting_hotkey_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}Pressing this button in-battle toggles lamps on/off.{/BODY}'),
+            'UI_setting_hotkey_tooltip': 'Pressing this button in-battle toggles lamps on/off.',
             'UI_setting_enableMessage_text': 'Enable service channel message',
             'UI_setting_enableMessage_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This allows the mod to send a notification to service channel in '
-                'no-GUI mode.{/BODY}'),
-            'UI_setting_meta_text': 'Total configs loaded: {totalCfg}, light sources: {totalSrc}, models: {models}',
-            'UI_setting_meta_tooltip': '{HEADER}Loaded configs:{/HEADER}',
-            'UI_setting_meta_no_configs': '{BODY}No configs were loaded.{/BODY}',
-            'UI_setting_meta_configs': '{BODY}{/BODY}',
+                'This allows the mod to send a notification to service channel in no-GUI mode.'),
+            'UI_setting_caps_text': 'Total configs loaded: {totalCfg}, light sources: {totalSrc}, models: {models}',
+            'UI_setting_meta_text': 'Loaded configs:',
+            'UI_setting_meta_tooltip': '%(meta)s',
+            'UI_setting_meta_no_configs': 'No configs were loaded.',
             'UI_setting_meta_NDA': '{attachTo} • No data available or provided.',
             'UI_setting_meta_AND': ' and ',
             'UI_setting_attachToPlayer': 'player tanks',
@@ -78,60 +75,39 @@ class _Config(PYmodsCore._Config):
         self.loadLang()
 
     def template_settings(self):
-        if not len(self.configsDict.keys()):
-            tooltipStrSuff = self.i18n['UI_setting_meta_no_configs']
-        else:
-            tooltipStrSuff = self.i18n['UI_setting_meta_configs']
-            for fileName in sorted(self.configsDict.keys()):
-                tooltipAttachTo = self.i18n['UI_setting_attachTo']
-                attaches = tuple(self.i18n['UI_setting_%s' % key] if self.configsDict[fileName][key] else ''
-                                 for key in ('attachToPlayer', 'attachToAlly', 'attachToEnemy'))
-                if all(attaches):
-                    tooltipAttachTo = ''
-                else:
-                    tooltipAttachTo += self.i18n['UI_setting_meta_AND'].join(filter(None, attaches)) + '\n'
-                tooltipStrSuff = tooltipStrSuff.replace('{/BODY}',
-                                                        '%s\n{/BODY}' % (self.configsDict[fileName]['meta']['name']))
-                tooltipDesc = self.configsDict[fileName]['meta']['desc'].format(attachTo=tooltipAttachTo)
-                if tooltipDesc.rstrip():
-                    tooltipStrSuff = tooltipStrSuff.replace('{/BODY}', '%s\n{/BODY}' % tooltipDesc.rstrip())
-
         sources = 0
         models = 0
         for confDict in self.configsDict.values():
             for source in confDict:
                 if source not in ('enable', 'meta', 'attachToPlayer', 'attachToAlly', 'attachToEnemy'):
-                    # noinspection PyTypeChecker
                     if 'model' not in confDict[source]['type']:
                         sources += 1
                     else:
                         models += 1
 
-        tooltipStr = self.i18n['UI_setting_meta_tooltip'] + tooltipStrSuff.rstrip()
-        template = {'modDisplayName': self.i18n['UI_description'],
-                    'settingsVersion': 200,
-                    'enabled': self.data['enabled'],
-                    'column1': [{'type': 'CheckBox',
-                                 'text': self.i18n['UI_setting_enableAtStart_text'],
-                                 'value': self.data['enableAtStartup'],
-                                 'tooltip': self.i18n['UI_setting_enableAtStart_tooltip'],
-                                 'varName': 'enableAtStartup'},
-                                {'type': 'Label',
-                                 'text': self.i18n['UI_setting_meta_text'].split('\n', 1)[0].format(
-                                     totalCfg=len(self.configsDict), totalSrc=sources, models=models),
-                                 'tooltip': tooltipStr}],
-                    'column2': [{'type': 'HotKey',
-                                 'text': self.i18n['UI_setting_hotkey_text'],
-                                 'tooltip': self.i18n['UI_setting_hotkey_tooltip'],
-                                 'value': self.data['hotkey'],
-                                 'defaultValue': self.defaultKeys['hotkey'],
-                                 'varName': 'hotkey'},
-                                {'type': 'CheckBox',
-                                 'text': self.i18n['UI_setting_enableMessage_text'],
-                                 'value': self.data['enableMessage'],
-                                 'tooltip': self.i18n['UI_setting_enableMessage_tooltip'],
-                                 'varName': 'enableMessage'}]}
-        return template
+        metaList = []
+        for fileName in sorted(self.configsDict.keys()):
+            attaches = tuple(self.i18n['UI_setting_%s' % key] if self.configsDict[fileName][key] else ''
+                             for key in ('attachToPlayer', 'attachToAlly', 'attachToEnemy'))
+            if all(attaches):
+                tooltipAttachTo = ''
+            else:
+                tooltipAttachTo = self.i18n['UI_setting_attachTo'] + self.i18n['UI_setting_meta_AND'].join(
+                    filter(None, attaches)) + '\n'
+            metaList.append('\n'.join((self.configsDict[fileName]['meta']['name'],
+                                       self.configsDict[fileName]['meta']['desc'].format(
+                                           attachTo=tooltipAttachTo).rstrip())).rstrip())
+        metaStr = ('\n'.join(metaList)) if self.configsDict else self.i18n['UI_setting_meta_no_configs']
+        capLabel = self.createLabel('meta')
+        capLabel['text'] = self.getLabel('caps').format(totalCfg=len(self.configsDict), totalSrc=sources, models=models)
+        capLabel['tooltip'] %= {'meta': metaStr}
+        return {'modDisplayName': self.i18n['UI_description'],
+                'settingsVersion': 200,
+                'enabled': self.data['enabled'],
+                'column1': [self.createControl('enableAtStartup'),
+                            capLabel],
+                'column2': [self.createHotKey('hotkey'),
+                            self.createControl('enableMessage')]}
 
     def apply_settings(self, settings):
         super(_Config, self).apply_settings(settings)

@@ -24,11 +24,10 @@ class _BR_Config(PYmodsCore._Config):
             'UI_description': 'Button Replacer',
             'UI_setting_reReadAtEnd_text': 'Re-read texts from configs after battle is over',
             'UI_setting_reReadAtEnd_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This setting allows the mod to re-read texts from configs while '
-                'client is in process of hangar loading.{/BODY}'),
-            'UI_setting_capacities_text': 'Configs loaded: {totalCfg}, texts changed: {keys}',
+                'This setting allows the mod to re-read texts from configs while client is in process of hangar loading.'),
+            'UI_setting_caps_text': 'Configs loaded: {totalCfg}, texts changed: {keys}',
             'UI_setting_meta_text': 'Loaded configs:',
-            'UI_setting_meta_tooltip': '{configs}',
+            'UI_setting_meta_tooltip': '%(meta)s',
             'UI_setting_meta_no_configs': 'No configs were loaded.',
             'UI_setting_NDA': ' • No data available or provided.'}
         self.textStack = {}
@@ -40,33 +39,17 @@ class _BR_Config(PYmodsCore._Config):
         self.loadLang()
 
     def template_settings(self):
-        metaList = map(lambda x: None, sorted(self.configsList, key=str.lower))
-        metaStr = ''.join()
-        tooltipStr = self.i18n['UI_setting_meta_tooltip']
-        if not len(self.configsList):
-            tooltipStr += self.i18n['UI_setting_meta_no_configs']
-        else:
-            tooltipStrSuff = self.i18n['UI_setting_meta_configs']
-            for config in sorted(self.configsList, key=str.lower):
-                tooltipStrSuff = tooltipStrSuff.replace('{/BODY}', '%s\n%s\n{/BODY}' % (
-                    self.confMeta[config]['name'].rstrip(), self.confMeta[config]['desc'].rstrip()))
-
-            tooltipStr += tooltipStrSuff
-        capLabelTemplate = self.createLabel('meta')
-        capLabelTemplate['text'] = self.getLabel('capacities')
+        metaList = map(lambda x: '\n'.join((self.confMeta[x][textType].rstrip() for textType in ('name', 'desc'))),
+                       sorted(self.configsList, key=str.lower))
+        metaStr = ('\n'.join(metaList)) if metaList else self.i18n['UI_setting_meta_no_configs']
+        capLabel = self.createLabel('meta')
+        capLabel['text'] = self.getLabel('caps').format(totalCfg=len(self.configsList), keys=len(self.sectDict))
+        capLabel['tooltip'] %= {'meta': metaStr}
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [],
-                'column1': [{'type': 'Label',
-                             'text': self.i18n['UI_setting_meta_text'].format(
-                                 totalCfg=len(self.configsList), keys=len(self.sectDict)),
-                             'tooltip': tooltipStr}],
-                'column2': [{'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_reReadAtEnd_text'],
-                             'value': self.data['reReadAtEnd'],
-                             'tooltip': self.i18n['UI_setting_reReadAtEnd_tooltip'],
-                             'varName': 'reReadAtEnd'}]}
+                'column1': [capLabel],
+                'column2': [self.createControl('reReadAtEnd')]}
 
     def update_data(self, doPrint=False):
         super(_BR_Config, self).update_data()

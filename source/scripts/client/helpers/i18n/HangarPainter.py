@@ -33,19 +33,20 @@ class _HP_Config(PYmodsCore._Config):
         self.backupData = {}
         self.i18n = {
             'UI_description': 'Hangar Painter',
-            'UI_setting_colour_text': 'Hangar texts colour:',
+            'UI_setting_colourCheck_text': 'Hangar texts colour:',
+            'UI_setting_colour_text': '<font color=\'#%(colour)s\'>Current colour: %(colour)s</font>',
             'UI_setting_colour_tooltip': (
-                '{HEADER}<font color=\'#{colour}\'>Current colour: #{colour}</font>{/HEADER}{BODY}This colour will be '
-                'applied to all hangar texts.\n'
-                '\n<b>WARNING!</b> Restart required for this setting to be applied properly.{/BODY}'),
+                'This colour will be applied to all hangar texts.\n'
+                '\n<b>WARNING!</b> Restart required for this setting to be applied properly.'),
             'UI_setting_crewColour_text': 'Enable crew texts colouring',
             'UI_setting_crewColour_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}Crew names, ranks and roles will be coloured, but this sometimes '
-                'does not function properly.\n\n<b>WARNING!</b> Restart required for this setting to be applied.{/BODY}'),
+                'Crew names, ranks and roles will be coloured, but this sometimes '
+                'does not function properly.\n\n<b>WARNING!</b> Restart required for this setting to be applied.'),
             'UI_setting_cleanColour_text': 'Enable clean mode',
             'UI_setting_cleanColour_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}If disabled, all available texts will be coloured.\nIf enabled, rare '
-                'cases of "unreadable" texts will be fixed, but these texts will not be coloured.{/BODY}'),
+                'If disabled, all available texts will be coloured.\nIf enabled, rare cases of "unreadable" texts will be '
+                'fixed, but these texts will not be coloured.\n\n<b>WARNING!</b> Restart required for this setting to be '
+                'applied.'),
             'UI_restart_header': 'Restart request',
             'UI_restart_text': 'Hangar Painter: {reason}. Client restart required to accept changes.',
             'UI_restart_reason_colourChanged': 'text colour was changed',
@@ -61,26 +62,16 @@ class _HP_Config(PYmodsCore._Config):
         self.loadLang()
 
     def template_settings(self):
+        colourLabel = self.createLabel('colour')
+        colourLabel['text'] = self.getLabel('colourCheck')
+        colourLabel['tooltip'] %= {'colour': self.data['colour']}
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [{'type': 'Label',
-                             'text': self.i18n['UI_setting_colour_text'],
-                             'tooltip': self.i18n['UI_setting_colour_tooltip'].format(colour=self.data['colour'],
-                                                                                      **self.tooltipSubs)},
-                            {'type': 'TextInputColor',
-                             'value': self.data['colour'],
-                             'varName': 'colour'}],
-                'column2': [{'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_crewColour_text'],
-                             'value': self.data['crewColour'],
-                             'tooltip': self.i18n['UI_setting_crewColour_tooltip'],
-                             'varName': 'crewColour'},
-                            {'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_cleanColour_text'],
-                             'value': self.data['cleanColour'],
-                             'tooltip': self.i18n['UI_setting_cleanColour_tooltip'],
-                             'varName': 'cleanColour'}]}
+                'column1': [colourLabel,
+                            self.createControl('colour', 'TextInputColor', True)],
+                'column2': [self.createControl('crewColour'),
+                            self.createControl('cleanColour')]}
 
     def apply_settings(self, settings):
         for setting in settings:

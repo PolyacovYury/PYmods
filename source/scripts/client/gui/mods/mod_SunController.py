@@ -38,18 +38,15 @@ class _Config(PYmodsCore._Config):
             'UI_deactivSunMod': 'SunController DISABLED',
             'UI_setting_time_text': 'Time set by Controller',
             'UI_setting_time_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This time of day will be applied to all battle maps.\n'
-                ' • 0:00 - old behaviour.\n • 24:00 - current local time.{/BODY}'),
-            'UI_setting_enableAtStart_text': 'Sun is controlled by default',
-            'UI_setting_enableAtStart_tooltip': ('{HEADER}Description:{/HEADER}{BODY}Sun position will be '
-                                                 'changed automatically after battle begins.{/BODY}'),
+                'This time of day will be applied to all battle maps.\n'
+                ' • 0:00 - old behaviour.\n • 24:00 - current local time.'),
+            'UI_setting_enableAtStartup_text': 'Sun is controlled by default',
+            'UI_setting_enableAtStartup_tooltip': 'Sun position will be changed automatically after battle begins.',
             'UI_setting_hotkey_text': 'SunController hotkey',
-            'UI_setting_hotkey_tooltip': ('{HEADER}Description:{/HEADER}{BODY}Pressing this button in-battle '
-                                          'toggles sun control on/off.{/BODY}'),
+            'UI_setting_hotkey_tooltip': 'Pressing this button in-battle toggles sun control on/off.',
             'UI_setting_enableMessage_text': 'Enable service channel message',
             'UI_setting_enableMessage_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This allows the mod to send a notification to service channel in '
-                'no-GUI mode.{/BODY}'),
+                'This allows the mod to send a notification to service channel in no-GUI mode.'),
             'UI_serviceChannelPopUpAll': '<b>{author}<font color="#cc9933"> turned the Earth!</font></b>',
             'UI_serviceChannelPopUpAnd': '<b><font color="#cc9933">And turned the Earth!</font></b>'}
         self.loadLang()
@@ -58,31 +55,10 @@ class _Config(PYmodsCore._Config):
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [{'type': 'Slider',
-                             'text': self.i18n['UI_setting_time_text'],
-                             'tooltip': self.i18n['UI_setting_time_tooltip'],
-                             'minimum': 0,
-                             'maximum': 24,
-                             'snapInterval': 1,
-                             'value': self.data['time'],
-                             'format': '{{value}}:00',
-                             'varName': 'time'},
-                            {'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_enableMessage_text'],
-                             'value': self.data['enableMessage'],
-                             'tooltip': self.i18n['UI_setting_enableMessage_tooltip'],
-                             'varName': 'enableMessage'}],
-                'column2': [{'type': 'HotKey',
-                             'text': self.i18n['UI_setting_hotkey_text'],
-                             'tooltip': self.i18n['UI_setting_hotkey_tooltip'],
-                             'value': self.data['hotkey'],
-                             'defaultValue': self.defaultKeys['hotkey'],
-                             'varName': 'hotkey'},
-                            {'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_enableAtStart_text'],
-                             'value': self.data['enableAtStartup'],
-                             'tooltip': self.i18n['UI_setting_enableAtStart_tooltip'],
-                             'varName': 'enableAtStartup'}]}
+                'column1': [self.createSlider('time', 0, 24, 1, '{{value}}:00'),
+                            self.createControl('enableMessage')],
+                'column2': [self.createHotKey('hotkey'),
+                            self.createControl('enableAtStartup')]}
 
     def apply_settings(self, settings):
         global isSunControlled

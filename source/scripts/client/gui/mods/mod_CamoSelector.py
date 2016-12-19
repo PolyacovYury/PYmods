@@ -54,25 +54,18 @@ class CamoSelectorUI(AbstractWindowView):
             'nations': map(lambda x: i18n.makeString('#nations:%s' % x), nations.NAMES) + [
                 _config.i18n['UI_flash_camoMode_modded'], _config.i18n['UI_flash_camoMode_international']],
             'camouflages': [[] for _ in xrange(len(nations.NAMES) + 2)],
-            'randomOptions': {'label': _config.i18n['UI_flash_randomOptions_text'],
-                              'tooltip': _config.i18n['UI_flash_randomOptions_tooltip'],
+            'randomOptions': {'text': _config.i18n['UI_flash_randomOptions_text'],
+                              'tooltip': _config.createTooltip('randomOptions', 'flash'),
                               'options': [_config.i18n['UI_flash_randomOptions_OFF'],
                                           _config.i18n['UI_flash_randomOptions_overrideRandom'],
                                           _config.i18n['UI_flash_randomOptions_includeInRandom']]},
-            'useFor': {'header': {'label': _config.i18n['UI_flash_useFor_header_label'],
-                                  'tooltip': _config.i18n['UI_flash_useFor_header_tooltip']},
-                       'ally': {'label': _config.i18n['UI_flash_useFor_ally_label'],
-                                'tooltip': _config.i18n['UI_flash_useFor_ally_tooltip']},
-                       'enemy': {'label': _config.i18n['UI_flash_useFor_enemy_label'],
-                                 'tooltip': _config.i18n['UI_flash_useFor_enemy_tooltip']}},
-            'kinds': {'header': {'label': _config.i18n['UI_flash_kinds_header_label'],
-                                 'tooltip': _config.i18n['UI_flash_kinds_header_tooltip']},
-                      'winter': {'label': _config.i18n['UI_flash_kinds_winter_label'],
-                                 'tooltip': _config.i18n['UI_flash_kinds_winter_tooltip']},
-                      'summer': {'label': _config.i18n['UI_flash_kinds_summer_label'],
-                                 'tooltip': _config.i18n['UI_flash_kinds_summer_tooltip']},
-                      'desert': {'label': _config.i18n['UI_flash_kinds_desert_label'],
-                                 'tooltip': _config.i18n['UI_flash_kinds_desert_tooltip']}},
+            'useFor': {'header': _config.createLabel('useFor_header', 'flash'),
+                       'ally': _config.createLabel('useFor_ally', 'flash'),
+                       'enemy': _config.createLabel('useFor_enemy', 'flash')},
+            'kinds': {'header': _config.createLabel('kinds_header', 'flash'),
+                      'winter': _config.createLabel('kinds_winter', 'flash'),
+                      'summer': _config.createLabel('kinds_summer', 'flash'),
+                      'desert': _config.createLabel('kinds_desert', 'flash')},
             'installTooltip': _config.i18n['UI_flash_installTooltip'],
             'save': _config.i18n['UI_flash_save']}
         settings = [[] for _ in xrange(len(nations.NAMES) + 2)]
@@ -249,49 +242,39 @@ class _Config(PYmodsCore._Config):
             'UI_flash_camoMode_international': 'International',
             'UI_flash_randomOptions_text': 'Random selection mode',
             'UI_flash_randomOptions_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY} • <b>OFF</b>: camouflage is disabled.\n • <b>Override random '
-                'selection</b>: this camouflage gets included into a list of camouflages which appear <b>instead of</b> '
-                'default ones when a random option is being selected.\n • <b>Include in random selection</b>: this '
-                'camouflage is included into a list of camouflages which may appear <b>along with</b> default ones when a '
-                'random option is being selected. Please note that these camouflages get <b>overridden</b> by ones that '
-                'have an option above selected.{/BODY}'),
+                ' • <b>OFF</b>: camouflage is disabled.\n • <b>Override random selection</b>: this camouflage gets '
+                'included into a list of camouflages which appear <b>instead of</b> default ones when a random option is '
+                'being selected.\n • <b>Include in random selection</b>: this camouflage is included into a list of '
+                'camouflages which may appear <b>along with</b> default ones when a random option is being selected. '
+                'Please note that these camouflages get <b>overridden</b> by ones that have an option above selected.'),
             'UI_flash_randomOptions_OFF': 'OFF',
             'UI_flash_randomOptions_overrideRandom': 'Override random selection',
             'UI_flash_randomOptions_includeInRandom': 'Include in random selection',
-            'UI_flash_useFor_header_label': 'Use this camouflage for:',
+            'UI_flash_useFor_header_text': 'Use this camouflage for:',
             'UI_flash_useFor_header_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This camouflage will be used for these groups of tanks.\n'
-                '<b>Attention</b>: a camouflage with no tick set will be considered disabled.{/BODY}'),
-            'UI_flash_useFor_ally_label': 'Player and allies',
-            'UI_flash_useFor_ally_tooltip': '',
-            'UI_flash_useFor_enemy_label': 'Enemies',
-            'UI_flash_useFor_enemy_tooltip': '',
-            'UI_flash_kinds_header_label': 'Camouflage kinds:',
+                'This camouflage will be used for these groups of tanks.\n'
+                '<b>Attention</b>: a camouflage with no tick set will be considered disabled.'),
+            'UI_flash_useFor_ally_text': 'Player and allies',
+            'UI_flash_useFor_enemy_text': 'Enemies',
+            'UI_flash_kinds_header_text': 'Camouflage kinds:',
             'UI_flash_kinds_header_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This camouflage will appear on these kinds of maps.\n'
-                '<b>Attention</b>: a camouflage with no tick set will be considered disabled.{/BODY}'),
-            'UI_flash_kinds_winter_label': 'Winter',
-            'UI_flash_kinds_winter_tooltip': '',
-            'UI_flash_kinds_summer_label': 'Summer',
-            'UI_flash_kinds_summer_tooltip': '',
-            'UI_flash_kinds_desert_label': 'Desert',
-            'UI_flash_kinds_desert_tooltip': '',
+                'This camouflage will appear on these kinds of maps.\n'
+                '<b>Attention</b>: a camouflage with no tick set will be considered disabled.'),
+            'UI_flash_kinds_winter_text': 'Winter',
+            'UI_flash_kinds_summer_text': 'Summer',
+            'UI_flash_kinds_desert_text': 'Desert',
             'UI_flash_installTooltip': '{HEADER}Install{/HEADER}{BODY}"Buy" this camouflage for selected tank.{/BODY}',
             'UI_flash_save': 'Save',
             'UI_setting_doRandom_text': 'Select random camouflages',
             'UI_setting_doRandom_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}If enabled, mod will select a random available camouflage if no '
-                'other option is provided.{/BODY}'),
+                'If enabled, mod will select a random available camouflage if no other option is provided.'),
             'UI_setting_useBought_text': 'Use bought camouflages in battle',
-            'UI_setting_useBought_tooltip': ('{HEADER}Description:{/HEADER}{BODY}If enabled, mod will preserve '
-                                             "bought camouflages on other players' tanks.{/BODY}"),
-            'UI_setting_select_text': 'Camouflage select hotkey',
-            'UI_setting_select_tooltip': (
-                '{HEADER}Description:{/HEADER}{BODY}This hotkey will permanently install currently selected '
-                'preview camouflage to current tank.{/BODY}'),
+            'UI_setting_useBought_tooltip': "If enabled, mod will preserve bought camouflages on other players' tanks.",
+            'UI_setting_selectHotkey_text': 'Camouflage select hotkey',
+            'UI_setting_selectHotkey_tooltip': (
+                'This hotkey will permanently install currently selected preview camouflage to current tank.'),
             'UI_setting_hangarCamoKind_text': 'Hangar camouflage kind',
-            'UI_setting_hangarCamoKind_tooltip': ('{HEADER}Description:{/HEADER}{BODY}This setting controls '
-                                                  'a kind which is used in hangar.{/BODY}'),
+            'UI_setting_hangarCamoKind_tooltip': 'This setting controls a kind which is used in hangar.',
             'UI_setting_hangarCamo_winter': 'Winter', 'UI_setting_hangarCamo_summer': 'Summer',
             'UI_setting_hangarCamo_desert': 'Desert', 'UI_setting_hangarCamo_random': 'Random',
             'UI_camouflagePreview': '<b>Camouflage Selector:</b>\nCamouflage previewing:\n',
@@ -324,33 +307,11 @@ class _Config(PYmodsCore._Config):
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [{'type': 'Dropdown',
-                             'text': self.i18n['UI_setting_hangarCamoKind_text'],
-                             'tooltip': self.i18n['UI_setting_hangarCamoKind_tooltip'],
-                             'itemRenderer': 'DropDownListItemRendererSound',
-                             'options': [{'label': self.i18n['UI_setting_hangarCamo_winter']},
-                                         {'label': self.i18n['UI_setting_hangarCamo_summer']},
-                                         {'label': self.i18n['UI_setting_hangarCamo_desert']},
-                                         {'label': self.i18n['UI_setting_hangarCamo_random']}],
-                             'width': 200,
-                             'value': self.data['hangarCamoKind'],
-                             'varName': 'hangarCamoKind'},
-                            {'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_doRandom_text'],
-                             'value': self.data['doRandom'],
-                             'tooltip': self.i18n['UI_setting_doRandom_tooltip'],
-                             'varName': 'doRandom'}],
-                'column2': [{'type': 'HotKey',
-                             'text': self.i18n['UI_setting_select_text'],
-                             'tooltip': self.i18n['UI_setting_select_tooltip'],
-                             'value': self.data['selectHotkey'],
-                             'defaultValue': self.defaultKeys['selectHotkey'],
-                             'varName': 'selectHotkey'},
-                            {'type': 'CheckBox',
-                             'text': self.i18n['UI_setting_useBought_text'],
-                             'value': self.data['useBought'],
-                             'tooltip': self.i18n['UI_setting_useBought_tooltip'],
-                             'varName': 'useBought'}]}
+                'column1': [self.createOptions('hangarCamoKind', [self.i18n['UI_setting_hangarCamo_%s' % x] for x in
+                                                                  ('winter', 'summer', 'desert', 'random')]),
+                            self.createControl('doRandom')],
+                'column2': [self.createHotKey('selectHotkey'),
+                            self.createControl('useBought')]}
 
     def onWindowClose(self):
         try:
