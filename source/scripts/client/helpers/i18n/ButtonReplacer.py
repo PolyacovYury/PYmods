@@ -26,10 +26,10 @@ class _BR_Config(PYmodsCore._Config):
             'UI_setting_reReadAtEnd_tooltip': (
                 '{HEADER}Description:{/HEADER}{BODY}This setting allows the mod to re-read texts from configs while '
                 'client is in process of hangar loading.{/BODY}'),
-            'UI_setting_meta_text': 'Configs loaded: {totalCfg}, texts changed: {keys}',
-            'UI_setting_meta_tooltip': '{HEADER}Loaded configs:{/HEADER}',
-            'UI_setting_meta_no_configs': '{BODY}No configs were loaded.{/BODY}',
-            'UI_setting_meta_configs': '{BODY}{/BODY}',
+            'UI_setting_capacities_text': 'Configs loaded: {totalCfg}, texts changed: {keys}',
+            'UI_setting_meta_text': 'Loaded configs:',
+            'UI_setting_meta_tooltip': '{configs}',
+            'UI_setting_meta_no_configs': 'No configs were loaded.',
             'UI_setting_NDA': ' • No data available or provided.'}
         self.textStack = {}
         self.wasReplaced = {}
@@ -40,6 +40,8 @@ class _BR_Config(PYmodsCore._Config):
         self.loadLang()
 
     def template_settings(self):
+        metaList = map(lambda x: None, sorted(self.configsList, key=str.lower))
+        metaStr = ''.join()
         tooltipStr = self.i18n['UI_setting_meta_tooltip']
         if not len(self.configsList):
             tooltipStr += self.i18n['UI_setting_meta_no_configs']
@@ -50,9 +52,12 @@ class _BR_Config(PYmodsCore._Config):
                     self.confMeta[config]['name'].rstrip(), self.confMeta[config]['desc'].rstrip()))
 
             tooltipStr += tooltipStrSuff
+        capLabelTemplate = self.createLabel('meta')
+        capLabelTemplate['text'] = self.getLabel('capacities')
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
+                'column1': [],
                 'column1': [{'type': 'Label',
                              'text': self.i18n['UI_setting_meta_text'].format(
                                  totalCfg=len(self.configsList), keys=len(self.sectDict)),

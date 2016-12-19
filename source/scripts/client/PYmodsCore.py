@@ -195,6 +195,21 @@ class _Config(object):
         from gui.mods.vxSettingsApi import vxSettingsApi
         vxSettingsApi.updateMod('PYmodsGUI', self.ID, self.template_settings)
 
+    def makeTooltip(self, varName, ctx='setting'):
+        return '{HEADER}%s{/HEADER}{BODY}%s{/BODY}' % tuple(
+            self.i18n['UI_%s_%s_%s' % (ctx, varName, strType)] for strType in ('text', 'tooltip'))
+
+    def getLabel(self, varName, ctx='setting'):
+        return self.i18n['UI_%s_%s_text' % (ctx, varName)]
+
+    def createLabel(self, varName, ctx='setting'):
+        return {'type': 'Label', 'text': self.getLabel(varName, ctx), 'tooltip': self.makeTooltip(varName, ctx)}
+
+    def createCheckbox(self, varName, ctx='setting'):
+        result = self.createLabel(varName, ctx)
+        result.update({'type': 'CheckBox', 'value': self.data[varName], 'varName': varName})
+        return result
+
     def apply_settings(self, settings):
         for setting in settings:
             if setting in self.data:
