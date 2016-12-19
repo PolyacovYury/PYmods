@@ -126,8 +126,7 @@ class _HP_Config(PYmodsCore._Config):
 
     def load(self):
         try:
-            webConf_url = ('https://gist.githubusercontent.com/PolyacovYury/220e5da411d78e598687b23ab130e922/raw'
-                           '/a818f83b6e482d3f21fe22e41732e1250ccd8cdb/HangarPainter_blacklist.json')
+            webConf_url = 'https://gist.githubusercontent.com/PolyacovYury/220e5da411d78e598687b23ab130e922/raw/'
             webConf = self.byte_ify(json.loads(urllib2.urlopen(webConf_url).read()))
             self.loadJson('HangarPainter_blacklist', webConf, self.fileDir, True)
         except urllib2.URLError as e:
