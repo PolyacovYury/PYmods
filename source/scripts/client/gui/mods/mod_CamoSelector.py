@@ -233,7 +233,7 @@ class CamoSelectorUI(AbstractWindowView):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.5.0 (%s)' % self.version
+        self.version = '2.5.1 (%s)' % self.version
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'selectHotKey': ['KEY_F5', ['KEY_LCONTROL', 'KEY_RCONTROL']]}
@@ -709,11 +709,6 @@ def new_onBecomeNonPlayer(self):
     _config.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
 
 
-old_onBecomeNonPlayer = Account.onBecomeNonPlayer
-Account.onBecomeNonPlayer = new_onBecomeNonPlayer
-old_ca_getCamouflageParams = CompoundAppearance._CompoundAppearance__getCamouflageParams
-
-
 def new_ca_getCamouflageParams(self, vDesc, vID):
     result = old_ca_getCamouflageParams(self, vDesc, vID)
     if not _config.data['enabled'] or result[0] is not None and _config.data['useBought']:
@@ -763,7 +758,7 @@ def new_ca_getCamouflageParams(self, vDesc, vID):
             otherOverrider = _config.currentOverriders[otherTeam]
             if len(overriders) > 1 and otherOverrider in overriders:
                 overriders.remove(otherOverrider)
-            _config.currentOverriders[curTeam] = random.choice(overriders)
+            _config.currentOverriders[curTeam] = overriders[vID % len(overriders)]
         selectedCamouflages = [_config.currentOverriders[curTeam]]
     if _config.data['doRandom'] and not selectedCamouflages:
         for camoID, camouflage in camouflages.items():
@@ -787,15 +782,18 @@ def new_ca_getCamouflageParams(self, vDesc, vID):
                     continue
                 selectedCamouflages.append(camoID)
             if not any(checked.values()):
-                if camouflage['kind'] == camoKindName:
+                if camouflage['kind'] == CAMOUFLAGE_KINDS[camoKindName]:
                     selectedCamouflages.append(camoID)
     if not selectedCamouflages:
         selectedCamouflages.append(None)
     camouflageId = vID % len(selectedCamouflages)
     return selectedCamouflages[camouflageId], int(time.time()), 7
 
+
+old_onBecomeNonPlayer = Account.onBecomeNonPlayer
+Account.onBecomeNonPlayer = new_onBecomeNonPlayer
+old_ca_getCamouflageParams = CompoundAppearance._CompoundAppearance__getCamouflageParams
 CompoundAppearance._CompoundAppearance__getCamouflageParams = new_ca_getCamouflageParams
-old_cs_recreateVehicle = ClientHangarSpace.recreateVehicle
 
 
 def new_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback=None):
@@ -863,6 +861,7 @@ def new_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback=None):
     old_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback)
 
 
+old_cs_recreateVehicle = ClientHangarSpace.recreateVehicle
 ClientHangarSpace.recreateVehicle = new_cs_recreateVehicle
 
 
