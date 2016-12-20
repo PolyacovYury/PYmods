@@ -34,7 +34,7 @@ class _HP_Config(PYmodsCore._Config):
         self.i18n = {
             'UI_description': 'Hangar Painter',
             'UI_setting_colourCheck_text': 'Hangar texts colour:',
-            'UI_setting_colour_text': '<font color=\'#%(colour)s\'>Current colour: %(colour)s</font>',
+            'UI_setting_colour_text': '<font color=\'#%(colour)s\'>Current colour: #%(colour)s</font>',
             'UI_setting_colour_tooltip': (
                 'This colour will be applied to all hangar texts.\n'
                 '\n<b>WARNING!</b> Restart required for this setting to be applied properly.'),
@@ -117,8 +117,7 @@ class _HP_Config(PYmodsCore._Config):
 
     def load(self):
         try:
-            webConf_url = ('https://gist.githubusercontent.com/PolyacovYury/220e5da411d78e598687b23ab130e922/raw'
-                           '/a818f83b6e482d3f21fe22e41732e1250ccd8cdb/HangarPainter_blacklist.json')
+            webConf_url = 'https://gist.githubusercontent.com/PolyacovYury/220e5da411d78e598687b23ab130e922/raw/'
             webConf = self.byte_ify(json.loads(urllib2.urlopen(webConf_url).read()))
             self.loadJson('HangarPainter_blacklist', webConf, self.fileDir, True)
         except urllib2.URLError as e:
