@@ -162,6 +162,7 @@ def checkKeys(keys):
 class _Config(object):
     onMSAPopulate = Event.Event()
     onMSAWindowClose = Event.Event()
+    isMSAWindowOpen = False
     onButtonPress = Event.Event()
 
     def __init__(self, filePath=''):
@@ -491,11 +492,13 @@ class ModSettingsConfig(_Config):
         # noinspection PyUnresolvedReferences
         from gui.mods.vxSettingsApi import vxSettingsApiEvents
         if eventType == vxSettingsApiEvents.WINDOW_CLOSED:
+            self.isMSAWindowOpen = False
             self.onMSAWindowClose()
 
     def MSAPopulate(self):
         # noinspection PyUnresolvedReferences
         from gui.mods.vxSettingsApi import vxSettingsApi
+        self.isMSAWindowOpen = True
         self.onMSAPopulate()
         vxSettingsApi.loadWindow(self.ID)
 

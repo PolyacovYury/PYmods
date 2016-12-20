@@ -438,7 +438,7 @@ _config.load()
 
 def lobbyKeyControl(event):
     try:
-        if event.isKeyDown() and not getattr(BigWorld, 'isMSAWPopulated', False):
+        if event.isKeyDown() and not _config.isMSAWindowOpen:
             if PYmodsCore.checkKeys(_config.data['selectHotkey']):
                 installSelectedCamo()
     except StandardError:
