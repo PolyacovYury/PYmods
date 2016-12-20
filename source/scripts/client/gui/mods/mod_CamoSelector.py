@@ -666,14 +666,8 @@ def new_MV_populate(self):
 def updateGUIState():
     if _config.UIProxy is None:
         return
-    if g_currentPreviewVehicle.isPresent():
-        vDesc = g_currentPreviewVehicle.item.descriptor
-    elif g_currentVehicle.isPresent():
-        vDesc = g_currentVehicle.item.descriptor
-    else:
-        return
-    nationID = vDesc.type.customizationNationID
-    if _config.backupNationID != nationID:
+    nationID = CamoSelectorUI.getCurrentNation()
+    if nationID is not None and _config.backupNationID != nationID:
         _config.UIProxy.changeNation(nationID)
 
 
@@ -811,8 +805,8 @@ def new_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback=None):
                 SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflagePreviewError'] +
                                            _config.activePreviewCamo.join(('<b>', '</b>')),
                                            SystemMessages.SM_TYPE.CustomizationForGold)
-                _config.activePreviewCamo = None
                 print 'CamoSelector: camouflage not found for nation %s: %s' % (nationID, _config.activePreviewCamo)
+                _config.activePreviewCamo = None
         elif vDesc.type.compactDescr in _config.hangarCamoCache:
             vDesc.camouflages = _config.hangarCamoCache[vDesc.type.compactDescr]
         elif vDesc.name not in _config.disable:
