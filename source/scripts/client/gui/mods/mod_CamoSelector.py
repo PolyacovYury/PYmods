@@ -804,7 +804,7 @@ def new_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback=None):
                     tmpCamouflages.append(vDesc.camouflages[idx])
                 elif selectedCamo.get(idx) is not None:
                     tmpCamouflages.append((selectedCamo[idx], int(time.time()), 7))
-                elif not _config.data['doRandom']:
+                elif _config.data['doRandom']:
                     tmpCamouflages.append((random.choice(camoByKind[idx]), int(time.time()), 7))
                 else:
                     tmpCamouflages.append(vDesc.camouflages[idx])
