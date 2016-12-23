@@ -807,7 +807,7 @@ LoginView._populate = new_populate
 def lobbyKeyControl(event):
     try:
         if event.isKeyDown() and not _config.isMSAWindowOpen:
-            if PYmodsCore.checkKeys(_config.data['ChangeViewHotkey']):
+            if (_config.OM.enabled or _config.OS.enabled) and PYmodsCore.checkKeys(_config.data['ChangeViewHotkey']):
                 while True:
                     newModeNum = _config.possibleModes.index(
                         _config.data['currentMode']) + 1 if _config.possibleModes.index(
@@ -843,7 +843,7 @@ def lobbyKeyControl(event):
                     SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_enableCollision'],
                                                SystemMessages.SM_TYPE.CustomizationForGold)
                 g_currentPreviewVehicle.refreshModel()
-            if PYmodsCore.checkKeys(_config.data['SwitchRemodHotkey']):
+            if _config.OM.enabled and PYmodsCore.checkKeys(_config.data['SwitchRemodHotkey']):
                 if _config.data['currentMode'] != 'remod':
                     curTankType = _config.data['currentMode'][0].upper() + _config.data['currentMode'][1:]
                     snameList = sorted(_config.OM.models.keys()) + ['']
@@ -908,6 +908,8 @@ copy_reg.__newobj__ = new_obj
 
 def OM_find(xmlName, playerName, isPlayerVehicle, isAlly, currentMode='battle'):
     _config.OMDesc = None
+    if not _config.OM.enabled:
+        return
     if _config.data['isDebug']:
         if not isPlayerVehicle:
             print 'RemodEnabler: looking for OMDescriptor for %s, player - %s' % (xmlName, playerName)
@@ -1062,6 +1064,8 @@ def OM_apply(vDesc):
 
 def OS_find(curVehName, playerName, isPlayerVehicle, isAlly, currentMode='battle', skinType='static'):
     _config.OSDesc[skinType] = None
+    if not _config.OS.enabled:
+        return
     if _config.data['isDebug']:
         if not isPlayerVehicle:
             print 'RemodEnabler: looking for %s OSDescriptor for %s, player - %s' % (skinType, curVehName, playerName)
@@ -1459,7 +1463,7 @@ class TextBox(object):
         self.GUIComponent.heightMode = 'CLIP'
         self.GUIComponent.explicitSize = True
         self.GUIComponent.position = position
-        self.GUIComponent.font = 'collision_table'
+        self.GUIComponent.font = 'system_small'
         self.GUIComponent.text = text
         self.GUIComponent.size = size
         self.GUIComponent.visible = True
@@ -1523,24 +1527,6 @@ def addCollisionGUI(self):
             textBox = TextBox('%s' % armorValue, (x, y, 0.725), (0, 0, 0, 255))
             textBox.addRoot()
             curCollisionTable['textBoxes'].append(textBox)
-            # texBox = TexBox('system/fonts/collision_table_shadow.dds', (x, y, 0.75),
-            #                 (textBox.GUIComponent.width + 0.008, textBox.GUIComponent.height + 0.01))
-            # texBox.addRoot()
-            # curCollisionTable['texBoxes'].append(texBox)
-            '''
-            for i in xrange(3):
-                armorStr = '%s' % armorValue
-                for idx, num in enumerate(armorStr):
-                    colWidth = 0.01
-                    colPad = colWidth / 2.0
-                    x = (6 + moduleIdx) / 10.0 + 0.025 - colPad * float(len(armorStr) - 1) + colWidth * idx
-                    y = (-3 - Idx) / 20.0
-                    textBox = TextBox('%s' % num, (x, y, (7 - i % 2) / 10.0),
-                                      (0.016 - 0.006 * i, 0.05 - 0.015 * i), tuple(255 * (i % 2) if j <= 2 else 255
-                                      for j in xrange(4)))
-                    textBox.addRoot()
-                    curCollisionTable['textBoxes'].append(textBox)
-            '''
             kindsCap = len(curCollisionTable['armorValues'][armorValue])
             for matIdx, matKind in enumerate(curCollisionTable['armorValues'][armorValue]):
                 matKindName = material_kinds.IDS_BY_NAMES.keys()[material_kinds.IDS_BY_NAMES.values().index(matKind)]
