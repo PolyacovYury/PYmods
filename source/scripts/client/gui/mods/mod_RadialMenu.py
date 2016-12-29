@@ -13,6 +13,7 @@ import ResMgr
 import CommandMapping
 import Keys
 import PYmodsCore
+from Avatar import PlayerAvatar
 from constants import ARENA_BONUS_TYPE
 from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared import radial_menu
@@ -62,6 +63,8 @@ class _Config(PYmodsCore._Config):
         self.activeConfigs = []
         self.commands = {}
         self.wasAltMenuPressed = False
+        self.bestConf = None
+        self.confType = ''
         self.loadLang()
 
     def template_settings(self):
@@ -305,6 +308,8 @@ def isTargetCorrect(player, target):
 
 
 def findBestFitConf(commandConf):
+    if _config.bestConf is not None:
+        return _config.bestConf, _config.confType
     vehicleTypeDescr = g_sessionProvider.getArenaDP().getVehicleInfo().vehicleType
     vehicleType = vehicleTypeDescr.classTag
     vehicleName = vehicleTypeDescr.iconName.split('-', 1)[1]
@@ -324,6 +329,7 @@ def findBestFitConf(commandConf):
     if menuConf is None:
         menuConf = commandConf.get('TankMenu')
         menuType = 'TankMenu'
+    _config.bestConf, _config.confType = menuConf, menuType
     return menuConf, menuType
 
 
@@ -352,6 +358,14 @@ def inj_hkKeyEvent(event):
         traceback.print_exc()
 
 
+def new_destroyGUI(self):
+    old_destroyGUI(self)
+    _config.bestConf = None
+    _config.confType = ''
+
+
+old_destroyGUI = PlayerAvatar._PlayerAvatar__destroyGUI
+PlayerAvatar._PlayerAvatar__destroyGUI = new_destroyGUI
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 
