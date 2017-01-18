@@ -1,35 +1,41 @@
 # -*- coding: utf-8 -*-
 import binascii
 import copy
-import copy_reg
+import datetime
+import gc
 import glob
 import os
 import shutil
 import time
 import traceback
+import weakref
 from collections import namedtuple
 from functools import partial
 from zipfile import ZipFile
 
-import BigWorld
 import Math
 import ResMgr
 
+import BigWorld
 import GUI
 import Keys
 import PYmodsCore
+import SoundGroups
 import material_kinds
 from Avatar import PlayerAvatar
 from AvatarInputHandler import mathUtils
-from CurrentVehicle import g_currentPreviewVehicle
+from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from Vehicle import Vehicle
 from adisp import AdispException, async, process
 from gui import InputHandler, SystemMessages
 from gui.ClientHangarSpace import _VehicleAppearance
-from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
+from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
+from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
+from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.app_loader.loader import g_appLoader
+from gui.battle_control.controllers.finish_sound_ctrl import _SOUND_EVENTS
 from helpers import getClientVersion
 from items import vehicles
 from vehicle_systems import appearance_cache
@@ -41,28 +47,6 @@ sb = res['Paths']
 vl = sb.values()[0]
 if vl is not None and not hasattr(BigWorld, 'curCV'):
     BigWorld.curCV = vl.asString
-
-
-# noinspection PyDecorator,PyUnresolvedReferences
-@staticmethod
-def new_show(message, isSingle=False, interruptCallback=lambda: None):
-    if 'Remod: ' not in message:
-        return old_show(message, isSingle, interruptCallback)
-    BigWorld.Screener.setEnabled(False)
-    if not (isSingle and message in Waiting._Waiting__waitingStack):
-        Waiting._Waiting__waitingStack.append(message)
-    view = Waiting.getWaitingView()
-    if view is not None:
-        view.showS(message.replace('Remod: ', ''))
-        Waiting._Waiting__isVisible = True
-        view.setCallback(interruptCallback)
-        from gui.shared.events import LobbySimpleEvent
-        from gui.shared import EVENT_BUS_SCOPE
-        view.fireEvent(LobbySimpleEvent(LobbySimpleEvent.WAITING_SHOWN), scope=EVENT_BUS_SCOPE.LOBBY)
-
-
-old_show = Waiting.show
-Waiting.show = new_show
 
 EmblemSlot = namedtuple('EmblemSlot', ['rayStart',
                                        'rayEnd',
@@ -119,16 +103,10 @@ class OM(object):
 class OMDescriptor(object):
     def __init__(self):
         self.name = ''
-        self.enabled = False
-        self.swapPlayer = True
-        self.swapAlly = True
-        self.swapEnemy = True
-        self.swapAll = {'Player': True,
-                        'Ally': True,
-                        'Enemy': True}
-        self.whitelists = {'Player': [],
-                           'Ally': [],
-                           'Enemy': []}
+        self.authorMessage = ''
+        self.whitelists = {'Player': set(),
+                           'Ally': set(),
+                           'Enemy': set()}
 
 
 class OS(object):
@@ -143,12 +121,7 @@ class OS(object):
 class OSDescriptor(object):
     def __init__(self):
         self.name = ''
-        self.enabled = False
-        self.swapPlayer = True
-        self.swapAlly = True
-        self.swapEnemy = True
         self.whitelist = []
-        self.hasSegmentTex = {}
 
 
 class _Config(PYmodsCore._Config):
@@ -157,10 +130,21 @@ class _Config(PYmodsCore._Config):
         self.version = '2.9.0 (%s)' % self.version
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
-        self.defaultSkinConfig = {'enabled': True,
-                                  'swapPlayer': True,
-                                  'swapAlly': False,
-                                  'swapEnemy': True}
+        self.defaultSkinConfig = {'static': {'enabled': True,
+                                             'swapPlayer': True,
+                                             'swapAlly': False,
+                                             'swapEnemy': True},
+                                  'dynamic': {'enabled': True,
+                                              'swapPlayer': True,
+                                              'swapAlly': False,
+                                              'swapEnemy': True}}
+        self.defaultRemodConfig = {'enabled': True,
+                                   'swapPlayer': True,
+                                   'swapAlly': True,
+                                   'swapEnemy': True,
+                                   'usePlayerWhitelist': True,
+                                   'useAllyWhitelist': True,
+                                   'useEnemyWhitelist': True}
         self.defaultKeys = {'ChangeViewHotKey': ['KEY_F2', ['KEY_LCONTROL', 'KEY_RCONTROL']],
                             'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'SwitchRemodHotKey': ['KEY_F3', ['KEY_LCONTROL', 'KEY_RCONTROL']],
@@ -171,6 +155,7 @@ class _Config(PYmodsCore._Config):
                      'isDebug': True,
                      'collisionEnabled': False,
                      'collisionComparisonEnabled': False,
+                     'isInHangar': False,
                      'oldConfigPrints': [],
                      'ChangeViewHotKey': self.defaultKeys['ChangeViewHotKey'],
                      'ChangeViewHotkey': self.defaultKeys['ChangeViewHotkey'],
@@ -182,6 +167,47 @@ class _Config(PYmodsCore._Config):
                      'remod': True}
         self.i18n = {
             'UI_description': 'Remod Enabler',
+            'UI_flash_header': 'Remods and skins setup',
+            'UI_flash_header_tooltip': "Extended setup for RemodEnabler by "
+                                       "<font color='#DD7700'><b>Polyacov_Yury</b></font>",
+            'UI_flash_remodSetupBtn': 'Remods setup',
+            'UI_flash_remodWLBtn': 'Remod whitelists',
+            'UI_flash_skinSetupBtn': 'Skins setup',
+            'UI_flash_skinPriorityBtn': 'Skin priorities',
+            'UI_flash_skinType_static': 'Static',
+            'UI_flash_skinType_dynamic': 'Dynamic',
+            'UI_flash_team_player': 'Player',
+            'UI_flash_team_ally': 'Ally',
+            'UI_flash_team_enemy': 'Enemy',
+            'UI_flash_whiteList_addBtn': 'Add current tank',
+            'UI_flash_whiteList_del_text': 'View and delete:',
+            'UI_flash_whiteList_del_tooltip': 'Open to view all items, select an item to delete.\n\n'
+                                              'List is scrollable if longer than 10 items.',
+            'UI_flash_whiteDropdown_default': 'Click to expand',
+            'UI_flash_useFor_header_text': 'Use this item for:',
+            'UI_flash_useFor_player_text': 'Player',
+            'UI_flash_useFor_ally_text': 'Allies',
+            'UI_flash_useFor_enemy_text': 'Enemies',
+            'UI_flash_useWL_header_text': 'Use whitelists for:',
+            'UI_flash_useWL_header_tooltip': 'If disabled, this remod will be installed to all corresponding group tanks.',
+            'UI_flash_useWL_player_text': 'Player',
+            'UI_flash_useWL_ally_text': 'Allies',
+            'UI_flash_useWL_enemy_text': 'Enemies',
+            'UI_flash_WLVehDelete_header': 'Confirmation',
+            'UI_flash_WLVehDelete_text': 'Are you sure you want to delete this vehicle from this whitelist?',
+            'UI_flash_vehicleDelete_success': 'Vehicle deleted from whitelist: ',
+            'UI_flash_vehicleAdd_success': 'Vehicle added to whitelist: ',
+            'UI_flash_vehicleAdd_dupe': 'Vehicle already in whitelist: ',
+            'UI_flash_backBtn': 'Back',
+            'UI_flash_saveBtn': 'Save',
+            'UI_loading_bugReport': 'Report a bug',
+            'UI_loading_done': ' Done!',
+            'UI_loading_header_CRC32': 'RemodEnabler: checking textures',
+            'UI_loading_header_models_unpack': 'RemodEnabler: unpacking models',
+            'UI_loading_package': 'Unpacking %s:',
+            'UI_loading_skinPack': 'Checking %s:',
+            'UI_loading_skinType_static': 'Checking static skins...',
+            'UI_loading_skinType_dynamic': 'Checking dynamic skins...',
             'UI_setting_isDebug_text': 'Enable extended log printing',
             'UI_setting_isDebug_tooltip': 'If enabled, your python.log will be harassed with mod\'s debug information.',
             'UI_setting_remod_text': 'Enable all remods preview mode',
@@ -198,36 +224,6 @@ class _Config(PYmodsCore._Config):
             'UI_setting_SwitchRemodHotkey_text': 'Remod switch hotkey',
             'UI_setting_SwitchRemodHotkey_tooltip': (
                 'This hotkey will cycle through all remods (ignoring whitelists in remod preview mode).'),
-            'UI_setting_curRemodSwapPlayer_text': 'Apply current remod to player tanks',
-            'UI_setting_curRemodSwapPlayer_tooltip': (
-                'Current remod will be able to be applied to player tanks according to its whitelist settings.'),
-            'UI_setting_curRemodUsePlayerWhitelist_text': 'Enable player whitelist usage of current remod',
-            'UI_setting_curRemodUsePlayerWhitelist_tooltip': (
-                'If disabled, this remod will be whitelisted for all player tanks.\n<b>Current whitelist:</b>\n'),
-            'UI_setting_curRemodSwapAlly_text': 'Apply current remod to ally tanks',
-            'UI_setting_curRemodSwapAlly_tooltip': (
-                'Current remod will be able to be applied to ally tanks according to '
-                'its whitelist settings.'),
-            'UI_setting_curRemodUseAllyWhitelist_text': 'Enable ally whitelist usage of current remod',
-            'UI_setting_curRemodUseAllyWhitelist_tooltip': (
-                'If disabled, this remod will be whitelisted for all ally tanks.\n<b>Current whitelist:</b>\n'),
-            'UI_setting_curRemodSwapEnemy_text': 'Apply current remod to enemy tanks',
-            'UI_setting_curRemodSwapEnemy_tooltip': (
-                'Current remod will be able to be applied to enemy tanks according to its whitelist settings.'),
-            'UI_setting_curRemodUseEnemyWhitelist_text': 'Enable enemy whitelist usage of current remod',
-            'UI_setting_curRemodUseEnemyWhitelist_tooltip': (
-                'If disabled, this remod will be whitelisted for all enemy tanks.\n<b>Current whitelist:</b>\n'),
-            'UI_setting_curRemodEmptyWhitelist': ' • This remod\'s whitelist is empty, so all tanks will be affected.{'
-                                                 '/BODY}',
-            'UI_setting_curSkinSwapPlayer_text': 'Apply current skin to player tanks',
-            'UI_setting_curSkinSwapPlayer_tooltip': (
-                'Current skin will be able to be applied to player tanks according to its whitelist.'),
-            'UI_setting_curSkinSwapAlly_text': 'Apply current skin to ally tanks',
-            'UI_setting_curSkinSwapAlly_tooltip': (
-                'Current skin will be able to be applied to ally tanks according to its whitelist.'),
-            'UI_setting_curSkinSwapEnemy_text': 'Apply current skin to enemy tanks',
-            'UI_setting_curSkinSwapEnemy_tooltip': (
-                'Current skin will be able to be applied to enemy tanks according to its whitelist.'),
             'UI_disableCollisionComparison': '<b>RemodEnabler:</b>\nDisabling collision comparison mode.',
             'UI_enableCollisionComparison': '<b>RemodEnabler:</b>\nEnabling collision comparison mode.',
             'UI_enableCollision': '<b>RemodEnabler:</b>\nEnabling collision mode.',
@@ -238,15 +234,15 @@ class _Config(PYmodsCore._Config):
             'UI_mode_player': 'player tank preview',
             'UI_mode_ally': 'ally tank preview',
             'UI_mode_enemy': 'enemy tank preview',
-            'UI_mode_remod': 'all remods preview',
-            'UI_loading_header_CRC32': 'RemodEnabler:\nchecking textures...',
-            'UI_loading_header_models_unpack': 'RemodEnabler:\nunpacking models...'}
+            'UI_mode_remod': 'all remods preview'}
         self.configsDict = {}
+        self.settings = {'remods': {}, 'skins': {}, 'skins_dynamic': {}}
         self.OM = OM()
         self.OS = OS()
         self.OMDesc = None
         self.OSDesc = {'static': None, 'dynamic': None}
         self.curVehicleName = None
+        self.loadingProxy = None
         self.loadLang()
 
     def template_settings(self):
@@ -255,70 +251,12 @@ class _Config(PYmodsCore._Config):
         template = {'modDisplayName': self.i18n['UI_description'],
                     'settingsVersion': 200,
                     'enabled': True,
-                    'column1': [],
+                    'column1': [self.createControl('isDebug'),
+                                self.createControl('remod')],
                     'column2': [viewKey,
                                 self.createHotKey('SwitchRemodHotkey'),
                                 self.createHotKey('CollisionHotkey')]}
-        if self.OMDesc is not None:
-            for key in ('SwapPlayer', 'Player', 'SwapAlly', 'Ally', 'SwapEnemy', 'Enemy'):
-                if 'Swap' in key:
-                    self.data['curRemod%s' % key] = getattr(self.OMDesc, key[0].lower() + key[1:])
-                    template['column1'].append(self.createControl('curRemod%s' % key))
-                else:
-                    self.data['curRemodUse%sWhitelist' % key] = not self.OMDesc.swapAll[key]
-                    checkbox = self.createControl('curRemodUse%sWhitelist' % key)
-                    whitelist = self.OMDesc.whitelists[key]
-                    if whitelist:
-                        tooltipStr = ' • ' + '\n • '.join(whitelist) + '{/BODY}'
-                    else:
-                        tooltipStr = self.i18n['UI_setting_curRemodEmptyWhitelist']
-                    checkbox['tooltip'] = checkbox['tooltip'].replace('{/BODY}', tooltipStr)
-                    template['column1'].append(checkbox)
-        elif self.OSDesc['static'] is not None:
-            for key in ('SwapPlayer', 'SwapAlly', 'SwapEnemy'):
-                self.data['curSkin%s' % key] = getattr(self.OSDesc['static'], key[0].lower() + key[1:])
-                template['column1'].append(self.createControl('curSkin%s' % key))
-        elif self.OSDesc['dynamic'] is not None:
-            for key in ('SwapPlayer', 'SwapAlly', 'SwapEnemy'):
-                self.data['curSkin%s' % key] = getattr(self.OSDesc['dynamic'], key[0].lower() + key[1:])
-                template['column1'].append(self.createControl('curSkin%s' % key))
-        else:
-            template['column1'].extend((self.createControl('isDebug'),
-                                        self.createControl('remod')))
         return template
-
-    def apply_settings(self, settings):
-        super(_Config, self).apply_settings(settings)
-        if getattr(self, 'OMDesc', None) is not None:
-            OMDict = {}
-            for key in ('SwapPlayer', 'Player', 'SwapAlly', 'Ally', 'SwapEnemy', 'Enemy'):
-                if 'Swap' in key:
-                    setattr(self.OMDesc, key[0].lower() + key[1:],
-                            self.data.get('curRemod%s' % key, getattr(self.OMDesc, key[0].lower() + key[1:])))
-                    OMDict[key[0].lower() + key[1:]] = self.data.get(
-                        'curRemod%s' % key, getattr(self.OMDesc, key[0].lower() + key[1:]))
-                else:
-                    self.OMDesc.swapAll[key] = not self.data.get('curRemodUse%sWhitelist' % key,
-                                                                 not self.OMDesc.swapAll[key])
-                    OMDict['use%sWhitelist' % key] = self.data.get('curRemodUse%sWhitelist' % key,
-                                                                   not self.OMDesc.swapAll[key])
-            self.loadJson(self.OMDesc.name, OMDict, '%sremods/' % self.configPath, True, False)
-        elif self.OSDesc['static'] is not None:
-            OSDict = {}
-            for key in ('SwapPlayer', 'SwapAlly', 'SwapEnemy'):
-                setattr(self.OSDesc['static'], key[0].lower() + key[1:],
-                        self.data.get('curSkin%s' % key, getattr(self.OSDesc['static'], key[0].lower() + key[1:])))
-                OSDict[key[0].lower() + key[1:]] = self.data.get(
-                    'curSkin%s' % key, getattr(self.OSDesc['static'], key[0].lower() + key[1:]))
-            self.loadJson(self.OSDesc['static'].name, OSDict, '%sskins/' % self.configPath, True, False)
-        elif self.OSDesc['dynamic'] is not None:
-            OSDict = {}
-            for key in ('SwapPlayer', 'SwapAlly', 'SwapEnemy'):
-                setattr(self.OSDesc['dynamic'], key[0].lower() + key[1:],
-                        self.data.get('curSkin%s' % key, getattr(self.OSDesc['dynamic'], key[0].lower() + key[1:])))
-                OSDict[key[0].lower() + key[1:]] = self.data.get(
-                    'curSkin%s' % key, getattr(self.OSDesc['dynamic'], key[0].lower() + key[1:]))
-            self.loadJson(self.OSDesc['dynamic'].name, OSDict, '%sskins_dynamic/' % self.configPath, True, False)
 
     def onWindowClose(self):
         g_currentPreviewVehicle.refreshModel()
@@ -332,24 +270,61 @@ class _Config(PYmodsCore._Config):
 
     def update_data(self, doPrint=False):
         super(_Config, self).update_data()
+        self.settings = self.loadJson('settings', self.settings, self.configPath)
         self.OM.enabled = os.path.isdir('%s/vehicles/remods/' % BigWorld.curCV) and len(
             glob.glob('%s/vehicles/remods/*' % BigWorld.curCV))
         if self.OM.enabled:
             self.OM.selected = self.loadJson('remodsCache', self.OM.selected, self.configPath)
             configsPath = '%sremods/*.json' % self.configPath
             for configPath in glob.iglob(configsPath):
-                confPath = configPath.replace('%s/' % BigWorld.curCV, '')
                 sname = os.path.basename(configPath).split('.')[0]
                 self.configsDict[sname] = confDict = self.loadJson(sname, self.configsDict.get(sname, {}),
-                                                                   os.path.dirname(configPath) + '/')
+                                                                   os.path.dirname(configPath) + '/', encrypted=True)
                 if not confDict:
-                    print '%s: error while reading %s.' % (self.ID, os.path.basename(confPath))
+                    print '%s: error while reading %s.' % (self.ID, os.path.basename(configPath))
                     continue
-                if 'enabled' in confDict and not confDict['enabled']:
+                settingsDict = self.settings['remods'].setdefault(sname, self.defaultRemodConfig)
+                if not settingsDict.get('enabled', True):
                     print '%s: %s disabled, moving on' % (self.ID, sname)
                     continue
                 self.OM.models[sname] = pRecord = OMDescriptor()
                 pRecord.name = sname
+                authorMessage = confDict.get('authorMessage', '')
+                if authorMessage:
+                    pRecord.authorMessage = '\n' + authorMessage
+                for tankType in self.OM.allDesc:
+                    allDesc = self.OM.allDesc[tankType]
+                    selected = self.OM.selected[tankType]
+                    if not settingsDict.get('swap%s' % tankType, self.defaultRemodConfig['swap%s' % tankType]):
+                        if self.data['isDebug']:
+                            print '%s: %s swapping in %s disabled.' % (self.ID, tankType.lower(), sname)
+                        for xmlName in selected.keys():
+                            if sname == selected[xmlName]:
+                                del selected[xmlName]
+                        if sname in allDesc:
+                            allDesc.remove(sname)
+                        continue
+                    useKey = 'use%sWhitelist' % tankType
+                    WLKey = '%sWhitelist' % tankType.lower()
+                    whiteStr = settingsDict.setdefault(WLKey, confDict.get(WLKey, ''))
+                    templist = filter(None, map(lambda x: x.strip(), whiteStr.split(',')))
+                    whitelist = pRecord.whitelists[tankType]
+                    whitelist.update(templist)
+                    if not settingsDict.get(useKey, self.defaultRemodConfig[useKey]) and templist:
+                        if sname not in allDesc:
+                            allDesc.append(sname)
+                        if self.data['isDebug']:
+                            print ('%s: empty whitelist for %s. Apply to all %s tanks' if whitelist else
+                                   '%s: %s will be used for all %s tanks if not explicitly designated to another '
+                                   'model.') % (self.ID, sname, tankType.lower())
+                    else:
+                        if self.data['isDebug']:
+                            print '%s: whitelist for %s: %s' % (self.ID, tankType.lower(), list(whitelist))
+                        if sname in allDesc:
+                            allDesc.remove(sname)
+                        for xmlName in selected.keys():
+                            if sname == selected[xmlName] and xmlName not in whitelist:
+                                del selected[xmlName]
                 pRecord.emblemSlotsGun = None
                 pRecord.emblemSlotsHull = None
                 pRecord.emblemSlotsTurret = None
@@ -359,50 +334,6 @@ class _Config(PYmodsCore._Config):
                 pRecord.strGunEffects = pRecord.strGunReloadEffect = ''
                 pRecord.exhaustNodes = []
                 pRecord.exhaustPixie = ''
-                for tankType in self.OM.allDesc:
-                    if not confDict.get('swap%s' % tankType, getattr(pRecord, 'swap%s' % tankType)):
-                        if doPrint:
-                            print '%s: %s swapping in %s disabled.' % (self.ID, tankType.lower(), sname)
-                        setattr(pRecord, 'swap%s' % tankType,
-                                confDict.get('swap%s' % tankType, getattr(pRecord, 'swap%s' % tankType)))
-                        for xmlName in self.OM.selected[tankType].keys():
-                            if sname == self.OM.selected[tankType][xmlName]:
-                                del self.OM.selected[tankType][xmlName]
-                        if sname in self.OM.allDesc[tankType]:
-                            self.OM.allDesc[tankType].remove(sname)
-                        continue
-                    if 'use%sWhitelist' % tankType in confDict:
-                        pRecord.swapAll[tankType] = not confDict['use%sWhitelist' % tankType]
-                    if not pRecord.swapAll[tankType]:
-                        templist = confDict['%sWhitelist' % tankType.lower()].split(',')
-                        curVehNamesList = []
-                        for curVehName in templist:
-                            curVehName = curVehName.strip()
-                            if curVehName:
-                                pRecord.swapAll[tankType] = False
-                                curVehNamesList.append(curVehName)
-                                if curVehName not in pRecord.whitelists[tankType]:
-                                    pRecord.whitelists[tankType].append(curVehName)
-
-                        if self.data['isDebug']:
-                            if pRecord.swapAll[tankType]:
-                                print '%s: empty whitelist for %s. Apply to all %s tanks' % (
-                                    self.ID, sname, tankType.lower())
-                            else:
-                                print '%s: whitelist for %s: %s' % (self.ID, tankType.lower(), curVehNamesList)
-                    if pRecord.swapAll[tankType]:
-                        if sname not in self.OM.allDesc[tankType]:
-                            self.OM.allDesc[tankType].append(sname)
-                            if doPrint:
-                                print '%s: %s will be used for all %s tanks if not explicitly designated to another ' \
-                                      'model.' % (self.ID, sname, tankType.lower())
-                    else:
-                        if sname in self.OM.allDesc[tankType]:
-                            self.OM.allDesc[tankType].remove(sname)
-                        for xmlName in self.OM.selected[tankType].keys():
-                            if sname == self.OM.selected[tankType][xmlName] and \
-                                    xmlName not in pRecord.whitelists[tankType]:
-                                del self.OM.selected[tankType][xmlName]
                 pRecord.strChassis = confDict['chassis']['undamaged']
                 pRecord.strHull = confDict['hull']['undamaged']
                 pRecord.strTurret = confDict['turret']['undamaged']
@@ -441,9 +372,8 @@ class _Config(PYmodsCore._Config):
                     pRecord.strGunEffects = confDict['gun']['effects']
                 if 'reloadEffect' in confDict['gun']:
                     pRecord.strGunReloadEffect = confDict['gun']['reloadEffect']
-                if doPrint:
+                if self.data['isDebug']:
                     print '%s: config for %s loaded.' % (self.ID, sname)
-                pRecord.enabled = True
 
             if not self.OM.models:
                 print '%s: no configs found, model module standing down.' % self.ID
@@ -468,57 +398,48 @@ class _Config(PYmodsCore._Config):
             print '%s: no remods found, model module standing down.' % self.ID
             self.OM.enabled = False
             self.loadJson('remodsCache', self.OM.selected, self.configPath, True)
-        self.OS.enabled = (os.path.isdir('%s/vehicles/skins/' % BigWorld.curCV) and glob.glob(
-            '%s/vehicles/skins/*' % BigWorld.curCV) or os.path.isdir(
-            '%s/vehicles/skins_dynamic/' % BigWorld.curCV) and glob.glob('%s/vehicles/skins_dynamic/*' % BigWorld.curCV))
+        self.OS.enabled = any(os.path.isdir('%s/vehicles/skins%s/' % (BigWorld.curCV, skinType)) and glob.glob(
+            '%s/vehicles/skins%s/*' % (BigWorld.curCV, skinType)) for skinType in ('', '_dynamic'))
         if self.OS.enabled:
             self.OS.priorities = self.loadJson('skinsPriority', self.OS.priorities, self.configPath)
-            for skinDir in ('', '_dynamic'):
-                configsPath = '%sskins%s/*.json' % (self.configPath, skinDir)
-                skinType = 'static' if not skinDir else skinDir[1:]
-                for configPath in glob.iglob(configsPath):
-                    confPath = configPath.replace('%s/' % BigWorld.curCV, '')
-                    sname = os.path.basename(configPath).split('.')[0]
-                    self.configsDict[sname] = confDict = self.loadJson(sname, self.configsDict.get(sname, {}),
-                                                                       os.path.dirname(configPath) + '/')
-                    if not confDict:
-                        print '%s: error while reading %s.' % (self.ID, os.path.basename(confPath))
-                        continue
+            skinsDir = BigWorld.curCV + '/vehicles/skins%s/textures/'
+            for skinTypeSuff in ('', '_dynamic'):
+                skinDir = skinsDir % skinTypeSuff + '*'
+                skinType = 'static' if not skinTypeSuff else skinTypeSuff[1:]
+                skinsSettings = self.settings['skins%s' % skinTypeSuff]
+                disabledSkins = []
+                if self.data['isDebug']:
+                    print '%s: loading configs for %s skins' % (self.ID, skinType)
+                for skinPath in glob.iglob(skinDir):
+                    sname = os.path.basename(skinPath)
+                    confDict = skinsSettings.setdefault(sname, self.defaultSkinConfig[skinType])
                     if not confDict.get('enabled', True):
                         print '%s: %s disabled, moving on' % (self.ID, sname)
+                        disabledSkins.append(sname)
                         continue
-                    texturesPath = '%s/vehicles/skins%s/textures/%s' % (BigWorld.curCV, skinDir, sname)
-                    if not os.path.isdir(texturesPath):
-                        print '%s: config and folder mismatch detected: %s folder not found, config deleted' % (
-                            self.ID, texturesPath)
-                        shutil.rmtree(configPath)
-                        continue
-                    models = self.OS.models[skinType]
-                    models[sname] = pRecord = OSDescriptor()
+                    self.OS.models[skinType][sname] = pRecord = OSDescriptor()
                     pRecord.name = sname
                     priorities = self.OS.priorities[skinType]
                     for tankType in priorities:
-                        if not confDict.get('swap%s' % tankType, getattr(pRecord, 'swap%s' % tankType)):
-                            if doPrint:
+                        key = 'swap%s' % tankType
+                        if not confDict.setdefault(key, self.defaultSkinConfig[skinType][key]):
+                            if self.data['isDebug']:
                                 print '%s: %s swapping in %s disabled.' % (self.ID, tankType, sname)
-                            setattr(pRecord, 'swap%s' % tankType,
-                                    confDict.get('swap%s' % tankType, getattr(pRecord, 'swap%s' % tankType)))
                             if sname in priorities[tankType]:
                                 priorities[tankType].remove(sname)
                             continue
                         if sname not in priorities[tankType]:
                             priorities[tankType].append(sname)
                     pRecord.whitelist = []
-                    for curNation in glob.iglob(texturesPath + '/vehicles/*'):
+                    for curNation in glob.iglob(skinPath + '/vehicles/*'):
                         for vehicleName in glob.iglob(curNation + '/*'):
                             curVehName = os.path.basename(vehicleName)
-                            pRecord.hasSegmentTex[curVehName] = False
-                            if not len(glob.glob(vehicleName + '/tracks/*.dds')) and os.path.isdir(
-                                            vehicleName + '/tracks'):
+                            hasSegmentTex = False
+                            if not glob.glob(vehicleName + '/tracks/*.dds') and os.path.isdir(vehicleName + '/tracks'):
                                 shutil.rmtree(vehicleName + '/tracks')
                             else:
-                                pRecord.hasSegmentTex[curVehName] = True
-                            if not len(glob.glob(vehicleName + '/*.dds')) and not pRecord.hasSegmentTex[curVehName]:
+                                hasSegmentTex = True
+                            if not glob.glob(vehicleName + '/*.dds') and not hasSegmentTex:
                                 os.rmdir(vehicleName)
                                 if self.data['isDebug']:
                                     print '%s: %s folder from %s pack is deleted: empty' % (
@@ -527,10 +448,12 @@ class _Config(PYmodsCore._Config):
                                 if curVehName not in pRecord.whitelist:
                                     pRecord.whitelist.append(curVehName)
 
-                    if doPrint:
+                    if self.data['isDebug']:
                         print '%s: config for %s loaded.' % (self.ID, sname)
-                    pRecord.enabled = True
-
+                snameList = self.OS.models[skinType].keys() + disabledSkins
+                for sname in skinsSettings.keys():
+                    if sname not in snameList:
+                        del skinsSettings[sname]
             if not any(self.OS.models.values()):
                 print '%s: no skins configs found, skins module standing down.' % self.ID
                 self.OS.enabled = False
@@ -544,12 +467,29 @@ class _Config(PYmodsCore._Config):
                             if sname not in self.OS.models[skinType]:
                                 self.OS.priorities[skinType][key].remove(sname)
         else:
-            print '%s: no skins found, skins module standing down.' % self.ID
-            self.OS.enabled = False
+            if doPrint:
+                print '%s: no skins found, skins module standing down.' % self.ID
             for skinType in self.OS.priorities:
                 for key in self.OS.priorities[skinType]:
                     self.OS.priorities[skinType][key] = []
         self.loadJson('skinsPriority', self.OS.priorities, self.configPath, True)
+        self.loadJson('settings', self.settings, self.configPath, True)
+
+    def do_config(self):
+        super(_Config, self).do_config()
+        BigWorld.g_modsListApi.addMod(
+            id='RemodEnablerUI', name=self.i18n['UI_flash_header'],
+            description=self.i18n['UI_flash_header_tooltip'],
+            icon='gui/flash/RemodEnabler.png',
+            enabled=self.data['enabled'], login=True, lobby=True,
+            callback=lambda: g_appLoader.getDefLobbyApp().loadView(
+                'RemodEnablerUI') if self.loadingProxy is None else None)
+        g_entitiesFactories.addSettings(
+            ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
+                         ScopeTemplates.GLOBAL_SCOPE, False))
+        g_entitiesFactories.addSettings(
+            GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
+                                '', None, ScopeTemplates.DEFAULT_SCOPE))
 
 
 def skinsPresenceCheck():
@@ -557,7 +497,7 @@ def skinsPresenceCheck():
     for skinsType in skinsFound:
         skinsPath = '%s/vehicles/skins%s/textures/' % (BigWorld.curCV, skinsType)
         if os.path.isdir(skinsPath):
-            if len(glob.glob(skinsPath + '*')):
+            if glob.glob(skinsPath + '*'):
                 skinsFound[skinsType] = True
 
 
@@ -573,9 +513,211 @@ modelsDir = BigWorld.curCV + '/vehicles/skins%s/models/'
 skinVehNamesLDict = {'': {}, '_dynamic': {}}
 
 
-def CRC32_from_file(filename):
+class RemodEnablerLoading(LoginQueueWindowMeta):
+    def __init__(self):
+        super(RemodEnablerLoading, self).__init__()
+        self.lines = []
+        self.curPercentage = 0
+        _config.loadingProxy = weakref.proxy(self)
+
+    def _populate(self):
+        super(RemodEnablerLoading, self)._populate()
+        self.__initTexts()
+
+    def __initTexts(self):
+        self.updateTitle(_config.i18n['UI_loading_header_CRC32'])
+        self.updateMessage()
+        self.as_setCancelLabelS(_config.i18n['UI_loading_bugReport'])
+        self.as_showAutoLoginBtnS(False)
+
+    def updateTitle(self, title):
+        self.as_setTitleS(title)
+
+    def updateMessage(self):
+        self.as_setMessageS(''.join(line.join(("<p align='left'>", "</p>")) for line in self.lines))
+
+    def addLine(self, line, prefix=True):
+        if len(self.lines) == 8:
+            del self.lines[0]
+        if prefix:
+            line = '>' + line
+        self.lines.append(line)
+        self.updateMessage()
+
+    def onComplete(self):
+        self.lines[-1] += _config.i18n['UI_loading_done'].join(("<font color='#00FF00'>", '</font>'))
+        self.updateMessage()
+
+    def addBar(self, pkgName):
+        self.curPercentage = 0
+        self.addLine(_config.i18n['UI_loading_package'] % pkgName)
+        self.addLine(self.createBar(), prefix=False)
+
+    def createBar(self):
+        red = 510 - 255 * self.curPercentage / 50
+        green = 255 * self.curPercentage / 50
+        return "<font color='#007BFF' face='Arial'>%s</font><font color='#{0:0>2x}{1:0>2x}00'>  %s%%</font>".format(
+            red if red < 255 else 255, green if green < 255 else 255) % (
+               u'\u2593' * (self.curPercentage / 4) + u'\u2591' * (25 - self.curPercentage / 4), self.curPercentage)
+
+    def updatePercentage(self, percentage):
+        self.curPercentage = percentage
+        self.lines[-1] = self.createBar()
+        self.updateMessage()
+
+    def onBarComplete(self):
+        del self.lines[-1]
+        self.onComplete()
+
+    def onTryClosing(self):
+        return False
+
+    def onCancelClick(self):
+        BigWorld.wg_openWebBrowser('http://www.koreanrandom.com/forum/topic/22800-')
+
+    def onWindowClose(self):
+        _config.loadingProxy = None
+        self.destroy()
+
+
+class RemodEnablerUI(AbstractWindowView):
+    def _populate(self):
+        super(RemodEnablerUI, self)._populate()
+        self.modeBackup = _config.data['currentMode']
+        self.remodBackup = _config.OM.selected['Remod']
+        if self._isDAAPIInited():
+            self.createData()
+
+    def createData(self):
+        _config.update_data(_config.data['isDebug'])
+        texts = {
+            'header': {
+                'main': _config.i18n['UI_flash_header'],
+                'remodSetup': _config.i18n['UI_flash_remodSetupBtn'],
+                'remodWL': _config.i18n['UI_flash_remodWLBtn'],
+                'skinSetup': _config.i18n['UI_flash_skinSetupBtn'],
+                'priorities': _config.i18n['UI_flash_skinPriorityBtn']},
+            'remodSetupBtn': _config.i18n['UI_flash_remodSetupBtn'],
+            'remodWLBtn': _config.i18n['UI_flash_remodWLBtn'],
+            'skinsSetupBtn': _config.i18n['UI_flash_skinSetupBtn'],
+            'skinsPriorityBtn': _config.i18n['UI_flash_skinPriorityBtn'],
+            'skinTypes': [_config.i18n['UI_flash_skinType_%s' % skinType] for skinType in ('static', 'dynamic')],
+            'teams': [_config.i18n['UI_flash_team_%s' % team] for team in ('player', 'ally', 'enemy')],
+            'remodNames': [],
+            'skinNames': [[], []],
+            'whiteList': {'addBtn': _config.i18n['UI_flash_whiteList_addBtn'],
+                          'delLabel': _config.createLabel('whiteList_del', 'flash'),
+                          'defStr': _config.i18n['UI_flash_whiteDropdown_default']},
+            'useFor': {'header': _config.createLabel('useFor_header', 'flash'),
+                       'ally': _config.createLabel('useFor_ally', 'flash'),
+                       'enemy': _config.createLabel('useFor_enemy', 'flash'),
+                       'player': _config.createLabel('useFor_player', 'flash')},
+            'useWL': {'header': _config.createLabel('useWL_header', 'flash'),
+                      'ally': _config.createLabel('useWL_ally', 'flash'),
+                      'enemy': _config.createLabel('useWL_enemy', 'flash'),
+                      'player': _config.createLabel('useWL_player', 'flash')},
+            'backBtn': _config.i18n['UI_flash_backBtn'],
+            'saveBtn': _config.i18n['UI_flash_saveBtn']
+        }
+        settings = {
+            'remods': [],
+            'skins': [[], []],
+            'priorities': [[_config.OS.priorities[sType][team] for team in ('Player', 'Ally', 'Enemy')] for sType in
+                           ('static', 'dynamic')],
+            'whitelists': [],
+            'isInHangar': _config.data['isInHangar']
+        }
+        for sname in sorted(_config.OM.models):
+            OMDesc = _config.OM.models[sname]
+            OMSettings = _config.settings['remods'][sname]
+            texts['remodNames'].append(sname)
+            settings['remods'].append({
+                'useFor': {key.lower(): OMSettings['swap%s' % key] for key in ('Player', 'Ally', 'Enemy')},
+                'useWL': {key.lower(): OMSettings['use%sWhitelist' % key] for key in ('Player', 'Ally', 'Enemy')},
+                'whitelists': [OMDesc.whitelists[team] for team in ('Player', 'Ally', 'Enemy')]
+            })
+        for idx, skinType in enumerate(('', '_dynamic')):
+            skins = _config.settings['skins%s' % skinType]
+            for sname in sorted(_config.OS.models['static' if not skinType else 'dynamic']):
+                sDesc = skins[sname]
+                texts['skinNames'][idx].append(sname)
+                settings['skins'][idx].append({'useFor': {k.lower(): sDesc['swap%s' % k] for k in _config.OM.allDesc}})
+        self.flashObject.as_updateData(texts, settings)
+        self.flashObject.as_initMainMenu()
+
+    @staticmethod
+    def py_onShowRemod(remodIdx):
+        _config.data['currentMode'] = 'remod'
+        _config.OM.selected['Remod'] = sorted(_config.OM.models)[remodIdx]
+        g_currentPreviewVehicle.refreshModel()
+
+    def py_onModelRestore(self):
+        _config.data['currentMode'] = self.modeBackup
+        _config.OM.selected['Remod'] = self.remodBackup
+        g_currentPreviewVehicle.refreshModel()
+
+    @staticmethod
+    def py_getCurrentVehicleName():
+        if g_currentPreviewVehicle.isPresent():
+            vDesc = g_currentPreviewVehicle.item.descriptor
+        elif g_currentVehicle.isPresent():
+            vDesc = g_currentVehicle.item.descriptor
+        else:
+            raise AttributeError('g_currentVehicle.item.descriptor not found')
+        return vDesc.name.split(':')[1].lower()
+
+    def py_onRequestVehicleDelete(self):
+        from gui import DialogsInterface
+        from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta, I18nConfirmDialogButtons
+
+        DialogsInterface.showDialog(SimpleDialogMeta(_config.i18n['UI_flash_WLVehDelete_header'],
+                                                     _config.i18n['UI_flash_WLVehDelete_text'],
+                                                     I18nConfirmDialogButtons('common/confirm'), None),
+                                    self.flashObject.as_onVehicleDeleteConfirmed)
+
+    @staticmethod
+    def py_onSaveSettings(settings):
+        remodNames = sorted(_config.OM.models)
+        for idx, setObj in enumerate(settings.remods):
+            OMSettings = _config.settings['remods'][remodNames[idx]]
+            for key in ('Player', 'Ally', 'Enemy'):
+                OMSettings['swap%s' % key] = getattr(setObj.useFor, key.lower())
+                OMSettings['use%sWhitelist' % key] = getattr(setObj.useWL, key.lower())
+            for teamIdx, team in enumerate(('player', 'ally', 'enemy')):
+                OMSettings['%sWhitelist' % team] = ','.join(setObj.whitelists[teamIdx])
+        for idx, settingsArray in enumerate(settings.skins):
+            for nameIdx, setObj in enumerate(settingsArray):
+                for key in _config.OM.allDesc:
+                    _config.settings['skins%s' % ('', '_dynamic')[idx]][
+                        sorted(_config.OS.models[('static', 'dynamic')[idx]])[nameIdx]]['swap%s' % key] = getattr(
+                        setObj.useFor, key.lower())
+        for idx, prioritiesArray in enumerate(settings.priorities):
+            for teamIdx, team in enumerate(('Player', 'Ally', 'Enemy')):
+                _config.OS.priorities[('static', 'dynamic')[idx]][team] = prioritiesArray[teamIdx]
+        _config.loadJson('skinsPriority', _config.OS.priorities, _config.configPath, True)
+        _config.loadJson('settings', _config.settings, _config.configPath, True)
+        _config.update_data(_config.data['isDebug'])
+        g_currentPreviewVehicle.refreshModel()
+
+    @staticmethod
+    def py_sendMessage(xmlName, action, status):
+        SystemMessages.pushMessage(
+            'PYmods_SM' + _config.i18n['UI_flash_vehicle%s_%s' % (action, status)] + xmlName.join(
+                ('<b>', '</b>.')), SystemMessages.SM_TYPE.CustomizationForGold)
+
+    def onWindowClose(self):
+        self.py_onModelRestore()
+        self.destroy()
+
+    @staticmethod
+    def py_printLog(*args):
+        for arg in args:
+            print arg
+
+
+def CRC32_from_file(filename, localPath):
     buf = open(filename, 'rb').read()
-    buf = binascii.crc32(buf) & 0xFFFFFFFF
+    buf = binascii.crc32(buf) & 0xFFFFFFFF & localPath.__hash__()
     return buf
 
 
@@ -590,29 +732,40 @@ def skinCRC32All(callback):
             CRC32cache = open(CRC32cacheFile, 'rb').read()
         skinsPath = '%s/vehicles/skins%s/textures/' % (BigWorld.curCV, skinsType)
         if os.path.isdir(skinsPath):
-            if len(glob.glob(skinsPath + '*')):
+            if glob.glob(skinsPath + '*'):
                 skinsFound[skinsType] = True
-                print 'RemodEnabler: listing %s/vehicles/skins%s/textures for CRC32' % (BigWorld.curCV, skinsType)
+                print 'RemodEnabler: listing %s for CRC32' % skinsPath
+                _config.loadingProxy.addLine(
+                    _config.i18n['UI_loading_skinType_%s' % ('static' if not skinsType else 'dynamic')])
                 CRC32 = 0
+                resultList = []
                 for skin in glob.iglob(skinsPath + '*'):
+                    _config.loadingProxy.addLine(_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
                     result = yield skinCRC32Process(skin, skinsType)
+                    _config.loadingProxy.onComplete()
+                    SoundGroups.g_instance.playSound2D('enemy_sighted_for_team')
+                    if result in resultList:
+                        print 'RemodEnabler: deleting duplicate skins pack:', skin.replace(os.sep, '/')
+                        shutil.rmtree(skin)
+                        continue
                     CRC32 ^= result
-
+                    resultList.append(result)
                 if CRC32cache is not None and str(CRC32) == CRC32cache:
-                    print 'RemodEnabler: skins textures were not changed'
+                    print 'RemodEnabler: skins%s textures were not changed' % skinsType
                 else:
                     if CRC32cache is None:
-                        print 'RemodEnabler: skins textures were reinstalled (or you deleted the CRC32 cache)'
+                        print 'RemodEnabler: skins%s textures were reinstalled (or you deleted the CRC32 cache)' % \
+                              skinsType
                     else:
-                        print 'RemodEnabler: skins textures were changed'
+                        print 'RemodEnabler: skins%s textures were changed' % skinsType
                     cf = open(CRC32cacheFile, 'w+b')
                     cf.write(str(CRC32))
                     cf.close()
                     texReplaced[skinsType] = True
             else:
-                print 'RemodEnabler: skins folder is empty'
+                print 'RemodEnabler: skins%s folder is empty' % skinsType
         else:
-            print 'RemodEnabler: skins folder not found'
+            print 'RemodEnabler: skins%s folder not found' % skinsType
     BigWorld.callback(0.0, partial(callback, True))
 
 
@@ -621,10 +774,6 @@ def skinCRC32All(callback):
 def skinCRC32Process(skin, skinType, callback):
     CRC32 = 0
     skinName = os.path.basename(skin)
-    configPath = '%sskins%s/%s.json' % (_config.configPath, skinType, skinName)
-    if not os.path.isfile(configPath):
-        print '%s: config %s not found, creating default' % (_config.ID, configPath)
-        _config.loadJson(skinName, _config.defaultSkinConfig, '%sskins%s/' % (_config.configPath, skinType), True)
     for nation in glob.iglob(skin + '/vehicles/*'):
         result = yield nationCRC32(nation, skinName, skinType)
         CRC32 ^= result
@@ -648,7 +797,7 @@ def nationCRC32(nation, skinName, skinType, callback):
 def vehicleCRC32(vehicleName, callback):
     CRC32 = 0
     for texture in glob.iglob(vehicleName + '/*.dds'):
-        result = CRC32_from_file(texture)
+        result = CRC32_from_file(texture, '/'.join(texture.replace(os.sep, '/').rsplit('/', 4)[1:]))
         CRC32 ^= result
     BigWorld.callback(0.0, partial(callback, CRC32))
 
@@ -677,7 +826,7 @@ def modelsCheck(callback):
             print 'RemodEnabler: skins%s models dir not found' % skinsType
         needToReReadSkinsModels[skinsType] = skinsFound[skinsType] and (
             clientIsNew[skinsType] or skinsModelsMissing[skinsType] or texReplaced[skinsType])
-        if clientIsNew[skinsType]:
+        if skinsFound[skinsType] and clientIsNew[skinsType]:
             if os.path.isdir(modelDir):
                 shutil.rmtree(modelDir)
             lastVersionFile = open(lastVersionPath, 'w+')
@@ -696,35 +845,44 @@ def modelsCheck(callback):
 @async
 @process
 def modelsProcess(callback):
-    for skinsType in needToReReadSkinsModels:
-        skinsVehDict = skinVehNamesLDict[skinsType]
-        if needToReReadSkinsModels[skinsType]:
-            Waiting.show('Remod: ' + _config.i18n['UI_loading_header_models_unpack'])
-            modelFileFormats = ('.model', '.primitives', '.visual', '.primitives_processed', '.visual_processed')
-            print 'RemodEnabler: starting to unpack vehicles packages for skins%s' % skinsType
-            for vehPkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
-                allfilesCnt = 0
-                filesCnt = 0
-                pkgStartTime = time.time()
-                print 'RemodEnabler: unpacking %s' % os.path.basename(vehPkgPath)
-                vehPkg = ZipFile(vehPkgPath)
-                for memberFileName in vehPkg.namelist():
-                    if not memberFileName.startswith('vehicles'):
+    if any(needToReReadSkinsModels.values()):
+        _config.loadingProxy.updateTitle(_config.i18n['UI_loading_header_models_unpack'])
+        modelFileFormats = ('.model', '.primitives', '.visual', '.primitives_processed', '.visual_processed')
+        print 'RemodEnabler: starting to unpack vehicles packages'
+        for vehPkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
+            completionPercentage = 0
+            filesCnt = 0
+            pkgStartTime = time.time()
+            print 'RemodEnabler: unpacking %s' % os.path.basename(vehPkgPath)
+            _config.loadingProxy.addBar(os.path.basename(vehPkgPath))
+            vehPkg = ZipFile(vehPkgPath)
+            fileNamesList = filter(
+                lambda x: x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats,
+                vehPkg.namelist())
+            allFilesCnt = len(fileNamesList)
+            for fileNum, memberFileName in enumerate(fileNamesList):
+                for skinsType in needToReReadSkinsModels:
+                    if not needToReReadSkinsModels[skinsType]:
                         continue
-                    if 'normal' in memberFileName and os.path.splitext(memberFileName)[1] in modelFileFormats:
-                        # noinspection PyTypeChecker
-                        for skinName in skinsVehDict.get(os.path.normpath(memberFileName).split('\\')[2], []):
-                            processMember(memberFileName, skinName, skinsType, vehPkg)
-                            filesCnt += 1
-                        allfilesCnt += 1
-                        if not filesCnt % 300 or not allfilesCnt % 750:
+                    skinsVehDict = skinVehNamesLDict[skinsType]
+                    # noinspection PyTypeChecker
+                    for skinName in skinsVehDict.get(os.path.normpath(memberFileName).split('\\')[2], []):
+                        processMember(memberFileName, skinName, skinsType, vehPkg)
+                        filesCnt += 1
+                        if not filesCnt % 25:
                             yield doFuncCall()
-                vehPkg.close()
-                if _config.data['isDebug']:
-                    print 'RemodEnabler: file candidates checked:', allfilesCnt
-                    print 'RemodEnabler: file candidates processed:', filesCnt
-                    print 'RemodEnabler: pkg process time: %s seconds' % round(time.time() - pkgStartTime, 2)
-            Waiting.hide('Remod: ' + _config.i18n['UI_loading_header_models_unpack'])
+                currentPercentage = int(100 * float(fileNum) / float(allFilesCnt))
+                if currentPercentage != completionPercentage:
+                    completionPercentage = currentPercentage
+                    _config.loadingProxy.updatePercentage(completionPercentage)
+                    yield doFuncCall()
+            vehPkg.close()
+            _config.loadingProxy.onBarComplete()
+            SoundGroups.g_instance.playSound2D('enemy_sighted_for_team')
+            if _config.data['isDebug']:
+                print 'RemodEnabler: file candidates checked:', allFilesCnt
+                print 'RemodEnabler: file candidates processed:', filesCnt
+                print 'RemodEnabler: pkg process time: %s seconds' % round(time.time() - pkgStartTime, 2)
     BigWorld.callback(0.0, partial(callback, True))
 
 
@@ -782,22 +940,26 @@ def processMember(memberFileName, skinName, skinType, vehPkg):
 
 @process
 def skinCaller():
-    jobStartTime = time.time()
-    try:
-        yield skinCRC32All()
-        yield modelsCheck()
-        yield modelsProcess()
-    except AdispException:
-        traceback.print_exc()
-    print 'RemodEnabler: total models check time: %s seconds' % round(time.time() - jobStartTime, 2)
-    Waiting.hide('Remod: ' + _config.i18n['UI_loading_header_CRC32'])
+    if any(skinsFound.values()):
+        g_appLoader.getDefLobbyApp().loadView('RemodEnablerLoading')
+        jobStartTime = time.time()
+        try:
+            yield skinCRC32All()
+            yield modelsCheck()
+            yield modelsProcess()
+        except AdispException:
+            traceback.print_exc()
+        print 'RemodEnabler: total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
+        gc.collect()
+        SoundGroups.g_instance.playSound2D(_SOUND_EVENTS.LAST_KILL)
+        BigWorld.callback(3, _config.loadingProxy.onWindowClose)
 
 
 def new_populate(self):
     old_populate(self)
+    _config.data['isInHangar'] = False
     if _config.data['enabled']:
-        BigWorld.callback(5.0, partial(Waiting.show, 'Remod: ' + _config.i18n['UI_loading_header_CRC32']))
-        BigWorld.callback(6.0, skinCaller)
+        BigWorld.callback(3.0, skinCaller)
 
 
 old_populate = LoginView._populate
@@ -845,23 +1007,24 @@ def lobbyKeyControl(event):
                 g_currentPreviewVehicle.refreshModel()
             if _config.OM.enabled and PYmodsCore.checkKeys(_config.data['SwitchRemodHotkey']):
                 if _config.data['currentMode'] != 'remod':
-                    curTankType = _config.data['currentMode'][0].upper() + _config.data['currentMode'][1:]
+                    curTankType = _config.data['currentMode'].capitalize()
                     snameList = sorted(_config.OM.models.keys()) + ['']
-                    if _config.OM.selected[curTankType].get(_config.curVehicleName) not in snameList:
+                    allDesc = _config.OM.allDesc[curTankType]
+                    selected = _config.OM.selected[curTankType]
+                    vehName = _config.curVehicleName
+                    if selected.get(vehName) not in snameList:
                         snameIdx = 0
                     else:
-                        snameIdx = snameList.index(_config.OM.selected[curTankType][_config.curVehicleName]) + 1
+                        snameIdx = snameList.index(selected[vehName]) + 1
                         if snameIdx == len(snameList):
                             snameIdx = 0
                     for Idx in xrange(snameIdx, len(snameList)):
                         curPRecord = _config.OM.models.get(snameList[Idx])
-                        if snameList[Idx] not in _config.OM.allDesc[curTankType] and _config.curVehicleName not in \
-                                curPRecord.whitelists[curTankType]:
+                        if snameList[Idx] not in allDesc and vehName not in curPRecord.whitelists[curTankType]:
                             continue
                         else:
-                            if _config.curVehicleName in _config.OM.remodTanks[curTankType] or len(
-                                    _config.OM.allDesc[curTankType]) > 1:
-                                _config.OM.selected[curTankType][_config.curVehicleName] = getattr(curPRecord, 'name', '')
+                            if vehName in _config.OM.remodTanks[curTankType] or len(allDesc) > 1:
+                                selected[vehName] = getattr(curPRecord, 'name', '')
                             _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
                             break
                     g_currentPreviewVehicle.refreshModel()
@@ -873,8 +1036,8 @@ def lobbyKeyControl(event):
                         snameIdx = snameList.index(_config.OM.selected['Remod']) + 1
                         if snameIdx == len(snameList):
                             snameIdx = 0
-                    curPRecord = _config.OM.models[snameList[snameIdx]]
-                    _config.OM.selected['Remod'] = curPRecord.name
+                    sname = snameList[snameIdx]
+                    _config.OM.selected['Remod'] = sname
                     _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
                     g_currentPreviewVehicle.refreshModel()
     except StandardError:
@@ -894,18 +1057,6 @@ InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 
 
-def new_obj(cls, *args):
-    try:
-        return old_obj(cls, *args)
-    except StandardError:
-        if _config.data['isDebug']:
-            print 'Cannot directly construct objects of this type: %s' % cls
-
-
-old_obj = copy_reg.__newobj__
-copy_reg.__newobj__ = new_obj
-
-
 def OM_find(xmlName, playerName, isPlayerVehicle, isAlly, currentMode='battle'):
     _config.OMDesc = None
     if not _config.OM.enabled:
@@ -918,16 +1069,17 @@ def OM_find(xmlName, playerName, isPlayerVehicle, isAlly, currentMode='battle'):
     curTankType = 'Player' if isPlayerVehicle else 'Ally' if isAlly else 'Enemy'
     if currentMode != 'remod':
         snameList = sorted(_config.OM.models.keys()) + ['']
+        allDesc = _config.OM.allDesc[curTankType]
         if _config.OM.selected[curTankType].get(xmlName) not in snameList:
             snameIdx = 0
         else:
             snameIdx = snameList.index(_config.OM.selected[curTankType][xmlName])
         for Idx in xrange(snameIdx, len(snameList)):
             curPRecord = _config.OM.models.get(snameList[Idx])
-            if snameList[Idx] not in _config.OM.allDesc[curTankType] and xmlName not in curPRecord.whitelists[curTankType]:
+            if snameList[Idx] not in allDesc and xmlName not in curPRecord.whitelists[curTankType]:
                 continue
             else:
-                if xmlName in _config.OM.remodTanks[curTankType] or len(_config.OM.allDesc[curTankType]) > 1:
+                if xmlName in _config.OM.remodTanks[curTankType] or len(allDesc) > 1:
                     _config.OM.selected[curTankType][xmlName] = getattr(curPRecord, 'name', '')
                 _config.OMDesc = curPRecord
                 break
@@ -942,9 +1094,9 @@ def OM_find(xmlName, playerName, isPlayerVehicle, isAlly, currentMode='battle'):
             snameIdx = 0
         else:
             snameIdx = snameList.index(_config.OM.selected['Remod'])
-        curPRecord = _config.OM.models[snameList[snameIdx]]
-        _config.OMDesc = curPRecord
-        _config.OM.selected['Remod'] = curPRecord.name
+        sname = snameList[snameIdx]
+        _config.OMDesc = _config.OM.models[sname]
+        _config.OM.selected['Remod'] = sname
         _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
 
 
@@ -1059,7 +1211,6 @@ def OM_apply(vDesc):
         vDesc.gun['camouflageTiling'] = _config.OMDesc.strCamoTilingGun
     if _config.OMDesc.exhaustNodes:
         vDesc.hull['exhaust'].nodes = _config.OMDesc.exhaustNodes
-    return vDesc
 
 
 def OS_find(curVehName, playerName, isPlayerVehicle, isAlly, currentMode='battle', skinType='static'):
@@ -1074,8 +1225,7 @@ def OS_find(curVehName, playerName, isPlayerVehicle, isAlly, currentMode='battle
     curTankType = 'Player' if isPlayerVehicle else 'Ally' if isAlly else 'Enemy'
     if currentMode != 'remod':
         for curSName in _config.OS.priorities[skinType][curTankType]:
-            models = _config.OS.models[skinType]
-            curPRecord = models[curSName]
+            curPRecord = _config.OS.models[skinType][curSName]
             # noinspection PyUnresolvedReferences
             if curVehName not in curPRecord.whitelist:
                 continue
@@ -1088,35 +1238,61 @@ OS_dynamic_db = {}
 
 
 def OS_create_dynamic(vehicleID, vDesc):
+    global OS_dynamic_db
     try:
         OS_dynamic_db[vehicleID] = OS_dyn = {part: {'model': None, 'motor': None} for part in TankPartNames.ALL[1:]}
         OS_dyn['loaded'] = False
+        OS_dyn['entered'] = False
+        OS_dyn['loading'] = True
         xmlName = vDesc.name.split(':')[1].lower()
         sname = _config.OSDesc['dynamic'].name
         if _config.data['isDebug']:
             print 'RemodEnabler: %s assigned to dynamic skin %s' % (xmlName, sname)
-        failList = []
+        resList = []
         for modelName in TankPartNames.ALL[1:]:
-            modelPath = getattr(vDesc, modelName)['models']['undamaged'].replace(
-                'vehicles/', 'vehicles/skins_dynamic/models/%s/vehicles/' % sname)
-            try:
-                OS_dyn[modelName]['model'] = BigWorld.Model(modelPath)
-                OS_dyn[modelName]['model'].visible = False
-            except StandardError:
-                failList.append(modelPath)
-
-        if failList:
-            print 'RemodEnabler: dynamic skin %s load failed: models not found:' % sname
-            print failList
-        else:
-            OS_dyn['loaded'] = True
+            modelPath = getattr(vDesc, modelName)['hitTester'].bspModelName.replace(
+                'vehicles/', 'vehicles/skins_dynamic/models/%s/vehicles/' % sname).replace(
+                'collision_client', 'normal/lod0')
+            resList.append(modelPath)
+        BigWorld.loadResourceListBG(tuple(resList), partial(OS_onLoad_dynamic, vehicleID))
     except StandardError:
         traceback.print_exc()
         print vDesc.name
 
 
+def OS_onLoad_dynamic(vehicleID, resourceRefs):
+    global OS_dynamic_db
+    if vehicleID not in OS_dynamic_db:
+        return
+    OS_dyn = OS_dynamic_db[vehicleID]
+    OS_dyn['loading'] = False
+    OS_dyn['loaded'] = True
+    failList = []
+    failed = resourceRefs.failedIDs
+    resourceItems = resourceRefs.items()
+    for idx, modelName in enumerate(TankPartNames.ALL[1:]):
+        modelPath, model = resourceItems[idx]
+        if modelPath not in failed and model is not None:
+            module = OS_dyn[modelName]
+            module['model'] = model
+            module['model'].visible = False
+        else:
+            failList.append(modelPath)
+    if failList:
+        print 'RemodEnabler: dynamic skin load failed: models not found:'
+        OS_dyn['loaded'] = False
+        print failList
+    if OS_dyn['entered']:
+        OS_attach_dynamic(vehicleID)
+
+
 def OS_attach_dynamic(vehicleID):
-    if vehicleID not in OS_dynamic_db or not OS_dynamic_db[vehicleID]['loaded']:
+    global OS_dynamic_db
+    if vehicleID not in OS_dynamic_db:
+        return
+    if not OS_dynamic_db[vehicleID]['loaded']:
+        if OS_dynamic_db[vehicleID]['loading']:
+            OS_dynamic_db[vehicleID]['entered'] = True
         return
     vEntity = BigWorld.entity(vehicleID)
     if vEntity is None:
@@ -1128,39 +1304,44 @@ def OS_attach_dynamic(vehicleID):
     addedMat = mathUtils.createIdentityMatrix()
     for modelName in TankPartNames.ALL[1:]:
         module = OS_dyn[modelName]
-        if module['motor'] not in tuple(module['model'].motors):
+        if module['motor'] not in module['model'].motors:
             if modelName == TankPartNames.GUN:
                 addedMat = vEntity.appearance.gunMatrix
             module['motor'] = BigWorld.Servo(
                 mathUtils.MatrixProviders.product(mathUtils.MatrixProviders.product(scaleMat, addedMat),
                                                   compoundModel.node(modelName)))
             module['model'].addMotor(module['motor'])
-        if module['model'] not in BigWorld.models():
+        if module['model'] not in vEntity.models:
             try:
-                BigWorld.addModel(module['model'])
+                vEntity.addModel(module['model'])
             except StandardError:
                 pass
         module['model'].visible = False
 
 
 def OS_detach_dynamic(vehicleID):
+    global OS_dynamic_db
     if vehicleID in OS_dynamic_db:
         OS_dyn = OS_dynamic_db[vehicleID]
         if not OS_dyn['loaded']:
+            return
+        OS_dyn['loaded'] = False
+        vEntity = BigWorld.entity(vehicleID)
+        if vEntity is None:
             return
         for moduleName in TankPartNames.ALL[1:]:
             module = OS_dyn[moduleName]
             module['model'].visible = False
             try:
-                BigWorld.delModel(module['model'])
+                vEntity.delModel(module['model'])
             except ValueError:
-                traceback.print_exc()
-                print moduleName
+                pass
             if module['motor'] in tuple(module['model'].motors):
                 module['model'].delMotor(module['motor'])
 
 
 def OS_destroy_dynamic(vehicleID):
+    global OS_dynamic_db
     try:
         if vehicleID in OS_dynamic_db:
             OS_detach_dynamic(vehicleID)
@@ -1189,23 +1370,33 @@ def new_vehicle_onLeaveWorld(self, vehicle):
 
 
 def new_targetFocus(self, entity):
+    global OS_dynamic_db
     old_targetFocus(self, entity)
-    if entity not in self._PlayerAvatar__vehicles:
-        return
-    for vehicleID in OS_dynamic_db:
-        if OS_dynamic_db[vehicleID]['loaded']:
-            for moduleName in TankPartNames.ALL[1:]:
-                OS_dynamic_db[vehicleID][moduleName]['model'].visible = vehicleID == entity.id
+    if entity in self._PlayerAvatar__vehicles:
+        try:
+            for vehicleID in OS_dynamic_db:
+                if OS_dynamic_db[vehicleID]['loaded']:
+                    for moduleName in TankPartNames.ALL[1:]:
+                        model = OS_dynamic_db[vehicleID][moduleName]['model']
+                        if model is not None:
+                            model.visible = vehicleID == entity.id
+        except StandardError:
+            traceback.print_exc()
 
 
 def new_targetBlur(self, prevEntity):
+    global OS_dynamic_db
     old_targetBlur(self, prevEntity)
-    if prevEntity not in self._PlayerAvatar__vehicles:
-        return
-    for vehicleID in OS_dynamic_db:
-        if OS_dynamic_db[vehicleID]['loaded']:
-            for moduleName in TankPartNames.ALL[1:]:
-                OS_dynamic_db[vehicleID][moduleName]['model'].visible = False
+    if prevEntity in self._PlayerAvatar__vehicles:
+        try:
+            for vehicleID in OS_dynamic_db:
+                if OS_dynamic_db[vehicleID]['loaded']:
+                    for moduleName in TankPartNames.ALL[1:]:
+                        model = OS_dynamic_db[vehicleID][moduleName]['model']
+                        if model is not None:
+                            model.visible = False
+        except StandardError:
+            traceback.print_exc()
 
 
 old_targetFocus = PlayerAvatar.targetFocus
@@ -1216,33 +1407,32 @@ PlayerAvatar.targetBlur = new_targetBlur
 
 def OS_apply(vDesc):
     xmlName = vDesc.name.split(':')[1].lower()
-    sname = _config.OSDesc['static'].name
-    if _config.data['isDebug']:
-        print 'RemodEnabler: %s assigned to skin %s' % (xmlName, sname)
-    for part in TankPartNames.ALL:
-        modelPath = getattr(vDesc, part)['models']['undamaged'].replace('vehicles/',
-                                                                        'vehicles/skins/models/%s/vehicles/' % sname)
-        if os.path.isfile(BigWorld.curCV + '/' + modelPath):
-            getattr(vDesc, part)['models']['undamaged'] = modelPath
-    return vDesc
+    OSDesc = _config.OSDesc['static']
+    if OSDesc is not None:
+        sname = OSDesc.name
+        if _config.data['isDebug']:
+            print 'RemodEnabler: %s assigned to skin %s' % (xmlName, sname)
+        for part in TankPartNames.ALL:
+            modelPath = getattr(vDesc, part)['hitTester'].bspModelName.replace(
+                'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname).replace('collision_client', 'normal/lod0')
+            if os.path.isfile(BigWorld.curCV + '/' + modelPath):
+                getattr(vDesc, part)['models']['undamaged'] = modelPath
+    else:
+        if _config.data['isDebug']:
+            print 'RemodEnabler: %s unchanged' % xmlName
+        for part in TankPartNames.ALL:
+            getattr(vDesc, part)['models']['undamaged'] = getattr(vDesc, part)['hitTester'].bspModelName.replace(
+                'collision_client', 'normal/lod0')
 
 
 def printOldConfigs(vDesc):
     xmlName = vDesc.name.split(':')[1].lower()
     print 'old chassis configuration:'
-    print vDesc.chassis['traces']
-    print vDesc.chassis['tracks']
-    print vDesc.chassis['wheels']
-    print vDesc.chassis['groundNodes']
-    print vDesc.chassis['trackNodes']
-    print vDesc.chassis['splineDesc']
-    print vDesc.chassis['trackParams']
-    print 'old gun emblem slots configuration:'
-    print vDesc.gun['emblemSlots']
-    print 'old hull emblem slots configuration:'
-    print vDesc.hull['emblemSlots']
-    print 'old turret emblem slots configuration:'
-    print vDesc.turret['emblemSlots']
+    for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
+        print vDesc.chassis[key]
+    for part in ('gun', 'hull', 'turret'):
+        print 'old %s emblem slots configuration:' % part
+        print getattr(vDesc, part)['emblemSlots']
     _config.data['oldConfigPrints'].append(xmlName)
 
 
@@ -1260,39 +1450,23 @@ def new_prerequisites(self, respawnCompactDescr=None):
         playerName = BigWorld.player().arena.vehicles.get(self.id)['name']
         isAlly = BigWorld.player().arena.vehicles.get(self.id)['team'] == BigWorld.player().team
         OM_find(xmlName, playerName, isPlayerVehicle, isAlly)
-        vDesc = descr
         if xmlName not in _config.data['oldConfigPrints'] and (
                 isPlayerVehicle and _config.OMDesc is None or _config.OMDesc is not None) and _config.data['isDebug']:
-            printOldConfigs(vDesc)
-        vehName = vDesc.chassis['models']['undamaged'].split('/')[2]
-        if skinsFound['_dynamic']:
-            OS_find(vehName, playerName, isPlayerVehicle, isAlly, skinType='dynamic')
-            if _config.OSDesc['dynamic'] is not None:
-                OS_create_dynamic(self.id, vDesc)
+            printOldConfigs(descr)
+        vehName = descr.chassis['hitTester'].bspModelName.split('/')[2]
         if _config.OMDesc is None:
+            if skinsFound['_dynamic']:
+                OS_find(vehName, playerName, isPlayerVehicle, isAlly, skinType='dynamic')
+                if _config.OSDesc['dynamic'] is not None:
+                    OS_create_dynamic(self.id, descr)
             if skinsFound['']:
                 OS_find(vehName, playerName, isPlayerVehicle, isAlly)
-                if _config.OSDesc['static'] is not None:
-                    if _config.data['isDebug']:
-                        print 'RemodEnabler: !!making a deepcopy for typeDescriptor(inside ' \
-                              'CompoundAppearance::prerequisites)'
-                    vDesc = copy.deepcopy(vDesc)
-                    vDesc = OS_apply(vDesc)
-                elif _config.data['isDebug']:
-                    print 'RemodEnabler: %s unchanged' % xmlName
-            elif _config.data['isDebug']:
-                print 'RemodEnabler: %s unchanged' % xmlName
+            OS_apply(descr)
         else:
-            if _config.data['isDebug']:
-                print 'RemodEnabler: !!making a deepcopy for typeDescriptor(inside CompoundAppearance::prerequisites)'
-            vDesc = copy.deepcopy(vDesc)
-            vDesc = OM_apply(vDesc)
-        self.typeDescriptor = vDesc
-    else:
-        self.typeDescriptor = descr
-    self.appearance, compoundAssembler, prereqs = appearance_cache.createAppearance(self.id, self.typeDescriptor,
-                                                                                    self.health, self.isCrewActive,
-                                                                                    self.isTurretDetached)
+            OM_apply(descr)
+    self.typeDescriptor = descr
+    self.appearance, compoundAssembler, prereqs = appearance_cache.createAppearance(
+        self.id, self.typeDescriptor, self.health, self.isCrewActive, self.isTurretDetached)
     return prereqs
 
 
@@ -1300,45 +1474,36 @@ def new_startBuild(self, vDesc, vState):
     if _config.data['enabled']:
         xmlName = vDesc.name.split(':')[1].lower()
         _config.curVehicleName = xmlName
-        OM_find(xmlName, 'HangarEntity', _config.data['currentMode'] in 'player', _config.data['currentMode'] in 'ally',
+        OM_find(xmlName, 'HangarEntity', _config.data['currentMode'] == 'player', _config.data['currentMode'] == 'ally',
                 _config.data['currentMode'])
+        vDesc = copy.deepcopy(vDesc)
         if xmlName not in _config.data['oldConfigPrints'] and _config.data['isDebug']:
             printOldConfigs(vDesc)
         if _config.OMDesc is None:
             if skinsFound['']:
-                OS_find(vDesc.chassis['models']['undamaged'].split('/')[2], 'HangarEntity',
-                        _config.data['currentMode'] in 'player', _config.data['currentMode'] in 'ally',
+                OS_find(vDesc.chassis['hitTester'].bspModelName.split('/')[2], 'HangarEntity',
+                        _config.data['currentMode'] == 'player', _config.data['currentMode'] == 'ally',
                         _config.data['currentMode'])
                 if _config.OSDesc['static'] is not None:
-                    if _config.data['isDebug']:
-                        print 'RemodEnabler: !!making a deepcopy for typeDescriptor(inside ' \
-                              '_VehicleAppearance::prerequisites)'
-                    vDesc = copy.deepcopy(vDesc)
-                    vDesc = OS_apply(vDesc)
                     if not _config.data['collisionEnabled'] and not _config.data['collisionComparisonEnabled']:
                         SystemMessages.pushMessage(
                             'PYmods_SM' + _config.i18n['UI_install_skin'] + _config.OSDesc['static'].name.join(
                                 ('<b>', '</b>.')), SystemMessages.SM_TYPE.CustomizationForGold)
                 else:
-                    if _config.data['isDebug']:
-                        print 'RemodEnabler: %s unchanged' % xmlName
                     if not _config.data['collisionEnabled'] and not _config.data['collisionComparisonEnabled']:
                         SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_install_default'],
                                                    SystemMessages.SM_TYPE.CustomizationForGold)
             else:
-                if _config.data['isDebug']:
-                    print 'RemodEnabler: %s unchanged' % xmlName
                 if not _config.data['collisionEnabled'] and not _config.data['collisionComparisonEnabled']:
                     SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_install_default'],
                                                SystemMessages.SM_TYPE.CustomizationForGold)
+            OS_apply(vDesc)
         else:
-            if _config.data['isDebug']:
-                print 'RemodEnabler: !!making a deepcopy for typeDescriptor(inside _VehicleAppearance::prerequisites)'
-            vDesc = copy.deepcopy(vDesc)
-            vDesc = OM_apply(vDesc)
+            OM_apply(vDesc)
             if not _config.data['collisionEnabled'] and not _config.data['collisionComparisonEnabled']:
                 SystemMessages.pushMessage(
-                    'PYmods_SM' + _config.i18n['UI_install_remod'] + _config.OMDesc.name.join(('<b>', '</b>.')),
+                    'PYmods_SM' + _config.i18n['UI_install_remod'] + _config.OMDesc.name.join(
+                        ('<b>', '</b>.')) + _config.OMDesc.authorMessage,
                     SystemMessages.SM_TYPE.CustomizationForGold)
     old_startBuild(self, vDesc, vState)
 
@@ -1567,6 +1732,7 @@ def fini():
 
 def new_LW_populate(self):
     old_LW_populate(self)
+    _config.data['isInHangar'] = True
     try:
         statistic_mod.start()
     except StandardError:

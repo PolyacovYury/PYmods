@@ -11,6 +11,10 @@ import urllib
 import urllib2
 from functools import partial
 
+import binascii
+
+import zlib
+
 import BigWorld
 import ResMgr
 
@@ -331,7 +335,7 @@ class _Config(object):
     def json_dumps(conf):
         return json.dumps(conf, sort_keys=True, indent=4, ensure_ascii=False, encoding='utf-8-sig', separators=(',', ': '))
 
-    def loadJson(self, name, oldConfig, path, save=False, rewrite=True):
+    def loadJson(self, name, oldConfig, path, save=False, rewrite=True, encrypted=False):
         config_new = oldConfig
         if not os.path.exists(path):
             os.makedirs(path)
@@ -343,6 +347,11 @@ class _Config(object):
                 try:
                     with codecs.open(new_path, 'r', encoding='utf-8-sig') as json_file:
                         config_newS = json_file.read()
+                        try:
+                            config_newS = config_newS.decode('base64').decode('zlib')
+                            encrypted = True
+                        except (binascii.Error, zlib.error):
+                            encrypted = False
                         config_newExcl = self.byte_ify(self.json_comments(config_newS)[1])
                 except StandardError:
                     traceback.print_exc()
@@ -407,29 +416,44 @@ class _Config(object):
                 if self.conf_changed:
                     print '%s: updating config: %s' % (self.ID, new_path)
                     with codecs.open(new_path, 'w', encoding='utf-8-sig') as json_file:
-                        json_file.write(self.byte_ify('\n'.join(conf_newL)))
+                        writeToConf = self.byte_ify('\n'.join(conf_newL))
+                        if encrypted:
+                            writeToConf = writeToConf.encode('zlib').encode('base64')
+                        json_file.write(writeToConf)
                         config_new = oldConfig
             else:
                 with codecs.open(new_path, 'w', encoding='utf-8-sig') as json_file:
                     data = self.json_dumps(oldConfig)
-                    json_file.write(self.byte_ify(data))
+                    writeToConf = self.byte_ify(data)
+                    if encrypted:
+                        writeToConf = writeToConf.encode('zlib').encode('base64')
+                    json_file.write(writeToConf)
                     config_new = oldConfig
         elif os.path.isfile(new_path):
             data = ''
             excluded = []
             try:
                 with codecs.open(new_path, 'r', encoding='utf-8-sig') as json_file:
-                    data, excluded = self.json_comments(json_file.read())
+                    confData = json_file.read()
+                    try:
+                        confData = confData.decode('base64').decode('zlib')
+                        encrypted = True
+                    except (binascii.Error, zlib.error):
+                        encrypted = False
+                    data, excluded = self.json_comments(confData)
                     config_new = self.byte_ify(json.loads(data))
             except StandardError:
                 print new_path
                 traceback.print_exc()
-                if excluded:
+                if excluded and not encrypted:
                     print data
         else:
             with codecs.open(new_path, 'w', encoding='utf-8-sig') as json_file:
                 data = self.json_dumps(oldConfig)
-                json_file.write(self.byte_ify(data))
+                writeToConf = self.byte_ify(data)
+                if encrypted:
+                    writeToConf = writeToConf.encode('zlib').encode('base64')
+                json_file.write(writeToConf)
                 config_new = oldConfig
                 print '%s: ERROR: Config not found, creating default: %s' % (self.ID, new_path)
         return config_new

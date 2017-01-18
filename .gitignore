@@ -3,6 +3,7 @@
 *.cmd
 /source/scripts/client/gui/mods/mod_branding.py
 /source/scripts/client/gui/mods/mod_test.py
+/source/scripts/client/gui/mods/mod_ConfigEncrypt.py
 /source/scripts/others/
 /source/scripts/client/gui/mods/__init__.py
 /source/scripts/client/gui/__init__.py
