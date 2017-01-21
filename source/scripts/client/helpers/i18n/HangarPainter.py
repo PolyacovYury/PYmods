@@ -23,10 +23,11 @@ def __dir__():
 class _HP_Config(PYmodsCore._Config):
     def __init__(self):
         super(_HP_Config, self).__init__(__file__)
-        self.version = '1.1.0 (%s)' % self.version
+        self.version = '1.1.1 (%s)' % self.version
         self.data = {'enabled': True,
                      'debug': True,
                      'debugColour': True,
+                     'debugBegin': 0,
                      'crewColour': True,
                      'cleanColour': False,
                      'colour': '0097FA'}
@@ -167,7 +168,7 @@ def i18n_hook_makeString(key, *args, **kwargs):
                 elif _config.data['debugColour']:
                     return "<font color='#%s'>%s</font>" % (_config.data['colour'], subkey)
                 else:
-                    return key
+                    return key[_config.data['debugBegin']:]
             else:
                 return old_makeString(key, *args, **kwargs)
         except StandardError:
