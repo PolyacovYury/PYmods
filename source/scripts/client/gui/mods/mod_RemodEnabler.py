@@ -1024,7 +1024,7 @@ def lobbyKeyControl(event):
                         if snameList[Idx] not in allDesc and vehName not in curPRecord.whitelists[curTankType]:
                             continue
                         else:
-                            if vehName in selected[curTankType] or len(allDesc) > 1:
+                            if vehName in selected or len(allDesc) > 1:
                                 selected[vehName] = getattr(curPRecord, 'name', '')
                             _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
                             break
