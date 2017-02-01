@@ -93,7 +93,6 @@ class OM(object):
         self.allDesc = {'Player': [''],
                         'Ally': [''],
                         'Enemy': ['']}
-        self.remodTanks = {}
         self.selected = {'Player': {},
                          'Ally': {},
                          'Enemy': {},
@@ -127,7 +126,7 @@ class OSDescriptor(object):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.9.0 (%s)' % self.version
+        self.version = '2.9.2 (%s)' % self.version
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True,
@@ -380,16 +379,18 @@ class _Config(PYmodsCore._Config):
                 self.OM.enabled = False
                 self.loadJson('remodsCache', self.OM.selected, self.configPath, True)
             else:
-                self.OM.remodTanks = {}
+                remodTanks = {key: set() for key in self.OM.selected}
                 for OMDesc in self.OM.models.values():
                     for tankType, whitelist in OMDesc.whitelists.iteritems():
                         for xmlName in whitelist:
-                            self.OM.remodTanks.setdefault(tankType, set()).add(xmlName)
+                            remodTanks[tankType].add(xmlName)
                 for tankType in self.OM.allDesc:
                     for xmlName in self.OM.selected[tankType].keys():
                         if (self.OM.selected[tankType][xmlName] and self.OM.selected[tankType][
-                            xmlName] not in self.OM.models) or (
-                                len(self.OM.allDesc[tankType]) == 1 and xmlName not in self.OM.remodTanks[tankType]):
+                                xmlName] not in self.OM.models):
+                            self.OM.selected[tankType][xmlName] = ''
+                        if (len(self.OM.allDesc[tankType]) == 1 or self.OM.selected[tankType][xmlName] not in
+                                self.OM.allDesc[tankType]) and xmlName not in remodTanks[tankType]:
                             del self.OM.selected[tankType][xmlName]
                 if self.OM.selected['Remod'] and self.OM.selected['Remod'] not in self.OM.models:
                     self.OM.selected['Remod'] = ''
@@ -1023,7 +1024,7 @@ def lobbyKeyControl(event):
                         if snameList[Idx] not in allDesc and vehName not in curPRecord.whitelists[curTankType]:
                             continue
                         else:
-                            if vehName in _config.OM.remodTanks[curTankType] or len(allDesc) > 1:
+                            if vehName in selected or len(allDesc) > 1:
                                 selected[vehName] = getattr(curPRecord, 'name', '')
                             _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
                             break
@@ -1067,37 +1068,38 @@ def OM_find(xmlName, playerName, isPlayerVehicle, isAlly, currentMode='battle'):
         else:
             print 'RemodEnabler: looking for OMDescriptor for %s' % xmlName
     curTankType = 'Player' if isPlayerVehicle else 'Ally' if isAlly else 'Enemy'
+    selected = _config.OM.selected
     if currentMode != 'remod':
         snameList = sorted(_config.OM.models.keys()) + ['']
         allDesc = _config.OM.allDesc[curTankType]
-        if _config.OM.selected[curTankType].get(xmlName) not in snameList:
+        if selected[curTankType].get(xmlName) not in snameList:
             snameIdx = 0
         else:
-            snameIdx = snameList.index(_config.OM.selected[curTankType][xmlName])
+            snameIdx = snameList.index(selected[curTankType][xmlName])
         for Idx in xrange(snameIdx, len(snameList)):
             curPRecord = _config.OM.models.get(snameList[Idx])
             if snameList[Idx] not in allDesc and xmlName not in curPRecord.whitelists[curTankType]:
                 continue
             else:
-                if xmlName in _config.OM.remodTanks[curTankType] or len(allDesc) > 1:
-                    _config.OM.selected[curTankType][xmlName] = getattr(curPRecord, 'name', '')
+                if xmlName in selected[curTankType] or len(allDesc) > 1:
+                    selected[curTankType][xmlName] = getattr(curPRecord, 'name', '')
                 _config.OMDesc = curPRecord
                 break
 
         # noinspection PyUnboundLocalVariable
-        if _config.OMDesc is None and snameList[Idx] and xmlName in _config.OM.selected[curTankType]:
-            del _config.OM.selected[curTankType][xmlName]
-        _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
+        if _config.OMDesc is None and snameList[Idx] and xmlName in selected[curTankType]:
+            del selected[curTankType][xmlName]
+        _config.loadJson('remodsCache', selected, _config.configPath, True)
     else:
         snameList = sorted(_config.OM.models.keys())
-        if _config.OM.selected['Remod'] not in snameList:
+        if selected['Remod'] not in snameList:
             snameIdx = 0
         else:
-            snameIdx = snameList.index(_config.OM.selected['Remod'])
+            snameIdx = snameList.index(selected['Remod'])
         sname = snameList[snameIdx]
         _config.OMDesc = _config.OM.models[sname]
-        _config.OM.selected['Remod'] = sname
-        _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
+        selected['Remod'] = sname
+        _config.loadJson('remodsCache', selected, _config.configPath, True)
 
 
 def OM_apply(vDesc):
