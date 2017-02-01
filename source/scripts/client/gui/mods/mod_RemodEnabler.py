@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import binascii
 import copy
+import copy_reg
 import datetime
 import gc
 import glob
@@ -299,7 +300,7 @@ class _Config(PYmodsCore._Config):
                             print '%s: %s swapping in %s disabled.' % (self.ID, tankType.lower(), sname)
                         for xmlName in selected.keys():
                             if sname == selected[xmlName]:
-                                del selected[xmlName]
+                                selected[xmlName] = ''
                         if sname in allDesc:
                             allDesc.remove(sname)
                         continue
@@ -313,7 +314,7 @@ class _Config(PYmodsCore._Config):
                         if sname not in allDesc:
                             allDesc.append(sname)
                         if self.data['isDebug']:
-                            print ('%s: empty whitelist for %s. Apply to all %s tanks' if whitelist else
+                            print ('%s: empty whitelist for %s. Apply to all %s tanks' if not whitelist else
                                    '%s: %s will be used for all %s tanks if not explicitly designated to another '
                                    'model.') % (self.ID, sname, tankType.lower())
                     else:
@@ -323,7 +324,7 @@ class _Config(PYmodsCore._Config):
                             allDesc.remove(sname)
                         for xmlName in selected.keys():
                             if sname == selected[xmlName] and xmlName not in whitelist:
-                                del selected[xmlName]
+                                selected[xmlName] = ''
                 pRecord.emblemSlotsGun = None
                 pRecord.emblemSlotsHull = None
                 pRecord.emblemSlotsTurret = None
@@ -1056,6 +1057,18 @@ def inj_hkKeyEvent(event):
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
+
+
+def new_obj(cls, *args):
+    try:
+        return old_obj(cls, *args)
+    except StandardError:
+        if _config.data['isDebug']:
+            print 'Cannot directly construct objects of this type: %s' % cls
+
+
+old_obj = copy_reg.__newobj__
+copy_reg.__newobj__ = new_obj
 
 
 def OM_find(xmlName, playerName, isPlayerVehicle, isAlly, currentMode='battle'):
