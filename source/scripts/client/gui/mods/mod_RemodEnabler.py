@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import binascii
 import copy
+import copy_reg
 import datetime
 import gc
 import glob
@@ -1056,6 +1057,18 @@ def inj_hkKeyEvent(event):
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
+
+
+def new_obj(cls, *args):
+    try:
+        return old_obj(cls, *args)
+    except StandardError:
+        if _config.data['isDebug']:
+            print 'Cannot directly construct objects of this type: %s' % cls
+
+
+old_obj = copy_reg.__newobj__
+copy_reg.__newobj__ = new_obj
 
 
 def OM_find(xmlName, playerName, isPlayerVehicle, isAlly, currentMode='battle'):
