@@ -92,7 +92,7 @@ def compile_file(fullname, ddir=None, force=0, rx=None, quiet=0):
         head, tail = name[:-3], name[-3:]
         if tail == '.py':
             timeStr = subprocess.check_output(
-                ['git', '--no-pager', 'log', '-n', '1', '--format="%ct"', '--full-history', '--', fullname])
+                ['git', '--no-pager', 'log', '-n', '1', '--format="%ct"', '--', fullname])
             if not force:
                 try:
                     if not timeStr:
