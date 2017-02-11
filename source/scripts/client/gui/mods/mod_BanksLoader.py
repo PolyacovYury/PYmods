@@ -87,17 +87,18 @@ class _Config(PYmodsCore._Config):
         config = ResMgr.openSection('engine_config_edited.xml', True)
         config.copy(orig_config)
         ResMgr.purge('engine_config.xml')
-        audio_mods = ResMgr.openSection('audio_mods.xml')
-        audio_mods_new = ResMgr.openSection('audio_mods_edited.xml', True)
+        soundMgr = config['soundMgr']
+        mediaPath = soundMgr['wwmediaPath'].asString
+        audio_mods = ResMgr.openSection('/'.join((mediaPath, 'audio_mods.xml')))
+        audio_mods_new = ResMgr.openSection('/'.join((mediaPath, 'audio_mods_edited.xml')), True)
         if audio_mods is None:
             LOG_NOTE('audio_mods.xml not found, will be created if needed')
         else:
             audio_mods_new.copy(audio_mods)
+            ResMgr.purge('/'.join((mediaPath, 'audio_mods.xml')))
         for key in ('banks', 'events', 'switches', 'RTPCs', 'states'):
             if not audio_mods_new.has_key(key):
                 audio_mods_new.createSection(key)
-        soundMgr = config['soundMgr']
-        mediaPath = soundMgr['wwmediaPath'].asString
         bankFiles = {'mods': set(), 'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')}}
         pkg = zipfile.ZipFile('./res/packages/audioww.pkg')
         bankFiles['pkg'] = {os.path.basename(name) for name in pkg.namelist()}
