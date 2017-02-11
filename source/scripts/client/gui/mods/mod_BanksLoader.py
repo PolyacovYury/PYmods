@@ -130,14 +130,18 @@ class _Config(PYmodsCore._Config):
                     self.editedBanks['delete_engine'].append(bankName)
                     section.deleteSection(project)
         self.editedBanks['delete_engine'] = PYmodsCore.remDups(self.editedBanks['delete_engine'])
+        moddedExist = []
         for bankSect in audio_mods_new['banks'].values():
-            if bankSect['name'] not in bankFiles['mods']:
+            bankName = bankSect['name'].asString
+            if bankName not in bankFiles['mods'] or bankName in moddedExist:
                 print 'BanksLoader: deleting section for bank', bankName
                 self.editedBanks['delete'].append(bankName)
                 audio_mods_new['banks'].deleteSection(bankSect)
+                continue
+            moddedExist.append(bankName)
         self.editedBanks['delete'] = PYmodsCore.remDups(self.editedBanks['delete'])
         for bankName in bankFiles['mods']:
-            if bankName not in bankFiles['orig']:
+            if bankName not in bankFiles['orig'] and bankName not in moddedExist:
                 print 'BanksLoader: creating sections for bank', bankName
                 if bankName in self.editedBanks['delete_engine']:
                     self.editedBanks['delete_engine'].remove(bankName)
