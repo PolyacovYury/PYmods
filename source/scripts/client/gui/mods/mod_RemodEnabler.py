@@ -30,13 +30,14 @@ from Vehicle import Vehicle
 from adisp import AdispException, async, process
 from gui import InputHandler, SystemMessages
 from gui.ClientHangarSpace import _VehicleAppearance
+from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
+from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
 from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.app_loader.loader import g_appLoader
-from gui.battle_control.controllers.finish_sound_ctrl import _SOUND_EVENTS
 from helpers import getClientVersion
 from items import vehicles
 from vehicle_systems import appearance_cache
@@ -549,6 +550,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
     def onComplete(self):
         self.lines[-1] += _config.i18n['UI_loading_done'].join(("<font color='#00FF00'>", '</font>'))
         self.updateMessage()
+        SoundGroups.g_instance.playSound2D(MINIMAP_ATTENTION_SOUND_ID)
 
     def addBar(self, pkgName):
         self.curPercentage = 0
@@ -759,7 +761,6 @@ def skinCRC32All(callback):
                             yield doFuncCall()
                         skinCRC32 ^= nationCRC32
                     _config.loadingProxy.onComplete()
-                    SoundGroups.g_instance.playSound2D('enemy_sighted_for_team')
                     if skinCRC32 in resultList:
                         print 'RemodEnabler: deleting duplicate skins pack:', skin.replace(os.sep, '/')
                         shutil.rmtree(skin)
@@ -830,6 +831,7 @@ def modelsCheck(callback):
 def modelsProcess(callback):
     if any(needToReReadSkinsModels.values()):
         _config.loadingProxy.updateTitle(_config.i18n['UI_loading_header_models_unpack'])
+        SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
         modelFileFormats = ('.model', '.primitives', '.visual', '.primitives_processed', '.visual_processed')
         print 'RemodEnabler: starting to unpack vehicles packages'
         for vehPkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
@@ -861,7 +863,6 @@ def modelsProcess(callback):
                     yield doFuncCall()
             vehPkg.close()
             _config.loadingProxy.onBarComplete()
-            SoundGroups.g_instance.playSound2D('enemy_sighted_for_team')
             if _config.data['isDebug']:
                 print 'RemodEnabler: file candidates checked:', allFilesCnt
                 print 'RemodEnabler: file candidates processed:', filesCnt
@@ -934,8 +935,8 @@ def skinCaller():
             traceback.print_exc()
         print 'RemodEnabler: total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         gc.collect()
-        SoundGroups.g_instance.playSound2D(_SOUND_EVENTS.LAST_KILL)
-        BigWorld.callback(3, _config.loadingProxy.onWindowClose)
+        BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
+        BigWorld.callback(2, _config.loadingProxy.onWindowClose)
 
 
 def new_populate(self):
