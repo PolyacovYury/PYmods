@@ -96,7 +96,8 @@ class _Config(PYmodsCore._Config):
         else:
             audio_mods_new.copy(audio_mods)
             ResMgr.purge('/'.join((mediaPath, 'audio_mods.xml')))
-        for key in ('banks', 'events', 'switches', 'RTPCs', 'states'):
+        modsKeys = ('events', 'switches', 'RTPCs', 'states')
+        for key in ('loadBanks',) + modsKeys:
             if not audio_mods_new.has_key(key):
                 audio_mods_new.createSection(key)
         bankFiles = {'mods': set(), 'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')}}
@@ -104,9 +105,9 @@ class _Config(PYmodsCore._Config):
         bankFiles['pkg'] = {os.path.basename(name) for name in pkg.namelist()}
         pkg.close()
         if os.path.isdir(BigWorld.curCV + '/' + mediaPath):
-            bankFiles['mods'] = set(filter(lambda x: x.endswith('.bnk') or x.endswith('.pck'),
-                                           (os.path.basename(path) for path in
-                                            glob.iglob(BigWorld.curCV + '/' + mediaPath + '/*'))))
+            bankFiles['mods'] = set(filter(
+                lambda x: x.endswith('.bnk') or x.endswith('.pck'),
+                (os.path.basename(path) for path in glob.iglob('/'.join((BigWorld.curCV, mediaPath, '*'))))))
         bankFiles['orig'] = bankFiles['res'] | bankFiles['pkg']
         bankFiles['all'] = bankFiles['orig'] | bankFiles['mods']
         active_profile_name = soundMgr['WWISE_active_profile'].asString
@@ -131,16 +132,16 @@ class _Config(PYmodsCore._Config):
                     section.deleteSection(project)
         self.editedBanks['delete_engine'] = PYmodsCore.remDups(self.editedBanks['delete_engine'])
         moddedExist = []
-        for bankSect in audio_mods_new['banks'].values():
-            bankName = bankSect['name'].asString
+        for bankSect in audio_mods_new['loadBanks'].values():
+            bankName = bankSect.asString
             if bankName not in bankFiles['mods'] or bankName in moddedExist:
                 print 'BanksLoader: deleting section for bank', bankName
                 self.editedBanks['delete'].append(bankName)
-                audio_mods_new['banks'].deleteSection(bankSect)
+                audio_mods_new['loadBanks'].deleteSection(bankSect)
                 continue
             moddedExist.append(bankName)
         self.editedBanks['delete'] = PYmodsCore.remDups(self.editedBanks['delete'])
-        for bankName in bankFiles['mods']:
+        for bankName in sorted(bankFiles['mods']):
             if bankName not in bankFiles['orig'] and bankName not in moddedExist:
                 print 'BanksLoader: creating sections for bank', bankName
                 if bankName in self.editedBanks['delete_engine']:
@@ -148,7 +149,7 @@ class _Config(PYmodsCore._Config):
                     self.editedBanks['move'].append(bankName)
                 else:
                     self.editedBanks['create'].append(bankName)
-                audio_mods_new['banks'].createSection('bank').writeString('name', bankName)
+                audio_mods_new['loadBanks'].createSection('bank').asString = bankName
                 # active_profile['SFX_soundbanks_loadonce'].createSection('project').writeString('name', bankName)
         if any(self.editedBanks[key] for key in ('delete_engine', 'move', 'memory')):
             config.save()
