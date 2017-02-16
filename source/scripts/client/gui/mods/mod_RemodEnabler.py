@@ -726,7 +726,7 @@ def CRC32_from_file(filename, localPath):
 @async
 @process
 def skinCRC32All(callback):
-    global texReplaced, skinsFound
+    global texReplaced, skinsFound, skinVehNamesLDict
     for skinsType in texReplaced:
         CRC32cacheFile = '%s/vehicles/skins%s/CRC32_textures.txt' % (BigWorld.curCV, skinsType)
         CRC32cache = None
@@ -743,15 +743,29 @@ def skinCRC32All(callback):
                 resultList = []
                 for skin in glob.iglob(skinsPath + '*'):
                     _config.loadingProxy.addLine(_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
-                    result = yield skinCRC32Process(skin, skinsType)
+                    skinCRC32 = 0
+                    skinName = os.path.basename(skin)
+                    for nation in glob.iglob(skin + '/vehicles/*'):
+                        nationCRC32 = 0
+                        for vehicleName in glob.iglob(nation + '/*'):
+                            vehicleCRC32 = 0
+                            vehName = os.path.basename(vehicleName)
+                            skinVehNamesLDict[skinsType].setdefault(vehName, []).append(skinName)
+                            for texture in glob.iglob(vehicleName + '/*.dds'):
+                                textureCRC32 = CRC32_from_file(
+                                    texture, '/'.join(texture.replace(os.sep, '/').rsplit('/', 4)[1:]))
+                                vehicleCRC32 ^= textureCRC32
+                            nationCRC32 ^= vehicleCRC32
+                            yield doFuncCall()
+                        skinCRC32 ^= nationCRC32
                     _config.loadingProxy.onComplete()
                     SoundGroups.g_instance.playSound2D('enemy_sighted_for_team')
-                    if result in resultList:
+                    if skinCRC32 in resultList:
                         print 'RemodEnabler: deleting duplicate skins pack:', skin.replace(os.sep, '/')
                         shutil.rmtree(skin)
                         continue
-                    CRC32 ^= result
-                    resultList.append(result)
+                    CRC32 ^= skinCRC32
+                    resultList.append(skinCRC32)
                 if CRC32cache is not None and str(CRC32) == CRC32cache:
                     print 'RemodEnabler: skins%s textures were not changed' % skinsType
                 else:
@@ -769,39 +783,6 @@ def skinCRC32All(callback):
         else:
             print 'RemodEnabler: skins%s folder not found' % skinsType
     BigWorld.callback(0.0, partial(callback, True))
-
-
-@async
-@process
-def skinCRC32Process(skin, skinType, callback):
-    CRC32 = 0
-    skinName = os.path.basename(skin)
-    for nation in glob.iglob(skin + '/vehicles/*'):
-        result = yield nationCRC32(nation, skinName, skinType)
-        CRC32 ^= result
-    BigWorld.callback(0.0, partial(callback, CRC32))
-
-
-@async
-@process
-def nationCRC32(nation, skinName, skinType, callback):
-    global skinVehNamesLDict
-    CRC32 = 0
-    for vehicleName in glob.iglob(nation + '/*'):
-        vehName = os.path.basename(vehicleName)
-        skinVehNamesLDict[skinType].setdefault(vehName, []).append(skinName)
-        result = yield vehicleCRC32(vehicleName)
-        CRC32 ^= result
-    BigWorld.callback(0.0, partial(callback, CRC32))
-
-
-@async
-def vehicleCRC32(vehicleName, callback):
-    CRC32 = 0
-    for texture in glob.iglob(vehicleName + '/*.dds'):
-        result = CRC32_from_file(texture, '/'.join(texture.replace(os.sep, '/').rsplit('/', 4)[1:]))
-        CRC32 ^= result
-    BigWorld.callback(0.0, partial(callback, CRC32))
 
 
 @async
