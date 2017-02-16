@@ -1420,6 +1420,9 @@ def OS_apply(vDesc):
         for part in TankPartNames.ALL:
             getattr(vDesc, part)['models']['undamaged'] = getattr(vDesc, part)['hitTester'].bspModelName.replace(
                 'collision_client', 'normal/lod0')
+            if xmlName == 'g114_rheinmetall_skorpian':
+                getattr(vDesc, part)['models']['undamaged'] = getattr(vDesc, part)['models']['undamaged'].replace(
+                    'G114_Skorpian', 'G114_Rheinmetall_Skorpian')
 
 
 def printOldConfigs(vDesc):
