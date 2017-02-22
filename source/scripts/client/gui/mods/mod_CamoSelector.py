@@ -20,7 +20,7 @@ from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from gui import InputHandler, SystemMessages, g_tankActiveCamouflage
 from gui.ClientHangarSpace import ClientHangarSpace
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
+from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView, _LobbySubViewsCtrl
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
@@ -612,10 +612,28 @@ def new_removeSlot(self, cType, slotIdx):
     old_removeSlot(self, cType, slotIdx)
 
 
-def new_subViewTransferStop(self, alias):
-    if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION:
-        BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
-    old_subViewTransferStop(self, alias)
+def new_onViewLoaded(self, view):
+    if view is not None and view.settings is not None:
+        alias = view.settings.alias
+        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self.__loadingSubViews:
+            BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
+    old_onViewLoaded(self, view)
+
+
+def new_onViewLoadCanceled(self, name, item):
+    if item is not None and item.pyEntity is not None:
+        alias = item.pyEntity.settings.alias
+        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self.__loadingSubViews:
+            BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
+    old_onViewLoadCanceled(self, name, item)
+
+
+def new_onViewLoadError(self, name, msg, item):
+    if item is not None and item.pyEntity is not None:
+        alias = item.pyEntity.settings.alias
+        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self.__loadingSubViews:
+            BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
+    old_onViewLoadError(self, name, msg, item)
 
 
 def new_MV_populate(self):
@@ -648,8 +666,12 @@ old_selectPreviewVehicle = CurrentVehicle._CurrentPreviewVehicle.selectVehicle
 CurrentVehicle._CurrentPreviewVehicle.selectVehicle = new_selectPreviewVehicle
 old_removeSlot = MainView.removeSlot
 MainView.removeSlot = new_removeSlot
-old_subViewTransferStop = LobbyView._LobbyView__subViewTransferStop
-LobbyView._LobbyView__subViewTransferStop = new_subViewTransferStop
+old_onViewLoaded = _LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoaded
+_LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoaded = new_onViewLoaded
+old_onViewLoadCanceled = _LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoadCanceled
+_LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoadCanceled = new_onViewLoadCanceled
+old_onViewLoadError = _LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoadError
+_LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoadError = new_onViewLoadError
 old_MV_populate = MainView._populate
 MainView._populate = new_MV_populate
 old_elementIsInShop = DataAggregator._elementIsInShop

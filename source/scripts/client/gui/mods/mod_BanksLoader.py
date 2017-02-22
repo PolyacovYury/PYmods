@@ -4,11 +4,11 @@ import os
 import traceback
 import zipfile
 
-import BigWorld
 import ResMgr
 
+import BigWorld
 import PYmodsCore
-from debug_utils import LOG_ERROR
+from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
 
@@ -39,31 +39,16 @@ class _Config(PYmodsCore._Config):
                      'UI_restart_reason': 'Exact changes:\n{}\n',
                      'UI_restart_create': ' • sections <b>created</b> for these banks: ',
                      'UI_restart_delete': ' • sections <b>deleted</b> for these banks: ',
+                     'UI_restart_delete_engine': ' • sections <b>cleared</b> for these banks: ',
                      'UI_restart_move': ' • sections <b>moved</b> for these banks: ',
-                     'UI_restart_memory': ' • values <b>changed</b> for memory settings: '}
-        self.editedBanks = {'create': [], 'delete': [], 'memory': [], 'move': []}
-        self.bankGroupsConfig = {'all': set()}
+                     'UI_restart_memory': ' • values <b>changed</b> for memory settings: ',
+                     'UI_restart_remap': ' • sections <b>changed</b> for these settings: '}
+        self.editedBanks = {'create': [], 'delete': [], 'delete_engine': [], 'memory': [], 'move': [], 'remap': set()}
         self.was_declined = False
         self.loadLang()
 
     def updateMod(self):
         pass
-
-    def update_data(self, doPrint=False):
-        super(_Config, self).update_data()
-        if not os.path.isdir(self.configPath):
-            return
-        for configPath in glob.iglob(self.configPath + '*.json'):
-            confPath = configPath.replace('%s/' % BigWorld.curCV, '')
-            try:
-                confdict = self.loadJson(os.path.basename(configPath).split('.')[0], {}, os.path.dirname(configPath) + '/')
-            except StandardError:
-                print 'BanksLoader: config %s is invalid.' % os.path.basename(confPath)
-                traceback.print_exc()
-                continue
-            for groupName in confdict:
-                self.bankGroupsConfig.setdefault(groupName, set()).update(confdict[groupName])
-                self.bankGroupsConfig['all'].update(confdict[groupName])
 
     def onRestartConfirmed(self, proceed):
         if proceed:
@@ -94,7 +79,8 @@ class _Config(PYmodsCore._Config):
                                                      I18nConfirmDialogButtons('common/confirm'), None),
                                     self.onRestartConfirmed)
 
-    def engineConfigReader(self):
+    def load(self):
+        self.update_data(True)
         orig_config = ResMgr.openSection('engine_config.xml')
         if orig_config is None:
             LOG_ERROR('engine_config.xml not found')
@@ -109,11 +95,11 @@ class _Config(PYmodsCore._Config):
         bankFiles['pkg'] = {os.path.basename(name) for name in pkg.namelist()}
         pkg.close()
         if os.path.isdir(BigWorld.curCV + '/' + mediaPath):
-            bankFiles['mods'] = set(filter(lambda x: x.endswith('.bnk') or x.endswith('.pck'),
-                                           (os.path.basename(path) for path in
-                                            glob.iglob(BigWorld.curCV + '/' + mediaPath + '/*'))))
-        bankFiles['all'] = bankFiles['res'] | bankFiles['pkg'] | bankFiles['mods']
-        confBanks = {'all': []}
+            bankFiles['mods'] = set(filter(
+                lambda x: x.endswith('.bnk') or x.endswith('.pck'),
+                (os.path.basename(path) for path in glob.iglob('/'.join((BigWorld.curCV, mediaPath, '*'))))))
+        bankFiles['orig'] = bankFiles['res'] | bankFiles['pkg']
+        bankFiles['all'] = bankFiles['orig'] | bankFiles['mods']
         active_profile_name = soundMgr['WWISE_active_profile'].asString
         active_profile = soundMgr[active_profile_name]
         poolKeys = {'memoryManager': ['defaultPool', 'lowEnginePool', 'preparedPool', 'streamingPool', 'IOPoolSize'],
@@ -126,46 +112,148 @@ class _Config(PYmodsCore._Config):
         for name, section in active_profile.items():
             if 'soundbanks' not in name:
                 continue
-            confBanks[name] = []
             for sectName, project in section.items():
                 if sectName != 'project':
                     continue
                 bankName = project['name'].asString
-                if bankName not in bankFiles['all'] or bankName in self.bankGroupsConfig[
-                        'all'] and bankName not in self.bankGroupsConfig.get(name, set()):
-                    print 'BanksLoader: deleting section for bank', bankName
-                    self.editedBanks['delete'].append(bankName)
+                if bankName not in bankFiles['orig']:
+                    print 'BanksLoader: clearing section for bank', bankName
+                    self.editedBanks['delete_engine'].append(bankName)
                     section.deleteSection(project)
+        self.editedBanks['delete_engine'] = PYmodsCore.remDups(self.editedBanks['delete_engine'])
+
+        audio_mods = ResMgr.openSection('/'.join((mediaPath, 'audio_mods.xml')))
+        audio_mods_new = ResMgr.openSection('/'.join((mediaPath, 'audio_mods_edited.xml')), True)
+        if audio_mods is None:
+            LOG_NOTE('audio_mods.xml not found, will be created if needed')
+        else:
+            audio_mods_new.copy(audio_mods)
+            ResMgr.purge('/'.join((mediaPath, 'audio_mods.xml')))
+        bankFiles['ignore'] = set()
+        modsKeys = ('events', 'switches', 'RTPCs', 'states')
+        confList = filter(lambda x: any(bankFile in x for bankFile in bankFiles['mods']),
+                          glob.glob('/'.join((BigWorld.curCV, mediaPath, '*.xml'))))
+        for key in ('loadBanks',) + modsKeys:
+            if not audio_mods_new.has_key(key):
+                audio_mods_new.createSection(key)
+        confData_old = {key: [] for key in modsKeys}
+        key_to_sub = {'events': 'event', 'RTPCs': 'RTPC', 'switches': 'switch', 'states': 'stateGroup'}
+        subList = {'switches': 'states', 'states': 'stateNames'}
+        for key in modsKeys:
+            conf = audio_mods_new[key]
+            for sectName, confSect in conf.items():
+                if sectName != key_to_sub[key] or not confSect.has_key('name') or not confSect.has_key('mod'):
+                    conf.deleteSection(confSect)
+                    self.editedBanks['remap'].add(key)
                     continue
-                confBanks['all'].append(bankName)
-                confBanks[name].append(bankName)
+                result = {'name': confSect['name'].asString, 'mod': confSect['mod'].asString}
+                if key in subList:
+                    stateList = []
+                    for confSubName, confSubSect in confSect[subList[key]].items():
+                        if confSubName != 'state' or not confSubSect.has_key('name') or not confSubSect.has_key('mod'):
+                            confSect.deleteSection(confSubSect)
+                            self.editedBanks['remap'].add(key)
+                            continue
+                        stateList.append({'name': confSubSect['name'].asString, 'mod': confSubSect['mod'].asString})
+                    result[subList[key]] = stateList
+                confData_old[key].append(result)
+        confData = {key: [] for key in modsKeys}
+        bankConfData = {}
+        for confPath in confList:
+            confPathShort = confPath.replace(BigWorld.curCV + '/', '')
+            confSect = ResMgr.openSection(confPathShort)
+            bankName = os.path.basename(confPathShort).replace('.xml', '.bnk')
+            bankData = bankConfData[bankName] = {}
+            if confSect is None:
+                bankFiles['ignore'].add(bankName)
+                print '%s: error while reading' % self.ID, confPathShort
+                continue
+            for key in modsKeys:
+                if confSect.has_key(key):
+                    existingNames = map(lambda x: x['name'], confData[key])
+                    existingMods = map(lambda x: x['mod'], confData[key])
+                    bankEvents = bankData[key] = []
+                    for sectName, subSect in confSect[key].items():
+                        if sectName != key_to_sub[key] or not subSect.has_key('name') or not subSect.has_key('mod'):
+                            continue
+                        name = subSect['name'].asString
+                        mod = subSect['mod'].asString
+                        if name in existingNames or mod in existingMods:
+                            bankFiles['ignore'].add(bankName)
+                            break
+                        result = {'name': name, 'mod': mod}
+                        if key in subList:
+                            stateList = []
+                            for subSectName, stateSect in subSect[subList[key]].items():
+                                if subSectName != 'state' or not stateSect.has_key('name') or not stateSect.has_key('mod'):
+                                    continue
+                                stateList.append({'name': stateSect['name'].asString, 'mod': stateSect['mod'].asString})
+                            result[subList[key]] = stateList
+                        bankEvents.append(result)
+                if bankName in bankFiles['ignore']:
+                    del bankConfData[bankName]
+                    break
+            for key in confData:
+                if bankName not in bankFiles['ignore'] and key in bankData:
+                    confData[key].extend(bankData[key])
+        moddedExist = []
+        for bankSect in audio_mods_new['loadBanks'].values():
+            bankName = bankSect.asString
+            if bankName not in bankFiles['mods'] or bankName in moddedExist or bankName in bankFiles['ignore']:
+                print 'BanksLoader: deleting section for bank', bankName
+                self.editedBanks['delete'].append(bankName)
+                audio_mods_new['loadBanks'].deleteSection(bankSect)
+                continue
+            moddedExist.append(bankName)
         self.editedBanks['delete'] = PYmodsCore.remDups(self.editedBanks['delete'])
-        for bankName in bankFiles['mods']:
-            if bankName not in confBanks['all']:
+        for bankName in sorted(bankFiles['mods']):
+            if bankName not in bankFiles['orig'] and bankName not in moddedExist and bankName not in bankFiles['ignore']:
                 print 'BanksLoader: creating sections for bank', bankName
-                if bankName in self.editedBanks['delete']:
-                    self.editedBanks['delete'].remove(bankName)
+                if bankName in self.editedBanks['delete_engine']:
+                    self.editedBanks['delete_engine'].remove(bankName)
                     self.editedBanks['move'].append(bankName)
                 else:
                     self.editedBanks['create'].append(bankName)
-                if bankName in self.bankGroupsConfig['all']:
-                    for groupName in self.bankGroupsConfig:
-                        if groupName == 'all':
-                            continue
-                        if bankName in self.bankGroupsConfig[groupName]:
-                            active_profile[groupName].createSection('project').writeString('name', bankName)
-                else:
-                    active_profile['SFX_soundbanks_loadonce'].createSection('project').writeString('name', bankName)
-        if not any(self.editedBanks.values()):
-            return
-        config.save()
-        if os.path.isfile(BigWorld.curCV + '/engine_config.xml'):
-            try:
-                os.remove(BigWorld.curCV + '/engine_config.xml')
-            except StandardError:
-                traceback.print_exc()
-        if os.path.isfile(BigWorld.curCV + '/engine_config_edited.xml'):
-            os.rename(BigWorld.curCV + '/engine_config_edited.xml', BigWorld.curCV + '/engine_config.xml')
+                audio_mods_new['loadBanks'].createSection('bank').asString = bankName
+        for key in modsKeys:
+            if confData_old[key] != confData[key]:
+                self.editedBanks['remap'].add(key)
+            if key in self.editedBanks['remap']:
+                audio_mods_new.deleteSection(audio_mods_new[key])
+                newSect = audio_mods_new.createSection(key)
+                for data in confData[key]:
+                    newSubSect = newSect.createSection(key_to_sub[key])
+                    for subKey in ('name', 'mod'):
+                        newSubSect.createSection(subKey).asString = data[subKey]
+                    if key in subList:
+                        newSubLSect = newSubSect.createSection(subList[key])
+                        for subData in data[subList[key]]:
+                            newSubSSect = newSubLSect.createSection('state')
+                            for subKey in subData:
+                                newSubSSect.createSection(subKey).asString = subData[subKey]
+
+        if any(self.editedBanks[key] for key in ('delete_engine', 'move', 'memory')):
+            config.save()
+            xmlOrig = BigWorld.curCV + '/engine_config.xml'
+            if os.path.isfile(xmlOrig):
+                try:
+                    os.remove(xmlOrig)
+                except StandardError:
+                    traceback.print_exc()
+            newXml = BigWorld.curCV + '/engine_config_edited.xml'
+            if os.path.isfile(newXml):
+                os.rename(newXml, xmlOrig)
+        if any(self.editedBanks[key] for key in ('delete', 'create', 'move', 'remap')):
+            audio_mods_new.save()
+            origXml = '/'.join((BigWorld.curCV, mediaPath, 'audio_mods.xml'))
+            if os.path.isfile(origXml):
+                try:
+                    os.remove(origXml)
+                except StandardError:
+                    traceback.print_exc()
+            newXml = '/'.join((BigWorld.curCV, mediaPath, 'audio_mods_edited.xml'))
+            if os.path.isfile(newXml):
+                os.rename(newXml, origXml)
         # noinspection SpellCheckingInspection
         oldModName = BigWorld.curCV + '/scripts/client/gui/mods/mod_wg_load_custom_ekspont_banks.pyc'
         if os.path.isfile(oldModName) and os.path.isfile(oldModName + '1'):
@@ -175,10 +263,6 @@ class _Config(PYmodsCore._Config):
                 traceback.print_exc()
         if os.path.isfile(oldModName):
             os.rename(oldModName, oldModName + '1')
-
-    def load(self):
-        self.update_data(True)
-        self.engineConfigReader()
         print '%s: initialised.' % (self.message())
 
 
