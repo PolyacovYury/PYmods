@@ -1187,7 +1187,7 @@ def OM_apply(vDesc):
             part['camouflageExclusionMask'] = exclMask
             part['camouflageTiling'] = camoData['tiling']
     nodes = data['hull']['exhaust']['nodes']
-    if nodes:
+    if nodes and 'exhaust' in vDesc.hull:
         vDesc.hull['exhaust'].nodes = nodes
 
 
