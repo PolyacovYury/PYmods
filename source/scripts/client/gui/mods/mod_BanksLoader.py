@@ -103,14 +103,24 @@ class _Config(PYmodsCore._Config):
             if '/'.join(('res', mediaPath, 'audio_mods.xml')) in fileNames:
                 self.editedBanks['wotmod'].append(os.path.basename(filePath))
                 bankFiles = filter(lambda x: x.startswith('res/' + mediaPath) and x.endswith('.bnk'), fileNames)
-                zip_new = zipfile.ZipFile(filePath[:-7] + '_BanksLoader_ing' + '.wotmod', 'w')
+                new_filePath = filePath[:-7] + '_BanksLoader_ing' + '.wotmod'
+                zip_new = zipfile.ZipFile(new_filePath, 'w')
                 for fileName in fileNames:
                     if fileName != '/'.join(('res', mediaPath, 'audio_mods.xml')):
                         zip_new.writestr(fileName, zip_orig.read(fileName))
                     elif bankFiles:
                         zip_new.writestr(bankFiles[0].replace('.bnk', '.xml'), zip_orig.read(fileName))
                 zip_new.close()
-            zip_orig.close()
+                zip_orig.close()
+                if os.path.isfile(filePath):
+                    try:
+                        os.remove(filePath)
+                    except StandardError:
+                        traceback.print_exc()
+                if os.path.isfile(new_filePath):
+                    os.rename(new_filePath, filePath)
+            else:
+                zip_orig.close()
 
     def checkConfigs(self):
         orig_engine = ResMgr.openSection('engine_config.xml')
