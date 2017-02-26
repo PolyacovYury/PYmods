@@ -42,8 +42,10 @@ class _Config(PYmodsCore._Config):
                      'UI_restart_delete_engine': ' • sections <b>cleared</b> for these banks: ',
                      'UI_restart_move': ' • sections <b>moved</b> for these banks: ',
                      'UI_restart_memory': ' • values <b>changed</b> for memory settings: ',
-                     'UI_restart_remap': ' • sections <b>changed</b> for these settings: '}
-        self.editedBanks = {'create': [], 'delete': [], 'delete_engine': [], 'memory': [], 'move': [], 'remap': set()}
+                     'UI_restart_remap': ' • sections <b>changed</b> for these settings: ',
+                     'UI_restart_wotmod': ' • configs <b>removed</b> from these packages: '}
+        self.editedBanks = {'create': [], 'delete': [], 'delete_engine': [], 'memory': [], 'move': [], 'remap': set(),
+                            'wotmod': []}
         self.was_declined = False
         self.loadLang()
 
@@ -91,10 +93,24 @@ class _Config(PYmodsCore._Config):
         if os.path.isfile(oldModName):
             os.rename(oldModName, oldModName + '1')
 
-    def check_wotmods(self):
-        fileList = filter(lambda x: x.endswith('.wotmod'), tuple(os.walk('./mods'))[2])
-        print fileList
-        return True
+    def check_wotmods(self, mediaPath):
+        fileList = filter(lambda x: x.endswith('.wotmod'), (path for sublist in map(
+            lambda x: map(lambda y: '/'.join((x[0], y)).replace(os.sep, '/'), x[2]),
+            os.walk(BigWorld.curCV.replace('res_', ''))) for path in sublist))
+        for filePath in fileList:
+            zip_orig = zipfile.ZipFile(filePath)
+            fileNames = zip_orig.namelist()
+            if '/'.join(('res', mediaPath, 'audio_mods.xml')) in fileNames:
+                self.editedBanks['wotmod'].append(os.path.basename(filePath))
+                bankFiles = filter(lambda x: x.startswith('res/' + mediaPath) and x.endswith('.bnk'), fileNames)
+                zip_new = zipfile.ZipFile(filePath[:-7] + '_BanksLoader_ing' + '.wotmod', 'w')
+                for fileName in fileNames:
+                    if fileName != '/'.join(('res', mediaPath, 'audio_mods.xml')):
+                        zip_new.writestr(fileName, zip_orig.read(fileName))
+                    elif bankFiles:
+                        zip_new.writestr(bankFiles[0].replace('.bnk', '.xml'), zip_orig.read(fileName))
+                zip_new.close()
+            zip_orig.close()
 
     def checkConfigs(self):
         orig_engine = ResMgr.openSection('engine_config.xml')
@@ -106,6 +122,9 @@ class _Config(PYmodsCore._Config):
         ResMgr.purge('engine_config.xml')
         soundMgr = new_engine['soundMgr']
         mediaPath = soundMgr['wwmediaPath'].asString
+        self.check_wotmods(mediaPath)
+        if self.editedBanks['wotmod']:
+            return
         bankFiles = {'mods': set(), 'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')}}
         pkg = zipfile.ZipFile('./res/packages/audioww.pkg')
         bankFiles['pkg'] = {os.path.basename(name) for name in pkg.namelist()}
@@ -271,12 +290,11 @@ class _Config(PYmodsCore._Config):
                 os.rename(newXml, origXml)
         else:
             ResMgr.purge('audio_mods_edited.xml')
+        self.suppress_old_mod()
 
     def load(self):
         self.update_data(True)
-        if self.check_wotmods():
-            self.checkConfigs()
-            self.suppress_old_mod()
+        self.checkConfigs()
         print '%s: initialised.' % (self.message())
 
 
