@@ -79,27 +79,38 @@ class _Config(PYmodsCore._Config):
                                                      I18nConfirmDialogButtons('common/confirm'), None),
                                     self.onRestartConfirmed)
 
-    def load(self):
-        self.update_data(True)
-        orig_config = ResMgr.openSection('engine_config.xml')
-        if orig_config is None:
+    @staticmethod
+    def suppress_old_mod():
+        # noinspection SpellCheckingInspection
+        oldModName = BigWorld.curCV + '/scripts/client/gui/mods/mod_wg_load_custom_ekspont_banks.pyc'
+        if os.path.isfile(oldModName) and os.path.isfile(oldModName + '1'):
+            try:
+                os.remove(oldModName + '1')
+            except StandardError:
+                traceback.print_exc()
+        if os.path.isfile(oldModName):
+            os.rename(oldModName, oldModName + '1')
+
+    def check_wotmods(self):
+        fileList = filter(lambda x: x.endswith('.wotmod'), tuple(os.walk('./mods'))[2])
+        print fileList
+        return True
+
+    def checkConfigs(self):
+        orig_engine = ResMgr.openSection('engine_config.xml')
+        if orig_engine is None:
             LOG_ERROR('engine_config.xml not found')
             return
-        config = ResMgr.openSection('engine_config_edited.xml', True)
-        config.copy(orig_config)
+        new_engine = ResMgr.openSection('engine_config_edited.xml', True)
+        new_engine.copy(orig_engine)
         ResMgr.purge('engine_config.xml')
-        soundMgr = config['soundMgr']
+        soundMgr = new_engine['soundMgr']
         mediaPath = soundMgr['wwmediaPath'].asString
         bankFiles = {'mods': set(), 'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')}}
         pkg = zipfile.ZipFile('./res/packages/audioww.pkg')
         bankFiles['pkg'] = {os.path.basename(name) for name in pkg.namelist()}
         pkg.close()
-        if os.path.isdir(BigWorld.curCV + '/' + mediaPath):
-            bankFiles['mods'] = set(filter(
-                lambda x: x.endswith('.bnk') or x.endswith('.pck'),
-                (os.path.basename(path) for path in glob.iglob('/'.join((BigWorld.curCV, mediaPath, '*'))))))
         bankFiles['orig'] = bankFiles['res'] | bankFiles['pkg']
-        bankFiles['all'] = bankFiles['orig'] | bankFiles['mods']
         active_profile_name = soundMgr['WWISE_active_profile'].asString
         active_profile = soundMgr[active_profile_name]
         poolKeys = {'memoryManager': ['defaultPool', 'lowEnginePool', 'preparedPool', 'streamingPool', 'IOPoolSize'],
@@ -122,6 +133,8 @@ class _Config(PYmodsCore._Config):
                     section.deleteSection(project)
         self.editedBanks['delete_engine'] = PYmodsCore.remDups(self.editedBanks['delete_engine'])
 
+        bankFiles['mods'] = set(filter(lambda x: (x.endswith('.bnk') or x.endswith('.pck')) and x not in bankFiles['orig'],
+                                       (ResMgr.openSection(mediaPath).keys())))
         audio_mods = ResMgr.openSection('/'.join((mediaPath, 'audio_mods.xml')))
         audio_mods_new = ResMgr.openSection('/'.join((mediaPath, 'audio_mods_edited.xml')), True)
         if audio_mods is None:
@@ -233,7 +246,7 @@ class _Config(PYmodsCore._Config):
                                 newSubSSect.createSection(subKey).asString = subData[subKey]
 
         if any(self.editedBanks[key] for key in ('delete_engine', 'move', 'memory')):
-            config.save()
+            new_engine.save()
             xmlOrig = BigWorld.curCV + '/engine_config.xml'
             if os.path.isfile(xmlOrig):
                 try:
@@ -243,6 +256,8 @@ class _Config(PYmodsCore._Config):
             newXml = BigWorld.curCV + '/engine_config_edited.xml'
             if os.path.isfile(newXml):
                 os.rename(newXml, xmlOrig)
+        else:
+            ResMgr.purge('engine_config_edited.xml')
         if any(self.editedBanks[key] for key in ('delete', 'create', 'move', 'remap')):
             audio_mods_new.save()
             origXml = '/'.join((BigWorld.curCV, mediaPath, 'audio_mods.xml'))
@@ -254,15 +269,14 @@ class _Config(PYmodsCore._Config):
             newXml = '/'.join((BigWorld.curCV, mediaPath, 'audio_mods_edited.xml'))
             if os.path.isfile(newXml):
                 os.rename(newXml, origXml)
-        # noinspection SpellCheckingInspection
-        oldModName = BigWorld.curCV + '/scripts/client/gui/mods/mod_wg_load_custom_ekspont_banks.pyc'
-        if os.path.isfile(oldModName) and os.path.isfile(oldModName + '1'):
-            try:
-                os.remove(oldModName + '1')
-            except StandardError:
-                traceback.print_exc()
-        if os.path.isfile(oldModName):
-            os.rename(oldModName, oldModName + '1')
+        else:
+            ResMgr.purge('audio_mods_edited.xml')
+
+    def load(self):
+        self.update_data(True)
+        if self.check_wotmods():
+            self.checkConfigs()
+            self.suppress_old_mod()
         print '%s: initialised.' % (self.message())
 
 
