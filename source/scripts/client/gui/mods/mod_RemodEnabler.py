@@ -142,16 +142,16 @@ class OSDescriptor(object):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__(__file__)
-        self.version = '2.9.3 (%s)' % self.version
+        self.version = '2.9.4 (%s)' % self.version
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True,
                                              'swapPlayer': True,
-                                             'swapAlly': False,
+                                             'swapAlly': True,
                                              'swapEnemy': True},
                                   'dynamic': {'enabled': True,
-                                              'swapPlayer': True,
-                                              'swapAlly': False,
+                                              'swapPlayer': False,
+                                              'swapAlly': True,
                                               'swapEnemy': True}}
         self.defaultRemodConfig = {'enabled': True,
                                    'swapPlayer': True,
@@ -1107,8 +1107,7 @@ def OM_find(xmlName, playerName, isPlayerVehicle, isAlly, currentMode='battle'):
 def OM_apply(vDesc):
     xmlName = vDesc.name.split(':')[1].lower()
     if _config.data['isDebug']:
-        print 'RemodEnabler: %s assigned to %s' % (xmlName, _config.OMDesc.name)
-        print '!! swapping chassis '
+        print 'RemodEnabler:', xmlName, 'assigned to', _config.OMDesc.name
     for key in ('splineDesc', 'trackParams'):
         if vDesc.chassis[key] is None:
             vDesc.chassis[key] = {}
@@ -1120,8 +1119,7 @@ def OM_apply(vDesc):
         vDesc.chassis['AODecals'] = copy.deepcopy(data['chassis']['AODecals'])
         vDesc.chassis['AODecals'][0].setElement(3, 1, AODecalsOffset.y)
     elif _config.data['isDebug']:
-        print 'warning: AODecals not found. stock AODecal is applied'
-        print vDesc.chassis['AODecals'][0].translation
+        print 'RemodEnabler: AODecals not found. stock AODecal is applied:', vDesc.chassis['AODecals'][0].translation
     for part in TankPartNames.ALL:
         getattr(vDesc, part)['models']['undamaged'] = data[part]['undamaged']
     if data['gun']['effects']:
@@ -1133,14 +1131,12 @@ def OM_apply(vDesc):
         if newGunReloadEffect:
             vDesc.gun['reloadEffect'] = newGunReloadEffect
     vDesc.gun['emblemSlots'] = data['gun']['emblemSlots']
-    cntClan = 1
-    cntPlayer = cntInscription = 0
     if not data['hull']['emblemSlots']:
         if _config.data['isDebug']:
             print 'RemodEnabler: hull and turret emblemSlots not provided.'
     else:
-        if _config.data['isDebug']:
-            print 'RemodEnabler: hull and turret emblemSlots found. processing'
+        cntClan = 1
+        cntPlayer = cntInscription = 0
         for part in ('hull', 'turret'):
             for slot in getattr(vDesc, part)['emblemSlots']:
                 if slot.type == 'inscription':
@@ -1162,8 +1158,6 @@ def OM_apply(vDesc):
                         cntClan -= 1
 
             assert not cntClan and not cntPlayer and not cntInscription
-            if _config.data['isDebug']:
-                print 'RemodEnabler: hull and turret emblemSlots swap completed'
         except StandardError:
             print 'RemodEnabler: provided emblem slots corrupted. Stock slots restored'
             if _config.data['isDebug']:
@@ -1249,13 +1243,17 @@ def OS_onLoad_dynamic(vehicleID, visible, resourceRefs):
     failed = resourceRefs.failedIDs
     resourceItems = resourceRefs.items()
     for idx, modelName in enumerate(TankPartNames.ALL[1:]):
-        modelPath, model = resourceItems[idx]
-        if modelPath not in failed and model is not None:
-            module = OS_dyn[modelName]
-            module['model'] = model
-            module['model'].visible = False
-        else:
-            failList.append(modelPath)
+        try:
+            modelPath, model = resourceItems[idx]
+            if modelPath not in failed and model is not None:
+                module = OS_dyn[modelName]
+                module['model'] = model
+                module['model'].visible = False
+            else:
+                failList.append(modelPath)
+        except IndexError as e:
+            print e
+            print idx, resourceItems
     if failList:
         print 'RemodEnabler: dynamic skin load failed: models not found:'
         OS_dyn['loaded'] = False
@@ -1285,19 +1283,20 @@ def OS_attach_dynamic(vehicleID, visible=False):
     addedMat = mathUtils.createIdentityMatrix()
     for modelName in TankPartNames.ALL[1:]:
         module = OS_dyn[modelName]
-        if module['motor'] not in module['model'].motors:
-            if modelName == TankPartNames.GUN and hasattr(vEntity, 'appearance'):
-                addedMat = vEntity.appearance.gunMatrix
-            module['motor'] = BigWorld.Servo(
-                mathUtils.MatrixProviders.product(mathUtils.MatrixProviders.product(scaleMat, addedMat),
-                                                  compoundModel.node(modelName)))
-            module['model'].addMotor(module['motor'])
-        if module['model'] not in vEntity.models:
-            try:
-                vEntity.addModel(module['model'])
-            except StandardError:
-                pass
-        module['model'].visible = visible
+        if module['model'] is not None:
+            if module['motor'] not in module['model'].motors:
+                if modelName == TankPartNames.GUN and hasattr(vEntity, 'appearance'):
+                    addedMat = vEntity.appearance.gunMatrix
+                module['motor'] = BigWorld.Servo(
+                    mathUtils.MatrixProviders.product(mathUtils.MatrixProviders.product(scaleMat, addedMat),
+                                                      compoundModel.node(modelName)))
+                module['model'].addMotor(module['motor'])
+            if module['model'] not in vEntity.models:
+                try:
+                    vEntity.addModel(module['model'])
+                except StandardError:
+                    pass
+            module['model'].visible = visible
 
 
 def OS_detach_dynamic(vehicleID):
@@ -1312,13 +1311,14 @@ def OS_detach_dynamic(vehicleID):
             return
         for moduleName in TankPartNames.ALL[1:]:
             module = OS_dyn[moduleName]
-            module['model'].visible = False
-            try:
-                vEntity.delModel(module['model'])
-            except ValueError:
-                pass
-            if module['motor'] in tuple(module['model'].motors):
-                module['model'].delMotor(module['motor'])
+            if module['model'] is not None:
+                module['model'].visible = False
+                try:
+                    vEntity.delModel(module['model'])
+                except ValueError:
+                    pass
+                if module['motor'] in tuple(module['model'].motors):
+                    module['model'].delMotor(module['motor'])
 
 
 def OS_destroy_dynamic(vehicleID):
@@ -1398,6 +1398,8 @@ def OS_apply(vDesc):
                 'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname).replace('collision_client', 'normal/lod0')
             if os.path.isfile(BigWorld.curCV + '/' + modelPath):
                 getattr(vDesc, part)['models']['undamaged'] = modelPath
+            elif _config.data['isDebug']:
+                print 'RemodEnabler: skin model not found:', modelPath
     else:
         if _config.data['isDebug']:
             print 'RemodEnabler: %s unchanged' % xmlName
