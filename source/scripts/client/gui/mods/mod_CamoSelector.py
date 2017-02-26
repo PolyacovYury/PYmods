@@ -301,6 +301,7 @@ class _Config(PYmodsCore._Config):
         self.UIProxy = None
         self.backupNationID = None
         self.backup = {'mode': 0, 'camoID': (len(nations.NAMES) + 2) * [0]}
+        self.isModAdded = False
         self.loadLang()
 
     def template_settings(self):
@@ -321,7 +322,8 @@ class _Config(PYmodsCore._Config):
 
     def apply_settings(self, settings):
         super(_Config, self).apply_settings(settings)
-        BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
+        if self.isModAdded:
+            BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
 
     def readCamouflages(self, doShopCheck):
         self.camouflages = {'modded': {}}
@@ -399,6 +401,7 @@ class _Config(PYmodsCore._Config):
             icon='gui/flash/CamoSelector.png',
             enabled=self.data['enabled'], login=False, lobby=True,
             callback=lambda: g_appLoader.getDefLobbyApp().loadView('CamoSelectorUI'))
+        self.isModAdded = True
         g_entitiesFactories.addSettings(
             ViewSettings('CamoSelectorUI', CamoSelectorUI, 'CamoSelector.swf', ViewTypes.WINDOW, None,
                          ScopeTemplates.GLOBAL_SCOPE, False))
