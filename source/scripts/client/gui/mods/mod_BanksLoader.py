@@ -98,6 +98,8 @@ class _Config(PYmodsCore._Config):
             lambda x: map(lambda y: '/'.join((x[0], y)).replace(os.sep, '/'), x[2]),
             os.walk(BigWorld.curCV.replace('res_', ''))) for path in sublist))
         for filePath in fileList:
+            if os.path.basename(filePath) == '_aaa_BanksLoader_audioMods.wotmod':
+                continue
             zip_orig = zipfile.ZipFile(filePath)
             fileNames = zip_orig.namelist()
             if '/'.join(('res', mediaPath, 'audio_mods.xml')) in fileNames:
