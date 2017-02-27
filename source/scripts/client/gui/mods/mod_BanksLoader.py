@@ -249,6 +249,7 @@ class _Config(PYmodsCore._Config):
                 continue
             moddedExist.append(bankName)
         self.editedBanks['delete'] = PYmodsCore.remDups(self.editedBanks['delete'])
+        bankFiles['orig'] = set(map(str.lower, bankFiles['orig']))
         for bankName in sorted(bankFiles['mods']):
             if bankName not in bankFiles['orig'] and bankName not in moddedExist and bankName not in bankFiles['ignore']:
                 print 'BanksLoader: creating sections for bank', bankName
@@ -301,9 +302,9 @@ class _Config(PYmodsCore._Config):
                 os.rename(newXml, origXml)
         else:
             ResMgr.purge('audio_mods_edited.xml')
-        self.suppress_old_mod()
 
     def load(self):
+        self.suppress_old_mod()
         self.update_data(True)
         self.checkConfigs()
         print '%s: initialised.' % (self.message())
