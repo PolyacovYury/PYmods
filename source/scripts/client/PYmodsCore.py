@@ -172,8 +172,11 @@ class _Config(object):
     def __init__(self, filePath=''):
         self.filePath = filePath
         self.ID = os.path.basename(self.filePath).split('.')[0].replace('mod_', '')
-        self.version = time.strftime('%d.%m.%Y', time.localtime(
-            os.stat('%s/%s' % (BigWorld.curCV, self.filePath)).st_mtime))
+        try:
+            self.version = time.strftime('%d.%m.%Y', time.localtime(
+                os.stat('%s/%s' % (BigWorld.curCV, self.filePath)).st_mtime))
+        except WindowsError:
+            self.version = ''
         self.fileDir = '%s/%s/' % (BigWorld.curCV, os.path.dirname(self.filePath))
         self.configPath = '%s%s/' % (self.fileDir, self.ID)
         self.langPath = './res_mods/configs/PYmods/i18n/%s/' % self.ID
