@@ -175,8 +175,8 @@ class _Config(PYmodsCore._Config):
             ResMgr.purge('/'.join((mediaPath, 'audio_mods.xml')))
         bankFiles['ignore'] = set()
         modsKeys = ('events', 'switches', 'RTPCs', 'states')
-        confList = filter(lambda x: any(bankFile in x for bankFile in bankFiles['mods']),
-                          glob.glob('/'.join((BigWorld.curCV, mediaPath, '*.xml'))))
+        confList = filter(lambda x: x.endswith('.xml') and x.replace('.xml', '.bnk') in bankFiles['mods'],
+                          ResMgr.openSection(mediaPath).keys())
         for key in ('loadBanks',) + modsKeys:
             if not audio_mods_new.has_key(key):
                 audio_mods_new.createSection(key)
@@ -204,13 +204,12 @@ class _Config(PYmodsCore._Config):
         confData = {key: [] for key in modsKeys}
         bankConfData = {}
         for confPath in confList:
-            confPathShort = confPath.replace(BigWorld.curCV + '/', '')
-            confSect = ResMgr.openSection(confPathShort)
-            bankName = os.path.basename(confPathShort).replace('.xml', '.bnk')
+            confSect = ResMgr.openSection('/'.join((mediaPath, confPath)))
+            bankName = confPath.replace('.xml', '.bnk')
             bankData = bankConfData[bankName] = {}
             if confSect is None:
                 bankFiles['ignore'].add(bankName)
-                print '%s: error while reading' % self.ID, confPathShort
+                print '%s: error while reading' % self.ID, confPath
                 continue
             for key in modsKeys:
                 if confSect.has_key(key):
