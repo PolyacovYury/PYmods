@@ -23,6 +23,8 @@ import __builtin__
 
 import marshal
 
+import time
+
 __all__ = ["compile_dir", "compile_file", "compile_path"]
 
 
@@ -92,13 +94,13 @@ def compile_file(fullname, ddir=None, force=0, rx=None, quiet=0):
         head, tail = name[:-3], name[-3:]
         if tail == '.py':
             timeStr = subprocess.check_output(
-                ['git', '--no-pager', 'log', '-n', '1', '--format="%ct"', '--', fullname])
+                ['git', '--no-pager', 'log', '-n', '1', '--format="%ct"', '--', fullname])[1:-2]
             if not force:
                 try:
                     if not timeStr:
                         mtime = int(os.stat(fullname).st_mtime)
                     else:
-                        mtime = int(timeStr[1:-2])
+                        mtime = int(timeStr)
                     expect = struct.pack('<4sl', imp.get_magic(), mtime)
                     cfile = fullname + (__debug__ and 'c' or 'o')
                     with open(cfile, 'rb') as chandle:
@@ -282,9 +284,10 @@ def do_compile(file, cfile=None, dfile=None, doraise=False, timeStr=''):
         except AttributeError:
             timestamp = long(os.stat(file).st_mtime)
             access = long(os.stat(file).st_atime)
-        if timeStr:
-            timestamp = int(timeStr[1:-2])
         codestring = f.read()
+        if timeStr:
+            timestamp = int(timeStr)
+            codestring = codestring.replace('%(file_compile_date)s', time.strftime('%d.%m.%Y', time.localtime(timestamp)))
     try:
         codeobject = __builtin__.compile(codestring, dfile or file, 'exec')
     except Exception, err:

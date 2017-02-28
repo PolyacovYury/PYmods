@@ -30,8 +30,7 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
     BigWorld.curCV = vl.asString
 if not hasattr(BigWorld, 'PMC_wasPrint'):
     BigWorld.PMC_wasPrint = True
-    print 'Current PYmodsCore version: 2.1.0 (%s)' % time.strftime('%d.%m.%Y', time.localtime(
-        os.stat('%s/scripts/client/PYmodsCore.pyc' % BigWorld.curCV).st_mtime))
+    print 'Current PYmodsCore version: 2.1.0 (%(file_compile_date)s)'
 MAX_CHAT_MESSAGE_LENGTH = 220
 
 
