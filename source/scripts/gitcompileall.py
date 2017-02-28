@@ -12,17 +12,15 @@ See module py_compile for details of the actual byte-compilation.
 
 modified for custom use with git by Polyacov_Yury
 """
+import __builtin__
 import imp
+import marshal
 import os
 import py_compile
+import re
 import struct
 import subprocess
 import sys
-
-import __builtin__
-
-import marshal
-
 import time
 
 __all__ = ["compile_dir", "compile_file", "compile_path"]
@@ -287,7 +285,9 @@ def do_compile(file, cfile=None, dfile=None, doraise=False, timeStr=''):
         codestring = f.read()
         if timeStr:
             timestamp = int(timeStr)
-            codestring = codestring.replace('%(file_compile_date)s', time.strftime('%d.%m.%Y', time.localtime(timestamp)))
+            codestring = multireplace(codestring,
+                                      {'%(file_compile_date)s': time.strftime('%d.%m.%Y', time.localtime(timestamp)),
+                                       '%(mod_ID)s': multireplace(os.path.basename(file), {'.py': '', 'mod_': ''})})
     try:
         codeobject = __builtin__.compile(codestring, dfile or file, 'exec')
     except Exception, err:
@@ -308,6 +308,25 @@ def do_compile(file, cfile=None, dfile=None, doraise=False, timeStr=''):
         fc.write(py_compile.MAGIC)
     if timeStr:
         os.utime(cfile, (access, timestamp))
+
+
+def multireplace(string, replacements):
+    """
+    Given a string and a replacement map, it returns the replaced string.
+    :param str string: string to execute replacements on
+    :param dict replacements: replacement dictionary {value to find: value to replace}
+    :rtype: str
+    """
+    # Place longer ones first to keep shorter substrings from matching where the longer ones should take place
+    # For instance given the replacements {'ab': 'AB', 'abc': 'ABC'} against the string 'hey abc', it should produce
+    # 'hey ABC' and not 'hey ABc'
+    substrs = sorted(replacements, key=len, reverse=True)
+
+    # Create a big OR regex that matches any of the substrings to replace
+    regexp = re.compile('|'.join(map(re.escape, substrs)))
+
+    # For each match, look up the new string in the replacements
+    return regexp.sub(lambda match: replacements[match.group(0)], string)
 
 
 if __name__ == '__main__':
