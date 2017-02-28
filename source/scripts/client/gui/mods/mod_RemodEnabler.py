@@ -141,8 +141,8 @@ class OSDescriptor(object):
 
 class _Config(PYmodsCore._Config):
     def __init__(self):
-        super(_Config, self).__init__(__file__)
-        self.version = '2.9.4 (%s)' % self.version
+        super(_Config, self).__init__('%(mod_ID)s')
+        self.version = '2.9.5 (%(file_compile_date)s)'
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True,

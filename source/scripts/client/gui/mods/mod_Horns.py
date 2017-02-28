@@ -22,8 +22,8 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
 
 class _Config(PYmodsCore._Config):
     def __init__(self):
-        super(_Config, self).__init__(__file__)
-        self.version = '2.4.0 (%s)' % self.version
+        super(_Config, self).__init__('%(mod_ID)s')
+        self.version = '2.4.1 (%(file_compile_date)s)'
         self.defaultKeys = {'hotkey': [Keys.KEY_G], 'hotKey': ['KEY_G']}
         self.data = {'enabled': True,
                      'event': 4,

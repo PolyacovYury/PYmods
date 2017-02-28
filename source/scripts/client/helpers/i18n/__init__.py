@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import glob
 import marshal
 import os
 import os.path
@@ -21,12 +20,10 @@ def loadOriginalFile():
 loadOriginalFile()
 del loadOriginalFile
 
-
-filesList = [os.path.basename(filePath).split('.')[0] for filePath in
-             glob.iglob(
-                 ResMgr.openSection('../paths.xml')['Paths'].values()[0].asString + '/' + __path__[0] + '/*.pyc')
-             if '__init__' not in filePath]
-filesList = [fileName for idx in xrange(2) for fileName in sorted(filesList) if bool(idx) != bool('_' in fileName)]
+filesList = filter(lambda x: x.endswith('.pyc') and '__init__' not in x,
+                   ResMgr.openSection('scripts/client/helpers/i18n').keys())
+filesList = [fileName.replace('.pyc', '') for idx in xrange(2) for fileName in sorted(filesList) if
+             bool(idx) != bool('_' in fileName)]
 for fileName in filesList:
     print '* Executing: ' + fileName
     try:

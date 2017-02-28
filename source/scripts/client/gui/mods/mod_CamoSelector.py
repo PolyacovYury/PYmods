@@ -7,9 +7,9 @@ import time
 import traceback
 import weakref
 
-import BigWorld
 import ResMgr
 
+import BigWorld
 import CurrentVehicle
 import Keys
 import PYmodsCore
@@ -166,7 +166,7 @@ class CamoSelectorUI(AbstractWindowView):
                     if camoName in _config.configFolders[confFolderName]:
                         _config.loadJson('settings', dict(
                             (key, nationConf[key]) for key in _config.configFolders[confFolderName]),
-                                         _config.configPath + confFolderName + '/', True, False)
+                                         '/'.join((_config.configPath, 'camouflages', confFolderName, '')), True, False)
                 if nationConf[camoName]['random_mode'] == 2 or nationConf[camoName]['random_mode'] == 1 and not isInter:
                     del nationConf[camoName]['random_mode']
                 kindNames = filter(None, nationConf[camoName]['kinds'].split(','))
@@ -225,12 +225,12 @@ class CamoSelectorUI(AbstractWindowView):
 
 class _Config(PYmodsCore._Config):
     def __init__(self):
-        super(_Config, self).__init__(__file__)
-        self.version = '2.5.1 (%s)' % self.version
+        super(_Config, self).__init__('%(mod_ID)s')
+        self.version = '2.5.2 (%(file_compile_date)s)'
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'selectHotKey': ['KEY_F5', ['KEY_LCONTROL', 'KEY_RCONTROL']]}
-        self.data = {'enabled': True, 'doRandom': True, 'Debug': True, 'useBought': True, 'hangarCamoKind': 0,
+        self.data = {'enabled': True, 'doRandom': True, 'useBought': True, 'hangarCamoKind': 0,
                      'selectHotkey': self.defaultKeys['selectHotkey'], 'selectHotKey': self.defaultKeys['selectHotKey']}
         self.disable = []
         self.i18n = {
@@ -329,7 +329,7 @@ class _Config(PYmodsCore._Config):
         self.camouflages = {'modded': {}}
         self.camouflagesCache = self.loadJson('camouflagesCache', self.camouflagesCache, self.configPath)
         try:
-            for dirName in glob.iglob(self.configPath + '*'):
+            for dirName in glob.iglob(self.configPath + 'camouflages/*'):
                 if os.path.isdir(dirName):
                     self.configFolders[os.path.basename(dirName)] = confFolder = set()
                     settings = self.loadJson('settings', {}, dirName + '/')
@@ -468,8 +468,8 @@ def new_customization(self, nationID):
             self.changedNations = getattr(self, 'changedNations', [])
             self.changedNations.append(nationID)
             commonDescr = old_customization(self, nationID)
-            for configDir in (dirName.replace(BigWorld.curCV + '/', '') for dirName in glob.iglob(_config.configPath + '*')
-                              if os.path.isdir(dirName)):
+            for configDir in (dirName.replace(BigWorld.curCV + '/', '') for dirName in
+                              glob.iglob(_config.configPath + 'camouflages/*') if os.path.isdir(dirName)):
                 customDescr = items.vehicles._readCustomization(configDir + '/settings.xml', nationID, idsRange=(5001, 65535))
                 if 'custom_camo' in commonDescr['camouflageGroups'] and 'custom_camo' in customDescr['camouflageGroups']:
                     del customDescr['camouflageGroups']['custom_camo']

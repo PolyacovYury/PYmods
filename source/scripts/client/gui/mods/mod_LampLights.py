@@ -35,9 +35,9 @@ def listToTuple(seq):
 
 class _Config(PYmodsCore._Config):
     def __init__(self):
-        super(_Config, self).__init__(__file__)
+        super(_Config, self).__init__('%(mod_ID)s')
         self.isTickRequired = True
-        self.version = '2.2.0 (%s)' % self.version
+        self.version = '2.2.1 (%(file_compile_date)s)'
         self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
         self.data = {'enabled': True,
                      'enableAtStartup': True,
@@ -116,8 +116,7 @@ class _Config(PYmodsCore._Config):
         else:
             self.isLampsVisible = False
 
-    def readConfDict(self, doPrint, confdict, configPath, sourceModel=None, upperName=''):
-        confPath = configPath.replace('%s/' % BigWorld.curCV, '')
+    def readConfDict(self, doPrint, confdict, confPath, sourceModel=None, upperName=''):
         for confKey, configDict in confdict.items():
             if upperName:
                 confKey = '.'.join((upperName, confKey))
@@ -149,12 +148,12 @@ class _Config(PYmodsCore._Config):
                 if doPrint:
                     print 'LampLights: %s disabled in config.' % confKey
                 continue
-            self.configsDict[os.path.basename(configPath).split('.')[0]][confKey] = confDict = {}
+            self.configsDict[os.path.basename(confPath).split('.')[0]][confKey] = confDict = {}
             for key in ('type', 'place', 'mode', 'preRotate', 'postRotate', 'vect'):
                 confDict[key] = listToTuple(configDict[key])
 
             for key in ('attachToPlayer', 'attachToAlly', 'attachToEnemy'):
-                confDict[key] = self.configsDict[os.path.basename(configPath).split('.')[0]][key]
+                confDict[key] = self.configsDict[os.path.basename(confPath).split('.')[0]][key]
 
             if confDict['mode'] not in self.modes:
                 print 'LampLights: unknown mode at %s detected: %s. This light will be off.' % (
@@ -170,7 +169,7 @@ class _Config(PYmodsCore._Config):
             else:
                 confDict['path'] = configDict['path']
                 if 'subLights' in configDict:
-                    self.readConfDict(doPrint, configDict['subLights'], configPath, sourceModel=model,
+                    self.readConfDict(doPrint, configDict['subLights'], confPath, sourceModel=model,
                                       upperName=confKey)
             if self.data['Debug'] and doPrint:
                 print 'LampLights: %s loaded.' % confKey
@@ -192,15 +191,15 @@ class _Config(PYmodsCore._Config):
                 LOG_NOTE('Debug disabled due to absence of DebugPath.')
                 self.data['DebugModel'] = False
         if self.data['enabled']:
-            if not os.path.exists(self.configPath):
-                LOG_ERROR('LampLights config folder not found: %s' % self.configPath)
-                os.makedirs(self.configPath)
-            for configPath in glob.iglob(self.configPath + '*.json'):
-                confPath = configPath.replace('%s/' % BigWorld.curCV, '')
+            configPath = self.configPath + 'configs/'
+            if not os.path.exists(configPath):
+                LOG_ERROR('LampLights config folder not found:', configPath)
+                os.makedirs(configPath)
+            for confPath in glob.iglob(configPath + '*.json'):
                 try:
-                    confdict = self.loadJson(os.path.basename(configPath).split('.')[0],
-                                             self.configsDict.get(os.path.basename(configPath).split('.')[0], {}),
-                                             os.path.dirname(configPath) + '/')
+                    confdict = self.loadJson(os.path.basename(confPath).split('.')[0],
+                                             self.configsDict.get(os.path.basename(confPath).split('.')[0], {}),
+                                             os.path.dirname(confPath) + '/')
                 except StandardError:
                     print 'LampLights: config %s is invalid.' % os.path.basename(confPath)
                     traceback.print_exc()
@@ -213,14 +212,14 @@ class _Config(PYmodsCore._Config):
                     continue
                 if self.data['Debug']:
                     print 'LampLights: loading %s:' % os.path.basename(confPath)
-                self.configsDict[os.path.basename(configPath).split('.')[0]] = configsDict = {}
-                configsDict['meta'] = metaDict = {'name': '<b>%s</b>' % os.path.basename(configPath),
+                self.configsDict[os.path.basename(confPath).split('.')[0]] = configsDict = {}
+                configsDict['meta'] = metaDict = {'name': '<b>%s</b>' % os.path.basename(confPath),
                                                   'desc': self.i18n['UI_setting_meta_NDA']}
                 metaDict['name'] = confdict.get('meta', {}).get(self.lang, {}).get('name', metaDict['name'])
                 metaDict['desc'] = confdict.get('meta', {}).get(self.lang, {}).get('desc', metaDict['desc'])
                 for key in ['attachToPlayer', 'attachToAlly', 'attachToEnemy']:
                     configsDict[key] = confdict.get(key, True)
-                self.readConfDict(doPrint, confdict, configPath)
+                self.readConfDict(doPrint, confdict, confPath)
 
             if not self.configsDict:
                 print 'LampLights has not loaded any configs. Are you sure you need this .pyc?'

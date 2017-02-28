@@ -39,8 +39,8 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
 
 class _Config(PYmodsCore._Config):
     def __init__(self):
-        super(_Config, self).__init__(__file__)
-        self.version = '2.4.0 (%s)' % self.version
+        super(_Config, self).__init__('%(mod_ID)s')
+        self.version = '2.4.1 (%(file_compile_date)s)'
         self.author = '%s (orig by locastan)' % self.author
         self.colours = OrderedDict([
             ('UI_color_red', '#FF0000'), ('UI_color_nice_red', '#FA8072'), ('UI_color_chocolate', '#D3691E'),
@@ -245,7 +245,8 @@ class _Flash(object):
             return
         bgConf = _config.data['textBackground']
         backPath = os.path.normpath('gui/flash/' + bgConf['image']).replace(os.sep, '/')
-        if os.path.isfile(BigWorld.curCV + '/' + backPath):
+        bgSect = ResMgr.openSection(backPath)
+        if bgSect is not None:
             backgroundPath = bgConf['image']
         else:
             LOG_ERROR('Battle text background file not found', backPath)

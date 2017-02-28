@@ -3,40 +3,23 @@ import traceback
 import ResMgr
 
 from debug_utils import LOG_ERROR, LOG_NOTE, LOG_WARNING, LOG_CURRENT_EXCEPTION
-from helpers.i18n import g_translators
 wasPrint = False
 
 
 def __dir__():
-    return ['makeString']
+    return ['i18n_hook_makeString']
 
 
-def makeString(key, *args, **kwargs):
+def old_makeString(*_, **kwargs):
+    _ = kwargs
+    LOG_ERROR('i18n hook failed')
+    return ''
+
+
+def i18n_hook_makeString(key, *args, **kwargs):
     global wasPrint
     try:
-        if not key or key[0] != '#':
-            return key
-        moName, subkey = key[1:].split(':', 1)
-        if not moName or not subkey:
-            return key
-        translator = g_translators[moName]
-        text = translator.gettext(subkey)
-        if text == '?empty?':
-            text = ''
-        if args:
-            try:
-                text %= args
-            except TypeError:
-                LOG_WARNING("Arguments do not match string read by key '%s': %s", (key, args))
-                return key
-
-        elif kwargs:
-            try:
-                text %= kwargs
-            except TypeError:
-                LOG_WARNING("Arguments do not match string read by key '%s': %s", (key, kwargs))
-                return key
-
+        text = old_makeString(key, *args, **kwargs)
         debuggerCfg = ResMgr.openSection('scripts/client/helpers/i18n/i18nDebugger.xml')
         if debuggerCfg is not None:
             if debuggerCfg['enable'] is not None and debuggerCfg['enable'].asBool:
