@@ -168,17 +168,11 @@ class _Config(object):
     isMSAWindowOpen = False
     onButtonPress = Event.Event()
 
-    def __init__(self, filePath=''):
-        self.filePath = filePath
-        self.ID = os.path.basename(self.filePath).split('.')[0].replace('mod_', '')
-        try:
-            self.version = time.strftime('%d.%m.%Y', time.localtime(
-                os.stat('%s/%s' % (BigWorld.curCV, self.filePath)).st_mtime))
-        except WindowsError:
-            self.version = ''
-        self.fileDir = '%s/%s/' % (BigWorld.curCV, os.path.dirname(self.filePath))
-        self.configPath = '%s%s/' % (self.fileDir, self.ID)
-        self.langPath = './res_mods/configs/PYmods/i18n/%s/' % self.ID
+    def __init__(self, ID):
+        self.ID = ID
+        self.version = ''
+        self.configPath = './mods/configs/PYmods/%s/' % self.ID
+        self.langPath = '%si18n/' % self.configPath
         self.author = 'by Polyacov_Yury'
         self.defaultKeys = {}
         self.data = {}
@@ -252,7 +246,7 @@ class _Config(object):
                 self.data[setting] = settings[setting]
 
         self.writeHotKeys(self.data)
-        self.loadJson(os.path.basename(self.filePath).split('.')[0], self.data, self.fileDir, True, False)
+        self.loadJson(self.ID, self.data, self.configPath, True, False)
         self.updateMod()
 
     def update_settings(self):
@@ -263,7 +257,7 @@ class _Config(object):
         pass
 
     def update_data(self, doPrint=False):
-        data = self.loadJson(os.path.basename(self.filePath).split('.')[0], self.data, self.fileDir)
+        data = self.loadJson(self.ID, self.data, self.configPath)
         for key in data:
             if key in self.data:
                 self.data[key] = data[key]
@@ -493,12 +487,9 @@ class _Config(object):
 
 class ModSettingsConfig(_Config):
     def __init__(self):
-        super(self.__class__, self).__init__(__file__)
-        self.ID = 'PYmodsGUI'
-        self.version = '2.0.0 (%s)' % self.version
+        super(self.__class__, self).__init__('Settings')
+        self.version = '2.0.1 (%(file_compile_date)s)'
         self.author = 'by spoter, satel1te (fork %s)' % self.author
-        self.configPath = './res_mods/configs/PYmods/'
-        self.langPath = '%si18n/GUI/' % self.configPath
         self.i18n = {'gui_name': "PY's mods settings",
                      'gui_description': "<font color='#DD7700'><b>Polyacov_Yury</b></font>'s modifications enabling and "
                                         "settings",

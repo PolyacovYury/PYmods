@@ -21,8 +21,8 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
 
 class _Config(PYmodsCore._Config):
     def __init__(self):
-        super(_Config, self).__init__(__file__)
-        self.version = '1.9.0 (%s)' % self.version
+        super(_Config, self).__init__('%(mod_ID)s')
+        self.version = '1.9.1 (%(file_compile_date)s)'
         self.author = '%s and Ekspoint' % self.author
         self.data = {'defaultPool': 48,
                      'lowEnginePool': 36,

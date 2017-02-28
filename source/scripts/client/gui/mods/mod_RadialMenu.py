@@ -37,14 +37,14 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
 
 class _Config(PYmodsCore._Config):
     def __init__(self):
-        super(_Config, self).__init__(__file__)
-        self.version = '2.1.0 (%s)' % self.version
+        super(_Config, self).__init__('%(mod_ID)s')
+        self.version = '2.1.1 (%(file_compile_date)s)'
         self.author = '%s (orig by locastan/tehHedger/TRJ_VoRoN)' % self.author
         self.defaultKeys = {'mapMenu_key': [Keys.KEY_LALT], 'mapMenu_Key': ['KEY_LALT']}
         self.data = {'enabled': True,
                      'mapMenu_key': self.defaultKeys['mapMenu_key'],
                      'mapMenu_Key': self.defaultKeys['mapMenu_Key'],
-                     'selectedConfig': 11,
+                     'selectedConfig': 12,
                      'chatDelay': 550,
                      'hotDelay': 350,
                      'analyticsFull': True}
@@ -87,11 +87,10 @@ class _Config(PYmodsCore._Config):
         self.configsMeta = {'default': self.i18n['UI_setting_selectedConfig_defaultMeta']}
         # noinspection SpellCheckingInspection
         self.commands = {'default': {'hotkeyOnly': [CustomMenuCommand({'command': 'RELOADINGGUN', 'hotKey': ['KEY_C']})]}}
-        for configPath in glob.iglob(self.configPath + '*.json'):
-            confPath = configPath.replace('%s/' % BigWorld.curCV, '')
-            confName = os.path.basename(configPath).split('.')[0]
+        for confPath in glob.iglob(self.configPath + 'skins/*.json'):
+            confName = os.path.basename(confPath).split('.')[0]
             try:
-                confDict = self.loadJson(confName, {}, os.path.dirname(configPath) + '/')
+                confDict = self.loadJson(confName, {}, os.path.dirname(confPath) + '/')
             except StandardError:
                 print 'RadialMenu: config %s is invalid.' % os.path.basename(confPath)
                 traceback.print_exc()

@@ -285,9 +285,9 @@ def do_compile(file, cfile=None, dfile=None, doraise=False, timeStr=''):
         codestring = f.read()
         if timeStr:
             timestamp = int(timeStr)
-            codestring = multireplace(codestring,
-                                      {'%(file_compile_date)s': time.strftime('%d.%m.%Y', time.localtime(timestamp)),
-                                       '%(mod_ID)s': multireplace(os.path.basename(file), {'.py': '', 'mod_': ''})})
+        codestring = multireplace(codestring,
+                                  {'%(file_compile_date)s': time.strftime('%d.%m.%Y', time.localtime(timestamp)),
+                                   '%(mod_ID)s': multireplace(os.path.basename(file), {'.py': '', 'mod_': ''})})
     try:
         codeobject = __builtin__.compile(codestring, dfile or file, 'exec')
     except Exception, err:

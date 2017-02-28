@@ -15,9 +15,8 @@ def __dir__():
 
 class _BR_Config(PYmodsCore._Config):
     def __init__(self):
-        super(_BR_Config, self).__init__(__file__)
-        self.version = '2.1.0 (%s)' % self.version
-        self.configPath = './res_mods/configs/%s/' % self.ID
+        super(_BR_Config, self).__init__('%(mod_ID)s')
+        self.version = '2.1.1 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'reReadAtEnd': True}
         self.i18n = {
@@ -56,10 +55,11 @@ class _BR_Config(PYmodsCore._Config):
         self.configsList = []
         self.confMeta = {}
         self.sectDict = {}
-        if os.path.isdir(self.configPath):
+        configPath = self.configPath + 'configs/'
+        if os.path.isdir(configPath):
             if doPrint:
-                print '%s: loading configs from %s:' % (self.ID, self.configPath)
-            for conp in glob.iglob(self.configPath + '*.json'):
+                print '%s: loading configs from %s:' % (self.ID, configPath)
+            for conp in glob.iglob(configPath + '*.json'):
                 if doPrint:
                     print '%s: loading %s' % (self.ID, os.path.basename(conp))
                 confdict = self.loadJson(os.path.basename(conp).split('.')[0], self.data,
@@ -95,7 +95,7 @@ class _BR_Config(PYmodsCore._Config):
                                     None, map(lambda txtStr: txtStr.rstrip(), confdict[key]['text'])))
 
         elif doPrint:
-            print '%s: config directory not found: %s' % (self.ID, self.configPath)
+            print '%s: config directory not found: %s' % (self.ID, configPath)
 
         for key in self.sectDict:
             self.sectDict[key]['textList'] = PYmodsCore.remDups(self.sectDict[key]['textList'])
