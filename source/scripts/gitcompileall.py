@@ -12,16 +12,16 @@ See module py_compile for details of the actual byte-compilation.
 
 modified for custom use with git by Polyacov_Yury
 """
+import __builtin__
 import imp
+import marshal
 import os
 import py_compile
+import re
 import struct
 import subprocess
 import sys
-
-import __builtin__
-
-import marshal
+import time
 
 __all__ = ["compile_dir", "compile_file", "compile_path"]
 
@@ -92,13 +92,13 @@ def compile_file(fullname, ddir=None, force=0, rx=None, quiet=0):
         head, tail = name[:-3], name[-3:]
         if tail == '.py':
             timeStr = subprocess.check_output(
-                ['git', '--no-pager', 'log', '-n', '1', '--format="%ct"', '--', fullname])
+                ['git', '--no-pager', 'log', '-n', '1', '--format="%ct"', '--', fullname])[1:-2]
             if not force:
                 try:
                     if not timeStr:
                         mtime = int(os.stat(fullname).st_mtime)
                     else:
-                        mtime = int(timeStr[1:-2])
+                        mtime = int(timeStr)
                     expect = struct.pack('<4sl', imp.get_magic(), mtime)
                     cfile = fullname + (__debug__ and 'c' or 'o')
                     with open(cfile, 'rb') as chandle:
@@ -282,9 +282,12 @@ def do_compile(file, cfile=None, dfile=None, doraise=False, timeStr=''):
         except AttributeError:
             timestamp = long(os.stat(file).st_mtime)
             access = long(os.stat(file).st_atime)
-        if timeStr:
-            timestamp = int(timeStr[1:-2])
         codestring = f.read()
+        if timeStr:
+            timestamp = int(timeStr)
+        codestring = multireplace(codestring,
+                                  {'%(file_compile_date)s': time.strftime('%d.%m.%Y', time.localtime(timestamp)),
+                                   '%(mod_ID)s': multireplace(os.path.basename(file), {'.py': '', 'mod_': ''})})
     try:
         codeobject = __builtin__.compile(codestring, dfile or file, 'exec')
     except Exception, err:
@@ -305,6 +308,25 @@ def do_compile(file, cfile=None, dfile=None, doraise=False, timeStr=''):
         fc.write(py_compile.MAGIC)
     if timeStr:
         os.utime(cfile, (access, timestamp))
+
+
+def multireplace(string, replacements):
+    """
+    Given a string and a replacement map, it returns the replaced string.
+    :param str string: string to execute replacements on
+    :param dict replacements: replacement dictionary {value to find: value to replace}
+    :rtype: str
+    """
+    # Place longer ones first to keep shorter substrings from matching where the longer ones should take place
+    # For instance given the replacements {'ab': 'AB', 'abc': 'ABC'} against the string 'hey abc', it should produce
+    # 'hey ABC' and not 'hey ABc'
+    substrs = sorted(replacements, key=len, reverse=True)
+
+    # Create a big OR regex that matches any of the substrings to replace
+    regexp = re.compile('|'.join(map(re.escape, substrs)))
+
+    # For each match, look up the new string in the replacements
+    return regexp.sub(lambda match: replacements[match.group(0)], string)
 
 
 if __name__ == '__main__':

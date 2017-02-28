@@ -22,8 +22,8 @@ def __dir__():
 
 class _HP_Config(PYmodsCore._Config):
     def __init__(self):
-        super(_HP_Config, self).__init__(__file__)
-        self.version = '1.1.1 (%s)' % self.version
+        super(_HP_Config, self).__init__('%(mod_ID)s')
+        self.version = '1.1.2 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'debug': True,
                      'debugColour': True,
@@ -89,7 +89,7 @@ class _HP_Config(PYmodsCore._Config):
 
     def update_data(self, doPrint=False):
         super(_HP_Config, self).update_data(doPrint)
-        self.blacklists = self.loadJson('HangarPainter_blacklist', self.blacklists, self.fileDir)
+        self.blacklists = self.loadJson('blacklist', self.blacklists, self.configPath)
 
     @staticmethod
     def onRestartConfirmed(*_):
@@ -120,7 +120,7 @@ class _HP_Config(PYmodsCore._Config):
         try:
             webConf_url = 'https://gist.githubusercontent.com/PolyacovYury/220e5da411d78e598687b23ab130e922/raw/'
             webConf = self.byte_ify(json.loads(urllib2.urlopen(webConf_url).read()))
-            self.loadJson('HangarPainter_blacklist', webConf, self.fileDir, True)
+            self.loadJson('blacklist', webConf, self.configPath, True)
         except urllib2.URLError as e:
             if hasattr(e, 'reason'):
                 print '%s: blacklists config download failed: ' % self.ID, e.reason

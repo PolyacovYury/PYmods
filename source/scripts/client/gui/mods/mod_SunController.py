@@ -22,8 +22,8 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
 
 class _Config(PYmodsCore._Config):
     def __init__(self):
-        super(_Config, self).__init__(__file__)
-        self.version = '2.2.0 (%s)' % self.version
+        super(_Config, self).__init__('%(mod_ID)s')
+        self.version = '2.2.1 (%(file_compile_date)s)'
         self.author = '%s (orig by Lp()rtii/Dellux) (thx to LSD_MAX/Delysid :P)' % self.author
         self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
         self.data = {'enabled': True,
@@ -80,13 +80,12 @@ if _config.data['enableMessage']:
             isRegistered = vxSettingsApi.isRegistered('PYmodsGUI')
         except ImportError:
             isRegistered = False
-        if os.path.isfile('%s/%s/mod_LampLights.pyc' % (BigWorld.curCV, os.path.dirname(__file__))):
-            try:
-                from gui.mods import mod_LampLights
-                if not isRegistered and mod_LampLights._config.data['enableMessage']:
-                    LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAnd']
-            except StandardError:
-                pass
+        try:
+            from gui.mods import mod_LampLights
+            if not isRegistered and mod_LampLights._config.data['enableMessage']:
+                LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAnd']
+        except StandardError:
+            pass
         global isLogin
         old_populate(self)
         if isLogin and not isRegistered:
