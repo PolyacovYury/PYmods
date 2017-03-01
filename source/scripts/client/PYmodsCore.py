@@ -485,7 +485,7 @@ class _Config(object):
 
 class ModSettingsConfig(_Config):
     def __init__(self):
-        super(self.__class__, self).__init__('Settings')
+        super(self.__class__, self).__init__('PYmodsGUI')
         self.version = '2.0.1 (%(file_compile_date)s)'
         self.author = 'by spoter, satel1te (fork %s)' % self.author
         self.i18n = {'gui_name': "PY's mods settings",
