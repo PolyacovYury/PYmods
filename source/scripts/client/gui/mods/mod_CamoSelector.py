@@ -85,7 +85,6 @@ class CamoSelectorUI(AbstractWindowView):
             for camoName in sorted(camoNames.keys()):
                 camoID = camoNames[camoName]
                 camouflageDesc = camouflages[camoID]
-                _config.camouflages.get(nation, {})
                 camouflage = _config.camouflages.get(nation, {}).get(camoName, {})
                 texts['camouflages'][idx].append(camoName)
                 camoSettings = {'randomOption': camouflage.get('random_mode', 2),
@@ -193,7 +192,8 @@ class CamoSelectorUI(AbstractWindowView):
 
     @staticmethod
     def py_printLog(*args):
-        print (arg for arg in args)
+        for arg in args:
+            print arg
 
     @staticmethod
     def py_onShowPreset(nationID, mode, camoID):
