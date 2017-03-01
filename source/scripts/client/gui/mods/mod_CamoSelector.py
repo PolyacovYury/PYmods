@@ -466,14 +466,15 @@ InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 
 
 def new_customization(self, nationID):
-    commonDescr = self._Cache__customization[nationID]
+    commonDescr = old_customization(self, nationID)
     if _config.data['enabled']:
         if commonDescr is None or not hasattr(self, 'changedNations') or nationID not in self.changedNations:
-            self.changedNations = getattr(self, 'changedNations', [])
-            self.changedNations.append(nationID)
-            commonDescr = old_customization(self, nationID)
+            if _config.configFolders:
+                self.changedNations = getattr(self, 'changedNations', [])
+                self.changedNations.append(nationID)
             for configDir in _config.configFolders:
-                customDescr = items.vehicles._readCustomization(configDir + '/settings.xml', nationID, idsRange=(5001, 65535))
+                customDescr = items.vehicles._readCustomization('vehicles/camouflages/' + configDir + '/settings.xml',
+                                                                nationID, idsRange=(5001, 65535))
                 if 'custom_camo' in commonDescr['camouflageGroups'] and 'custom_camo' in customDescr['camouflageGroups']:
                     del customDescr['camouflageGroups']['custom_camo']
                 commonDescr = items.vehicles._joinCustomizationParams(nationID, commonDescr, customDescr)
