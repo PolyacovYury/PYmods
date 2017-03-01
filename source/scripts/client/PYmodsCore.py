@@ -17,7 +17,6 @@ import ResMgr
 import BigWorld
 import Event
 import Keys
-import game
 from PlayerEvents import g_playerEvents
 from constants import AUTH_REALM, DEFAULT_LANGUAGE
 from debug_utils import LOG_CURRENT_EXCEPTION
@@ -572,6 +571,10 @@ class Analytics(object):
         self.user = None
         self.old_user = None
         g_playerEvents.onAccountShowGUI += self.start
+        BigWorld.callback(0.0, self.game_fini_hook)
+
+    def game_fini_hook(self):
+        import game
         old_fini = game.fini
         game.fini = lambda: (self.end(), old_fini())
 
