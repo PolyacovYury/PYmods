@@ -80,8 +80,8 @@ if _config.data['enableMessage']:
         except ImportError:
             isRegistered = False
         try:
-            from gui.mods import mod_LampLights
-            if not isRegistered and mod_LampLights._config.data['enableMessage']:
+            from gui.mods import mod_lamplights
+            if not isRegistered and mod_lamplights._config.data['enableMessage']:
                 LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAnd']
         except StandardError:
             pass
