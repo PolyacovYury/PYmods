@@ -20,7 +20,7 @@ from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from gui import InputHandler, SystemMessages, g_tankActiveCamouflage
 from gui.ClientHangarSpace import ClientHangarSpace
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView, _LobbySubViewsCtrl
+from gui.Scaleform.daapi.view.lobby.LobbyView import _LobbySubViewsCtrl
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
@@ -85,7 +85,6 @@ class CamoSelectorUI(AbstractWindowView):
             for camoName in sorted(camoNames.keys()):
                 camoID = camoNames[camoName]
                 camouflageDesc = camouflages[camoID]
-                _config.camouflages.get(nation, {})
                 camouflage = _config.camouflages.get(nation, {}).get(camoName, {})
                 texts['camouflages'][idx].append(camoName)
                 camoSettings = {'randomOption': camouflage.get('random_mode', 2),
@@ -164,9 +163,9 @@ class CamoSelectorUI(AbstractWindowView):
                     nationConf[camoName]['kinds'] = ','.join(enabledKinds)
                 for confFolderName in _config.configFolders:
                     if camoName in _config.configFolders[confFolderName]:
-                        _config.loadJson('settings', dict(
+                        _config.loadJson(confFolderName, dict(
                             (key, nationConf[key]) for key in _config.configFolders[confFolderName]),
-                                         '/'.join((_config.configPath, 'camouflages', confFolderName, '')), True, False)
+                                         _config.configPath + 'camouflages/', True, False)
                 if nationConf[camoName]['random_mode'] == 2 or nationConf[camoName]['random_mode'] == 1 and not isInter:
                     del nationConf[camoName]['random_mode']
                 kindNames = filter(None, nationConf[camoName]['kinds'].split(','))
@@ -193,7 +192,8 @@ class CamoSelectorUI(AbstractWindowView):
 
     @staticmethod
     def py_printLog(*args):
-        print (arg for arg in args)
+        for arg in args:
+            print arg
 
     @staticmethod
     def py_onShowPreset(nationID, mode, camoID):
@@ -316,7 +316,7 @@ class _Config(PYmodsCore._Config):
 
     def onWindowClose(self):
         try:
-            from gui.mods import mod_RemodEnabler
+            from gui.mods import mod_remodenabler
         except StandardError:
             g_currentPreviewVehicle.refreshModel()
 
@@ -326,16 +326,20 @@ class _Config(PYmodsCore._Config):
             BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
 
     def readCamouflages(self, doShopCheck):
+        self.configFolders.clear()
         self.camouflages = {'modded': {}}
         self.camouflagesCache = self.loadJson('camouflagesCache', self.camouflagesCache, self.configPath)
         try:
-            for dirName in glob.iglob(self.configPath + 'camouflages/*'):
-                if os.path.isdir(dirName):
-                    self.configFolders[os.path.basename(dirName)] = confFolder = set()
-                    settings = self.loadJson('settings', {}, dirName + '/')
-                    for key in settings:
-                        confFolder.add(key)
-                    self.camouflages['modded'].update(settings)
+            configFiles = map(lambda x: os.path.basename(x).replace('.json', ''),
+                              glob.iglob(self.configPath + 'camouflages/*.json'))
+            camoDirs = set(ResMgr.openSection('vehicles/camouflages').keys())
+            camoNames = [camoName for camoName in configFiles if camoName in camoDirs]
+            for camoName in camoNames:
+                self.configFolders[camoName] = confFolder = set()
+                settings = self.loadJson(camoName, {}, self.configPath + 'camouflages/')
+                for key in settings:
+                    confFolder.add(key)
+                self.camouflages['modded'].update(settings)
         except StandardError:
             traceback.print_exc()
 
@@ -462,15 +466,15 @@ InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 
 
 def new_customization(self, nationID):
-    commonDescr = self._Cache__customization[nationID]
+    commonDescr = old_customization(self, nationID)
     if _config.data['enabled']:
         if commonDescr is None or not hasattr(self, 'changedNations') or nationID not in self.changedNations:
-            self.changedNations = getattr(self, 'changedNations', [])
-            self.changedNations.append(nationID)
-            commonDescr = old_customization(self, nationID)
-            for configDir in (dirName.replace(BigWorld.curCV + '/', '') for dirName in
-                              glob.iglob(_config.configPath + 'camouflages/*') if os.path.isdir(dirName)):
-                customDescr = items.vehicles._readCustomization(configDir + '/settings.xml', nationID, idsRange=(5001, 65535))
+            if _config.configFolders:
+                self.changedNations = getattr(self, 'changedNations', [])
+                self.changedNations.append(nationID)
+            for configDir in _config.configFolders:
+                customDescr = items.vehicles._readCustomization('vehicles/camouflages/' + configDir + '/settings.xml',
+                                                                nationID, idsRange=(5001, 65535))
                 if 'custom_camo' in commonDescr['camouflageGroups'] and 'custom_camo' in customDescr['camouflageGroups']:
                     del customDescr['camouflageGroups']['custom_camo']
                 commonDescr = items.vehicles._joinCustomizationParams(nationID, commonDescr, customDescr)
@@ -618,7 +622,7 @@ def new_removeSlot(self, cType, slotIdx):
 def new_onViewLoaded(self, view):
     if view is not None and view.settings is not None:
         alias = view.settings.alias
-        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self.__loadingSubViews:
+        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
             BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
     old_onViewLoaded(self, view)
 
@@ -626,7 +630,7 @@ def new_onViewLoaded(self, view):
 def new_onViewLoadCanceled(self, name, item):
     if item is not None and item.pyEntity is not None:
         alias = item.pyEntity.settings.alias
-        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self.__loadingSubViews:
+        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
             BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
     old_onViewLoadCanceled(self, name, item)
 
@@ -634,7 +638,7 @@ def new_onViewLoadCanceled(self, name, item):
 def new_onViewLoadError(self, name, msg, item):
     if item is not None and item.pyEntity is not None:
         alias = item.pyEntity.settings.alias
-        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self.__loadingSubViews:
+        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
             BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
     old_onViewLoadError(self, name, msg, item)
 
@@ -845,33 +849,4 @@ def new_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback=None):
 
 old_cs_recreateVehicle = ClientHangarSpace.recreateVehicle
 ClientHangarSpace.recreateVehicle = new_cs_recreateVehicle
-
-
-class Analytics(PYmodsCore.Analytics):
-    def __init__(self):
-        super(Analytics, self).__init__()
-        self.mod_description = _config.ID
-        self.mod_version = _config.version.split(' ', 1)[0]
-        self.mod_id_analytics = 'UA-76792179-7'
-
-
-statistic_mod = Analytics()
-
-
-def fini():
-    try:
-        statistic_mod.end()
-    except StandardError:
-        traceback.print_exc()
-
-
-def new_LW_populate(self):
-    old_LW_populate(self)
-    try:
-        statistic_mod.start()
-    except StandardError:
-        traceback.print_exc()
-
-
-old_LW_populate = LobbyView._populate
-LobbyView._populate = new_LW_populate
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-7', _config.configFolders)

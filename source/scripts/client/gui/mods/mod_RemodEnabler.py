@@ -1709,32 +1709,11 @@ def delCollisionGUI(self):
         del self.collisionTable
 
 
-class Analytics(PYmodsCore.Analytics):
-    def __init__(self):
-        super(Analytics, self).__init__()
-        self.mod_description = _config.ID
-        self.mod_version = _config.version.split(' ', 1)[0]
-        self.mod_id_analytics = 'UA-76792179-4'
-
-
-statistic_mod = Analytics()
-
-
-def fini():
-    try:
-        statistic_mod.end()
-    except StandardError:
-        traceback.print_exc()
-
-
 def new_LW_populate(self):
     old_LW_populate(self)
     _config.data['isInHangar'] = True
-    try:
-        statistic_mod.start()
-    except StandardError:
-        traceback.print_exc()
 
 
 old_LW_populate = LobbyView._populate
 LobbyView._populate = new_LW_populate
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-4')

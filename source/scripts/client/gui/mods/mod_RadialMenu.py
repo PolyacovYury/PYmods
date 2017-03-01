@@ -6,10 +6,10 @@ import string
 import traceback
 from functools import partial
 
-import BigWorld
 import Math
 import ResMgr
 
+import BigWorld
 import CommandMapping
 import Keys
 import PYmodsCore
@@ -18,7 +18,6 @@ from constants import ARENA_BONUS_TYPE
 from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared import radial_menu
 from gui.Scaleform.daapi.view.battle.shared.radial_menu import SHORTCUT_SETS, SHORTCUT_STATES, getKeyFromAction
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.genConsts.BATTLE_ICONS_CONSTS import BATTLE_ICONS_CONSTS
 from gui.app_loader.loader import g_appLoader
 from gui.battle_control.controllers.chat_cmd_ctrl import CHAT_COMMANDS
@@ -46,8 +45,7 @@ class _Config(PYmodsCore._Config):
                      'mapMenu_Key': self.defaultKeys['mapMenu_Key'],
                      'selectedConfig': 12,
                      'chatDelay': 550,
-                     'hotDelay': 350,
-                     'analyticsFull': True}
+                     'hotDelay': 350}
         self.i18n = {
             'UI_description': 'Radial Menu',
             'UI_setting_info_text': 'Special for ',
@@ -83,7 +81,7 @@ class _Config(PYmodsCore._Config):
 
     def update_data(self, doPrint=False):
         super(_Config, self).update_data()
-        self.activeConfigs = ['default']
+        self.activeConfigs[:] = 'default'
         self.configsMeta = {'default': self.i18n['UI_setting_selectedConfig_defaultMeta']}
         # noinspection SpellCheckingInspection
         self.commands = {'default': {'hotkeyOnly': [CustomMenuCommand({'command': 'RELOADINGGUN', 'hotKey': ['KEY_C']})]}}
@@ -448,35 +446,5 @@ old_updateMenu = radial_menu.RadialMenu._RadialMenu__updateMenu
 radial_menu.RadialMenu._RadialMenu__updateMenu = new_updateMenu
 old_onAction = radial_menu.RadialMenu.onAction
 radial_menu.RadialMenu.onAction = new_onAction
-
-
-class Analytics(PYmodsCore.Analytics):
-    def __init__(self):
-        super(Analytics, self).__init__()
-        self.mod_description = _config.ID
-        self.mod_version = _config.version.split(' ', 1)[0]
-        self.mod_id_analytics = 'UA-76792179-10'
-
-
-statistic_mod = Analytics()
-
-
-def fini():
-    try:
-        if _config.data['analyticsFull']:
-            statistic_mod.end()
-    except StandardError:
-        traceback.print_exc()
-
-
-def new_LW_populate(self):
-    old_LW_populate(self)
-    try:
-        if _config.data['analyticsFull']:
-            statistic_mod.start()
-    except StandardError:
-        traceback.print_exc()
-
-
-old_LW_populate = LobbyView._populate
-LobbyView._populate = new_LW_populate
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-10',
+                                     [_config.activeConfigs[_config.data['selectedConfig']]])

@@ -175,7 +175,7 @@ class _Config(PYmodsCore._Config):
                 print 'LampLights: %s loaded.' % confKey
 
     def update_data(self, doPrint=False):
-        self.configsDict = {}
+        self.configsDict.clear()
         self.modes = {'constant': [], 'stop': [], 'turn_left': [], 'turn_right': [], 'back': [], 'target': [], 'spot': []}
         super(_Config, self).update_data()
 
@@ -787,33 +787,4 @@ old_targetFocus = PlayerAvatar.targetFocus
 PlayerAvatar.targetFocus = new_targetFocus
 old_targetBlur = PlayerAvatar.targetBlur
 PlayerAvatar.targetBlur = new_targetBlur
-
-
-class Analytics(PYmodsCore.Analytics):
-    def __init__(self):
-        super(Analytics, self).__init__()
-        self.mod_description = _config.ID
-        self.mod_version = _config.version.split(' ', 1)[0]
-        self.mod_id_analytics = 'UA-76792179-2'
-
-
-statistic_mod = Analytics()
-
-
-def fini():
-    try:
-        statistic_mod.end()
-    except StandardError:
-        traceback.print_exc()
-
-
-def new_LW_populate(self):
-    old_LW_populate(self)
-    try:
-        statistic_mod.start()
-    except StandardError:
-        traceback.print_exc()
-
-
-old_LW_populate = LobbyView._populate
-LobbyView._populate = new_LW_populate
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-2', _config.configsDict)
