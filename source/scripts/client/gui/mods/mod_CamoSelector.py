@@ -618,7 +618,7 @@ def new_removeSlot(self, cType, slotIdx):
 def new_onViewLoaded(self, view):
     if view is not None and view.settings is not None:
         alias = view.settings.alias
-        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self.__loadingSubViews:
+        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
             BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
     old_onViewLoaded(self, view)
 
@@ -626,7 +626,7 @@ def new_onViewLoaded(self, view):
 def new_onViewLoadCanceled(self, name, item):
     if item is not None and item.pyEntity is not None:
         alias = item.pyEntity.settings.alias
-        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self.__loadingSubViews:
+        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
             BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
     old_onViewLoadCanceled(self, name, item)
 
@@ -634,7 +634,7 @@ def new_onViewLoadCanceled(self, name, item):
 def new_onViewLoadError(self, name, msg, item):
     if item is not None and item.pyEntity is not None:
         alias = item.pyEntity.settings.alias
-        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self.__loadingSubViews:
+        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
             BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
     old_onViewLoadError(self, name, msg, item)
 
