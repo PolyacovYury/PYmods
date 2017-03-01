@@ -316,7 +316,7 @@ class _Config(PYmodsCore._Config):
 
     def onWindowClose(self):
         try:
-            from gui.mods import mod_RemodEnabler
+            from gui.mods import mod_remodenabler
         except StandardError:
             g_currentPreviewVehicle.refreshModel()
 
