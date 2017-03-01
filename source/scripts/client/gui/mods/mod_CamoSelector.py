@@ -164,9 +164,9 @@ class CamoSelectorUI(AbstractWindowView):
                     nationConf[camoName]['kinds'] = ','.join(enabledKinds)
                 for confFolderName in _config.configFolders:
                     if camoName in _config.configFolders[confFolderName]:
-                        _config.loadJson('settings', dict(
+                        _config.loadJson(confFolderName, dict(
                             (key, nationConf[key]) for key in _config.configFolders[confFolderName]),
-                                         '/'.join((_config.configPath, 'camouflages', confFolderName, '')), True, False)
+                                         _config.configPath + 'camouflages/', True, False)
                 if nationConf[camoName]['random_mode'] == 2 or nationConf[camoName]['random_mode'] == 1 and not isInter:
                     del nationConf[camoName]['random_mode']
                 kindNames = filter(None, nationConf[camoName]['kinds'].split(','))
@@ -326,16 +326,20 @@ class _Config(PYmodsCore._Config):
             BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
 
     def readCamouflages(self, doShopCheck):
+        self.configFolders.clear()
         self.camouflages = {'modded': {}}
         self.camouflagesCache = self.loadJson('camouflagesCache', self.camouflagesCache, self.configPath)
         try:
-            for dirName in glob.iglob(self.configPath + 'camouflages/*'):
-                if os.path.isdir(dirName):
-                    self.configFolders[os.path.basename(dirName)] = confFolder = set()
-                    settings = self.loadJson('settings', {}, dirName + '/')
-                    for key in settings:
-                        confFolder.add(key)
-                    self.camouflages['modded'].update(settings)
+            configFiles = map(lambda x: os.path.basename(x).replace('.json', ''),
+                              glob.iglob(self.configPath + 'camouflages/*.json'))
+            camoDirs = set(ResMgr.openSection('vehicles/camouflages').keys())
+            camoNames = [camoName for camoName in configFiles if camoName in camoDirs]
+            for camoName in camoNames:
+                self.configFolders[camoName] = confFolder = set()
+                settings = self.loadJson(camoName, {}, self.configPath + 'camouflages/')
+                for key in settings:
+                    confFolder.add(key)
+                self.camouflages['modded'].update(settings)
         except StandardError:
             traceback.print_exc()
 
@@ -468,8 +472,7 @@ def new_customization(self, nationID):
             self.changedNations = getattr(self, 'changedNations', [])
             self.changedNations.append(nationID)
             commonDescr = old_customization(self, nationID)
-            for configDir in (dirName.replace(BigWorld.curCV + '/', '') for dirName in
-                              glob.iglob(_config.configPath + 'camouflages/*') if os.path.isdir(dirName)):
+            for configDir in _config.configFolders:
                 customDescr = items.vehicles._readCustomization(configDir + '/settings.xml', nationID, idsRange=(5001, 65535))
                 if 'custom_camo' in commonDescr['camouflageGroups'] and 'custom_camo' in customDescr['camouflageGroups']:
                     del customDescr['camouflageGroups']['custom_camo']
