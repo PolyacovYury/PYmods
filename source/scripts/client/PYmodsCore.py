@@ -1,25 +1,24 @@
 # -*- coding: utf-8 -*-
+import binascii
 import codecs
 import json
 import os
 import random
 import re
 import threading
-import time
 import traceback
 import urllib
 import urllib2
+import zlib
 from functools import partial
 
-import binascii
-
-import zlib
-
-import BigWorld
 import ResMgr
 
+import BigWorld
 import Event
 import Keys
+import game
+from PlayerEvents import g_playerEvents
 from constants import AUTH_REALM, DEFAULT_LANGUAGE
 from debug_utils import LOG_CURRENT_EXCEPTION
 
@@ -559,24 +558,28 @@ _modSettingsConfig.load()
 
 
 class Analytics(object):
-    def __init__(self):
+    def __init__(self, description, version, ID, confList=None):
+        self.mod_description = description
+        self.mod_id_analytics = ID
+        self.mod_version = version
         self.analytics_started = False
         self.analytics_ended = False
         self._thread_analytics = None
-        self.mod_description = ''
-        self.mod_id_analytics = ''
-        self.mod_version = ''
+        self.confList = confList if confList else ['(not set)']
         self.playerName = ''
         self.old_playerName = ''
         self.lang = ''
         self.user = None
         self.old_user = None
+        g_playerEvents.onAccountShowGUI += self.start
+        old_fini = game.fini
+        game.fini = lambda: (self.end(), old_fini())
 
     def analytics_start(self):
         if not self.analytics_started:
             from helpers import getClientLanguage
             self.lang = str(getClientLanguage()).upper()
-            param = urllib.urlencode({
+            paramDict = {
                 'v': 1,  # Version.
                 'tid': '%s' % self.mod_id_analytics,  # Код мода для сбора статистики
                 'cid': '%s' % self.user,  # ID пользователя
@@ -585,14 +588,17 @@ class Analytics(object):
                 'av': '%s %s' % (self.mod_description, self.mod_version),  # App version.
                 'cd': '%s (Cluster: [%s], lang: [%s])' % (self.playerName, AUTH_REALM, self.lang),
                 'ul': '%s' % self.lang,
-                'sc': 'start'
-            })
-            urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=param).read()
+                'sc': 'start'}
+            for confName in self.confList:
+                paramDict['aid'] = confName.split('.')[0]
+                param = urllib.urlencode(paramDict)
+                urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=param).read()
             self.analytics_started = True
             self.old_user = BigWorld.player().databaseID
             self.old_playerName = BigWorld.player().name
 
-    def start(self):
+    # noinspection PyUnusedLocal
+    def start(self, ctx):
         player = BigWorld.player()
         if self.user is not None and self.user != player.databaseID:
             self.old_user = player.databaseID
@@ -605,6 +611,7 @@ class Analytics(object):
         self._thread_analytics.start()
 
     def end(self):
+        g_playerEvents.onAccountShowGUI -= self.start
         if self.analytics_started:
             from helpers import getClientLanguage
             self.lang = str(getClientLanguage()).upper()

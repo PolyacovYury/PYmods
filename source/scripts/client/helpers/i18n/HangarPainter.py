@@ -179,42 +179,4 @@ def i18n_hook_makeString(key, *args, **kwargs):
         return old_makeString(key, *args, **kwargs)
 
 
-class _Analytics(PYmodsCore.Analytics):
-    def __init__(self):
-        super(_Analytics, self).__init__()
-        self.mod_description = _config.ID
-        self.mod_version = _config.version.split(' ', 1)[0]
-        self.mod_id_analytics = 'UA-76792179-6'
-
-
-statistic_mod = _Analytics()
-
-
-def new_fini():
-    try:
-        statistic_mod.end()
-    except StandardError:
-        traceback.print_exc()
-    old_fini()
-
-
-def new_populate(self):
-    old_populate(self)
-    try:
-        statistic_mod.start()
-    except StandardError:
-        traceback.print_exc()
-
-
-# noinspection PyGlobalUndefined
-def HangarPainter_hooks():
-    global old_populate, old_fini
-    from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
-    old_populate = LobbyView._populate
-    LobbyView._populate = new_populate
-    import game
-    old_fini = game.fini
-    game.fini = new_fini
-
-
-BigWorld.callback(0.0, HangarPainter_hooks)
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-6')

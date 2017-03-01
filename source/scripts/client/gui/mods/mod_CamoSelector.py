@@ -20,7 +20,7 @@ from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from gui import InputHandler, SystemMessages, g_tankActiveCamouflage
 from gui.ClientHangarSpace import ClientHangarSpace
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView, _LobbySubViewsCtrl
+from gui.Scaleform.daapi.view.lobby.LobbyView import _LobbySubViewsCtrl
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
@@ -845,33 +845,4 @@ def new_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback=None):
 
 old_cs_recreateVehicle = ClientHangarSpace.recreateVehicle
 ClientHangarSpace.recreateVehicle = new_cs_recreateVehicle
-
-
-class Analytics(PYmodsCore.Analytics):
-    def __init__(self):
-        super(Analytics, self).__init__()
-        self.mod_description = _config.ID
-        self.mod_version = _config.version.split(' ', 1)[0]
-        self.mod_id_analytics = 'UA-76792179-7'
-
-
-statistic_mod = Analytics()
-
-
-def fini():
-    try:
-        statistic_mod.end()
-    except StandardError:
-        traceback.print_exc()
-
-
-def new_LW_populate(self):
-    old_LW_populate(self)
-    try:
-        statistic_mod.start()
-    except StandardError:
-        traceback.print_exc()
-
-
-old_LW_populate = LobbyView._populate
-LobbyView._populate = new_LW_populate
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-7', _config.configFolders)

@@ -53,7 +53,7 @@ class _BR_Config(PYmodsCore._Config):
     def update_data(self, doPrint=False):
         super(_BR_Config, self).update_data()
         self.configsList = []
-        self.confMeta = {}
+        self.confMeta.clear()
         self.sectDict = {}
         configPath = self.configPath + 'configs/'
         if os.path.isdir(configPath):
@@ -160,88 +160,13 @@ def new_destroyGUI(self):
         _config.wasReplaced = dict.fromkeys(_config.wasReplaced.keys(), False)
 
 
-class _Analytics(PYmodsCore.Analytics):
-    def __init__(self):
-        super(_Analytics, self).__init__()
-        self.mod_description = _config.ID
-        self.mod_version = _config.version.split(' ', 1)[0]
-        self.mod_id_analytics = 'UA-76792179-1'
-        self.analytics_started = False
-        self.playerName = ''
-        self.old_playerName = ''
-        self.lang = ''
-        self.user = None
-        self.old_user = None
-
-    def analytics_start(self):
-        if not self.analytics_started:
-            from constants import AUTH_REALM
-            import urllib
-            import urllib2
-            from helpers import getClientLanguage
-            self.lang = str(getClientLanguage()).upper()
-            param = urllib.urlencode({
-                'v': 1,  # Version.
-                'tid': '%s' % self.mod_id_analytics,  # Код мода для сбора статистики
-                'cid': '%s' % self.user,  # ID пользователя
-                't': 'screenview',  # Screenview hit type.
-                'an': '%s' % self.mod_description,  # Имя мода
-                'av': '%s %s' % (self.mod_description, self.mod_version),  # App version.
-                'cd': '%s (Cluster: [%s], lang: [%s])' % (self.playerName, AUTH_REALM, self.lang),
-                'ul': '%s' % self.lang,
-                'aid': '%s' % _config.confMeta.keys()[0].split('.')[0] if _config.confMeta else '(not set)',
-                'sc': 'start'
-            })
-            urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=param).read()
-            for confName in _config.confMeta.keys()[1:]:
-                param = urllib.urlencode({
-                    'v': 1,  # Version.
-                    'tid': '%s' % self.mod_id_analytics,  # Код мода для сбора статистики
-                    'cid': '%s' % self.user,  # ID пользователя
-                    't': 'event',  # event hit type.
-                    'an': '%s' % self.mod_description,  # Имя мода
-                    'av': '%s %s' % (self.mod_description, self.mod_version),  # App version.
-                    'cd': '%s (Cluster: [%s], lang: [%s])' % (self.playerName, AUTH_REALM, self.lang),
-                    'ul': '%s' % self.lang,
-                    'aid': '%s' % confName.split('.')[0]
-                })
-                urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=param).read()
-            self.analytics_started = True
-            self.old_user = BigWorld.player().databaseID
-            self.old_playerName = BigWorld.player().name
-
-
-statistic_mod = _Analytics()
-
-
-def new_fini():
-    try:
-        statistic_mod.end()
-    except StandardError:
-        traceback.print_exc()
-    old_fini()
-
-
-def new_populate(self):
-    old_populate(self)
-    try:
-        statistic_mod.start()
-    except StandardError:
-        traceback.print_exc()
-
-
 # noinspection PyGlobalUndefined
 def ButtonReplacer_hooks():
-    global old_fini, old_destroyGUI, old_populate
-    import game
-    old_fini = game.fini
-    game.fini = new_fini
+    global old_destroyGUI
     from Avatar import PlayerAvatar
     old_destroyGUI = PlayerAvatar._PlayerAvatar__destroyGUI
     PlayerAvatar._PlayerAvatar__destroyGUI = new_destroyGUI
-    from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
-    old_populate = LobbyView._populate
-    LobbyView._populate = new_populate
 
 
 BigWorld.callback(0.0, ButtonReplacer_hooks)
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-1', _config.confMeta)

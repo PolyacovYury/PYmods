@@ -15,9 +15,9 @@ from collections import OrderedDict
 from functools import partial
 from string import Template
 
-import BigWorld
 import ResMgr
 
+import BigWorld
 import ClientArena
 import PYmodsCore
 import SoundGroups
@@ -26,7 +26,6 @@ from constants import ARENA_PERIOD
 from debug_utils import LOG_ERROR
 from gui import IngameSoundNotifications
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import BattleEndWarningPanel
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 from gui.app_loader import g_appLoader
 from gui.app_loader.settings import GUI_GLOBAL_SPACE_ID
@@ -709,33 +708,4 @@ old_AVK = ClientArena.ClientArena._ClientArena__onVehicleKilled
 ClientArena.ClientArena._ClientArena__onVehicleKilled = newAVK
 old_onVehicleDestroyed = DamagePanelMeta.DamagePanelMeta.as_setVehicleDestroyedS
 DamagePanelMeta.DamagePanelMeta.as_setVehicleDestroyedS = new_onVehicleDestroyed
-
-
-class Analytics(PYmodsCore.Analytics):
-    def __init__(self):
-        super(Analytics, self).__init__()
-        self.mod_description = _config.ID
-        self.mod_version = _config.version.split(' ', 1)[0]
-        self.mod_id_analytics = 'UA-76792179-8'
-
-
-statistic_mod = Analytics()
-
-
-def fini():
-    try:
-        statistic_mod.end()
-    except StandardError:
-        traceback.print_exc()
-
-
-def new_LW_populate(self):
-    old_LW_populate(self)
-    try:
-        statistic_mod.start()
-    except StandardError:
-        traceback.print_exc()
-
-
-old_LW_populate = LobbyView._populate
-LobbyView._populate = new_LW_populate
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-8')
