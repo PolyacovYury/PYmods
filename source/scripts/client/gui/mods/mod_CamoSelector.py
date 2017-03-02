@@ -330,7 +330,7 @@ class _Config(PYmodsCore._Config):
         self.camouflages = {'modded': {}}
         self.camouflagesCache = self.loadJson('camouflagesCache', self.camouflagesCache, self.configPath)
         try:
-            configFiles = map(lambda x: os.path.basename(x).replace('.json', ''),
+            configFiles = map(lambda x: os.path.basename(x).replace('.json', '').lower(),
                               glob.iglob(self.configPath + 'camouflages/*.json'))
             camoDirs = set(ResMgr.openSection('vehicles/camouflages').keys())
             camoNames = [camoName for camoName in configFiles if camoName in camoDirs]
