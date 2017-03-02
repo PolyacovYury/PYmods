@@ -293,10 +293,10 @@ class _Config(PYmodsCore._Config):
     def update_data(self, doPrint=False):
         super(_Config, self).update_data()
         self.settings = self.loadJson('settings', self.settings, self.configPath)
-        self.OM.enabled = bool(len(glob.glob('%s/vehicles/remods/*' % BigWorld.curCV)))
+        configsPath = self.configPath + 'remods/*.json'
+        self.OM.enabled = bool(len(glob.glob(configsPath)))
         if self.OM.enabled:
             self.OM.selected = self.loadJson('remodsCache', self.OM.selected, self.configPath)
-            configsPath = '%sremods/*.json' % self.configPath
             for configPath in glob.iglob(configsPath):
                 sname = os.path.basename(configPath).split('.')[0]
                 self.configsDict[sname] = confDict = self.loadJson(sname, self.configsDict.get(sname, {}),
