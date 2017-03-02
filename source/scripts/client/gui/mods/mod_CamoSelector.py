@@ -332,7 +332,8 @@ class _Config(PYmodsCore._Config):
         try:
             configFiles = map(lambda x: os.path.basename(x).replace('.json', '').lower(),
                               glob.iglob(self.configPath + 'camouflages/*.json'))
-            camoDirs = set(ResMgr.openSection('vehicles/camouflages').keys())
+            camoDirSect = ResMgr.openSection('vehicles/camouflages')
+            camoDirs = set(camoDirSect.keys() if camoDirSect is not None else [])
             camoNames = [camoName for camoName in configFiles if camoName in camoDirs]
             for camoName in camoNames:
                 self.configFolders[camoName] = confFolder = set()
