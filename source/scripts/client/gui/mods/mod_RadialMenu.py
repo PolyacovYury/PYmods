@@ -81,7 +81,7 @@ class _Config(PYmodsCore._Config):
 
     def update_data(self, doPrint=False):
         super(_Config, self).update_data()
-        self.activeConfigs[:] = 'default'
+        self.activeConfigs[:] = ['default']
         self.configsMeta = {'default': self.i18n['UI_setting_selectedConfig_defaultMeta']}
         # noinspection SpellCheckingInspection
         self.commands = {'default': {'hotkeyOnly': [CustomMenuCommand({'command': 'RELOADINGGUN', 'hotKey': ['KEY_C']})]}}
