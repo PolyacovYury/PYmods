@@ -358,9 +358,14 @@ class _Config(PYmodsCore._Config):
             else:
                 self.disable = settings['disable']
         for nation in settings.keys():
-            if nation not in nations.NAMES + ('international',):
-                continue
-            camouflages = items.vehicles.g_cache.customization(nations.INDICES[nation])['camouflages']
+            if nation not in nations.NAMES:
+                if nation != 'international':
+                    del settings[nation]
+                    continue
+                nationID = 0
+            else:
+                nationID = nations.INDICES[nation]
+            camouflages = items.vehicles.g_cache.customization(nationID)['camouflages']
             nationConf = settings[nation]
             camoNames = [camouflage['name'] for camouflage in camouflages.values()]
             for camoName in nationConf:
@@ -371,7 +376,7 @@ class _Config(PYmodsCore._Config):
                 if camoName not in nationConf:
                     continue
                 camoInShop = not doShopCheck or g_customizationController.dataAggregator._elementIsInShop(
-                    camoID, 0, nations.INDICES[nation])
+                    camoID, 0, nationID)
                 if nationConf[camoName].get('random_mode') == 2 or nationConf[camoName].get(
                         'random_mode') == 1 and camoName not in self.interCamo:
                     del nationConf[camoName]['random_mode']
