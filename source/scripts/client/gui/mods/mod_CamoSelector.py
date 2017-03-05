@@ -181,7 +181,7 @@ class CamoSelectorUI(AbstractWindowView):
         newSettings = {}
         if _config.disable:
             newSettings['disable'] = _config.disable
-        for nation in nations.NAMES:
+        for nation in nations.NAMES + ('international',):
             if nation in _config.camouflages:
                 newSettings[nation] = _config.camouflages[nation]
         _config.loadJson('settings', newSettings, _config.configPath, True)
@@ -322,6 +322,7 @@ class _Config(PYmodsCore._Config):
 
     def apply_settings(self, settings):
         super(_Config, self).apply_settings(settings)
+        self.hangarCamoCache.clear()
         if self.isModAdded:
             BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
 
