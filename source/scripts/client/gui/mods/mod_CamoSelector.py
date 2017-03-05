@@ -740,7 +740,7 @@ def new_ca_getCamouflageParams(self, vDesc, vID):
                     vDesc.type.compactDescr in camouflage['deny']:
                 continue
             if vDesc.type.compactDescr in camouflage['tiling']:
-                overriders.append(camoNames[camoName])
+                overriders.append(camoName)
             else:
                 print 'CamoSelector: a vehicle was not whitelisted and (or) blacklisted, but is missing:', vehName
                 print camouflage['tiling']
@@ -750,7 +750,7 @@ def new_ca_getCamouflageParams(self, vDesc, vID):
             if len(overriders) > 1 and otherOverrider in overriders:
                 overriders.remove(otherOverrider)
             _config.currentOverriders[curTeam] = overriders[vID % len(overriders)]
-        selectedCamouflages = [_config.currentOverriders[curTeam]]
+        selectedCamouflages = [camoNames[_config.currentOverriders[curTeam]]]
     if _config.data['doRandom'] and not selectedCamouflages:
         for camoID, camouflage in camouflages.items():
             camoName = camouflage['name']
