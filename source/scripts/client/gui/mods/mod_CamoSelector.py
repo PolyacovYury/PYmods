@@ -181,7 +181,7 @@ class CamoSelectorUI(AbstractWindowView):
         newSettings = {}
         if _config.disable:
             newSettings['disable'] = _config.disable
-        for nation in nations.NAMES:
+        for nation in nations.NAMES + ('international',):
             if nation in _config.camouflages:
                 newSettings[nation] = _config.camouflages[nation]
         _config.loadJson('settings', newSettings, _config.configPath, True)
@@ -322,6 +322,7 @@ class _Config(PYmodsCore._Config):
 
     def apply_settings(self, settings):
         super(_Config, self).apply_settings(settings)
+        self.hangarCamoCache.clear()
         if self.isModAdded:
             BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
 
@@ -357,9 +358,14 @@ class _Config(PYmodsCore._Config):
             else:
                 self.disable = settings['disable']
         for nation in settings.keys():
-            if nation not in nations.NAMES + ('international',):
-                continue
-            camouflages = items.vehicles.g_cache.customization(nations.INDICES[nation])['camouflages']
+            if nation not in nations.NAMES:
+                if nation != 'international':
+                    del settings[nation]
+                    continue
+                nationID = 0
+            else:
+                nationID = nations.INDICES[nation]
+            camouflages = items.vehicles.g_cache.customization(nationID)['camouflages']
             nationConf = settings[nation]
             camoNames = [camouflage['name'] for camouflage in camouflages.values()]
             for camoName in nationConf:
@@ -370,7 +376,7 @@ class _Config(PYmodsCore._Config):
                 if camoName not in nationConf:
                     continue
                 camoInShop = not doShopCheck or g_customizationController.dataAggregator._elementIsInShop(
-                    camoID, 0, nations.INDICES[nation])
+                    camoID, 0, nationID)
                 if nationConf[camoName].get('random_mode') == 2 or nationConf[camoName].get(
                         'random_mode') == 1 and camoName not in self.interCamo:
                     del nationConf[camoName]['random_mode']
@@ -609,7 +615,7 @@ def new_removeSlot(self, cType, slotIdx):
         else:
             vDesc = g_currentVehicle.item.getCustomizedDescriptor()
         nationName, vehName = vDesc.name.split(':')
-        item = g_customizationController.cart.items[slotIdx]
+        item = [item for item in g_customizationController.cart.items if item['idx'] == slotIdx][0]
         camoKind = CAMOUFLAGE_KIND_INDICES[slotIdx]
         camoName = item['object']._rawData['name']
         if _config.camouflagesCache.get(nationName, {}).get(vehName) is not None:
@@ -734,7 +740,7 @@ def new_ca_getCamouflageParams(self, vDesc, vID):
                     vDesc.type.compactDescr in camouflage['deny']:
                 continue
             if vDesc.type.compactDescr in camouflage['tiling']:
-                overriders.append(camoNames[camoName])
+                overriders.append(camoName)
             else:
                 print 'CamoSelector: a vehicle was not whitelisted and (or) blacklisted, but is missing:', vehName
                 print camouflage['tiling']
@@ -744,7 +750,7 @@ def new_ca_getCamouflageParams(self, vDesc, vID):
             if len(overriders) > 1 and otherOverrider in overriders:
                 overriders.remove(otherOverrider)
             _config.currentOverriders[curTeam] = overriders[vID % len(overriders)]
-        selectedCamouflages = [_config.currentOverriders[curTeam]]
+        selectedCamouflages = [camoNames[_config.currentOverriders[curTeam]]]
     if _config.data['doRandom'] and not selectedCamouflages:
         for camoID, camouflage in camouflages.items():
             camoName = camouflage['name']
