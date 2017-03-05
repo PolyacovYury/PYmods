@@ -615,7 +615,7 @@ def new_removeSlot(self, cType, slotIdx):
         else:
             vDesc = g_currentVehicle.item.getCustomizedDescriptor()
         nationName, vehName = vDesc.name.split(':')
-        item = g_customizationController.cart.items[slotIdx]
+        item = [item for item in g_customizationController.cart.items if item['idx'] == slotIdx][0]
         camoKind = CAMOUFLAGE_KIND_INDICES[slotIdx]
         camoName = item['object']._rawData['name']
         if _config.camouflagesCache.get(nationName, {}).get(vehName) is not None:
