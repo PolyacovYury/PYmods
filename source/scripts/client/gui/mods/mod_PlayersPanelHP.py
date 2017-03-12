@@ -30,7 +30,7 @@ class PlayersPanelController(object):
     def getVehicleHealth(vehicleID):
         if hasattr(BigWorld.entity(vehicleID), 'health'):
             vehicle = BigWorld.entity(vehicleID)
-            return vehicle.health if vehicle.isCrewActive else ''
+            return vehicle.health if vehicle.isCrewActive and vehicle.health >= 0 else 0
         else:
             vehicle = BigWorld.player().arena.vehicles.get(vehicleID)
             if vehicle is not None and vehicle['vehicleType'] is not None:
@@ -97,11 +97,11 @@ class PlayersPanelController(object):
             self.__component = None
 
     def __setSettings(self):
-        self.__component.as_setPPConfigS(self.container + 'text', {'leftX': 106, 'leftY': 3, 'rightX': -110, 'rightY': 3,
+        self.__component.as_setPPConfigS(self.container + 'text', {'leftX': 111, 'leftY': 3, 'rightX': -115, 'rightY': 3,
                                                                    'align': 'center'})
-        self.__component.as_setPPConfigS(self.container + 'img', {'leftX': 70, 'leftY': 3, 'rightX': -146, 'rightY': 3,
+        self.__component.as_setPPConfigS(self.container + 'img', {'leftX': 75, 'leftY': 3, 'rightX': -151, 'rightY': 3,
                                                                   'align': 'left'})
-        self.__component.as_setPPConfigS(self.container + 'bg', {'leftX': 71, 'leftY': 4, 'rightX': -145, 'rightY': 4,
+        self.__component.as_setPPConfigS(self.container + 'bg', {'leftX': 76, 'leftY': 4, 'rightX': -150, 'rightY': 4,
                                                                  'align': 'left'})
 
 
