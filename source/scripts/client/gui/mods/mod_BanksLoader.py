@@ -107,20 +107,25 @@ class _Config(PYmodsCore._Config):
                 bankFiles = filter(lambda x: x.startswith('res/' + mediaPath) and x.endswith('.bnk'), fileNames)
                 new_filePath = filePath[:-7] + '_BanksLoader_ing' + '.wotmod'
                 zip_new = zipfile.ZipFile(new_filePath, 'w')
-                for fileName in fileNames:
+                for fileInfo in zip_orig.infolist():
+                    fileName = fileInfo.filename
                     if fileName != '/'.join(('res', mediaPath, 'audio_mods.xml')):
-                        zip_new.writestr(fileName, zip_orig.read(fileName))
+                        zip_new.writestr(fileInfo, zip_orig.read(fileName))
                     elif bankFiles:
-                        zip_new.writestr(bankFiles[0].replace('.bnk', '.xml'), zip_orig.read(fileName))
+                        fileInfo.filename = bankFiles[0].replace('.bnk', '.xml')
+                        zip_new.writestr(fileInfo, zip_orig.read(fileName))
                 zip_new.close()
                 zip_orig.close()
                 if os.path.isfile(filePath):
                     try:
+                        stat = os.stat(filePath)
                         os.remove(filePath)
                     except StandardError:
                         traceback.print_exc()
                 if os.path.isfile(new_filePath):
                     os.rename(new_filePath, filePath)
+                if os.path.isfile(filePath):
+                    os.utime(filePath, (stat.st_atime, stat.st_mtime))
             else:
                 zip_orig.close()
 
