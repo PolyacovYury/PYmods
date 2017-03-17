@@ -388,6 +388,8 @@ class _Config(PYmodsCore._Config):
                     for tankType, whitelist in OMDesc.whitelists.iteritems():
                         for xmlName in whitelist:
                             remodTanks[tankType].add(xmlName)
+                            if xmlName not in self.OM.selected[tankType]:
+                                self.OM.selected[tankType][xmlName] = None
                 for tankType in self.OM.allDesc:
                     for xmlName in self.OM.selected[tankType].keys():
                         if (self.OM.selected[tankType][xmlName] and self.OM.selected[tankType][
