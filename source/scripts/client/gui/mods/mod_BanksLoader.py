@@ -11,6 +11,7 @@ import PYmodsCore
 from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
+from gui.Scaleform.daapi.view.dialogs.SimpleDialog import SimpleDialog
 
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
@@ -19,10 +20,24 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
     BigWorld.curCV = vl.asString
 
 
+class RestartButtons(object):
+    def __init__(self, restart, shutdown, close):
+        self._restart = restart
+        self._shutdown = shutdown
+        self._close = close
+
+    def getLabels(self):
+        return [
+            {'id': 'submit', 'label': self._restart, 'focused': True},
+            {'id': 'shutdown', 'label': self._shutdown, 'focused': False},
+            {'id': 'close', 'label': self._close, 'focused': False}
+        ]
+
+
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '1.9.1 (%(file_compile_date)s)'
+        self.version = '1.9.2 (%(file_compile_date)s)'
         self.author = '%s and Ekspoint' % self.author
         self.data = {'defaultPool': 48,
                      'lowEnginePool': 36,
@@ -36,6 +51,9 @@ class _Config(PYmodsCore._Config):
                          'You have installed new audio mods, so the game config was changed. {reason}Client restart '
                          'required to accept changes.\nSound mods proper behaviour <b>NOT GUARANTEED</b> until next '
                          'client start. This will <b>not</b> be required later. Do you want to restart the game now?'),
+                     'UI_restart_button_restart': 'Restart',
+                     'UI_restart_button_shutdown': 'Shutdown',
+                     'UI_restart_button_close': 'Continue',
                      'UI_restart_reason': 'Exact changes:\n{}\n',
                      'UI_restart_create': ' • sections <b>created</b> for these banks: ',
                      'UI_restart_delete': ' • sections <b>deleted</b> for these banks: ',
@@ -52,11 +70,15 @@ class _Config(PYmodsCore._Config):
     def updateMod(self):
         pass
 
-    def onRestartConfirmed(self, proceed):
-        if proceed:
+    def onRestartConfirmed(self, buttonID):
+        if buttonID == 'submit':
             print '%s: client restart confirmed.' % self.ID
             BigWorld.savePreferences()
             BigWorld.restartGame()
+        elif buttonID == 'shutdown':
+            print '%s: client shut down.' % self.ID
+            BigWorld.savePreferences()
+            BigWorld.quit()
         else:
             print '%s: client restart declined.' % self.ID
             self.was_declined = True
@@ -76,9 +98,11 @@ class _Config(PYmodsCore._Config):
         reasonStr = self.i18n['UI_restart_reason'].format(';\n'.join(reasons)) if reasons else ''
         dialogText = self.i18n['UI_restart_text'].format(reason=reasonStr)
         from gui import DialogsInterface
-        from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogButtons, SimpleDialogMeta
+        from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta
         DialogsInterface.showDialog(SimpleDialogMeta(self.i18n['UI_restart_header'], dialogText,
-                                                     I18nConfirmDialogButtons('common/confirm'), None),
+                                                     RestartButtons(self.i18n['UI_restart_button_restart'],
+                                                                    self.i18n['UI_restart_button_shutdown'],
+                                                                    self.i18n['UI_restart_button_close']), None),
                                     self.onRestartConfirmed)
 
     @staticmethod
@@ -315,6 +339,13 @@ class _Config(PYmodsCore._Config):
         print '%s: initialised.' % (self.message())
 
 
+def new_callHandler(self, buttonID):
+    if self._SimpleDialog__handler == _config.onRestartConfirmed:
+        self._SimpleDialog__handler(buttonID)
+    else:
+        old_callHandler(self, buttonID)
+
+
 _config = _Config()
 _config.load()
 
@@ -333,4 +364,6 @@ old_Login_populate = LoginView._populate
 LoginView._populate = new_Login_populate
 old_LW_populate = LobbyView._populate
 LobbyView._populate = new_LW_populate
+old_callHandler = SimpleDialog._SimpleDialog__callHandler
+SimpleDialog._SimpleDialog__callHandler = new_callHandler
 statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-9')
