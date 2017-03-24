@@ -13,15 +13,16 @@ from collections import namedtuple
 from functools import partial
 from zipfile import ZipFile
 
+import GUI
 import Math
 import ResMgr
 
 import BigWorld
-import GUI
 import Keys
 import PYmodsCore
 import SoundGroups
 import material_kinds
+import nations
 from Avatar import PlayerAvatar
 from AvatarInputHandler import mathUtils
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
@@ -1059,6 +1060,7 @@ InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 
 def OM_find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
     _config.OMDesc = None
+    _config.OSDesc = dict.fromkeys(_config.OSDesc, None)
     if not _config.OM.enabled:
         return
     curTankType = 'Player' if isPlayerVehicle else 'Ally' if isAlly else 'Enemy'
@@ -1407,30 +1409,34 @@ def new_prerequisites(self, respawnCompactDescr=None):
         self.respawnCompactDescr = None
     if respawnCompactDescr is None and self.typeDescriptor is not None:
         return ()
-    descr = self.getDescr(respawnCompactDescr)
+    vDesc = self.getDescr(respawnCompactDescr)
     if _config.data['enabled']:
         isPlayerVehicle = self.id == BigWorld.player().playerVehicleID
-        xmlName = descr.name.split(':')[1].lower()
+        xmlName = vDesc.name.split(':')[1].lower()
         playerName = BigWorld.player().arena.vehicles.get(self.id)['name']
         isAlly = BigWorld.player().arena.vehicles.get(self.id)['team'] == BigWorld.player().team
         OM_find(xmlName, isPlayerVehicle, isAlly)
         for partName in TankPartNames.ALL:
-            old_part = getattr(descr, partName)
-            setattr(descr, partName, copy.deepcopy(old_part))
-            getattr(descr, partName)['hitTester'] = old_part['hitTester']
-        vehName = descr.chassis['models']['undamaged'].split('/')[2]
+            old_part = getattr(vDesc, partName)
+            setattr(vDesc, partName, copy.deepcopy(old_part))
+            getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+        vehNation, vehName = vDesc.chassis['models']['undamaged'].split('/')[1:3]
+        vehDefNation = vDesc.chassis['hitTester'].bspModelName.split('/')[1]
         if _config.OMDesc is None:
-            if skinsFound['_dynamic']:
-                OS_find(vehName, isPlayerVehicle, isAlly, skinType='dynamic')
-                if _config.OSDesc['dynamic'] is not None:
-                    OS_createDynamic(self.id, descr)
-            if skinsFound['']:
-                OS_find(vehName, isPlayerVehicle, isAlly)
-                OS_apply(descr)
+            if vehNation == vehDefNation:
+                if skinsFound['_dynamic']:
+                    OS_find(vehName, isPlayerVehicle, isAlly, skinType='dynamic')
+                    if _config.OSDesc['dynamic'] is not None:
+                        OS_createDynamic(self.id, vDesc)
+                if skinsFound['']:
+                    OS_find(vehName, isPlayerVehicle, isAlly)
+                    OS_apply(vDesc)
+            elif _config.data['isDebug']:
+                print 'RemodEnabler: unknown vehicle nation for %s: %s' % (vehName, vehNation)
         else:
-            OM_apply(descr)
+            OM_apply(vDesc)
         debugOutput(xmlName, vehName, playerName)
-    self.typeDescriptor = descr
+    self.typeDescriptor = vDesc
     self.appearance, compoundAssembler, prereqs = appearance_cache.createAppearance(
         self.id, self.typeDescriptor, self.health, self.isCrewActive, self.isTurretDetached)
     return prereqs
@@ -1449,18 +1455,24 @@ def new_startBuild(self, vDesc, vState):
             getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
         message = None
         collisionNotVisible = not _config.data['collisionEnabled'] and not _config.data['collisionComparisonEnabled']
-        vehName = vDesc.chassis['models']['undamaged'].split('/')[2]
+        vehNation, vehName = vDesc.chassis['models']['undamaged'].split('/')[1:3]
+        vehDefNation = vDesc.chassis['hitTester'].bspModelName.split('/')[1]
         if _config.OMDesc is None:
-            if skinsFound['_dynamic']:
-                OS_find(vehName, isPlayerVehicle, isAlly, _config.data['currentMode'], skinType='dynamic')
-                if _config.OSDesc['dynamic'] is not None:
-                    OS_createDynamic(self._VehicleAppearance__vEntityId, vDesc,
-                                     _config.data['dynamicSkinEnabled'] and not _config.data['collisionComparisonEnabled'])
-                    if _config.data['dynamicSkinEnabled'] and collisionNotVisible:
-                        message = _config.i18n['UI_install_skin_dynamic'] + _config.OSDesc['dynamic'].name.join(('<b>', '</b>.'))
-            if skinsFound['']:
-                OS_find(vehName, isPlayerVehicle, isAlly, _config.data['currentMode'])
-                OS_apply(vDesc)
+            if vehNation == vehDefNation:
+                if skinsFound['_dynamic']:
+                    OS_find(vehName, isPlayerVehicle, isAlly, _config.data['currentMode'], skinType='dynamic')
+                    if _config.OSDesc['dynamic'] is not None:
+                        OS_createDynamic(self._VehicleAppearance__vEntityId, vDesc,
+                                         _config.data['dynamicSkinEnabled'] and not _config.data[
+                                             'collisionComparisonEnabled'])
+                        if _config.data['dynamicSkinEnabled'] and collisionNotVisible:
+                            message = _config.i18n['UI_install_skin_dynamic'] + _config.OSDesc['dynamic'].name.join(
+                                ('<b>', '</b>.'))
+                if skinsFound['']:
+                    OS_find(vehName, isPlayerVehicle, isAlly, _config.data['currentMode'])
+                    OS_apply(vDesc)
+            elif _config.data['isDebug']:
+                print 'RemodEnabler: unknown vehicle nation for %s: %s' % (vehName, vehNation)
             if (_config.OSDesc['dynamic'] is None or not _config.data['dynamicSkinEnabled']) and collisionNotVisible:
                 if _config.OSDesc['static'] is not None:
                     message = _config.i18n['UI_install_skin'] + _config.OSDesc['static'].name.join(('<b>', '</b>.'))
