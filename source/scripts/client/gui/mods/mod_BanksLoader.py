@@ -319,14 +319,17 @@ class _Config(PYmodsCore._Config):
         else:
             ResMgr.purge('engine_config_edited.xml')
         if any(self.editedBanks[key] for key in ('delete', 'create', 'move', 'remap')):
+            dirName = '/'.join((BigWorld.curCV, mediaPath))
+            if not os.path.exists(dirName):
+                os.makedirs(dirName)
             audio_mods_new.save()
-            origXml = '/'.join((BigWorld.curCV, mediaPath, 'audio_mods.xml'))
+            origXml = '/'.join((dirName, 'audio_mods.xml'))
             if os.path.isfile(origXml):
                 try:
                     os.remove(origXml)
                 except StandardError:
                     traceback.print_exc()
-            newXml = '/'.join((BigWorld.curCV, mediaPath, 'audio_mods_edited.xml'))
+            newXml = '/'.join((dirName, 'audio_mods_edited.xml'))
             if os.path.isfile(newXml):
                 os.rename(newXml, origXml)
         else:
