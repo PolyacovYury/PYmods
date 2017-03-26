@@ -22,7 +22,6 @@ import Keys
 import PYmodsCore
 import SoundGroups
 import material_kinds
-import nations
 from Avatar import PlayerAvatar
 from AvatarInputHandler import mathUtils
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
@@ -38,11 +37,12 @@ from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowM
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.app_loader.loader import g_appLoader
+from gui.shared.utils.HangarSpace import _HangarSpace
 from helpers import getClientVersion
-from items import vehicles
+from items.vehicles import g_cache
 from vehicle_systems import appearance_cache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
-from vehicle_systems.tankStructure import TankPartNames
+from vehicle_systems.tankStructure import TankPartNames, TankNodeNames
 
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
@@ -142,7 +142,7 @@ class OSDescriptor(object):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '2.9.6 (%(file_compile_date)s)'
+        self.version = '2.9.7 (%(file_compile_date)s)'
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True,
@@ -269,6 +269,7 @@ class _Config(PYmodsCore._Config):
         self.OSDesc = {'static': None, 'dynamic': None}
         self.curVehicleName = None
         self.loadingProxy = None
+        self.isModAdded = False
         self.loadLang()
 
     def template_settings(self):
@@ -276,7 +277,7 @@ class _Config(PYmodsCore._Config):
         viewKey['tooltip'] %= {'remod': self.i18n['UI_setting_ChangeViewHotkey_remod'] if self.data['remod'] else ''}
         template = {'modDisplayName': self.i18n['UI_description'],
                     'settingsVersion': 200,
-                    'enabled': True,
+                    'enabled': self.data['enabled'],
                     'column1': [self.createHotKey('DynamicSkinHotkey'),
                                 self.createControl('isDebug'),
                                 self.createControl('remod')],
@@ -288,12 +289,17 @@ class _Config(PYmodsCore._Config):
     def onWindowClose(self):
         g_currentPreviewVehicle.refreshModel()
 
+    def apply_settings(self, settings):
+        super(_Config, self).apply_settings(settings)
+        if self.isModAdded:
+            BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
+
     # noinspection PyUnresolvedReferences
     def update_data(self, doPrint=False):
         super(_Config, self).update_data()
         self.settings = self.loadJson('settings', self.settings, self.configPath)
         configsPath = self.configPath + 'remods/*.json'
-        self.OM.enabled = bool(len(glob.glob(configsPath)))
+        self.OM.enabled = bool(glob.glob(configsPath))
         if self.OM.enabled:
             self.OM.selected = self.loadJson('remodsCache', self.OM.selected, self.configPath)
             for configPath in glob.iglob(configsPath):
@@ -303,8 +309,8 @@ class _Config(PYmodsCore._Config):
                 if not confDict:
                     print '%s: error while reading %s.' % (self.ID, os.path.basename(configPath))
                     continue
-                settingsDict = self.settings['remods'].setdefault(sname, self.defaultRemodConfig)
-                if not settingsDict.get('enabled', True):
+                settingsDict = self.settings['remods'].setdefault(sname, {})
+                if not settingsDict.get('enabled', self.defaultRemodConfig['enabled']):
                     print '%s: %s disabled, moving on' % (self.ID, sname)
                     continue
                 self.OM.models[sname] = pRecord = OMDescriptor()
@@ -313,7 +319,8 @@ class _Config(PYmodsCore._Config):
                 for tankType in self.OM.allDesc:
                     allDesc = self.OM.allDesc[tankType]
                     selected = self.OM.selected[tankType]
-                    if not settingsDict.get('swap%s' % tankType, self.defaultRemodConfig['swap%s' % tankType]):
+                    swapKey = 'swap%s' % tankType
+                    if not settingsDict.get(swapKey, confDict.get(swapKey, self.defaultRemodConfig[swapKey])):
                         if self.data['isDebug']:
                             print '%s: %s swapping in %s disabled.' % (self.ID, tankType.lower(), sname)
                         for xmlName in selected.keys():
@@ -328,7 +335,7 @@ class _Config(PYmodsCore._Config):
                     templist = filter(None, map(lambda x: x.strip(), whiteStr.split(',')))
                     whitelist = pRecord.whitelists[tankType]
                     whitelist.update(templist)
-                    if not settingsDict.get(useKey, self.defaultRemodConfig[useKey]) and templist:
+                    if not settingsDict.get(useKey, self.defaultRemodConfig[useKey]) or not whitelist:
                         if sname not in allDesc:
                             allDesc.append(sname)
                         if self.data['isDebug']:
@@ -490,6 +497,7 @@ class _Config(PYmodsCore._Config):
             enabled=self.data['enabled'], login=True, lobby=True,
             callback=lambda: g_appLoader.getDefLobbyApp().loadView(
                 'RemodEnablerUI') if self.loadingProxy is None else None)
+        self.isModAdded = True
         g_entitiesFactories.addSettings(
             ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
                          ScopeTemplates.GLOBAL_SCOPE, False))
@@ -835,13 +843,11 @@ def modelsProcess(callback):
     if any(needToReReadSkinsModels.values()):
         _config.loadingProxy.updateTitle(_config.i18n['UI_loading_header_models_unpack'])
         SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
-        modelFileFormats = ('.model', '.primitives', '.visual', '.primitives_processed', '.visual_processed')
-        print 'RemodEnabler: starting to unpack vehicles packages'
+        modelFileFormats = ('.model', '.visual', '.visual_processed')
+        print 'RemodEnabler: unpacking vehicle packages'
         for vehPkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
             completionPercentage = 0
             filesCnt = 0
-            pkgStartTime = time.time()
-            print 'RemodEnabler: unpacking %s' % os.path.basename(vehPkgPath)
             _config.loadingProxy.addBar(os.path.basename(vehPkgPath))
             vehPkg = ZipFile(vehPkgPath)
             fileNamesList = filter(
@@ -855,7 +861,7 @@ def modelsProcess(callback):
                     skinsVehDict = skinVehNamesLDict[skinsType]
                     # noinspection PyTypeChecker
                     for skinName in skinsVehDict.get(os.path.normpath(memberFileName).split('\\')[2], []):
-                        processMember(memberFileName, skinName, skinsType, vehPkg)
+                        processMember(memberFileName, skinName, skinsType)
                         filesCnt += 1
                         if not filesCnt % 25:
                             yield doFuncCall()
@@ -866,10 +872,6 @@ def modelsProcess(callback):
                     yield doFuncCall()
             vehPkg.close()
             _config.loadingProxy.onBarComplete()
-            if _config.data['isDebug']:
-                print 'RemodEnabler: file candidates checked:', allFilesCnt
-                print 'RemodEnabler: file candidates processed:', filesCnt
-                print 'RemodEnabler: pkg process time: %s seconds' % round(time.time() - pkgStartTime, 2)
     BigWorld.callback(0.0, partial(callback, True))
 
 
@@ -879,14 +881,12 @@ def doFuncCall(callback):
 
 
 # noinspection PyPep8,PyPep8
-def processMember(memberFileName, skinName, skinType, vehPkg):
+def processMember(memberFileName, skinName, skinType):
     modelDir = modelsDir % skinType
     skinDir = modelDir.replace('%s/' % BigWorld.curCV, '') + skinName + '/'
     texDir = skinDir.replace('models', 'textures')
     skinsSign = 'vehicles/skins%s/' % skinType
-    if '.primitives' in memberFileName:
-        vehPkg.extract(memberFileName, modelDir + skinName)
-    elif '.model' in memberFileName:
+    if '.model' in memberFileName:
         oldModel = ResMgr.openSection(memberFileName)
         newModelPath = skinDir + memberFileName
         curModel = ResMgr.openSection(newModelPath, True)
@@ -922,6 +922,7 @@ def processMember(memberFileName, skinName, skinType, vehPkg):
                         curDiff = curTexture.replace(texDir, '')
                         curProp.writeString('Texture', curDiff.replace('\\', '/'))
 
+        curVisual.writeString('primitivesName', os.path.splitext(memberFileName)[0])
         curVisual.save()
 
 
@@ -1112,11 +1113,11 @@ def OM_apply(vDesc):
     for part in TankPartNames.ALL:
         getattr(vDesc, part)['models']['undamaged'] = data[part]['undamaged']
     if data['gun']['effects']:
-        newGunEffects = vehicles.g_cache._gunEffects.get(data['gun']['effects'])
+        newGunEffects = g_cache._gunEffects.get(data['gun']['effects'])
         if newGunEffects:
             vDesc.gun['effects'] = newGunEffects
     if data['gun']['reloadEffect']:
-        newGunReloadEffect = vehicles.g_cache._gunReloadEffects.get(data['gun']['reloadEffect'])
+        newGunReloadEffect = g_cache._gunReloadEffects.get(data['gun']['reloadEffect'])
         if newGunReloadEffect:
             vDesc.gun['reloadEffect'] = newGunReloadEffect
     vDesc.gun['emblemSlots'] = data['gun']['emblemSlots']
@@ -1166,9 +1167,11 @@ def OM_apply(vDesc):
             part = getattr(vDesc, partName)
             part['camouflageExclusionMask'] = exclMask
             part['camouflageTiling'] = camoData['tiling']
-    nodes = data['hull']['exhaust']['nodes']
-    if nodes and 'exhaust' in vDesc.hull:
-        vDesc.hull['exhaust'].nodes = nodes
+    # exhaust = data['hull']['exhaust']
+    # for effectDesc in vDesc.hull['customEffects']:
+    #     if exhaust['nodes']:
+    #         effectDesc.nodes[:] = exhaust['nodes']
+    #     effectDesc._selectorDesc = g_cache._customEffects['exhaust'].get(exhaust['pixie'], effectDesc._selectorDesc)
 
 
 def OS_find(curVehName, isPlayerVehicle, isAlly, currentMode='battle', skinType='static'):
@@ -1193,7 +1196,7 @@ OS_dynamic_db = {}
 def OS_createDynamic(vehicleID, vDesc, visible=False):
     global OS_dynamic_db
     try:
-        OS_dynamic_db[vehicleID] = OS_dyn = {part: {'model': None, 'motor': None} for part in TankPartNames.ALL[1:]}
+        OS_dynamic_db[vehicleID] = OS_dyn = {part: {'model': None} for part in TankPartNames.ALL[1:]}
         OS_dyn['loaded'] = False
         OS_dyn['entered'] = False
         OS_dyn['loading'] = True
@@ -1223,9 +1226,9 @@ def OS_onLoad_dynamic(vehicleID, visible, resourceRefs):
         try:
             modelPath, model = resourceItems[idx]
             if modelPath not in failed and model is not None:
-                module = OS_dyn[modelName]
-                module['model'] = model
-                module['model'].visible = False
+                moduleDict = OS_dyn[modelName]
+                moduleDict['model'] = model
+                moduleDict['model'].visible = False
             else:
                 failList.append(modelPath)
         except IndexError as e:
@@ -1257,23 +1260,18 @@ def OS_attach_dynamic(vehicleID, visible=False):
     OS_dyn = OS_dynamic_db[vehicleID]
     scaleMat = mathUtils.createIdentityMatrix()
     scaleMat.setScale(Math.Vector3(1.025))
-    addedMat = mathUtils.createIdentityMatrix()
     for modelName in TankPartNames.ALL[1:]:
-        module = OS_dyn[modelName]
-        if module['model'] is not None:
-            if module['motor'] not in module['model'].motors:
-                if modelName == TankPartNames.GUN and hasattr(vEntity, 'appearance'):
-                    addedMat = vEntity.appearance.gunMatrix
-                module['motor'] = BigWorld.Servo(
-                    mathUtils.MatrixProviders.product(mathUtils.MatrixProviders.product(scaleMat, addedMat),
-                                                      compoundModel.node(modelName)))
-                module['model'].addMotor(module['motor'])
-            if module['model'] not in vEntity.models:
+        moduleDict = OS_dyn[modelName]
+        if moduleDict['model'] is not None:
+            if moduleDict['model'] not in vEntity.models:
                 try:
-                    vEntity.addModel(module['model'])
+                    if modelName == TankPartNames.GUN:
+                        modelName = TankNodeNames.GUN_INCLINATION
+                    compoundModel.node(modelName).attach(moduleDict['model'], scaleMat)
                 except StandardError:
-                    pass
-            module['model'].visible = visible
+                    if _config.data['isDebug']:
+                        traceback.print_exc()
+            moduleDict['model'].visible = visible
 
 
 def OS_detach_dynamic(vehicleID):
@@ -1287,15 +1285,9 @@ def OS_detach_dynamic(vehicleID):
         if vEntity is None:
             return
         for moduleName in TankPartNames.ALL[1:]:
-            module = OS_dyn[moduleName]
-            if module['model'] is not None:
-                module['model'].visible = False
-                try:
-                    vEntity.delModel(module['model'])
-                except ValueError:
-                    pass
-                if module['motor'] in tuple(module['model'].motors):
-                    module['model'].delMotor(module['motor'])
+            moduleDict = OS_dyn[moduleName]
+            if moduleDict['model'] is not None:
+                moduleDict['model'].visible = False
 
 
 def OS_destroy_dynamic(vehicleID):
@@ -1473,10 +1465,11 @@ def new_startBuild(self, vDesc, vState):
                     OS_apply(vDesc)
             elif _config.data['isDebug']:
                 print 'RemodEnabler: unknown vehicle nation for %s: %s' % (vehName, vehNation)
-            if (_config.OSDesc['dynamic'] is None or not _config.data['dynamicSkinEnabled']) and collisionNotVisible:
+            if _config.data['isDebug'] and (
+                    _config.OSDesc['dynamic'] is None or not _config.data['dynamicSkinEnabled']) and collisionNotVisible:
                 if _config.OSDesc['static'] is not None:
                     message = _config.i18n['UI_install_skin'] + _config.OSDesc['static'].name.join(('<b>', '</b>.'))
-                elif _config.data['isDebug']:
+                else:
                     message = _config.i18n['UI_install_default']
         else:
             OM_apply(vDesc)
@@ -1536,17 +1529,17 @@ def new_setupModel(self, buildIdx):
                     'matrix'] = fullTurretMP = mathUtils.MatrixProviders.product(turretMP, fullHullMP)
                 self.modifiedModelsDesc[TankPartNames.GUN]['matrix'] = mathUtils.MatrixProviders.product(gunMP,
                                                                                                          fullTurretMP)
-                for moduleName, module in self.modifiedModelsDesc.items():
-                    if module['motor'] not in tuple(module['model'].motors):
-                        module['motor'] = BigWorld.Servo(
-                            mathUtils.MatrixProviders.product(module['matrix'], vEntity.matrix))
-                        module['model'].addMotor(module['motor'])
-                    if module['model'] not in tuple(vEntity.models):
+                for moduleName, moduleDict in self.modifiedModelsDesc.items():
+                    if moduleDict['motor'] not in tuple(moduleDict['model'].motors):
+                        moduleDict['motor'] = BigWorld.Servo(
+                            mathUtils.MatrixProviders.product(moduleDict['matrix'], vEntity.matrix))
+                        moduleDict['model'].addMotor(moduleDict['motor'])
+                    if moduleDict['model'] not in tuple(vEntity.models):
                         try:
-                            vEntity.addModel(module['model'])
+                            vEntity.addModel(moduleDict['model'])
                         except StandardError:
                             pass
-                    module['model'].visible = True
+                    moduleDict['model'].visible = True
                 addCollisionGUI(self)
             if _config.data['collisionEnabled']:
                 for moduleName in TankPartNames.ALL:
@@ -1558,12 +1551,20 @@ def new_setupModel(self, buildIdx):
                         print 'RemodEnabler: collision model for %s not found' % moduleName
 
 
+def new_updatePreviewVehicle(self, vehicle):
+    if _config.OMDesc is not None or any(_config.OSDesc.values()):
+        vehicle.descriptor = vehicle.getCustomizedDescriptor()
+    old_updatePreviewVehicle(self, vehicle)
+
+
 old_prerequisites = Vehicle.prerequisites
 Vehicle.prerequisites = new_prerequisites
 old_startBuild = _VehicleAppearance._VehicleAppearance__startBuild
 _VehicleAppearance._VehicleAppearance__startBuild = new_startBuild
 old_setupModel = _VehicleAppearance._VehicleAppearance__setupModel
 _VehicleAppearance._VehicleAppearance__setupModel = new_setupModel
+old_updatePreviewVehicle = _HangarSpace.updatePreviewVehicle
+_HangarSpace.updatePreviewVehicle = new_updatePreviewVehicle
 old_vehicle_onLeaveWorld = PlayerAvatar.vehicle_onLeaveWorld
 PlayerAvatar.vehicle_onLeaveWorld = new_vehicle_onLeaveWorld
 old_startVisual = Vehicle.startVisual
@@ -1576,12 +1577,13 @@ def clearCollision(self):
     if _config.data['enabled']:
         vEntityId = self._VehicleAppearance__vEntityId
         if getattr(self, 'collisionLoaded', False):
-            for moduleName, module in self.modifiedModelsDesc.items():
-                if module['model'] in tuple(BigWorld.entity(vEntityId).models):
-                    BigWorld.entity(vEntityId).delModel(module['model'])
-                    if module['motor'] in tuple(module['model'].motors):
-                        module['model'].delMotor(module['motor'])
-        delCollisionGUI(self)
+            for moduleName, moduleDict in self.modifiedModelsDesc.items():
+                if moduleDict['model'] in tuple(BigWorld.entity(vEntityId).models):
+                    BigWorld.entity(vEntityId).delModel(moduleDict['model'])
+                    if moduleDict['motor'] in tuple(moduleDict['model'].motors):
+                        moduleDict['model'].delMotor(moduleDict['motor'])
+        if hasattr(self, 'collisionTable'):
+            del self.collisionTable
         OS_destroy_dynamic(vEntityId)
 
 
@@ -1662,9 +1664,9 @@ def addCollisionGUI(self):
         self.collisionTable[moduleName] = curCollisionTable = {'textBoxes': [],
                                                                'texBoxes': [],
                                                                'armorValues': {}}
-        module = getattr(vDesc, moduleName)
-        for Idx, groupNum in enumerate(sorted(module['materials'].keys())):
-            armorValue = int(module['materials'][groupNum].armor)
+        moduleDict = getattr(vDesc, moduleName)
+        for Idx, groupNum in enumerate(sorted(moduleDict['materials'].keys())):
+            armorValue = int(moduleDict['materials'][groupNum].armor)
             curCollisionTable['armorValues'].setdefault(armorValue, [])
             if groupNum not in curCollisionTable['armorValues'][armorValue]:
                 curCollisionTable['armorValues'][armorValue].append(groupNum)
@@ -1690,11 +1692,6 @@ def addCollisionGUI(self):
                 texBox.addRoot()
                 curCollisionTable['texBoxes'].append(texBox)
         GUI.reSort()
-
-
-def delCollisionGUI(self):
-    if hasattr(self, 'collisionTable'):
-        del self.collisionTable
 
 
 def new_LW_populate(self):
