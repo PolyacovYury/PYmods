@@ -5,6 +5,7 @@ import datetime
 import gc
 import glob
 import os
+import pprint
 import shutil
 import time
 import traceback
@@ -320,7 +321,7 @@ class _Config(PYmodsCore._Config):
                     allDesc = self.OM.allDesc[tankType]
                     selected = self.OM.selected[tankType]
                     swapKey = 'swap%s' % tankType
-                    if not settingsDict.get(swapKey, confDict.get(swapKey, self.defaultRemodConfig[swapKey])):
+                    if not settingsDict.setdefault(swapKey, confDict.get(swapKey, self.defaultRemodConfig[swapKey])):
                         if self.data['isDebug']:
                             print '%s: %s swapping in %s disabled.' % (self.ID, tankType.lower(), sname)
                         for xmlName in selected.keys():
@@ -1409,9 +1410,16 @@ def new_prerequisites(self, respawnCompactDescr=None):
         isAlly = BigWorld.player().arena.vehicles.get(self.id)['team'] == BigWorld.player().team
         OM_find(xmlName, isPlayerVehicle, isAlly)
         for partName in TankPartNames.ALL:
-            old_part = getattr(vDesc, partName)
-            setattr(vDesc, partName, copy.deepcopy(old_part))
-            getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+            new_part = None
+            try:
+                old_part = getattr(vDesc, partName)
+                new_part = copy.deepcopy(old_part)
+                setattr(vDesc, partName, new_part)
+                getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+            except TypeError:
+                print partName
+                pprint.pprint(getattr(vDesc, partName))
+                pprint.pprint(new_part)
         vehNation, vehName = vDesc.chassis['models']['undamaged'].split('/')[1:3]
         vehDefNation = vDesc.chassis['hitTester'].bspModelName.split('/')[1]
         if _config.OMDesc is None:
