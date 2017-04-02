@@ -43,7 +43,7 @@ from helpers import getClientVersion
 from items.vehicles import g_cache
 from vehicle_systems import appearance_cache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
-from vehicle_systems.tankStructure import TankPartNames, TankNodeNames
+from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
@@ -83,12 +83,11 @@ def readEmblemSlots(confList):
 
 
 class OM(object):
+    tankGroups = ('Player', 'Ally', 'Enemy')
+
     def __init__(self):
         self.models = {}
         self.enabled = False
-        self.allDesc = {'Player': [''],
-                        'Ally': [''],
-                        'Enemy': ['']}
         self.selected = {'Player': {},
                          'Ally': {},
                          'Enemy': {},
@@ -157,10 +156,7 @@ class _Config(PYmodsCore._Config):
         self.defaultRemodConfig = {'enabled': True,
                                    'swapPlayer': True,
                                    'swapAlly': True,
-                                   'swapEnemy': True,
-                                   'usePlayerWhitelist': True,
-                                   'useAllyWhitelist': True,
-                                   'useEnemyWhitelist': True}
+                                   'swapEnemy': True}
         self.defaultKeys = {'DynamicSkinHotKey': ['KEY_F1', ['KEY_LCONTROL', 'KEY_RCONTROL']],
                             'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'ChangeViewHotKey': ['KEY_F2', ['KEY_LCONTROL', 'KEY_RCONTROL']],
@@ -208,11 +204,6 @@ class _Config(PYmodsCore._Config):
             'UI_flash_useFor_player_text': 'Player',
             'UI_flash_useFor_ally_text': 'Allies',
             'UI_flash_useFor_enemy_text': 'Enemies',
-            'UI_flash_useWL_header_text': 'Use whitelists for:',
-            'UI_flash_useWL_header_tooltip': 'If disabled, this remod will be installed to all corresponding group tanks.',
-            'UI_flash_useWL_player_text': 'Player',
-            'UI_flash_useWL_ally_text': 'Allies',
-            'UI_flash_useWL_enemy_text': 'Enemies',
             'UI_flash_WLVehDelete_header': 'Confirmation',
             'UI_flash_WLVehDelete_text': 'Are you sure you want to delete this vehicle from this whitelist?',
             'UI_flash_vehicleDelete_success': 'Vehicle deleted from whitelist: ',
@@ -311,46 +302,37 @@ class _Config(PYmodsCore._Config):
                     print '%s: error while reading %s.' % (self.ID, os.path.basename(configPath))
                     continue
                 settingsDict = self.settings['remods'].setdefault(sname, {})
-                if not settingsDict.get('enabled', self.defaultRemodConfig['enabled']):
+                if not settingsDict.setdefault('enabled', self.defaultRemodConfig['enabled']):
                     print '%s: %s disabled, moving on' % (self.ID, sname)
                     continue
                 self.OM.models[sname] = pRecord = OMDescriptor()
                 pRecord.name = sname
                 pRecord.authorMessage = confDict.get('authorMessage', '')
-                for tankType in self.OM.allDesc:
-                    allDesc = self.OM.allDesc[tankType]
+                for tankType in OM.tankGroups:
                     selected = self.OM.selected[tankType]
                     swapKey = 'swap%s' % tankType
+                    WLKey = '%sWhitelist' % tankType.lower()
+                    whiteStr = settingsDict.setdefault(WLKey, confDict.get(WLKey, ''))
                     if not settingsDict.setdefault(swapKey, confDict.get(swapKey, self.defaultRemodConfig[swapKey])):
                         if self.data['isDebug']:
                             print '%s: %s swapping in %s disabled.' % (self.ID, tankType.lower(), sname)
-                        for xmlName in selected.keys():
+                        for xmlName in selected:
                             if sname == selected[xmlName]:
-                                selected[xmlName] = ''
-                        if sname in allDesc:
-                            allDesc.remove(sname)
+                                selected[xmlName] = None
                         continue
-                    useKey = 'use%sWhitelist' % tankType
-                    WLKey = '%sWhitelist' % tankType.lower()
-                    whiteStr = settingsDict.setdefault(WLKey, confDict.get(WLKey, ''))
                     templist = filter(None, map(lambda x: x.strip(), whiteStr.split(',')))
                     whitelist = pRecord.whitelists[tankType]
                     whitelist.update(templist)
-                    if not settingsDict.get(useKey, self.defaultRemodConfig[useKey]) or not whitelist:
-                        if sname not in allDesc:
-                            allDesc.append(sname)
+                    if not whitelist:
                         if self.data['isDebug']:
-                            print ('%s: empty whitelist for %s. Apply to all %s tanks' if not whitelist else
-                                   '%s: %s will be used for all %s tanks if not explicitly designated to another '
-                                   'model.') % (self.ID, sname, tankType.lower())
+                            print '%s: empty whitelist for %s. Not applied to %s tanks.' % (
+                                self.ID, sname, tankType.lower())
                     else:
                         if self.data['isDebug']:
                             print '%s: whitelist for %s: %s' % (self.ID, tankType.lower(), list(whitelist))
-                        if sname in allDesc:
-                            allDesc.remove(sname)
-                        for xmlName in selected.keys():
+                        for xmlName in selected:
                             if sname == selected[xmlName] and xmlName not in whitelist:
-                                selected[xmlName] = ''
+                                selected[xmlName] = None
                 for key, data in pRecord.data.iteritems():
                     if key == 'common':
                         confSubDict = confDict
@@ -397,13 +379,12 @@ class _Config(PYmodsCore._Config):
                             remodTanks[tankType].add(xmlName)
                             if xmlName not in self.OM.selected[tankType]:
                                 self.OM.selected[tankType][xmlName] = None
-                for tankType in self.OM.allDesc:
+                for tankType in OM.tankGroups:
                     for xmlName in self.OM.selected[tankType].keys():
                         if (self.OM.selected[tankType][xmlName] and self.OM.selected[tankType][
                                 xmlName] not in self.OM.models):
-                            self.OM.selected[tankType][xmlName] = ''
-                        if (len(self.OM.allDesc[tankType]) == 1 or self.OM.selected[tankType][xmlName] not in
-                                self.OM.allDesc[tankType]) and xmlName not in remodTanks[tankType]:
+                            self.OM.selected[tankType][xmlName] = None
+                        if xmlName not in remodTanks[tankType]:
                             del self.OM.selected[tankType][xmlName]
                 if self.OM.selected['Remod'] and self.OM.selected['Remod'] not in self.OM.models:
                     self.OM.selected['Remod'] = ''
@@ -628,10 +609,6 @@ class RemodEnablerUI(AbstractWindowView):
                        'ally': _config.createLabel('useFor_ally', 'flash'),
                        'enemy': _config.createLabel('useFor_enemy', 'flash'),
                        'player': _config.createLabel('useFor_player', 'flash')},
-            'useWL': {'header': _config.createLabel('useWL_header', 'flash'),
-                      'ally': _config.createLabel('useWL_ally', 'flash'),
-                      'enemy': _config.createLabel('useWL_enemy', 'flash'),
-                      'player': _config.createLabel('useWL_player', 'flash')},
             'backBtn': _config.i18n['UI_flash_backBtn'],
             'saveBtn': _config.i18n['UI_flash_saveBtn']
         }
@@ -647,17 +624,14 @@ class RemodEnablerUI(AbstractWindowView):
             OMDesc = _config.OM.models[sname]
             OMSettings = _config.settings['remods'][sname]
             texts['remodNames'].append(sname)
-            settings['remods'].append({
-                'useFor': {key.lower(): OMSettings['swap%s' % key] for key in ('Player', 'Ally', 'Enemy')},
-                'useWL': {key.lower(): OMSettings['use%sWhitelist' % key] for key in ('Player', 'Ally', 'Enemy')},
-                'whitelists': [OMDesc.whitelists[team] for team in ('Player', 'Ally', 'Enemy')]
-            })
+            settings['remods'].append({'useFor': {key.lower(): OMSettings['swap%s' % key] for key in OM.tankGroups},
+                                       'whitelists': [OMDesc.whitelists[team] for team in OM.tankGroups]})
         for idx, skinType in enumerate(('', '_dynamic')):
             skins = _config.settings['skins%s' % skinType]
             for sname in sorted(_config.OS.models['static' if not skinType else 'dynamic']):
                 sDesc = skins[sname]
                 texts['skinNames'][idx].append(sname)
-                settings['skins'][idx].append({'useFor': {k.lower(): sDesc['swap%s' % k] for k in _config.OM.allDesc}})
+                settings['skins'][idx].append({'useFor': {k.lower(): sDesc['swap%s' % k] for k in OM.tankGroups}})
         self.flashObject.as_updateData(texts, settings)
         self.flashObject.as_initMainMenu()
 
@@ -698,12 +672,11 @@ class RemodEnablerUI(AbstractWindowView):
             OMSettings = _config.settings['remods'][remodNames[idx]]
             for key in ('Player', 'Ally', 'Enemy'):
                 OMSettings['swap%s' % key] = getattr(setObj.useFor, key.lower())
-                OMSettings['use%sWhitelist' % key] = getattr(setObj.useWL, key.lower())
             for teamIdx, team in enumerate(('player', 'ally', 'enemy')):
                 OMSettings['%sWhitelist' % team] = ','.join(setObj.whitelists[teamIdx])
         for idx, settingsArray in enumerate(settings.skins):
             for nameIdx, setObj in enumerate(settingsArray):
-                for key in _config.OM.allDesc:
+                for key in OM.tankGroups:
                     _config.settings['skins%s' % ('', '_dynamic')[idx]][
                         sorted(_config.OS.models[('static', 'dynamic')[idx]])[nameIdx]]['swap%s' % key] = getattr(
                         setObj.useFor, key.lower())
@@ -930,7 +903,11 @@ def processMember(memberFileName, skinName, skinType):
 @process
 def skinCaller():
     if any(skinsFound.values()):
-        g_appLoader.getDefLobbyApp().loadView('RemodEnablerLoading')
+        lobbyApp = g_appLoader.getDefLobbyApp()
+        if lobbyApp is not None:
+            lobbyApp.loadView('RemodEnablerLoading')
+        else:
+            return
         jobStartTime = time.time()
         try:
             yield skinCRC32All()
@@ -1014,7 +991,6 @@ def lobbyKeyControl(event):
                 if _config.data['currentMode'] != 'remod':
                     curTankType = _config.data['currentMode'].capitalize()
                     snameList = sorted(_config.OM.models.keys()) + ['']
-                    allDesc = _config.OM.allDesc[curTankType]
                     selected = _config.OM.selected[curTankType]
                     vehName = _config.curVehicleName
                     if selected.get(vehName) not in snameList:
@@ -1025,9 +1001,9 @@ def lobbyKeyControl(event):
                             snameIdx = 0
                     for Idx in xrange(snameIdx, len(snameList)):
                         curPRecord = _config.OM.models.get(snameList[Idx])
-                        if snameList[Idx] not in allDesc and vehName not in curPRecord.whitelists[curTankType]:
+                        if snameList[Idx] and vehName not in curPRecord.whitelists[curTankType]:
                             continue
-                        if vehName in selected or len(allDesc) > 1:
+                        if vehName in selected:
                             selected[vehName] = getattr(curPRecord, 'name', '')
                         _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
                         break
@@ -1069,17 +1045,16 @@ def OM_find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
     selected = _config.OM.selected
     if currentMode != 'remod':
         snameList = sorted(_config.OM.models.keys()) + ['']
-        allDesc = _config.OM.allDesc[curTankType]
         if selected[curTankType].get(xmlName) not in snameList:
             snameIdx = 0
         else:
             snameIdx = snameList.index(selected[curTankType][xmlName])
         for Idx in xrange(snameIdx, len(snameList)):
             curPRecord = _config.OM.models.get(snameList[Idx])
-            if snameList[Idx] not in allDesc and xmlName not in curPRecord.whitelists[curTankType]:
+            if snameList[Idx] and xmlName not in curPRecord.whitelists[curTankType]:
                 continue
             else:
-                if xmlName in selected[curTankType] or len(allDesc) > 1:
+                if xmlName in selected:
                     selected[curTankType][xmlName] = getattr(curPRecord, 'name', '')
                 _config.OMDesc = curPRecord
                 break
