@@ -25,7 +25,7 @@ import SoundGroups
 import material_kinds
 from Avatar import PlayerAvatar
 from AvatarInputHandler import mathUtils
-from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
+from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle, _CurrentPreviewVehicle
 from Vehicle import Vehicle
 from adisp import AdispException, async, process
 from gui import InputHandler, SystemMessages
@@ -38,7 +38,6 @@ from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowM
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.app_loader.loader import g_appLoader
-from gui.shared.utils.HangarSpace import _HangarSpace
 from helpers import getClientVersion
 from items.vehicles import g_cache
 from vehicle_systems import appearance_cache
@@ -142,7 +141,7 @@ class OSDescriptor(object):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '2.9.7 (%(file_compile_date)s)'
+        self.version = '2.9.8.1 (%(file_compile_date)s)'
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True,
@@ -1054,7 +1053,7 @@ def OM_find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
             if snameList[Idx] and xmlName not in curPRecord.whitelists[curTankType]:
                 continue
             else:
-                if xmlName in selected:
+                if xmlName in selected[curTankType]:
                     selected[curTankType][xmlName] = getattr(curPRecord, 'name', '')
                 _config.OMDesc = curPRecord
                 break
@@ -1143,11 +1142,11 @@ def OM_apply(vDesc):
             part = getattr(vDesc, partName)
             part['camouflageExclusionMask'] = exclMask
             part['camouflageTiling'] = camoData['tiling']
-    # exhaust = data['hull']['exhaust']
-    # for effectDesc in vDesc.hull['customEffects']:
-    #     if exhaust['nodes']:
-    #         effectDesc.nodes[:] = exhaust['nodes']
-    #     effectDesc._selectorDesc = g_cache._customEffects['exhaust'].get(exhaust['pixie'], effectDesc._selectorDesc)
+    exhaust = data['hull']['exhaust']
+    for effectDesc in vDesc.hull['customEffects']:
+        if exhaust['nodes']:
+            effectDesc.nodes[:] = exhaust['nodes']
+        effectDesc._selectorDesc = g_cache._customEffects['exhaust'].get(exhaust['pixie'], effectDesc._selectorDesc)
 
 
 def OS_find(curVehName, isPlayerVehicle, isAlly, currentMode='battle', skinType='static'):
@@ -1425,9 +1424,16 @@ def new_startBuild(self, vDesc, vState):
         isAlly = _config.data['currentMode'] == 'ally'
         OM_find(xmlName, isPlayerVehicle, isAlly, _config.data['currentMode'])
         for partName in TankPartNames.ALL:
-            old_part = getattr(vDesc, partName)
-            setattr(vDesc, partName, copy.deepcopy(old_part))
-            getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+            new_part = None
+            try:
+                old_part = getattr(vDesc, partName)
+                new_part = copy.deepcopy(old_part)
+                setattr(vDesc, partName, new_part)
+                getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+            except TypeError:
+                print partName
+                pprint.pprint(getattr(vDesc, partName))
+                pprint.pprint(new_part)
         message = None
         collisionNotVisible = not _config.data['collisionEnabled'] and not _config.data['collisionComparisonEnabled']
         vehNation, vehName = vDesc.chassis['models']['undamaged'].split('/')[1:3]
@@ -1534,10 +1540,10 @@ def new_setupModel(self, buildIdx):
                         print 'RemodEnabler: collision model for %s not found' % moduleName
 
 
-def new_updatePreviewVehicle(self, vehicle):
-    if _config.OMDesc is not None or any(_config.OSDesc.values()):
-        vehicle.descriptor = vehicle.getCustomizedDescriptor()
-    old_updatePreviewVehicle(self, vehicle)
+def new_refreshModel(self):
+    if self.isPresent() and (_config.OMDesc is not None or any(_config.OSDesc.values())):
+        self._CurrentPreviewVehicle__item = self._CurrentPreviewVehicle__getPreviewVehicle(self.item.intCD)
+    old_refreshModel(self)
 
 
 old_prerequisites = Vehicle.prerequisites
@@ -1546,8 +1552,8 @@ old_startBuild = _VehicleAppearance._VehicleAppearance__startBuild
 _VehicleAppearance._VehicleAppearance__startBuild = new_startBuild
 old_setupModel = _VehicleAppearance._VehicleAppearance__setupModel
 _VehicleAppearance._VehicleAppearance__setupModel = new_setupModel
-old_updatePreviewVehicle = _HangarSpace.updatePreviewVehicle
-_HangarSpace.updatePreviewVehicle = new_updatePreviewVehicle
+old_refreshModel = _CurrentPreviewVehicle.refreshModel
+_CurrentPreviewVehicle.refreshModel = new_refreshModel
 old_vehicle_onLeaveWorld = PlayerAvatar.vehicle_onLeaveWorld
 PlayerAvatar.vehicle_onLeaveWorld = new_vehicle_onLeaveWorld
 old_startVisual = Vehicle.startVisual
