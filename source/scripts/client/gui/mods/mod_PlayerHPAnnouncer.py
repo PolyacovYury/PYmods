@@ -19,18 +19,16 @@ class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__('%(mod_ID)s')
         self.version = '1.0.0 (%(file_compile_date)s)'
-        self.data = {'10percent': '10percent',
-                     '25percent': '25percent',
-                     '50percent': '50percent'}
+        self.data = {'10percent': 'percent_10',
+                     '25percent': 'percent_25',
+                     '50percent': 'percent_50'}
         self.currentPercent = None
 
     def updateMod(self):
         pass
 
-    def load(self):
-        self.update_data(True)
-        print '%s: initialised.' % (self.message())
-
+    def do_config_delayed(self):
+        pass
 
 _config = _Config()
 _config.load()
@@ -50,12 +48,12 @@ def new_updateHealth(self, healthStr, progress):
     old_updateHealth(self, healthStr, progress)
     if _config.currentPercent is None:
         return
-    if progress <= 10 < _config.currentPercent:
-        SoundGroups.g_instance.playSound2D(_config.data['10percent'])
-    elif progress <= 25 < _config.currentPercent:
-        SoundGroups.g_instance.playSound2D(_config.data['25percent'])
-    elif progress <= 50 < _config.currentPercent:
-        SoundGroups.g_instance.playSound2D(_config.data['50percent'])
+    for percentage in (10, 25, 50):
+        if not progress:
+            break
+        if progress <= percentage < _config.currentPercent:
+            SoundGroups.g_instance.playSound2D(_config.data['%spercent' % percentage])
+            break
     _config.currentPercent = progress
 
 
