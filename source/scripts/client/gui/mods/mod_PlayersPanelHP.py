@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import traceback
-
 import BigWorld
 import PYmodsCore
+import traceback
 from Avatar import PlayerAvatar
 from Vehicle import Vehicle
 from gui.Scaleform.daapi.view.battle.shared.minimap.plugins import ArenaVehiclesPlugin
@@ -11,20 +10,27 @@ from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 
 
-class PlayersPanelController(object):
+class PlayersPanelController(PYmodsCore._Config):
     vCache = property(lambda self: self.__vCache)
 
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
-    def __init__(self, container):
-        self.container = container
-        self.version = '1.0 (%(file_compile_date)s)'
+    def __init__(self):
+        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.version = '1.1 (%(file_compile_date)s)'
+        self.author = 'by PolarFox (forked %s)' % self.author
+        self.data = {'textFields': {}}
         self.__hpCache = dict()
         self.__vCache = set()
         self.__component = None
-        vxBattleFlash.register(self.container)
+        vxBattleFlash.register(self.ID)
         vxBattleFlash.onStateChanged += self.__onStateChanged
-        print '%s v.%s by PolarFox (forked by Polyacov_Yury): initialised.' % (self.container, self.version)
+
+    def updateMod(self):
+        pass
+
+    def do_config_delayed(self):
+        pass
 
     @staticmethod
     def getVehicleHealth(vehicleID):
@@ -48,16 +54,15 @@ class PlayersPanelController(object):
     def setHPField(self, vehicleID):
         playerTeam = BigWorld.player().team
         team = BigWorld.player().arena.vehicles[vehicleID]['team']
-        self.__component.as_setPPTextS(self.container + 'text', [
-            vehicleID, "<font face='$FieldFont' color='#FFFFFF' size='11'>%s/%s</font>" % (
-                self.__hpCache[vehicleID]['current'], self.__hpCache[vehicleID]['max'])])
-        self.__component.as_setPPTextS(self.container + 'img', [
-            vehicleID, "<img src='img://icons/hp_alive_%s.png' width='%d' height='14'>" % (
-                'l' if playerTeam == team else 'r',
-                72 * (float(self.__hpCache[vehicleID]['current']) / self.__hpCache[vehicleID]['max']))
-            if float(self.__hpCache[vehicleID]['current']) else ''])
-        self.__component.as_setPPTextS(self.container + 'bg', [
-            vehicleID, "<img src='img://icons/hp_bg.png' width='70' height='12'>"])
+        panelSide = 'left' if playerTeam == team else 'right'
+        currentHP = self.__hpCache[vehicleID]['current']
+        maxHP = self.__hpCache[vehicleID]['max']
+        for fieldName, fieldData in sorted(self.data['textFields'].iteritems()):
+            self.__component.as_setPPTextS(self.ID + fieldName, [vehicleID, (fieldData['%sText' % panelSide] % {
+                'curHealth': currentHP,
+                'maxHealth': maxHP,
+                'barWidth': fieldData.get('%sWidth' % panelSide, 0) * (float(currentHP) / maxHP)
+            }) if not fieldData.get('hideIfDead', False) or currentHP else ''])
 
     def onEndBattle(self):
         BigWorld.player().arena.onVehicleKilled -= self.onVehicleKilled
@@ -86,7 +91,7 @@ class PlayersPanelController(object):
             self.__vCache.add(vehicleID)
 
     def __onStateChanged(self, eventType, compID, compUI):
-        if compID != self.container:
+        if compID != self.ID:
             return
         if eventType == vxBattleFlashEvents.COMPONENT_READY:
             self.__component = compUI
@@ -97,12 +102,8 @@ class PlayersPanelController(object):
             self.__component = None
 
     def __setSettings(self):
-        self.__component.as_setPPConfigS(self.container + 'text', {'leftX': 111, 'leftY': 3, 'rightX': -115, 'rightY': 3,
-                                                                   'align': 'center'})
-        self.__component.as_setPPConfigS(self.container + 'img', {'leftX': 75, 'leftY': 3, 'rightX': -151, 'rightY': 3,
-                                                                  'align': 'left'})
-        self.__component.as_setPPConfigS(self.container + 'bg', {'leftX': 76, 'leftY': 4, 'rightX': -150, 'rightY': 4,
-                                                                 'align': 'left'})
+        for fieldName, fieldData in self.data['textFields'].iteritems():
+            self.__component.as_setPPConfigS(self.ID + fieldName, fieldData)
 
 
 def new_ArenaVehiclesPlugin__setInAoI(self, entry, isInAoI):
@@ -138,7 +139,8 @@ def new_vehicle_onHealthChanged(self, newHealth, attackerID, attackReasonID):
 try:
     from gui.mods.vxBattleFlash import *
 
-    mod_playersHP = PlayersPanelController('%(mod_ID)s')
+    mod_playersHP = PlayersPanelController()
+    mod_playersHP.load()
 
 except ImportError:
     vxBattleFlash = None
@@ -159,4 +161,4 @@ else:
     ArenaVehiclesPlugin._ArenaVehiclesPlugin__setInAoI = new_ArenaVehiclesPlugin__setInAoI
     old_vehicle_onEnterWorld = PlayerAvatar.vehicle_onEnterWorld
     PlayerAvatar.vehicle_onEnterWorld = new_vehicle_onEnterWorld
-    statistic_mod = PYmodsCore.Analytics(mod_playersHP.container, mod_playersHP.version.split(' ', 1)[0], 'UA-76792179-11')
+    statistic_mod = PYmodsCore.Analytics(mod_playersHP.ID, mod_playersHP.version.split(' ', 1)[0], 'UA-76792179-11')
