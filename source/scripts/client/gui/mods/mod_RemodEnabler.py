@@ -102,7 +102,9 @@ class OMDescriptor(object):
                            'Enemy': set()}
         self.data = {'chassis': {'undamaged': '',
                                  'AODecals': None,
-                                 'hullPosition': None},
+                                 'hullPosition': None,
+                                 'wwsoundPC': '',
+                                 'wwsoundNPC': ''},
                      'hull': {'undamaged': '',
                               'emblemSlots': [],
                               'camouflage': {'exclusionMask': '',
@@ -119,6 +121,8 @@ class OMDescriptor(object):
                                             'tiling': (1.0, 1.0, 0.0, 0.0)},
                              'effects': '',
                              'reloadEffect': ''},
+                     'engine': {'wwsoundPC': '',
+                                'wwsoundNPC': ''},
                      'common': {'camouflage': {'exclusionMask': '',
                                                'tiling': (1.0, 1.0, 0.0, 0.0)}}}
 
@@ -337,7 +341,7 @@ class _Config(PYmodsCore._Config):
                         confSubDict = confDict
                     else:
                         confSubDict = confDict.get(key)
-                    if not confDict:
+                    if not confSubDict:
                         continue
                     if 'undamaged' in data:
                         data['undamaged'] = confSubDict['undamaged']
@@ -360,7 +364,7 @@ class _Config(PYmodsCore._Config):
                     if key == 'chassis':
                         for k in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
                             data[k] = confSubDict[k]
-                    for subKey in ('effects', 'reloadEffect'):
+                    for subKey in ('effects', 'reloadEffect', 'wwsoundPC', 'wwsoundNPC'):
                         if subKey in data and subKey in confSubDict:
                             data[subKey] = confSubDict[subKey]
                 if self.data['isDebug']:
@@ -1147,6 +1151,12 @@ def OM_apply(vDesc):
         if exhaust['nodes']:
             effectDesc.nodes[:] = exhaust['nodes']
         effectDesc._selectorDesc = g_cache._customEffects['exhaust'].get(exhaust['pixie'], effectDesc._selectorDesc)
+    for partName in ('chassis', 'engine'):
+        for key in ('wwsoundPC', 'wwsoundNPC'):
+            part = getattr(vDesc, partName)
+            soundID = data[partName][key]
+            if soundID:
+                part[key] = soundID
 
 
 def OS_find(curVehName, isPlayerVehicle, isAlly, currentMode='battle', skinType='static'):
@@ -1350,6 +1360,15 @@ def printOldConfigs(vDesc):
     for part in ('gun', 'hull', 'turret'):
         print 'old %s emblem slots configuration:' % part
         print getattr(vDesc, part)['emblemSlots']
+    for ids in (('_gunEffects', 'effects', 'shot'), ('_gunReloadEffects', 'reloadEffect', 'reload')):
+        for key, value in getattr(g_cache, ids[0]).items():
+            if value == vDesc.gun[ids[1]]:
+                print 'old gun', ids[2], 'effects ID:', key
+                break
+        else:
+            print 'gun', ids[2], 'effect ID not found'
+    print 'chassis sound IDs: PC:', vDesc.chassis['wwsoundPC'], 'NPC:', vDesc.chassis['wwsoundNPC']
+    print 'engine sound IDs: PC:', vDesc.engine['wwsoundPC'], 'NPC:', vDesc.engine['wwsoundNPC']
 
 
 def debugOutput(xmlName, vehName, playerName=None):
@@ -1383,13 +1402,14 @@ def new_prerequisites(self, respawnCompactDescr=None):
         playerName = BigWorld.player().arena.vehicles.get(self.id)['name']
         isAlly = BigWorld.player().arena.vehicles.get(self.id)['team'] == BigWorld.player().team
         OM_find(xmlName, isPlayerVehicle, isAlly)
-        for partName in TankPartNames.ALL:
+        for partName in TankPartNames.ALL + ('engine',):
             new_part = None
             try:
                 old_part = getattr(vDesc, partName)
                 new_part = copy.deepcopy(old_part)
                 setattr(vDesc, partName, new_part)
-                getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+                if 'hitTester' in old_part:
+                    getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
             except TypeError:
                 print partName
                 pprint.pprint(getattr(vDesc, partName))
@@ -1423,13 +1443,14 @@ def new_startBuild(self, vDesc, vState):
         isPlayerVehicle = _config.data['currentMode'] == 'player'
         isAlly = _config.data['currentMode'] == 'ally'
         OM_find(xmlName, isPlayerVehicle, isAlly, _config.data['currentMode'])
-        for partName in TankPartNames.ALL:
+        for partName in TankPartNames.ALL + ('engine',):
             new_part = None
             try:
                 old_part = getattr(vDesc, partName)
                 new_part = copy.deepcopy(old_part)
                 setattr(vDesc, partName, new_part)
-                getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+                if 'hitTester' in old_part:
+                    getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
             except TypeError:
                 print partName
                 pprint.pprint(getattr(vDesc, partName))
