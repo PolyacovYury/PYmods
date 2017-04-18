@@ -1,18 +1,8 @@
 # -*- coding: utf-8 -*-
 import binascii
-import copy
 import datetime
 import gc
-import glob
-import os
-import pprint
-import shutil
 import time
-import traceback
-import weakref
-from collections import namedtuple
-from functools import partial
-from zipfile import ZipFile
 
 import GUI
 import Math
@@ -22,12 +12,21 @@ import BigWorld
 import Keys
 import PYmodsCore
 import SoundGroups
+import copy
+import glob
 import material_kinds
+import os
+import pprint
+import shutil
+import traceback
+import weakref
 from Avatar import PlayerAvatar
 from AvatarInputHandler import mathUtils
-from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
+from CurrentVehicle import _CurrentPreviewVehicle, g_currentPreviewVehicle, g_currentVehicle
 from Vehicle import Vehicle
 from adisp import AdispException, async, process
+from collections import namedtuple
+from functools import partial
 from gui import InputHandler, SystemMessages
 from gui.ClientHangarSpace import _VehicleAppearance
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
@@ -38,12 +37,12 @@ from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowM
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.app_loader.loader import g_appLoader
-from gui.shared.utils.HangarSpace import _HangarSpace
 from helpers import getClientVersion
 from items.vehicles import g_cache
 from vehicle_systems import appearance_cache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
+from zipfile import ZipFile
 
 res = ResMgr.openSection('../paths.xml')
 sb = res['Paths']
@@ -103,7 +102,9 @@ class OMDescriptor(object):
                            'Enemy': set()}
         self.data = {'chassis': {'undamaged': '',
                                  'AODecals': None,
-                                 'hullPosition': None},
+                                 'hullPosition': None,
+                                 'wwsoundPC': '',
+                                 'wwsoundNPC': ''},
                      'hull': {'undamaged': '',
                               'emblemSlots': [],
                               'camouflage': {'exclusionMask': '',
@@ -120,6 +121,8 @@ class OMDescriptor(object):
                                             'tiling': (1.0, 1.0, 0.0, 0.0)},
                              'effects': '',
                              'reloadEffect': ''},
+                     'engine': {'wwsoundPC': '',
+                                'wwsoundNPC': ''},
                      'common': {'camouflage': {'exclusionMask': '',
                                                'tiling': (1.0, 1.0, 0.0, 0.0)}}}
 
@@ -127,7 +130,7 @@ class OMDescriptor(object):
 class OS(object):
     def __init__(self):
         self.models = {'static': {}, 'dynamic': {}}
-        self.enabled = False
+        self.enabled = True
         self.priorities = {skinType: {'Player': [],
                                       'Ally': [],
                                       'Enemy': []} for skinType in self.models}
@@ -136,13 +139,13 @@ class OS(object):
 class OSDescriptor(object):
     def __init__(self):
         self.name = ''
-        self.whitelist = []
+        self.whitelist = set()
 
 
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '2.9.7 (%(file_compile_date)s)'
+        self.version = '2.9.9 (%(file_compile_date)s)'
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True,
@@ -217,8 +220,7 @@ class _Config(PYmodsCore._Config):
             'UI_loading_header_models_unpack': 'RemodEnabler: unpacking models',
             'UI_loading_package': 'Unpacking %s:',
             'UI_loading_skinPack': 'Checking %s:',
-            'UI_loading_skinType_static': 'Checking static skins...',
-            'UI_loading_skinType_dynamic': 'Checking dynamic skins...',
+            'UI_loading_skins': 'Checking skins...',
             'UI_setting_isDebug_text': 'Enable extended log printing',
             'UI_setting_isDebug_tooltip': 'If enabled, your python.log will be harassed with mod\'s debug information.',
             'UI_setting_remod_text': 'Enable all remods preview mode',
@@ -255,6 +257,7 @@ class _Config(PYmodsCore._Config):
             'UI_mode_remod': 'all remods preview'}
         self.configsDict = {}
         self.settings = {'remods': {}, 'skins': {}, 'skins_dynamic': {}}
+        self.skinsCache = {"CRC32": "", "version": ""}
         self.OM = OM()
         self.OS = OS()
         self.OMDesc = None
@@ -290,6 +293,7 @@ class _Config(PYmodsCore._Config):
     def update_data(self, doPrint=False):
         super(_Config, self).update_data()
         self.settings = self.loadJson('settings', self.settings, self.configPath)
+        self.skinsCache.update(self.loadJson('skinsCache', self.skinsCache, self.configPath))
         configsPath = self.configPath + 'remods/*.json'
         self.OM.enabled = bool(glob.glob(configsPath))
         if self.OM.enabled:
@@ -338,7 +342,7 @@ class _Config(PYmodsCore._Config):
                         confSubDict = confDict
                     else:
                         confSubDict = confDict.get(key)
-                    if not confDict:
+                    if not confSubDict:
                         continue
                     if 'undamaged' in data:
                         data['undamaged'] = confSubDict['undamaged']
@@ -361,7 +365,7 @@ class _Config(PYmodsCore._Config):
                     if key == 'chassis':
                         for k in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
                             data[k] = confSubDict[k]
-                    for subKey in ('effects', 'reloadEffect'):
+                    for subKey in ('effects', 'reloadEffect', 'wwsoundPC', 'wwsoundNPC'):
                         if subKey in data and subKey in confSubDict:
                             data[subKey] = confSubDict[subKey]
                 if self.data['isDebug']:
@@ -393,20 +397,18 @@ class _Config(PYmodsCore._Config):
             print '%s: no remods found, model module standing down.' % self.ID
             self.OM.enabled = False
             self.loadJson('remodsCache', self.OM.selected, self.configPath, True)
-        self.OS.enabled = any(os.path.isdir('%s/vehicles/skins%s/' % (BigWorld.curCV, skinType)) and glob.glob(
-            '%s/vehicles/skins%s/*' % (BigWorld.curCV, skinType)) for skinType in ('', '_dynamic'))
+        self.OS.enabled = ResMgr.openSection('vehicles/skins/') is not None and ResMgr.isDir('vehicles/skins/')
         if self.OS.enabled:
             self.OS.priorities = self.loadJson('skinsPriority', self.OS.priorities, self.configPath)
-            skinsDir = BigWorld.curCV + '/vehicles/skins%s/textures/'
+            skinDir = 'vehicles/skins/textures/'
             for skinTypeSuff in ('', '_dynamic'):
-                skinDir = skinsDir % skinTypeSuff + '*'
                 skinType = 'static' if not skinTypeSuff else skinTypeSuff[1:]
                 skinsSettings = self.settings['skins%s' % skinTypeSuff]
                 disabledSkins = []
                 if self.data['isDebug']:
                     print '%s: loading configs for %s skins' % (self.ID, skinType)
-                for skinPath in glob.iglob(skinDir):
-                    sname = os.path.basename(skinPath)
+                skinDirSect = ResMgr.openSection(skinDir)
+                for sname in [] if skinDirSect is None else skinDirSect.keys():
                     confDict = skinsSettings.setdefault(sname, self.defaultSkinConfig[skinType])
                     if not confDict.get('enabled', True):
                         print '%s: %s disabled, moving on' % (self.ID, sname)
@@ -425,23 +427,25 @@ class _Config(PYmodsCore._Config):
                             continue
                         if sname not in priorities[tankType]:
                             priorities[tankType].append(sname)
-                    pRecord.whitelist = []
-                    for curNation in glob.iglob(skinPath + '/vehicles/*'):
-                        for vehicleName in glob.iglob(curNation + '/*'):
-                            curVehName = os.path.basename(vehicleName)
-                            hasSegmentTex = False
-                            if not glob.glob(vehicleName + '/tracks/*.dds') and os.path.isdir(vehicleName + '/tracks'):
-                                shutil.rmtree(vehicleName + '/tracks')
-                            else:
-                                hasSegmentTex = True
-                            if not glob.glob(vehicleName + '/*.dds') and not hasSegmentTex:
-                                os.rmdir(vehicleName)
+                    pRecord.whitelist.clear()
+                    vehiclesDirPath = skinDir + sname + '/vehicles/'
+                    vehiclesDirSect = ResMgr.openSection(vehiclesDirPath)
+                    for curNation in [] if vehiclesDirSect is None else vehiclesDirSect.keys():
+                        nationDirPath = vehiclesDirPath + curNation + '/'
+                        nationDirSect = ResMgr.openSection(nationDirPath)
+                        for vehicleName in [] if nationDirSect is None else nationDirSect.keys():
+                            vehDirPath = nationDirPath + vehicleName + '/'
+                            vehDirSect = ResMgr.openSection(vehDirPath)
+                            tracksDirPath = vehDirPath + 'tracks/'
+                            tracksDirSect = ResMgr.openSection(tracksDirPath)
+                            if not (texName for texName in ([] if vehDirSect is None else vehDirSect.keys()) if
+                                    texName.endswith('.dds')) and not (texName for texName in (
+                                    [] if tracksDirSect is None else tracksDirSect.keys()) if texName.endswith('.dds')):
                                 if self.data['isDebug']:
-                                    print '%s: %s folder from %s pack is deleted: empty' % (
-                                        self.ID, curVehName, sname)
+                                    print '%s: %s folder from %s pack is empty' % (
+                                        self.ID, vehicleName, sname)
                             else:
-                                if curVehName not in pRecord.whitelist:
-                                    pRecord.whitelist.append(curVehName)
+                                pRecord.whitelist.add(vehicleName)
 
                     if self.data['isDebug']:
                         print '%s: config for %s loaded.' % (self.ID, sname)
@@ -490,23 +494,21 @@ class _Config(PYmodsCore._Config):
 
 def skinsPresenceCheck():
     global skinsFound
-    for skinsType in skinsFound:
-        skinsPath = '%s/vehicles/skins%s/textures/' % (BigWorld.curCV, skinsType)
-        if os.path.isdir(skinsPath):
-            if glob.glob(skinsPath + '*'):
-                skinsFound[skinsType] = True
+    dirSect = ResMgr.openSection('vehicles/skins/textures/')
+    if dirSect is not None and dirSect.keys():
+        skinsFound = True
 
 
 _config = _Config()
 _config.load()
-texReplaced = {'': False, '_dynamic': False}
-skinsFound = {'': False, '_dynamic': False}
+texReplaced = False
+skinsFound = False
 skinsPresenceCheck()
-clientIsNew = {'': True, '_dynamic': True}
-skinsModelsMissing = {'': True, '_dynamic': True}
-needToReReadSkinsModels = {'': False, '_dynamic': False}
-modelsDir = BigWorld.curCV + '/vehicles/skins%s/models/'
-skinVehNamesLDict = {'': {}, '_dynamic': {}}
+clientIsNew = True
+skinsModelsMissing = True
+needToReReadSkinsModels = False
+modelsDir = BigWorld.curCV + '/vehicles/skins/models/'
+skinVehNamesLDict = {}
 
 
 class RemodEnablerLoading(LoginQueueWindowMeta):
@@ -532,11 +534,9 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
     def updateMessage(self):
         self.as_setMessageS(''.join(line.join(("<p align='left'>", "</p>")) for line in self.lines))
 
-    def addLine(self, line, prefix=True):
+    def addLine(self, line):
         if len(self.lines) == 8:
             del self.lines[0]
-        if prefix:
-            line = '>' + line
         self.lines.append(line)
         self.updateMessage()
 
@@ -548,7 +548,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
     def addBar(self, pkgName):
         self.curPercentage = 0
         self.addLine(_config.i18n['UI_loading_package'] % pkgName)
-        self.addLine(self.createBar(), prefix=False)
+        self.addLine(self.createBar())
 
     def createBar(self):
         red = 510 - 255 * self.curPercentage / 50
@@ -705,7 +705,7 @@ class RemodEnablerUI(AbstractWindowView):
 
 
 def CRC32_from_file(filename, localPath):
-    buf = open(filename, 'rb').read()
+    buf = str(ResMgr.openSection(filename).asBinary)
     buf = binascii.crc32(buf) & 0xFFFFFFFF & localPath.__hash__()
     return buf
 
@@ -714,107 +714,95 @@ def CRC32_from_file(filename, localPath):
 @process
 def skinCRC32All(callback):
     global texReplaced, skinsFound, skinVehNamesLDict
-    for skinsType in texReplaced:
-        CRC32cacheFile = '%s/vehicles/skins%s/CRC32_textures.txt' % (BigWorld.curCV, skinsType)
-        CRC32cache = None
-        if os.path.isfile(CRC32cacheFile):
-            CRC32cache = open(CRC32cacheFile, 'rb').read()
-        skinsPath = '%s/vehicles/skins%s/textures/' % (BigWorld.curCV, skinsType)
-        if os.path.isdir(skinsPath):
-            if glob.glob(skinsPath + '*'):
-                skinsFound[skinsType] = True
-                print 'RemodEnabler: listing %s for CRC32' % skinsPath
-                _config.loadingProxy.addLine(
-                    _config.i18n['UI_loading_skinType_%s' % ('static' if not skinsType else 'dynamic')])
-                CRC32 = 0
-                resultList = []
-                for skin in glob.iglob(skinsPath + '*'):
-                    _config.loadingProxy.addLine(_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
-                    skinCRC32 = 0
-                    skinName = os.path.basename(skin)
-                    for nation in glob.iglob(skin + '/vehicles/*'):
-                        nationCRC32 = 0
-                        for vehicleName in glob.iglob(nation + '/*'):
-                            vehicleCRC32 = 0
-                            vehName = os.path.basename(vehicleName)
-                            skinVehNamesLDict[skinsType].setdefault(vehName, []).append(skinName)
-                            for texture in glob.iglob(vehicleName + '/*.dds'):
-                                textureCRC32 = CRC32_from_file(
-                                    texture, '/'.join(texture.replace(os.sep, '/').rsplit('/', 4)[1:]))
-                                vehicleCRC32 ^= textureCRC32
-                            nationCRC32 ^= vehicleCRC32
-                            yield doFuncCall()
-                        skinCRC32 ^= nationCRC32
-                    _config.loadingProxy.onComplete()
-                    if skinCRC32 in resultList:
-                        print 'RemodEnabler: deleting duplicate skins pack:', skin.replace(os.sep, '/')
-                        shutil.rmtree(skin)
-                        continue
-                    CRC32 ^= skinCRC32
-                    resultList.append(skinCRC32)
-                if CRC32cache is not None and str(CRC32) == CRC32cache:
-                    print 'RemodEnabler: skins%s textures were not changed' % skinsType
-                else:
-                    if CRC32cache is None:
-                        print 'RemodEnabler: skins%s textures were reinstalled (or you deleted the CRC32 cache)' % \
-                              skinsType
-                    else:
-                        print 'RemodEnabler: skins%s textures were changed' % skinsType
-                    cf = open(CRC32cacheFile, 'w+b')
-                    cf.write(str(CRC32))
-                    cf.close()
-                    texReplaced[skinsType] = True
-            else:
-                print 'RemodEnabler: skins%s folder is empty' % skinsType
+    CRC32cache = _config.skinsCache['CRC32']
+    skinsPath = 'vehicles/skins/textures/'
+    dirSect = ResMgr.openSection(skinsPath)
+    if dirSect is not None and dirSect.keys():
+        skinsFound = True
+        print 'RemodEnabler: listing %s for CRC32' % skinsPath
+        _config.loadingProxy.addLine(_config.i18n['UI_loading_skins'])
+        CRC32 = 0
+        resultList = []
+        for skin in dirSect.keys():
+            _config.loadingProxy.addLine(_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
+            skinCRC32 = 0
+            skinSect = ResMgr.openSection(skinsPath + skin + '/vehicles/')
+            for nation in [] if skinSect is None else skinSect.keys():
+                nationCRC32 = 0
+                nationSect = ResMgr.openSection(skinsPath + skin + '/vehicles/' + nation)
+                for vehicleName in [] if nationSect is None else nationSect.keys():
+                    vehicleCRC32 = 0
+                    skinVehNamesLDict.setdefault(vehicleName.lower(), []).append(skin)
+                    vehicleSect = ResMgr.openSection(skinsPath + skin + '/vehicles/' + nation + '/' + vehicleName)
+                    for texture in [] if vehicleSect is None else (texName for texName in vehicleSect.keys() if
+                                                                   texName.endswith('.dds')):
+                        localPath = 'vehicles/' + nation + '/' + vehicleName + '/' + texture
+                        texPath = skinsPath + skin + '/' + localPath
+                        textureCRC32 = CRC32_from_file(texPath, localPath)
+                        vehicleCRC32 ^= textureCRC32
+                    nationCRC32 ^= vehicleCRC32
+                    yield doFuncCall()
+                skinCRC32 ^= nationCRC32
+            _config.loadingProxy.onComplete()
+            if skinCRC32 in resultList:
+                print 'RemodEnabler: deleting duplicate skins pack:', skin.replace(os.sep, '/')
+                shutil.rmtree(skin)
+                continue
+            CRC32 ^= skinCRC32
+            resultList.append(skinCRC32)
+        if CRC32cache is not None and str(CRC32) == CRC32cache:
+            print 'RemodEnabler: skins textures were not changed'
         else:
-            print 'RemodEnabler: skins%s folder not found' % skinsType
+            if CRC32cache is None:
+                print 'RemodEnabler: skins textures were reinstalled (or you deleted the CRC32 cache)'
+            else:
+                print 'RemodEnabler: skins textures were changed'
+            _config.skinsCache['CRC32'] = str(CRC32)
+            texReplaced = True
+    else:
+        print 'RemodEnabler: skins folder is empty'
     BigWorld.callback(0.0, partial(callback, True))
 
 
 @async
 def modelsCheck(callback):
     global clientIsNew, skinsModelsMissing, needToReReadSkinsModels
-    for skinsType in texReplaced:
-        modelDir = modelsDir % skinsType
-        lastVersionPath = '%s/vehicles/skins%s/last_version.txt' % (BigWorld.curCV, skinsType)
-        if os.path.isfile(lastVersionPath):
-            lastVersion = open(lastVersionPath).read()
-            if getClientVersion() == lastVersion:
-                clientIsNew[skinsType] = False
-            else:
-                print 'RemodEnabler: skins%s client version changed' % skinsType
+    lastVersion = _config.skinsCache['version']
+    if lastVersion:
+        if getClientVersion() == lastVersion:
+            clientIsNew = False
         else:
-            print 'RemodEnabler: skins%s client version cache not found' % skinsType
+            print 'RemodEnabler: skins client version changed'
+    else:
+        print 'RemodEnabler: skins client version cache not found'
 
-        if os.path.isdir(modelDir):
-            if len(glob.glob(modelDir + '*')):
-                skinsModelsMissing[skinsType] = False
-            else:
-                print 'RemodEnabler: skins%s models dir is empty' % skinsType
+    if os.path.isdir(modelsDir):
+        if len(glob.glob(modelsDir + '*')):
+            skinsModelsMissing = False
         else:
-            print 'RemodEnabler: skins%s models dir not found' % skinsType
-        needToReReadSkinsModels[skinsType] = skinsFound[skinsType] and (
-            clientIsNew[skinsType] or skinsModelsMissing[skinsType] or texReplaced[skinsType])
-        if skinsFound[skinsType] and clientIsNew[skinsType]:
-            if os.path.isdir(modelDir):
-                shutil.rmtree(modelDir)
-            lastVersionFile = open(lastVersionPath, 'w+')
-            lastVersionFile.write(getClientVersion())
-            lastVersionFile.close()
-        if skinsFound[skinsType] and not os.path.isdir(modelDir):
-            os.makedirs(modelDir)
-        elif not skinsFound[skinsType] and os.path.isdir(modelDir):
-            print 'RemodEnabler: no skins found, deleting %s' % modelDir
-            shutil.rmtree(modelDir)
-        elif texReplaced[skinsType] and os.path.isdir(modelDir):
-            shutil.rmtree(modelDir)
+            print 'RemodEnabler: skins models dir is empty'
+    else:
+        print 'RemodEnabler: skins models dir not found'
+    needToReReadSkinsModels = skinsFound and (clientIsNew or skinsModelsMissing or texReplaced)
+    if skinsFound and clientIsNew:
+        if os.path.isdir(modelsDir):
+            shutil.rmtree(modelsDir)
+        _config.skinsCache['version'] = getClientVersion()
+    if skinsFound and not os.path.isdir(modelsDir):
+        os.makedirs(modelsDir)
+    elif not skinsFound and os.path.isdir(modelsDir):
+        print 'RemodEnabler: no skins found, deleting %s' % modelsDir
+        shutil.rmtree(modelsDir)
+    elif texReplaced and os.path.isdir(modelsDir):
+        shutil.rmtree(modelsDir)
+    _config.loadJson('skinsCache', _config.skinsCache, _config.configPath, True)
     BigWorld.callback(0.0, partial(callback, True))
 
 
 @async
 @process
 def modelsProcess(callback):
-    if any(needToReReadSkinsModels.values()):
+    if needToReReadSkinsModels:
         _config.loadingProxy.updateTitle(_config.i18n['UI_loading_header_models_unpack'])
         SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
         modelFileFormats = ('.model', '.visual', '.visual_processed')
@@ -829,16 +817,13 @@ def modelsProcess(callback):
                 vehPkg.namelist())
             allFilesCnt = len(fileNamesList)
             for fileNum, memberFileName in enumerate(fileNamesList):
-                for skinsType in needToReReadSkinsModels:
-                    if not needToReReadSkinsModels[skinsType]:
-                        continue
-                    skinsVehDict = skinVehNamesLDict[skinsType]
-                    # noinspection PyTypeChecker
-                    for skinName in skinsVehDict.get(os.path.normpath(memberFileName).split('\\')[2], []):
-                        processMember(memberFileName, skinName, skinsType)
-                        filesCnt += 1
-                        if not filesCnt % 25:
-                            yield doFuncCall()
+                if not needToReReadSkinsModels:
+                    continue
+                for skinName in skinVehNamesLDict.get(os.path.normpath(memberFileName).split('\\')[2].lower(), []):
+                    processMember(memberFileName, skinName)
+                    filesCnt += 1
+                    if not filesCnt % 25:
+                        yield doFuncCall()
                 currentPercentage = int(100 * float(fileNum) / float(allFilesCnt))
                 if currentPercentage != completionPercentage:
                     completionPercentage = currentPercentage
@@ -855,11 +840,10 @@ def doFuncCall(callback):
 
 
 # noinspection PyPep8,PyPep8
-def processMember(memberFileName, skinName, skinType):
-    modelDir = modelsDir % skinType
-    skinDir = modelDir.replace('%s/' % BigWorld.curCV, '') + skinName + '/'
+def processMember(memberFileName, skinName):
+    skinDir = modelsDir.replace('%s/' % BigWorld.curCV, '') + skinName + '/'
     texDir = skinDir.replace('models', 'textures')
-    skinsSign = 'vehicles/skins%s/' % skinType
+    skinsSign = 'vehicles/skins/'
     if '.model' in memberFileName:
         oldModel = ResMgr.openSection(memberFileName)
         newModelPath = skinDir + memberFileName
@@ -889,10 +873,10 @@ def processMember(memberFileName, skinName, skinType):
                     if curPrimName != 'property' or not curProp.has_key('Texture'):
                         continue
                     curTexture = curProp['Texture'].asString
-                    if skinsSign not in curTexture and os.path.isfile(BigWorld.curCV + '/' + texDir + curTexture):
+                    if skinsSign not in curTexture and ResMgr.isFile(texDir + curTexture):
                         curDiff = texDir + curTexture
                         curProp.writeString('Texture', curDiff.replace('\\', '/'))
-                    elif skinsSign in curTexture and not os.path.isfile(BigWorld.curCV + '/' + curTexture):
+                    elif skinsSign in curTexture and not ResMgr.isFile(curTexture):
                         curDiff = curTexture.replace(texDir, '')
                         curProp.writeString('Texture', curDiff.replace('\\', '/'))
 
@@ -902,7 +886,7 @@ def processMember(memberFileName, skinName, skinType):
 
 @process
 def skinCaller():
-    if any(skinsFound.values()):
+    if skinsFound:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
             lobbyApp.loadView('RemodEnablerLoading')
@@ -1054,7 +1038,7 @@ def OM_find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
             if snameList[Idx] and xmlName not in curPRecord.whitelists[curTankType]:
                 continue
             else:
-                if xmlName in selected:
+                if xmlName in selected[curTankType]:
                     selected[curTankType][xmlName] = getattr(curPRecord, 'name', '')
                 _config.OMDesc = curPRecord
                 break
@@ -1143,11 +1127,17 @@ def OM_apply(vDesc):
             part = getattr(vDesc, partName)
             part['camouflageExclusionMask'] = exclMask
             part['camouflageTiling'] = camoData['tiling']
-    # exhaust = data['hull']['exhaust']
-    # for effectDesc in vDesc.hull['customEffects']:
-    #     if exhaust['nodes']:
-    #         effectDesc.nodes[:] = exhaust['nodes']
-    #     effectDesc._selectorDesc = g_cache._customEffects['exhaust'].get(exhaust['pixie'], effectDesc._selectorDesc)
+    exhaust = data['hull']['exhaust']
+    for effectDesc in vDesc.hull['customEffects']:
+        if exhaust['nodes']:
+            effectDesc.nodes[:] = exhaust['nodes']
+        effectDesc._selectorDesc = g_cache._customEffects['exhaust'].get(exhaust['pixie'], effectDesc._selectorDesc)
+    for partName in ('chassis', 'engine'):
+        for key in ('wwsoundPC', 'wwsoundNPC'):
+            part = getattr(vDesc, partName)
+            soundID = data[partName][key]
+            if soundID:
+                part[key] = soundID
 
 
 def OS_find(curVehName, isPlayerVehicle, isAlly, currentMode='battle', skinType='static'):
@@ -1159,7 +1149,7 @@ def OS_find(curVehName, isPlayerVehicle, isAlly, currentMode='battle', skinType=
         for curSName in _config.OS.priorities[skinType][curTankType]:
             curPRecord = _config.OS.models[skinType][curSName]
             # noinspection PyUnresolvedReferences
-            if curVehName not in curPRecord.whitelist:
+            if curVehName not in curPRecord.whitelist and curVehName.lower() not in curPRecord.whitelist:
                 continue
             else:
                 _config.OSDesc[skinType] = curPRecord
@@ -1180,7 +1170,7 @@ def OS_createDynamic(vehicleID, vDesc, visible=False):
         resList = []
         for modelName in TankPartNames.ALL[1:]:
             modelPath = getattr(vDesc, modelName)['models']['undamaged'].replace(
-                'vehicles/', 'vehicles/skins_dynamic/models/%s/vehicles/' % sname)
+                'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
             resList.append(modelPath)
         BigWorld.loadResourceListBG(tuple(resList), partial(OS_onLoad_dynamic, vehicleID, visible))
     except StandardError:
@@ -1340,7 +1330,7 @@ def OS_apply(vDesc):
                 'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
             if os.path.isfile(BigWorld.curCV + '/' + modelPath):
                 getattr(vDesc, part)['models']['undamaged'] = modelPath
-            elif _config.data['isDebug']:
+            else:
                 print 'RemodEnabler: skin model not found:', modelPath
 
 
@@ -1351,6 +1341,15 @@ def printOldConfigs(vDesc):
     for part in ('gun', 'hull', 'turret'):
         print 'old %s emblem slots configuration:' % part
         print getattr(vDesc, part)['emblemSlots']
+    for ids in (('_gunEffects', 'effects', 'shot'), ('_gunReloadEffects', 'reloadEffect', 'reload')):
+        for key, value in getattr(g_cache, ids[0]).items():
+            if value == vDesc.gun[ids[1]]:
+                print 'old gun', ids[2], 'effects ID:', key
+                break
+        else:
+            print 'gun', ids[2], 'effect ID not found'
+    print 'chassis sound IDs: PC:', vDesc.chassis['wwsoundPC'], 'NPC:', vDesc.chassis['wwsoundNPC']
+    print 'engine sound IDs: PC:', vDesc.engine['wwsoundPC'], 'NPC:', vDesc.engine['wwsoundNPC']
 
 
 def debugOutput(xmlName, vehName, playerName=None):
@@ -1384,13 +1383,14 @@ def new_prerequisites(self, respawnCompactDescr=None):
         playerName = BigWorld.player().arena.vehicles.get(self.id)['name']
         isAlly = BigWorld.player().arena.vehicles.get(self.id)['team'] == BigWorld.player().team
         OM_find(xmlName, isPlayerVehicle, isAlly)
-        for partName in TankPartNames.ALL:
+        for partName in TankPartNames.ALL + ('engine',):
             new_part = None
             try:
                 old_part = getattr(vDesc, partName)
                 new_part = copy.deepcopy(old_part)
                 setattr(vDesc, partName, new_part)
-                getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+                if 'hitTester' in old_part:
+                    getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
             except TypeError:
                 print partName
                 pprint.pprint(getattr(vDesc, partName))
@@ -1399,11 +1399,10 @@ def new_prerequisites(self, respawnCompactDescr=None):
         vehDefNation = vDesc.chassis['hitTester'].bspModelName.split('/')[1]
         if _config.OMDesc is None:
             if vehNation == vehDefNation:
-                if skinsFound['_dynamic']:
+                if skinsFound:
                     OS_find(vehName, isPlayerVehicle, isAlly, skinType='dynamic')
                     if _config.OSDesc['dynamic'] is not None:
                         OS_createDynamic(self.id, vDesc)
-                if skinsFound['']:
                     OS_find(vehName, isPlayerVehicle, isAlly)
                     OS_apply(vDesc)
             elif _config.data['isDebug']:
@@ -1424,17 +1423,25 @@ def new_startBuild(self, vDesc, vState):
         isPlayerVehicle = _config.data['currentMode'] == 'player'
         isAlly = _config.data['currentMode'] == 'ally'
         OM_find(xmlName, isPlayerVehicle, isAlly, _config.data['currentMode'])
-        for partName in TankPartNames.ALL:
-            old_part = getattr(vDesc, partName)
-            setattr(vDesc, partName, copy.deepcopy(old_part))
-            getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+        for partName in TankPartNames.ALL + ('engine',):
+            new_part = None
+            try:
+                old_part = getattr(vDesc, partName)
+                new_part = copy.deepcopy(old_part)
+                setattr(vDesc, partName, new_part)
+                if 'hitTester' in old_part:
+                    getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+            except TypeError:
+                print partName
+                pprint.pprint(getattr(vDesc, partName))
+                pprint.pprint(new_part)
         message = None
         collisionNotVisible = not _config.data['collisionEnabled'] and not _config.data['collisionComparisonEnabled']
         vehNation, vehName = vDesc.chassis['models']['undamaged'].split('/')[1:3]
         vehDefNation = vDesc.chassis['hitTester'].bspModelName.split('/')[1]
         if _config.OMDesc is None:
             if vehNation == vehDefNation:
-                if skinsFound['_dynamic']:
+                if skinsFound:
                     OS_find(vehName, isPlayerVehicle, isAlly, _config.data['currentMode'], skinType='dynamic')
                     if _config.OSDesc['dynamic'] is not None:
                         OS_createDynamic(self._VehicleAppearance__vEntityId, vDesc,
@@ -1443,7 +1450,6 @@ def new_startBuild(self, vDesc, vState):
                         if _config.data['dynamicSkinEnabled'] and collisionNotVisible:
                             message = _config.i18n['UI_install_skin_dynamic'] + _config.OSDesc['dynamic'].name.join(
                                 ('<b>', '</b>.'))
-                if skinsFound['']:
                     OS_find(vehName, isPlayerVehicle, isAlly, _config.data['currentMode'])
                     OS_apply(vDesc)
             elif _config.data['isDebug']:
@@ -1534,10 +1540,10 @@ def new_setupModel(self, buildIdx):
                         print 'RemodEnabler: collision model for %s not found' % moduleName
 
 
-def new_updatePreviewVehicle(self, vehicle):
-    if _config.OMDesc is not None or any(_config.OSDesc.values()):
-        vehicle.descriptor = vehicle.getCustomizedDescriptor()
-    old_updatePreviewVehicle(self, vehicle)
+def new_refreshModel(self):
+    if self.isPresent() and (_config.OMDesc is not None or any(_config.OSDesc.values())):
+        self._CurrentPreviewVehicle__item = self._CurrentPreviewVehicle__getPreviewVehicle(self.item.intCD)
+    old_refreshModel(self)
 
 
 old_prerequisites = Vehicle.prerequisites
@@ -1546,8 +1552,8 @@ old_startBuild = _VehicleAppearance._VehicleAppearance__startBuild
 _VehicleAppearance._VehicleAppearance__startBuild = new_startBuild
 old_setupModel = _VehicleAppearance._VehicleAppearance__setupModel
 _VehicleAppearance._VehicleAppearance__setupModel = new_setupModel
-old_updatePreviewVehicle = _HangarSpace.updatePreviewVehicle
-_HangarSpace.updatePreviewVehicle = new_updatePreviewVehicle
+old_refreshModel = _CurrentPreviewVehicle.refreshModel
+_CurrentPreviewVehicle.refreshModel = new_refreshModel
 old_vehicle_onLeaveWorld = PlayerAvatar.vehicle_onLeaveWorld
 PlayerAvatar.vehicle_onLeaveWorld = new_vehicle_onLeaveWorld
 old_startVisual = Vehicle.startVisual

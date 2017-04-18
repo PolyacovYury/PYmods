@@ -545,10 +545,11 @@ def installSelectedCamo():
         if activeCamo is None:
             activeCamo = g_tankActiveCamouflage.get(vDesc.type.compactDescr, 0)
         customization = items.vehicles.g_cache.customization(nationID)
-        camoID = _config.hangarCamoCache[vDesc.type.compactDescr][activeCamo][0]
         if _config.activePreviewCamo is not None:
             camoNames = {camouflage['name']: camoID for camoID, camouflage in customization['camouflages'].items()}
             camoID = camoNames[_config.activePreviewCamo]
+        else:
+            camoID = _config.hangarCamoCache[vDesc.type.compactDescr][activeCamo][0]
         camouflage = customization['camouflages'][camoID]
         camoName = camouflage['name']
         nationConf = _config.camouflages.get(nations.NAMES[nationID])
