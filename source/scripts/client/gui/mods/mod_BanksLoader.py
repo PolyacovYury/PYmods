@@ -37,7 +37,7 @@ class RestartButtons(object):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '1.9.2 (%(file_compile_date)s)'
+        self.version = '1.9.3 (%(file_compile_date)s)'
         self.author = '%s and Ekspoint' % self.author
         self.data = {'defaultPool': 48,
                      'lowEnginePool': 36,
@@ -54,7 +54,7 @@ class _Config(PYmodsCore._Config):
                      'UI_restart_button_restart': 'Restart',
                      'UI_restart_button_shutdown': 'Shutdown',
                      'UI_restart_button_close': 'Continue',
-                     'UI_restart_reason': 'Exact changes:\n{}\n',
+                     'UI_restart_reason': 'Exact changes:\n{}.\n',
                      'UI_restart_create': ' • sections <b>created</b> for these banks: ',
                      'UI_restart_delete': ' • sections <b>deleted</b> for these banks: ',
                      'UI_restart_delete_engine': ' • sections <b>cleared</b> for these banks: ',
@@ -118,9 +118,8 @@ class _Config(PYmodsCore._Config):
             os.rename(oldModName, oldModName + '1')
 
     def check_wotmods(self, mediaPath):
-        fileList = filter(lambda x: x.endswith('.wotmod'), (path for sublist in map(
-            lambda x: map(lambda y: '/'.join((x[0], y)).replace(os.sep, '/'), x[2]),
-            os.walk(BigWorld.curCV.replace('res_', ''))) for path in sublist))
+        fileList = (path for sublist in map(lambda x: map(lambda y: '/'.join((x[0], y)).replace(os.sep, '/'), x[2]),
+                    os.walk(BigWorld.curCV.replace('res_', ''))) for path in sublist if path.endswith('.wotmod'))
         for filePath in fileList:
             if os.path.basename(filePath) == '_aaa_BanksLoader_audioMods.wotmod':
                 continue
@@ -128,7 +127,7 @@ class _Config(PYmodsCore._Config):
             fileNames = zip_orig.namelist()
             if '/'.join(('res', mediaPath, 'audio_mods.xml')) in fileNames:
                 self.editedBanks['wotmod'].append(os.path.basename(filePath))
-                bankFiles = filter(lambda x: x.startswith('res/' + mediaPath) and x.endswith('.bnk'), fileNames)
+                bankFiles = [x for x in fileNames if x.startswith('res/' + mediaPath) and x.endswith('.bnk')]
                 new_filePath = filePath[:-7] + '_BanksLoader_ing' + '.wotmod'
                 zip_new = zipfile.ZipFile(new_filePath, 'w')
                 for fileInfo in zip_orig.infolist():
@@ -140,6 +139,7 @@ class _Config(PYmodsCore._Config):
                         zip_new.writestr(fileInfo, zip_orig.read(fileName))
                 zip_new.close()
                 zip_orig.close()
+                print 'BanksLoader: config cleaned from package', os.path.basename(filePath)
                 if os.path.isfile(filePath):
                     try:
                         stat = os.stat(filePath)
@@ -193,8 +193,8 @@ class _Config(PYmodsCore._Config):
                     section.deleteSection(project)
         self.editedBanks['delete_engine'] = PYmodsCore.remDups(self.editedBanks['delete_engine'])
 
-        bankFiles['mods'] = set(filter(lambda x: (x.endswith('.bnk') or x.endswith('.pck')) and x not in bankFiles['orig'],
-                                       (ResMgr.openSection(mediaPath).keys())))
+        bankFiles['mods'] = set(x for x in ResMgr.openSection(mediaPath).keys()
+                                if (x.endswith('.bnk') or x.endswith('.pck')) and x not in bankFiles['orig'])
         audio_mods = ResMgr.openSection('/'.join((mediaPath, 'audio_mods.xml')))
         audio_mods_new = ResMgr.openSection('/'.join((mediaPath, 'audio_mods_edited.xml')), True)
         if audio_mods is None:
@@ -204,8 +204,8 @@ class _Config(PYmodsCore._Config):
             ResMgr.purge('/'.join((mediaPath, 'audio_mods.xml')))
         bankFiles['ignore'] = set()
         modsKeys = ('events', 'switches', 'RTPCs', 'states')
-        confList = filter(lambda x: x.endswith('.xml') and x.replace('.xml', '.bnk') in bankFiles['mods'],
-                          ResMgr.openSection(mediaPath).keys())
+        confList = [x for x in ResMgr.openSection(mediaPath).keys()
+                    if x.endswith('.xml') and x.replace('.xml', '.bnk') in bankFiles['mods']|bankFiles['orig']]
         for key in ('loadBanks',) + modsKeys:
             if not audio_mods_new.has_key(key):
                 audio_mods_new.createSection(key)
