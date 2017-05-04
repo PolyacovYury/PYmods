@@ -20,7 +20,7 @@ def i18n_hook_makeString(key, *args, **kwargs):
     global wasPrint
     try:
         text = old_makeString(key, *args, **kwargs)
-        debuggerCfg = ResMgr.openSection('scripts/client/helpers/i18n/i18nDebugger.xml')
+        debuggerCfg = ResMgr.openSection('../mods/configs/PYmods/i18nDebugger/i18nDebugger.xml')
         if debuggerCfg is not None:
             if debuggerCfg['enable'] is not None and debuggerCfg['enable'].asBool:
                 if debuggerCfg['key'] is not None:
