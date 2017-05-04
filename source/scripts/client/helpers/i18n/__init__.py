@@ -9,19 +9,18 @@ import ResMgr
 
 
 def loadOriginalFile():
-    originalFilePath = 'scripts/client/helpers/i18n.pyc'
-    scriptsPkgPath = './res/packages/scripts.pkg'
-    if os.path.isfile(scriptsPkgPath):
-        with zipfile.ZipFile(scriptsPkgPath) as scriptsPkg:
-            originalFile = scriptsPkg.read(originalFilePath)
-            exec marshal.loads(originalFile[8:]) in globals()
+    filePath = 'scripts/client/helpers/i18n.pyc'
+    fileSect = ResMgr.openSection(filePath)
+    if fileSect is not None and ResMgr.isFile(filePath):
+        originalFile = str(fileSect.asBinary)
+        exec marshal.loads(originalFile[8:]) in globals()
 
 
 loadOriginalFile()
 del loadOriginalFile
 
-filesList = filter(lambda x: x.endswith('.pyc') and '__init__' not in x,
-                   ResMgr.openSection('scripts/client/helpers/i18n').keys())
+filesList = [x for x in ResMgr.openSection('scripts/client/helpers/i18n').keys()
+             if x.endswith('.pyc') and '__init__' not in x]
 filesList = [fileName.replace('.pyc', '') for idx in xrange(2) for fileName in sorted(filesList) if
              bool(idx) != bool('_' in fileName)]
 for fileName in filesList:
