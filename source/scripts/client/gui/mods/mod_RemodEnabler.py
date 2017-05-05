@@ -795,6 +795,7 @@ def modelsCheck(callback):
         shutil.rmtree(modelsDir)
     elif texReplaced and os.path.isdir(modelsDir):
         shutil.rmtree(modelsDir)
+        os.makedirs(modelsDir)
     _config.loadJson('skinsCache', _config.skinsCache, _config.configPath, True)
     BigWorld.callback(0.0, partial(callback, True))
 
