@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import marshal
-import os
-import os.path
-import traceback
-import zipfile
 
 import ResMgr
+
+import traceback
 
 
 def loadOriginalFile():

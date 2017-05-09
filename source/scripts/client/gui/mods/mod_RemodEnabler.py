@@ -486,6 +486,7 @@ class _Config(PYmodsCore._Config):
             callback=lambda: g_appLoader.getDefLobbyApp().loadView(
                 'RemodEnablerUI') if self.loadingProxy is None else None)
         self.isModAdded = True
+        # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
                          ScopeTemplates.GLOBAL_SCOPE, False))

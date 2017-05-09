@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
+import BigWorld
+import PYmodsCore
 import glob
 import os
 import traceback
-
-import BigWorld
-import PYmodsCore
 from debug_utils import LOG_ERROR, LOG_WARNING
 
 
@@ -167,23 +166,28 @@ def new_construct(self):
     from gui.shared.tooltips import formatters
     from helpers.i18n import makeString as _ms
     from items import ITEM_TYPES
-    module = self.module
     block = []
 
     def checkLocalization(key):
         localization = _ms('#artefacts:%s' % key)
         return key != localization, localization
 
-    onUse = checkLocalization('%s/onUse' % module.descriptor['name'])
-    always = checkLocalization('%s/always' % module.descriptor['name'])
-    restriction = checkLocalization('%s/restriction' % module.descriptor['name'])
-    if bonus_helper.isSituationalBonus(module.name):
-        effectDesc = text_styles.bonusPreviewText(_ms(module.fullDescription))
+    if self.lobbyContext.getServerSettings().spgRedesignFeatures.isStunEnabled():
+        isRemovingStun = self.module.isRemovingStun
+    else:
+        isRemovingStun = False
+    onUseStr = '%s/removingStun/onUse' if isRemovingStun else '%s/onUse'
+    onUse = checkLocalization(onUseStr % self.module.descriptor['name'])
+    always = checkLocalization('%s/always' % self.module.descriptor['name'])
+    restriction = checkLocalization('%s/restriction' % self.module.descriptor['name'])
+    if bonus_helper.isSituationalBonus(self.module.name):
+        effectDesc = text_styles.bonusPreviewText(_ms(self.module.fullDescription))
+        # noinspection PyArgumentEqualDefault
         icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_TOOLTIP_ASTERISK_OPTIONAL, 16, 16, 0, 4)
         desc = params_formatters.packSituationalIcon(effectDesc, icon)
     else:
-        desc = text_styles.bonusAppliedText(_ms(module.fullDescription))
-    if module.itemTypeID == ITEM_TYPES.optionalDevice:
+        desc = text_styles.bonusAppliedText(_ms(self.module.fullDescription))
+    if self.module.itemTypeID == ITEM_TYPES.optionalDevice:
         block.append(formatters.packTitleDescBlock(title='', desc=desc, padding=formatters.packPadding(top=-8)))
     else:
         topPadding = 0
@@ -204,46 +208,47 @@ def new_construct(self):
 
 
 def new_MIW_populate(self):
-    from gui.shared import g_itemsCache
     from gui.shared.formatters import text_styles
     from gui.shared.items_parameters import params_helper, formatters
     from gui.shared.utils import GUN_RELOADING_TYPE, GUN_CAN_BE_CLIP, GUN_CLIP, CLIP_ICON_PATH, EXTRA_MODULE_INFO, \
         HYDRAULIC_ICON_PATH
+    from gui.shared.gui_items import GUI_ITEM_TYPE
     from gui.Scaleform.locale.MENU import MENU
-    from gui.shared.utils.functions import stripShortDescrTags
-    from items import ITEM_TYPE_NAMES
+    from gui.shared.utils.functions import stripColorTagDescrTags
     from helpers import i18n
     from gui.Scaleform.framework.entities.View import View
+    from gui.Scaleform.genConsts.SLOT_HIGHLIGHT_TYPES import SLOT_HIGHLIGHT_TYPES
     import re
     _DEF_SHOT_DISTANCE = 720
     super(View, self)._populate()
-    module = g_itemsCache.items.getItemByCD(self.moduleCompactDescr)
+    curModule = self.itemsCache.items.getItemByCD(self.moduleCompactDescr)
     description = ''
-    if module.itemTypeName in (ITEM_TYPE_NAMES[9], ITEM_TYPE_NAMES[11]):
-        description = stripShortDescrTags(module.fullDescription)
+    if curModule.itemTypeID in (GUI_ITEM_TYPE.OPTIONALDEVICE, GUI_ITEM_TYPE.EQUIPMENT):
+        description = stripColorTagDescrTags(curModule.fullDescription)
         description = re.sub(r'<[^>]*>', '', description)
-    if module.itemTypeName in (ITEM_TYPE_NAMES[9], ITEM_TYPE_NAMES[10], ITEM_TYPE_NAMES[11]):
-        icon = module.icon
+    if curModule.itemTypeID in (GUI_ITEM_TYPE.OPTIONALDEVICE, GUI_ITEM_TYPE.SHELL, GUI_ITEM_TYPE.EQUIPMENT):
+        icon = curModule.icon
     else:
-        icon = module.level
+        icon = curModule.level
     extraModuleInfo = ''
-    moduleData = {'name': module.longUserName,
-                  'windowTitle': ' '.join([module.longUserName, i18n.makeString(MENU.MODULEINFO_TITLE)]),
-                  'type': module.itemTypeName,
+    moduleData = {'name': curModule.longUserName,
+                  'windowTitle': ' '.join([curModule.longUserName, i18n.makeString(MENU.MODULEINFO_TITLE)]),
+                  'type': curModule.itemTypeName,
                   'description': description,
                   'level': icon,
                   'params': [],
                   'compatible': [],
                   'effects': {},
-                  'moduleLabel': module.getGUIEmblemID(),
-                  'moduleLevel': module.level}
-    params = params_helper.get(module, self._ModuleInfoWindow__vehicleDescr)
+                  'moduleLabel': curModule.getGUIEmblemID(),
+                  'moduleLevel': curModule.level}
+    params = params_helper.get(curModule, self._ModuleInfoWindow__vehicleDescr)
     moduleParameters = params.get('parameters', {})
-    formattedModuleParameters = formatters.getFormattedParamsList(module.descriptor, moduleParameters)
+    formattedModuleParameters = formatters.getFormattedParamsList(curModule.descriptor, moduleParameters)
     extraParamsInfo = params.get('extras', {})
-    isGun = module.itemTypeName == ITEM_TYPE_NAMES[4]
-    isShell = module.itemTypeName == ITEM_TYPE_NAMES[10]
-    isChassis = module.itemTypeName == ITEM_TYPE_NAMES[2]
+    isGun = curModule.itemTypeID == GUI_ITEM_TYPE.GUN
+    isShell = curModule.itemTypeID == GUI_ITEM_TYPE.SHELL
+    isChassis = curModule.itemTypeID == GUI_ITEM_TYPE.CHASSIS
+    isOptionalDevice = curModule.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE
     excludedParametersNames = extraParamsInfo.get('excludedParams', tuple())
     if isGun:
         if 'maxShotDistance' in moduleParameters:
@@ -286,13 +291,24 @@ def new_MIW_populate(self):
         compatible.append({'type': i18n.makeString(MENU.moduleinfo_compatible(paramType)),
                            'value': paramValue})
 
-    if module.itemTypeName == ITEM_TYPE_NAMES[11]:
-        effectsNametemplate = '#artefacts:%s/%s'
-        moduleData['effects'] = {'effectOnUse': i18n.makeString(effectsNametemplate % (module.name, 'onUse')),
-                                 'effectAlways': i18n.makeString(effectsNametemplate % (module.name, 'always')),
-                                 'effectRestriction': i18n.makeString(effectsNametemplate % (module.name, 'restriction'))}
+    if curModule.itemTypeID == GUI_ITEM_TYPE.EQUIPMENT:
+        effectsNameTemplate = '#artefacts:%s/%s'
+        if self.lobbyContext.getServerSettings().spgRedesignFeatures.isStunEnabled():
+            isRemovingStun = curModule.isRemovingStun
+        else:
+            isRemovingStun = False
+        onUseStr = 'removingStun/onUse' if isRemovingStun else 'onUse'
+        moduleData['effects'] = {'effectOnUse': i18n.makeString(effectsNameTemplate % (curModule.name, onUseStr)),
+                                 'effectAlways': i18n.makeString(effectsNameTemplate % (curModule.name, 'always')),
+                                 'effectRestriction': i18n.makeString(effectsNameTemplate % (curModule.name, 'restriction'))}
+        cooldownSeconds = curModule.descriptor.cooldownSeconds
+        if cooldownSeconds > 0:
+            moduleData['addParams'] = {'type': formatters.formatModuleParamName('cooldownSeconds') + '\n',
+                                       'value': text_styles.stats(cooldownSeconds) + '\n'}
     if isShell and self._ModuleInfoWindow__isAdditionalInfoShow is not None:
         moduleData['additionalInfo'] = self._ModuleInfoWindow__isAdditionalInfoShow
+    if isOptionalDevice:
+        moduleData['highlightType'] = SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS if curModule.isDeluxe() else SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
     self.as_setModuleInfoS(moduleData)
     self._updateActionButton()
 

@@ -413,6 +413,7 @@ class _Config(PYmodsCore._Config):
             enabled=self.data['enabled'], login=False, lobby=True,
             callback=lambda: g_appLoader.getDefLobbyApp().loadView('CamoSelectorUI'))
         self.isModAdded = True
+        # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('CamoSelectorUI', CamoSelectorUI, 'CamoSelector.swf', ViewTypes.WINDOW, None,
                          ScopeTemplates.GLOBAL_SCOPE, False))

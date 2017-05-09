@@ -18,7 +18,6 @@ from gui import InputHandler, SystemMessages
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.app_loader.loader import g_appLoader
 from vehicle_systems.CompoundAppearance import CompoundAppearance
-from vehicle_systems.components.engine_state import DetailedEngineStateWWISE
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 
 res = ResMgr.openSection('../paths.xml')
@@ -709,18 +708,20 @@ CompoundAppearance.onVehicleHealthChanged = new_oVHC
 curSpeedsDict = {}
 
 
-def new_refresh(self, dt):
-    old_refresh(self, dt)
-    if self._vehicle is None:
+def new_periodicTimer(self):
+    old_periodicTimer(self)
+    if CompoundAppearance.frameTimeStamp > BigWorld.wg_getFrameTimestamp():
+        return
+    if self._CompoundAppearance__vehicle is None:
         return
     if not _config.data['enabled'] or not _config.isLampsVisible or not _config.isTickRequired:
         return
-    vehicleID = self._vehicle.id
+    vehicleID = self._CompoundAppearance__vehicle.id
     if vehicleID not in lightDBDict:
         return
     curSpeeds = curSpeedsDict.setdefault(vehicleID, {})
     oldSpeed = curSpeeds.setdefault('curSpeed', 0.0)
-    speedValue = self._vehicle.filter.speedInfo.value
+    speedValue = self._CompoundAppearance__vehicle.filter.speedInfo.value
     curSpeed = round(speedValue[0], 1)
     curRSpeed = round(speedValue[1], 1)
     doVisible = {'back': curSpeed < 0,
@@ -739,8 +740,8 @@ def new_refresh(self, dt):
     curSpeeds['curRSpeed'] = curRSpeed
 
 
-old_refresh = DetailedEngineStateWWISE.refresh
-DetailedEngineStateWWISE.refresh = new_refresh
+old_periodicTimer = CompoundAppearance._CompoundAppearance__periodicTimer
+CompoundAppearance._CompoundAppearance__periodicTimer = new_periodicTimer
 
 
 def spotToggle(vehicleID, lightIdx, status):
