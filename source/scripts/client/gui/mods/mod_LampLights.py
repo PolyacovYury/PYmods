@@ -708,8 +708,8 @@ CompoundAppearance.onVehicleHealthChanged = new_oVHC
 curSpeedsDict = {}
 
 
-def new_periodicTimer(self):
-    old_periodicTimer(self)
+def new_onPeriodicTimer(self):
+    old_onPeriodicTimer(self)
     if CompoundAppearance.frameTimeStamp > BigWorld.wg_getFrameTimestamp():
         return
     if self._CompoundAppearance__vehicle is None:
@@ -740,8 +740,8 @@ def new_periodicTimer(self):
     curSpeeds['curRSpeed'] = curRSpeed
 
 
-old_periodicTimer = CompoundAppearance._CompoundAppearance__periodicTimer
-CompoundAppearance._CompoundAppearance__periodicTimer = new_periodicTimer
+old_onPeriodicTimer = CompoundAppearance._CompoundAppearance__onPeriodicTimer
+CompoundAppearance._CompoundAppearance__onPeriodicTimer = new_onPeriodicTimer
 
 
 def spotToggle(vehicleID, lightIdx, status):
