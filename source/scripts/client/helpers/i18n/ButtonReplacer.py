@@ -164,6 +164,7 @@ def new_construct(self):
     from gui.shared.formatters import text_styles, icons
     from gui.shared.items_parameters import formatters as params_formatters, bonus_helper
     from gui.shared.tooltips import formatters
+    from gui.shared.utils.functions import stripColorTagDescrTags
     from helpers.i18n import makeString as _ms
     from items import ITEM_TYPES
     block = []
@@ -181,12 +182,12 @@ def new_construct(self):
     always = checkLocalization('%s/always' % self.module.descriptor['name'])
     restriction = checkLocalization('%s/restriction' % self.module.descriptor['name'])
     if bonus_helper.isSituationalBonus(self.module.name):
-        effectDesc = text_styles.bonusPreviewText(_ms(self.module.fullDescription))
+        effectDesc = text_styles.bonusPreviewText(stripColorTagDescrTags(_ms(self.module.fullDescription)))
         # noinspection PyArgumentEqualDefault
         icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_TOOLTIP_ASTERISK_OPTIONAL, 16, 16, 0, 4)
         desc = params_formatters.packSituationalIcon(effectDesc, icon)
     else:
-        desc = text_styles.bonusAppliedText(_ms(self.module.fullDescription))
+        desc = text_styles.bonusAppliedText(stripColorTagDescrTags(_ms(self.module.fullDescription)))
     if self.module.itemTypeID == ITEM_TYPES.optionalDevice:
         block.append(formatters.packTitleDescBlock(title='', desc=desc, padding=formatters.packPadding(top=-8)))
     else:
