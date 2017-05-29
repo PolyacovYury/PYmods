@@ -518,9 +518,9 @@ class ModSettingsConfig(_Config):
         vxSettingsApi.loadWindow(self.ID)
 
     def modsListRegister(self):
-        BigWorld.g_modsListApi.addMod(id=self.ID, name=self.i18n['gui_name'],
-                                      description=self.i18n['gui_description'], icon='scripts/client/PYmodsLogo.png',
-                                      enabled=True, login=True, lobby=True, callback=self.MSAPopulate)
+        BigWorld.g_modsListApi.addModification(
+            id=self.ID, name=self.i18n['gui_name'], description=self.i18n['gui_description'],
+            icon='scripts/client/PYmodsLogo.png', enabled=True, login=True, lobby=True, callback=self.MSAPopulate)
 
     def load(self):
         BigWorld.callback(0.0, self.do_config_delayed)
@@ -536,7 +536,7 @@ class ModSettingsConfig(_Config):
             LOG_CURRENT_EXCEPTION()
         try:
             # noinspection PyUnresolvedReferences
-            from gui.mods.modsListApi import g_modsListApi
+            from gui.modsListApi import g_modsListApi
             if not hasattr(BigWorld, 'g_modsListApi'):
                 BigWorld.g_modsListApi = g_modsListApi
             # noinspection PyUnresolvedReferences

@@ -287,7 +287,7 @@ class _Config(PYmodsCore._Config):
     def apply_settings(self, settings):
         super(_Config, self).apply_settings(settings)
         if self.isModAdded:
-            BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
+            BigWorld.g_modsListApi.updateModification('RemodEnablerUI', enabled=self.data['enabled'])
 
     # noinspection PyUnresolvedReferences
     def update_data(self, doPrint=False):
@@ -478,14 +478,6 @@ class _Config(PYmodsCore._Config):
 
     def do_config(self):
         super(_Config, self).do_config()
-        BigWorld.g_modsListApi.addMod(
-            id='RemodEnablerUI', name=self.i18n['UI_flash_header'],
-            description=self.i18n['UI_flash_header_tooltip'],
-            icon='gui/flash/RemodEnabler.png',
-            enabled=self.data['enabled'], login=True, lobby=True,
-            callback=lambda: g_appLoader.getDefLobbyApp().loadView(
-                'RemodEnablerUI') if self.loadingProxy is None else None)
-        self.isModAdded = True
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
@@ -493,6 +485,14 @@ class _Config(PYmodsCore._Config):
         g_entitiesFactories.addSettings(
             GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
                                 '', None, ScopeTemplates.DEFAULT_SCOPE))
+        BigWorld.g_modsListApi.addModification(
+            id='RemodEnablerUI', name=self.i18n['UI_flash_header'],
+            description=self.i18n['UI_flash_header_tooltip'],
+            icon='gui/flash/RemodEnabler.png',
+            enabled=self.data['enabled'], login=True, lobby=True,
+            callback=lambda: g_appLoader.getDefLobbyApp().loadView(
+                'RemodEnablerUI') if self.loadingProxy is None else None)
+        self.isModAdded = True
 
 
 def skinsPresenceCheck():
