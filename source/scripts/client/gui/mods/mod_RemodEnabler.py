@@ -585,10 +585,8 @@ class RemodEnablerUI(AbstractWindowView):
         super(RemodEnablerUI, self)._populate()
         self.modeBackup = _config.data['currentMode']
         self.remodBackup = _config.OM.selected['Remod']
-        if self._isDAAPIInited():
-            self.createData()
 
-    def createData(self):
+    def py_onRequestSettings(self):
         _config.update_data(_config.data['isDebug'])
         texts = {
             'header': {
@@ -636,7 +634,6 @@ class RemodEnablerUI(AbstractWindowView):
                 texts['skinNames'][idx].append(sname)
                 settings['skins'][idx].append({'useFor': {k.lower(): sDesc['swap%s' % k] for k in OM.tankGroups}})
         self.flashObject.as_updateData(texts, settings)
-        self.flashObject.as_initMainMenu()
 
     @staticmethod
     def py_onShowRemod(remodIdx):

@@ -44,10 +44,9 @@ class CamoSelectorUI(AbstractWindowView):
     def _populate(self):
         super(CamoSelectorUI, self)._populate()
         if self._isDAAPIInited():
-            self.createData()
             _config.UIProxy = weakref.proxy(self)
 
-    def createData(self):
+    def py_onSyncData(self):
         # noinspection PyUnresolvedReferences
         texts = {
             'header': _config.i18n['UI_flash_header'],
