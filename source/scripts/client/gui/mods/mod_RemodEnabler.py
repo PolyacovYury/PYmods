@@ -145,7 +145,7 @@ class OSDescriptor(object):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '2.9.9 (%(file_compile_date)s)'
+        self.version = '2.9.9.1 (%(file_compile_date)s)'
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True,
@@ -287,7 +287,7 @@ class _Config(PYmodsCore._Config):
     def apply_settings(self, settings):
         super(_Config, self).apply_settings(settings)
         if self.isModAdded:
-            BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
+            BigWorld.g_modsListApi.updateModification('RemodEnablerUI', enabled=self.data['enabled'])
 
     # noinspection PyUnresolvedReferences
     def update_data(self, doPrint=False):
@@ -408,7 +408,7 @@ class _Config(PYmodsCore._Config):
                 if self.data['isDebug']:
                     print '%s: loading configs for %s skins' % (self.ID, skinType)
                 skinDirSect = ResMgr.openSection(skinDir)
-                for sname in [] if skinDirSect is None else skinDirSect.keys():
+                for sname in [] if skinDirSect is None else PYmodsCore.remDups(skinDirSect.keys()):
                     confDict = skinsSettings.setdefault(sname, self.defaultSkinConfig[skinType])
                     if not confDict.get('enabled', True):
                         print '%s: %s disabled, moving on' % (self.ID, sname)
@@ -430,17 +430,19 @@ class _Config(PYmodsCore._Config):
                     pRecord.whitelist.clear()
                     vehiclesDirPath = skinDir + sname + '/vehicles/'
                     vehiclesDirSect = ResMgr.openSection(vehiclesDirPath)
-                    for curNation in [] if vehiclesDirSect is None else vehiclesDirSect.keys():
+                    for curNation in [] if vehiclesDirSect is None else PYmodsCore.remDups(vehiclesDirSect.keys()):
                         nationDirPath = vehiclesDirPath + curNation + '/'
                         nationDirSect = ResMgr.openSection(nationDirPath)
-                        for vehicleName in [] if nationDirSect is None else nationDirSect.keys():
+                        for vehicleName in [] if nationDirSect is None else PYmodsCore.remDups(nationDirSect.keys()):
                             vehDirPath = nationDirPath + vehicleName + '/'
                             vehDirSect = ResMgr.openSection(vehDirPath)
                             tracksDirPath = vehDirPath + 'tracks/'
                             tracksDirSect = ResMgr.openSection(tracksDirPath)
-                            if not (texName for texName in ([] if vehDirSect is None else vehDirSect.keys()) if
-                                    texName.endswith('.dds')) and not (texName for texName in (
-                                    [] if tracksDirSect is None else tracksDirSect.keys()) if texName.endswith('.dds')):
+                            if not [texName for texName in
+                                    ([] if vehDirSect is None else PYmodsCore.remDups(vehDirSect.keys())) if
+                                    texName.endswith('.dds')] and not [texName for texName in (
+                                    [] if tracksDirSect is None else PYmodsCore.remDups(tracksDirSect.keys())) if
+                                    texName.endswith('.dds')]:
                                 if self.data['isDebug']:
                                     print '%s: %s folder from %s pack is empty' % (
                                         self.ID, vehicleName, sname)
@@ -476,7 +478,14 @@ class _Config(PYmodsCore._Config):
 
     def do_config(self):
         super(_Config, self).do_config()
-        BigWorld.g_modsListApi.addMod(
+        # noinspection PyArgumentList
+        g_entitiesFactories.addSettings(
+            ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
+                         ScopeTemplates.GLOBAL_SCOPE, False))
+        g_entitiesFactories.addSettings(
+            GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
+                                '', None, ScopeTemplates.DEFAULT_SCOPE))
+        BigWorld.g_modsListApi.addModification(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'],
             description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png',
@@ -484,12 +493,6 @@ class _Config(PYmodsCore._Config):
             callback=lambda: g_appLoader.getDefLobbyApp().loadView(
                 'RemodEnablerUI') if self.loadingProxy is None else None)
         self.isModAdded = True
-        g_entitiesFactories.addSettings(
-            ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
-                         ScopeTemplates.GLOBAL_SCOPE, False))
-        g_entitiesFactories.addSettings(
-            GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
-                                '', None, ScopeTemplates.DEFAULT_SCOPE))
 
 
 def skinsPresenceCheck():
@@ -582,10 +585,8 @@ class RemodEnablerUI(AbstractWindowView):
         super(RemodEnablerUI, self)._populate()
         self.modeBackup = _config.data['currentMode']
         self.remodBackup = _config.OM.selected['Remod']
-        if self._isDAAPIInited():
-            self.createData()
 
-    def createData(self):
+    def py_onRequestSettings(self):
         _config.update_data(_config.data['isDebug'])
         texts = {
             'header': {
@@ -633,7 +634,6 @@ class RemodEnablerUI(AbstractWindowView):
                 texts['skinNames'][idx].append(sname)
                 settings['skins'][idx].append({'useFor': {k.lower(): sDesc['swap%s' % k] for k in OM.tankGroups}})
         self.flashObject.as_updateData(texts, settings)
-        self.flashObject.as_initMainMenu()
 
     @staticmethod
     def py_onShowRemod(remodIdx):
@@ -723,19 +723,19 @@ def skinCRC32All(callback):
         _config.loadingProxy.addLine(_config.i18n['UI_loading_skins'])
         CRC32 = 0
         resultList = []
-        for skin in dirSect.keys():
+        for skin in PYmodsCore.remDups(dirSect.keys()):
             _config.loadingProxy.addLine(_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
             skinCRC32 = 0
             skinSect = ResMgr.openSection(skinsPath + skin + '/vehicles/')
-            for nation in [] if skinSect is None else skinSect.keys():
+            for nation in [] if skinSect is None else PYmodsCore.remDups(skinSect.keys()):
                 nationCRC32 = 0
                 nationSect = ResMgr.openSection(skinsPath + skin + '/vehicles/' + nation)
-                for vehicleName in [] if nationSect is None else nationSect.keys():
+                for vehicleName in [] if nationSect is None else PYmodsCore.remDups(nationSect.keys()):
                     vehicleCRC32 = 0
                     skinVehNamesLDict.setdefault(vehicleName.lower(), []).append(skin)
                     vehicleSect = ResMgr.openSection(skinsPath + skin + '/vehicles/' + nation + '/' + vehicleName)
-                    for texture in [] if vehicleSect is None else (texName for texName in vehicleSect.keys() if
-                                                                   texName.endswith('.dds')):
+                    for texture in [] if vehicleSect is None else (
+                            texName for texName in PYmodsCore.remDups(vehicleSect.keys()) if texName.endswith('.dds')):
                         localPath = 'vehicles/' + nation + '/' + vehicleName + '/' + texture
                         texPath = skinsPath + skin + '/' + localPath
                         textureCRC32 = CRC32_from_file(texPath, localPath)
