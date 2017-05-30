@@ -268,7 +268,7 @@ if _config.data['enableMessage']:
         old_populate(self)
         try:
             # noinspection PyUnresolvedReferences
-            from gui.mods.vxSettingsApi import vxSettingsApi
+            from gui.vxSettingsApi import vxSettingsApi
             isRegistered = vxSettingsApi.isRegistered('PYmodsGUI')
         except ImportError:
             isRegistered = False

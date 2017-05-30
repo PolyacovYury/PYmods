@@ -28,7 +28,7 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
     BigWorld.curCV = vl.asString
 if not hasattr(BigWorld, 'PMC_wasPrint'):
     BigWorld.PMC_wasPrint = True
-    print 'Current PYmodsCore version: 2.2.0 (%(file_compile_date)s)'
+    print 'Current PYmodsCore version: 2.2.1 (%(file_compile_date)s)'
 MAX_CHAT_MESSAGE_LENGTH = 220
 
 
@@ -191,7 +191,7 @@ class _Config(object):
 
     def updateMod(self):
         # noinspection PyUnresolvedReferences
-        from gui.mods.vxSettingsApi import vxSettingsApi
+        from gui.vxSettingsApi import vxSettingsApi
         vxSettingsApi.updateMod('PYmodsGUI', self.ID, self.template_settings)
 
     def getLabel(self, varName, ctx='setting'):
@@ -474,7 +474,7 @@ class _Config(object):
             LOG_CURRENT_EXCEPTION()
         try:
             # noinspection PyUnresolvedReferences
-            from gui.mods.vxSettingsApi import vxSettingsApi
+            from gui.vxSettingsApi import vxSettingsApi
             vxSettingsApi.addMod('PYmodsGUI', self.ID, self.template_settings, self.data, self.apply_settings,
                                  self.onButtonPress)
         except ImportError:
@@ -505,14 +505,14 @@ class ModSettingsConfig(_Config):
         if container != self.ID:
             return
         # noinspection PyUnresolvedReferences
-        from gui.mods.vxSettingsApi import vxSettingsApiEvents
+        from gui.vxSettingsApi import vxSettingsApiEvents
         if eventType == vxSettingsApiEvents.WINDOW_CLOSED:
             self.isMSAWindowOpen = False
             self.onMSAWindowClose()
 
     def MSAPopulate(self):
         # noinspection PyUnresolvedReferences
-        from gui.mods.vxSettingsApi import vxSettingsApi
+        from gui.vxSettingsApi import vxSettingsApi
         self.isMSAWindowOpen = True
         self.onMSAPopulate()
         vxSettingsApi.loadWindow(self.ID)
@@ -540,7 +540,7 @@ class ModSettingsConfig(_Config):
             if not hasattr(BigWorld, 'g_modsListApi'):
                 BigWorld.g_modsListApi = g_modsListApi
             # noinspection PyUnresolvedReferences
-            from gui.mods.vxSettingsApi import vxSettingsApi
+            from gui.vxSettingsApi import vxSettingsApi
             keys = ('windowTitle', 'buttonOK', 'buttonCancel', 'buttonApply', 'enableButtonTooltip')
             userSettings = {key: self.i18n['gui_%s' % key] for key in keys}
             vxSettingsApi.addContainer(self.ID, userSettings)
