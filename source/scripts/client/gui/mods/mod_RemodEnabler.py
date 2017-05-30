@@ -1370,6 +1370,15 @@ def debugOutput(xmlName, vehName, playerName=None):
         print header + ' processed:', ', '.join(info)
 
 
+def new_reconstruct(x, info, deep, memo=None):
+    if memo is None:
+        memo = {}
+    if type(x).__name__ == 'PyDirectParticleAttachment':
+        memo[id(x)] = x
+        return x
+    return old_reconstruct(x, info, deep, memo)
+
+
 def new_prerequisites(self, respawnCompactDescr=None):
     if self.respawnCompactDescr is not None:
         respawnCompactDescr = self.respawnCompactDescr
@@ -1385,17 +1394,15 @@ def new_prerequisites(self, respawnCompactDescr=None):
         isAlly = BigWorld.player().arena.vehicles.get(self.id)['team'] == BigWorld.player().team
         OM_find(xmlName, isPlayerVehicle, isAlly)
         for partName in TankPartNames.ALL + ('engine',):
-            new_part = None
             try:
                 old_part = getattr(vDesc, partName)
                 new_part = copy.deepcopy(old_part)
                 setattr(vDesc, partName, new_part)
                 if 'hitTester' in old_part:
                     getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
-            except TypeError:
+            except StandardError:
+                traceback.print_exc()
                 print partName
-                pprint.pprint(getattr(vDesc, partName))
-                pprint.pprint(new_part)
         vehNation, vehName = vDesc.chassis['models']['undamaged'].split('/')[1:3]
         vehDefNation = vDesc.chassis['hitTester'].bspModelName.split('/')[1]
         if _config.OMDesc is None:
@@ -1425,17 +1432,15 @@ def new_startBuild(self, vDesc, vState):
         isAlly = _config.data['currentMode'] == 'ally'
         OM_find(xmlName, isPlayerVehicle, isAlly, _config.data['currentMode'])
         for partName in TankPartNames.ALL + ('engine',):
-            new_part = None
             try:
                 old_part = getattr(vDesc, partName)
                 new_part = copy.deepcopy(old_part)
                 setattr(vDesc, partName, new_part)
                 if 'hitTester' in old_part:
                     getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
-            except TypeError:
+            except StandardError:
+                traceback.print_exc()
                 print partName
-                pprint.pprint(getattr(vDesc, partName))
-                pprint.pprint(new_part)
         message = None
         collisionNotVisible = not _config.data['collisionEnabled'] and not _config.data['collisionComparisonEnabled']
         vehNation, vehName = vDesc.chassis['models']['undamaged'].split('/')[1:3]
@@ -1547,6 +1552,8 @@ def new_refreshModel(self):
     old_refreshModel(self)
 
 
+old_reconstruct = copy._reconstruct
+copy._reconstruct = new_reconstruct
 old_prerequisites = Vehicle.prerequisites
 Vehicle.prerequisites = new_prerequisites
 old_startBuild = _VehicleAppearance._VehicleAppearance__startBuild
