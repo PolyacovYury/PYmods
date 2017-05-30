@@ -75,7 +75,7 @@ if _config.data['enableMessage']:
             author='<font color="#DD7700">Polyacov_Yury</font>')
         try:
             # noinspection PyUnresolvedReferences
-            from gui.mods.vxSettingsApi import vxSettingsApi
+            from gui.vxSettingsApi import vxSettingsApi
             isRegistered = vxSettingsApi.isRegistered('PYmodsGUI')
         except ImportError:
             isRegistered = False
