@@ -287,7 +287,7 @@ class _Config(PYmodsCore._Config):
     def apply_settings(self, settings):
         super(_Config, self).apply_settings(settings)
         if self.isModAdded:
-            BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
+            BigWorld.g_modsListApi.updateModification('RemodEnablerUI', enabled=self.data['enabled'])
 
     # noinspection PyUnresolvedReferences
     def update_data(self, doPrint=False):
@@ -478,7 +478,14 @@ class _Config(PYmodsCore._Config):
 
     def do_config(self):
         super(_Config, self).do_config()
-        BigWorld.g_modsListApi.addMod(
+        # noinspection PyArgumentList
+        g_entitiesFactories.addSettings(
+            ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
+                         ScopeTemplates.GLOBAL_SCOPE, False))
+        g_entitiesFactories.addSettings(
+            GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
+                                '', None, ScopeTemplates.DEFAULT_SCOPE))
+        BigWorld.g_modsListApi.addModification(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'],
             description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png',
@@ -486,12 +493,6 @@ class _Config(PYmodsCore._Config):
             callback=lambda: g_appLoader.getDefLobbyApp().loadView(
                 'RemodEnablerUI') if self.loadingProxy is None else None)
         self.isModAdded = True
-        g_entitiesFactories.addSettings(
-            ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
-                         ScopeTemplates.GLOBAL_SCOPE, False))
-        g_entitiesFactories.addSettings(
-            GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
-                                '', None, ScopeTemplates.DEFAULT_SCOPE))
 
 
 def skinsPresenceCheck():
@@ -584,10 +585,8 @@ class RemodEnablerUI(AbstractWindowView):
         super(RemodEnablerUI, self)._populate()
         self.modeBackup = _config.data['currentMode']
         self.remodBackup = _config.OM.selected['Remod']
-        if self._isDAAPIInited():
-            self.createData()
 
-    def createData(self):
+    def py_onRequestSettings(self):
         _config.update_data(_config.data['isDebug'])
         texts = {
             'header': {
@@ -635,7 +634,6 @@ class RemodEnablerUI(AbstractWindowView):
                 texts['skinNames'][idx].append(sname)
                 settings['skins'][idx].append({'useFor': {k.lower(): sDesc['swap%s' % k] for k in OM.tankGroups}})
         self.flashObject.as_updateData(texts, settings)
-        self.flashObject.as_initMainMenu()
 
     @staticmethod
     def py_onShowRemod(remodIdx):

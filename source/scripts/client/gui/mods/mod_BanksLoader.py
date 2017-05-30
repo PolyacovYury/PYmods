@@ -205,7 +205,7 @@ class _Config(PYmodsCore._Config):
         bankFiles['ignore'] = set()
         modsKeys = ('events', 'switches', 'RTPCs', 'states')
         confList = [x for x in ResMgr.openSection(mediaPath).keys()
-                    if x.endswith('.xml') and x.replace('.xml', '.bnk') in bankFiles['mods']|bankFiles['orig']]
+                    if x.endswith('.xml') and x.replace('.xml', '.bnk') in bankFiles['mods'] | bankFiles['orig']]
         for key in ('loadBanks',) + modsKeys:
             if not audio_mods_new.has_key(key):
                 audio_mods_new.createSection(key)

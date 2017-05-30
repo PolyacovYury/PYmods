@@ -44,10 +44,9 @@ class CamoSelectorUI(AbstractWindowView):
     def _populate(self):
         super(CamoSelectorUI, self)._populate()
         if self._isDAAPIInited():
-            self.createData()
             _config.UIProxy = weakref.proxy(self)
 
-    def createData(self):
+    def py_onSyncData(self):
         # noinspection PyUnresolvedReferences
         texts = {
             'header': _config.i18n['UI_flash_header'],
@@ -324,7 +323,7 @@ class _Config(PYmodsCore._Config):
         super(_Config, self).apply_settings(settings)
         self.hangarCamoCache.clear()
         if self.isModAdded:
-            BigWorld.g_modsListApi.updateMod('CamoSelectorUI', enabled=self.data['enabled'])
+            BigWorld.g_modsListApi.updateModification('CamoSelectorUI', enabled=self.data['enabled'])
 
     def readCamouflages(self, doShopCheck):
         self.configFolders.clear()
@@ -406,16 +405,17 @@ class _Config(PYmodsCore._Config):
 
     def do_config(self):
         super(_Config, self).do_config()
-        BigWorld.g_modsListApi.addMod(
+        # noinspection PyArgumentList
+        g_entitiesFactories.addSettings(
+            ViewSettings('CamoSelectorUI', CamoSelectorUI, 'CamoSelector.swf', ViewTypes.WINDOW, None,
+                         ScopeTemplates.GLOBAL_SCOPE, False))
+        BigWorld.g_modsListApi.addModification(
             id='CamoSelectorUI', name=self.i18n['UI_flash_header'],
             description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/CamoSelector.png',
             enabled=self.data['enabled'], login=False, lobby=True,
             callback=lambda: g_appLoader.getDefLobbyApp().loadView('CamoSelectorUI'))
         self.isModAdded = True
-        g_entitiesFactories.addSettings(
-            ViewSettings('CamoSelectorUI', CamoSelectorUI, 'CamoSelector.swf', ViewTypes.WINDOW, None,
-                         ScopeTemplates.GLOBAL_SCOPE, False))
 
 
 # noinspection PyUnboundLocalVariable,PyUnboundLocalVariable
