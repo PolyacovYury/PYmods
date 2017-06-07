@@ -323,7 +323,11 @@ class _Config(PYmodsCore._Config):
         super(_Config, self).apply_settings(settings)
         self.hangarCamoCache.clear()
         if self.isModAdded:
-            BigWorld.g_modsListApi.updateModification('CamoSelectorUI', enabled=self.data['enabled'])
+            kwargs = dict(id='CamoSelectorUI', enabled=self.data['enabled'])
+            try:
+                BigWorld.g_modsListApi.updateModification(**kwargs)
+            except AttributeError:
+                BigWorld.g_modsListApi.updateMod(**kwargs)
 
     def readCamouflages(self, doShopCheck):
         self.configFolders.clear()
@@ -409,12 +413,14 @@ class _Config(PYmodsCore._Config):
         g_entitiesFactories.addSettings(
             ViewSettings('CamoSelectorUI', CamoSelectorUI, 'CamoSelector.swf', ViewTypes.WINDOW, None,
                          ScopeTemplates.GLOBAL_SCOPE, False))
-        BigWorld.g_modsListApi.addModification(
-            id='CamoSelectorUI', name=self.i18n['UI_flash_header'],
-            description=self.i18n['UI_flash_header_tooltip'],
-            icon='gui/flash/CamoSelector.png',
-            enabled=self.data['enabled'], login=False, lobby=True,
+        kwargs = dict(
+            id='CamoSelectorUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
+            icon='gui/flash/CamoSelector.png', enabled=self.data['enabled'], login=False, lobby=True,
             callback=lambda: g_appLoader.getDefLobbyApp().loadView('CamoSelectorUI'))
+        try:
+            BigWorld.g_modsListApi.addModification(**kwargs)
+        except AttributeError:
+            BigWorld.g_modsListApi.addMod(**kwargs)
         self.isModAdded = True
 
 

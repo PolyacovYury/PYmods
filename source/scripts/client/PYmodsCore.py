@@ -28,7 +28,7 @@ if vl is not None and not hasattr(BigWorld, 'curCV'):
     BigWorld.curCV = vl.asString
 if not hasattr(BigWorld, 'PMC_wasPrint'):
     BigWorld.PMC_wasPrint = True
-    print 'Current PYmodsCore version: 2.2.1 (%(file_compile_date)s)'
+    print 'Current PYmodsCore version: 2.2.1.1 (%(file_compile_date)s)'
 MAX_CHAT_MESSAGE_LENGTH = 220
 
 
@@ -486,7 +486,7 @@ class _Config(object):
 class ModSettingsConfig(_Config):
     def __init__(self):
         super(self.__class__, self).__init__('PYmodsGUI')
-        self.version = '2.0.1 (%(file_compile_date)s)'
+        self.version = '2.0.2 (%(file_compile_date)s)'
         self.author = 'by spoter, satel1te (fork %s)' % self.author
         self.i18n = {'gui_name': "PY's mods settings",
                      'gui_description': "<font color='#DD7700'><b>Polyacov_Yury</b></font>'s modifications enabling and "
@@ -518,9 +518,13 @@ class ModSettingsConfig(_Config):
         vxSettingsApi.loadWindow(self.ID)
 
     def modsListRegister(self):
-        BigWorld.g_modsListApi.addModification(
+        kwargs = dict(
             id=self.ID, name=self.i18n['gui_name'], description=self.i18n['gui_description'],
             icon='scripts/client/PYmodsLogo.png', enabled=True, login=True, lobby=True, callback=self.MSAPopulate)
+        try:
+            BigWorld.g_modsListApi.addModification(**kwargs)
+        except AttributeError:
+            BigWorld.g_modsListApi.addMod(**kwargs)
 
     def load(self):
         BigWorld.callback(0.0, self.do_config_delayed)
