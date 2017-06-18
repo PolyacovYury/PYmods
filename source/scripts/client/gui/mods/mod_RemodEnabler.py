@@ -36,7 +36,8 @@ from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSet
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.app_loader.loader import g_appLoader
 from helpers import getClientVersion
-from items.vehicles import g_cache, EmblemSlot
+from items.vehicle_config_types import GroundNode, GroundNodeGroup, TrackNode, Wheel, WheelGroup
+from items.vehicles import EmblemSlot, g_cache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 from zipfile import ZipFile
@@ -275,6 +276,8 @@ class _Config(PYmodsCore._Config):
                 settingsDict = self.settings['remods'].setdefault(sname, {})
                 if not settingsDict.setdefault('enabled', self.defaultRemodConfig['enabled']):
                     print '%s: %s disabled, moving on' % (self.ID, sname)
+                    if sname in self.OM.models:
+                        del self.OM.models[sname]
                     continue
                 self.OM.models[sname] = pRecord = OMDescriptor()
                 pRecord.name = sname
@@ -1032,7 +1035,34 @@ def OM_apply(vDesc):
             vDesc.chassis[key] = {}
     data = _config.OMDesc.data
     for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
-        exec "vDesc.chassis['%s']=" % key + data['chassis'][key]
+        obj = eval(data['chassis'][key])
+        if key not in ('wheels', 'groundNodes', 'trackNodes') or any(
+                hasattr(d, '_fields') for l in obj.itervalues() if type(l) != float for d in l):
+            vDesc.chassis[key] = obj
+            continue
+        newObj = {}
+        if key == 'wheels':
+            newObj['groups'] = []
+            newObj['wheels'] = []
+            newObj['lodDist'] = obj['lodDist']
+            newObj['leadingWheelSyncAngle'] = obj['leadingWheelSyncAngle']
+            for d in obj['groups']:
+                newObj['groups'].append(WheelGroup(*d))
+            for d in obj['wheels']:
+                newObj['wheels'].append(Wheel(*(d[0], d[2], d[1], d[3], d[4])))
+        if key == 'groundNodes':
+            newObj['groups'] = []
+            newObj['nodes'] = []
+            for d in obj['groups']:
+                newObj['groups'].append(GroundNodeGroup(*(d[0], d[4], d[5], d[1], d[2], d[3])))
+            for d in obj['nodes']:
+                newObj['nodes'].append(GroundNode(*(d[1], d[0], d[2], d[3])))
+        if key == 'trackNodes':
+            newObj['groups'] = []
+            newObj['nodes'] = []
+            for d in obj['nodes']:
+                newObj['nodes'].append(TrackNode(*(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])))
+        vDesc.chassis[key] = newObj
     if data['chassis']['AODecals']:
         AODecalsOffset = vDesc.chassis['hullPosition'] - data['chassis']['hullPosition']
         vDesc.chassis['AODecals'] = copy.deepcopy(data['chassis']['AODecals'])
