@@ -7,12 +7,6 @@ import traceback
 import urllib2
 from debug_utils import LOG_ERROR
 
-res = ResMgr.openSection('../paths.xml')
-sb = res['Paths']
-vl = sb.values()[0]
-if vl is not None and not hasattr(BigWorld, 'curCV'):
-    BigWorld.curCV = vl.asString
-
 
 def __dir__():
     return ['i18n_hook_makeString']
