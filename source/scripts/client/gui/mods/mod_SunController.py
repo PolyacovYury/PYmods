@@ -1,28 +1,20 @@
 # -*- coding: utf-8 -*-
 import time
-import traceback
-
-import ResMgr
 
 import BigWorld
 import Keys
 import PYmodsCore
+import traceback
 from Avatar import PlayerAvatar
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.app_loader.loader import g_appLoader
 
-res = ResMgr.openSection('../paths.xml')
-sb = res['Paths']
-vl = sb.values()[0]
-if vl is not None and not hasattr(BigWorld, 'curCV'):
-    BigWorld.curCV = vl.asString
 
-
-class _Config(PYmodsCore._Config):
+class _Config(PYmodsCore.Config):
     def __init__(self):
-        super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '2.2.1 (%(file_compile_date)s)'
+        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.version = '2.2.2 (%(file_compile_date)s)'
         self.author = '%s (orig by Lp()rtii/Dellux) (thx to LSD_MAX/Delysid :P)' % self.author
         self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
         self.data = {'enabled': True,
@@ -61,7 +53,7 @@ class _Config(PYmodsCore._Config):
 
     def apply_settings(self, settings):
         global isSunControlled
-        super(_Config, self).apply_settings(settings)
+        super(self.__class__, self).apply_settings(settings)
         isSunControlled = _config.data['enableAtStartup']
 
 
@@ -70,7 +62,9 @@ _config.load()
 if _config.data['enableMessage']:
     isLogin = True
 
-    def new_populate(self):
+
+    @PYmodsCore.overrideMethod(LobbyView, '_populate')
+    def new_populate(base, self):
         LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAll'].format(
             author='<font color="#DD7700">Polyacov_Yury</font>')
         try:
@@ -86,13 +80,11 @@ if _config.data['enableMessage']:
         except StandardError:
             pass
         global isLogin
-        old_populate(self)
+        base(self)
         if isLogin and not isRegistered:
             SystemMessages.pushMessage(LOGIN_TEXT_MESSAGE, type=SystemMessages.SM_TYPE.Information)
             isLogin = False
 
-    old_populate = LobbyView._populate
-    LobbyView._populate = new_populate
 isSunControlled = _config.data['enableAtStartup']
 wasSunControlled = False
 timeBackup = '12:00'
@@ -120,8 +112,9 @@ def sun_controller(isControlled=True):
 old_startGUI = PlayerAvatar._PlayerAvatar__startGUI
 
 
-def new_startGUI(self):
-    old_startGUI(self)
+@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
+def new_startGUI(base, self):
+    base(self)
     temp_t = BigWorld.time()
 
     def _clear_loop():
@@ -136,21 +129,15 @@ def new_startGUI(self):
         _clear_loop()
 
 
-PlayerAvatar._PlayerAvatar__startGUI = new_startGUI
-
-
 def battleKeyControl(event):
     global isSunControlled
-    try:
-        if PYmodsCore.checkKeys(_config.data['hotkey']) and event.isKeyDown():
-            isSunControlled = not isSunControlled
-            sun_controller(isSunControlled)
-            if isSunControlled:
-                PYmodsCore.sendMessage(_config.i18n['UI_activSunMod'])
-            else:
-                PYmodsCore.sendMessage(_config.i18n['UI_deactivSunMod'], 'Red')
-    except StandardError:
-        traceback.print_exc()
+    if PYmodsCore.checkKeys(_config.data['hotkey']) and event.isKeyDown():
+        isSunControlled = not isSunControlled
+        sun_controller(isSunControlled)
+        if isSunControlled:
+            PYmodsCore.sendMessage(_config.i18n['UI_activSunMod'])
+        else:
+            PYmodsCore.sendMessage(_config.i18n['UI_deactivSunMod'], 'Red')
 
 
 def inj_hkKeyEvent(event):

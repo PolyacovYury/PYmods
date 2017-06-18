@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 import binascii
 import datetime
-import gc
 import time
 
 import GUI
 import Math
-import ResMgr
 
 import BigWorld
 import Keys
 import PYmodsCore
+import ResMgr
 import SoundGroups
 import copy
 import glob
@@ -41,12 +40,6 @@ from items.vehicles import EmblemSlot, g_cache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 from zipfile import ZipFile
-
-res = ResMgr.openSection('../paths.xml')
-sb = res['Paths']
-vl = sb.values()[0]
-if vl is not None and not hasattr(BigWorld, 'curCV'):
-    BigWorld.curCV = vl.asString
 
 
 def readAODecals(confList):
@@ -115,15 +108,15 @@ class OSDescriptor(object):
         self.whitelist = set()
 
 
-class _Config(PYmodsCore._Config):
+class _Config(PYmodsCore.Config):
     def __init__(self):
-        super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '2.9.9.2 (%(file_compile_date)s)'
+        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.version = '2.9.9.3 (%(file_compile_date)s)'
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True},
                                   'dynamic': {'enabled': True, 'swapPlayer': False, 'swapAlly': True, 'swapEnemy': True}}
-        self.defaultRemodConfig = {'enabled': True, 'swapPlayer': True,  'swapAlly': True, 'swapEnemy': True}
+        self.defaultRemodConfig = {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True}
         self.defaultKeys = {'DynamicSkinHotKey': ['KEY_F1', ['KEY_LCONTROL', 'KEY_RCONTROL']],
                             'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'ChangeViewHotKey': ['KEY_F2', ['KEY_LCONTROL', 'KEY_RCONTROL']],
@@ -249,7 +242,7 @@ class _Config(PYmodsCore._Config):
         g_currentPreviewVehicle.refreshModel()
 
     def apply_settings(self, settings):
-        super(_Config, self).apply_settings(settings)
+        super(self.__class__, self).apply_settings(settings)
         if self.isModAdded:
             kwargs = dict(id='RemodEnablerUI', enabled=self.data['enabled'])
             try:
@@ -259,7 +252,7 @@ class _Config(PYmodsCore._Config):
 
     # noinspection PyUnresolvedReferences
     def update_data(self, doPrint=False):
-        super(_Config, self).update_data()
+        super(self.__class__, self).update_data()
         self.settings = self.loadJson('settings', self.settings, self.configPath)
         self.skinsCache.update(self.loadJson('skinsCache', self.skinsCache, self.configPath))
         configsPath = self.configPath + 'remods/*.json'
@@ -412,7 +405,7 @@ class _Config(PYmodsCore._Config):
                                     ([] if vehDirSect is None else PYmodsCore.remDups(vehDirSect.keys())) if
                                     texName.endswith('.dds')] and not [texName for texName in (
                                     [] if tracksDirSect is None else PYmodsCore.remDups(tracksDirSect.keys())) if
-                                    texName.endswith('.dds')]:
+                                                                       texName.endswith('.dds')]:
                                 if self.data['isDebug']:
                                     print '%s: %s folder from %s pack is empty' % (
                                         self.ID, vehicleName, sname)
@@ -447,7 +440,7 @@ class _Config(PYmodsCore._Config):
         self.loadJson('settings', self.settings, self.configPath, True)
 
     def do_config(self):
-        super(_Config, self).do_config()
+        super(self.__class__, self).do_config()
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
@@ -475,6 +468,7 @@ def skinsPresenceCheck():
 
 _config = _Config()
 _config.load()
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-4')
 texReplaced = False
 skinsFound = False
 skinsPresenceCheck()
@@ -487,13 +481,13 @@ skinVehNamesLDict = {}
 
 class RemodEnablerLoading(LoginQueueWindowMeta):
     def __init__(self):
-        super(RemodEnablerLoading, self).__init__()
+        super(self.__class__, self).__init__()
         self.lines = []
         self.curPercentage = 0
         _config.loadingProxy = weakref.proxy(self)
 
     def _populate(self):
-        super(RemodEnablerLoading, self)._populate()
+        super(self.__class__, self)._populate()
         self.__initTexts()
 
     def __initTexts(self):
@@ -553,7 +547,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
 
 class RemodEnablerUI(AbstractWindowView):
     def _populate(self):
-        super(RemodEnablerUI, self)._populate()
+        super(self.__class__, self)._populate()
         self.modeBackup = _config.data['currentMode']
         self.remodBackup = _config.OM.selected['Remod']
 
@@ -872,20 +866,22 @@ def skinCaller():
         except AdispException:
             traceback.print_exc()
         print 'RemodEnabler: total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
-        gc.collect()
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, _config.loadingProxy.onWindowClose)
 
 
-def new_populate(self):
-    old_populate(self)
+@PYmodsCore.overrideMethod(LoginView, '_populate')
+def new_Login_populate(base, self):
+    base(self)
     _config.data['isInHangar'] = False
     if _config.data['enabled']:
         BigWorld.callback(3.0, skinCaller)
 
 
-old_populate = LoginView._populate
-LoginView._populate = new_populate
+@PYmodsCore.overrideMethod(LobbyView, '_populate')
+def new_Lobby_populate(base, self):
+    base(self)
+    _config.data['isInHangar'] = True
 
 
 def lobbyKeyControl(event):
@@ -1263,28 +1259,32 @@ def OS_destroy_dynamic(vehicleID):
         traceback.print_exc()
 
 
-def new_oVHC(self):
+@PYmodsCore.overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
+def new_oVHC(base, self):
     vehicle = self._CompoundAppearance__vehicle
     if not vehicle.isAlive():
         OS_destroy_dynamic(vehicle.id)
-    old_oVHC(self)
+    base(self)
 
 
-def new_startVisual(self):
-    old_startVisual(self)
+@PYmodsCore.overrideMethod(Vehicle, 'startVisual')
+def new_startVisual(base, self):
+    base(self)
     if self.isStarted and self.isAlive() and _config.data['enabled']:
         BigWorld.callback(0.1, partial(OS_attach_dynamic, self.id))
 
 
-def new_vehicle_onLeaveWorld(self, vehicle):
+@PYmodsCore.overrideMethod(PlayerAvatar, 'vehicle_onLeaveWorld')
+def new_vehicle_onLeaveWorld(base, self, vehicle):
     if vehicle.isStarted:
         OS_destroy_dynamic(vehicle.id)
-    old_vehicle_onLeaveWorld(self, vehicle)
+    base(self, vehicle)
 
 
-def new_targetFocus(self, entity):
+@PYmodsCore.overrideMethod(PlayerAvatar, 'targetFocus')
+def new_targetFocus(base, self, entity):
     global OS_dynamic_db
-    old_targetFocus(self, entity)
+    base(self, entity)
     if entity in self._PlayerAvatar__vehicles:
         try:
             for vehicleID in OS_dynamic_db:
@@ -1297,9 +1297,10 @@ def new_targetFocus(self, entity):
             traceback.print_exc()
 
 
-def new_targetBlur(self, prevEntity):
+@PYmodsCore.overrideMethod(PlayerAvatar, 'targetBlur')
+def new_targetBlur(base, self, prevEntity):
     global OS_dynamic_db
-    old_targetBlur(self, prevEntity)
+    base(self, prevEntity)
     if prevEntity in self._PlayerAvatar__vehicles:
         try:
             for vehicleID in OS_dynamic_db:
@@ -1310,12 +1311,6 @@ def new_targetBlur(self, prevEntity):
                             model.visible = False
         except StandardError:
             traceback.print_exc()
-
-
-old_targetFocus = PlayerAvatar.targetFocus
-PlayerAvatar.targetFocus = new_targetFocus
-old_targetBlur = PlayerAvatar.targetBlur
-PlayerAvatar.targetBlur = new_targetBlur
 
 
 def OS_apply(vDesc):
@@ -1366,13 +1361,14 @@ def debugOutput(xmlName, vehName, playerName=None):
         print header + ' processed:', ', '.join(info)
 
 
-def new_reconstruct(x, info, deep, memo=None):
+@PYmodsCore.overrideMethod(copy, '_reconstruct')
+def new_reconstruct(base, x, info, deep, memo=None):
     if memo is None:
         memo = {}
     if type(x).__name__ == 'PyDirectParticleAttachment':
         memo[id(x)] = x
         return x
-    return old_reconstruct(x, info, deep, memo)
+    return base(x, info, deep, memo)
 
 
 def vDesc_process(self, vDesc, mode):
@@ -1436,21 +1432,24 @@ def vDesc_process(self, vDesc, mode):
     debugOutput(xmlName, vehName, playerName)
 
 
-def new_getDescr(self, respawnCompactDescr=None):
-    vDesc = old_getDescr(self, respawnCompactDescr)
+@PYmodsCore.overrideMethod(Vehicle, 'getDescr')
+def new_getDescr(base, self, respawnCompactDescr=None):
+    vDesc = base(self, respawnCompactDescr)
     if _config.data['enabled']:
         vDesc_process(self, vDesc, 'battle')
     return vDesc
 
 
-def new_startBuild(self, vDesc, vState):
+@PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__startBuild')
+def new_startBuild(base, self, vDesc, vState):
     if _config.data['enabled']:
         vDesc_process(self, vDesc, 'hangar')
-    old_startBuild(self, vDesc, vState)
+    base(self, vDesc, vState)
 
 
-def new_setupModel(self, buildIdx):
-    old_setupModel(self, buildIdx)
+@PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__setupModel')
+def new_setupModel(base, self, buildIdx):
+    base(self, buildIdx)
     if not _config.data['enabled']:
         return
     vEntityId = self._VehicleAppearance__vEntityId
@@ -1516,28 +1515,11 @@ def new_setupModel(self, buildIdx):
                 print 'RemodEnabler: model rescale for %s failed' % moduleName
 
 
-def new_refreshModel(self):
+@PYmodsCore.overrideMethod(_CurrentPreviewVehicle, 'refreshModel')
+def new_refreshModel(base, self):
     if self.isPresent() and (_config.OMDesc is not None or any(_config.OSDesc.values())):
         self._CurrentPreviewVehicle__item = self._CurrentPreviewVehicle__getPreviewVehicle(self.item.intCD)
-    old_refreshModel(self)
-
-
-old_reconstruct = copy._reconstruct
-copy._reconstruct = new_reconstruct
-old_getDescr = Vehicle.getDescr
-Vehicle.getDescr = new_getDescr
-old_startBuild = _VehicleAppearance._VehicleAppearance__startBuild
-_VehicleAppearance._VehicleAppearance__startBuild = new_startBuild
-old_setupModel = _VehicleAppearance._VehicleAppearance__setupModel
-_VehicleAppearance._VehicleAppearance__setupModel = new_setupModel
-old_refreshModel = _CurrentPreviewVehicle.refreshModel
-_CurrentPreviewVehicle.refreshModel = new_refreshModel
-old_vehicle_onLeaveWorld = PlayerAvatar.vehicle_onLeaveWorld
-PlayerAvatar.vehicle_onLeaveWorld = new_vehicle_onLeaveWorld
-old_startVisual = Vehicle.startVisual
-Vehicle.startVisual = new_startVisual
-old_oVHC = CompoundAppearance.onVehicleHealthChanged
-CompoundAppearance.onVehicleHealthChanged = new_oVHC
+    base(self)
 
 
 def clearCollision(self):
@@ -1553,20 +1535,16 @@ def clearCollision(self):
     OS_destroy_dynamic(vEntityId)
 
 
-def new_refresh(self):
+@PYmodsCore.overrideMethod(_VehicleAppearance, 'refresh')
+def new_refresh(base, self):
     clearCollision(self)
-    old_refresh(self)
+    base(self)
 
 
-def new_recreate(self, vDesc, vState, onVehicleLoadedCallback=None):
+@PYmodsCore.overrideMethod(_VehicleAppearance, 'recreate')
+def new_recreate(base, self, vDesc, vState, onVehicleLoadedCallback=None):
     clearCollision(self)
-    old_recreate(self, vDesc, vState, onVehicleLoadedCallback)
-
-
-old_refresh = _VehicleAppearance.refresh
-_VehicleAppearance.refresh = new_refresh
-old_recreate = _VehicleAppearance.recreate
-_VehicleAppearance.recreate = new_recreate
+    base(self, vDesc, vState, onVehicleLoadedCallback)
 
 
 class GUIBox(object):
@@ -1642,13 +1620,3 @@ def addCollisionGUI(self):
                 texBox.addRoot()
                 curCollisionTable['texBoxes'].append(texBox)
         GUI.reSort()
-
-
-def new_LW_populate(self):
-    old_LW_populate(self)
-    _config.data['isInHangar'] = True
-
-
-old_LW_populate = LobbyView._populate
-LobbyView._populate = new_LW_populate
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-4')

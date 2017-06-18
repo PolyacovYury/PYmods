@@ -2,7 +2,6 @@
 import marshal
 
 import ResMgr
-
 import traceback
 
 

@@ -1,27 +1,18 @@
 # -*- coding: utf-8 -*-
-import traceback
-from functools import partial
-
-import ResMgr
-
 import BigWorld
 import Keys
 import PYmodsCore
 import Vehicle
+import traceback
 from PYmodsCore import Sound
+from functools import partial
 from gui import InputHandler
 from gui.app_loader.loader import g_appLoader
 
-res = ResMgr.openSection('../paths.xml')
-sb = res['Paths']
-vl = sb.values()[0]
-if vl is not None and not hasattr(BigWorld, 'curCV'):
-    BigWorld.curCV = vl.asString
 
-
-class _Config(PYmodsCore._Config):
+class _Config(PYmodsCore.Config):
     def __init__(self):
-        super(_Config, self).__init__('%(mod_ID)s')
+        super(self.__class__, self).__init__('%(mod_ID)s')
         self.version = '2.4.1 (%(file_compile_date)s)'
         self.defaultKeys = {'hotkey': [Keys.KEY_G], 'hotKey': ['KEY_G']}
         self.data = {'enabled': True,
@@ -86,24 +77,24 @@ _config = _Config()
 _config.load()
 
 
-def __getBattleOn():
-    return hasattr(BigWorld.player(), 'arena')
+def __getBattleOn(player):
+    return hasattr(player, 'arena')
 
 
-def __getIsLive(entityID):
-    return __getBattleOn() and entityID in BigWorld.player().arena.vehicles and \
-           BigWorld.player().arena.vehicles.get(entityID)['isAlive']
+def __getIsLive(player, entityID):
+    return __getBattleOn(player) and entityID in player.arena.vehicles and player.arena.vehicles.get(entityID)['isAlive']
 
 
-def __getIsFriendly(entityID):
-    return __getBattleOn() and BigWorld.player().arena.vehicles[BigWorld.player().playerVehicleID]['team'] == \
-                               BigWorld.player().arena.vehicles[entityID]['team']
+def __getIsFriendly(player, entityID):
+    return __getBattleOn(player) and player.arena.vehicles[player.playerVehicleID]['team'] == \
+                                     player.arena.vehicles[entityID]['team']
 
 
 def getCrosshairType():
     target = BigWorld.target()
-    if type(target) is Vehicle.Vehicle and __getIsLive(target.id):
-        if not __getIsFriendly(target.id):
+    player = BigWorld.player()
+    if type(target) is Vehicle.Vehicle and __getIsLive(player, target.id):
+        if not __getIsFriendly(player, target.id):
             return 'enemy'
         else:
             return 'ally'

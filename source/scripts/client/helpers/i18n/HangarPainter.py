@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
+import BigWorld
+import PYmodsCore
+import ResMgr
 import json
 import traceback
 import urllib2
-
-import BigWorld
-import ResMgr
-
-import PYmodsCore
 from debug_utils import LOG_ERROR
 
 res = ResMgr.openSection('../paths.xml')
@@ -20,9 +18,9 @@ def __dir__():
     return ['i18n_hook_makeString']
 
 
-class _HP_Config(PYmodsCore._Config):
+class _Config(PYmodsCore.Config):
     def __init__(self):
-        super(_HP_Config, self).__init__('%(mod_ID)s')
+        super(self.__class__, self).__init__('%(mod_ID)s')
         self.version = '1.1.2 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'debug': True,
@@ -79,7 +77,7 @@ class _HP_Config(PYmodsCore._Config):
             if setting in ('colour', 'enabled', 'crewColour', 'cleanColour') and setting not in self.backupData:
                 self.backupData[setting] = self.data[setting]
 
-        super(_HP_Config, self).apply_settings(settings)
+        super(self.__class__, self).apply_settings(settings)
 
     def onWindowClose(self):
         if any(self.data[setting] != self.backupData[setting] for setting in self.backupData):
@@ -88,7 +86,7 @@ class _HP_Config(PYmodsCore._Config):
         self.backupData = {}
 
     def update_data(self, doPrint=False):
-        super(_HP_Config, self).update_data(doPrint)
+        super(self.__class__, self).update_data(doPrint)
         self.blacklists = self.loadJson('blacklist', self.blacklists, self.configPath)
 
     @staticmethod
@@ -126,9 +124,10 @@ class _HP_Config(PYmodsCore._Config):
                 print '%s: blacklists config download failed: ' % self.ID, e.reason
             elif hasattr(e, 'code'):
                 print '%s: GitHub internal error: ' % self.ID, e.code
-        super(_HP_Config, self).load()
+        super(self.__class__, self).load()
 
-_config = _HP_Config()
+
+_config = _Config()
 _config.load()
 
 
@@ -148,7 +147,7 @@ def i18n_hook_makeString(key, *args, **kwargs):
                 return key
             moFile = '#' + moName
             identity = {listType: any(
-                    moKey in moFile and (not idList[moKey] or any(x in subkey for x in idList[moKey])) for moKey in idList)
+                moKey in moFile and (not idList[moKey] or any(x in subkey for x in idList[moKey])) for moKey in idList)
                 for listType, idList in _config.blacklists.iteritems()}
             identity['commonBlacklist'] = identity['commonBlacklist'] or (
                 '#messenger' in moFile and subkey.startswith('server/errors/') and subkey.endswith('/title'))

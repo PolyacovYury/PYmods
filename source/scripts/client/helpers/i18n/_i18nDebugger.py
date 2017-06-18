@@ -1,8 +1,7 @@
-import traceback
-
 import ResMgr
+import traceback
+from debug_utils import LOG_CURRENT_EXCEPTION, LOG_ERROR, LOG_NOTE, LOG_WARNING
 
-from debug_utils import LOG_ERROR, LOG_NOTE, LOG_WARNING, LOG_CURRENT_EXCEPTION
 wasPrint = False
 
 

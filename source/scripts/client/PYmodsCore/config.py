@@ -1,166 +1,18 @@
 # -*- coding: utf-8 -*-
 import binascii
+import zlib
+
+import Event
+import Keys
 import codecs
 import json
 import os
-import random
 import re
-import threading
 import traceback
-import urllib
-import urllib2
-import zlib
-from functools import partial
-
-import ResMgr
-
-import BigWorld
-import Event
-import Keys
-from PlayerEvents import g_playerEvents
-from constants import AUTH_REALM, DEFAULT_LANGUAGE
-from debug_utils import LOG_CURRENT_EXCEPTION
-
-res = ResMgr.openSection('../paths.xml')
-sb = res['Paths']
-vl = sb.values()[0]
-if vl is not None and not hasattr(BigWorld, 'curCV'):
-    BigWorld.curCV = vl.asString
-if not hasattr(BigWorld, 'PMC_wasPrint'):
-    BigWorld.PMC_wasPrint = True
-    print 'Current PYmodsCore version: 2.2.1.1 (%(file_compile_date)s)'
-MAX_CHAT_MESSAGE_LENGTH = 220
+from constants import DEFAULT_LANGUAGE
 
 
-def pickRandomPart(variantList, lastRandId, doNext=False):
-    if not len(variantList):
-        return ['', -1]
-    if len(variantList) > 1:
-        if doNext:
-            newId = lastRandId + 1
-            if newId >= len(variantList) or newId < 0:
-                newId = 0
-        else:
-            bLoop = True
-            newId = 0
-            while bLoop:
-                newId = random.randrange(len(variantList))
-                bLoop = newId == lastRandId
-
-        return variantList[newId], newId
-    return variantList[0], 0
-
-
-def __splitMsg(msg):
-    if len(msg) <= MAX_CHAT_MESSAGE_LENGTH:
-        return msg, ''
-    strPart = msg[:MAX_CHAT_MESSAGE_LENGTH]
-    splitPos = strPart.rfind(' ')
-    if splitPos == -1:
-        splitPos = MAX_CHAT_MESSAGE_LENGTH
-    return msg[:splitPos], msg[splitPos:]
-
-
-def __sendMessagePart(msg, chanId):
-    class PYmods_chat(object):
-        from messenger.m_constants import PROTO_TYPE
-        from messenger.proto import proto_getter
-
-        def __init__(self):
-            pass
-
-        @proto_getter(PROTO_TYPE.BW_CHAT2)
-        def proto(self):
-            return None
-
-    msg = msg.encode('utf-8')
-    import BattleReplay
-    if PYmods_chat.proto is None or BattleReplay.isPlaying():
-        from messenger import MessengerEntry
-        MessengerEntry.g_instance.gui.addClientMessage('OFFLINE: %s' % msg, True)
-        return
-    else:
-        if chanId == 0:
-            PYmods_chat.proto.arenaChat.broadcast(msg, 1)
-        if chanId == 1:
-            PYmods_chat.proto.arenaChat.broadcast(msg, 0)
-        if chanId == 2:
-            PYmods_chat.proto.unitChat.broadcast(msg, 1)
-
-
-def sendChatMessage(fullMsg, chanId, delay):
-    currPart, remains = __splitMsg(fullMsg)
-    __sendMessagePart(currPart, chanId)
-    if len(remains) == 0:
-        return
-    BigWorld.callback(delay / 1000.0, partial(sendChatMessage, remains, chanId))
-
-
-def new_addItem(self, item):
-    if 'PYmods_SM' in item._vo['message']['message']:
-        item._vo['message']['message'] = item._vo['message']['message'].replace('PYmods_SM', '')
-        item._vo['notify'] = False
-        if item._settings:
-            item._settings.isNotify = False
-        return True
-    else:
-        return old_addItem(self, item)
-
-
-def new_handleAction(self, model, typeID, entityID, actionName):
-    from notification.settings import NOTIFICATION_TYPE
-    if typeID == NOTIFICATION_TYPE.MESSAGE and re.match('https?://', actionName, re.I):
-        BigWorld.wg_openWebBrowser(actionName)
-    else:
-        old_handleAction(self, model, typeID, entityID, actionName)
-
-
-# noinspection PyGlobalUndefined
-def PMC_hooks():
-    global old_addItem, old_handleAction
-    from notification.NotificationsCollection import NotificationsCollection
-    old_addItem = NotificationsCollection.addItem
-    NotificationsCollection.addItem = new_addItem
-    from notification.actions_handlers import NotificationsActionsHandlers
-    old_handleAction = NotificationsActionsHandlers.handleAction
-    # noinspection PyUnresolvedReferences
-    NotificationsActionsHandlers.handleAction = new_handleAction
-
-
-BigWorld.callback(0.0, PMC_hooks)
-
-
-def remDups(seq):  # Dave Kirby
-    # Order preserving
-    seen = set()
-    return [x for x in seq if x not in seen and not seen.add(x)]
-
-
-def sendMessage(text='', colour='Green', panel='Player'):
-    from gui.Scaleform.framework import ViewTypes
-    from gui.app_loader import g_appLoader
-    """
-    panel = 'Player', 'Vehicle', 'VehicleError'
-    colour = 'Red', 'Purple', 'Green', 'Gold', 'Yellow', 'Self'
-    """
-    battle = g_appLoader.getDefBattleApp()
-    battle_page = battle.containerManager.getContainer(ViewTypes.VIEW).getView()
-    getattr(battle_page.components['battle%sMessages' % panel], 'as_show%sMessageS' % colour, None)(None, text)
-
-
-def checkKeys(keys):
-    if not keys:
-        return False
-    for key in keys:
-        if isinstance(key, int) and not BigWorld.isKeyDown(key):
-            return False
-        if isinstance(key, list) and not any(BigWorld.isKeyDown(x) for x in key):
-            return False
-
-    return True
-
-
-class _Config(object):
+class Config(object):
     onMSAPopulate = Event.Event()
     onMSAWindowClose = Event.Event()
     isMSAWindowOpen = False
@@ -329,6 +181,50 @@ class _Config(object):
     def json_dumps(conf):
         return json.dumps(conf, sort_keys=True, indent=4, ensure_ascii=False, encoding='utf-8-sig', separators=(',', ': '))
 
+    def checkSubDict(self, oldDict, conf_newL, config_newExcl, start_idx, end_idx):
+        conf_changed = False
+        decer = json.JSONDecoder(encoding='utf-8-sig')
+        encer = json.JSONEncoder(encoding='utf-8-sig')
+        new_end_idx = None
+        subLevels = 0
+        for idx in xrange(start_idx, end_idx):
+            newLine = conf_newL[idx]
+            if newLine in config_newExcl:
+                continue
+            if new_end_idx >= idx:
+                continue
+            if ':' in newLine:
+                new_key, new_value = newLine.split(':', 1)
+                new_key = new_key.strip().replace('"', '')
+                new_value = self.json_comments(new_value)[0].strip()
+                if new_value.endswith(','):
+                    new_value = ''.join(new_value.rsplit(',', 1)).strip()
+                if new_key in oldDict:
+                    if new_value == '{':
+                        subKey = new_key
+                        new_start_idx = idx
+                        new_end_idx = idx
+                        while new_end_idx < end_idx:
+                            curNewLine = self.byte_ify(self.json_comments(conf_newL[new_end_idx])[0])
+                            if '{' in curNewLine and new_end_idx > new_start_idx:
+                                subLevels += 1
+                            if '}' not in curNewLine:
+                                new_end_idx += 1
+                                continue
+                            if '}' in self.json_comments(curNewLine)[0].strip():
+                                if subLevels:
+                                    subLevels -= 1
+                                else:
+                                    break
+                        conf_changed = self.checkSubDict(
+                            oldDict[subKey], conf_newL, config_newExcl, new_start_idx + 1, new_end_idx - 1)
+                    elif oldDict[new_key] != decer.decode(new_value):
+                        conf_newL[idx] = ':'.join(
+                            (newLine.split(':', 1)[0], newLine.split(':', 1)[1].replace(
+                                new_value, '%s' % encer.encode(oldDict[new_key]), 1)))
+                        conf_changed = True
+        return conf_changed
+
     def loadJson(self, name, oldConfig, path, save=False, rewrite=True, encrypted=False):
         config_new = oldConfig
         if not os.path.exists(path):
@@ -354,60 +250,20 @@ class _Config(object):
                     config_newExcl = []
                 config_newD = self.byte_ify(config_newS)
                 conf_newL = config_newD.split('\n')
-                self.conf_changed = False
+                conf_changed = False
                 if not rewrite:
-                    def checkSubDict(oldDict, start_idx, end_idx):
-                        decer = json.JSONDecoder(encoding='utf-8-sig')
-                        encer = json.JSONEncoder(encoding='utf-8-sig')
-                        new_end_idx = None
-                        subLevels = 0
-                        for idx in xrange(start_idx, end_idx):
-                            newLine = conf_newL[idx]
-                            if newLine in config_newExcl:
-                                continue
-                            if new_end_idx >= idx:
-                                continue
-                            if ':' in newLine:
-                                new_key, new_value = newLine.split(':', 1)
-                                new_key = new_key.strip().replace('"', '')
-                                new_value = self.json_comments(new_value)[0].strip()
-                                if new_value.endswith(','):
-                                    new_value = ''.join(new_value.rsplit(',', 1)).strip()
-                                if new_key in oldDict:
-                                    if new_value == '{':
-                                        subKey = new_key
-                                        new_start_idx = idx
-                                        new_end_idx = idx
-                                        while new_end_idx < end_idx:
-                                            curNewLine = self.byte_ify(self.json_comments(conf_newL[new_end_idx])[0])
-                                            if '{' in curNewLine and new_end_idx > new_start_idx:
-                                                subLevels += 1
-                                            if '}' not in curNewLine:
-                                                new_end_idx += 1
-                                                continue
-                                            if '}' in self.json_comments(curNewLine)[0].strip():
-                                                if subLevels:
-                                                    subLevels -= 1
-                                                else:
-                                                    break
-                                        checkSubDict(oldDict[subKey], new_start_idx + 1, new_end_idx - 1)
-                                    elif oldDict[new_key] != decer.decode(new_value):
-                                        conf_newL[idx] = ':'.join(
-                                            (newLine.split(':', 1)[0], newLine.split(':', 1)[1].replace(
-                                                new_value, '%s' % encer.encode(oldDict[new_key]), 1)))
-                                        self.conf_changed = True
                     try:
-                        checkSubDict(oldConfig, 0, len(conf_newL))
+                        self.checkSubDict(oldConfig, conf_newL, config_newExcl, 0, len(conf_newL))
                     except StandardError:
                         print new_path
                         traceback.print_exc()
 
                 else:
-                    self.conf_changed = not config_oldS == \
-                        self.json_dumps(self.byte_ify(json.loads(self.json_comments(config_newD)[0])))
-                    if self.conf_changed:
+                    conf_changed = not config_oldS == self.json_dumps(
+                        self.byte_ify(json.loads(self.json_comments(config_newD)[0])))
+                    if conf_changed:
                         conf_newL = self.byte_ify(config_oldS).split('\n')
-                if self.conf_changed:
+                if conf_changed:
                     print '%s: updating config: %s' % (self.ID, new_path)
                     with codecs.open(new_path, 'w', encoding='utf-8-sig') as json_file:
                         writeToConf = self.byte_ify('\n'.join(conf_newL))
@@ -471,7 +327,7 @@ class _Config(object):
                 self.lang = newLang
                 self.loadLang()
         except StandardError:
-            LOG_CURRENT_EXCEPTION()
+            traceback.print_exc()
         try:
             # noinspection PyUnresolvedReferences
             from gui.vxSettingsApi import vxSettingsApi
@@ -480,10 +336,10 @@ class _Config(object):
         except ImportError:
             print '%s: no-GUI mode activated' % self.ID
         except StandardError:
-            LOG_CURRENT_EXCEPTION()
+            traceback.print_exc()
 
 
-class ModSettingsConfig(_Config):
+class ModSettingsConfig(Config):
     def __init__(self):
         super(self.__class__, self).__init__('PYmodsGUI')
         self.version = '2.0.2 (%(file_compile_date)s)'
@@ -537,7 +393,7 @@ class ModSettingsConfig(_Config):
                 self.lang = newLang
                 self.loadLang()
         except StandardError:
-            LOG_CURRENT_EXCEPTION()
+            traceback.print_exc()
         try:
             # noinspection PyUnresolvedReferences
             from gui.modsListApi import g_modsListApi
@@ -553,114 +409,8 @@ class ModSettingsConfig(_Config):
         except ImportError:
             print '%s: no-GUI mode activated' % self.ID
         except StandardError:
-            LOG_CURRENT_EXCEPTION()
+            traceback.print_exc()
 
 
 _modSettingsConfig = ModSettingsConfig()
 _modSettingsConfig.load()
-
-
-class Analytics(object):
-    def __init__(self, description, version, ID, confList=None):
-        self.mod_description = description
-        self.mod_id_analytics = ID
-        self.mod_version = version
-        self.analytics_started = False
-        self.analytics_ended = False
-        self._thread_analytics = None
-        self.confList = confList if confList else ['(not set)']
-        self.playerName = ''
-        self.old_playerName = ''
-        self.lang = ''
-        self.user = None
-        self.old_user = None
-        g_playerEvents.onAccountShowGUI += self.start
-        BigWorld.callback(0.0, self.game_fini_hook)
-
-    def game_fini_hook(self):
-        import game
-        old_fini = game.fini
-        game.fini = lambda: (self.end(), old_fini())
-
-    def analytics_start(self):
-        if not self.analytics_started:
-            from helpers import getClientLanguage
-            self.lang = str(getClientLanguage()).upper()
-            paramDict = {
-                'v': 1,  # Version.
-                'tid': '%s' % self.mod_id_analytics,  # Код мода для сбора статистики
-                'cid': '%s' % self.user,  # ID пользователя
-                't': 'screenview',  # Screenview hit type.
-                'an': '%s' % self.mod_description,  # Имя мода
-                'av': '%s %s' % (self.mod_description, self.mod_version),  # App version.
-                'cd': '%s (Cluster: [%s], lang: [%s])' % (self.playerName, AUTH_REALM, self.lang),
-                'ul': '%s' % self.lang,
-                'sc': 'start'}
-            for confName in self.confList:
-                paramDict['aid'] = confName.split('.')[0]
-                param = urllib.urlencode(paramDict)
-                urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=param).read()
-            self.analytics_started = True
-            self.old_user = BigWorld.player().databaseID
-            self.old_playerName = BigWorld.player().name
-
-    # noinspection PyUnusedLocal
-    def start(self, ctx):
-        player = BigWorld.player()
-        if self.user is not None and self.user != player.databaseID:
-            self.old_user = player.databaseID
-            self.old_playerName = player.name
-            self._thread_analytics = threading.Thread(target=self.end, name='Thread')
-            self._thread_analytics.start()
-        self.user = player.databaseID
-        self.playerName = player.name
-        self._thread_analytics = threading.Thread(target=self.analytics_start, name='Thread')
-        self._thread_analytics.start()
-
-    def end(self):
-        g_playerEvents.onAccountShowGUI -= self.start
-        if self.analytics_started:
-            from helpers import getClientLanguage
-            self.lang = str(getClientLanguage()).upper()
-            param = urllib.urlencode({
-                'v': 1,  # Version.
-                'tid': '%s' % self.mod_id_analytics,  # Код мода для сбора статистики
-                'cid': self.old_user,  # Anonymous Client ID.
-                't': 'event',  # event hit type.
-                'an': '%s' % self.mod_description,  # Имя мода
-                'av': '%s %s' % (self.mod_description, self.mod_version),  # App version.
-                'cd': '%s (Cluster: [%s], lang: [%s])' % (self.old_playerName, AUTH_REALM, self.lang),
-                'ul': '%s' % self.lang,
-                'sc': 'end'
-            })
-            urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=param).read()
-            self.analytics_started = False
-
-
-class Sound(object):
-    def __init__(self, soundPath):
-        import SoundGroups
-        self.__sndPath = soundPath
-        self.__sndTick = SoundGroups.g_instance.getSound2D(self.__sndPath)
-        self.__isPlaying = True
-        self.stop()
-        return
-
-    @property
-    def isPlaying(self):
-        return self.__isPlaying
-
-    @property
-    def sound(self):
-        return self.__sndTick
-
-    def play(self):
-        self.stop()
-        if self.__sndTick:
-            self.__sndTick.play()
-        self.__isPlaying = True
-
-    def stop(self):
-        if self.__sndTick:
-            self.__sndTick.stop()
-        self.__isPlaying = False

@@ -10,14 +10,14 @@ from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 
 
-class PlayersPanelController(PYmodsCore._Config):
+class PlayersPanelController(PYmodsCore.Config):
     vCache = property(lambda self: self.__vCache)
 
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):
         super(self.__class__, self).__init__('%(mod_ID)s')
-        self.version = '1.1 (%(file_compile_date)s)'
+        self.version = '1.1.1 (%(file_compile_date)s)'
         self.author = 'by PolarFox (forked %s)' % self.author
         self.data = {'textFields': {}}
         self.__hpCache = dict()
@@ -106,41 +106,12 @@ class PlayersPanelController(PYmodsCore._Config):
             self.__component.as_setPPConfigS(self.ID + fieldName, fieldData)
 
 
-def new_ArenaVehiclesPlugin__setInAoI(self, entry, isInAoI):
-    result = old_ArenaVehiclesPlugin__setInAoI(self, entry, isInAoI)
-    try:
-        for vehicleID, entry2 in self._entries.iteritems():
-            if entry == entry2 and isInAoI:
-                if vehicleID in mod_playersHP.vCache:
-                    break
-                mod_playersHP.updateHealth(vehicleID)
-    finally:
-        return result
-
-
-def new_vehicle_onEnterWorld(self, vehicle):
-    result = old_vehicle_onEnterWorld(self, vehicle)
-    try:
-        vehicleID = vehicle.id
-        mod_playersHP.validateCache(vehicleID)
-        mod_playersHP.updateHealth(vehicleID)
-    finally:
-        return result
-
-
-def new_vehicle_onHealthChanged(self, newHealth, attackerID, attackReasonID):
-    result = old_vehicle_onHealthChanged(self, newHealth, attackerID, attackReasonID)
-    try:
-        mod_playersHP.updateHealth(self.id, newHealth)
-    finally:
-        return result
-
-
 try:
     from gui.mods.vxBattleFlash import *
 
     mod_playersHP = PlayersPanelController()
     mod_playersHP.load()
+    statistic_mod = PYmodsCore.Analytics(mod_playersHP.ID, mod_playersHP.version.split(' ', 1)[0], 'UA-76792179-11')
 
 except ImportError:
     vxBattleFlash = None
@@ -155,10 +126,34 @@ except StandardError:
     mod_playersHP = None
     traceback.print_exc()
 else:
-    old_vehicle_onHealthChanged = Vehicle.onHealthChanged
-    Vehicle.onHealthChanged = new_vehicle_onHealthChanged
-    old_ArenaVehiclesPlugin__setInAoI = ArenaVehiclesPlugin._ArenaVehiclesPlugin__setInAoI
-    ArenaVehiclesPlugin._ArenaVehiclesPlugin__setInAoI = new_ArenaVehiclesPlugin__setInAoI
-    old_vehicle_onEnterWorld = PlayerAvatar.vehicle_onEnterWorld
-    PlayerAvatar.vehicle_onEnterWorld = new_vehicle_onEnterWorld
-    statistic_mod = PYmodsCore.Analytics(mod_playersHP.ID, mod_playersHP.version.split(' ', 1)[0], 'UA-76792179-11')
+    @PYmodsCore.overrideMethod(ArenaVehiclesPlugin, '_ArenaVehiclesPlugin__setInAoI')
+    def new_setInAoI(base, self, entry, isInAoI):
+        result = base(self, entry, isInAoI)
+        try:
+            for vehicleID, entry2 in self._entries.iteritems():
+                if entry == entry2 and isInAoI:
+                    if vehicleID in mod_playersHP.vCache:
+                        break
+                    mod_playersHP.updateHealth(vehicleID)
+        finally:
+            return result
+
+
+    @PYmodsCore.overrideMethod(PlayerAvatar, 'vehicle_onEnterWorld')
+    def new_vehicle_onEnterWorld(base, self, vehicle):
+        result = base(self, vehicle)
+        try:
+            vehicleID = vehicle.id
+            mod_playersHP.validateCache(vehicleID)
+            mod_playersHP.updateHealth(vehicleID)
+        finally:
+            return result
+
+
+    @PYmodsCore.overrideMethod(Vehicle, 'onHealthChanged')
+    def new_vehicle_onHealthChanged(base, self, newHealth, attackerID, attackReasonID):
+        result = base(self, newHealth, attackerID, attackReasonID)
+        try:
+            mod_playersHP.updateHealth(self.id, newHealth)
+        finally:
+            return result
