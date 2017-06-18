@@ -635,7 +635,7 @@ def new_onViewLoaded(base, self, view):
     base(self, view)
 
 
-@PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewCanceled')
+@PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoadCanceled')
 def new_onViewLoadCanceled(base, self, name, item):
     if item is not None and item.pyEntity is not None:
         alias = item.pyEntity.settings.alias
