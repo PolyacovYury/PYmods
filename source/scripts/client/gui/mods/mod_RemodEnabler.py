@@ -16,7 +16,6 @@ import copy
 import glob
 import material_kinds
 import os
-import pprint
 import shutil
 import traceback
 import weakref
@@ -25,7 +24,6 @@ from AvatarInputHandler import mathUtils
 from CurrentVehicle import _CurrentPreviewVehicle, g_currentPreviewVehicle, g_currentVehicle
 from Vehicle import Vehicle
 from adisp import AdispException, async, process
-from collections import namedtuple
 from functools import partial
 from gui import InputHandler, SystemMessages
 from gui.ClientHangarSpace import _VehicleAppearance
@@ -38,8 +36,8 @@ from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSet
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.app_loader.loader import g_appLoader
 from helpers import getClientVersion
-from items.vehicles import g_cache
-from vehicle_systems import appearance_cache
+from items.vehicle_config_types import GroundNode, GroundNodeGroup, TrackNode, Wheel, WheelGroup
+from items.vehicles import EmblemSlot, g_cache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 from zipfile import ZipFile
@@ -49,9 +47,6 @@ sb = res['Paths']
 vl = sb.values()[0]
 if vl is not None and not hasattr(BigWorld, 'curCV'):
     BigWorld.curCV = vl.asString
-
-EmblemSlot = namedtuple('EmblemSlot', [
-    'rayStart', 'rayEnd', 'rayUp', 'size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId'])
 
 
 def readAODecals(confList):
@@ -87,53 +82,31 @@ class OM(object):
     def __init__(self):
         self.models = {}
         self.enabled = False
-        self.selected = {'Player': {},
-                         'Ally': {},
-                         'Enemy': {},
-                         'Remod': ''}
+        self.selected = {'Player': {}, 'Ally': {}, 'Enemy': {}, 'Remod': ''}
 
 
 class OMDescriptor(object):
     def __init__(self):
         self.name = ''
         self.authorMessage = ''
-        self.whitelists = {'Player': set(),
-                           'Ally': set(),
-                           'Enemy': set()}
-        self.data = {'chassis': {'undamaged': '',
-                                 'AODecals': None,
-                                 'hullPosition': None,
-                                 'wwsoundPC': '',
-                                 'wwsoundNPC': ''},
-                     'hull': {'undamaged': '',
-                              'emblemSlots': [],
-                              'camouflage': {'exclusionMask': '',
-                                             'tiling': (1.0, 1.0, 0.0, 0.0)},
-                              'exhaust': {'nodes': [],
-                                          'pixie': ''}},
-                     'turret': {'undamaged': '',
-                                'emblemSlots': [],
-                                'camouflage': {'exclusionMask': '',
-                                               'tiling': (1.0, 1.0, 0.0, 0.0)}},
-                     'gun': {'undamaged': '',
-                             'emblemSlots': [],
-                             'camouflage': {'exclusionMask': '',
-                                            'tiling': (1.0, 1.0, 0.0, 0.0)},
-                             'effects': '',
-                             'reloadEffect': ''},
-                     'engine': {'wwsoundPC': '',
-                                'wwsoundNPC': ''},
-                     'common': {'camouflage': {'exclusionMask': '',
-                                               'tiling': (1.0, 1.0, 0.0, 0.0)}}}
+        self.whitelists = {'Player': set(), 'Ally': set(), 'Enemy': set()}
+        self.data = {
+            'chassis': {'undamaged': '', 'AODecals': None, 'hullPosition': None, 'wwsoundPC': '', 'wwsoundNPC': ''},
+            'hull': {'undamaged': '', 'emblemSlots': [], 'exhaust': {'nodes': [], 'pixie': ''},
+                     'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
+            'turret': {'undamaged': '', 'emblemSlots': [],
+                       'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
+            'gun': {'undamaged': '', 'emblemSlots': [], 'effects': '', 'reloadEffect': '',
+                    'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
+            'engine': {'wwsoundPC': '', 'wwsoundNPC': ''},
+            'common': {'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}}}
 
 
 class OS(object):
     def __init__(self):
         self.models = {'static': {}, 'dynamic': {}}
         self.enabled = True
-        self.priorities = {skinType: {'Player': [],
-                                      'Ally': [],
-                                      'Enemy': []} for skinType in self.models}
+        self.priorities = {skinType: {'Player': [], 'Ally': [], 'Enemy': []} for skinType in self.models}
 
 
 class OSDescriptor(object):
@@ -145,21 +118,12 @@ class OSDescriptor(object):
 class _Config(PYmodsCore._Config):
     def __init__(self):
         super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '2.9.9.1 (%(file_compile_date)s)'
+        self.version = '2.9.9.2 (%(file_compile_date)s)'
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
-        self.defaultSkinConfig = {'static': {'enabled': True,
-                                             'swapPlayer': True,
-                                             'swapAlly': True,
-                                             'swapEnemy': True},
-                                  'dynamic': {'enabled': True,
-                                              'swapPlayer': False,
-                                              'swapAlly': True,
-                                              'swapEnemy': True}}
-        self.defaultRemodConfig = {'enabled': True,
-                                   'swapPlayer': True,
-                                   'swapAlly': True,
-                                   'swapEnemy': True}
+        self.defaultSkinConfig = {'static': {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True},
+                                  'dynamic': {'enabled': True, 'swapPlayer': False, 'swapAlly': True, 'swapEnemy': True}}
+        self.defaultRemodConfig = {'enabled': True, 'swapPlayer': True,  'swapAlly': True, 'swapEnemy': True}
         self.defaultKeys = {'DynamicSkinHotKey': ['KEY_F1', ['KEY_LCONTROL', 'KEY_RCONTROL']],
                             'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'ChangeViewHotKey': ['KEY_F2', ['KEY_LCONTROL', 'KEY_RCONTROL']],
@@ -312,6 +276,8 @@ class _Config(PYmodsCore._Config):
                 settingsDict = self.settings['remods'].setdefault(sname, {})
                 if not settingsDict.setdefault('enabled', self.defaultRemodConfig['enabled']):
                     print '%s: %s disabled, moving on' % (self.ID, sname)
+                    if sname in self.OM.models:
+                        del self.OM.models[sname]
                     continue
                 self.OM.models[sname] = pRecord = OMDescriptor()
                 pRecord.name = sname
@@ -923,94 +889,92 @@ LoginView._populate = new_populate
 
 
 def lobbyKeyControl(event):
-    try:
-        if event.isKeyDown() and not _config.isMSAWindowOpen:
-            if (_config.OM.enabled or _config.OS.enabled) and PYmodsCore.checkKeys(_config.data['ChangeViewHotkey']):
-                while True:
-                    newModeNum = _config.possibleModes.index(_config.data['currentMode']) + 1
-                    if newModeNum >= len(_config.possibleModes):
-                        newModeNum = 0
-                    _config.data['currentMode'] = _config.possibleModes[newModeNum]
-                    if _config.data.get(_config.data['currentMode'], True):
-                        break
-                if _config.data['isDebug']:
-                    print 'RemodEnabler: Changing display mode to %s' % _config.data['currentMode']
-                SystemMessages.pushMessage(
-                    'PYmods_SM' + _config.i18n['UI_mode'] + _config.i18n['UI_mode_' + _config.data['currentMode']].join(
-                        ('<b>', '</b>.')),
-                    SystemMessages.SM_TYPE.Warning)
-                g_currentPreviewVehicle.refreshModel()
-            if PYmodsCore.checkKeys(_config.data['CollisionHotkey']):
-                if _config.data['collisionComparisonEnabled']:
-                    _config.data['collisionComparisonEnabled'] = False
-                    if _config.data['isDebug']:
-                        print 'RemodEnabler: Disabling collision displaying'
-                    SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_disableCollisionComparison'],
-                                               SystemMessages.SM_TYPE.CustomizationForGold)
-                elif _config.data['collisionEnabled']:
-                    _config.data['collisionEnabled'] = False
-                    _config.data['collisionComparisonEnabled'] = True
-                    if _config.data['isDebug']:
-                        print 'RemodEnabler: Enabling collision display comparison mode'
-                    SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_enableCollisionComparison'],
-                                               SystemMessages.SM_TYPE.CustomizationForGold)
-                else:
-                    _config.data['collisionEnabled'] = True
-                    if _config.data['isDebug']:
-                        print 'RemodEnabler: Enabling collision display'
-                    SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_enableCollision'],
-                                               SystemMessages.SM_TYPE.CustomizationForGold)
-                g_currentPreviewVehicle.refreshModel()
-            if PYmodsCore.checkKeys(_config.data['DynamicSkinHotkey']):
-                enabled = _config.data['dynamicSkinEnabled']
-                _config.data['dynamicSkinEnabled'] = not enabled
-                SystemMessages.pushMessage(
-                    'PYmods_SM' + _config.i18n['UI_%sableDynamicSkin' % ('en' if not enabled else 'dis')],
-                    SystemMessages.SM_TYPE.CustomizationForGold)
-                g_currentPreviewVehicle.refreshModel()
-            if PYmodsCore.checkKeys([Keys.KEY_INSERT]):
-                if g_currentPreviewVehicle.isPresent():
-                    vDesc = g_currentPreviewVehicle.item.descriptor
-                elif g_currentVehicle.isPresent():
-                    vDesc = g_currentVehicle.item.descriptor
-                else:
-                    raise AttributeError('g_currentVehicle.item.descriptor not found')
-                if _config.OMDesc is None and _config.data['isDebug']:
-                    printOldConfigs(vDesc)
-            if _config.OM.enabled and PYmodsCore.checkKeys(_config.data['SwitchRemodHotkey']):
-                if _config.data['currentMode'] != 'remod':
-                    curTankType = _config.data['currentMode'].capitalize()
-                    snameList = sorted(_config.OM.models.keys()) + ['']
-                    selected = _config.OM.selected[curTankType]
-                    vehName = _config.curVehicleName
-                    if selected.get(vehName) not in snameList:
-                        snameIdx = 0
-                    else:
-                        snameIdx = snameList.index(selected[vehName]) + 1
-                        if snameIdx == len(snameList):
-                            snameIdx = 0
-                    for Idx in xrange(snameIdx, len(snameList)):
-                        curPRecord = _config.OM.models.get(snameList[Idx])
-                        if snameList[Idx] and vehName not in curPRecord.whitelists[curTankType]:
-                            continue
-                        if vehName in selected:
-                            selected[vehName] = getattr(curPRecord, 'name', '')
-                        _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
-                        break
-                else:
-                    snameList = sorted(_config.OM.models.keys())
-                    if _config.OM.selected['Remod'] not in snameList:
-                        snameIdx = 0
-                    else:
-                        snameIdx = snameList.index(_config.OM.selected['Remod']) + 1
-                        if snameIdx == len(snameList):
-                            snameIdx = 0
-                    sname = snameList[snameIdx]
-                    _config.OM.selected['Remod'] = sname
-                    _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
-                g_currentPreviewVehicle.refreshModel()
-    except StandardError:
-        traceback.print_exc()
+    if not event.isKeyDown() or _config.isMSAWindowOpen:
+        return
+    if (_config.OM.enabled or _config.OS.enabled) and PYmodsCore.checkKeys(_config.data['ChangeViewHotkey']):
+        while True:
+            newModeNum = _config.possibleModes.index(_config.data['currentMode']) + 1
+            if newModeNum >= len(_config.possibleModes):
+                newModeNum = 0
+            _config.data['currentMode'] = _config.possibleModes[newModeNum]
+            if _config.data.get(_config.data['currentMode'], True):
+                break
+        if _config.data['isDebug']:
+            print 'RemodEnabler: Changing display mode to %s' % _config.data['currentMode']
+        SystemMessages.pushMessage(
+            'PYmods_SM' + _config.i18n['UI_mode'] + _config.i18n['UI_mode_' + _config.data['currentMode']].join(
+                ('<b>', '</b>.')),
+            SystemMessages.SM_TYPE.Warning)
+        g_currentPreviewVehicle.refreshModel()
+    if PYmodsCore.checkKeys(_config.data['CollisionHotkey']):
+        if _config.data['collisionComparisonEnabled']:
+            _config.data['collisionComparisonEnabled'] = False
+            if _config.data['isDebug']:
+                print 'RemodEnabler: Disabling collision displaying'
+            SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_disableCollisionComparison'],
+                                       SystemMessages.SM_TYPE.CustomizationForGold)
+        elif _config.data['collisionEnabled']:
+            _config.data['collisionEnabled'] = False
+            _config.data['collisionComparisonEnabled'] = True
+            if _config.data['isDebug']:
+                print 'RemodEnabler: Enabling collision display comparison mode'
+            SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_enableCollisionComparison'],
+                                       SystemMessages.SM_TYPE.CustomizationForGold)
+        else:
+            _config.data['collisionEnabled'] = True
+            if _config.data['isDebug']:
+                print 'RemodEnabler: Enabling collision display'
+            SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_enableCollision'],
+                                       SystemMessages.SM_TYPE.CustomizationForGold)
+        g_currentPreviewVehicle.refreshModel()
+    if PYmodsCore.checkKeys(_config.data['DynamicSkinHotkey']):
+        enabled = _config.data['dynamicSkinEnabled']
+        _config.data['dynamicSkinEnabled'] = not enabled
+        SystemMessages.pushMessage(
+            'PYmods_SM' + _config.i18n['UI_%sableDynamicSkin' % ('en' if not enabled else 'dis')],
+            SystemMessages.SM_TYPE.CustomizationForGold)
+        g_currentPreviewVehicle.refreshModel()
+    if PYmodsCore.checkKeys([Keys.KEY_INSERT]):
+        if g_currentPreviewVehicle.isPresent():
+            vDesc = g_currentPreviewVehicle.item.descriptor
+        elif g_currentVehicle.isPresent():
+            vDesc = g_currentVehicle.item.descriptor
+        else:
+            raise AttributeError('g_currentVehicle.item.descriptor not found')
+        if _config.OMDesc is None and _config.data['isDebug']:
+            printOldConfigs(vDesc)
+    if _config.OM.enabled and PYmodsCore.checkKeys(_config.data['SwitchRemodHotkey']):
+        if _config.data['currentMode'] != 'remod':
+            curTankType = _config.data['currentMode'].capitalize()
+            snameList = sorted(_config.OM.models.keys()) + ['']
+            selected = _config.OM.selected[curTankType]
+            vehName = _config.curVehicleName
+            if selected.get(vehName) not in snameList:
+                snameIdx = 0
+            else:
+                snameIdx = snameList.index(selected[vehName]) + 1
+                if snameIdx == len(snameList):
+                    snameIdx = 0
+            for Idx in xrange(snameIdx, len(snameList)):
+                curPRecord = _config.OM.models.get(snameList[Idx])
+                if snameList[Idx] and vehName not in curPRecord.whitelists[curTankType]:
+                    continue
+                if vehName in selected:
+                    selected[vehName] = getattr(curPRecord, 'name', '')
+                _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
+                break
+        else:
+            snameList = sorted(_config.OM.models.keys())
+            if _config.OM.selected['Remod'] not in snameList:
+                snameIdx = 0
+            else:
+                snameIdx = snameList.index(_config.OM.selected['Remod']) + 1
+                if snameIdx == len(snameList):
+                    snameIdx = 0
+            sname = snameList[snameIdx]
+            _config.OM.selected['Remod'] = sname
+            _config.loadJson('remodsCache', _config.OM.selected, _config.configPath, True)
+        g_currentPreviewVehicle.refreshModel()
 
 
 def inj_hkKeyEvent(event):
@@ -1071,7 +1035,34 @@ def OM_apply(vDesc):
             vDesc.chassis[key] = {}
     data = _config.OMDesc.data
     for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
-        exec "vDesc.chassis['%s']=" % key + data['chassis'][key]
+        obj = eval(data['chassis'][key])
+        if key not in ('wheels', 'groundNodes', 'trackNodes') or any(
+                hasattr(d, '_fields') for l in obj.itervalues() if type(l) != float for d in l):
+            vDesc.chassis[key] = obj
+            continue
+        newObj = {}
+        if key == 'wheels':
+            newObj['groups'] = []
+            newObj['wheels'] = []
+            newObj['lodDist'] = obj['lodDist']
+            newObj['leadingWheelSyncAngle'] = obj['leadingWheelSyncAngle']
+            for d in obj['groups']:
+                newObj['groups'].append(WheelGroup(*d))
+            for d in obj['wheels']:
+                newObj['wheels'].append(Wheel(*(d[0], d[2], d[1], d[3], d[4])))
+        if key == 'groundNodes':
+            newObj['groups'] = []
+            newObj['nodes'] = []
+            for d in obj['groups']:
+                newObj['groups'].append(GroundNodeGroup(*(d[0], d[4], d[5], d[1], d[2], d[3])))
+            for d in obj['nodes']:
+                newObj['nodes'].append(GroundNode(*(d[1], d[0], d[2], d[3])))
+        if key == 'trackNodes':
+            newObj['groups'] = []
+            newObj['nodes'] = []
+            for d in obj['nodes']:
+                newObj['nodes'].append(TrackNode(*(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])))
+        vDesc.chassis[key] = newObj
     if data['chassis']['AODecals']:
         AODecalsOffset = vDesc.chassis['hullPosition'] - data['chassis']['hullPosition']
         vDesc.chassis['AODecals'] = copy.deepcopy(data['chassis']['AODecals'])
@@ -1384,171 +1375,145 @@ def new_reconstruct(x, info, deep, memo=None):
     return old_reconstruct(x, info, deep, memo)
 
 
-def new_prerequisites(self, respawnCompactDescr=None):
-    if self.respawnCompactDescr is not None:
-        respawnCompactDescr = self.respawnCompactDescr
-        self.isCrewActive = True
-        self.respawnCompactDescr = None
-    if respawnCompactDescr is None and self.typeDescriptor is not None:
-        return ()
-    vDesc = self.getDescr(respawnCompactDescr)
-    if _config.data['enabled']:
+def vDesc_process(self, vDesc, mode):
+    if mode == 'battle':
+        currentMode = mode
         isPlayerVehicle = self.id == BigWorld.player().playerVehicleID
-        xmlName = vDesc.name.split(':')[1].lower()
         playerName = BigWorld.player().arena.vehicles.get(self.id)['name']
         isAlly = BigWorld.player().arena.vehicles.get(self.id)['team'] == BigWorld.player().team
-        OM_find(xmlName, isPlayerVehicle, isAlly)
-        for partName in TankPartNames.ALL + ('engine',):
-            try:
-                old_part = getattr(vDesc, partName)
-                new_part = copy.deepcopy(old_part)
-                setattr(vDesc, partName, new_part)
-                if 'hitTester' in old_part:
-                    getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
-            except StandardError:
-                traceback.print_exc()
-                print partName
-        vehNation, vehName = vDesc.chassis['models']['undamaged'].split('/')[1:3]
-        vehDefNation = vDesc.chassis['hitTester'].bspModelName.split('/')[1]
-        if _config.OMDesc is None:
-            if vehNation == vehDefNation:
-                if skinsFound:
-                    OS_find(vehName, isPlayerVehicle, isAlly, skinType='dynamic')
-                    if _config.OSDesc['dynamic'] is not None:
-                        OS_createDynamic(self.id, vDesc)
-                    OS_find(vehName, isPlayerVehicle, isAlly)
-                    OS_apply(vDesc)
-            elif _config.data['isDebug']:
-                print 'RemodEnabler: unknown vehicle nation for %s: %s' % (vehName, vehNation)
-        else:
-            OM_apply(vDesc)
-        debugOutput(xmlName, vehName, playerName)
-    self.typeDescriptor = vDesc
-    self.appearance, compoundAssembler, prereqs = appearance_cache.createAppearance(
-        self.id, self.typeDescriptor, self.health, self.isCrewActive, self.isTurretDetached)
-    return prereqs
+        vehicleID = self.id
+    elif mode == 'hangar':
+        currentMode = _config.data['currentMode']
+        isPlayerVehicle = currentMode == 'player'
+        playerName = None
+        isAlly = currentMode == 'ally'
+        vehicleID = self._VehicleAppearance__vEntityId
+    else:
+        return
+    xmlName = vDesc.name.split(':')[1].lower()
+    OM_find(xmlName, isPlayerVehicle, isAlly, currentMode)
+    for partName in TankPartNames.ALL + ('engine',):
+        try:
+            old_part = getattr(vDesc, partName)
+            new_part = copy.deepcopy(old_part)
+            setattr(vDesc, partName, new_part)
+            if 'hitTester' in old_part:
+                getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+        except StandardError:
+            traceback.print_exc()
+            print partName
+    message = None
+    collisionNotVisible = not _config.data['collisionEnabled'] and not _config.data['collisionComparisonEnabled']
+    vehNation, vehName = vDesc.chassis['models']['undamaged'].split('/')[1:3]
+    vehDefNation = vDesc.chassis['hitTester'].bspModelName.split('/')[1]
+    if _config.OMDesc is None:
+        if vehNation == vehDefNation:
+            if skinsFound:
+                OS_find(vehName, isPlayerVehicle, isAlly, currentMode, skinType='dynamic')
+                if _config.OSDesc['dynamic'] is not None:
+                    OS_createDynamic(vehicleID, vDesc, mode == 'battle' or (
+                        _config.data['dynamicSkinEnabled'] and not _config.data['collisionComparisonEnabled']))
+                    if _config.data['dynamicSkinEnabled'] and collisionNotVisible:
+                        message = _config.i18n['UI_install_skin_dynamic'] + _config.OSDesc['dynamic'].name.join(
+                            ('<b>', '</b>.'))
+                OS_find(vehName, isPlayerVehicle, isAlly, currentMode)
+                OS_apply(vDesc)
+        elif _config.data['isDebug']:
+            print 'RemodEnabler: unknown vehicle nation for %s: %s' % (vehName, vehNation)
+        if _config.data['isDebug'] and (
+                _config.OSDesc['dynamic'] is None or not _config.data['dynamicSkinEnabled']) and collisionNotVisible:
+            if _config.OSDesc['static'] is not None:
+                message = _config.i18n['UI_install_skin'] + _config.OSDesc['static'].name.join(('<b>', '</b>.'))
+            else:
+                message = _config.i18n['UI_install_default']
+    else:
+        OM_apply(vDesc)
+        if collisionNotVisible:
+            message = _config.i18n['UI_install_remod'] + _config.OMDesc.name.join(
+                ('<b>', '</b>.')) + '\n' + _config.OMDesc.authorMessage
+    if message is not None and mode == 'hangar':
+        SystemMessages.pushMessage('PYmods_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
+    debugOutput(xmlName, vehName, playerName)
+
+
+def new_getDescr(self, respawnCompactDescr=None):
+    vDesc = old_getDescr(self, respawnCompactDescr)
+    if _config.data['enabled']:
+        vDesc_process(self, vDesc, 'battle')
+    return vDesc
 
 
 def new_startBuild(self, vDesc, vState):
     if _config.data['enabled']:
-        xmlName = vDesc.name.split(':')[1].lower()
-        _config.curVehicleName = xmlName
-        isPlayerVehicle = _config.data['currentMode'] == 'player'
-        isAlly = _config.data['currentMode'] == 'ally'
-        OM_find(xmlName, isPlayerVehicle, isAlly, _config.data['currentMode'])
-        for partName in TankPartNames.ALL + ('engine',):
-            try:
-                old_part = getattr(vDesc, partName)
-                new_part = copy.deepcopy(old_part)
-                setattr(vDesc, partName, new_part)
-                if 'hitTester' in old_part:
-                    getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
-            except StandardError:
-                traceback.print_exc()
-                print partName
-        message = None
-        collisionNotVisible = not _config.data['collisionEnabled'] and not _config.data['collisionComparisonEnabled']
-        vehNation, vehName = vDesc.chassis['models']['undamaged'].split('/')[1:3]
-        vehDefNation = vDesc.chassis['hitTester'].bspModelName.split('/')[1]
-        if _config.OMDesc is None:
-            if vehNation == vehDefNation:
-                if skinsFound:
-                    OS_find(vehName, isPlayerVehicle, isAlly, _config.data['currentMode'], skinType='dynamic')
-                    if _config.OSDesc['dynamic'] is not None:
-                        OS_createDynamic(self._VehicleAppearance__vEntityId, vDesc,
-                                         _config.data['dynamicSkinEnabled'] and not _config.data[
-                                             'collisionComparisonEnabled'])
-                        if _config.data['dynamicSkinEnabled'] and collisionNotVisible:
-                            message = _config.i18n['UI_install_skin_dynamic'] + _config.OSDesc['dynamic'].name.join(
-                                ('<b>', '</b>.'))
-                    OS_find(vehName, isPlayerVehicle, isAlly, _config.data['currentMode'])
-                    OS_apply(vDesc)
-            elif _config.data['isDebug']:
-                print 'RemodEnabler: unknown vehicle nation for %s: %s' % (vehName, vehNation)
-            if _config.data['isDebug'] and (
-                    _config.OSDesc['dynamic'] is None or not _config.data['dynamicSkinEnabled']) and collisionNotVisible:
-                if _config.OSDesc['static'] is not None:
-                    message = _config.i18n['UI_install_skin'] + _config.OSDesc['static'].name.join(('<b>', '</b>.'))
-                else:
-                    message = _config.i18n['UI_install_default']
-        else:
-            OM_apply(vDesc)
-            if collisionNotVisible:
-                message = _config.i18n['UI_install_remod'] + _config.OMDesc.name.join(
-                    ('<b>', '</b>.')) + '\n' + _config.OMDesc.authorMessage
-        if message is not None:
-            SystemMessages.pushMessage('PYmods_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
-        debugOutput(xmlName, vehName)
+        vDesc_process(self, vDesc, 'hangar')
     old_startBuild(self, vDesc, vState)
 
 
 def new_setupModel(self, buildIdx):
     old_setupModel(self, buildIdx)
-    if _config.data['enabled']:
-        vEntityId = self._VehicleAppearance__vEntityId
-        vEntity = BigWorld.entity(vEntityId)
-        vDesc = self._VehicleAppearance__vDesc
-        model = vEntity.model
-        self.collisionLoaded = True
-        self.modifiedModelsDesc = dict(
-            [(part, {'model': None, 'motor': None, 'matrix': None}) for part in TankPartNames.ALL])
-        failList = []
-        for modelName in self.modifiedModelsDesc.keys():
-            try:
-                self.modifiedModelsDesc[modelName]['model'] = BigWorld.Model(
-                    getattr(vDesc, modelName)['hitTester'].bspModelName)
-                self.modifiedModelsDesc[modelName]['model'].visible = False
-            except StandardError:
-                self.collisionLoaded = False
-                failList.append(getattr(vDesc, modelName)['hitTester'].bspModelName)
+    if not _config.data['enabled']:
+        return
+    vEntityId = self._VehicleAppearance__vEntityId
+    vEntity = BigWorld.entity(vEntityId)
+    vDesc = self._VehicleAppearance__vDesc
+    model = vEntity.model
+    self.collisionLoaded = True
+    self.modifiedModelsDesc = dict(
+        [(part, {'model': None, 'motor': None, 'matrix': None}) for part in TankPartNames.ALL])
+    failList = []
+    for part in self.modifiedModelsDesc.keys():
+        try:
+            self.modifiedModelsDesc[part]['model'] = BigWorld.Model(getattr(vDesc, part)['hitTester'].bspModelName)
+            self.modifiedModelsDesc[part]['model'].visible = False
+        except StandardError:
+            self.collisionLoaded = False
+            failList.append(getattr(vDesc, part)['hitTester'].bspModelName)
 
-        if failList:
-            print 'RemodEnabler: collision load failed: models not found'
-            print failList
-        if _config.OSDesc['dynamic'] is not None:
-            OS_attach_dynamic(
-                vEntityId, _config.data['dynamicSkinEnabled'] and not _config.data['collisionComparisonEnabled'])
-        if self.collisionLoaded:
-            if any((_config.data['collisionEnabled'], _config.data['collisionComparisonEnabled'])):
-                # Getting offset matrices
-                hullOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.chassis['hullPosition'])
-                turretOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.hull['turretPositions'][0])
-                gunOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.turret['gunPosition'])
-                # Getting local transform matrices
-                hullMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), hullOffset)
-                turretMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), turretOffset)
-                gunMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), gunOffset)
-                # turretMP = mathUtils.MatrixProviders.product(vEntity.appearance.turretMatrix, turretOffset)
-                # gunMP = mathUtils.MatrixProviders.product(vEntity.appearance.gunMatrix, gunOffset)
-                # Getting full transform matrices relative to vehicle coordinate system
-                self.modifiedModelsDesc[TankPartNames.CHASSIS][
-                    'matrix'] = fullChassisMP = mathUtils.createIdentityMatrix()
-                self.modifiedModelsDesc[TankPartNames.HULL]['matrix'] = fullHullMP = mathUtils.MatrixProviders.product(
-                    hullMP, fullChassisMP)
-                self.modifiedModelsDesc[TankPartNames.TURRET][
-                    'matrix'] = fullTurretMP = mathUtils.MatrixProviders.product(turretMP, fullHullMP)
-                self.modifiedModelsDesc[TankPartNames.GUN]['matrix'] = mathUtils.MatrixProviders.product(gunMP,
-                                                                                                         fullTurretMP)
-                for moduleName, moduleDict in self.modifiedModelsDesc.items():
-                    if moduleDict['motor'] not in tuple(moduleDict['model'].motors):
-                        moduleDict['motor'] = BigWorld.Servo(
-                            mathUtils.MatrixProviders.product(moduleDict['matrix'], vEntity.matrix))
-                        moduleDict['model'].addMotor(moduleDict['motor'])
-                    if moduleDict['model'] not in tuple(vEntity.models):
-                        try:
-                            vEntity.addModel(moduleDict['model'])
-                        except StandardError:
-                            pass
-                    moduleDict['model'].visible = True
-                addCollisionGUI(self)
-            if _config.data['collisionEnabled']:
-                for moduleName in TankPartNames.ALL:
-                    if model.node(moduleName) is not None:
-                        scaleMat = Math.Matrix()
-                        scaleMat.setScale((0.001, 0.001, 0.001))
-                        model.node(moduleName, scaleMat)
-                    else:
-                        print 'RemodEnabler: collision model for %s not found' % moduleName
+    if failList:
+        print 'RemodEnabler: collision load failed: models not found'
+        print failList
+    if _config.OSDesc['dynamic'] is not None:
+        OS_attach_dynamic(vEntityId, _config.data['dynamicSkinEnabled'] and not _config.data['collisionComparisonEnabled'])
+    if not self.collisionLoaded:
+        return
+    if any((_config.data['collisionEnabled'], _config.data['collisionComparisonEnabled'])):
+        # Getting offset matrices
+        hullOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.chassis['hullPosition'])
+        turretOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.hull['turretPositions'][0])
+        gunOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.turret['gunPosition'])
+        # Getting local transform matrices
+        hullMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), hullOffset)
+        turretMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), turretOffset)
+        gunMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), gunOffset)
+        # turretMP = mathUtils.MatrixProviders.product(vEntity.appearance.turretMatrix, turretOffset)
+        # gunMP = mathUtils.MatrixProviders.product(vEntity.appearance.gunMatrix, gunOffset)
+        # Getting full transform matrices relative to vehicle coordinate system
+        self.modifiedModelsDesc[TankPartNames.CHASSIS]['matrix'] = fullChassisMP = mathUtils.createIdentityMatrix()
+        self.modifiedModelsDesc[TankPartNames.HULL]['matrix'] = fullHullMP = mathUtils.MatrixProviders.product(
+            hullMP, fullChassisMP)
+        self.modifiedModelsDesc[TankPartNames.TURRET][
+            'matrix'] = fullTurretMP = mathUtils.MatrixProviders.product(turretMP, fullHullMP)
+        self.modifiedModelsDesc[TankPartNames.GUN]['matrix'] = mathUtils.MatrixProviders.product(gunMP, fullTurretMP)
+        for moduleName, moduleDict in self.modifiedModelsDesc.items():
+            if moduleDict['motor'] not in tuple(moduleDict['model'].motors):
+                moduleDict['motor'] = BigWorld.Servo(
+                    mathUtils.MatrixProviders.product(moduleDict['matrix'], vEntity.matrix))
+                moduleDict['model'].addMotor(moduleDict['motor'])
+            if moduleDict['model'] not in tuple(vEntity.models):
+                try:
+                    vEntity.addModel(moduleDict['model'])
+                except StandardError:
+                    pass
+            moduleDict['model'].visible = True
+        addCollisionGUI(self)
+    if _config.data['collisionEnabled']:
+        for moduleName in TankPartNames.ALL:
+            if model.node(moduleName) is not None:
+                scaleMat = Math.Matrix()
+                scaleMat.setScale((0.001, 0.001, 0.001))
+                model.node(moduleName, scaleMat)
+            else:
+                print 'RemodEnabler: model rescale for %s failed' % moduleName
 
 
 def new_refreshModel(self):
@@ -1559,8 +1524,8 @@ def new_refreshModel(self):
 
 old_reconstruct = copy._reconstruct
 copy._reconstruct = new_reconstruct
-old_prerequisites = Vehicle.prerequisites
-Vehicle.prerequisites = new_prerequisites
+old_getDescr = Vehicle.getDescr
+Vehicle.getDescr = new_getDescr
 old_startBuild = _VehicleAppearance._VehicleAppearance__startBuild
 _VehicleAppearance._VehicleAppearance__startBuild = new_startBuild
 old_setupModel = _VehicleAppearance._VehicleAppearance__setupModel
@@ -1576,17 +1541,16 @@ CompoundAppearance.onVehicleHealthChanged = new_oVHC
 
 
 def clearCollision(self):
-    if _config.data['enabled']:
-        vEntityId = self._VehicleAppearance__vEntityId
-        if getattr(self, 'collisionLoaded', False):
-            for moduleName, moduleDict in self.modifiedModelsDesc.items():
-                if moduleDict['model'] in tuple(BigWorld.entity(vEntityId).models):
-                    BigWorld.entity(vEntityId).delModel(moduleDict['model'])
-                    if moduleDict['motor'] in tuple(moduleDict['model'].motors):
-                        moduleDict['model'].delMotor(moduleDict['motor'])
-        if hasattr(self, 'collisionTable'):
-            del self.collisionTable
-        OS_destroy_dynamic(vEntityId)
+    vEntityId = self._VehicleAppearance__vEntityId
+    if getattr(self, 'collisionLoaded', False):
+        for moduleName, moduleDict in self.modifiedModelsDesc.items():
+            if moduleDict['model'] in tuple(BigWorld.entity(vEntityId).models):
+                BigWorld.entity(vEntityId).delModel(moduleDict['model'])
+                if moduleDict['motor'] in tuple(moduleDict['model'].motors):
+                    moduleDict['model'].delMotor(moduleDict['motor'])
+    if hasattr(self, 'collisionTable'):
+        del self.collisionTable
+    OS_destroy_dynamic(vEntityId)
 
 
 def new_refresh(self):
@@ -1605,67 +1569,51 @@ old_recreate = _VehicleAppearance.recreate
 _VehicleAppearance.recreate = new_recreate
 
 
-class TextBox(object):
-    def __init__(self, text='', position=(0, 0.6, 1), colour=(255, 255, 255, 255), size=(0, 0.04)):
-        self.GUIComponent = GUI.Text('')
+class GUIBox(object):
+    def __init__(self, obj, position, colour, size):
+        self.GUIComponent = obj
         self.GUIComponent.verticalAnchor = 'CENTER'
         self.GUIComponent.horizontalAnchor = 'CENTER'
         self.GUIComponent.verticalPositionMode = 'CLIP'
         self.GUIComponent.horizontalPositionMode = 'CLIP'
+        self.GUIComponent.heightMode = 'CLIP'
         self.GUIComponent.materialFX = 'BLEND'
         self.GUIComponent.colour = colour
-        self.GUIComponent.heightMode = 'CLIP'
-        self.GUIComponent.explicitSize = True
         self.GUIComponent.position = position
+        self.GUIComponent.size = size
+        self.GUIComponent.visible = True
+
+    def addRoot(self):
+        GUI.addRoot(self.GUIComponent)
+
+    def delRoot(self):
+        GUI.delRoot(self.GUIComponent)
+
+    def __del__(self):
+        self.delRoot()
+
+
+class TextBox(GUIBox):
+    def __init__(self, text='', position=(0, 0.6, 1), colour=(255, 255, 255, 255), size=(0, 0.04)):
+        super(self.__class__, self).__init__(GUI.Text(''), position, colour, size)
+        self.GUIComponent.explicitSize = True
         self.GUIComponent.font = 'system_small'
         self.GUIComponent.text = text
-        self.GUIComponent.size = size
-        self.GUIComponent.visible = True
-
-    def addRoot(self):
-        GUI.addRoot(self.GUIComponent)
-
-    def delRoot(self):
-        GUI.delRoot(self.GUIComponent)
-
-    def __del__(self):
-        self.delRoot()
 
 
-class TexBox(object):
+class TexBox(GUIBox):
     def __init__(self, texturePath='', position=(0, 0, 1), size=(0.09, 0.045)):
-        self.GUIComponent = GUI.Simple('')
-        self.GUIComponent.verticalAnchor = 'CENTER'
-        self.GUIComponent.horizontalAnchor = 'CENTER'
-        self.GUIComponent.verticalPositionMode = 'CLIP'
-        self.GUIComponent.horizontalPositionMode = 'CLIP'
+        super(self.__class__, self).__init__(GUI.Simple(''), position, (255, 255, 255, 255), size)
         self.GUIComponent.widthMode = 'CLIP'
-        self.GUIComponent.heightMode = 'CLIP'
-        self.GUIComponent.materialFX = 'BLEND'
-        self.GUIComponent.colour = (255, 255, 255, 255)
-        self.GUIComponent.size = size
-        self.GUIComponent.position = position
         self.GUIComponent.textureName = texturePath
         self.GUIComponent.mapping = ((0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (1.0, 0.0))
-        self.GUIComponent.visible = True
-
-    def addRoot(self):
-        GUI.addRoot(self.GUIComponent)
-
-    def delRoot(self):
-        GUI.delRoot(self.GUIComponent)
-
-    def __del__(self):
-        self.delRoot()
 
 
 def addCollisionGUI(self):
     vDesc = self._VehicleAppearance__vDesc
     self.collisionTable = {}
     for moduleIdx, moduleName in enumerate(TankPartNames.ALL):
-        self.collisionTable[moduleName] = curCollisionTable = {'textBoxes': [],
-                                                               'texBoxes': [],
-                                                               'armorValues': {}}
+        self.collisionTable[moduleName] = curCollisionTable = {'textBoxes': [], 'texBoxes': [], 'armorValues': {}}
         moduleDict = getattr(vDesc, moduleName)
         for Idx, groupNum in enumerate(sorted(moduleDict['materials'].keys())):
             armorValue = int(moduleDict['materials'][groupNum].armor)
