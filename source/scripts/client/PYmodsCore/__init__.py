@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import BigWorld
 import ResMgr
 from .config import *
 from .events import *

@@ -2,6 +2,7 @@
 import binascii
 import zlib
 
+import BigWorld
 import Event
 import Keys
 import codecs

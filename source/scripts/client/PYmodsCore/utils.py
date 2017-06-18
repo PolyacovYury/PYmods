@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import BigWorld
 import random
 import re
 import threading
