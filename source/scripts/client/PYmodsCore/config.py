@@ -254,7 +254,7 @@ class Config(object):
                 conf_changed = False
                 if not rewrite:
                     try:
-                        self.checkSubDict(oldConfig, conf_newL, config_newExcl, 0, len(conf_newL))
+                        conf_changed = self.checkSubDict(oldConfig, conf_newL, config_newExcl, 0, len(conf_newL))
                     except StandardError:
                         print new_path
                         traceback.print_exc()
