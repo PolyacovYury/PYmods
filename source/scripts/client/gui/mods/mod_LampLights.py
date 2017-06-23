@@ -682,11 +682,11 @@ def new_startVisual(base, self):
 
 
 @PYmodsCore.overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
-def new_oVHC(base, self):
+def new_oVHC(base, self, showEffects=True):
     vehicle = self._CompoundAppearance__vehicle
     if not vehicle.isAlive():
         lightsDestroy(vehicle.id, 'oVHC_vehicle_not_isAlive')
-    base(self)
+    base(self, showEffects)
 
 
 @PYmodsCore.overrideMethod(CompoundAppearance, '_CompoundAppearance__onPeriodicTimer')
