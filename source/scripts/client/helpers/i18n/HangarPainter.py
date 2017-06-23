@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import BigWorld
 import PYmodsCore
-import ResMgr
 import json
 import traceback
 import urllib2
