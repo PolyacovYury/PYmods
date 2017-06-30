@@ -5,6 +5,7 @@ import re
 import threading
 import urllib
 import urllib2
+from PYmodsCore import overrideMethod
 from PlayerEvents import g_playerEvents
 from constants import AUTH_REALM
 from functools import partial
@@ -77,7 +78,7 @@ def sendChatMessage(fullMsg, chanId, delay):
     BigWorld.callback(delay / 1000.0, partial(sendChatMessage, remains, chanId))
 
 
-def new_addItem(self, item):
+def new_addItem(base, self, item):
     if 'PYmods_SM' in item._vo['message']['message']:
         item._vo['message']['message'] = item._vo['message']['message'].replace('PYmods_SM', '')
         item._vo['notify'] = False
@@ -85,27 +86,24 @@ def new_addItem(self, item):
             item._settings.isNotify = False
         return True
     else:
-        return old_addItem(self, item)
+        return base(self, item)
 
 
-def new_handleAction(self, model, typeID, entityID, actionName):
+def new_handleAction(base, self, model, typeID, entityID, actionName):
     from notification.settings import NOTIFICATION_TYPE
     if typeID == NOTIFICATION_TYPE.MESSAGE and re.match('https?://', actionName, re.I):
         BigWorld.wg_openWebBrowser(actionName)
     else:
-        old_handleAction(self, model, typeID, entityID, actionName)
+        base(self, model, typeID, entityID, actionName)
 
 
 # noinspection PyGlobalUndefined
 def PMC_hooks():
-    global old_addItem, old_handleAction
-    from notification.NotificationsCollection import NotificationsCollection
-    old_addItem = NotificationsCollection.addItem
-    NotificationsCollection.addItem = new_addItem
+    global new_addItem, new_handleAction
     from notification.actions_handlers import NotificationsActionsHandlers
-    old_handleAction = NotificationsActionsHandlers.handleAction
-    # noinspection PyUnresolvedReferences
-    NotificationsActionsHandlers.handleAction = new_handleAction
+    from notification.NotificationsCollection import NotificationsCollection
+    new_addItem = overrideMethod(new_addItem, NotificationsCollection, 'addItem')
+    new_handleAction = overrideMethod(new_handleAction, NotificationsActionsHandlers, 'handleAction')
 
 
 BigWorld.callback(0.0, PMC_hooks)
@@ -224,7 +222,6 @@ class Sound(object):
         self.__sndTick = SoundGroups.g_instance.getSound2D(self.__sndPath)
         self.__isPlaying = True
         self.stop()
-        return
 
     @property
     def isPlaying(self):
