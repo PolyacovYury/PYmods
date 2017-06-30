@@ -675,8 +675,8 @@ def new_selectVehicle(base, self, vehInvID=0):
 
 
 @PYmodsCore.overrideMethod(CurrentVehicle._CurrentPreviewVehicle, 'selectVehicle')
-def new_selectPreviewVehicle(base, self, vehicleCD):
-    base(self, vehicleCD)
+def new_selectPreviewVehicle(base, self, vehicleCD=None, vehicleStrCD=None):
+    base(self, vehicleCD, vehicleStrCD)
     updateGUIState()
 
 

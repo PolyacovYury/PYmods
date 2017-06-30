@@ -1260,11 +1260,11 @@ def OS_destroy_dynamic(vehicleID):
 
 
 @PYmodsCore.overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
-def new_oVHC(base, self):
+def new_oVHC(base, self, showEffects=True):
     vehicle = self._CompoundAppearance__vehicle
     if not vehicle.isAlive():
         OS_destroy_dynamic(vehicle.id)
-    base(self)
+    base(self, showEffects)
 
 
 @PYmodsCore.overrideMethod(Vehicle, 'startVisual')
@@ -1433,7 +1433,7 @@ def vDesc_process(self, vDesc, mode):
 
 
 @PYmodsCore.overrideMethod(Vehicle, 'getDescr')
-def new_getDescr(base, self, respawnCompactDescr=None):
+def new_getDescr(base, self, respawnCompactDescr):
     vDesc = base(self, respawnCompactDescr)
     if _config.data['enabled']:
         vDesc_process(self, vDesc, 'battle')
