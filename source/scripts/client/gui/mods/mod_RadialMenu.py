@@ -99,7 +99,7 @@ class _Config(PYmodsCore.Config):
                     commands[key] = tankSect = {}
                     for tankName in confSect:
                         tankConf = confSect[tankName]
-                        if isinstance(tankConf, basestring):
+                        if isinstance(tankConf, str):
                             tankSect[tankName] = tankConf
                         else:
                             tankSect[tankName] = {
@@ -304,7 +304,7 @@ def findBestFitConf(commandConf):
         menuConf = allMenuConf.get(vehicleName)
         menuType = 'tankSpecific' + vehicleName
         if menuConf is not None:
-            if isinstance(menuConf, string):
+            if isinstance(menuConf, str):
                 menuConf = allMenuConf.get(menuConf)
                 menuType = 'tankSpecific' + menuConf
     if menuConf is None:

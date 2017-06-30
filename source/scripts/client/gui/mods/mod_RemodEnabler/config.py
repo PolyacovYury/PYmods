@@ -479,6 +479,7 @@ class RemodEnablerUI(AbstractWindowView):
             OMDesc = g_config.OM.models[sname]
             OMSettings = g_config.settings['remods'][sname]
             texts['remodNames'].append(sname)
+            # noinspection PyTypeChecker
             settings['remods'].append({'useFor': {key.lower(): OMSettings['swap%s' % key] for key in OM.tankGroups},
                                        'whitelists': [OMDesc.whitelists[team] for team in OM.tankGroups]})
         for idx, skinType in enumerate(('', '_dynamic')):
@@ -486,6 +487,7 @@ class RemodEnablerUI(AbstractWindowView):
             for sname in sorted(g_config.OS.models['static' if not skinType else 'dynamic']):
                 sDesc = skins[sname]
                 texts['skinNames'][idx].append(sname)
+                # noinspection PyUnresolvedReferences
                 settings['skins'][idx].append({'useFor': {k.lower(): sDesc['swap%s' % k] for k in OM.tankGroups}})
         self.flashObject.as_updateData(texts, settings)
 

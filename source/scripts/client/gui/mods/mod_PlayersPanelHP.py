@@ -69,7 +69,7 @@ class PlayersPanelController(PYmodsCore.Config):
         self.__hpCache.clear()
         self.__vCache.clear()
 
-    def onVehicleKilled(self, targetID, attackerID, equipmentID, reason):
+    def onVehicleKilled(self, targetID, *_):
         if targetID in self.__hpCache:
             self.__hpCache[targetID]['current'] = 0
             self.setHPField(targetID)

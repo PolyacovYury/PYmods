@@ -79,13 +79,13 @@ class _Config(PYmodsCore.Config):
                             self.sectDict[key]['bindToKey'] = confdict[key]['bindToKey']
                         textList = self.sectDict[key].setdefault('textList', [])
                         if self.sectDict[key]['mode'] == 'single':
-                            if isinstance(confdict[key]['text'], basestring):
+                            if isinstance(confdict[key]['text'], str):
                                 textList.append(confdict[key]['text'].rstrip())
                             elif isinstance(confdict[key]['text'], list):
                                 textList.append(
                                     ''.join(filter(None, confdict[key]['text'])).rstrip())
                         else:
-                            if isinstance(confdict[key]['text'], basestring):
+                            if isinstance(confdict[key]['text'], str):
                                 textList.extend(filter(
                                     None, map(lambda txtStr: txtStr.rstrip(), confdict[key]['text'].split(';'))))
                             elif isinstance(confdict[key]['text'], list):
