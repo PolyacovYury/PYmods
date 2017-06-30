@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 import BigWorld
 import Keys
+import Math
 import PYmodsCore
+import ResMgr
+import glob
+import os
 import traceback
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
-from gui import SystemMessages, InputHandler
+from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.app_loader import g_appLoader
 from items.vehicles import EmblemSlot
-from . import g_config, processor
-from .skinLoader import RemodEnablerLoading
 
 
 def readAODecals(confList):
@@ -98,6 +100,7 @@ class _Config(PYmodsCore.Config):
                             'CollisionHotkey': [Keys.KEY_F4, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
         self.data = {'enabled': True,
                      'isDebug': True,
+                     'skinsFound': False,
                      'collisionEnabled': False,
                      'collisionComparisonEnabled': False,
                      'dynamicSkinEnabled': False,
@@ -412,6 +415,7 @@ class _Config(PYmodsCore.Config):
 
     def do_config(self):
         super(self.__class__, self).do_config()
+        from .skinLoader import RemodEnablerLoading
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
@@ -608,6 +612,7 @@ def lobbyKeyControl(event):
         else:
             raise AttributeError('g_currentVehicle.item.descriptor not found')
         if g_config.OMDesc is None and g_config.data['isDebug']:
+            from . import processor
             processor.printOldConfigs(vDesc)
     if g_config.OM.enabled and PYmodsCore.checkKeys(g_config.data['SwitchRemodHotkey']):
         if g_config.data['currentMode'] != 'remod':
@@ -655,3 +660,4 @@ def inj_hkKeyEvent(event):
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
+g_config = _Config()

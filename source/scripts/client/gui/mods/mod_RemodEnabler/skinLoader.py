@@ -25,14 +25,13 @@ from . import g_config
 
 
 def skinsPresenceCheck():
-    global skinsFound
     dirSect = ResMgr.openSection('vehicles/skins/textures/')
     if dirSect is not None and dirSect.keys():
-        skinsFound = True
+        g_config.data['skinsFound'] = True
 
 
 texReplaced = False
-skinsFound = False
+g_config.data['skinsFound'] = False
 skinsPresenceCheck()
 clientIsNew = True
 skinsModelsMissing = True
@@ -116,12 +115,12 @@ def CRC32_from_file(filename, localPath):
 @async
 @process
 def skinCRC32All(callback):
-    global texReplaced, skinsFound, skinVehNamesLDict
+    global texReplaced, skinVehNamesLDict
     CRC32cache = g_config.skinsCache['CRC32']
     skinsPath = 'vehicles/skins/textures/'
     dirSect = ResMgr.openSection(skinsPath)
     if dirSect is not None and dirSect.keys():
-        skinsFound = True
+        g_config.data['skinsFound'] = True
         print 'RemodEnabler: listing %s for CRC32' % skinsPath
         g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
         CRC32 = 0
@@ -186,14 +185,14 @@ def modelsCheck(callback):
             print 'RemodEnabler: skins models dir is empty'
     else:
         print 'RemodEnabler: skins models dir not found'
-    needToReReadSkinsModels = skinsFound and (clientIsNew or skinsModelsMissing or texReplaced)
-    if skinsFound and clientIsNew:
+    needToReReadSkinsModels = g_config.data['skinsFound'] and (clientIsNew or skinsModelsMissing or texReplaced)
+    if g_config.data['skinsFound'] and clientIsNew:
         if os.path.isdir(modelsDir):
             shutil.rmtree(modelsDir)
         g_config.skinsCache['version'] = getClientVersion()
-    if skinsFound and not os.path.isdir(modelsDir):
+    if g_config.data['skinsFound'] and not os.path.isdir(modelsDir):
         os.makedirs(modelsDir)
-    elif not skinsFound and os.path.isdir(modelsDir):
+    elif not g_config.data['skinsFound'] and os.path.isdir(modelsDir):
         print 'RemodEnabler: no skins found, deleting %s' % modelsDir
         shutil.rmtree(modelsDir)
     elif texReplaced and os.path.isdir(modelsDir):
@@ -290,7 +289,7 @@ def processMember(memberFileName, skinName):
 
 @process
 def skinLoader():
-    if skinsFound:
+    if g_config.data['skinsFound']:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
             lobbyApp.loadView('RemodEnablerLoading')

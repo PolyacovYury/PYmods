@@ -1,3 +1,4 @@
+import Math
 import traceback
 from Avatar import PlayerAvatar
 from AvatarInputHandler import mathUtils

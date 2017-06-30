@@ -8,7 +8,7 @@ from gui import SystemMessages
 from gui.ClientHangarSpace import _VehicleAppearance
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
-from .. import g_config, skinLoader
+from .. import g_config
 from . import remods, skins_dynamic, skins_static
 
 
@@ -27,7 +27,6 @@ def skins_find(curVehName, isPlayerVehicle, isAlly, currentMode='battle', skinTy
     if currentMode != 'remod':
         for curSName in g_config.OS.priorities[skinType][curTankType]:
             curPRecord = g_config.OS.models[skinType][curSName]
-            # noinspection PyUnresolvedReferences
             if curVehName not in curPRecord.whitelist and curVehName.lower() not in curPRecord.whitelist:
                 continue
             else:
@@ -113,7 +112,7 @@ def vDesc_process(self, vDesc, mode):
     vehDefNation = vDesc.chassis['hitTester'].bspModelName.split('/')[1]
     if g_config.OMDesc is None:
         if vehNation == vehDefNation:
-            if skinLoader.skinsFound:
+            if g_config.data['skinsFound']:
                 skins_find(vehName, isPlayerVehicle, isAlly, currentMode, skinType='dynamic')
                 if g_config.OSDesc['dynamic'] is not None:
                     skins_dynamic.create(vehicleID, vDesc, mode == 'battle' or (

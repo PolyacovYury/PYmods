@@ -1,4 +1,6 @@
 import BigWorld
+import GUI
+import Math
 import PYmodsCore
 import material_kinds
 from AvatarInputHandler import mathUtils
