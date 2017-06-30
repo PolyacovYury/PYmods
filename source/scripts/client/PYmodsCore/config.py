@@ -12,6 +12,8 @@ import re
 import traceback
 from constants import DEFAULT_LANGUAGE
 
+__all__ = ['Config']
+
 
 class Config(object):
     onMSAPopulate = Event.Event()

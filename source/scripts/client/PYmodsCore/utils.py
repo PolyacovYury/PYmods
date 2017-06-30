@@ -10,6 +10,7 @@ from constants import AUTH_REALM
 from functools import partial
 
 MAX_CHAT_MESSAGE_LENGTH = 220
+__all__ = ['pickRandomPart', 'sendMessage', 'sendChatMessage', 'remDups', 'checkKeys', 'Analytics', 'Sound']
 
 
 def pickRandomPart(variantList, lastRandId, doNext=False):

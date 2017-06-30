@@ -2,6 +2,8 @@
 # forked by Polyacov_Yury
 import traceback
 
+__all__ = ['registerEvent', 'overrideMethod', 'overrideClassMethod', 'overrideStaticMethod']
+
 
 class EventHook(object):
     def __init__(self):
