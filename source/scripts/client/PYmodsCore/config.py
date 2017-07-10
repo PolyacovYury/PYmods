@@ -15,6 +15,46 @@ from constants import DEFAULT_LANGUAGE
 __all__ = ['Config']
 
 
+class MyJSONEncoder(json.JSONEncoder):
+    def __init__(self, *args, **kwargs):
+        super(MyJSONEncoder, self).__init__(*args, **kwargs)
+        self.current_indent = 0
+        self.current_indent_str = ""
+
+    def encode(self, o):
+        # Special Processing for lists
+        if isinstance(o, (list, tuple)):
+            primitives_only = True
+            for item in o:
+                if isinstance(item, (list, tuple, dict)):
+                    primitives_only = False
+                    break
+            output = []
+            if primitives_only:
+                for item in o:
+                    output.append(json.dumps(item))
+                return "[" + ", ".join(output) + "]"
+            else:
+                self.current_indent += self.indent
+                self.current_indent_str = " " * self.current_indent
+                for item in o:
+                    output.append(self.current_indent_str + self.encode(item))
+                self.current_indent -= self.indent
+                self.current_indent_str = " " * self.current_indent
+                return "[\n" + ",\n".join(output) + "\n" + self.current_indent_str + "]"
+        elif isinstance(o, dict):
+            output = []
+            self.current_indent += self.indent
+            self.current_indent_str = " " * self.current_indent
+            for key, value in o.iteritems():
+                output.append(self.current_indent_str + json.dumps(key) + ": " + self.encode(value))
+            self.current_indent -= self.indent
+            self.current_indent_str = " " * self.current_indent
+            return "{\n" + ",\n".join(output) + "\n" + self.current_indent_str + "}"
+        else:
+            return json.dumps(o)
+
+
 class Config(object):
     onMSAPopulate = Event.Event()
     onMSAWindowClose = Event.Event()
@@ -181,8 +221,9 @@ class Config(object):
         return '\n'.join(lines), excluded
 
     @staticmethod
-    def json_dumps(conf):
-        return json.dumps(conf, sort_keys=True, indent=4, ensure_ascii=False, encoding='utf-8-sig', separators=(',', ': '))
+    def json_dumps(conf, sort_keys):
+        return json.dumps(conf, sort_keys=sort_keys, indent=4, cls=MyJSONEncoder,
+                          ensure_ascii=False, encoding='utf-8-sig', separators=(',', ': '))
 
     def checkSubDict(self, oldDict, conf_newL, config_newExcl, start_idx, end_idx):
         conf_changed = False
@@ -214,8 +255,10 @@ class Config(object):
                             if '}' not in curNewLine:
                                 new_end_idx += 1
                                 continue
+                            else:
+                                subLevels -= 1
                             if '}' in self.json_comments(curNewLine)[0].strip():
-                                if subLevels:
+                                if subLevels > 0:
                                     subLevels -= 1
                                 else:
                                     break
@@ -228,7 +271,7 @@ class Config(object):
                         conf_changed = True
         return conf_changed
 
-    def loadJson(self, name, oldConfig, path, save=False, rewrite=True, encrypted=False):
+    def loadJson(self, name, oldConfig, path, save=False, rewrite=True, encrypted=False, sort_keys=True):
         config_new = oldConfig
         if not os.path.exists(path):
             os.makedirs(path)
@@ -236,7 +279,7 @@ class Config(object):
         if save:
             if os.path.isfile(new_path):
                 config_newS = ''
-                config_oldS = self.json_dumps(oldConfig)
+                config_oldS = self.json_dumps(oldConfig, sort_keys)
                 try:
                     with codecs.open(new_path, 'r', encoding='utf-8-sig') as json_file:
                         config_newS = json_file.read()
@@ -263,7 +306,7 @@ class Config(object):
 
                 else:
                     conf_changed = not config_oldS == self.json_dumps(
-                        self.byte_ify(json.loads(self.json_comments(config_newD)[0])))
+                        self.byte_ify(json.loads(self.json_comments(config_newD)[0])), sort_keys)
                     if conf_changed:
                         conf_newL = self.byte_ify(config_oldS).split('\n')
                 if conf_changed:
@@ -276,7 +319,7 @@ class Config(object):
                         config_new = oldConfig
             else:
                 with codecs.open(new_path, 'w', encoding='utf-8-sig') as json_file:
-                    data = self.json_dumps(oldConfig)
+                    data = self.json_dumps(oldConfig, sort_keys)
                     writeToConf = self.byte_ify(data)
                     if encrypted:
                         writeToConf = writeToConf.encode('zlib').encode('base64')
@@ -302,7 +345,7 @@ class Config(object):
                     print data
         else:
             with codecs.open(new_path, 'w', encoding='utf-8-sig') as json_file:
-                data = self.json_dumps(oldConfig)
+                data = self.json_dumps(oldConfig, sort_keys)
                 writeToConf = self.byte_ify(data)
                 if encrypted:
                     writeToConf = writeToConf.encode('zlib').encode('base64')

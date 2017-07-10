@@ -264,14 +264,7 @@ class _Config(PYmodsCore.Config):
                     swapKey = 'swap%s' % tankType
                     WLKey = '%sWhitelist' % tankType.lower()
                     whiteStr = settingsDict.setdefault(WLKey, confDict.get(WLKey, ''))
-                    if not settingsDict.setdefault(swapKey, confDict.get(swapKey, self.defaultRemodConfig[swapKey])):
-                        if self.data['isDebug']:
-                            print '%s: %s swapping in %s disabled.' % (self.ID, tankType.lower(), sname)
-                        for xmlName in selected:
-                            if sname == selected[xmlName]:
-                                selected[xmlName] = None
-                        continue
-                    templist = filter(None, map(lambda x: x.strip(), whiteStr.split(',')))
+                    templist = [x.strip() for x in whiteStr.split(',') if x]
                     whitelist = pRecord.whitelists[tankType]
                     whitelist.update(templist)
                     if not whitelist:
@@ -283,6 +276,12 @@ class _Config(PYmodsCore.Config):
                             print '%s: whitelist for %s: %s' % (self.ID, tankType.lower(), list(whitelist))
                         for xmlName in selected:
                             if sname == selected[xmlName] and xmlName not in whitelist:
+                                selected[xmlName] = None
+                    if not settingsDict.setdefault(swapKey, confDict.get(swapKey, self.defaultRemodConfig[swapKey])):
+                        if self.data['isDebug']:
+                            print '%s: %s swapping in %s disabled.' % (self.ID, tankType.lower(), sname)
+                        for xmlName in selected:
+                            if sname == selected[xmlName]:
                                 selected[xmlName] = None
                 for key, data in pRecord.data.iteritems():
                     if key == 'common':
@@ -574,6 +573,7 @@ class RemodEnablerUI(AbstractWindowView):
             if not settings.name:
                 SystemMessages.pushMessage(
                     'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_name_empty'], SystemMessages.SM_TYPE.Warning)
+                return
             from collections import OrderedDict
             data = OrderedDict()
             data['authorMessage'] = settings.message
@@ -637,7 +637,7 @@ class RemodEnablerUI(AbstractWindowView):
                     data[partName]['emblemSlots'].append(slotDict)
             data['engine']['wwsoundPC'] = vDesc.engine['wwsoundPC']
             data['engine']['wwsoundNPC'] = vDesc.engine['wwsoundNPC']
-            g_config.loadJson(settings.name, data, g_config.configPath + '/remods/', True, False)
+            g_config.loadJson(str(settings.name), data, g_config.configPath + 'remods/', True, False, sort_keys=False)
             g_config.update_data()
             SystemMessages.pushMessage(
                 'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_success'], SystemMessages.SM_TYPE.CustomizationForGold)
