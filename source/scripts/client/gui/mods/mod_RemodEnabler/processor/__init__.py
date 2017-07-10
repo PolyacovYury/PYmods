@@ -34,24 +34,6 @@ def skins_find(curVehName, isPlayerVehicle, isAlly, currentMode='battle', skinTy
                 break
 
 
-def printOldConfigs(vDesc):
-    print 'old chassis configuration:'
-    for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
-        print vDesc.chassis[key]
-    for part in ('gun', 'hull', 'turret'):
-        print 'old %s emblem slots configuration:' % part
-        print getattr(vDesc, part)['emblemSlots']
-    for ids in (('_gunEffects', 'effects', 'shot'), ('_gunReloadEffects', 'reloadEffect', 'reload')):
-        for key, value in getattr(g_cache, ids[0]).items():
-            if value == vDesc.gun[ids[1]]:
-                print 'old gun', ids[2], 'effects ID:', key
-                break
-        else:
-            print 'gun', ids[2], 'effect ID not found'
-    print 'chassis sound IDs: PC:', vDesc.chassis['wwsoundPC'], 'NPC:', vDesc.chassis['wwsoundNPC']
-    print 'engine sound IDs: PC:', vDesc.engine['wwsoundPC'], 'NPC:', vDesc.engine['wwsoundNPC']
-
-
 def debugOutput(xmlName, vehName, playerName=None):
     if not g_config.data['isDebug']:
         return
@@ -151,5 +133,6 @@ def new_getDescr(base, self, respawnCompactDescr):
 @PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled']:
+        g_config.curVehicleName = vDesc.name.split(':')[1].lower()
         vDesc_process(self, vDesc, 'hangar')
     base(self, vDesc, vState)

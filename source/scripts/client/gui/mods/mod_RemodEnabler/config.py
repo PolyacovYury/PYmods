@@ -12,7 +12,8 @@ from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.app_loader import g_appLoader
-from items.vehicles import EmblemSlot
+from items.vehicles import EmblemSlot, g_cache
+from vehicle_systems.tankStructure import TankPartNames
 
 
 def readAODecals(confList):
@@ -122,6 +123,15 @@ class _Config(PYmodsCore.Config):
                                        "<font color='#DD7700'><b>Polyacov_Yury</b></font>",
             'UI_flash_remodSetupBtn': 'Remods setup',
             'UI_flash_remodWLBtn': 'Remod whitelists',
+            'UI_flash_remodCreateBtn': 'Create remod',
+            'UI_flash_remodCreate_name_text': 'Remod name',
+            'UI_flash_remodCreate_name_tooltip': 'Remod unique ID and config file name.',
+            'UI_flash_remodCreate_message_text': 'Author message',
+            'UI_flash_remodCreate_message_tooltip': 'This message is displayed in hangar every time the remod is selected.'
+                                                    '\nLeave blank if not required.',
+            'UI_flash_remodCreate_name_empty': '<b>Remod creation failed:</b> name is empty.',
+            'UI_flash_remodCreate_error': '<b>Remod creation failed:</b> check python.log for additional information.',
+            'UI_flash_remodCreate_success': '<b>Remod created successfully</b>.',
             'UI_flash_skinSetupBtn': 'Skins setup',
             'UI_flash_skinPriorityBtn': 'Skin priorities',
             'UI_flash_skinType_static': 'Static',
@@ -447,12 +457,16 @@ class RemodEnablerUI(AbstractWindowView):
                 'main': g_config.i18n['UI_flash_header'],
                 'remodSetup': g_config.i18n['UI_flash_remodSetupBtn'],
                 'remodWL': g_config.i18n['UI_flash_remodWLBtn'],
+                'remodCreate': g_config.i18n['UI_flash_remodCreateBtn'],
                 'skinSetup': g_config.i18n['UI_flash_skinSetupBtn'],
                 'priorities': g_config.i18n['UI_flash_skinPriorityBtn']},
             'remodSetupBtn': g_config.i18n['UI_flash_remodSetupBtn'],
             'remodWLBtn': g_config.i18n['UI_flash_remodWLBtn'],
+            'remodCreateBtn': g_config.i18n['UI_flash_remodCreateBtn'],
             'skinsSetupBtn': g_config.i18n['UI_flash_skinSetupBtn'],
             'skinsPriorityBtn': g_config.i18n['UI_flash_skinPriorityBtn'],
+            'create': {'name': g_config.createLabel('remodCreate_name', 'flash'),
+                       'message': g_config.createLabel('remodCreate_message', 'flash')},
             'skinTypes': [g_config.i18n['UI_flash_skinType_%s' % skinType] for skinType in ('static', 'dynamic')],
             'teams': [g_config.i18n['UI_flash_team_%s' % team] for team in ('player', 'ally', 'enemy')],
             'remodNames': [],
@@ -490,6 +504,16 @@ class RemodEnablerUI(AbstractWindowView):
                 # noinspection PyUnresolvedReferences
                 settings['skins'][idx].append({'useFor': {k.lower(): sDesc['swap%s' % k] for k in OM.tankGroups}})
         self.flashObject.as_updateData(texts, settings)
+
+    @staticmethod
+    def py_getRemodData():
+        OMDesc = g_config.OMDesc
+        if OMDesc is not None:
+            return {'isRemod': True, 'name': OMDesc.name, 'message': OMDesc.authorMessage,
+                    'whitelists': [OMDesc.whitelists[team] for team in OM.tankGroups]}
+        else:
+            return {'isRemod': False, 'name': '', 'message': '',
+                    'whitelists': [set((RemodEnablerUI.py_getCurrentVehicleName())) for _ in OM.tankGroups]}
 
     @staticmethod
     def py_onShowRemod(remodIdx):
@@ -543,6 +567,84 @@ class RemodEnablerUI(AbstractWindowView):
         g_config.loadJson('settings', g_config.settings, g_config.configPath, True)
         g_config.update_data(g_config.data['isDebug'])
         g_currentPreviewVehicle.refreshModel()
+
+    @staticmethod
+    def py_onCreateRemod(settings):
+        try:
+            if not settings.name:
+                SystemMessages.pushMessage(
+                    'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_name_empty'], SystemMessages.SM_TYPE.Warning)
+            from collections import OrderedDict
+            data = OrderedDict()
+            data['authorMessage'] = settings.message
+            for teamIdx, team in enumerate(OM.tankGroups):
+                data[team.lower() + 'Whitelist'] = ','.join(settings.whitelists[teamIdx])
+
+            if g_currentPreviewVehicle.isPresent():
+                vDesc = g_currentPreviewVehicle.item.descriptor
+            elif g_currentVehicle.isPresent():
+                vDesc = g_currentVehicle.item.descriptor
+            else:
+                raise AttributeError('g_currentVehicle.item.descriptor not found')
+
+            for key in TankPartNames.ALL + ('engine',):
+                data[key] = OrderedDict()
+            for key in TankPartNames.ALL:
+                data[key]['undamaged'] = getattr(vDesc, key)['models']['undamaged']
+            chassis = data['chassis']
+            for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
+                chassis[key] = str(vDesc.chassis[key])
+            chassis['hullPosition'] = vDesc.chassis['hullPosition'].tuple()
+            chassis['AODecals'] = []
+            for decal in vDesc.chassis['AODecals']:
+                decDict = {'transform': OrderedDict()}
+                for strIdx in xrange(4):
+                    decDict['transform']['row%s' % strIdx] = []
+                    for colIdx in xrange(3):
+                        decDict['transform']['row%s' % strIdx].append(decal.get(strIdx, colIdx))
+            for key in ('wwsoundPC', 'wwsoundNPC'):
+                chassis[key] = vDesc.chassis[key]
+            pixieID = ''
+            for key, value in g_cache._customEffects['exhaust'].iteritems():
+                if value == vDesc.hull['customEffects'][0]._selectorDesc:
+                    pixieID = key
+                    break
+            data['hull']['exhaust'] = {'nodes': ' '.join(vDesc.hull['customEffects'][0].nodes), 'pixie': pixieID}
+            for ids in (('_gunEffects', 'effects'), ('_gunReloadEffects', 'reloadEffect')):
+                for key, value in getattr(g_cache, ids[0]).items():
+                    if value == vDesc.gun[ids[1]]:
+                        data['gun'][ids[1]] = key
+                        break
+            exclMask = vDesc.type.camouflageExclusionMask
+            if exclMask:
+                camouflage = data['camouflage'] = OrderedDict()
+                camouflage['exclusionMask'] = exclMask
+                camouflage['tiling'] = vDesc.type.camouflageTiling
+            for partName in TankPartNames.ALL[1:]:
+                part = getattr(vDesc, partName)
+                data[partName]['emblemSlots'] = []
+                exclMask = part['camouflageExclusionMask']
+                if exclMask:
+                    camouflage = data[partName]['camouflage'] = OrderedDict()
+                    camouflage['exclusionMask'] = exclMask
+                    camouflage['tiling'] = part['camouflageTiling']
+                for slot in part['emblemSlots']:
+                    slotDict = OrderedDict()
+                    for key in ('rayStart', 'rayEnd', 'rayUp'):
+                        slotDict[key] = getattr(slot, key).tuple()
+                    for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId'):
+                        slotDict[key] = getattr(slot, key)
+                    data[partName]['emblemSlots'].append(slotDict)
+            data['engine']['wwsoundPC'] = vDesc.engine['wwsoundPC']
+            data['engine']['wwsoundNPC'] = vDesc.engine['wwsoundNPC']
+            g_config.loadJson(settings.name, data, g_config.configPath + '/remods/', True, False)
+            g_config.update_data()
+            SystemMessages.pushMessage(
+                'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_success'], SystemMessages.SM_TYPE.CustomizationForGold)
+        except StandardError:
+            SystemMessages.pushMessage(
+                'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)
+            traceback.print_exc()
 
     @staticmethod
     def py_sendMessage(xmlName, action, status):
@@ -606,16 +708,6 @@ def lobbyKeyControl(event):
             'PYmods_SM' + g_config.i18n['UI_%sableDynamicSkin' % ('en' if not enabled else 'dis')],
             SystemMessages.SM_TYPE.CustomizationForGold)
         g_currentPreviewVehicle.refreshModel()
-    if PYmodsCore.checkKeys([Keys.KEY_INSERT]):
-        if g_currentPreviewVehicle.isPresent():
-            vDesc = g_currentPreviewVehicle.item.descriptor
-        elif g_currentVehicle.isPresent():
-            vDesc = g_currentVehicle.item.descriptor
-        else:
-            raise AttributeError('g_currentVehicle.item.descriptor not found')
-        if g_config.OMDesc is None and g_config.data['isDebug']:
-            from . import processor
-            processor.printOldConfigs(vDesc)
     if g_config.OM.enabled and PYmodsCore.checkKeys(g_config.data['SwitchRemodHotkey']):
         if g_config.data['currentMode'] != 'remod':
             curTankType = g_config.data['currentMode'].capitalize()
