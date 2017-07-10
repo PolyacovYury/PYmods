@@ -7,11 +7,12 @@ import ResMgr
 import glob
 import os
 import traceback
-from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
+from CurrentVehicle import g_currentPreviewVehicle
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.app_loader import g_appLoader
+from gui.shared.utils.HangarSpace import g_hangarSpace
 from items.vehicles import EmblemSlot, g_cache
 from vehicle_systems.tankStructure import TankPartNames
 
@@ -527,12 +528,7 @@ class RemodEnablerUI(AbstractWindowView):
 
     @staticmethod
     def py_getCurrentVehicleName():
-        if g_currentPreviewVehicle.isPresent():
-            vDesc = g_currentPreviewVehicle.item.descriptor
-        elif g_currentVehicle.isPresent():
-            vDesc = g_currentVehicle.item.descriptor
-        else:
-            raise AttributeError('g_currentVehicle.item.descriptor not found')
+        vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
         return vDesc.name.split(':')[1].lower()
 
     def py_onRequestVehicleDelete(self):
@@ -580,13 +576,7 @@ class RemodEnablerUI(AbstractWindowView):
             for teamIdx, team in enumerate(OM.tankGroups):
                 data[team.lower() + 'Whitelist'] = ','.join(settings.whitelists[teamIdx])
 
-            if g_currentPreviewVehicle.isPresent():
-                vDesc = g_currentPreviewVehicle.item.descriptor
-            elif g_currentVehicle.isPresent():
-                vDesc = g_currentVehicle.item.descriptor
-            else:
-                raise AttributeError('g_currentVehicle.item.descriptor not found')
-
+            vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
             for key in TankPartNames.ALL + ('engine',):
                 data[key] = OrderedDict()
             for key in TankPartNames.ALL:
