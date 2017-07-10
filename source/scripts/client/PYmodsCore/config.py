@@ -46,13 +46,16 @@ class MyJSONEncoder(json.JSONEncoder):
             output = []
             self.current_indent += self.indent
             self.current_indent_str = " " * self.current_indent
-            for key, value in o.iteritems():
-                output.append(self.current_indent_str + json.dumps(key) + ": " + self.encode(value))
+            keys = o.keys()
+            if self.sort_keys:
+                keys = sorted(keys)
+            for key in keys:
+                output.append(self.current_indent_str + json.dumps(key) + ": " + self.encode(o[key]))
             self.current_indent -= self.indent
             self.current_indent_str = " " * self.current_indent
             return "{\n" + ",\n".join(output) + "\n" + self.current_indent_str + "}"
         else:
-            return json.dumps(o)
+            return super(self.__class__, self).encode(o)
 
 
 class Config(object):

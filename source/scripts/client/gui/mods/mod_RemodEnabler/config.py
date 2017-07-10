@@ -281,6 +281,7 @@ class _Config(PYmodsCore.Config):
                     if not settingsDict.setdefault(swapKey, confDict.get(swapKey, self.defaultRemodConfig[swapKey])):
                         if self.data['isDebug']:
                             print '%s: %s swapping in %s disabled.' % (self.ID, tankType.lower(), sname)
+                        whitelist.clear()
                         for xmlName in selected:
                             if sname == selected[xmlName]:
                                 selected[xmlName] = None
@@ -490,12 +491,12 @@ class RemodEnablerUI(AbstractWindowView):
             'isInHangar': g_config.data['isInHangar']
         }
         for sname in sorted(g_config.OM.models):
-            OMDesc = g_config.OM.models[sname]
             OMSettings = g_config.settings['remods'][sname]
             texts['remodNames'].append(sname)
             # noinspection PyTypeChecker
             settings['remods'].append({'useFor': {key.lower(): OMSettings['swap%s' % key] for key in OM.tankGroups},
-                                       'whitelists': [OMDesc.whitelists[team] for team in OM.tankGroups]})
+                                       'whitelists': [str(OMSettings[team.lower() + 'Whitelist']).split(',')
+                                                      for team in OM.tankGroups]})
         for idx, skinType in enumerate(('', '_dynamic')):
             skins = g_config.settings['skins%s' % skinType]
             for sname in sorted(g_config.OS.models['static' if not skinType else 'dynamic']):
@@ -510,10 +511,11 @@ class RemodEnablerUI(AbstractWindowView):
         OMDesc = g_config.OMDesc
         if OMDesc is not None:
             return {'isRemod': True, 'name': OMDesc.name, 'message': OMDesc.authorMessage,
-                    'whitelists': [OMDesc.whitelists[team] for team in OM.tankGroups]}
+                    'whitelists': [str(g_config.settings['remods'][OMDesc.name][team.lower() + 'Whitelist']).split(',')
+                                   for team in OM.tankGroups]}
         else:
             return {'isRemod': False, 'name': '', 'message': '',
-                    'whitelists': [set((RemodEnablerUI.py_getCurrentVehicleName())) for _ in OM.tankGroups]}
+                    'whitelists': [[RemodEnablerUI.py_getCurrentVehicleName()] for _ in OM.tankGroups]}
 
     @staticmethod
     def py_onShowRemod(remodIdx):
