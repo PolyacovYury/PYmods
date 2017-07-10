@@ -109,9 +109,6 @@ def sun_controller(isControlled=True):
             pass
 
 
-old_startGUI = PlayerAvatar._PlayerAvatar__startGUI
-
-
 @PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
 def new_startGUI(base, self):
     base(self)
