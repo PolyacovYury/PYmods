@@ -9,37 +9,30 @@ last change 2016-10-12 for 0.9.16 budyx69
 russian version by Polyacov_Yury, multiple fixes by Andre_V/Ekspoint
 final version by Polyacov_Yury
 """
-import os
-import traceback
-from collections import OrderedDict
-from functools import partial
-from string import Template
-
-import ResMgr
-
 import BigWorld
 import ClientArena
 import PYmodsCore
+import ResMgr
 import SoundGroups
+import os
+import traceback
 from Avatar import PlayerAvatar
+from collections import OrderedDict
 from constants import ARENA_PERIOD
 from debug_utils import LOG_ERROR
+from functools import partial
 from gui import IngameSoundNotifications
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import BattleEndWarningPanel
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 from gui.app_loader import g_appLoader
 from gui.app_loader.settings import GUI_GLOBAL_SPACE_ID
-
-sb = ResMgr.openSection('../paths.xml')['Paths']
-vl = sb.values()[0]
-if vl is not None and not hasattr(BigWorld, 'curCV'):
-    BigWorld.curCV = vl.asString
+from string import Template
 
 
-class _Config(PYmodsCore._Config):
+class _Config(PYmodsCore.Config):
     def __init__(self):
-        super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '2.4.1 (%(file_compile_date)s)'
+        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.version = '2.4.2 (%(file_compile_date)s)'
         self.author = '%s (orig by locastan)' % self.author
         self.colours = OrderedDict([
             ('UI_color_red', '#FF0000'), ('UI_color_nice_red', '#FA8072'), ('UI_color_chocolate', '#D3691E'),
@@ -198,15 +191,15 @@ class _Config(PYmodsCore._Config):
 
     def apply_settings(self, settings):
         self.data['textStyle']['colour'] = self.colours.values()[settings['textColour']]
-        super(_Config, self).apply_settings(settings)
+        super(self.__class__, self).apply_settings(settings)
 
     def update_settings(self):
-        super(_Config, self).update_settings()
+        super(self.__class__, self).update_settings()
         colour = self.data['textStyle']['colour']
         colours = self.colours.values()
         self.data['textColour'] = colours.index(colour) if colour in colours else 10
         self.data['textStyle']['colour'] = self.colours.values()[self.data['textColour']]
-        super(_Config, self).apply_settings(self.data)
+        super(self.__class__, self).apply_settings(self.data)
 
 
 class _Flash(object):
@@ -252,8 +245,8 @@ class _Flash(object):
             backgroundPath = '../maps/bg.png'
         self.texts = []
         posConfig = _config.data['textPosition']
-        posX, posY = vxBattleFlash.convertCoords(vxBattleFlashAliases.GLOBAL, posConfig['x'], posConfig['y'], posConfig['alignX'],
-                                                 posConfig['alignY'])
+        posX, posY = vxBattleFlash.convertCoords(vxBattleFlashAliases.GLOBAL, posConfig['x'], posConfig['y'],
+                                                 posConfig['alignX'], posConfig['alignY'])
         self.uiFlash.as_setPositionS(self.container, '', [posX - int(bgConf['width'] / 2), posY])
         self.uiFlash.as_setSettingsS(self.container, [not _config.data['textLock'], True])
         for idx in xrange(_config.data['textLength']):
@@ -347,6 +340,7 @@ class _Flash(object):
 
 _config = _Config()
 _config.load()
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-8')
 PlayerAvatar.sounds = None
 try:
     from gui.mods.vxBattleFlash import *
@@ -653,8 +647,12 @@ def startBattleL(SpaceID):
                     _config.data['sounds'][soundEventName])
 
 
-def new_setCurrentTimeLeft(self, totalTime):
-    old_setCurrentTimeLeft(self, totalTime)
+g_appLoader.onGUISpaceEntered += startBattleL
+
+
+@PYmodsCore.overrideMethod(BattleEndWarningPanel, 'setCurrentTimeLeft')
+def new_setCurrentTimeLeft(base, self, totalTime):
+    base(self, totalTime)
     if not _config.data['enabled']:
         return
     period = BigWorld.player().arena.period
@@ -664,11 +662,8 @@ def new_setCurrentTimeLeft(self, totalTime):
         soundMgr.addToQueue(events_by_time[totalTime])
 
 
-old_setCurrentTimeLeft = BattleEndWarningPanel.setCurrentTimeLeft
-BattleEndWarningPanel.setCurrentTimeLeft = new_setCurrentTimeLeft
-
-
-def newAVK(self, argStr):
+@PYmodsCore.overrideMethod(ClientArena.ClientArena, '_ClientArena__onVehicleKilled')
+def new_AVK(base, self, argStr):
     if _config.data['enabled'] and BigWorld.player().arena is not None:
         import cPickle
         victimID, killerID, equipmentID, reason = cPickle.loads(argStr)
@@ -678,19 +673,21 @@ def newAVK(self, argStr):
         checkSquadMan()
         if PlayerAvatar.sounds is not None:
             firstCheck(victimID, killerID, reason, False, None)
-    old_AVK(self, argStr)
+    base(self, argStr)
 
 
-def new_onVehicleDestroyed(self):
+@PYmodsCore.overrideMethod(DamagePanelMeta.DamagePanelMeta, 'as_setVehicleDestroyedS')
+def new_onVehicleDestroyed(base, self):
     if _config.data['enabled'] and not hasattr(BigWorld.player().arena, 'UT'):
         initial()
         checkSquadMan()
         BigWorld.player().arena.killerCallBackId = BigWorld.callback(0.5, checkOwnKiller)
-    old_onVehicleDestroyed(self)
+    base(self)
 
 
-def new_readConfig(self):
-    old_readConfig(self)
+@PYmodsCore.overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '_IngameSoundNotifications__readConfig')
+def new_readConfig(base, self):
+    base(self)
     if _config.data['enabled'] and _config.data['disStand']:
         events = self._IngameSoundNotifications__events
         for eventName, event in events.iteritems():
@@ -699,13 +696,3 @@ def new_readConfig(self):
                     event[category]['sound'] = ''
 
         self._IngameSoundNotifications__events = events
-
-
-old_readConfig = IngameSoundNotifications.IngameSoundNotifications._IngameSoundNotifications__readConfig
-IngameSoundNotifications.IngameSoundNotifications._IngameSoundNotifications__readConfig = new_readConfig
-g_appLoader.onGUISpaceEntered += startBattleL
-old_AVK = ClientArena.ClientArena._ClientArena__onVehicleKilled
-ClientArena.ClientArena._ClientArena__onVehicleKilled = newAVK
-old_onVehicleDestroyed = DamagePanelMeta.DamagePanelMeta.as_setVehicleDestroyedS
-DamagePanelMeta.DamagePanelMeta.as_setVehicleDestroyedS = new_onVehicleDestroyed
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-8')

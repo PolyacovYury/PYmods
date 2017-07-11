@@ -70,7 +70,7 @@ class _Config(object):
                 self.commands[key] = tankSect = {}
                 for tankName in confSect:
                     tankConf = confSect.get(tankName, {})  # this tells IDE that this is a dict, not list|object|tuple
-                    if isinstance(tankConf, basestring):
+                    if isinstance(tankConf, str):
                         tankSect[tankName] = tankConf
                     else:
                         tankSect[tankName] = {menuType: map(lambda x: CustomMenuCommand(x) if x else x, tankConf[menuType])
@@ -423,7 +423,7 @@ def findBestFitConf(commandConf):
         menuConf = allMenuConf.get(vehicleName)
         menuType = 'tankSpecific' + vehicleName
         if menuConf is not None:
-            if isinstance(menuConf, string):
+            if isinstance(menuConf, str):
                 menuConf = allMenuConf.get(menuConf)
                 menuType = 'tankSpecific' + menuConf
     if menuConf is None:

@@ -1,23 +1,15 @@
 # -*- coding: utf-8 -*-
+import BigWorld
+import PYmodsCore
+import ResMgr
 import glob
 import os
 import traceback
 import zipfile
-
-import ResMgr
-
-import BigWorld
-import PYmodsCore
 from debug_utils import LOG_ERROR, LOG_NOTE
+from gui.Scaleform.daapi.view.dialogs.SimpleDialog import SimpleDialog
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
-from gui.Scaleform.daapi.view.dialogs.SimpleDialog import SimpleDialog
-
-res = ResMgr.openSection('../paths.xml')
-sb = res['Paths']
-vl = sb.values()[0]
-if vl is not None and not hasattr(BigWorld, 'curCV'):
-    BigWorld.curCV = vl.asString
 
 
 class RestartButtons(object):
@@ -34,10 +26,10 @@ class RestartButtons(object):
         ]
 
 
-class _Config(PYmodsCore._Config):
+class _Config(PYmodsCore.Config):
     def __init__(self):
-        super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '1.9.3 (%(file_compile_date)s)'
+        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.version = '1.9.4 (%(file_compile_date)s)'
         self.author = '%s and Ekspoint' % self.author
         self.data = {'defaultPool': 48,
                      'lowEnginePool': 36,
@@ -118,8 +110,8 @@ class _Config(PYmodsCore._Config):
             os.rename(oldModName, oldModName + '1')
 
     def check_wotmods(self, mediaPath):
-        fileList = (path for sublist in map(lambda x: map(lambda y: '/'.join((x[0], y)).replace(os.sep, '/'), x[2]),
-                    os.walk(BigWorld.curCV.replace('res_', ''))) for path in sublist if path.endswith('.wotmod'))
+        fileList = (path for path in ('/'.join((x[0], y)).replace(os.sep, '/') for x in os.walk(
+            BigWorld.curCV.replace('res_', '')) for y in x[2]) if path.endswith('.wotmod'))
         for filePath in fileList:
             if os.path.basename(filePath) == '_aaa_BanksLoader_audioMods.wotmod':
                 continue
@@ -342,31 +334,26 @@ class _Config(PYmodsCore._Config):
         print '%s: initialised.' % (self.message())
 
 
-def new_callHandler(self, buttonID):
+_config = _Config()
+_config.load()
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-9')
+
+
+@PYmodsCore.overrideMethod(SimpleDialog, '_SimpleDialog__callHandler')
+def new_callHandler(base, self, buttonID):
     if self._SimpleDialog__handler == _config.onRestartConfirmed:
         self._SimpleDialog__handler(buttonID)
     else:
-        old_callHandler(self, buttonID)
+        base(self, buttonID)
 
 
-_config = _Config()
-_config.load()
-
-
-def new_Login_populate(self):
-    old_Login_populate(self)
+@PYmodsCore.overrideMethod(LoginView, '_populate')
+def new_Login_populate(base, self):
+    base(self)
     _config.onRequestRestart()
 
 
-def new_LW_populate(self):
-    old_LW_populate(self)
+@PYmodsCore.overrideMethod(LobbyView, '_populate')
+def new_Lobby_populate(base, self):
+    base(self)
     _config.onRequestRestart()
-
-
-old_Login_populate = LoginView._populate
-LoginView._populate = new_Login_populate
-old_LW_populate = LobbyView._populate
-LobbyView._populate = new_LW_populate
-old_callHandler = SimpleDialog._SimpleDialog__callHandler
-SimpleDialog._SimpleDialog__callHandler = new_callHandler
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-9')

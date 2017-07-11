@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
-import glob
-import heapq
-import os
-import random
 import time
-import traceback
-import weakref
-
-import ResMgr
 
 import BigWorld
 import CurrentVehicle
 import Keys
 import PYmodsCore
+import ResMgr
+import glob
+import heapq
 import items.vehicles
 import nations
+import os
+import random
+import traceback
+import weakref
 from Account import Account
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from gui import InputHandler, SystemMessages, g_tankActiveCamouflage
@@ -33,16 +32,10 @@ from items import _xml
 from items.vehicles import CAMOUFLAGE_KINDS, CAMOUFLAGE_KIND_INDICES
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 
-res = ResMgr.openSection('../paths.xml')
-sb = res['Paths']
-vl = sb.values()[0]
-if vl is not None and not hasattr(BigWorld, 'curCV'):
-    BigWorld.curCV = vl.asString
-
 
 class CamoSelectorUI(AbstractWindowView):
     def _populate(self):
-        super(CamoSelectorUI, self)._populate()
+        super(self.__class__, self)._populate()
         if self._isDAAPIInited():
             _config.UIProxy = weakref.proxy(self)
 
@@ -222,10 +215,10 @@ class CamoSelectorUI(AbstractWindowView):
         installSelectedCamo()
 
 
-class _Config(PYmodsCore._Config):
+class _Config(PYmodsCore.Config):
     def __init__(self):
-        super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '2.5.2 (%(file_compile_date)s)'
+        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.version = '2.5.3 (%(file_compile_date)s)'
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'selectHotKey': ['KEY_F5', ['KEY_LCONTROL', 'KEY_RCONTROL']]}
@@ -320,7 +313,7 @@ class _Config(PYmodsCore._Config):
             g_currentPreviewVehicle.refreshModel()
 
     def apply_settings(self, settings):
-        super(_Config, self).apply_settings(settings)
+        super(self.__class__, self).apply_settings(settings)
         self.hangarCamoCache.clear()
         if self.isModAdded:
             kwargs = dict(id='CamoSelectorUI', enabled=self.data['enabled'])
@@ -408,7 +401,7 @@ class _Config(PYmodsCore._Config):
         self.loadJson('settings', newSettings, self.configPath, True)
 
     def do_config(self):
-        super(_Config, self).do_config()
+        super(self.__class__, self).do_config()
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('CamoSelectorUI', CamoSelectorUI, 'CamoSelector.swf', ViewTypes.WINDOW, None,
@@ -425,7 +418,8 @@ class _Config(PYmodsCore._Config):
 
 
 # noinspection PyUnboundLocalVariable,PyUnboundLocalVariable
-def new_vehicleValues(xmlCtx, section, sectionName, defNationID):
+@PYmodsCore.overrideMethod(items.vehicles, '_vehicleValues')
+def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
     section = section[sectionName]
     if section is None:
         return
@@ -450,19 +444,15 @@ def new_vehicleValues(xmlCtx, section, sectionName, defNationID):
                                                       ctx, subsection)
 
 
-items.vehicles._vehicleValues = new_vehicleValues
-
 _config = _Config()
 _config.load()
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-7', _config.configFolders)
 
 
 def lobbyKeyControl(event):
-    try:
-        if event.isKeyDown() and not _config.isMSAWindowOpen:
-            if PYmodsCore.checkKeys(_config.data['selectHotkey']):
-                installSelectedCamo()
-    except StandardError:
-        traceback.print_exc()
+    if event.isKeyDown() and not _config.isMSAWindowOpen:
+        if PYmodsCore.checkKeys(_config.data['selectHotkey']):
+            installSelectedCamo()
 
 
 def inj_hkKeyEvent(event):
@@ -478,8 +468,9 @@ InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 
 
-def new_customization(self, nationID):
-    commonDescr = old_customization(self, nationID)
+@PYmodsCore.overrideMethod(items.vehicles.Cache, 'customization')
+def new_customization(base, self, nationID):
+    commonDescr = base(self, nationID)
     if _config.data['enabled']:
         if commonDescr is None or not hasattr(self, 'changedNations') or nationID not in self.changedNations:
             if _config.configFolders:
@@ -495,12 +486,13 @@ def new_customization(self, nationID):
     return commonDescr
 
 
-def new_elementIsInShop(self, criteria, cType, nationID):
+@PYmodsCore.overrideMethod(DataAggregator, '_elementIsInShop')
+def new_elementIsInShop(base, self, criteria, cType, nationID):
     if cType == CUSTOMIZATION_TYPE.CAMOUFLAGE:
         customization = items.vehicles.g_cache.customization(nationID)
         if customization['camouflages'][criteria]['name'] in _config.camouflages['modded']:
             return False
-    return old_elementIsInShop(self, criteria, cType, nationID)
+    return base(self, criteria, cType, nationID)
 
 
 def readInstalledCamouflages(self):
@@ -615,7 +607,8 @@ def installSelectedCamo():
                                SystemMessages.SM_TYPE.CustomizationForGold)
 
 
-def new_removeSlot(self, cType, slotIdx):
+@PYmodsCore.overrideMethod(MainView, 'removeSlot')
+def new_removeSlot(base, self, cType, slotIdx):
     if cType == CUSTOMIZATION_TYPE.CAMOUFLAGE:
         if g_currentPreviewVehicle.isPresent():
             vDesc = g_currentPreviewVehicle.item.descriptor
@@ -630,35 +623,39 @@ def new_removeSlot(self, cType, slotIdx):
             if vehDict.get(camoKind) is not None and vehDict[camoKind] == camoName:
                 del vehDict[camoKind]
             _config.loadJson('camouflagesCache', _config.camouflagesCache, _config.configPath, True)
-    old_removeSlot(self, cType, slotIdx)
+    base(self, cType, slotIdx)
 
 
-def new_onViewLoaded(self, view):
+@PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoaded')
+def new_onViewLoaded(base, self, view):
     if view is not None and view.settings is not None:
         alias = view.settings.alias
         if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
             BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
-    old_onViewLoaded(self, view)
+    base(self, view)
 
 
-def new_onViewLoadCanceled(self, name, item):
+@PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoadCanceled')
+def new_onViewLoadCanceled(base, self, name, item):
     if item is not None and item.pyEntity is not None:
         alias = item.pyEntity.settings.alias
         if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
             BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
-    old_onViewLoadCanceled(self, name, item)
+    base(self, name, item)
 
 
-def new_onViewLoadError(self, name, msg, item):
+@PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoadError')
+def new_onViewLoadError(base, self, name, msg, item):
     if item is not None and item.pyEntity is not None:
         alias = item.pyEntity.settings.alias
         if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
             BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
-    old_onViewLoadError(self, name, msg, item)
+    base(self, name, msg, item)
 
 
-def new_MV_populate(self):
-    old_MV_populate(self)
+@PYmodsCore.overrideMethod(MainView, '_populate')
+def new_MV_populate(base, self):
+    base(self)
     if _config.data['enabled']:
         readInstalledCamouflages(self)
 
@@ -671,44 +668,28 @@ def updateGUIState():
         _config.UIProxy.changeNation(nationID)
 
 
-def new_selectVehicle(self, vehInvID=0):
-    old_selectVehicle(self, vehInvID)
+@PYmodsCore.overrideMethod(CurrentVehicle._CurrentVehicle, 'selectVehicle')
+def new_selectVehicle(base, self, vehInvID=0):
+    base(self, vehInvID)
     updateGUIState()
 
 
-def new_selectPreviewVehicle(self, vehicleCD):
-    old_selectPreviewVehicle(self, vehicleCD)
+@PYmodsCore.overrideMethod(CurrentVehicle._CurrentPreviewVehicle, 'selectVehicle')
+def new_selectPreviewVehicle(base, self, *args):
+    base(self, *args)
     updateGUIState()
 
 
-old_selectVehicle = CurrentVehicle._CurrentVehicle.selectVehicle
-CurrentVehicle._CurrentVehicle.selectVehicle = new_selectVehicle
-old_selectPreviewVehicle = CurrentVehicle._CurrentPreviewVehicle.selectVehicle
-CurrentVehicle._CurrentPreviewVehicle.selectVehicle = new_selectPreviewVehicle
-old_removeSlot = MainView.removeSlot
-MainView.removeSlot = new_removeSlot
-old_onViewLoaded = _LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoaded
-_LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoaded = new_onViewLoaded
-old_onViewLoadCanceled = _LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoadCanceled
-_LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoadCanceled = new_onViewLoadCanceled
-old_onViewLoadError = _LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoadError
-_LobbySubViewsCtrl._LobbySubViewsCtrl__onViewLoadError = new_onViewLoadError
-old_MV_populate = MainView._populate
-MainView._populate = new_MV_populate
-old_elementIsInShop = DataAggregator._elementIsInShop
-DataAggregator._elementIsInShop = new_elementIsInShop
-old_customization = items.vehicles.Cache.customization
-items.vehicles.Cache.customization = new_customization
-
-
-def new_onBecomeNonPlayer(self):
-    old_onBecomeNonPlayer(self)
+@PYmodsCore.overrideMethod(Account, 'onBecomeNonPlayer')
+def new_onBecomeNonPlayer(base, self):
+    base(self)
     _config.hangarCamoCache.clear()
     _config.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
 
 
-def new_ca_getCamouflageParams(self, vDesc, vID):
-    result = old_ca_getCamouflageParams(self, vDesc, vID)
+@PYmodsCore.overrideMethod(CompoundAppearance, '_CompoundAppearance__getCamouflageParams')
+def new_ca_getCamouflageParams(base, self, vDesc, vID):
+    result = base(self, vDesc, vID)
     if not _config.data['enabled'] or result[0] is not None and _config.data['useBought']:
         return result
     if 'modded' not in _config.camouflages:
@@ -788,13 +769,8 @@ def new_ca_getCamouflageParams(self, vDesc, vID):
     return selectedCamouflages[camouflageId], int(time.time()), 7
 
 
-old_onBecomeNonPlayer = Account.onBecomeNonPlayer
-Account.onBecomeNonPlayer = new_onBecomeNonPlayer
-old_ca_getCamouflageParams = CompoundAppearance._CompoundAppearance__getCamouflageParams
-CompoundAppearance._CompoundAppearance__getCamouflageParams = new_ca_getCamouflageParams
-
-
-def new_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback=None):
+@PYmodsCore.overrideMethod(ClientHangarSpace, 'recreateVehicle')
+def new_cs_recreateVehicle(base, self, vDesc, vState, onVehicleLoadedCallback=None):
     if _config.data['enabled']:
         if 'modded' not in _config.camouflages:
             _config.readCamouflages(True)
@@ -824,7 +800,8 @@ def new_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback=None):
                 interConf = _config.camouflages.get('international', {})
                 camoKindNames = (CAMOUFLAGE_KIND_INDICES[camouflage['kind']],)
                 if camoName in _config.camouflages['modded']:
-                    camoKindNames = filter(None, _config.camouflages['modded'].get(camoName, {}).get('kinds', '').split(','))
+                    camoKindNames = filter(None,
+                                           _config.camouflages['modded'].get(camoName, {}).get('kinds', '').split(','))
                 elif camoName in interConf:
                     kindsStr = interConf.get(camoName, {}).get('kinds')
                     if kindsStr is not None:
@@ -858,9 +835,4 @@ def new_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback=None):
             else:
                 idx = random.randrange(3)
             g_tankActiveCamouflage[vDesc.type.compactDescr] = idx
-    old_cs_recreateVehicle(self, vDesc, vState, onVehicleLoadedCallback)
-
-
-old_cs_recreateVehicle = ClientHangarSpace.recreateVehicle
-ClientHangarSpace.recreateVehicle = new_cs_recreateVehicle
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-7', _config.configFolders)
+    base(self, vDesc, vState, onVehicleLoadedCallback)

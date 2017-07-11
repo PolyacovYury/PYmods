@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
-import glob
 import math
-import os
-import string
-import traceback
-from functools import partial
 
 import Math
-import ResMgr
 
 import BigWorld
 import CommandMapping
 import Keys
 import PYmodsCore
+import glob
+import os
+import string
+import traceback
 from Avatar import PlayerAvatar
 from constants import ARENA_BONUS_TYPE
+from functools import partial
 from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared import radial_menu
 from gui.Scaleform.daapi.view.battle.shared.radial_menu import SHORTCUT_SETS, SHORTCUT_STATES, getKeyFromAction
@@ -27,17 +26,11 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 
 g_sessionProvider = dependency.instance(IBattleSessionProvider)
 
-res = ResMgr.openSection('../paths.xml')
-sb = res['Paths']
-vl = sb.values()[0]
-if vl is not None and not hasattr(BigWorld, 'curCV'):
-    BigWorld.curCV = vl.asString
 
-
-class _Config(PYmodsCore._Config):
+class _Config(PYmodsCore.Config):
     def __init__(self):
-        super(_Config, self).__init__('%(mod_ID)s')
-        self.version = '2.1.1 (%(file_compile_date)s)'
+        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.version = '2.1.2 (%(file_compile_date)s)'
         self.author = '%s (orig by locastan/tehHedger/TRJ_VoRoN)' % self.author
         self.defaultKeys = {'mapMenu_key': [Keys.KEY_LALT], 'mapMenu_Key': ['KEY_LALT']}
         self.data = {'enabled': True,
@@ -76,11 +69,11 @@ class _Config(PYmodsCore._Config):
                             infoLabel]}
 
     def apply_settings(self, settings):
-        super(_Config, self).apply_settings(settings)
+        super(self.__class__, self).apply_settings(settings)
         self.update_data()
 
     def update_data(self, doPrint=False):
-        super(_Config, self).update_data()
+        super(self.__class__, self).update_data()
         self.activeConfigs[:] = ['default']
         self.configsMeta = {'default': self.i18n['UI_setting_selectedConfig_defaultMeta']}
         # noinspection SpellCheckingInspection
@@ -106,7 +99,7 @@ class _Config(PYmodsCore._Config):
                     commands[key] = tankSect = {}
                     for tankName in confSect:
                         tankConf = confSect[tankName]
-                        if isinstance(tankConf, basestring):
+                        if isinstance(tankConf, str):
                             tankSect[tankName] = tankConf
                         else:
                             tankSect[tankName] = {
@@ -179,7 +172,7 @@ class SafeFormatter(string.Formatter):
             except KeyError:
                 return key.join(('{', '}'))
         else:
-            super(SafeFormatter, self).get_value(key, args, kwargs)
+            super(self.__class__, self).get_value(key, args, kwargs)
 
 
 camMgr = CameraManager()
@@ -273,6 +266,8 @@ class CustomMenuCommand:
 
 _config = _Config()
 _config.load()
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-10',
+                                     [_config.activeConfigs[_config.data['selectedConfig']]])
 
 
 def getCrosshairType(player, target):
@@ -309,7 +304,7 @@ def findBestFitConf(commandConf):
         menuConf = allMenuConf.get(vehicleName)
         menuType = 'tankSpecific' + vehicleName
         if menuConf is not None:
-            if isinstance(menuConf, string):
+            if isinstance(menuConf, str):
                 menuConf = allMenuConf.get(menuConf)
                 menuType = 'tankSpecific' + menuConf
     if menuConf is None:
@@ -347,19 +342,19 @@ def inj_hkKeyEvent(event):
         traceback.print_exc()
 
 
-def new_destroyGUI(self):
-    old_destroyGUI(self)
+@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__destroyGUI')
+def new_destroyGUI(base, self):
+    base(self)
     _config.bestConf = None
     _config.confType = ''
 
 
-old_destroyGUI = PlayerAvatar._PlayerAvatar__destroyGUI
-PlayerAvatar._PlayerAvatar__destroyGUI = new_destroyGUI
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 
 
-def new_updateMenu(self):
+@PYmodsCore.overrideMethod(radial_menu.RadialMenu, '_RadialMenu__updateMenu')
+def new_updateMenu(_, self):
     data = []
     menuConf = None
     menuType = ''
@@ -431,7 +426,8 @@ def onCustomAction(cmd, target):
         cmd.updateCooldown()
 
 
-def new_onAction(self, action):
+@PYmodsCore.overrideMethod(radial_menu.RadialMenu, 'onAction')
+def new_onAction(base, self, action):
     if '.' in action:
         commands = _config.commands.get(_config.activeConfigs[_config.data['selectedConfig']])
         if commands is not None:
@@ -443,12 +439,4 @@ def new_onAction(self, action):
             else:
                 onCustomAction(commands[menuType][state][int(idx)], target)
     else:
-        old_onAction(self, action)
-
-
-old_updateMenu = radial_menu.RadialMenu._RadialMenu__updateMenu
-radial_menu.RadialMenu._RadialMenu__updateMenu = new_updateMenu
-old_onAction = radial_menu.RadialMenu.onAction
-radial_menu.RadialMenu.onAction = new_onAction
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-10',
-                                     [_config.activeConfigs[_config.data['selectedConfig']]])
+        base(self, action)

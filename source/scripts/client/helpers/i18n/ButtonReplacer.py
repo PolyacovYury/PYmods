@@ -11,9 +11,9 @@ def __dir__():
     return ['i18n_hook_makeString']
 
 
-class _BR_Config(PYmodsCore._Config):
+class _Config(PYmodsCore.Config):
     def __init__(self):
-        super(_BR_Config, self).__init__('%(mod_ID)s')
+        super(self.__class__, self).__init__('%(mod_ID)s')
         self.version = '2.1.2 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'reReadAtEnd': True}
@@ -49,7 +49,7 @@ class _BR_Config(PYmodsCore._Config):
                 'column2': [self.createControl('reReadAtEnd')]}
 
     def update_data(self, doPrint=False):
-        super(_BR_Config, self).update_data()
+        super(self.__class__, self).update_data()
         self.configsList = []
         self.confMeta.clear()
         self.sectDict = {}
@@ -79,13 +79,13 @@ class _BR_Config(PYmodsCore._Config):
                             self.sectDict[key]['bindToKey'] = confdict[key]['bindToKey']
                         textList = self.sectDict[key].setdefault('textList', [])
                         if self.sectDict[key]['mode'] == 'single':
-                            if isinstance(confdict[key]['text'], basestring):
+                            if isinstance(confdict[key]['text'], str):
                                 textList.append(confdict[key]['text'].rstrip())
                             elif isinstance(confdict[key]['text'], list):
                                 textList.append(
                                     ''.join(filter(None, confdict[key]['text'])).rstrip())
                         else:
-                            if isinstance(confdict[key]['text'], basestring):
+                            if isinstance(confdict[key]['text'], str):
                                 textList.extend(filter(
                                     None, map(lambda txtStr: txtStr.rstrip(), confdict[key]['text'].split(';'))))
                             elif isinstance(confdict[key]['text'], list):
@@ -99,7 +99,7 @@ class _BR_Config(PYmodsCore._Config):
             self.sectDict[key]['textList'] = PYmodsCore.remDups(self.sectDict[key]['textList'])
 
 
-_config = _BR_Config()
+_config = _Config()
 _config.load()
 
 
