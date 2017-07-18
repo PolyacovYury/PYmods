@@ -1,5 +1,5 @@
 .idea/
-0.9.*/
+uncompiled/
 *.cmd
 /source/scripts/others/
 /source/scripts/client_hidden/

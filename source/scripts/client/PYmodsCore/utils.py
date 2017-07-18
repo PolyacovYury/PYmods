@@ -102,8 +102,8 @@ def PMC_hooks():
     global new_addItem, new_handleAction
     from notification.actions_handlers import NotificationsActionsHandlers
     from notification.NotificationsCollection import NotificationsCollection
-    new_addItem = overrideMethod(new_addItem, NotificationsCollection, 'addItem')
-    new_handleAction = overrideMethod(new_handleAction, NotificationsActionsHandlers, 'handleAction')
+    new_addItem = overrideMethod(NotificationsCollection, 'addItem')(new_addItem)
+    new_handleAction = overrideMethod(NotificationsActionsHandlers, 'handleAction')(new_handleAction)
 
 
 BigWorld.callback(0.0, PMC_hooks)
