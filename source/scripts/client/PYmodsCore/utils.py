@@ -5,7 +5,7 @@ import re
 import threading
 import urllib
 import urllib2
-from PYmodsCore import overrideMethod
+from . import overrideMethod
 from PlayerEvents import g_playerEvents
 from constants import AUTH_REALM
 from functools import partial

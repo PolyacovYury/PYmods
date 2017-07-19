@@ -22,40 +22,43 @@ class MyJSONEncoder(json.JSONEncoder):
         self.current_indent_str = ""
 
     def encode(self, o):
-        # Special Processing for lists
-        if isinstance(o, (list, tuple)):
-            primitives_only = True
-            for item in o:
-                if isinstance(item, (list, tuple, dict)):
-                    primitives_only = False
-                    break
-            output = []
-            if primitives_only:
+        try:
+            # Special Processing for lists
+            if isinstance(o, (list, tuple)):
+                primitives_only = True
                 for item in o:
-                    output.append(json.dumps(item))
-                return "[" + ", ".join(output) + "]"
-            else:
+                    if isinstance(item, (list, tuple, dict)):
+                        primitives_only = False
+                        break
+                output = []
+                if primitives_only:
+                    for item in o:
+                        output.append(json.dumps(item))
+                    return "[" + ", ".join(output) + "]"
+                else:
+                    self.current_indent += self.indent
+                    self.current_indent_str = " " * self.current_indent
+                    for item in o:
+                        output.append(self.current_indent_str + self.encode(item))
+                    self.current_indent -= self.indent
+                    self.current_indent_str = " " * self.current_indent
+                    return "[\n" + ",\n".join(output) + "\n" + self.current_indent_str + "]"
+            elif isinstance(o, dict):
+                output = []
                 self.current_indent += self.indent
                 self.current_indent_str = " " * self.current_indent
-                for item in o:
-                    output.append(self.current_indent_str + self.encode(item))
+                keys = o.keys()
+                if self.sort_keys:
+                    keys = sorted(keys)
+                for key in keys:
+                    output.append(self.current_indent_str + json.dumps(key) + ": " + self.encode(o[key]))
                 self.current_indent -= self.indent
                 self.current_indent_str = " " * self.current_indent
-                return "[\n" + ",\n".join(output) + "\n" + self.current_indent_str + "]"
-        elif isinstance(o, dict):
-            output = []
-            self.current_indent += self.indent
-            self.current_indent_str = " " * self.current_indent
-            keys = o.keys()
-            if self.sort_keys:
-                keys = sorted(keys)
-            for key in keys:
-                output.append(self.current_indent_str + json.dumps(key) + ": " + self.encode(o[key]))
-            self.current_indent -= self.indent
-            self.current_indent_str = " " * self.current_indent
-            return "{\n" + ",\n".join(output) + "\n" + self.current_indent_str + "}"
-        else:
-            return super(self.__class__, self).encode(o)
+                return "{\n" + ",\n".join(output) + "\n" + self.current_indent_str + "}"
+            else:
+                return super(self.__class__, self).encode(o)
+        except StandardError:
+            return str(o)
 
 
 class Config(object):
@@ -63,6 +66,7 @@ class Config(object):
     onMSAWindowClose = Event.Event()
     isMSAWindowOpen = False
     onButtonPress = Event.Event()
+    modSettingsConfigs = {}
 
     def __init__(self, ID):
         self.ID = ID
@@ -73,7 +77,7 @@ class Config(object):
         self.defaultKeys = {}
         self.data = {}
         self.i18n = {}
-        self.conf_changed = False
+        self.modSettingsID = 'PYmodsGUI'
         self.lang = DEFAULT_LANGUAGE
         self.onMSAPopulate += self.update_settings
         self.onMSAWindowClose += self.onWindowClose
@@ -90,7 +94,7 @@ class Config(object):
     def updateMod(self):
         # noinspection PyUnresolvedReferences
         from gui.vxSettingsApi import vxSettingsApi
-        vxSettingsApi.updateMod('PYmodsGUI', self.ID, self.template_settings)
+        vxSettingsApi.updateMod(self.modSettingsID, self.ID, self.template_settings)
 
     def getLabel(self, varName, ctx='setting'):
         return self.i18n['UI_%s_%s_text' % (ctx, varName)]
@@ -224,14 +228,34 @@ class Config(object):
         return '\n'.join(lines), excluded
 
     @staticmethod
+    def encrypt(line):
+        return line.encode('zlib').encode('base64')
+
+    @staticmethod
+    def decrypt(line, encrypted):
+        if not line:
+            return encrypted, line
+        try:
+            return True, line.decode('base64').decode('zlib')
+        except (binascii.Error, zlib.error):
+            return False, line
+
+    @staticmethod
     def json_dumps(conf, sort_keys):
         return json.dumps(conf, sort_keys=sort_keys, indent=4, cls=MyJSONEncoder,
-                          ensure_ascii=False, encoding='utf-8-sig', separators=(',', ': '))
+                          ensure_ascii=False, encoding='utf-8', separators=(',', ': '))
+
+    def json_file_write(self, new_path, data, encrypted):
+        with codecs.open(new_path, 'w', encoding='utf-8-sig') as json_file:
+            writeToConf = self.byte_ify(data)
+            if encrypted:
+                writeToConf = self.encrypt(writeToConf)
+            json_file.write(writeToConf)
 
     def checkSubDict(self, oldDict, conf_newL, config_newExcl, start_idx, end_idx):
         conf_changed = False
-        decer = json.JSONDecoder(encoding='utf-8-sig')
-        encer = json.JSONEncoder(encoding='utf-8-sig')
+        decer = json.JSONDecoder(encoding='utf-8')
+        encer = json.JSONEncoder(encoding='utf-8')
         new_end_idx = None
         subLevels = 0
         for idx in xrange(start_idx, end_idx):
@@ -285,16 +309,13 @@ class Config(object):
                 config_oldS = self.json_dumps(oldConfig, sort_keys)
                 try:
                     with codecs.open(new_path, 'r', encoding='utf-8-sig') as json_file:
-                        config_newS = json_file.read()
-                        try:
-                            config_newS = config_newS.decode('base64').decode('zlib')
-                            encrypted = True
-                        except (binascii.Error, zlib.error):
-                            encrypted = False
+                        encrypted, config_newS = self.decrypt(json_file.read(), encrypted)
                         config_newExcl = self.byte_ify(self.json_comments(config_newS)[1])
-                except StandardError:
-                    traceback.print_exc()
-                    print config_newS.replace('\r', '')
+                except StandardError as e:
+                    print new_path
+                    print e
+                    if not encrypted:
+                        print config_newS.replace('\r', '')
                     config_newS = config_oldS
                     config_newExcl = []
                 config_newD = self.byte_ify(config_newS)
@@ -303,9 +324,9 @@ class Config(object):
                 if not rewrite:
                     try:
                         conf_changed = self.checkSubDict(oldConfig, conf_newL, config_newExcl, 0, len(conf_newL))
-                    except StandardError:
+                    except StandardError as e:
                         print new_path
-                        traceback.print_exc()
+                        print e
 
                 else:
                     conf_changed = not config_oldS == self.json_dumps(
@@ -314,31 +335,15 @@ class Config(object):
                         conf_newL = self.byte_ify(config_oldS).split('\n')
                 if conf_changed:
                     print '%s: updating config: %s' % (self.ID, new_path)
-                    with codecs.open(new_path, 'w', encoding='utf-8-sig') as json_file:
-                        writeToConf = self.byte_ify('\n'.join(conf_newL))
-                        if encrypted:
-                            writeToConf = writeToConf.encode('zlib').encode('base64')
-                        json_file.write(writeToConf)
-                        config_new = oldConfig
+                    self.json_file_write(new_path, '\n'.join(conf_newL), encrypted)
             else:
-                with codecs.open(new_path, 'w', encoding='utf-8-sig') as json_file:
-                    data = self.json_dumps(oldConfig, sort_keys)
-                    writeToConf = self.byte_ify(data)
-                    if encrypted:
-                        writeToConf = writeToConf.encode('zlib').encode('base64')
-                    json_file.write(writeToConf)
-                    config_new = oldConfig
+                self.json_file_write(new_path, self.json_dumps(oldConfig, sort_keys), encrypted)
         elif os.path.isfile(new_path):
             data = ''
             excluded = []
             try:
                 with codecs.open(new_path, 'r', encoding='utf-8-sig') as json_file:
-                    confData = json_file.read()
-                    try:
-                        confData = confData.decode('base64').decode('zlib')
-                        encrypted = True
-                    except (binascii.Error, zlib.error):
-                        encrypted = False
+                    encrypted, confData = self.decrypt(json_file.read(), encrypted)
                     data, excluded = self.json_comments(confData)
                     config_new = self.byte_ify(json.loads(data))
             except StandardError:
@@ -347,14 +352,8 @@ class Config(object):
                 if excluded and not encrypted:
                     print data
         else:
-            with codecs.open(new_path, 'w', encoding='utf-8-sig') as json_file:
-                data = self.json_dumps(oldConfig, sort_keys)
-                writeToConf = self.byte_ify(data)
-                if encrypted:
-                    writeToConf = writeToConf.encode('zlib').encode('base64')
-                json_file.write(writeToConf)
-                config_new = oldConfig
-                print '%s: ERROR: Config not found, creating default: %s' % (self.ID, new_path)
+            self.json_file_write(new_path, self.json_dumps(oldConfig, sort_keys), encrypted)
+            print '%s: ERROR: Config not found, creating default: %s' % (self.ID, new_path)
         return config_new
 
     def message(self):
@@ -380,7 +379,10 @@ class Config(object):
         try:
             # noinspection PyUnresolvedReferences
             from gui.vxSettingsApi import vxSettingsApi
-            vxSettingsApi.addMod('PYmodsGUI', self.ID, self.template_settings, self.data, self.apply_settings,
+            if self.modSettingsID not in self.modSettingsConfigs:
+                msc = self.modSettingsConfigs[self.modSettingsID] = ModSettingsConfig(self.modSettingsID, self.configPath)
+                msc.load()
+            vxSettingsApi.addMod(self.modSettingsID, self.ID, self.template_settings, self.data, self.apply_settings,
                                  self.onButtonPress)
         except ImportError:
             print '%s: no-GUI mode activated' % self.ID
@@ -389,10 +391,11 @@ class Config(object):
 
 
 class ModSettingsConfig(Config):
-    def __init__(self):
-        super(self.__class__, self).__init__('PYmodsGUI')
-        self.version = '2.0.2 (%(file_compile_date)s)'
-        self.author = 'by spoter, satel1te (fork %s)' % self.author
+    def __init__(self, ID, configPath):
+        super(self.__class__, self).__init__(ID)
+        self.configPath = configPath.rsplit('/', 2)[0] + '/%s/' % self.ID
+        self.version = '2.0.3 (%(file_compile_date)s)'
+        self.author = 'by spoter, satel1te (fork by Polyacov_Yury)'
         self.i18n = {'gui_name': "PY's mods settings",
                      'gui_description': "<font color='#DD7700'><b>Polyacov_Yury</b></font>'s modifications enabling and "
                                         "settings",
@@ -432,7 +435,7 @@ class ModSettingsConfig(Config):
             BigWorld.g_modsListApi.addMod(**kwargs)
 
     def load(self):
-        BigWorld.callback(0.0, self.do_config_delayed)
+        self.do_config()
 
     def do_config(self):
         try:
@@ -459,7 +462,3 @@ class ModSettingsConfig(Config):
             print '%s: no-GUI mode activated' % self.ID
         except StandardError:
             traceback.print_exc()
-
-
-_modSettingsConfig = ModSettingsConfig()
-_modSettingsConfig.load()
