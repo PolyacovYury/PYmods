@@ -124,7 +124,10 @@ def sendMessage(text='', colour='Green', panel='Player'):
     """
     battle = g_appLoader.getDefBattleApp()
     battle_page = battle.containerManager.getContainer(ViewTypes.VIEW).getView()
-    getattr(battle_page.components['battle%sMessages' % panel], 'as_show%sMessageS' % colour, None)(None, text)
+    if battle_page is not None:
+        getattr(battle_page.components['battle%sMessages' % panel], 'as_show%sMessageS' % colour, None)(None, text)
+    else:
+        BigWorld.callback(0.5, partial(sendMessage, text, colour, panel))
 
 
 def checkKeys(keys):
