@@ -117,7 +117,7 @@ class Config(object):
     def createOptions(self, varName, options, contType='Dropdown', empty=False, width=200, button=None):
         result = self.createControl(varName, contType, empty, button)
         result.update({'width': width, 'itemRenderer': 'DropDownListItemRendererSound',
-                       'options': map(lambda x: {'label': x}, options)})
+                       'options': [{'label': x} for x in options]})
         return result
 
     def createHotKey(self, varName, empty=False):
@@ -167,34 +167,36 @@ class Config(object):
     @staticmethod
     def readHotKeys(data):
         for key in data:
-            if 'key' not in key:
-                continue
-            data[key] = []
-            for keySet in data.get(key.replace('key', 'Key'), []):
-                if isinstance(keySet, list):
-                    data[key].append([])
-                    for hotKey in keySet:
-                        hotKeyName = hotKey if 'KEY_' in hotKey else 'KEY_' + hotKey
-                        data[key][-1].append(getattr(Keys, hotKeyName))
-                else:
-                    hotKeyName = keySet if 'KEY_' in keySet else 'KEY_' + keySet
-                    data[key].append(getattr(Keys, hotKeyName))
+            for keyType in ('key', 'button'):
+                if keyType not in key:
+                    continue
+                data[key] = []
+                for keySet in data.get(key.replace(keyType, keyType.capitalize()), []):
+                    if isinstance(keySet, list):
+                        data[key].append([])
+                        for hotKey in keySet:
+                            hotKeyName = hotKey if 'KEY_' in hotKey else 'KEY_' + hotKey
+                            data[key][-1].append(getattr(Keys, hotKeyName))
+                    else:
+                        hotKeyName = keySet if 'KEY_' in keySet else 'KEY_' + keySet
+                        data[key].append(getattr(Keys, hotKeyName))
 
     @staticmethod
     def writeHotKeys(data):
         for key in data:
-            if 'Key' not in key:
-                continue
-            data[key] = []
-            for keySet in data[key.replace('Key', 'key')]:
-                if isinstance(keySet, list):
-                    data[key].append([])
-                    for hotKey in keySet:
-                        hotKeyName = BigWorld.keyToString(hotKey)
-                        data[key][-1].append(hotKeyName if 'KEY_' in hotKeyName else 'KEY_' + hotKeyName)
-                else:
-                    hotKeyName = BigWorld.keyToString(keySet)
-                    data[key].append(hotKeyName if 'KEY_' in hotKeyName else 'KEY_' + hotKeyName)
+            for keyType in ('key', 'button'):
+                if keyType.capitalize() not in key:
+                    continue
+                data[key] = []
+                for keySet in data[key.replace(keyType.capitalize(), keyType)]:
+                    if isinstance(keySet, list):
+                        data[key].append([])
+                        for hotKey in keySet:
+                            hotKeyName = BigWorld.keyToString(hotKey)
+                            data[key][-1].append(hotKeyName if 'KEY_' in hotKeyName else 'KEY_' + hotKeyName)
+                    else:
+                        hotKeyName = BigWorld.keyToString(keySet)
+                        data[key].append(hotKeyName if 'KEY_' in hotKeyName else 'KEY_' + hotKeyName)
 
     def byte_ify(self, inputs):
         if inputs:
@@ -246,7 +248,8 @@ class Config(object):
                           ensure_ascii=False, encoding='utf-8', separators=(',', ': '))
 
     def json_file_write(self, new_path, data, encrypted):
-        with codecs.open(new_path, 'w', encoding='utf-8-sig') as json_file:
+        kwargs = {'mode': 'w', 'encoding': 'utf-8-sig'} if not encrypted else {'mode': 'wb'}
+        with codecs.open(new_path, **kwargs) as json_file:
             writeToConf = self.byte_ify(data)
             if encrypted:
                 writeToConf = self.encrypt(writeToConf)
@@ -308,8 +311,11 @@ class Config(object):
                 config_newS = ''
                 config_oldS = self.json_dumps(oldConfig, sort_keys)
                 try:
-                    with codecs.open(new_path, 'r', encoding='utf-8-sig') as json_file:
-                        encrypted, config_newS = self.decrypt(json_file.read(), encrypted)
+                    kwargs = {'mode': 'r', 'encoding': 'utf-8-sig'} if not encrypted else {'mode': 'rb'}
+                    with codecs.open(new_path, **kwargs) as json_file:
+                        isEncrypted, config_newS = self.decrypt(json_file.read(), encrypted)
+                        if not isEncrypted and encrypted:
+                            config_newS = config_newS.decode('utf-8-sig')
                         config_newExcl = self.byte_ify(self.json_comments(config_newS)[1])
                 except StandardError as e:
                     print new_path
@@ -342,11 +348,14 @@ class Config(object):
             data = ''
             excluded = []
             try:
-                with codecs.open(new_path, 'r', encoding='utf-8-sig') as json_file:
-                    encrypted, confData = self.decrypt(json_file.read(), encrypted)
+                kwargs = {'mode': 'r', 'encoding': 'utf-8-sig'} if not encrypted else {'mode': 'rb'}
+                with codecs.open(new_path, **kwargs) as json_file:
+                    isEncrypted, confData = self.decrypt(json_file.read(), encrypted)
+                    if not isEncrypted and encrypted:
+                        confData = confData.decode('utf-8-sig')
                     data, excluded = self.json_comments(confData)
                     config_new = self.byte_ify(json.loads(data))
-            except StandardError:
+            except StandardError as e:
                 print new_path
                 traceback.print_exc()
                 if excluded and not encrypted:
@@ -394,6 +403,7 @@ class ModSettingsConfig(Config):
     def __init__(self, ID, configPath):
         super(self.__class__, self).__init__(ID)
         self.configPath = configPath.rsplit('/', 2)[0] + '/%s/' % self.ID
+        self.langPath = '%si18n/' % self.configPath
         self.version = '2.0.3 (%(file_compile_date)s)'
         self.author = 'by spoter, satel1te (fork by Polyacov_Yury)'
         self.i18n = {'gui_name': "PY's mods settings",
@@ -428,7 +438,7 @@ class ModSettingsConfig(Config):
     def modsListRegister(self):
         kwargs = dict(
             id=self.ID, name=self.i18n['gui_name'], description=self.i18n['gui_description'],
-            icon='scripts/client/PYmodsLogo.png', enabled=True, login=True, lobby=True, callback=self.MSAPopulate)
+            icon='scripts/client/%s.png' % self.ID, enabled=True, login=True, lobby=True, callback=self.MSAPopulate)
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
         except AttributeError:
