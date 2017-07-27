@@ -6,7 +6,6 @@ from CurrentVehicle import _CurrentPreviewVehicle
 from Vehicle import Vehicle
 from gui import SystemMessages
 from gui.ClientHangarSpace import _VehicleAppearance
-from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
 from .. import g_config
 from . import remods, skins_dynamic, skins_static

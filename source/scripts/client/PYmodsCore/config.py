@@ -355,7 +355,7 @@ class Config(object):
                         confData = confData.decode('utf-8-sig')
                     data, excluded = self.json_comments(confData)
                     config_new = self.byte_ify(json.loads(data))
-            except StandardError as e:
+            except StandardError:
                 print new_path
                 traceback.print_exc()
                 if excluded and not encrypted:

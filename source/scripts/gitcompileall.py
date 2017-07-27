@@ -49,9 +49,9 @@ def compile_dir(dir, maxlevels=10, ddir=None,
     names.sort()
     success = 1
     for name in names:
-        fullname = os.path.join(dir, name)
+        fullname = os.path.join(dir, name).replace(os.sep, '/')
         if ddir is not None:
-            dfile = os.path.join(ddir, name)
+            dfile = os.path.join(ddir, name).replace(os.sep, '/')
         else:
             dfile = None
         if not os.path.isdir(fullname):
@@ -81,7 +81,7 @@ def compile_file(fullname, ddir=None, force=0, rx=None, quiet=0):
     success = 1
     name = os.path.basename(fullname)
     if ddir is not None:
-        dfile = os.path.join(ddir, name)
+        dfile = os.path.join(ddir, name).replace(os.sep, '/')
     else:
         dfile = None
     if rx is not None:
@@ -277,16 +277,28 @@ def do_compile(file, cfile=None, dfile=None, doraise=False, timeStr=''):
     """
     with open(file, 'U') as f:
         try:
-            timestamp = long(os.fstat(f.fileno()).st_mtime)
+            maxTS = timestamp = long(os.fstat(f.fileno()).st_mtime)
             access = long(os.fstat(f.fileno()).st_atime)
         except AttributeError:
-            timestamp = long(os.stat(file).st_mtime)
+            maxTS = timestamp = long(os.stat(file).st_mtime)
             access = long(os.stat(file).st_atime)
         codestring = f.read()
         if timeStr:
-            timestamp = int(timeStr)
+            maxTS = timestamp = int(timeStr)
+        if '__init__' in file or 'onfig' in file:
+            for path in ('/'.join((x[0], y)).replace(os.sep, '/') for x in os.walk(os.path.dirname(file)) for y in x[2]):
+                if not path.endswith('.py'):
+                    continue
+                timeStr = subprocess.check_output(
+                    ['git', '--no-pager', 'log', '-n', '1', '--format="%ct"', '--', path])[1:-2]
+                if not timeStr:
+                    mtime = int(os.stat(path).st_mtime)
+                else:
+                    mtime = int(timeStr)
+                if mtime > maxTS:
+                    maxTS = mtime
         codestring = multireplace(codestring,
-                                  {'%(file_compile_date)s': time.strftime('%d.%m.%Y', time.localtime(timestamp)),
+                                  {'%(file_compile_date)s': time.strftime('%d.%m.%Y', time.localtime(maxTS)),
                                    '%(mod_ID)s': multireplace(os.path.basename(file), {'.py': '', 'mod_': ''})})
     try:
         codeobject = __builtin__.compile(codestring, dfile or file, 'exec')
