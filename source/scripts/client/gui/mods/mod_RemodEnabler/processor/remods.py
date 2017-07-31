@@ -1,8 +1,15 @@
+import BigWorld
+import PYmodsCore
+import ResMgr
 import copy
+import traceback
+from Vehicle import Vehicle
+from gui.ClientHangarSpace import _VehicleAppearance
 from items.vehicle_config_types import GroundNode, GroundNodeGroup, TrackNode, Wheel, WheelGroup
 from items.vehicles import g_cache
-from vehicle_systems.tankStructure import TankPartNames
+from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 from .. import g_config
+from . import attached_models
 
 
 def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
@@ -151,3 +158,39 @@ def apply(vDesc):
             if soundID:
                 part[key] = soundID
 
+
+def glass_create(vehicleID, vDesc, visible=False):
+    try:
+        resList = []
+        for partName in TankPartNames.ALL[1:]:
+            modelPath = getattr(vDesc, partName)['models']['undamaged'].replace('.model', '_glass.model')
+            if ResMgr.isFile(modelPath):
+                if partName == TankPartNames.GUN:
+                    partName = TankNodeNames.GUN_INCLINATION
+                resList.append((modelPath, partName))
+        if resList:
+            attached_models.create(vehicleID, 'RE_glass', 'motor', resList, visible)
+    except StandardError:
+        traceback.print_exc()
+        print vDesc.name
+
+
+def glass_attach(vehicleID, visible=False):
+    attached_models.attach(vehicleID, 'RE_glass', visible)
+
+
+@PYmodsCore.overrideMethod(Vehicle, 'getDescr')
+def new_getDescr(base, self, respawnCompactDescr):
+    vDesc = base(self, respawnCompactDescr)
+    if g_config.data['enabled']:
+        glass_create(self.id, vDesc, True)
+    return vDesc
+
+
+@PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__setupModel')
+def new_setupModel(base, self, buildIdx):
+    base(self, buildIdx)
+    if g_config.data['enabled']:
+        vEntityId = self._VehicleAppearance__vEntityId
+        glass_create(vEntityId, self._VehicleAppearance__vDesc, True)
+        glass_attach(vEntityId, True)

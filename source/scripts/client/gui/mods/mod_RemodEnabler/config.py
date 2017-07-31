@@ -86,7 +86,7 @@ class OSDescriptor(object):
 class _Config(PYmodsCore.Config):
     def __init__(self):
         super(self.__class__, self).__init__('RemodEnabler')
-        self.version = '2.9.9.3 (%(file_compile_date)s)'
+        self.version = '3.0.0 (%(file_compile_date)s)'
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True},
@@ -130,8 +130,10 @@ class _Config(PYmodsCore.Config):
             'UI_flash_remodCreate_message_text': 'Author message',
             'UI_flash_remodCreate_message_tooltip': 'This message is displayed in hangar every time the remod is selected.'
                                                     '\nLeave blank if not required.',
-            'UI_flash_remodCreate_name_empty': '<b>Remod creation failed:</b> name is empty.',
-            'UI_flash_remodCreate_error': '<b>Remod creation failed:</b> check python.log for additional information.',
+            'UI_flash_remodCreate_name_empty': '<b>Remod creation failed:</b>\nname is empty.',
+            'UI_flash_remodCreate_wrongVehicle': '<b>Remod creation failed:</b>\n'
+                                                 'select the vehicle you started to create a remod from.',
+            'UI_flash_remodCreate_error': '<b>Remod creation failed:</b>\ncheck python.log for additional information.',
             'UI_flash_remodCreate_success': '<b>Remod created successfully</b>.',
             'UI_flash_skinSetupBtn': 'Skins setup',
             'UI_flash_skinPriorityBtn': 'Skin priorities',
@@ -509,13 +511,14 @@ class RemodEnablerUI(AbstractWindowView):
     @staticmethod
     def py_getRemodData():
         OMDesc = g_config.OMDesc
+        currentVehicle = RemodEnablerUI.py_getCurrentVehicleName()
         if OMDesc is not None:
-            return {'isRemod': True, 'name': OMDesc.name, 'message': OMDesc.authorMessage,
+            return {'isRemod': True, 'name': OMDesc.name, 'message': OMDesc.authorMessage, 'vehicleName': currentVehicle,
                     'whitelists': [str(g_config.settings['remods'][OMDesc.name][team.lower() + 'Whitelist']).split(',')
                                    for team in OM.tankGroups]}
         else:
-            return {'isRemod': False, 'name': '', 'message': '',
-                    'whitelists': [[RemodEnablerUI.py_getCurrentVehicleName()] for _ in OM.tankGroups]}
+            return {'isRemod': False, 'name': '', 'message': '', 'vehicleName': currentVehicle,
+                    'whitelists': [[currentVehicle] for _ in OM.tankGroups]}
 
     @staticmethod
     def py_onShowRemod(remodIdx):
@@ -569,8 +572,12 @@ class RemodEnablerUI(AbstractWindowView):
     def py_onCreateRemod(settings):
         try:
             if not settings.name:
-                SystemMessages.pushMessage(
-                    'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_name_empty'], SystemMessages.SM_TYPE.Warning)
+                SystemMessages.pushMessage('PYmods_SM' + g_config.i18n['UI_flash_remodCreate_name_empty'],
+                                           SystemMessages.SM_TYPE.Warning)
+                return
+            if settings.vehicleName != RemodEnablerUI.py_getCurrentVehicleName():
+                SystemMessages.pushMessage('PYmods_SM' + g_config.i18n['UI_flash_remodCreate_wrongVehicle'],
+                                           SystemMessages.SM_TYPE.Warning)
                 return
             from collections import OrderedDict
             data = OrderedDict()
