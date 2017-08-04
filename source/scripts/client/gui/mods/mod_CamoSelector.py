@@ -290,6 +290,7 @@ class _Config(PYmodsCore.Config):
         self.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
         self.interCamo = []
         self.origInterCamo = []
+        self.changedNations = []
         self.activePreviewCamo = None
         self.UIProxy = None
         self.backupNationID = None
@@ -473,10 +474,9 @@ InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 def new_customization(base, self, nationID):
     commonDescr = base(self, nationID)
     if _config.data['enabled']:
-        if commonDescr is None or not hasattr(self, 'changedNations') or nationID not in self.changedNations:
+        if commonDescr is None or nationID not in _config.changedNations:
             if _config.configFolders:
-                self.changedNations = getattr(self, 'changedNations', [])
-                self.changedNations.append(nationID)
+                _config.changedNations.append(nationID)
             for configDir in _config.configFolders:
                 customDescr = items.vehicles._readCustomization('vehicles/camouflages/' + configDir + '/settings.xml',
                                                                 nationID, idsRange=(5001, 65535))
