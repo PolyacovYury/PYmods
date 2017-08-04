@@ -12,7 +12,7 @@ def create(vehicleID, vDesc, visible=False):
         sname = g_config.OSDesc['dynamic'].name
         resList = []
         for partName in TankPartNames.ALL[1:]:
-            modelPath = getattr(vDesc, partName)['models']['undamaged'].replace(
+            modelPath = getattr(vDesc, partName).models.undamaged.replace(
                 'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
             if partName == TankPartNames.GUN:
                 partName = TankNodeNames.GUN_INCLINATION

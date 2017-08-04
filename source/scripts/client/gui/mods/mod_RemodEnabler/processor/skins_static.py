@@ -10,9 +10,9 @@ def apply(vDesc):
     if OSDesc is not None:
         sname = OSDesc.name
         for part in TankPartNames.ALL:
-            modelPath = getattr(vDesc, part)['models']['undamaged'].replace(
+            modelPath = getattr(vDesc, part).models.undamaged.replace(
                 'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
             if os.path.isfile(BigWorld.curCV + '/' + modelPath):
-                getattr(vDesc, part)['models']['undamaged'] = modelPath
+                getattr(vDesc, part).models.undamaged = modelPath
             else:
                 print 'RemodEnabler: skin model not found:', modelPath

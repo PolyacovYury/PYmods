@@ -292,7 +292,7 @@ def findWheelNodes(vehicleID, place):
     subWheelNodeStr = 'WD_%s' % place
     vEntity = BigWorld.entity(vehicleID)
     vDesc = vEntity.typeDescriptor
-    chassisSource = vDesc.chassis['models']['undamaged']
+    chassisSource = vDesc.chassis.models.undamaged
     modelSec = ResMgr.openSection(chassisSource)
     if modelSec is None:
         print chassisSource
@@ -393,7 +393,7 @@ def lightsCreate(vehicleID, callPlace=''):
 
         sourcesDict = {TankPartNames.CHASSIS: None, TankPartNames.HULL: None}
         for tankPartName in sourcesDict.keys():
-            curSource = getattr(vDesc, tankPartName)['models']['undamaged']
+            curSource = getattr(vDesc, tankPartName).models.undamaged
             modelSec = ResMgr.openSection(curSource)
             if modelSec is None:
                 print 'LampLights: file not found:', curSource
@@ -442,8 +442,7 @@ def lightsCreate(vehicleID, callPlace=''):
                     transMat = nodeWatcher(sourcesDict[TankPartNames.CHASSIS], node.replace('Up', ''))
                 isChassis = True
             if transMat is None:
-                print 'LampLights: restore Matrix not found for node %s in %s' % (
-                    node, vDesc.hull['models']['undamaged'])
+                print 'LampLights: restore Matrix not found for node %s in %s' % (node, vDesc.hull.models.undamaged)
                 print callPlace
             else:
                 restoreMat.setTranslate(transMat.translation)
@@ -461,12 +460,12 @@ def lightsCreate(vehicleID, callPlace=''):
         fakeDict[TankPartNames.TURRET] = BigWorld.Model('objects/fake_model.model')
         fakeDict[TankPartNames.TURRET + 'Root'] = BigWorld.Model('objects/fake_model.model')
         fakeDict[TankPartNames.TURRET + 'RootRoot'] = BigWorld.Model('objects/fake_model.model')
-        hull_bbox_min, hull_bbox_max, _ = vDesc.hull['hitTester'].bbox
-        turret_pos_on_hull = vDesc.hull['turretPositions'][0]
-        turret_bbox_max = vDesc.turret['hitTester'].bbox[1]
-        gun_pos_on_turret = vDesc.turret['gunPosition']
+        hull_bbox_min, hull_bbox_max, _ = vDesc.hull.hitTester.bbox
+        turret_pos_on_hull = vDesc.hull.turretPositions[0]
+        turret_bbox_max = vDesc.turret.hitTester.bbox[1]
+        gun_pos_on_turret = vDesc.turret.gunPosition
         gun_pos_on_hull = gun_pos_on_turret + turret_pos_on_hull
-        gun_bbox_max = vDesc.gun['hitTester'].bbox[1]
+        gun_bbox_max = vDesc.gun.hitTester.bbox[1]
         if hull_bbox_max.y >= turret_pos_on_hull.y + turret_bbox_max.y:
             observer_pos = Math.Vector3(0, hull_bbox_max.y, 0)
             node = TankPartNames.HULL

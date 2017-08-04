@@ -53,14 +53,14 @@ def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
 
 def apply(vDesc):
     for key in ('splineDesc', 'trackParams'):
-        if vDesc.chassis[key] is None:
-            vDesc.chassis[key] = {}
+        if getattr(vDesc.chassis, key) is None:
+            setattr(vDesc.chassis, key, {})
     data = g_config.OMDesc.data
     for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
         obj = eval(data['chassis'][key])
         if key not in ('wheels', 'groundNodes', 'trackNodes') or any(
                 hasattr(d, '_fields') for l in obj.itervalues() if type(l) != float for d in l):
-            vDesc.chassis[key] = obj
+            setattr(vDesc.chassis, key, obj)
             continue
         newObj = {}
         if key == 'wheels':
@@ -84,38 +84,38 @@ def apply(vDesc):
             newObj['nodes'] = []
             for d in obj['nodes']:
                 newObj['nodes'].append(TrackNode(*(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])))
-        vDesc.chassis[key] = newObj
+        setattr(vDesc.chassis, key, newObj)
     if data['chassis']['AODecals']:
-        AODecalsOffset = vDesc.chassis['hullPosition'] - data['chassis']['hullPosition']
-        vDesc.chassis['AODecals'] = copy.deepcopy(data['chassis']['AODecals'])
-        vDesc.chassis['AODecals'][0].setElement(3, 1, AODecalsOffset.y)
+        AODecalsOffset = vDesc.chassis.hullPosition - data['chassis']['hullPosition']
+        vDesc.chassis.AODecals = copy.deepcopy(data['chassis']['AODecals'])
+        vDesc.chassis.AODecals[0].setElement(3, 1, AODecalsOffset.y)
     for part in TankPartNames.ALL:
-        getattr(vDesc, part)['models']['undamaged'] = data[part]['undamaged']
+        getattr(vDesc, part).models.undamaged = data[part]['undamaged']
     if data['gun']['effects']:
         newGunEffects = g_cache._gunEffects.get(data['gun']['effects'])
         if newGunEffects:
-            vDesc.gun['effects'] = newGunEffects
+            vDesc.gun.effects = newGunEffects
     if data['gun']['reloadEffect']:
         newGunReloadEffect = g_cache._gunReloadEffects.get(data['gun']['reloadEffect'])
         if newGunReloadEffect:
-            vDesc.gun['reloadEffect'] = newGunReloadEffect
-    vDesc.gun['emblemSlots'] = data['gun']['emblemSlots']
+            vDesc.gun.reloadEffect = newGunReloadEffect
+    vDesc.gun.emblemSlots = data['gun']['emblemSlots']
     if data['hull']['emblemSlots']:
         cntClan = 1
         cntPlayer = cntInscription = 0
         for part in ('hull', 'turret'):
-            for slot in getattr(vDesc, part)['emblemSlots']:
+            for slot in getattr(vDesc, part).emblemSlots:
                 if slot.type == 'inscription':
                     cntInscription += 1
                 if slot.type == 'player':
                     cntPlayer += 1
         try:
-            vDesc.hull['emblemSlots'] = []
-            vDesc.turret['emblemSlots'] = []
+            vDesc.hull.emblemSlots = []
+            vDesc.turret.emblemSlots = []
             for part in ('hull', 'turret'):
                 for slot in data[part]['emblemSlots']:
                     if slot.type in ('player', 'inscription', 'clan'):
-                        getattr(vDesc, part)['emblemSlots'].append(slot)
+                        getattr(vDesc, part).emblemSlots.append(slot)
                     if slot.type == 'player' and cntPlayer > 0:
                         cntPlayer -= 1
                     if slot.type == 'inscription' and cntInscription > 0:
@@ -133,21 +133,21 @@ def apply(vDesc):
         if not data[partName]['emblemSlots']:
             part = getattr(vDesc, partName)
             for i in range(len(part['emblemSlots'])):
-                part['emblemSlots'][i] = part['emblemSlots'][i]._replace(size=0.001)
+                part.emblemSlots[i] = part.emblemSlots[i]._replace(size=0.001)
 
     exclMask = data['common']['camouflage']['exclusionMask']
-    vDesc.type.camouflageExclusionMask = exclMask
+    vDesc.type.camouflage.exclusionMask = exclMask
     if exclMask:
-        vDesc.type.camouflageTiling = data['common']['camouflage']['tiling']
+        vDesc.type.camouflage.tiling = data['common']['camouflage']['tiling']
     for partName in ('hull', 'gun', 'turret'):
         camoData = data[partName]['camouflage']
         exclMask = camoData['exclusionMask']
         if exclMask:
             part = getattr(vDesc, partName)
-            part['camouflageExclusionMask'] = exclMask
-            part['camouflageTiling'] = camoData['tiling']
+            part.camouflage.exclusionMask = exclMask
+            part.camouflage.tiling = camoData['tiling']
     exhaust = data['hull']['exhaust']
-    for effectDesc in vDesc.hull['customEffects']:
+    for effectDesc in vDesc.hull.customEffects:
         if exhaust['nodes']:
             effectDesc.nodes[:] = exhaust['nodes']
         effectDesc._selectorDesc = g_cache._customEffects['exhaust'].get(exhaust['pixie'], effectDesc._selectorDesc)
@@ -156,14 +156,14 @@ def apply(vDesc):
             part = getattr(vDesc, partName)
             soundID = data[partName][key]
             if soundID:
-                part[key] = soundID
+                setattr(part, key, soundID)
 
 
 def glass_create(vehicleID, vDesc, visible=False):
     try:
         resList = []
         for partName in TankPartNames.ALL[1:]:
-            modelPath = getattr(vDesc, partName)['models']['undamaged'].replace('.model', '_glass.model')
+            modelPath = getattr(vDesc, partName).models.undamaged.replace('.model', '_glass.model')
             if ResMgr.isFile(modelPath):
                 if partName == TankPartNames.GUN:
                     partName = TankNodeNames.GUN_INCLINATION
