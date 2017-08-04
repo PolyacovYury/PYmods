@@ -96,7 +96,7 @@ def vDesc_process(self, vDesc, mode):
             if g_config.data['skinsFound']:
                 skins_find(vehName, isPlayerVehicle, isAlly, currentMode, skinType='dynamic')
                 if g_config.OSDesc['dynamic'] is not None:
-                    skins_dynamic.create(vehicleID, vDesc, mode == 'battle' or (
+                    skins_dynamic.create(vehicleID, vDesc, mode == 'hangar' and (
                         g_config.data['dynamicSkinEnabled'] and not g_config.data['collisionComparisonEnabled']))
                     if g_config.data['dynamicSkinEnabled'] and collisionNotVisible:
                         message = g_config.i18n['UI_install_skin_dynamic'] + g_config.OSDesc['dynamic'].name.join(

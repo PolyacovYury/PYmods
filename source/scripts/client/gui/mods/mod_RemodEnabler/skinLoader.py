@@ -31,6 +31,7 @@ def skinsPresenceCheck():
 
 
 texReplaced = False
+skinsChecked = False
 g_config.data['skinsFound'] = False
 skinsPresenceCheck()
 clientIsNew = True
@@ -289,7 +290,8 @@ def processMember(memberFileName, skinName):
 
 @process
 def skinLoader():
-    if g_config.data['skinsFound']:
+    global skinsChecked
+    if g_config.data['enabled'] and g_config.data['skinsFound'] and not skinsChecked:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
             lobbyApp.loadView('RemodEnablerLoading')
@@ -305,6 +307,7 @@ def skinLoader():
         print 'RemodEnabler: total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, g_config.loadingProxy.onWindowClose)
+        skinsChecked = True
 
 
 @PYmodsCore.overrideMethod(LoginView, '_populate')
