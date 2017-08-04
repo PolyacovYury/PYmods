@@ -650,7 +650,7 @@ def startBattleL(SpaceID):
 g_appLoader.onGUISpaceEntered += startBattleL
 
 
-@PYmodsCore.overrideMethod(BattleEndWarningPanel, 'setCurrentTimeLeft')
+@PYmodsCore.overrideMethod(BattleEndWarningPanel, 'setTotalTime')
 def new_setCurrentTimeLeft(base, self, totalTime):
     base(self, totalTime)
     if not _config.data['enabled']:
