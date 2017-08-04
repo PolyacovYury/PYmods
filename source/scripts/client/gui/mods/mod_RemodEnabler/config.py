@@ -11,6 +11,7 @@ from CurrentVehicle import g_currentPreviewVehicle
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
+from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from gui.shared.utils.HangarSpace import g_hangarSpace
 from items.vehicles import EmblemSlot, g_cache
@@ -439,7 +440,8 @@ class _Config(PYmodsCore.Config):
         kwargs = dict(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=True, lobby=True,
-            callback=lambda: self.loadingProxy is not None or g_appLoader.getDefLobbyApp().loadView('RemodEnablerUI'))
+            callback=lambda: self.loadingProxy is not None or g_appLoader.getDefLobbyApp().loadView(
+                ViewLoadParams('RemodEnablerUI')))
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
         except AttributeError:

@@ -23,6 +23,7 @@ from gui.Scaleform.daapi.view.lobby.LobbyView import _LobbySubViewsCtrl
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
+from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from gui.customization import g_customizationController
 from gui.customization.data_aggregator import DataAggregator
@@ -409,7 +410,7 @@ class _Config(PYmodsCore.Config):
         kwargs = dict(
             id='CamoSelectorUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/CamoSelector.png', enabled=self.data['enabled'], login=False, lobby=True,
-            callback=lambda: g_appLoader.getDefLobbyApp().loadView('CamoSelectorUI'))
+            callback=lambda: g_appLoader.getDefLobbyApp().loadView(ViewLoadParams('CamoSelectorUI')))
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
         except AttributeError:
