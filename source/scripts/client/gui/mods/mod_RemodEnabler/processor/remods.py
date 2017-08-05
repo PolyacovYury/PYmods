@@ -5,7 +5,7 @@ import copy
 import traceback
 from Vehicle import Vehicle
 from gui.ClientHangarSpace import _VehicleAppearance
-from items.vehicle_config_types import GroundNode, GroundNodeGroup, TrackNode, Wheel, WheelGroup
+from items.components.chassis_components import GroundNode, GroundNodeGroup, TrackNode, Wheel, WheelGroup
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 from .. import g_config
