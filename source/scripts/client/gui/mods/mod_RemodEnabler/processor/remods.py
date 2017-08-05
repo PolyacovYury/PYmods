@@ -5,6 +5,7 @@ import copy
 import traceback
 from Vehicle import Vehicle
 from gui.ClientHangarSpace import _VehicleAppearance
+from items.components import shared_components
 from items.components.chassis_components import GroundNode, GroundNodeGroup, TrackNode, Wheel, WheelGroup
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
@@ -89,8 +90,10 @@ def apply(vDesc):
         AODecalsOffset = vDesc.chassis.hullPosition - data['chassis']['hullPosition']
         vDesc.chassis.AODecals = copy.deepcopy(data['chassis']['AODecals'])
         vDesc.chassis.AODecals[0].setElement(3, 1, AODecalsOffset.y)
-    for part in TankPartNames.ALL:
-        getattr(vDesc, part).models.undamaged = data[part]['undamaged']
+    for partName in TankPartNames.ALL:
+        part = getattr(vDesc, partName)
+        models = part.models
+        part.models = shared_components.ModelStatesPaths(data[partName]['undamaged'], models.destroyed, models.exploded)
     if data['gun']['effects']:
         newGunEffects = g_cache._gunEffects.get(data['gun']['effects'])
         if newGunEffects:
@@ -103,8 +106,8 @@ def apply(vDesc):
     if data['hull']['emblemSlots']:
         cntClan = 1
         cntPlayer = cntInscription = 0
-        for part in ('hull', 'turret'):
-            for slot in getattr(vDesc, part).emblemSlots:
+        for partName in ('hull', 'turret'):
+            for slot in getattr(vDesc, partName).emblemSlots:
                 if slot.type == 'inscription':
                     cntInscription += 1
                 if slot.type == 'player':
@@ -112,10 +115,10 @@ def apply(vDesc):
         try:
             vDesc.hull.emblemSlots = []
             vDesc.turret.emblemSlots = []
-            for part in ('hull', 'turret'):
-                for slot in data[part]['emblemSlots']:
+            for partName in ('hull', 'turret'):
+                for slot in data[partName]['emblemSlots']:
                     if slot.type in ('player', 'inscription', 'clan'):
-                        getattr(vDesc, part).emblemSlots.append(slot)
+                        getattr(vDesc, partName).emblemSlots.append(slot)
                     if slot.type == 'player' and cntPlayer > 0:
                         cntPlayer -= 1
                     if slot.type == 'inscription' and cntInscription > 0:
