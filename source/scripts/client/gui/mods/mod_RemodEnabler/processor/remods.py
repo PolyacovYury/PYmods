@@ -5,8 +5,10 @@ import copy
 import traceback
 from Vehicle import Vehicle
 from gui.ClientHangarSpace import _VehicleAppearance
-from items.components import shared_components
-from items.components.chassis_components import GroundNode, GroundNodeGroup, TrackNode, Wheel, WheelGroup
+from items.components import shared_components, component_constants
+from items.components.chassis_components import GroundNode, GroundNodeGroup, TrackNode, Wheel, WheelGroup, Traces, \
+    WheelsConfig, SplineConfig, TrackParams
+from items.components.shared_components import NodesAndGroups
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 from .. import g_config
@@ -59,33 +61,48 @@ def apply(vDesc):
     data = g_config.OMDesc.data
     for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
         obj = eval(data['chassis'][key])
-        if key not in ('wheels', 'groundNodes', 'trackNodes') or any(
-                hasattr(d, '_fields') for l in obj.itervalues() if type(l) != float for d in l):
-            setattr(vDesc.chassis, key, obj)
-            continue
-        newObj = {}
-        if key == 'wheels':
-            newObj['groups'] = []
-            newObj['wheels'] = []
-            newObj['lodDist'] = obj['lodDist']
-            newObj['leadingWheelSyncAngle'] = obj['leadingWheelSyncAngle']
-            for d in obj['groups']:
-                newObj['groups'].append(WheelGroup(*d))
-            for d in obj['wheels']:
-                newObj['wheels'].append(Wheel(*(d[0], d[2], d[1], d[3], d[4])))
-        if key == 'groundNodes':
-            newObj['groups'] = []
-            newObj['nodes'] = []
-            for d in obj['groups']:
-                newObj['groups'].append(GroundNodeGroup(*(d[0], d[4], d[5], d[1], d[2], d[3])))
-            for d in obj['nodes']:
-                newObj['nodes'].append(GroundNode(*(d[1], d[0], d[2], d[3])))
-        if key == 'trackNodes':
-            newObj['groups'] = []
-            newObj['nodes'] = []
-            for d in obj['nodes']:
-                newObj['nodes'].append(TrackNode(*(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])))
-        setattr(vDesc.chassis, key, newObj)
+        newObj = None
+        if isinstance (obj, dict):
+            if key == 'traces':
+                newObj = Traces(**obj)
+            elif key == 'tracks':
+                newObj = TrackNode(**obj)
+            elif key == 'wheels':
+                groups = []
+                wheels = []
+                for d in obj['groups']:
+                    if not hasattr(d, '_fields'):
+                        d = WheelGroup(*d)
+                    groups.append(d)
+                for d in obj['wheels']:
+                    if not hasattr(d, '_fields'):
+                        d = Wheel(d[0], d[2], d[1], d[3], d[4])
+                    wheels.append(d)
+                newObj = WheelsConfig(lodDist=obj['lodDist'], groups=tuple(groups), wheels=tuple(wheels))
+            elif key == 'groundNodes':
+                groups = []
+                nodes = []
+                for d in obj['groups']:
+                    if not hasattr(d, '_fields'):
+                        d = GroundNodeGroup(*(d[0], d[4], d[5], d[1], d[2], d[3]))
+                    groups.append(d)
+                for d in obj['nodes']:
+                    if not hasattr(d, '_fields'):
+                        d = GroundNode(*(d[1], d[0], d[2], d[3]))
+                    nodes.append(d)
+                newObj = NodesAndGroups(nodes=tuple(nodes), groups=tuple(groups))
+            elif key == 'trackNodes':
+                nodes = []
+                for d in obj['nodes']:
+                    if not hasattr(d, '_fields'):
+                        d = TrackNode(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])
+                    nodes.append(d)
+                newObj = NodesAndGroups(nodes=tuple(nodes), groups=component_constants.EMPTY_TUPLE)
+            elif key == 'splineDesc':
+                newObj = SplineConfig(**obj)
+            elif key == 'trackParams':
+                newObj = TrackParams(**obj)
+        setattr(vDesc.chassis, key, newObj if newObj is not None else obj)
     if data['chassis']['AODecals']:
         AODecalsOffset = vDesc.chassis.hullPosition - data['chassis']['hullPosition']
         vDesc.chassis.AODecals = copy.deepcopy(data['chassis']['AODecals'])
