@@ -628,7 +628,7 @@ def new_removeSlot(base, self, cType, slotIdx):
 
 
 @PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoaded')
-def new_onViewLoaded(base, self, view):
+def new_onViewLoaded(base, self, view, *_):
     if view is not None and view.settings is not None:
         alias = view.settings.alias
         if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
@@ -637,7 +637,7 @@ def new_onViewLoaded(base, self, view):
 
 
 @PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoadCanceled')
-def new_onViewLoadCanceled(base, self, name, item):
+def new_onViewLoadCanceled(base, self, name, item, *_):
     if item is not None and item.pyEntity is not None:
         alias = item.pyEntity.settings.alias
         if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
@@ -646,7 +646,7 @@ def new_onViewLoadCanceled(base, self, name, item):
 
 
 @PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoadError')
-def new_onViewLoadError(base, self, name, msg, item):
+def new_onViewLoadError(base, self, name, msg, item, *_):
     if item is not None and item.pyEntity is not None:
         alias = item.pyEntity.settings.alias
         if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
