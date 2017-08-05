@@ -604,7 +604,7 @@ class RemodEnablerUI(AbstractWindowView):
                     for colIdx in xrange(3):
                         decDict['transform']['row%s' % strIdx].append(decal.get(strIdx, colIdx))
             for key in ('wwsoundPC', 'wwsoundNPC'):
-                chassis[key] = getattr(vDesc.chassis, key)
+                chassis[key] = getattr(vDesc.chassis.sounds, key)
             pixieID = ''
             for key, value in g_cache._customEffects['exhaust'].iteritems():
                 if value == vDesc.hull.customEffects[0]._selectorDesc:
@@ -636,8 +636,8 @@ class RemodEnablerUI(AbstractWindowView):
                     for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId'):
                         slotDict[key] = getattr(slot, key)
                     data[partName]['emblemSlots'].append(slotDict)
-            data['engine']['wwsoundPC'] = vDesc.engine.wwsoundPC
-            data['engine']['wwsoundNPC'] = vDesc.engine.wwsoundNPC
+            data['engine']['wwsoundPC'] = vDesc.engine.sounds.wwsoundPC
+            data['engine']['wwsoundNPC'] = vDesc.engine.sounds.wwsoundNPC
             g_config.loadJson(str(settings.name), data, g_config.configPath + 'remods/', True, False, sort_keys=False)
             g_config.update_data()
             SystemMessages.pushMessage(
