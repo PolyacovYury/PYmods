@@ -38,7 +38,7 @@ def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
         # noinspection PyUnboundLocalVariable
         if g_config.OMDesc is None and snameList[Idx] and xmlName in selected[curTankType]:
             del selected[curTankType][xmlName]
-        g_config.loadJson('remodsCache', selected, g_config.configPath, True)
+        g_config.loadJson('remodsCache', selected, g_config.configPath, True, doPrint=g_config.data['isDebug'])
     else:
         snameList = sorted(g_config.OM.models.keys())
         if selected['Remod'] not in snameList:
@@ -48,7 +48,7 @@ def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
         sname = snameList[snameIdx]
         g_config.OMDesc = g_config.OM.models[sname]
         selected['Remod'] = sname
-        g_config.loadJson('remodsCache', selected, g_config.configPath, True)
+        g_config.loadJson('remodsCache', selected, g_config.configPath, True, doPrint=g_config.data['isDebug'])
 
 
 def apply(vDesc):
