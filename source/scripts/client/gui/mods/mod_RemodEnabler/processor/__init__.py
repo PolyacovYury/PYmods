@@ -79,15 +79,17 @@ def vDesc_process(self, vDesc, mode):
     xmlName = vDesc.name.split(':')[1].lower()
     remods.find(xmlName, isPlayerVehicle, isAlly, currentMode)
     for partName in TankPartNames.ALL + ('engine',):
-        try:
-            old_part = getattr(vDesc, partName)
-            new_part = copy.deepcopy(old_part)
-            setattr(vDesc, partName, new_part)
-            if hasattr(old_part, 'hitTester'):
-                getattr(vDesc, partName).hitTester = old_part.hitTester
-        except StandardError:
-            traceback.print_exc()
-            print partName
+        for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
+                vDesc.defaultVehicleDescr, vDesc.siegeVehicleDescr):
+            try:
+                old_part = getattr(descr, partName)
+                new_part = copy.deepcopy(old_part)
+                setattr(descr, partName, new_part)
+                if hasattr(old_part, 'hitTester'):
+                    getattr(descr, partName).hitTester = old_part.hitTester
+            except StandardError:
+                traceback.print_exc()
+                print partName
     message = None
     collisionNotVisible = not g_config.data['collisionEnabled'] and not g_config.data['collisionComparisonEnabled']
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
