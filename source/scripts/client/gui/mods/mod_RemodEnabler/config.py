@@ -60,14 +60,15 @@ class OMDescriptor(object):
         self.authorMessage = ''
         self.whitelists = {'Player': set(), 'Ally': set(), 'Enemy': set()}
         self.data = {
-            'chassis': {'undamaged': '', 'AODecals': None, 'hullPosition': None, 'wwsoundPC': '', 'wwsoundNPC': ''},
+            'chassis': {'undamaged': '', 'AODecals': None, 'hullPosition': None,
+                        'wwsound': '', 'wwsoundPC': '', 'wwsoundNPC': ''},
             'hull': {'undamaged': '', 'emblemSlots': [], 'exhaust': {'nodes': [], 'pixie': ''},
                      'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
             'turret': {'undamaged': '', 'emblemSlots': [],
                        'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
             'gun': {'undamaged': '', 'emblemSlots': [], 'effects': '', 'reloadEffect': '',
                     'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
-            'engine': {'wwsoundPC': '', 'wwsoundNPC': ''},
+            'engine': {'wwsound': '', 'wwsoundPC': '', 'wwsoundNPC': ''},
             'common': {'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}}}
 
 
@@ -608,8 +609,9 @@ class RemodEnablerUI(AbstractWindowView):
                     decDict['transform']['row%s' % strIdx] = []
                     for colIdx in xrange(3):
                         decDict['transform']['row%s' % strIdx].append(decal.get(strIdx, colIdx))
-            for key in ('wwsoundPC', 'wwsoundNPC'):
-                chassis[key] = getattr(vDesc.chassis.sounds, key)
+            for partName in ('chassis', 'engine'):
+                for key in ('wwsound', 'wwsoundPC', 'wwsoundNPC'):
+                    data[partName][key] = getattr(getattr(vDesc, partName).sounds, key)
             pixieID = ''
             for key, value in g_cache._customEffects['exhaust'].iteritems():
                 if value == vDesc.hull.customEffects[0]._selectorDesc:
@@ -641,8 +643,6 @@ class RemodEnablerUI(AbstractWindowView):
                     for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId'):
                         slotDict[key] = getattr(slot, key)
                     data[partName]['emblemSlots'].append(slotDict)
-            data['engine']['wwsoundPC'] = vDesc.engine.sounds.wwsoundPC
-            data['engine']['wwsoundNPC'] = vDesc.engine.sounds.wwsoundNPC
             g_config.loadJson(str(settings.name), data, g_config.configPath + 'remods/', True, False, sort_keys=False)
             g_config.update_data()
             SystemMessages.pushMessage(

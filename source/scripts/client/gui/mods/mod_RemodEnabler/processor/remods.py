@@ -8,6 +8,7 @@ from gui.ClientHangarSpace import _VehicleAppearance
 from items.components.chassis_components import *
 from items.components.chassis_components import SplineConfig, WheelsConfig
 from items.components.shared_components import Camouflage, ModelStatesPaths, NodesAndGroups
+from items.components.sound_components import WWTripleSoundConfig
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 from . import attached_models
@@ -171,11 +172,15 @@ def apply(vDesc):
             effectDesc.nodes[:] = exhaust['nodes']
         effectDesc._selectorDesc = g_cache._customEffects['exhaust'].get(exhaust['pixie'], effectDesc._selectorDesc)
     for partName in ('chassis', 'engine'):
-        for key in ('wwsoundPC', 'wwsoundNPC'):
-            part = getattr(vDesc, partName).sounds
-            soundID = data[partName][key]
-            if soundID:
-                setattr(part, key, soundID)
+        soundIDs = []
+        part = getattr(vDesc, partName)
+        partData = data[partName]
+        for key in ('wwsound', 'wwsoundPC', 'wwsoundNPC'):
+            soundID = partData[key]
+            if not soundID:
+                soundID = getattr(part.sounds, key)
+            soundIDs.append(soundID)
+        part.sounds = WWTripleSoundConfig(*soundIDs)
 
 
 def glass_create(vehicleID, vDesc, visible=False):
