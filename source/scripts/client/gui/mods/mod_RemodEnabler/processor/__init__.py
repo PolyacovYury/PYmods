@@ -114,8 +114,10 @@ def vDesc_process(self, vDesc, mode):
                 message = g_config.i18n['UI_install_skin'] + g_config.OSDesc['static'].name.join(('<b>', '</b>.'))
             else:
                 message = g_config.i18n['UI_install_default']
-    elif not isinstance(vDesc, CompositeVehicleDescriptor):
-        remods.apply(vDesc)
+    else:
+        for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
+                vDesc.defaultVehicleDescr, vDesc.siegeVehicleDescr):
+            remods.apply(descr)
         if collisionNotVisible:
             message = g_config.i18n['UI_install_remod'] + g_config.OMDesc.name.join(
                 ('<b>', '</b>.')) + '\n' + g_config.OMDesc.authorMessage

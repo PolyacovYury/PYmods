@@ -606,7 +606,7 @@ class RemodEnablerUI(AbstractWindowView):
     @staticmethod
     def py_getCurrentVehicleName():
         vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
-        return vDesc.name.split(':')[1].lower() if not isinstance(vDesc, CompositeVehicleDescriptor) else ''
+        return vDesc.name.split(':')[1].lower()
 
     def py_onRequestVehicleDelete(self):
         from gui import DialogsInterface
