@@ -16,7 +16,7 @@ from gui.Scaleform.framework.entities.abstract.AbstractWindowView import Abstrac
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from gui.shared.utils.HangarSpace import g_hangarSpace
-from items.vehicles import EmblemSlot, g_cache
+from items.vehicles import EmblemSlot, g_cache, CompositeVehicleDescriptor
 from vehicle_systems.tankStructure import TankPartNames
 
 
@@ -158,6 +158,7 @@ class _Config(PYmodsCore.Config):
             'UI_flash_vehicleDelete_success': 'Vehicle deleted from whitelist: ',
             'UI_flash_vehicleAdd_success': 'Vehicle added to whitelist: ',
             'UI_flash_vehicleAdd_dupe': 'Vehicle already in whitelist: ',
+            'UI_flash_vehicleAdd_notSupported': 'Vehicle is not supported by RemodEnabler.',
             'UI_flash_backBtn': 'Back',
             'UI_flash_saveBtn': 'Save',
             'UI_loading_bugReport': 'Report a bug',
@@ -518,75 +519,78 @@ class RemodEnablerUI(AbstractWindowView):
     def py_getRemodData(self):
         OMDesc = g_config.OMDesc
         currentVehicle = RemodEnablerUI.py_getCurrentVehicleName()
-        try:
-            data = self.newRemodData
-            data.clear()
-            vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
-            for key in TankPartNames.ALL + ('engine',):
-                data[key] = OrderedDict()
-            for key in TankPartNames.ALL:
-                data[key]['undamaged'] = getattr(vDesc, key).models.undamaged
-            chassis = data['chassis']
-            for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
-                obj = str(getattr(vDesc.chassis, key))
-                if key == 'tracks':
-                    obj = obj.replace('TrackNode', 'TrackMaterials')
-                elif key == 'trackParams':
-                    obj = obj.replace('TrackNode', 'TrackParams')
-                chassis[key] = obj
-            chassis['hullPosition'] = vDesc.chassis.hullPosition.tuple()
-            chassis['AODecals'] = []
-            for decal in vDesc.chassis.AODecals:
-                decDict = {'transform': OrderedDict()}
-                for strIdx in xrange(4):
-                    decDict['transform']['row%s' % strIdx] = []
-                    for colIdx in xrange(3):
-                        decDict['transform']['row%s' % strIdx].append(decal.get(strIdx, colIdx))
-            for partName in ('chassis', 'engine'):
-                for key in ('wwsound', 'wwsoundPC', 'wwsoundNPC'):
-                    data[partName][key] = getattr(getattr(vDesc, partName).sounds, key)
-            pixieID = ''
-            for key, value in g_cache._customEffects['exhaust'].iteritems():
-                if value == vDesc.hull.customEffects[0]._selectorDesc:
-                    pixieID = key
-                    break
-            data['hull']['exhaust'] = {'nodes': ' '.join(vDesc.hull.customEffects[0].nodes), 'pixie': pixieID}
-            for ids in (('_gunEffects', 'effects'), ('_gunReloadEffects', 'reloadEffect')):
-                for key, value in getattr(g_cache, ids[0]).items():
-                    if value == getattr(vDesc.gun, ids[1]):
-                        data['gun'][ids[1]] = key
+        if currentVehicle:
+            try:
+                data = self.newRemodData
+                data.clear()
+                vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
+                for key in TankPartNames.ALL + ('engine',):
+                    data[key] = OrderedDict()
+                for key in TankPartNames.ALL:
+                    data[key]['undamaged'] = getattr(vDesc, key).models.undamaged
+                chassis = data['chassis']
+                for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
+                    obj = str(getattr(vDesc.chassis, key))
+                    if key == 'tracks':
+                        obj = obj.replace('TrackNode', 'TrackMaterials')
+                    elif key == 'trackParams':
+                        obj = obj.replace('TrackNode', 'TrackParams')
+                    chassis[key] = obj
+                chassis['hullPosition'] = vDesc.chassis.hullPosition.tuple()
+                chassis['AODecals'] = []
+                for decal in vDesc.chassis.AODecals:
+                    decDict = {'transform': OrderedDict()}
+                    for strIdx in xrange(4):
+                        decDict['transform']['row%s' % strIdx] = []
+                        for colIdx in xrange(3):
+                            decDict['transform']['row%s' % strIdx].append(decal.get(strIdx, colIdx))
+                for partName in ('chassis', 'engine'):
+                    for key in ('wwsound', 'wwsoundPC', 'wwsoundNPC'):
+                        data[partName][key] = getattr(getattr(vDesc, partName).sounds, key)
+                pixieID = ''
+                for key, value in g_cache._customEffects['exhaust'].iteritems():
+                    if value == vDesc.hull.customEffects[0]._selectorDesc:
+                        pixieID = key
                         break
-            exclMask = vDesc.type.camouflage.exclusionMask
-            if exclMask:
-                camouflage = data['camouflage'] = OrderedDict()
-                camouflage['exclusionMask'] = exclMask
-                camouflage['tiling'] = vDesc.type.camouflage.tiling
-            for partName in TankPartNames.ALL[1:]:
-                part = getattr(vDesc, partName)
-                data[partName]['emblemSlots'] = []
-                exclMask = part.camouflage.exclusionMask
+                data['hull']['exhaust'] = {'nodes': ' '.join(vDesc.hull.customEffects[0].nodes), 'pixie': pixieID}
+                for ids in (('_gunEffects', 'effects'), ('_gunReloadEffects', 'reloadEffect')):
+                    for key, value in getattr(g_cache, ids[0]).items():
+                        if value == getattr(vDesc.gun, ids[1]):
+                            data['gun'][ids[1]] = key
+                            break
+                exclMask = vDesc.type.camouflage.exclusionMask
                 if exclMask:
-                    camouflage = data[partName]['camouflage'] = OrderedDict()
+                    camouflage = data['camouflage'] = OrderedDict()
                     camouflage['exclusionMask'] = exclMask
-                    camouflage['tiling'] = part.camouflage.tiling
-                for slot in part.emblemSlots:
-                    slotDict = OrderedDict()
-                    for key in ('rayStart', 'rayEnd', 'rayUp'):
-                        slotDict[key] = getattr(slot, key).tuple()
-                    for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId'):
-                        slotDict[key] = getattr(slot, key)
-                    data[partName]['emblemSlots'].append(slotDict)
-        except StandardError:
-            SystemMessages.pushMessage(
-                'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)
-            traceback.print_exc()
+                    camouflage['tiling'] = vDesc.type.camouflage.tiling
+                for partName in TankPartNames.ALL[1:]:
+                    part = getattr(vDesc, partName)
+                    data[partName]['emblemSlots'] = []
+                    exclMask = part.camouflage.exclusionMask
+                    if exclMask:
+                        camouflage = data[partName]['camouflage'] = OrderedDict()
+                        camouflage['exclusionMask'] = exclMask
+                        camouflage['tiling'] = part.camouflage.tiling
+                    for slot in part.emblemSlots:
+                        slotDict = OrderedDict()
+                        for key in ('rayStart', 'rayEnd', 'rayUp'):
+                            slotDict[key] = getattr(slot, key).tuple()
+                        for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId'):
+                            slotDict[key] = getattr(slot, key)
+                        data[partName]['emblemSlots'].append(slotDict)
+            except StandardError:
+                SystemMessages.pushMessage(
+                    'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)
+                traceback.print_exc()
+        else:
+            self.py_sendMessage('', 'Add', 'notSupported')
         if OMDesc is not None:
             return {'isRemod': True, 'name': OMDesc.name, 'message': OMDesc.authorMessage, 'vehicleName': currentVehicle,
                     'whitelists': [str(g_config.settings['remods'][OMDesc.name][team.lower() + 'Whitelist']).split(',')
                                    for team in OM.tankGroups]}
         else:
             return {'isRemod': False, 'name': '', 'message': '', 'vehicleName': currentVehicle,
-                    'whitelists': [[currentVehicle] for _ in OM.tankGroups]}
+                    'whitelists': [[currentVehicle] if currentVehicle else [] for _ in OM.tankGroups]}
 
     @staticmethod
     def py_onShowRemod(remodIdx):
@@ -602,7 +606,7 @@ class RemodEnablerUI(AbstractWindowView):
     @staticmethod
     def py_getCurrentVehicleName():
         vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
-        return vDesc.name.split(':')[1].lower()
+        return vDesc.name.split(':')[1].lower() if not isinstance(vDesc, CompositeVehicleDescriptor) else ''
 
     def py_onRequestVehicleDelete(self):
         from gui import DialogsInterface

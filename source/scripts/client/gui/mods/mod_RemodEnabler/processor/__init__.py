@@ -6,6 +6,7 @@ from CurrentVehicle import _CurrentPreviewVehicle
 from Vehicle import Vehicle
 from gui import SystemMessages
 from gui.ClientHangarSpace import _VehicleAppearance
+from items.vehicles import CompositeVehicleDescriptor
 from vehicle_systems.tankStructure import TankPartNames
 from .. import g_config
 from . import remods, skins_dynamic, skins_static
@@ -111,7 +112,7 @@ def vDesc_process(self, vDesc, mode):
                 message = g_config.i18n['UI_install_skin'] + g_config.OSDesc['static'].name.join(('<b>', '</b>.'))
             else:
                 message = g_config.i18n['UI_install_default']
-    else:
+    elif not isinstance(vDesc, CompositeVehicleDescriptor):
         remods.apply(vDesc)
         if collisionNotVisible:
             message = g_config.i18n['UI_install_remod'] + g_config.OMDesc.name.join(
