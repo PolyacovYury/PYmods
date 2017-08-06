@@ -23,6 +23,7 @@ from gui.Scaleform.daapi.view.lobby.LobbyView import _LobbySubViewsCtrl
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
+from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from gui.customization import g_customizationController
 from gui.customization.data_aggregator import DataAggregator
@@ -289,6 +290,7 @@ class _Config(PYmodsCore.Config):
         self.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
         self.interCamo = []
         self.origInterCamo = []
+        self.changedNations = []
         self.activePreviewCamo = None
         self.UIProxy = None
         self.backupNationID = None
@@ -409,7 +411,7 @@ class _Config(PYmodsCore.Config):
         kwargs = dict(
             id='CamoSelectorUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/CamoSelector.png', enabled=self.data['enabled'], login=False, lobby=True,
-            callback=lambda: g_appLoader.getDefLobbyApp().loadView('CamoSelectorUI'))
+            callback=lambda: g_appLoader.getDefLobbyApp().loadView(ViewLoadParams('CamoSelectorUI')))
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
         except AttributeError:
@@ -472,10 +474,9 @@ InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 def new_customization(base, self, nationID):
     commonDescr = base(self, nationID)
     if _config.data['enabled']:
-        if commonDescr is None or not hasattr(self, 'changedNations') or nationID not in self.changedNations:
+        if commonDescr is None or nationID not in _config.changedNations:
             if _config.configFolders:
-                self.changedNations = getattr(self, 'changedNations', [])
-                self.changedNations.append(nationID)
+                _config.changedNations.append(nationID)
             for configDir in _config.configFolders:
                 customDescr = items.vehicles._readCustomization('vehicles/camouflages/' + configDir + '/settings.xml',
                                                                 nationID, idsRange=(5001, 65535))
@@ -627,7 +628,7 @@ def new_removeSlot(base, self, cType, slotIdx):
 
 
 @PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoaded')
-def new_onViewLoaded(base, self, view):
+def new_onViewLoaded(base, self, view, *_):
     if view is not None and view.settings is not None:
         alias = view.settings.alias
         if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
@@ -636,7 +637,7 @@ def new_onViewLoaded(base, self, view):
 
 
 @PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoadCanceled')
-def new_onViewLoadCanceled(base, self, name, item):
+def new_onViewLoadCanceled(base, self, name, item, *_):
     if item is not None and item.pyEntity is not None:
         alias = item.pyEntity.settings.alias
         if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
@@ -645,7 +646,7 @@ def new_onViewLoadCanceled(base, self, name, item):
 
 
 @PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoadError')
-def new_onViewLoadError(base, self, name, msg, item):
+def new_onViewLoadError(base, self, name, msg, item, *_):
     if item is not None and item.pyEntity is not None:
         alias = item.pyEntity.settings.alias
         if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:

@@ -11,6 +11,7 @@ from CurrentVehicle import g_currentPreviewVehicle
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
+from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from gui.shared.utils.HangarSpace import g_hangarSpace
 from items.vehicles import EmblemSlot, g_cache
@@ -59,14 +60,15 @@ class OMDescriptor(object):
         self.authorMessage = ''
         self.whitelists = {'Player': set(), 'Ally': set(), 'Enemy': set()}
         self.data = {
-            'chassis': {'undamaged': '', 'AODecals': None, 'hullPosition': None, 'wwsoundPC': '', 'wwsoundNPC': ''},
+            'chassis': {'undamaged': '', 'AODecals': None, 'hullPosition': None,
+                        'wwsound': '', 'wwsoundPC': '', 'wwsoundNPC': ''},
             'hull': {'undamaged': '', 'emblemSlots': [], 'exhaust': {'nodes': [], 'pixie': ''},
                      'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
             'turret': {'undamaged': '', 'emblemSlots': [],
                        'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
             'gun': {'undamaged': '', 'emblemSlots': [], 'effects': '', 'reloadEffect': '',
                     'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
-            'engine': {'wwsoundPC': '', 'wwsoundNPC': ''},
+            'engine': {'wwsound': '', 'wwsoundPC': '', 'wwsoundNPC': ''},
             'common': {'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}}}
 
 
@@ -442,7 +444,8 @@ class _Config(PYmodsCore.Config):
         kwargs = dict(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=True, lobby=True,
-            callback=lambda: self.loadingProxy is not None or g_appLoader.getDefLobbyApp().loadView('RemodEnablerUI'))
+            callback=lambda: self.loadingProxy is not None or g_appLoader.getDefLobbyApp().loadView(
+                ViewLoadParams('RemodEnablerUI')))
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
         except AttributeError:
@@ -593,53 +596,57 @@ class RemodEnablerUI(AbstractWindowView):
             for key in TankPartNames.ALL + ('engine',):
                 data[key] = OrderedDict()
             for key in TankPartNames.ALL:
-                data[key]['undamaged'] = getattr(vDesc, key)['models']['undamaged']
+                data[key]['undamaged'] = getattr(vDesc, key).models.undamaged
             chassis = data['chassis']
             for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
-                chassis[key] = str(vDesc.chassis[key])
-            chassis['hullPosition'] = vDesc.chassis['hullPosition'].tuple()
+                obj = str(getattr(vDesc.chassis, key))
+                if key == 'tracks':
+                    obj = obj.replace('TrackNode', 'TrackMaterials')
+                elif key == 'trackParams':
+                    obj = obj.replace('TrackNode', 'TrackParams')
+                chassis[key] = obj
+            chassis['hullPosition'] = vDesc.chassis.hullPosition.tuple()
             chassis['AODecals'] = []
-            for decal in vDesc.chassis['AODecals']:
+            for decal in vDesc.chassis.AODecals:
                 decDict = {'transform': OrderedDict()}
                 for strIdx in xrange(4):
                     decDict['transform']['row%s' % strIdx] = []
                     for colIdx in xrange(3):
                         decDict['transform']['row%s' % strIdx].append(decal.get(strIdx, colIdx))
-            for key in ('wwsoundPC', 'wwsoundNPC'):
-                chassis[key] = vDesc.chassis[key]
+            for partName in ('chassis', 'engine'):
+                for key in ('wwsound', 'wwsoundPC', 'wwsoundNPC'):
+                    data[partName][key] = getattr(getattr(vDesc, partName).sounds, key)
             pixieID = ''
             for key, value in g_cache._customEffects['exhaust'].iteritems():
-                if value == vDesc.hull['customEffects'][0]._selectorDesc:
+                if value == vDesc.hull.customEffects[0]._selectorDesc:
                     pixieID = key
                     break
-            data['hull']['exhaust'] = {'nodes': ' '.join(vDesc.hull['customEffects'][0].nodes), 'pixie': pixieID}
+            data['hull']['exhaust'] = {'nodes': ' '.join(vDesc.hull.customEffects[0].nodes), 'pixie': pixieID}
             for ids in (('_gunEffects', 'effects'), ('_gunReloadEffects', 'reloadEffect')):
                 for key, value in getattr(g_cache, ids[0]).items():
-                    if value == vDesc.gun[ids[1]]:
+                    if value == getattr(vDesc.gun, ids[1]):
                         data['gun'][ids[1]] = key
                         break
-            exclMask = vDesc.type.camouflageExclusionMask
+            exclMask = vDesc.type.camouflage.exclusionMask
             if exclMask:
                 camouflage = data['camouflage'] = OrderedDict()
                 camouflage['exclusionMask'] = exclMask
-                camouflage['tiling'] = vDesc.type.camouflageTiling
+                camouflage['tiling'] = vDesc.type.camouflage.tiling
             for partName in TankPartNames.ALL[1:]:
                 part = getattr(vDesc, partName)
                 data[partName]['emblemSlots'] = []
-                exclMask = part['camouflageExclusionMask']
+                exclMask = part.camouflage.exclusionMask
                 if exclMask:
                     camouflage = data[partName]['camouflage'] = OrderedDict()
                     camouflage['exclusionMask'] = exclMask
-                    camouflage['tiling'] = part['camouflageTiling']
-                for slot in part['emblemSlots']:
+                    camouflage['tiling'] = part.camouflage.tiling
+                for slot in part.emblemSlots:
                     slotDict = OrderedDict()
                     for key in ('rayStart', 'rayEnd', 'rayUp'):
                         slotDict[key] = getattr(slot, key).tuple()
                     for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId'):
                         slotDict[key] = getattr(slot, key)
                     data[partName]['emblemSlots'].append(slotDict)
-            data['engine']['wwsoundPC'] = vDesc.engine['wwsoundPC']
-            data['engine']['wwsoundNPC'] = vDesc.engine['wwsoundNPC']
             g_config.loadJson(str(settings.name), data, g_config.configPath + 'remods/', True, False, sort_keys=False)
             g_config.update_data()
             SystemMessages.pushMessage(

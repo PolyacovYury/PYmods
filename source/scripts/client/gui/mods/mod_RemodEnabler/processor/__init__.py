@@ -82,15 +82,15 @@ def vDesc_process(self, vDesc, mode):
             old_part = getattr(vDesc, partName)
             new_part = copy.deepcopy(old_part)
             setattr(vDesc, partName, new_part)
-            if 'hitTester' in old_part:
-                getattr(vDesc, partName)['hitTester'] = old_part['hitTester']
+            if hasattr(old_part, 'hitTester'):
+                getattr(vDesc, partName).hitTester = old_part.hitTester
         except StandardError:
             traceback.print_exc()
             print partName
     message = None
     collisionNotVisible = not g_config.data['collisionEnabled'] and not g_config.data['collisionComparisonEnabled']
-    vehNation, vehName = vDesc.chassis['models']['undamaged'].split('/')[1:3]
-    vehDefNation = vDesc.chassis['hitTester'].bspModelName.split('/')[1]
+    vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
+    vehDefNation = vDesc.chassis.hitTester.bspModelName.split('/')[1]
     if g_config.OMDesc is None:
         if vehNation == vehDefNation:
             if g_config.data['skinsFound']:
