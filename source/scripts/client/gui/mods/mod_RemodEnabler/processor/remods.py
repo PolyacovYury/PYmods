@@ -1,14 +1,12 @@
-import BigWorld
 import PYmodsCore
 import ResMgr
 import copy
 import traceback
 from Vehicle import Vehicle
 from gui.ClientHangarSpace import _VehicleAppearance
-from items.components import shared_components, component_constants
-from items.components.chassis_components import GroundNode, GroundNodeGroup, TrackNode, Wheel, WheelGroup, Traces, \
-    WheelsConfig, SplineConfig, TrackParams
-from items.components.shared_components import NodesAndGroups
+from items.components.chassis_components import *
+from items.components.chassis_components import WheelsConfig, SplineConfig, TrackParams
+from items.components.shared_components import NodesAndGroups, ModelStatesPaths
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 from .. import g_config
@@ -62,7 +60,7 @@ def apply(vDesc):
     for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
         obj = eval(data['chassis'][key])
         newObj = None
-        if isinstance (obj, dict):
+        if isinstance(obj, dict):
             if key == 'traces':
                 newObj = Traces(**obj)
             elif key == 'tracks':
@@ -97,7 +95,7 @@ def apply(vDesc):
                     if not hasattr(d, '_fields'):
                         d = TrackNode(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])
                     nodes.append(d)
-                newObj = NodesAndGroups(nodes=tuple(nodes), groups=component_constants.EMPTY_TUPLE)
+                newObj = NodesAndGroups(nodes=tuple(nodes), groups=())
             elif key == 'splineDesc':
                 newObj = SplineConfig(**obj)
             elif key == 'trackParams':
@@ -110,7 +108,7 @@ def apply(vDesc):
     for partName in TankPartNames.ALL:
         part = getattr(vDesc, partName)
         models = part.models
-        part.models = shared_components.ModelStatesPaths(data[partName]['undamaged'], models.destroyed, models.exploded)
+        part.models = ModelStatesPaths(data[partName]['undamaged'], models.destroyed, models.exploded)
     if data['gun']['effects']:
         newGunEffects = g_cache._gunEffects.get(data['gun']['effects'])
         if newGunEffects:
