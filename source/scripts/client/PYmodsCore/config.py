@@ -301,7 +301,7 @@ class Config(object):
                         conf_changed = True
         return conf_changed
 
-    def loadJson(self, name, oldConfig, path, save=False, rewrite=True, encrypted=False, sort_keys=True):
+    def loadJson(self, name, oldConfig, path, save=False, rewrite=True, encrypted=False, sort_keys=True, doPrint=True):
         config_new = oldConfig
         if not os.path.exists(path):
             os.makedirs(path)
@@ -340,7 +340,8 @@ class Config(object):
                     if conf_changed:
                         conf_newL = self.byte_ify(config_oldS).split('\n')
                 if conf_changed:
-                    print '%s: updating config: %s' % (self.ID, new_path)
+                    if doPrint:
+                        print '%s: updating config: %s' % (self.ID, new_path)
                     self.json_file_write(new_path, '\n'.join(conf_newL), encrypted)
             else:
                 self.json_file_write(new_path, self.json_dumps(oldConfig, sort_keys), encrypted)
