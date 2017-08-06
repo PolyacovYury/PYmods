@@ -3,14 +3,18 @@ import ResMgr
 import copy
 import traceback
 from Vehicle import Vehicle
+from collections import namedtuple
 from gui.ClientHangarSpace import _VehicleAppearance
 from items.components.chassis_components import *
-from items.components.chassis_components import WheelsConfig, SplineConfig, TrackParams
-from items.components.shared_components import NodesAndGroups, ModelStatesPaths
+from items.components.chassis_components import SplineConfig, WheelsConfig
+from items.components.shared_components import ModelStatesPaths, NodesAndGroups
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
-from .. import g_config
 from . import attached_models
+from .. import g_config
+
+TrackMaterials = namedtuple('TrackMaterials', ('lodDist', 'leftMaterial', 'rightMaterial', 'textureScale'))
+TrackParams = namedtuple('TrackParams', ('thickness', 'maxAmplitude', 'maxOffset', 'gravity'))
 
 
 def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
@@ -64,7 +68,7 @@ def apply(vDesc):
             if key == 'traces':
                 newObj = Traces(**obj)
             elif key == 'tracks':
-                newObj = TrackNode(**obj)
+                newObj = TrackMaterials(**obj)
             elif key == 'wheels':
                 groups = []
                 wheels = []

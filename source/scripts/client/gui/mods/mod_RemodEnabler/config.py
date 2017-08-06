@@ -594,7 +594,12 @@ class RemodEnablerUI(AbstractWindowView):
                 data[key]['undamaged'] = getattr(vDesc, key).models.undamaged
             chassis = data['chassis']
             for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
-                chassis[key] = str(getattr(vDesc.chassis, key))
+                obj = str(getattr(vDesc.chassis, key))
+                if key == 'tracks':
+                    obj = obj.replace('TrackNode', 'TrackMaterials')
+                elif key == 'trackParams':
+                    obj = obj.replace('TrackNode', 'TrackParams')
+                chassis[key] = obj
             chassis['hullPosition'] = vDesc.chassis.hullPosition.tuple()
             chassis['AODecals'] = []
             for decal in vDesc.chassis.AODecals:
