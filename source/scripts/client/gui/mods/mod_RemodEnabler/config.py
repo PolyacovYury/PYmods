@@ -322,9 +322,10 @@ class _Config(PYmodsCore.Config):
                     print '%s: config for %s loaded.' % (self.ID, sname)
 
             if not self.OM.models:
-                print '%s: no configs found, model module standing down.' % self.ID
+                if doPrint:
+                    print '%s: no configs found, model module standing down.' % self.ID
                 self.OM.enabled = False
-                self.loadJson('remodsCache', self.OM.selected, self.configPath, True)
+                self.loadJson('remodsCache', self.OM.selected, self.configPath, True, doPrint=doPrint)
             else:
                 remodTanks = {key: set() for key in self.OM.selected}
                 for OMDesc in self.OM.models.values():
@@ -342,11 +343,12 @@ class _Config(PYmodsCore.Config):
                             del self.OM.selected[tankType][xmlName]
                 if self.OM.selected['Remod'] and self.OM.selected['Remod'] not in self.OM.models:
                     self.OM.selected['Remod'] = ''
-                self.loadJson('remodsCache', self.OM.selected, self.configPath, True)
+                self.loadJson('remodsCache', self.OM.selected, self.configPath, True, doPrint=doPrint)
         else:
-            print '%s: no remods found, model module standing down.' % self.ID
+            if doPrint:
+                print '%s: no remods found, model module standing down.' % self.ID
             self.OM.enabled = False
-            self.loadJson('remodsCache', self.OM.selected, self.configPath, True)
+            self.loadJson('remodsCache', self.OM.selected, self.configPath, True, doPrint=doPrint)
         self.OS.enabled = ResMgr.openSection('vehicles/skins/') is not None and ResMgr.isDir('vehicles/skins/')
         if self.OS.enabled:
             self.OS.priorities = self.loadJson('skinsPriority', self.OS.priorities, self.configPath)
@@ -406,7 +408,8 @@ class _Config(PYmodsCore.Config):
                     if sname not in snameList:
                         del skinsSettings[sname]
             if not any(self.OS.models.values()):
-                print '%s: no skins configs found, skins module standing down.' % self.ID
+                if doPrint:
+                    print '%s: no skins configs found, skins module standing down.' % self.ID
                 self.OS.enabled = False
                 for skinType in self.OS.priorities:
                     for key in self.OS.priorities[skinType]:
@@ -423,8 +426,8 @@ class _Config(PYmodsCore.Config):
             for skinType in self.OS.priorities:
                 for key in self.OS.priorities[skinType]:
                     self.OS.priorities[skinType][key] = []
-        self.loadJson('skinsPriority', self.OS.priorities, self.configPath, True)
-        self.loadJson('settings', self.settings, self.configPath, True)
+        self.loadJson('skinsPriority', self.OS.priorities, self.configPath, True, doPrint=doPrint)
+        self.loadJson('settings', self.settings, self.configPath, True, doPrint=doPrint)
 
     def do_config(self):
         super(self.__class__, self).do_config()
@@ -563,8 +566,9 @@ class RemodEnablerUI(AbstractWindowView):
         for idx, prioritiesArray in enumerate(settings.priorities):
             for teamIdx, team in enumerate(('Player', 'Ally', 'Enemy')):
                 g_config.OS.priorities[('static', 'dynamic')[idx]][team] = prioritiesArray[teamIdx]
-        g_config.loadJson('skinsPriority', g_config.OS.priorities, g_config.configPath, True)
-        g_config.loadJson('settings', g_config.settings, g_config.configPath, True)
+        g_config.loadJson('skinsPriority', g_config.OS.priorities, g_config.configPath, True,
+                          doPrint=g_config.data['isDebug'])
+        g_config.loadJson('settings', g_config.settings, g_config.configPath, True, doPrint=g_config.data['isDebug'])
         g_config.update_data(g_config.data['isDebug'])
         g_currentPreviewVehicle.refreshModel()
 
@@ -725,7 +729,8 @@ def lobbyKeyControl(event):
                     continue
                 if vehName in selected:
                     selected[vehName] = getattr(curPRecord, 'name', '')
-                g_config.loadJson('remodsCache', g_config.OM.selected, g_config.configPath, True)
+                g_config.loadJson('remodsCache', g_config.OM.selected, g_config.configPath, True,
+                                  doPrint=g_config.data['isDebug'])
                 break
         else:
             snameList = sorted(g_config.OM.models.keys())
@@ -737,7 +742,8 @@ def lobbyKeyControl(event):
                     snameIdx = 0
             sname = snameList[snameIdx]
             g_config.OM.selected['Remod'] = sname
-            g_config.loadJson('remodsCache', g_config.OM.selected, g_config.configPath, True)
+            g_config.loadJson('remodsCache', g_config.OM.selected, g_config.configPath, True,
+                              doPrint=g_config.data['isDebug'])
         g_currentPreviewVehicle.refreshModel()
 
 
