@@ -7,7 +7,7 @@ from collections import namedtuple
 from gui.ClientHangarSpace import _VehicleAppearance
 from items.components.chassis_components import *
 from items.components.chassis_components import SplineConfig, WheelsConfig
-from items.components.shared_components import ModelStatesPaths, NodesAndGroups
+from items.components.shared_components import Camouflage, ModelStatesPaths, NodesAndGroups
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 from . import attached_models
@@ -158,16 +158,13 @@ def apply(vDesc):
                 part.emblemSlots[i] = part.emblemSlots[i]._replace(size=0.001)
 
     exclMask = data['common']['camouflage']['exclusionMask']
-    vDesc.type.camouflage.exclusionMask = exclMask
-    if exclMask:
-        vDesc.type.camouflage.tiling = data['common']['camouflage']['tiling']
-    for partName in ('hull', 'gun', 'turret'):
+    vDesc.type.camouflage = Camouflage(
+        data['common']['camouflage']['tiling'] if exclMask else vDesc.type.camouflage.tiling, exclMask)
+    for partName in TankPartNames.ALL[1:]:
         camoData = data[partName]['camouflage']
         exclMask = camoData['exclusionMask']
         if exclMask:
-            part = getattr(vDesc, partName)
-            part.camouflage.exclusionMask = exclMask
-            part.camouflage.tiling = camoData['tiling']
+            getattr(vDesc, partName).camouflage = Camouflage(camoData['tiling'], exclMask)
     exhaust = data['hull']['exhaust']
     for effectDesc in vDesc.hull.customEffects:
         if exhaust['nodes']:
@@ -175,7 +172,7 @@ def apply(vDesc):
         effectDesc._selectorDesc = g_cache._customEffects['exhaust'].get(exhaust['pixie'], effectDesc._selectorDesc)
     for partName in ('chassis', 'engine'):
         for key in ('wwsoundPC', 'wwsoundNPC'):
-            part = getattr(vDesc, partName)
+            part = getattr(vDesc, partName).sounds
             soundID = data[partName][key]
             if soundID:
                 setattr(part, key, soundID)
