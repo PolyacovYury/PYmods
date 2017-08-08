@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from collections import OrderedDict
-
 import BigWorld
 import Keys
 import Math
@@ -10,13 +8,16 @@ import glob
 import os
 import traceback
 from CurrentVehicle import g_currentPreviewVehicle
+from collections import OrderedDict
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from gui.shared.utils.HangarSpace import g_hangarSpace
-from items.vehicles import EmblemSlot, g_cache, CompositeVehicleDescriptor
+from items.components import component_constants
+from items.components.shared_components import EmblemSlot
+from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
 
 
@@ -35,9 +36,9 @@ def readAODecals(confList):
 def readEmblemSlots(confList):
     slots = []
     for confDict in confList:
-        if confDict['type'] not in ('player', 'clan', 'inscription', 'insigniaOnGun'):
+        if confDict['type'] not in component_constants.ALLOWED_EMBLEM_SLOTS:
             print '%s: not supported emblem slot type: %s, expected: %s' % (
-                g_config.ID, confDict['type'], ' '.join(('player', 'clan', 'inscription', 'insigniaOnGun')))
+                g_config.ID, confDict['type'], ' '.join(component_constants.ALLOWED_EMBLEM_SLOTS))
         descr = EmblemSlot(Math.Vector3(tuple(confDict['rayStart'])), Math.Vector3(tuple(confDict['rayEnd'])),
                            Math.Vector3(tuple(confDict['rayUp'])), confDict['size'],
                            confDict.get('hideIfDamaged', False), confDict['type'], confDict.get('isMirrored', False),
