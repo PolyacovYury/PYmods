@@ -148,6 +148,7 @@ class _Config(PYmodsCore.Config):
                                               'List is scrollable if longer than 10 items.',
             'UI_flash_whiteDropdown_default': 'Click to expand',
             'UI_flash_useFor_header_text': 'Use this item for:',
+            'UI_flash_useFor_enable_text': 'Enabled',
             'UI_flash_useFor_player_text': 'Player',
             'UI_flash_useFor_ally_text': 'Allies',
             'UI_flash_useFor_enemy_text': 'Enemies',
@@ -483,7 +484,8 @@ class RemodEnablerUI(AbstractWindowView):
             'useFor': {'header': g_config.createLabel('useFor_header', 'flash'),
                        'ally': g_config.createLabel('useFor_ally', 'flash'),
                        'enemy': g_config.createLabel('useFor_enemy', 'flash'),
-                       'player': g_config.createLabel('useFor_player', 'flash')},
+                       'player': g_config.createLabel('useFor_player', 'flash'),
+                       'enable': g_config.createLabel('useFor_enable', 'flash')},
             'backBtn': g_config.i18n['UI_flash_backBtn'],
             'saveBtn': g_config.i18n['UI_flash_saveBtn']
         }
@@ -539,14 +541,14 @@ class RemodEnablerUI(AbstractWindowView):
         vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
         return vDesc.name.split(':')[1].lower()
 
-    def py_onRequestVehicleDelete(self):
+    def py_onRequestVehicleDelete(self, teamIdx):
         from gui import DialogsInterface
         from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta, I18nConfirmDialogButtons
 
         DialogsInterface.showDialog(SimpleDialogMeta(g_config.i18n['UI_flash_WLVehDelete_header'],
                                                      g_config.i18n['UI_flash_WLVehDelete_text'],
                                                      I18nConfirmDialogButtons('common/confirm'), None),
-                                    self.flashObject.as_onVehicleDeleteConfirmed)
+                                    lambda proceed: self.flashObject.as_onVehicleDeleteConfirmed(proceed, teamIdx))
 
     @staticmethod
     def py_onSaveSettings(settings):
