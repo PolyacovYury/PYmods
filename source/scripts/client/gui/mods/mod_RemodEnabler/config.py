@@ -501,9 +501,10 @@ class RemodEnablerUI(AbstractWindowView):
             OMSettings = g_config.settings['remods'][sname]
             texts['remodNames'].append(sname)
             # noinspection PyTypeChecker
-            settings['remods'].append({'useFor': {key.lower(): OMSettings['swap%s' % key] for key in OM.tankGroups},
-                                       'whitelists': [str(OMSettings[team.lower() + 'Whitelist']).split(',')
-                                                      for team in OM.tankGroups]})
+            settings['remods'].append({
+                'useFor': {key.lower(): OMSettings['swap%s' % key] for key in OM.tankGroups},
+                'whitelists': [[x for x in str(OMSettings[team.lower() + 'Whitelist']).split(',') if x]
+                               for team in OM.tankGroups]})
         for idx, skinType in enumerate(('', '_dynamic')):
             skins = g_config.settings['skins%s' % skinType]
             for sname in sorted(g_config.OS.models['static' if not skinType else 'dynamic']):
@@ -519,8 +520,9 @@ class RemodEnablerUI(AbstractWindowView):
         currentVehicle = RemodEnablerUI.py_getCurrentVehicleName()
         if OMDesc is not None:
             return {'isRemod': True, 'name': OMDesc.name, 'message': OMDesc.authorMessage, 'vehicleName': currentVehicle,
-                    'whitelists': [str(g_config.settings['remods'][OMDesc.name][team.lower() + 'Whitelist']).split(',')
-                                   for team in OM.tankGroups]}
+                    'whitelists': [
+                        [x for x in str(g_config.settings['remods'][OMDesc.name][team.lower() + 'Whitelist']).split(',')
+                         if x] for team in OM.tankGroups]}
         else:
             return {'isRemod': False, 'name': '', 'message': '', 'vehicleName': currentVehicle,
                     'whitelists': [[currentVehicle] for _ in OM.tankGroups]}
