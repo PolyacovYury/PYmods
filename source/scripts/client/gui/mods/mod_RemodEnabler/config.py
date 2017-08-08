@@ -203,7 +203,6 @@ class _Config(PYmodsCore.Config):
             'UI_mode_ally': 'ally tank preview',
             'UI_mode_enemy': 'enemy tank preview',
             'UI_mode_remod': 'all remods preview'}
-        self.configsDict = {}
         self.settings = {'remods': {}, 'skins': {}, 'skins_dynamic': {}}
         self.skinsCache = {"CRC32": "", "version": ""}
         self.OM = OM()
@@ -250,14 +249,16 @@ class _Config(PYmodsCore.Config):
         self.OM.enabled = bool(glob.glob(configsPath))
         if self.OM.enabled:
             self.OM.selected = self.loadJson('remodsCache', self.OM.selected, self.configPath)
+            snameList = set()
             for configPath in glob.iglob(configsPath):
                 sname = os.path.basename(configPath).split('.')[0]
-                self.configsDict[sname] = confDict = self.loadJson(sname, self.configsDict.get(sname, {}),
-                                                                   os.path.dirname(configPath) + '/', encrypted=True)
+                confDict = self.loadJson(sname, {}, os.path.dirname(configPath) + '/',
+                                         encrypted=True)
                 if not confDict:
                     print '%s: error while reading %s.' % (self.ID, os.path.basename(configPath))
                     continue
                 settingsDict = self.settings['remods'].setdefault(sname, {})
+                snameList.add(sname)
                 if not settingsDict.setdefault('enabled', self.defaultRemodConfig['enabled']):
                     print '%s: %s disabled, moving on' % (self.ID, sname)
                     if sname in self.OM.models:
@@ -324,6 +325,14 @@ class _Config(PYmodsCore.Config):
                             data[subKey] = confSubDict[subKey]
                 if self.data['isDebug']:
                     print '%s: config for %s loaded.' % (self.ID, sname)
+
+            for sname in self.OM.models.keys():
+                if sname not in snameList:
+                    del self.OM.models[sname]
+
+            for sname in self.settings['remods'].keys():
+                if sname not in snameList:
+                    del self.settings['remods'][sname]
 
             if not self.OM.models:
                 if doPrint:
