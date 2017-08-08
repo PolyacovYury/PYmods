@@ -145,12 +145,13 @@ class _Config(PYmodsCore.Config):
             'UI_flash_team_player': 'Player',
             'UI_flash_team_ally': 'Ally',
             'UI_flash_team_enemy': 'Enemy',
-            'UI_flash_whiteList_addBtn': 'Add current tank',
-            'UI_flash_whiteList_del_text': 'View and delete:',
-            'UI_flash_whiteList_del_tooltip': 'Open to view all items, select an item to delete.\n\n'
+            'UI_flash_whiteList_addBtn': 'Add',
+            'UI_flash_whiteList_header_text': 'Whitelists for:',
+            'UI_flash_whiteList_header_tooltip': 'Open to view all items, select an item to delete.\n\n'
                                               'List is scrollable if longer than 10 items.',
-            'UI_flash_whiteDropdown_default': 'Click to expand',
+            'UI_flash_whiteDropdown_default': 'Expand',
             'UI_flash_useFor_header_text': 'Use this item for:',
+            'UI_flash_useFor_enable_text': 'Enabled',
             'UI_flash_useFor_player_text': 'Player',
             'UI_flash_useFor_ally_text': 'Allies',
             'UI_flash_useFor_enemy_text': 'Enemies',
@@ -493,12 +494,13 @@ class RemodEnablerUI(AbstractWindowView):
             'remodNames': [],
             'skinNames': [[], []],
             'whiteList': {'addBtn': g_config.i18n['UI_flash_whiteList_addBtn'],
-                          'delLabel': g_config.createLabel('whiteList_del', 'flash'),
+                          'label': g_config.createLabel('whiteList_header', 'flash'),
                           'defStr': g_config.i18n['UI_flash_whiteDropdown_default']},
             'useFor': {'header': g_config.createLabel('useFor_header', 'flash'),
                        'ally': g_config.createLabel('useFor_ally', 'flash'),
                        'enemy': g_config.createLabel('useFor_enemy', 'flash'),
-                       'player': g_config.createLabel('useFor_player', 'flash')},
+                       'player': g_config.createLabel('useFor_player', 'flash'),
+                       'enable': g_config.createLabel('useFor_enable', 'flash')},
             'backBtn': g_config.i18n['UI_flash_backBtn'],
             'saveBtn': g_config.i18n['UI_flash_saveBtn']
         }
@@ -514,9 +516,10 @@ class RemodEnablerUI(AbstractWindowView):
             OMSettings = g_config.settings['remods'][sname]
             texts['remodNames'].append(sname)
             # noinspection PyTypeChecker
-            settings['remods'].append({'useFor': {key.lower(): OMSettings['swap%s' % key] for key in OM.tankGroups},
-                                       'whitelists': [str(OMSettings[team.lower() + 'Whitelist']).split(',')
-                                                      for team in OM.tankGroups]})
+            settings['remods'].append({
+                'useFor': {key.lower(): OMSettings['swap%s' % key] for key in OM.tankGroups},
+                'whitelists': [[x for x in str(OMSettings[team.lower() + 'Whitelist']).split(',') if x]
+                               for team in OM.tankGroups]})
         for idx, skinType in enumerate(('', '_dynamic')):
             skins = g_config.settings['skins%s' % skinType]
             for sname in sorted(g_config.OS.models['static' if not skinType else 'dynamic']):
@@ -599,8 +602,9 @@ class RemodEnablerUI(AbstractWindowView):
             self.py_sendMessage('', 'Add', 'notSupported')
         if OMDesc is not None:
             return {'isRemod': True, 'name': OMDesc.name, 'message': OMDesc.authorMessage, 'vehicleName': currentVehicle,
-                    'whitelists': [str(g_config.settings['remods'][OMDesc.name][team.lower() + 'Whitelist']).split(',')
-                                   for team in OM.tankGroups]}
+                    'whitelists': [
+                        [x for x in str(g_config.settings['remods'][OMDesc.name][team.lower() + 'Whitelist']).split(',')
+                         if x] for team in OM.tankGroups]}
         else:
             return {'isRemod': False, 'name': '', 'message': '', 'vehicleName': currentVehicle,
                     'whitelists': [[currentVehicle] if currentVehicle else [] for _ in OM.tankGroups]}
@@ -621,14 +625,14 @@ class RemodEnablerUI(AbstractWindowView):
         vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
         return vDesc.name.split(':')[1].lower()
 
-    def py_onRequestVehicleDelete(self):
+    def py_onRequestVehicleDelete(self, teamIdx):
         from gui import DialogsInterface
         from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta, I18nConfirmDialogButtons
 
         DialogsInterface.showDialog(SimpleDialogMeta(g_config.i18n['UI_flash_WLVehDelete_header'],
                                                      g_config.i18n['UI_flash_WLVehDelete_text'],
                                                      I18nConfirmDialogButtons('common/confirm'), None),
-                                    self.flashObject.as_onVehicleDeleteConfirmed)
+                                    lambda proceed: self.flashObject.as_onVehicleDeleteConfirmed(proceed, teamIdx))
 
     @staticmethod
     def py_onSaveSettings(settings):
