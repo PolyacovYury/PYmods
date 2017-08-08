@@ -155,7 +155,7 @@ def apply(vDesc):
     for partName in ('hull', 'turret'):
         if not data[partName]['emblemSlots']:
             part = getattr(vDesc, partName)
-            for i in range(len(part['emblemSlots'])):
+            for i in range(len(part.emblemSlots)):
                 part.emblemSlots[i] = part.emblemSlots[i]._replace(size=0.001)
 
     exclMask = data['common']['camouflage']['exclusionMask']

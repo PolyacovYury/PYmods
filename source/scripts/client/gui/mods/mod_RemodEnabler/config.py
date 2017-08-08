@@ -523,6 +523,9 @@ class RemodEnablerUI(AbstractWindowView):
             try:
                 data = self.newRemodData
                 data.clear()
+                data['authorMessage'] = ''
+                for team in OM.tankGroups:
+                    data[team.lower() + 'Whitelist'] = [currentVehicle] if currentVehicle else []
                 vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
                 for key in TankPartNames.ALL + ('engine',):
                     data[key] = OrderedDict()
@@ -566,7 +569,7 @@ class RemodEnablerUI(AbstractWindowView):
                 for partName in TankPartNames.ALL[1:]:
                     part = getattr(vDesc, partName)
                     data[partName]['emblemSlots'] = []
-                    exclMask = part.camouflage.exclusionMask
+                    exclMask = part.camouflage.exclusionMask if hasattr(part, 'camouflage') else ''
                     if exclMask:
                         camouflage = data[partName]['camouflage'] = OrderedDict()
                         camouflage['exclusionMask'] = exclMask
