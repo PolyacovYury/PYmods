@@ -62,19 +62,17 @@ def new_reconstruct(base, x, info, deep, memo=None):
     return base(x, info, deep, memo)
 
 
-def vDesc_process(self, vDesc, mode):
+def vDesc_process(vehicleID, vDesc, mode):
     if mode == 'battle':
         currentMode = mode
-        isPlayerVehicle = self.id == BigWorld.player().playerVehicleID
-        playerName = BigWorld.player().arena.vehicles.get(self.id)['name']
-        isAlly = BigWorld.player().arena.vehicles.get(self.id)['team'] == BigWorld.player().team
-        vehicleID = self.id
+        isPlayerVehicle = vehicleID == BigWorld.player().playerVehicleID
+        playerName = BigWorld.player().arena.vehicles.get(vehicleID)['name']
+        isAlly = BigWorld.player().arena.vehicles.get(vehicleID)['team'] == BigWorld.player().team
     elif mode == 'hangar':
         currentMode = g_config.data['currentMode']
         isPlayerVehicle = currentMode == 'player'
         playerName = None
         isAlly = currentMode == 'ally'
-        vehicleID = self._VehicleAppearance__vEntityId
     else:
         return
     xmlName = vDesc.name.split(':')[1].lower()
@@ -131,7 +129,7 @@ def vDesc_process(self, vDesc, mode):
 def new_getDescr(base, self, respawnCompactDescr):
     vDesc = base(self, respawnCompactDescr)
     if g_config.data['enabled']:
-        vDesc_process(self, vDesc, 'battle')
+        vDesc_process(self.id, vDesc, 'battle')
     return vDesc
 
 
@@ -139,7 +137,7 @@ def new_getDescr(base, self, respawnCompactDescr):
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled']:
         g_config.curVehicleName = vDesc.name.split(':')[1].lower()
-        vDesc_process(self, vDesc, 'hangar')
+        vDesc_process(self._VehicleAppearance__vEntityId, vDesc, 'hangar')
     base(self, vDesc, vState)
 
 
@@ -148,6 +146,6 @@ def new_startGUI(base, self, *args):
     base(self, *args)
     for vehicleID, vInfo in BigWorld.player().arena.vehicles.items():
         try:
-            vDesc_process(BigWorld.entity(vehicleID), vInfo['vehicleType'], 'battle')
+            vDesc_process(vehicleID, vInfo['vehicleType'], 'battle')
         except StandardError:
             traceback.print_exc()
