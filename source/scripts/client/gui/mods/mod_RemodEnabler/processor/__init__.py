@@ -2,6 +2,7 @@ import BigWorld
 import PYmodsCore
 import copy
 import traceback
+from Avatar import PlayerAvatar
 from CurrentVehicle import _CurrentPreviewVehicle
 from Vehicle import Vehicle
 from gui import SystemMessages
@@ -140,3 +141,13 @@ def new_startBuild(base, self, vDesc, vState):
         g_config.curVehicleName = vDesc.name.split(':')[1].lower()
         vDesc_process(self, vDesc, 'hangar')
     base(self, vDesc, vState)
+
+
+@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
+def new_startGUI(base, self, *args):
+    base(self, *args)
+    for vehicleID, vInfo in BigWorld.player().arena.vehicles.items():
+        try:
+            vDesc_process(BigWorld.entity(vehicleID), vInfo['vehicleType'], 'battle')
+        except StandardError:
+            traceback.print_exc()

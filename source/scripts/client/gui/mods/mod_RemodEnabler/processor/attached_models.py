@@ -15,12 +15,20 @@ dynamic_db = {}
 
 def create(vehicleID, mod, mode, models, visible=False):
     try:
-        dynamic_db.setdefault(vehicleID, {})[mod] = {
-            'models': {modelPath: {'model': None, 'nodeName': nodeName} for modelPath, nodeName in models},
-            'loaded': False, 'entered': False, 'loading': True, 'mode': mode}
         resList = []
-        for modelPath, _ in models:
-            resList.append(modelPath)
+        vehEntry = dynamic_db.setdefault(vehicleID, {})
+        if mod not in vehEntry:
+            vehEntry[mod] = {
+                'models': {modelPath: {'model': None, 'nodeName': nodeName} for modelPath, nodeName in models},
+                'loaded': False, 'entered': False, 'loading': True, 'mode': mode}
+            for modelPath, _ in models:
+                resList.append(modelPath)
+        else:
+            for modelPath, nodeName in models:
+                if modelPath not in vehEntry[mod]['models']:
+                    vehEntry[mod]['models'][modelPath] = {'model': None, 'nodeName': nodeName}
+                    vehEntry[mod].update({'loaded': False, 'entered': False, 'loading': True})
+                    resList.append(modelPath)
         BigWorld.loadResourceListBG(tuple(resList), partial(onLoad, vehicleID, mod, resList, visible))
     except StandardError:
         traceback.print_exc()
@@ -135,11 +143,11 @@ def new_startVisual(base, self):
         BigWorld.callback(0.1, partial(attach, self.id, visible=True))
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, 'vehicle_onLeaveWorld')
-def new_vehicle_onLeaveWorld(base, self, vehicle):
-    if vehicle.isStarted:
-        detach(vehicle.id)
-    base(self, vehicle)
+@PYmodsCore.overrideMethod(Vehicle, 'stopVisual')
+def new_vehicle_onLeaveWorld(base, self, *args):
+    if self.isStarted:
+        detach(self.id)
+    base(self, *args)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__destroyGUI')
