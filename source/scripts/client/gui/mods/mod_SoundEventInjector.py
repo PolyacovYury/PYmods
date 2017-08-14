@@ -7,6 +7,7 @@ import os
 import traceback
 from ReloadEffect import _BarrelReloadDesc
 from debug_utils import LOG_ERROR
+from gui import IngameSoundNotifications
 from helpers.EffectsList import _SoundEffectDesc
 from items.components import sound_components
 from material_kinds import EFFECT_MATERIALS
@@ -16,7 +17,7 @@ class _Config(PYmodsCore.Config):
     def __init__(self):
         super(self.__class__, self).__init__('%(mod_ID)s')
         self.version = '1.0.0 (%(file_compile_date)s)'
-        self.data = {'engines': {}, 'gunReloadEffects': {}, 'shot_effects': {}}
+        self.data = {'engines': {}, 'gunReloadEffects': {}, 'shot_effects': {}, 'sound_notifications': {}}
 
     def updateMod(self):
         pass
@@ -45,13 +46,13 @@ class _Config(PYmodsCore.Config):
                         items[nationName] = {}
                         for itemName in nationData:
                             items[nationName][itemName] = nationData[itemName]
-                if itemType in ('gun_reload_effects', 'shot_effects'):
+                if itemType in ('gun_reload_effects', 'shot_effects', 'sound_notifications'):
                     for itemName in itemsData:
                         items.setdefault(itemName, {}).update(itemsData[itemName])
 
     def load(self):
         self.update_data(True)
-        if any(self.data.values()):
+        if any(self.data[key] for key in ('engines', 'gunReloadEffects', 'shot_effects')):
             items.vehicles.init(True, None)
         print '%s: initialised.' % (self.message())
 
@@ -120,6 +121,19 @@ def new_readShotEffects(base, xmlCtx, section):
                     effectDesc._impactNames = tuple(typeData.get(key, effectDesc._impactNames[idx]) for idx, key in
                                                     enumerate(('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC')))
     return res
+
+
+@PYmodsCore.overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '_IngameSoundNotifications__readConfig')
+def new_readConfig(base, self):
+    base(self)
+    events = self._IngameSoundNotifications__events
+    notificationsData = _config.data['sound_notifications']
+    for eventName, event in events.iteritems():
+        if eventName in notificationsData:
+            for category in event:
+                event[category]['sound'] = notificationsData[eventName].get(category, event[category]['sound'])
+
+    self._IngameSoundNotifications__events = events
 
 
 _config = _Config()
