@@ -17,7 +17,7 @@ class _Config(PYmodsCore.Config):
     def __init__(self):
         super(self.__class__, self).__init__('%(mod_ID)s')
         self.version = '1.0.0 (%(file_compile_date)s)'
-        self.data = {'engines': {}, 'gunReloadEffects': {}, 'shot_effects': {}, 'sound_notifications': {}}
+        self.data = {'engines': {}, 'gun_reload_effects': {}, 'shot_effects': {}, 'sound_notifications': {}}
 
     def updateMod(self):
         pass
