@@ -108,7 +108,7 @@ def new_readShotEffects(base, xmlCtx, section):
     sname = xmlCtx[1]
     if sname in effectsData:
         effData = effectsData[sname]
-        for effType in (x for x in ('projectile', ) if x in effData):
+        for effType in (x for x in ('projectile',) if x in effData):
             typeData = effData[effType]
             for effectDesc in res[effType][2]._EffectsList__effectDescList:
                 if isinstance(effectDesc, _SoundEffectDesc):
@@ -136,7 +136,7 @@ def new_readEffectGroups(base, xmlPath, withSubgroups=False):
 
 @PYmodsCore.overrideMethod(items.vehicles, '_readGun')
 def new_readGun(base, xmlCtx, section, item, unlocksDescrs=None, _=None):
-    base(xmlCtx, section, item, unlocksDescrs=None, _=None)
+    base(xmlCtx, section, item, unlocksDescrs, _)
     nationID, itemID = item.id
     item.effects = items.vehicles.g_cache._gunEffects.get(
         _config.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', ''), item.effects)
