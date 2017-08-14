@@ -7,14 +7,16 @@ import os
 import traceback
 from ReloadEffect import _BarrelReloadDesc
 from debug_utils import LOG_ERROR
+from helpers.EffectsList import _SoundEffectDesc
 from items.components import sound_components
+from material_kinds import EFFECT_MATERIALS
 
 
 class _Config(PYmodsCore.Config):
     def __init__(self):
         super(self.__class__, self).__init__('%(mod_ID)s')
         self.version = '1.0.0 (%(file_compile_date)s)'
-        self.data = {'engines': {}, 'gunReloadEffects': {}}
+        self.data = {'engines': {}, 'gunReloadEffects': {}, 'shot_effects': {}}
 
     def updateMod(self):
         pass
@@ -43,9 +45,9 @@ class _Config(PYmodsCore.Config):
                         items[nationName] = {}
                         for itemName in nationData:
                             items[nationName][itemName] = nationData[itemName]
-                if itemType in ('gunReloadEffects',):
+                if itemType in ('gun_reload_effects', 'shot_effects'):
                     for itemName in itemsData:
-                        items[itemName] = itemsData[itemName]
+                        items.setdefault(itemName, {}).update(itemsData[itemName])
 
     def load(self):
         self.update_data(True)
@@ -94,6 +96,29 @@ def new_readReloadEffects(base, xmlPath):
             descr.caliber = effData.get('caliber', descr.caliber)
             descr.shellDt = effData.get('loopShellDt', descr.shellDt)
             descr.shellDtLast = effData.get('loopShellLastDt', descr.shellDtLast)
+    return res
+
+
+@PYmodsCore.overrideMethod(items.vehicles, '_readShotEffects')
+def new_readShotEffects(base, xmlCtx, section):
+    res = base(xmlCtx, section)
+    effectsData = _config.data['shot_effects']
+    sname = xmlCtx[1]
+    if sname in effectsData:
+        effData = effectsData[sname]
+        for effType in (x for x in ('projectile', ) if x in effData):
+            typeData = effData[effType]
+            for effectDesc in res[effType][2]._EffectsList__effectDescList:
+                if isinstance(effectDesc, _SoundEffectDesc):
+                    effectDesc._soundNames = tuple(typeData.get(key, effectDesc._soundNames[idx]) for idx, key in
+                                                   enumerate(('wwsoundPC', 'wwsoundNPC')))
+        for effType in (x for x in (tuple(x + 'Hit' for x in EFFECT_MATERIALS) + (
+                'armorBasicRicochet', 'armorRicochet', 'armorResisted', 'armorHit', 'armorCriticalHit')) if x in effData):
+            typeData = effData[effType]
+            for effectDesc in res[effType].effectsList._EffectsList__effectDescList:
+                if isinstance(effectDesc, _SoundEffectDesc):
+                    effectDesc._impactNames = tuple(typeData.get(key, effectDesc._impactNames[idx]) for idx, key in
+                                                    enumerate(('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC')))
     return res
 
 
