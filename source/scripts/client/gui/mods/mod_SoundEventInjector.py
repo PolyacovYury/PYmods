@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import PYmodsCore
+import ResMgr
 import glob
 import items.vehicles
 import nations
@@ -17,7 +18,7 @@ class _Config(PYmodsCore.Config):
     def __init__(self):
         super(self.__class__, self).__init__('%(mod_ID)s')
         self.version = '1.0.0 (%(file_compile_date)s)'
-        self.data = {'engines': {}, 'gun_reload_effects': {}, 'shot_effects': {}, 'sound_notifications': {}}
+        self.data = {'engines': {}, 'gun_reload_effects': {}, 'shot_effects': {}, 'sound_notifications': {}, 'guns': {}}
 
     def updateMod(self):
         pass
@@ -34,21 +35,21 @@ class _Config(PYmodsCore.Config):
                 print '%s: config %s is invalid.' % (self.ID, os.path.basename(confPath))
                 traceback.print_exc()
                 continue
-            for itemType, itemsData in confdict.iteritems():
+            for itemType, itemsDict in confdict.iteritems():
                 if itemType not in self.data:
                     continue
-                items = self.data[itemType]
-                if itemType in ('engines',):
-                    for nationName, nationData in itemsData.iteritems():
+                itemsData = self.data[itemType]
+                if itemType in ('engines', 'guns'):
+                    for nationName, nationData in itemsDict.iteritems():
                         if nationName not in nations.NAMES:
                             print '%s: unknown nation in %s data: %s' % (self.ID, itemType, nationName)
                             continue
-                        items[nationName] = {}
+                        itemsData[nationName] = {}
                         for itemName in nationData:
-                            items[nationName][itemName] = nationData[itemName]
+                            itemsData[nationName][itemName] = nationData[itemName]
                 if itemType in ('gun_reload_effects', 'shot_effects', 'sound_notifications'):
-                    for itemName in itemsData:
-                        items.setdefault(itemName, {}).update(itemsData[itemName])
+                    for itemName in itemsDict:
+                        itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
 
     def load(self):
         self.update_data(True)
@@ -121,6 +122,24 @@ def new_readShotEffects(base, xmlCtx, section):
                     effectDesc._impactNames = tuple(typeData.get(key, effectDesc._impactNames[idx]) for idx, key in
                                                     enumerate(('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC')))
     return res
+
+
+@PYmodsCore.overrideMethod(items.vehicles, '_readEffectGroups')
+def new_readEffectGroups(base, xmlPath, withSubgroups=False):
+    res = base(xmlPath, withSubgroups)
+    if 'gun_effects' in xmlPath:
+        newXmlPath = '../' + _config.configPath + 'configs/gun_effects.xml'
+        if ResMgr.isFile(newXmlPath):
+            res.update(base(newXmlPath, withSubgroups))
+    return res
+
+
+@PYmodsCore.overrideMethod(items.vehicles, '_readGun')
+def new_readGun(base, xmlCtx, section, item, unlocksDescrs=None, _=None):
+    base(xmlCtx, section, item, unlocksDescrs=None, _=None)
+    nationID, itemID = item.id
+    item.effects = items.vehicles.g_cache._gunEffects.get(
+        _config.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', ''), item.effects)
 
 
 @PYmodsCore.overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '_IngameSoundNotifications__readConfig')
