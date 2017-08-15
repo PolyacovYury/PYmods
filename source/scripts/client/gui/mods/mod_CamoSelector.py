@@ -6,11 +6,9 @@ import CurrentVehicle
 import Keys
 import PYmodsCore
 import ResMgr
-import glob
 import heapq
 import items.vehicles
 import nations
-import os
 import random
 import traceback
 import weakref
@@ -155,10 +153,10 @@ class CamoSelectorUI(AbstractWindowView):
                         enabledKinds.append(key)
                     nationConf[camoName]['kinds'] = ','.join(enabledKinds)
                 for confFolderName in _config.configFolders:
-                    if camoName in _config.configFolders[confFolderName]:
-                        _config.loadJson(confFolderName, dict(
-                            (key, nationConf[key]) for key in _config.configFolders[confFolderName]),
-                                         _config.configPath + 'camouflages/', True, False)
+                    configFolder = _config.configFolders[confFolderName]
+                    if camoName in configFolder:
+                        _config.loadJson('settings', dict((key, nationConf[key]) for key in configFolder),
+                                         _config.configPath + 'camouflages/' + confFolderName + '/', True, False)
                 if nationConf[camoName]['random_mode'] == 2 or nationConf[camoName]['random_mode'] == 1 and not isInter:
                     del nationConf[camoName]['random_mode']
                 kindNames = filter(None, nationConf[camoName]['kinds'].split(','))
@@ -219,7 +217,7 @@ class CamoSelectorUI(AbstractWindowView):
 class _Config(PYmodsCore.Config):
     def __init__(self):
         super(self.__class__, self).__init__('%(mod_ID)s')
-        self.version = '2.5.3 (%(file_compile_date)s)'
+        self.version = '2.5.4 (%(file_compile_date)s)'
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'selectHotKey': ['KEY_F5', ['KEY_LCONTROL', 'KEY_RCONTROL']]}
@@ -329,14 +327,13 @@ class _Config(PYmodsCore.Config):
         self.camouflages = {'modded': {}}
         self.camouflagesCache = self.loadJson('camouflagesCache', self.camouflagesCache, self.configPath)
         try:
-            configFiles = map(lambda x: os.path.basename(x).replace('.json', '').lower(),
-                              glob.iglob(self.configPath + 'camouflages/*.json'))
-            camoDirSect = ResMgr.openSection('vehicles/camouflages')
-            camoDirs = set(camoDirSect.keys() if camoDirSect is not None else [])
-            camoNames = [camoName for camoName in configFiles if camoName in camoDirs]
+            camoDirPath = '../' + self.configPath + 'camouflages'
+            camoDirSect = ResMgr.openSection(camoDirPath)
+            camoNames = set(
+                (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x)) if camoDirSect is not None else [])
             for camoName in camoNames:
                 self.configFolders[camoName] = confFolder = set()
-                settings = self.loadJson(camoName, {}, self.configPath + 'camouflages/')
+                settings = self.loadJson('settings', {}, self.configPath + 'camouflages/' + camoName + '/')
                 for key in settings:
                     confFolder.add(key)
                 self.camouflages['modded'].update(settings)
@@ -478,8 +475,9 @@ def new_customization(base, self, nationID):
             if _config.configFolders:
                 _config.changedNations.append(nationID)
             for configDir in _config.configFolders:
-                customDescr = items.vehicles._readCustomization('vehicles/camouflages/' + configDir + '/settings.xml',
-                                                                nationID, idsRange=(5001, 65535))
+                customDescr = items.vehicles._readCustomization(
+                    '../' + _config.configPath + 'camouflages/' + configDir + '/settings.xml', nationID,
+                    idsRange=(5001, 65535))
                 if 'custom_camo' in commonDescr['camouflageGroups'] and 'custom_camo' in customDescr['camouflageGroups']:
                     del customDescr['camouflageGroups']['custom_camo']
                 commonDescr = items.vehicles._joinCustomizationParams(nationID, commonDescr, customDescr)
