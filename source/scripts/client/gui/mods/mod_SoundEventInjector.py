@@ -25,10 +25,10 @@ class _Config(PYmodsCore.Config):
 
     def update_data(self, doPrint=False):
         configPath = self.configPath + 'configs/'
+        if not os.path.exists(configPath):
+            LOG_ERROR('%s config folder not found:' % self.ID, configPath)
+            os.makedirs(configPath)
         for confPath in glob.iglob(configPath + '*.json'):
-            if not os.path.exists(configPath):
-                LOG_ERROR('%s config folder not found:' % self.ID, configPath)
-                os.makedirs(configPath)
             try:
                 confdict = self.loadJson(os.path.basename(confPath).split('.')[0], {}, os.path.dirname(confPath) + '/')
             except StandardError:
