@@ -53,7 +53,7 @@ class _Config(PYmodsCore.Config):
 
     def load(self):
         self.update_data(True)
-        if any(self.data[key] for key in ('engines', 'gunReloadEffects', 'shot_effects')):
+        if any(self.data[key] for key in ('engines', 'gun_reload_effects', 'shot_effects')):
             items.vehicles.init(True, None)
         print '%s: initialised.' % (self.message())
 
@@ -78,7 +78,7 @@ def new_readEngine(base, xmlCtx, section, item, *args):
 @PYmodsCore.overrideMethod(items.vehicles, '_readReloadEffectGroups')
 def new_readReloadEffects(base, xmlPath):
     res = base(xmlPath)
-    effectsData = _config.data['gunReloadEffects']
+    effectsData = _config.data['gun_reload_effects']
     for sname in res:
         if sname not in effectsData:
             continue
@@ -131,6 +131,8 @@ def new_readEffectGroups(base, xmlPath, withSubgroups=False):
         newXmlPath = '../' + _config.configPath + 'configs/gun_effects.xml'
         if ResMgr.isFile(newXmlPath):
             res.update(base(newXmlPath, withSubgroups))
+        elif _config.data['guns']:
+            print '%s: gun effects config not found' % _config.ID
     return res
 
 
