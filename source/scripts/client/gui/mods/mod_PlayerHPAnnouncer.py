@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+import BattleReplay
 import BigWorld
 import PYmodsCore
 import SoundGroups
 from Avatar import PlayerAvatar
 from bootcamp import BootcampSettings
 from bootcamp.Assistant import BaseAssistant
+from bootcamp.Bootcamp import g_bootcamp
+from bootcamp.BootcampReplayController import BootcampReplayController
 from bootcamp.hints.HintsScenario import HintLowHP
 from bootcamp.hints.HintsSystem import HintSystem
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
@@ -36,6 +39,9 @@ statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0
 def new_startGUI(base, self):
     base(self)
     _config.currentPercent = 100
+    if BattleReplay.g_replayCtrl.isPlaying and g_bootcamp._Bootcamp__replayController is None:
+        g_bootcamp._Bootcamp__replayController = BootcampReplayController()
+        g_bootcamp._Bootcamp__replayController.init()
     _config.assistant = BaseAssistant(
         HintSystem(BigWorld.player(), {'hintLowHP': BootcampSettings.getBattleDefaults()['hints']['hintLowHP']}))
     _config.assistant.start()
