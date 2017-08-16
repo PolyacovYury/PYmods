@@ -2,12 +2,11 @@ import BigWorld
 import PYmodsCore
 import copy
 import traceback
-from Avatar import PlayerAvatar
 from CurrentVehicle import _CurrentPreviewVehicle
-from Vehicle import Vehicle
 from gui import SystemMessages
 from gui.ClientHangarSpace import _VehicleAppearance
 from items.vehicles import CompositeVehicleDescriptor
+from vehicle_systems import appearance_cache
 from vehicle_systems.tankStructure import TankPartNames
 from .. import g_config
 from . import remods, skins_dynamic, skins_static
@@ -125,12 +124,11 @@ def vDesc_process(vehicleID, vDesc, mode):
     debugOutput(xmlName, vehName, playerName)
 
 
-@PYmodsCore.overrideMethod(Vehicle, 'getDescr')
-def new_getDescr(base, self, respawnCompactDescr):
-    vDesc = base(self, respawnCompactDescr)
+@PYmodsCore.overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
+def new_cacheAppearance(base, self, vId, info, *args):
     if g_config.data['enabled']:
-        vDesc_process(self.id, vDesc, 'battle')
-    return vDesc
+        vDesc_process(vId, info.typeDescr, 'battle')
+    return base(self, vId, info, *args)
 
 
 @PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__startBuild')
@@ -139,17 +137,3 @@ def new_startBuild(base, self, vDesc, vState):
         g_config.curVehicleName = vDesc.name.split(':')[1].lower()
         vDesc_process(self._VehicleAppearance__vEntityId, vDesc, 'hangar')
     base(self, vDesc, vState)
-
-
-@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
-def new_startGUI(base, self, *args, **kwargs):
-    base(self, *args, **kwargs)
-    BigWorld.callback(0.1, onStartGUI)
-
-
-def onStartGUI():
-    for vehicleID, vInfo in BigWorld.player().arena.vehicles.items():
-        try:
-            vDesc_process(vehicleID, vInfo['vehicleType'], 'battle')
-        except StandardError:
-            traceback.print_exc()
