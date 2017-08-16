@@ -76,9 +76,9 @@ def vDesc_process(vehicleID, vDesc, mode):
         return
     xmlName = vDesc.name.split(':')[1].lower()
     remods.find(xmlName, isPlayerVehicle, isAlly, currentMode)
-    for partName in TankPartNames.ALL + ('engine',):
+    for partName in TankPartNames.ALL[1:] + ('engine',):
         for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
-                vDesc.defaultVehicleDescr, vDesc.siegeVehicleDescr):
+                vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
             try:
                 old_part = getattr(descr, partName)
                 new_part = copy.deepcopy(old_part)
