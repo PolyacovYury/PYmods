@@ -114,3 +114,15 @@ def new_setHealthValues(base, self, vehicle, *args):
     base(self, vehicle, *args)
     self._HintLowHP__isFirstWarningAppeared = False
     self._HintLowHP__isSecondWarningAppeared = False
+
+
+@PYmodsCore.overrideMethod(HintLowHP, 'start')
+def new_start(base, *args):
+    base(*args)
+    print 'HintLowHP started'
+
+
+@PYmodsCore.overrideMethod(HintLowHP, 'stop')
+def new_stop(base, *args):
+    base(*args)
+    print 'HintLowHP stopped'
