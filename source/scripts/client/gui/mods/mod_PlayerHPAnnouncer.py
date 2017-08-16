@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
+import BigWorld
 import PYmodsCore
 import SoundGroups
 from Avatar import PlayerAvatar
+from bootcamp import BootcampSettings
+from bootcamp.Assistant import BaseAssistant
+from bootcamp.hints.HintsScenario import HintLowHP
+from bootcamp.hints.HintsSystem import HintSystem
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 
 
@@ -13,6 +18,7 @@ class _Config(PYmodsCore.Config):
                      '25percent': 'percent_25',
                      '50percent': 'percent_50'}
         self.currentPercent = None
+        self.assistant = None
 
     def updateMod(self):
         pass
@@ -30,11 +36,16 @@ statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0
 def new_startGUI(base, self):
     base(self)
     _config.currentPercent = 100
+    _config.assistant = BaseAssistant(
+        HintSystem(BigWorld.player(), {'hintLowHP': BootcampSettings.getBattleDefaults()['hints']['hintLowHP']}))
+    _config.assistant.start()
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__destroyGUI')
 def new_destroyGUI(base, self):
     base(self)
+    _config.assistant.stop()
+    _config.assistant = None
     _config.currentPercent = None
 
 
@@ -50,3 +61,10 @@ def new_updateHealth(base, self, healthStr, progress):
             SoundGroups.g_instance.playSound2D(_config.data['%spercent' % percentage])
             break
     _config.currentPercent = progress
+
+
+@PYmodsCore.overrideMethod(HintLowHP, '_HintLowHP__setHealthValues')
+def new_setHealthValues(base, self, vehicle, *args):
+    base(self, vehicle, *args)
+    self._HintLowHP__isFirstWarningAppeared = False
+    self._HintLowHP__isSecondWarningAppeared = False
