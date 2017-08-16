@@ -9,7 +9,9 @@ from bootcamp.Assistant import BaseAssistant
 from bootcamp.Bootcamp import g_bootcamp
 from bootcamp.BootcampReplayController import BootcampReplayController
 from bootcamp.hints.HintsScenario import HintLowHP
-from bootcamp.hints.HintsSystem import HintSystem
+from bootcamp.hints.HintsSystem import HintSystem as _HintSystem
+from constants import HINT_NAMES, HINT_TYPE
+from debug_utils_bootcamp import LOG_CURRENT_EXCEPTION_BOOTCAMP
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 
 
@@ -28,6 +30,44 @@ class _Config(PYmodsCore.Config):
 
     def do_config_delayed(self):
         pass
+
+
+class HintSystem(_HintSystem):
+    def __init__(self, avatar=None, hintsInfo=None):
+        if hintsInfo is None:
+            hintsInfo = {}
+        super(self.__class__, self).__init__(avatar, hintsInfo)
+        replayPlaying = BattleReplay.g_replayCtrl.isPlaying
+        replaySafeHints = (HINT_TYPE.HINT_MESSAGE_AVOID, HINT_TYPE.HINT_LOW_HP)
+        for hintName, hintParams in hintsInfo.iteritems():
+            try:
+                if hintName != 'hintLowHP':
+                    continue
+                hintTypeId = HINT_NAMES.index(hintName)
+                if hintTypeId in HINT_TYPE.BATTLE_HINTS:
+                    if replayPlaying and hintTypeId not in replaySafeHints:
+                        continue
+                    cls = HintSystem.hintsBattleClasses.get(hintTypeId, None)
+                    if cls is None:
+                        raise Exception('Hint not implemented (%s)' % HINT_NAMES[hintTypeId])
+                    hint = cls(avatar, hintParams)
+                else:
+                    cls = HintSystem.hintsLobbyClasses.get(hintTypeId, None)
+                    if cls is None:
+                        raise Exception('Hint not implemented (%s)' % HINT_NAMES[hintTypeId])
+                    hint = cls(hintParams)
+                timeCompleted = hintParams.get('time_completed', 2.0)
+                cooldownAfter = hintParams.get('cooldown_after', 2.0)
+                voiceover = hintParams.get('voiceover', None)
+                message = hintParams.get('message', 'Default Message')
+                hint.timeCompleted = timeCompleted
+                hint.cooldownAfter = cooldownAfter
+                hint.message = message
+                if voiceover is not None:
+                    hint.voiceover = voiceover
+                self.addHint(hint)
+            except StandardError:
+                LOG_CURRENT_EXCEPTION_BOOTCAMP()
 
 
 _config = _Config()
@@ -74,21 +114,3 @@ def new_setHealthValues(base, self, vehicle, *args):
     base(self, vehicle, *args)
     self._HintLowHP__isFirstWarningAppeared = False
     self._HintLowHP__isSecondWarningAppeared = False
-
-
-@PYmodsCore.overrideMethod(HintLowHP, 'start')
-def new_start(base, *args):
-    base(*args)
-    print 'HintLowHP started'
-
-
-@PYmodsCore.overrideMethod(HintLowHP, 'stop')
-def new_stop(base, *args):
-    base(*args)
-    print 'HintLowHP stopped'
-
-
-@PYmodsCore.overrideMethod(HintLowHP, 'update')
-def new_update(base, *args):
-    base(*args)
-    print 'HintLowHP updated'
