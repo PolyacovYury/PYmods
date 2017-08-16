@@ -142,8 +142,12 @@ def new_startBuild(base, self, vDesc, vState):
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
-def new_startGUI(base, self, *args):
-    base(self, *args)
+def new_startGUI(base, self, *args, **kwargs):
+    base(self, *args, **kwargs)
+    BigWorld.callback(0.1, onStartGUI)
+
+
+def onStartGUI():
     for vehicleID, vInfo in BigWorld.player().arena.vehicles.items():
         try:
             vDesc_process(vehicleID, vInfo['vehicleType'], 'battle')
