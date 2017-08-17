@@ -76,7 +76,7 @@ def vDesc_process(vehicleID, vDesc, mode):
         return
     xmlName = vDesc.name.split(':')[1].lower()
     remods.find(xmlName, isPlayerVehicle, isAlly, currentMode)
-    for partName in TankPartNames.ALL[1:] + ('engine',):
+    for partName in TankPartNames.ALL + ('engine',):
         for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
                 vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
             try:
@@ -119,6 +119,7 @@ def vDesc_process(vehicleID, vDesc, mode):
         if collisionNotVisible:
             message = g_config.i18n['UI_install_remod'] + g_config.OMDesc.name.join(
                 ('<b>', '</b>.')) + '\n' + g_config.OMDesc.authorMessage
+    remods.glass_create(vehicleID, vDesc, True)
     if message is not None and mode == 'hangar':
         SystemMessages.pushMessage('PYmods_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
     debugOutput(xmlName, vehName, playerName)

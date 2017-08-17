@@ -10,7 +10,7 @@ def apply(vDesc):
     OSDesc = g_config.OSDesc['static']
     if OSDesc is not None:
         sname = OSDesc.name
-        for partName in TankPartNames.ALL[1:]:
+        for partName in TankPartNames.ALL:
             for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
                     vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
                 modelPath = getattr(descr, partName).models.undamaged.replace(

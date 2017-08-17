@@ -2,7 +2,6 @@ import PYmodsCore
 import ResMgr
 import copy
 import traceback
-from Vehicle import Vehicle
 from collections import namedtuple
 from gui.ClientHangarSpace import _VehicleAppearance
 from items.components.chassis_components import *
@@ -201,14 +200,6 @@ def glass_create(vehicleID, vDesc, visible=False):
 
 def glass_attach(vehicleID, visible=False):
     attached_models.attach(vehicleID, 'RE_glass', visible)
-
-
-@PYmodsCore.overrideMethod(Vehicle, 'getDescr')
-def new_getDescr(base, self, respawnCompactDescr):
-    vDesc = base(self, respawnCompactDescr)
-    if g_config.data['enabled']:
-        glass_create(self.id, vDesc, True)
-    return vDesc
 
 
 @PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__setupModel')

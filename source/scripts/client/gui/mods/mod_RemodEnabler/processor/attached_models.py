@@ -20,7 +20,7 @@ def create(vehicleID, mod, mode, models, visible=False):
         if mod not in vehEntry:
             vehEntry[mod] = {
                 'models': {modelPath: {'model': None, 'nodeName': nodeName} for modelPath, nodeName in models},
-                'loaded': False, 'entered': False, 'loading': True, 'mode': mode}
+                'loaded': False, 'entered': False, 'loading': True, 'mode': mode, 'visible': visible}
             for modelPath, _ in models:
                 resList.append(modelPath)
         else:
@@ -100,10 +100,10 @@ def attach(vehicleID, modID=None, visible=False):
                             mathUtils.MatrixProviders.product(compoundModel.node(modelDict['nodeName']), scaleMat))
                         model.addMotor(motor)
                         BigWorld.addModel(model)
-                model.visible = visible
+                model.visible = visible and dyn['visible']
 
 
-def detach(vehicleID, mode='visible', modID=None):
+def detach(vehicleID, mode='visible', modID=None, visible=False):
     if vehicleID in dynamic_db:
         for mod, dyn in dynamic_db[vehicleID].items():
             if modID is not None and mod != modID:
@@ -115,7 +115,7 @@ def detach(vehicleID, mode='visible', modID=None):
             for modelDict in dyn['models'].itervalues():
                 model = modelDict['model']
                 if model is not None:
-                    model.visible = False
+                    model.visible = visible
                     if 'destroy' in mode and 'motor' in modelDict:
                         model.delMotor(modelDict['motor'])
                         BigWorld.delModel(model)
