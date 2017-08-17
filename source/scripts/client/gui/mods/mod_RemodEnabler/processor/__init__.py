@@ -1,6 +1,5 @@
 import BigWorld
 import PYmodsCore
-import copy
 import traceback
 from CurrentVehicle import _CurrentPreviewVehicle
 from gui import SystemMessages
@@ -51,16 +50,6 @@ def debugOutput(xmlName, vehName, playerName=None):
         print header + ' processed:', ', '.join(info)
 
 
-@PYmodsCore.overrideMethod(copy, '_reconstruct')
-def new_reconstruct(base, x, info, deep, memo=None):
-    if memo is None:
-        memo = {}
-    if type(x).__name__ == 'PyDirectParticleAttachment':
-        memo[id(x)] = x
-        return x
-    return base(x, info, deep, memo)
-
-
 def vDesc_process(vehicleID, vDesc, mode):
     if mode == 'battle':
         currentMode = mode
@@ -80,11 +69,7 @@ def vDesc_process(vehicleID, vDesc, mode):
         for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
                 vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
             try:
-                old_part = getattr(descr, partName)
-                new_part = copy.deepcopy(old_part)
-                setattr(descr, partName, new_part)
-                if hasattr(old_part, 'hitTester'):
-                    getattr(descr, partName).hitTester = old_part.hitTester
+                setattr(descr, partName, getattr(descr, partName).copy())
             except StandardError:
                 traceback.print_exc()
                 print partName
