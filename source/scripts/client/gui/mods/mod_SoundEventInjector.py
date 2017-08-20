@@ -53,7 +53,7 @@ class _Config(PYmodsCore.Config):
 
     def load(self):
         self.update_data(True)
-        if any(self.data[key] for key in ('engines', 'gun_reload_effects', 'shot_effects')):
+        if any(self.data[key] for key in ('engines', 'gun_reload_effects', 'shot_effects', 'guns')):
             items.vehicles.init(True, None)
         print '%s: initialised.' % (self.message())
 
