@@ -113,7 +113,7 @@ class CamoSelectorUI(AbstractWindowView):
         _config.activePreviewCamo = None
         SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflageRestore'],
                                    SystemMessages.SM_TYPE.CustomizationForGold)
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
         _config.UIProxy = None
         self.destroy()
 
@@ -179,7 +179,7 @@ class CamoSelectorUI(AbstractWindowView):
 
         SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflageSave'],
                                    SystemMessages.SM_TYPE.CustomizationForGold)
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
 
     @staticmethod
     def py_printLog(*args):
@@ -207,7 +207,7 @@ class CamoSelectorUI(AbstractWindowView):
         _config.backup['mode'] = mode
         newIdx = nationID if mode == 2 else (len(nations.NAMES) + mode - 2)
         _config.backup['camoID'][newIdx] = camoID
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
 
     @staticmethod
     def py_onApplyPreset():
@@ -310,7 +310,7 @@ class _Config(PYmodsCore.Config):
         try:
             from gui.mods import mod_remodenabler
         except StandardError:
-            g_currentPreviewVehicle.refreshModel()
+            PYmodsCore.refreshCurrentVehicle()
 
     def apply_settings(self, settings):
         super(self.__class__, self).apply_settings(settings)
@@ -601,7 +601,7 @@ def installSelectedCamo():
     if nationName in _config.camouflagesCache and not _config.camouflagesCache[nationName]:
         del _config.camouflagesCache[nationName]
     _config.loadJson('camouflagesCache', _config.camouflagesCache, _config.configPath, True)
-    g_currentPreviewVehicle.refreshModel()
+    PYmodsCore.refreshCurrentVehicle()
     SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflageSelect'],
                                SystemMessages.SM_TYPE.CustomizationForGold)
 
