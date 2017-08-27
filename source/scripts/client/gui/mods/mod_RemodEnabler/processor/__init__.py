@@ -67,7 +67,7 @@ def vDesc_process(vehicleID, vDesc, mode):
     remods.find(xmlName, isPlayerVehicle, isAlly, currentMode)
     for partName in TankPartNames.ALL + ('engine',):
         for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
-                vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
+                vDesc.defaultVehicleDescr, vDesc.siegeVehicleDescr):
             try:
                 setattr(descr, partName, getattr(descr, partName).copy())
             except StandardError:
