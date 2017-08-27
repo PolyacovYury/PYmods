@@ -1,4 +1,3 @@
-import BigWorld
 import PYmodsCore
 import ResMgr
 import copy

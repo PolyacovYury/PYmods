@@ -244,6 +244,7 @@ class Config(object):
 
     @staticmethod
     def json_dumps(conf, sort_keys):
+        # noinspection PyArgumentEqualDefault
         return json.dumps(conf, sort_keys=sort_keys, indent=4, cls=MyJSONEncoder,
                           ensure_ascii=False, encoding='utf-8', separators=(',', ': '))
 
@@ -258,6 +259,7 @@ class Config(object):
     def checkSubDict(self, oldDict, conf_newL, config_newExcl, start_idx, end_idx):
         conf_changed = False
         decer = json.JSONDecoder(encoding='utf-8')
+        # noinspection PyArgumentEqualDefault
         encer = json.JSONEncoder(encoding='utf-8')
         new_end_idx = None
         subLevels = 0

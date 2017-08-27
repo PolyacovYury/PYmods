@@ -227,7 +227,7 @@ class _Config(PYmodsCore.Config):
         return template
 
     def onWindowClose(self):
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
 
     def apply_settings(self, settings):
         super(self.__class__, self).apply_settings(settings)
@@ -531,12 +531,12 @@ class RemodEnablerUI(AbstractWindowView):
     def py_onShowRemod(remodIdx):
         g_config.data['currentMode'] = 'remod'
         g_config.OM.selected['Remod'] = sorted(g_config.OM.models)[remodIdx]
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
 
     def py_onModelRestore(self):
         g_config.data['currentMode'] = self.modeBackup
         g_config.OM.selected['Remod'] = self.remodBackup
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
 
     @staticmethod
     def py_getCurrentVehicleName():
@@ -574,7 +574,7 @@ class RemodEnablerUI(AbstractWindowView):
                           doPrint=g_config.data['isDebug'])
         g_config.loadJson('settings', g_config.settings, g_config.configPath, True, doPrint=g_config.data['isDebug'])
         g_config.update_data(g_config.data['isDebug'])
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
 
     @staticmethod
     def py_onCreateRemod(settings):
@@ -686,7 +686,7 @@ def lobbyKeyControl(event):
             'PYmods_SM' + g_config.i18n['UI_mode'] + g_config.i18n['UI_mode_' + g_config.data['currentMode']].join(
                 ('<b>', '</b>.')),
             SystemMessages.SM_TYPE.Warning)
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
     if PYmodsCore.checkKeys(g_config.data['CollisionHotkey']):
         if g_config.data['collisionComparisonEnabled']:
             g_config.data['collisionComparisonEnabled'] = False
@@ -707,14 +707,14 @@ def lobbyKeyControl(event):
                 print 'RemodEnabler: Enabling collision display'
             SystemMessages.pushMessage('PYmods_SM' + g_config.i18n['UI_enableCollision'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
     if PYmodsCore.checkKeys(g_config.data['DynamicSkinHotkey']):
         enabled = g_config.data['dynamicSkinEnabled']
         g_config.data['dynamicSkinEnabled'] = not enabled
         SystemMessages.pushMessage(
             'PYmods_SM' + g_config.i18n['UI_%sableDynamicSkin' % ('en' if not enabled else 'dis')],
             SystemMessages.SM_TYPE.CustomizationForGold)
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
     if g_config.OM.enabled and PYmodsCore.checkKeys(g_config.data['SwitchRemodHotkey']):
         if g_config.data['currentMode'] != 'remod':
             curTankType = g_config.data['currentMode'].capitalize()
@@ -748,7 +748,7 @@ def lobbyKeyControl(event):
             g_config.OM.selected['Remod'] = sname
             g_config.loadJson('remodsCache', g_config.OM.selected, g_config.configPath, True,
                               doPrint=g_config.data['isDebug'])
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
 
 
 def inj_hkKeyEvent(event):

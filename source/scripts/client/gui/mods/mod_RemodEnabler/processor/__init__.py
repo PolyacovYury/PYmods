@@ -2,7 +2,7 @@ import BigWorld
 import PYmodsCore
 import copy
 import traceback
-from CurrentVehicle import _CurrentPreviewVehicle
+from CurrentVehicle import _RegularPreviewAppearance, g_currentPreviewVehicle
 from Vehicle import Vehicle
 from gui import SystemMessages
 from gui.ClientHangarSpace import _VehicleAppearance
@@ -11,11 +11,11 @@ from .. import g_config
 from . import remods, skins_dynamic, skins_static
 
 
-@PYmodsCore.overrideMethod(_CurrentPreviewVehicle, 'refreshModel')
-def new_refreshModel(base, self):
-    if self.isPresent() and (g_config.OMDesc is not None or any(g_config.OSDesc.values())):
-        self._CurrentPreviewVehicle__item = self._CurrentPreviewVehicle__getPreviewVehicle(self.item.intCD)
-    base(self)
+@PYmodsCore.overrideMethod(_RegularPreviewAppearance, 'refreshVehicle')
+def new_refreshVehicle(base, self, item):
+    if item and (g_config.OMDesc is not None or any(g_config.OSDesc.values())):
+        item = g_currentPreviewVehicle._CurrentPreviewVehicle__item = g_currentPreviewVehicle._CurrentPreviewVehicle__getPreviewVehicle(item.intCD)
+    base(self, item)
 
 
 def skins_find(curVehName, isPlayerVehicle, isAlly, currentMode='battle', skinType='static'):
