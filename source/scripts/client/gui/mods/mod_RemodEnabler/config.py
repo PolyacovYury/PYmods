@@ -7,7 +7,6 @@ import ResMgr
 import glob
 import os
 import traceback
-from CurrentVehicle import g_currentPreviewVehicle
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView

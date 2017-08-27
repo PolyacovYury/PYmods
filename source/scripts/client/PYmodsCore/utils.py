@@ -5,7 +5,6 @@ import re
 import threading
 import urllib
 import urllib2
-from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from . import overrideMethod
 from PlayerEvents import g_playerEvents
 from constants import AUTH_REALM
@@ -144,6 +143,7 @@ def checkKeys(keys):
 
 
 def refreshCurrentVehicle():
+    from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
     if g_currentPreviewVehicle._CurrentPreviewVehicle__vehAppearance:
         g_currentPreviewVehicle._CurrentPreviewVehicle__vehAppearance.refreshVehicle(g_currentPreviewVehicle.item)
     else:
