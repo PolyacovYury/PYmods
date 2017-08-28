@@ -145,7 +145,7 @@ def addCollisionGUI(self):
     for moduleIdx, moduleName in enumerate(TankPartNames.ALL):
         self.collisionTable[moduleName] = curCollisionTable = {'textBoxes': [], 'texBoxes': [], 'armorValues': {}}
         moduleDict = getattr(vDesc, moduleName)
-        for Idx, groupNum in enumerate(sorted(moduleDict['materials'].keys())):
+        for Idx, groupNum in enumerate(sorted(moduleDict.materials.keys())):
             armorValue = int(moduleDict.materials[groupNum].armor)
             curCollisionTable['armorValues'].setdefault(armorValue, [])
             if groupNum not in curCollisionTable['armorValues'][armorValue]:
