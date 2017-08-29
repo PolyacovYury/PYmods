@@ -622,7 +622,7 @@ def firstCheck(targetID, attackerID, reason, squadChecked, killerID):
             callTextInit(_config.i18n['UI_message_frags_%s' % frags], targetID, attackerID, None)
             LOG_NOTE('Calling Medal killCheck function.', targetID, attackerID)
             LOG_NOTE('Medal checked frags:', frags)
-            killCheck(frags)
+            killCheck(origFrags)
         elif attacker['isPlayer'] or _config.data['allKill'] and (
                         _config.data['allKill'] == 2 or cStats[BigWorld.player().playerVehicleID]['frags'] <= origFrags):
             LOG_NOTE('Calling normal killCheck function.', targetID, attackerID)
