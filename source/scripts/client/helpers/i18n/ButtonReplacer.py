@@ -178,9 +178,9 @@ def new_construct(self):
     else:
         isRemovingStun = False
     onUseStr = '%s/removingStun/onUse' if isRemovingStun else '%s/onUse'
-    onUse = checkLocalization(onUseStr % self.module.descriptor['name'])
-    always = checkLocalization('%s/always' % self.module.descriptor['name'])
-    restriction = checkLocalization('%s/restriction' % self.module.descriptor['name'])
+    onUse = checkLocalization(onUseStr % self.module.descriptor.name)
+    always = checkLocalization('%s/always' % self.module.descriptor.name)
+    restriction = checkLocalization('%s/restriction' % self.module.descriptor.name)
     if bonus_helper.isSituationalBonus(self.module.name):
         effectDesc = text_styles.bonusPreviewText(stripColorTagDescrTags(_ms(self.module.fullDescription)))
         # noinspection PyArgumentEqualDefault

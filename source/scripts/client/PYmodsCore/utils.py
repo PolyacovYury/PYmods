@@ -11,7 +11,7 @@ from constants import AUTH_REALM
 from functools import partial
 
 MAX_CHAT_MESSAGE_LENGTH = 220
-__all__ = ['pickRandomPart', 'sendMessage', 'sendChatMessage', 'remDups', 'checkKeys', 'Analytics', 'Sound']
+__all__ = ['pickRandomPart', 'sendMessage', 'sendChatMessage', 'remDups', 'checkKeys', 'refreshCurrentVehicle', 'Analytics', 'Sound']
 
 
 def pickRandomPart(variantList, lastRandId, doNext=False):
@@ -140,6 +140,14 @@ def checkKeys(keys):
             return False
 
     return True
+
+
+def refreshCurrentVehicle():
+    from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
+    if g_currentPreviewVehicle._CurrentPreviewVehicle__vehAppearance:
+        g_currentPreviewVehicle._CurrentPreviewVehicle__vehAppearance.refreshVehicle(g_currentPreviewVehicle.item)
+    else:
+        g_currentVehicle.refreshModel()
 
 
 class Analytics(object):

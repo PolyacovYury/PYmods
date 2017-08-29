@@ -7,13 +7,16 @@ import ResMgr
 import glob
 import os
 import traceback
-from CurrentVehicle import g_currentPreviewVehicle
+from collections import OrderedDict
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
+from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from gui.shared.utils.HangarSpace import g_hangarSpace
-from items.vehicles import EmblemSlot, g_cache
+from items.components import component_constants
+from items.components.shared_components import EmblemSlot
+from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
 
 
@@ -32,9 +35,9 @@ def readAODecals(confList):
 def readEmblemSlots(confList):
     slots = []
     for confDict in confList:
-        if confDict['type'] not in ('player', 'clan', 'inscription', 'insigniaOnGun'):
+        if confDict['type'] not in component_constants.ALLOWED_EMBLEM_SLOTS:
             print '%s: not supported emblem slot type: %s, expected: %s' % (
-                g_config.ID, confDict['type'], ' '.join(('player', 'clan', 'inscription', 'insigniaOnGun')))
+                g_config.ID, confDict['type'], ' '.join(component_constants.ALLOWED_EMBLEM_SLOTS))
         descr = EmblemSlot(Math.Vector3(tuple(confDict['rayStart'])), Math.Vector3(tuple(confDict['rayEnd'])),
                            Math.Vector3(tuple(confDict['rayUp'])), confDict['size'],
                            confDict.get('hideIfDamaged', False), confDict['type'], confDict.get('isMirrored', False),
@@ -59,14 +62,15 @@ class OMDescriptor(object):
         self.authorMessage = ''
         self.whitelists = {'Player': set(), 'Ally': set(), 'Enemy': set()}
         self.data = {
-            'chassis': {'undamaged': '', 'AODecals': None, 'hullPosition': None, 'wwsoundPC': '', 'wwsoundNPC': ''},
+            'chassis': {'undamaged': '', 'AODecals': None, 'hullPosition': None,
+                        'wwsound': '', 'wwsoundPC': '', 'wwsoundNPC': ''},
             'hull': {'undamaged': '', 'emblemSlots': [], 'exhaust': {'nodes': [], 'pixie': ''},
                      'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
             'turret': {'undamaged': '', 'emblemSlots': [],
                        'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
             'gun': {'undamaged': '', 'emblemSlots': [], 'effects': '', 'reloadEffect': '',
                     'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}},
-            'engine': {'wwsoundPC': '', 'wwsoundNPC': ''},
+            'engine': {'wwsound': '', 'wwsoundPC': '', 'wwsoundNPC': ''},
             'common': {'camouflage': {'exclusionMask': '', 'tiling': (1.0, 1.0, 0.0, 0.0)}}}
 
 
@@ -86,7 +90,7 @@ class OSDescriptor(object):
 class _Config(PYmodsCore.Config):
     def __init__(self):
         super(self.__class__, self).__init__('RemodEnabler')
-        self.version = '2.9.9.3 (%(file_compile_date)s)'
+        self.version = '3.0.0 (%(file_compile_date)s)'
         self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True},
@@ -130,8 +134,8 @@ class _Config(PYmodsCore.Config):
             'UI_flash_remodCreate_message_text': 'Author message',
             'UI_flash_remodCreate_message_tooltip': 'This message is displayed in hangar every time the remod is selected.'
                                                     '\nLeave blank if not required.',
-            'UI_flash_remodCreate_name_empty': '<b>Remod creation failed:</b> name is empty.',
-            'UI_flash_remodCreate_error': '<b>Remod creation failed:</b> check python.log for additional information.',
+            'UI_flash_remodCreate_name_empty': '<b>Remod creation failed:</b>\nname is empty.',
+            'UI_flash_remodCreate_error': '<b>Remod creation failed:</b>\ncheck python.log for additional information.',
             'UI_flash_remodCreate_success': '<b>Remod created successfully</b>.',
             'UI_flash_skinSetupBtn': 'Skins setup',
             'UI_flash_skinPriorityBtn': 'Skin priorities',
@@ -140,12 +144,13 @@ class _Config(PYmodsCore.Config):
             'UI_flash_team_player': 'Player',
             'UI_flash_team_ally': 'Ally',
             'UI_flash_team_enemy': 'Enemy',
-            'UI_flash_whiteList_addBtn': 'Add current tank',
-            'UI_flash_whiteList_del_text': 'View and delete:',
-            'UI_flash_whiteList_del_tooltip': 'Open to view all items, select an item to delete.\n\n'
+            'UI_flash_whiteList_addBtn': 'Add',
+            'UI_flash_whiteList_header_text': 'Whitelists for:',
+            'UI_flash_whiteList_header_tooltip': 'Open to view all items, select an item to delete.\n\n'
                                               'List is scrollable if longer than 10 items.',
-            'UI_flash_whiteDropdown_default': 'Click to expand',
+            'UI_flash_whiteDropdown_default': 'Expand',
             'UI_flash_useFor_header_text': 'Use this item for:',
+            'UI_flash_useFor_enable_text': 'Enabled',
             'UI_flash_useFor_player_text': 'Player',
             'UI_flash_useFor_ally_text': 'Allies',
             'UI_flash_useFor_enemy_text': 'Enemies',
@@ -154,6 +159,7 @@ class _Config(PYmodsCore.Config):
             'UI_flash_vehicleDelete_success': 'Vehicle deleted from whitelist: ',
             'UI_flash_vehicleAdd_success': 'Vehicle added to whitelist: ',
             'UI_flash_vehicleAdd_dupe': 'Vehicle already in whitelist: ',
+            'UI_flash_vehicleAdd_notSupported': 'Vehicle is not supported by RemodEnabler.',
             'UI_flash_backBtn': 'Back',
             'UI_flash_saveBtn': 'Save',
             'UI_loading_bugReport': 'Report a bug',
@@ -197,7 +203,6 @@ class _Config(PYmodsCore.Config):
             'UI_mode_ally': 'ally tank preview',
             'UI_mode_enemy': 'enemy tank preview',
             'UI_mode_remod': 'all remods preview'}
-        self.configsDict = {}
         self.settings = {'remods': {}, 'skins': {}, 'skins_dynamic': {}}
         self.skinsCache = {"CRC32": "", "version": ""}
         self.OM = OM()
@@ -224,7 +229,7 @@ class _Config(PYmodsCore.Config):
         return template
 
     def onWindowClose(self):
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
 
     def apply_settings(self, settings):
         super(self.__class__, self).apply_settings(settings)
@@ -244,14 +249,16 @@ class _Config(PYmodsCore.Config):
         self.OM.enabled = bool(glob.glob(configsPath))
         if self.OM.enabled:
             self.OM.selected = self.loadJson('remodsCache', self.OM.selected, self.configPath)
+            snameList = set()
             for configPath in glob.iglob(configsPath):
                 sname = os.path.basename(configPath).split('.')[0]
-                self.configsDict[sname] = confDict = self.loadJson(sname, self.configsDict.get(sname, {}),
-                                                                   os.path.dirname(configPath) + '/', encrypted=True)
+                confDict = self.loadJson(sname, {}, os.path.dirname(configPath) + '/',
+                                         encrypted=True)
                 if not confDict:
                     print '%s: error while reading %s.' % (self.ID, os.path.basename(configPath))
                     continue
                 settingsDict = self.settings['remods'].setdefault(sname, {})
+                snameList.add(sname)
                 if not settingsDict.setdefault('enabled', self.defaultRemodConfig['enabled']):
                     print '%s: %s disabled, moving on' % (self.ID, sname)
                     if sname in self.OM.models:
@@ -319,10 +326,19 @@ class _Config(PYmodsCore.Config):
                 if self.data['isDebug']:
                     print '%s: config for %s loaded.' % (self.ID, sname)
 
+            for sname in self.OM.models.keys():
+                if sname not in snameList:
+                    del self.OM.models[sname]
+
+            for sname in self.settings['remods'].keys():
+                if sname not in snameList:
+                    del self.settings['remods'][sname]
+
             if not self.OM.models:
-                print '%s: no configs found, model module standing down.' % self.ID
+                if doPrint:
+                    print '%s: no configs found, model module standing down.' % self.ID
                 self.OM.enabled = False
-                self.loadJson('remodsCache', self.OM.selected, self.configPath, True)
+                self.loadJson('remodsCache', self.OM.selected, self.configPath, True, doPrint=doPrint)
             else:
                 remodTanks = {key: set() for key in self.OM.selected}
                 for OMDesc in self.OM.models.values():
@@ -340,11 +356,12 @@ class _Config(PYmodsCore.Config):
                             del self.OM.selected[tankType][xmlName]
                 if self.OM.selected['Remod'] and self.OM.selected['Remod'] not in self.OM.models:
                     self.OM.selected['Remod'] = ''
-                self.loadJson('remodsCache', self.OM.selected, self.configPath, True)
+                self.loadJson('remodsCache', self.OM.selected, self.configPath, True, doPrint=doPrint)
         else:
-            print '%s: no remods found, model module standing down.' % self.ID
+            if doPrint:
+                print '%s: no remods found, model module standing down.' % self.ID
             self.OM.enabled = False
-            self.loadJson('remodsCache', self.OM.selected, self.configPath, True)
+            self.loadJson('remodsCache', self.OM.selected, self.configPath, True, doPrint=doPrint)
         self.OS.enabled = ResMgr.openSection('vehicles/skins/') is not None and ResMgr.isDir('vehicles/skins/')
         if self.OS.enabled:
             self.OS.priorities = self.loadJson('skinsPriority', self.OS.priorities, self.configPath)
@@ -404,7 +421,8 @@ class _Config(PYmodsCore.Config):
                     if sname not in snameList:
                         del skinsSettings[sname]
             if not any(self.OS.models.values()):
-                print '%s: no skins configs found, skins module standing down.' % self.ID
+                if doPrint:
+                    print '%s: no skins configs found, skins module standing down.' % self.ID
                 self.OS.enabled = False
                 for skinType in self.OS.priorities:
                     for key in self.OS.priorities[skinType]:
@@ -421,8 +439,8 @@ class _Config(PYmodsCore.Config):
             for skinType in self.OS.priorities:
                 for key in self.OS.priorities[skinType]:
                     self.OS.priorities[skinType][key] = []
-        self.loadJson('skinsPriority', self.OS.priorities, self.configPath, True)
-        self.loadJson('settings', self.settings, self.configPath, True)
+        self.loadJson('skinsPriority', self.OS.priorities, self.configPath, True, doPrint=doPrint)
+        self.loadJson('settings', self.settings, self.configPath, True, doPrint=doPrint)
 
     def do_config(self):
         super(self.__class__, self).do_config()
@@ -437,7 +455,8 @@ class _Config(PYmodsCore.Config):
         kwargs = dict(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=True, lobby=True,
-            callback=lambda: self.loadingProxy is not None or g_appLoader.getDefLobbyApp().loadView('RemodEnablerUI'))
+            callback=lambda: self.loadingProxy is not None or g_appLoader.getDefLobbyApp().loadView(
+                ViewLoadParams('RemodEnablerUI')))
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
         except AttributeError:
@@ -450,6 +469,7 @@ class RemodEnablerUI(AbstractWindowView):
         super(self.__class__, self)._populate()
         self.modeBackup = g_config.data['currentMode']
         self.remodBackup = g_config.OM.selected['Remod']
+        self.newRemodData = OrderedDict()
 
     def py_onRequestSettings(self):
         g_config.update_data(g_config.data['isDebug'])
@@ -473,12 +493,13 @@ class RemodEnablerUI(AbstractWindowView):
             'remodNames': [],
             'skinNames': [[], []],
             'whiteList': {'addBtn': g_config.i18n['UI_flash_whiteList_addBtn'],
-                          'delLabel': g_config.createLabel('whiteList_del', 'flash'),
+                          'label': g_config.createLabel('whiteList_header', 'flash'),
                           'defStr': g_config.i18n['UI_flash_whiteDropdown_default']},
             'useFor': {'header': g_config.createLabel('useFor_header', 'flash'),
                        'ally': g_config.createLabel('useFor_ally', 'flash'),
                        'enemy': g_config.createLabel('useFor_enemy', 'flash'),
-                       'player': g_config.createLabel('useFor_player', 'flash')},
+                       'player': g_config.createLabel('useFor_player', 'flash'),
+                       'enable': g_config.createLabel('useFor_enable', 'flash')},
             'backBtn': g_config.i18n['UI_flash_backBtn'],
             'saveBtn': g_config.i18n['UI_flash_saveBtn']
         }
@@ -494,9 +515,10 @@ class RemodEnablerUI(AbstractWindowView):
             OMSettings = g_config.settings['remods'][sname]
             texts['remodNames'].append(sname)
             # noinspection PyTypeChecker
-            settings['remods'].append({'useFor': {key.lower(): OMSettings['swap%s' % key] for key in OM.tankGroups},
-                                       'whitelists': [str(OMSettings[team.lower() + 'Whitelist']).split(',')
-                                                      for team in OM.tankGroups]})
+            settings['remods'].append({
+                'useFor': {key.lower(): OMSettings['swap%s' % key] for key in OM.tankGroups},
+                'whitelists': [[x for x in str(OMSettings[team.lower() + 'Whitelist']).split(',') if x]
+                               for team in OM.tankGroups]})
         for idx, skinType in enumerate(('', '_dynamic')):
             skins = g_config.settings['skins%s' % skinType]
             for sname in sorted(g_config.OS.models['static' if not skinType else 'dynamic']):
@@ -506,41 +528,110 @@ class RemodEnablerUI(AbstractWindowView):
                 settings['skins'][idx].append({'useFor': {k.lower(): sDesc['swap%s' % k] for k in OM.tankGroups}})
         self.flashObject.as_updateData(texts, settings)
 
-    @staticmethod
-    def py_getRemodData():
+    def py_getRemodData(self):
         OMDesc = g_config.OMDesc
-        if OMDesc is not None:
-            return {'isRemod': True, 'name': OMDesc.name, 'message': OMDesc.authorMessage,
-                    'whitelists': [str(g_config.settings['remods'][OMDesc.name][team.lower() + 'Whitelist']).split(',')
-                                   for team in OM.tankGroups]}
+        currentVehicle = RemodEnablerUI.py_getCurrentVehicleName()
+        if currentVehicle:
+            try:
+                data = self.newRemodData
+                data.clear()
+                data['authorMessage'] = ''
+                for team in OM.tankGroups:
+                    data[team.lower() + 'Whitelist'] = [currentVehicle] if currentVehicle else []
+                vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
+                for key in TankPartNames.ALL + ('engine',):
+                    data[key] = OrderedDict()
+                for key in TankPartNames.ALL:
+                    data[key]['undamaged'] = getattr(vDesc, key).models.undamaged
+                chassis = data['chassis']
+                for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
+                    obj = str(getattr(vDesc.chassis, key))
+                    if key == 'tracks':
+                        obj = obj.replace('TrackNode', 'TrackMaterials')
+                    elif key == 'trackParams':
+                        obj = obj.replace('TrackNode', 'TrackParams')
+                    chassis[key] = obj
+                chassis['hullPosition'] = vDesc.chassis.hullPosition.tuple()
+                chassis['AODecals'] = []
+                for decal in vDesc.chassis.AODecals:
+                    decDict = {'transform': OrderedDict()}
+                    for strIdx in xrange(4):
+                        decDict['transform']['row%s' % strIdx] = []
+                        for colIdx in xrange(3):
+                            decDict['transform']['row%s' % strIdx].append(decal.get(strIdx, colIdx))
+                for partName in ('chassis', 'engine'):
+                    for key in ('wwsound', 'wwsoundPC', 'wwsoundNPC'):
+                        data[partName][key] = getattr(getattr(vDesc, partName).sounds, key)
+                pixieID = ''
+                for key, value in g_cache._customEffects['exhaust'].iteritems():
+                    if value == vDesc.hull.customEffects[0]._selectorDesc:
+                        pixieID = key
+                        break
+                data['hull']['exhaust'] = {'nodes': ' '.join(vDesc.hull.customEffects[0].nodes), 'pixie': pixieID}
+                for ids in (('_gunEffects', 'effects'), ('_gunReloadEffects', 'reloadEffect')):
+                    for key, value in getattr(g_cache, ids[0]).items():
+                        if value == getattr(vDesc.gun, ids[1]):
+                            data['gun'][ids[1]] = key
+                            break
+                exclMask = vDesc.type.camouflage.exclusionMask
+                if exclMask:
+                    camouflage = data['camouflage'] = OrderedDict()
+                    camouflage['exclusionMask'] = exclMask
+                    camouflage['tiling'] = vDesc.type.camouflage.tiling
+                for partName in TankPartNames.ALL[1:]:
+                    part = getattr(vDesc, partName)
+                    data[partName]['emblemSlots'] = []
+                    exclMask = part.camouflage.exclusionMask if hasattr(part, 'camouflage') else ''
+                    if exclMask:
+                        camouflage = data[partName]['camouflage'] = OrderedDict()
+                        camouflage['exclusionMask'] = exclMask
+                        camouflage['tiling'] = part.camouflage.tiling
+                    for slot in part.emblemSlots:
+                        slotDict = OrderedDict()
+                        for key in ('rayStart', 'rayEnd', 'rayUp'):
+                            slotDict[key] = getattr(slot, key).tuple()
+                        for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId'):
+                            slotDict[key] = getattr(slot, key)
+                        data[partName]['emblemSlots'].append(slotDict)
+            except StandardError:
+                SystemMessages.pushMessage(
+                    'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)
+                traceback.print_exc()
         else:
-            return {'isRemod': False, 'name': '', 'message': '',
-                    'whitelists': [[RemodEnablerUI.py_getCurrentVehicleName()] for _ in OM.tankGroups]}
+            self.py_sendMessage('', 'Add', 'notSupported')
+        if OMDesc is not None:
+            return {'isRemod': True, 'name': OMDesc.name, 'message': OMDesc.authorMessage, 'vehicleName': currentVehicle,
+                    'whitelists': [
+                        [x for x in str(g_config.settings['remods'][OMDesc.name][team.lower() + 'Whitelist']).split(',')
+                         if x] for team in OM.tankGroups]}
+        else:
+            return {'isRemod': False, 'name': '', 'message': '', 'vehicleName': currentVehicle,
+                    'whitelists': [[currentVehicle] if currentVehicle else [] for _ in OM.tankGroups]}
 
     @staticmethod
     def py_onShowRemod(remodIdx):
         g_config.data['currentMode'] = 'remod'
         g_config.OM.selected['Remod'] = sorted(g_config.OM.models)[remodIdx]
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
 
     def py_onModelRestore(self):
         g_config.data['currentMode'] = self.modeBackup
         g_config.OM.selected['Remod'] = self.remodBackup
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
 
     @staticmethod
     def py_getCurrentVehicleName():
         vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
         return vDesc.name.split(':')[1].lower()
 
-    def py_onRequestVehicleDelete(self):
+    def py_onRequestVehicleDelete(self, teamIdx):
         from gui import DialogsInterface
         from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta, I18nConfirmDialogButtons
 
         DialogsInterface.showDialog(SimpleDialogMeta(g_config.i18n['UI_flash_WLVehDelete_header'],
                                                      g_config.i18n['UI_flash_WLVehDelete_text'],
                                                      I18nConfirmDialogButtons('common/confirm'), None),
-                                    self.flashObject.as_onVehicleDeleteConfirmed)
+                                    lambda proceed: self.flashObject.as_onVehicleDeleteConfirmed(proceed, teamIdx))
 
     @staticmethod
     def py_onSaveSettings(settings):
@@ -560,75 +651,23 @@ class RemodEnablerUI(AbstractWindowView):
         for idx, prioritiesArray in enumerate(settings.priorities):
             for teamIdx, team in enumerate(('Player', 'Ally', 'Enemy')):
                 g_config.OS.priorities[('static', 'dynamic')[idx]][team] = prioritiesArray[teamIdx]
-        g_config.loadJson('skinsPriority', g_config.OS.priorities, g_config.configPath, True)
-        g_config.loadJson('settings', g_config.settings, g_config.configPath, True)
+        g_config.loadJson('skinsPriority', g_config.OS.priorities, g_config.configPath, True,
+                          doPrint=g_config.data['isDebug'])
+        g_config.loadJson('settings', g_config.settings, g_config.configPath, True, doPrint=g_config.data['isDebug'])
         g_config.update_data(g_config.data['isDebug'])
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
 
-    @staticmethod
-    def py_onCreateRemod(settings):
+    def py_onCreateRemod(self, settings):
         try:
             if not settings.name:
-                SystemMessages.pushMessage(
-                    'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_name_empty'], SystemMessages.SM_TYPE.Warning)
+                SystemMessages.pushMessage('PYmods_SM' + g_config.i18n['UI_flash_remodCreate_name_empty'],
+                                           SystemMessages.SM_TYPE.Warning)
                 return
             from collections import OrderedDict
-            data = OrderedDict()
+            data = self.newRemodData
             data['authorMessage'] = settings.message
             for teamIdx, team in enumerate(OM.tankGroups):
                 data[team.lower() + 'Whitelist'] = ','.join(settings.whitelists[teamIdx])
-
-            vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
-            for key in TankPartNames.ALL + ('engine',):
-                data[key] = OrderedDict()
-            for key in TankPartNames.ALL:
-                data[key]['undamaged'] = getattr(vDesc, key)['models']['undamaged']
-            chassis = data['chassis']
-            for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
-                chassis[key] = str(vDesc.chassis[key])
-            chassis['hullPosition'] = vDesc.chassis['hullPosition'].tuple()
-            chassis['AODecals'] = []
-            for decal in vDesc.chassis['AODecals']:
-                decDict = {'transform': OrderedDict()}
-                for strIdx in xrange(4):
-                    decDict['transform']['row%s' % strIdx] = []
-                    for colIdx in xrange(3):
-                        decDict['transform']['row%s' % strIdx].append(decal.get(strIdx, colIdx))
-            for key in ('wwsoundPC', 'wwsoundNPC'):
-                chassis[key] = vDesc.chassis[key]
-            pixieID = ''
-            for key, value in g_cache._customEffects['exhaust'].iteritems():
-                if value == vDesc.hull['customEffects'][0]._selectorDesc:
-                    pixieID = key
-                    break
-            data['hull']['exhaust'] = {'nodes': ' '.join(vDesc.hull['customEffects'][0].nodes), 'pixie': pixieID}
-            for ids in (('_gunEffects', 'effects'), ('_gunReloadEffects', 'reloadEffect')):
-                for key, value in getattr(g_cache, ids[0]).items():
-                    if value == vDesc.gun[ids[1]]:
-                        data['gun'][ids[1]] = key
-                        break
-            exclMask = vDesc.type.camouflageExclusionMask
-            if exclMask:
-                camouflage = data['camouflage'] = OrderedDict()
-                camouflage['exclusionMask'] = exclMask
-                camouflage['tiling'] = vDesc.type.camouflageTiling
-            for partName in TankPartNames.ALL[1:]:
-                part = getattr(vDesc, partName)
-                data[partName]['emblemSlots'] = []
-                exclMask = part['camouflageExclusionMask']
-                if exclMask:
-                    camouflage = data[partName]['camouflage'] = OrderedDict()
-                    camouflage['exclusionMask'] = exclMask
-                    camouflage['tiling'] = part['camouflageTiling']
-                for slot in part['emblemSlots']:
-                    slotDict = OrderedDict()
-                    for key in ('rayStart', 'rayEnd', 'rayUp'):
-                        slotDict[key] = getattr(slot, key).tuple()
-                    for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId'):
-                        slotDict[key] = getattr(slot, key)
-                    data[partName]['emblemSlots'].append(slotDict)
-            data['engine']['wwsoundPC'] = vDesc.engine['wwsoundPC']
-            data['engine']['wwsoundNPC'] = vDesc.engine['wwsoundNPC']
             g_config.loadJson(str(settings.name), data, g_config.configPath + 'remods/', True, False, sort_keys=False)
             g_config.update_data()
             SystemMessages.pushMessage(
@@ -671,7 +710,7 @@ def lobbyKeyControl(event):
             'PYmods_SM' + g_config.i18n['UI_mode'] + g_config.i18n['UI_mode_' + g_config.data['currentMode']].join(
                 ('<b>', '</b>.')),
             SystemMessages.SM_TYPE.Warning)
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
     if PYmodsCore.checkKeys(g_config.data['CollisionHotkey']):
         if g_config.data['collisionComparisonEnabled']:
             g_config.data['collisionComparisonEnabled'] = False
@@ -692,14 +731,14 @@ def lobbyKeyControl(event):
                 print 'RemodEnabler: Enabling collision display'
             SystemMessages.pushMessage('PYmods_SM' + g_config.i18n['UI_enableCollision'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
     if PYmodsCore.checkKeys(g_config.data['DynamicSkinHotkey']):
         enabled = g_config.data['dynamicSkinEnabled']
         g_config.data['dynamicSkinEnabled'] = not enabled
         SystemMessages.pushMessage(
             'PYmods_SM' + g_config.i18n['UI_%sableDynamicSkin' % ('en' if not enabled else 'dis')],
             SystemMessages.SM_TYPE.CustomizationForGold)
-        g_currentPreviewVehicle.refreshModel()
+        PYmodsCore.refreshCurrentVehicle()
     if g_config.OM.enabled and PYmodsCore.checkKeys(g_config.data['SwitchRemodHotkey']):
         if g_config.data['currentMode'] != 'remod':
             curTankType = g_config.data['currentMode'].capitalize()
@@ -718,7 +757,8 @@ def lobbyKeyControl(event):
                     continue
                 if vehName in selected:
                     selected[vehName] = getattr(curPRecord, 'name', '')
-                g_config.loadJson('remodsCache', g_config.OM.selected, g_config.configPath, True)
+                g_config.loadJson('remodsCache', g_config.OM.selected, g_config.configPath, True,
+                                  doPrint=g_config.data['isDebug'])
                 break
         else:
             snameList = sorted(g_config.OM.models.keys())
@@ -730,8 +770,9 @@ def lobbyKeyControl(event):
                     snameIdx = 0
             sname = snameList[snameIdx]
             g_config.OM.selected['Remod'] = sname
-            g_config.loadJson('remodsCache', g_config.OM.selected, g_config.configPath, True)
-        g_currentPreviewVehicle.refreshModel()
+            g_config.loadJson('remodsCache', g_config.OM.selected, g_config.configPath, True,
+                              doPrint=g_config.data['isDebug'])
+        PYmodsCore.refreshCurrentVehicle()
 
 
 def inj_hkKeyEvent(event):

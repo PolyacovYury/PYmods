@@ -15,6 +15,7 @@ from adisp import AdispException, async, process
 from functools import partial
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
+from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader.loader import g_appLoader
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
@@ -31,6 +32,7 @@ def skinsPresenceCheck():
 
 
 texReplaced = False
+skinsChecked = False
 g_config.data['skinsFound'] = False
 skinsPresenceCheck()
 clientIsNew = True
@@ -289,10 +291,11 @@ def processMember(memberFileName, skinName):
 
 @process
 def skinLoader():
-    if g_config.data['skinsFound']:
+    global skinsChecked
+    if g_config.data['enabled'] and g_config.data['skinsFound'] and not skinsChecked:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
-            lobbyApp.loadView('RemodEnablerLoading')
+            lobbyApp.loadView(ViewLoadParams('RemodEnablerLoading'))
         else:
             return
         jobStartTime = time.time()
@@ -305,6 +308,7 @@ def skinLoader():
         print 'RemodEnabler: total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, g_config.loadingProxy.onWindowClose)
+        skinsChecked = True
 
 
 @PYmodsCore.overrideMethod(LoginView, '_populate')

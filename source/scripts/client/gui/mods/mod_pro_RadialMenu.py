@@ -415,7 +415,9 @@ def findBestFitConf(commandConf):
         return _config.bestConf, _config.confType
     vehicleTypeDescr = g_sessionProvider.getArenaDP().getVehicleInfo().vehicleType
     vehicleType = vehicleTypeDescr.classTag
-    vehicleName = vehicleTypeDescr.iconName.split('-', 1)[1]
+    vehicleName = vehicleTypeDescr.iconName
+    if '-' in vehicleName:
+        vehicleName = vehicleName.split('-', 1)[1]
     menuConf = None
     menuType = ''
     allMenuConf = commandConf.get('tankSpecific')

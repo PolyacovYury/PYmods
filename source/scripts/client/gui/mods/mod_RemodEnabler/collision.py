@@ -7,7 +7,6 @@ from AvatarInputHandler import mathUtils
 from gui.ClientHangarSpace import _VehicleAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from . import g_config
-from .processor import skins_dynamic
 
 
 def clearCollision(self):
@@ -20,7 +19,6 @@ def clearCollision(self):
                     moduleDict['model'].delMotor(moduleDict['motor'])
     if hasattr(self, 'collisionTable'):
         del self.collisionTable
-    skins_dynamic.destroy(vEntityId)
 
 
 @PYmodsCore.overrideMethod(_VehicleAppearance, 'refresh')
@@ -50,24 +48,22 @@ def new_setupModel(base, self, buildIdx):
     failList = []
     for part in self.modifiedModelsDesc.keys():
         try:
-            self.modifiedModelsDesc[part]['model'] = BigWorld.Model(getattr(vDesc, part)['hitTester'].bspModelName)
+            self.modifiedModelsDesc[part]['model'] = BigWorld.Model(getattr(vDesc, part).hitTester.bspModelName)
             self.modifiedModelsDesc[part]['model'].visible = False
         except StandardError:
             self.collisionLoaded = False
-            failList.append(getattr(vDesc, part)['hitTester'].bspModelName)
+            failList.append(getattr(vDesc, part).hitTester.bspModelName)
 
     if failList:
         print 'RemodEnabler: collision load failed: models not found'
         print failList
-    if g_config.OSDesc['dynamic'] is not None:
-        skins_dynamic.attach(vEntityId, g_config.data['dynamicSkinEnabled'] and not g_config.data['collisionComparisonEnabled'])
     if not self.collisionLoaded:
         return
     if any((g_config.data['collisionEnabled'], g_config.data['collisionComparisonEnabled'])):
         # Getting offset matrices
-        hullOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.chassis['hullPosition'])
-        turretOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.hull['turretPositions'][0])
-        gunOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.turret['gunPosition'])
+        hullOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.chassis.hullPosition)
+        turretOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.hull.turretPositions[0])
+        gunOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.turret.gunPosition)
         # Getting local transform matrices
         hullMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), hullOffset)
         turretMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), turretOffset)
@@ -149,8 +145,8 @@ def addCollisionGUI(self):
     for moduleIdx, moduleName in enumerate(TankPartNames.ALL):
         self.collisionTable[moduleName] = curCollisionTable = {'textBoxes': [], 'texBoxes': [], 'armorValues': {}}
         moduleDict = getattr(vDesc, moduleName)
-        for Idx, groupNum in enumerate(sorted(moduleDict['materials'].keys())):
-            armorValue = int(moduleDict['materials'][groupNum].armor)
+        for Idx, groupNum in enumerate(sorted(moduleDict.materials.keys())):
+            armorValue = int(moduleDict.materials[groupNum].armor)
             curCollisionTable['armorValues'].setdefault(armorValue, [])
             if groupNum not in curCollisionTable['armorValues'][armorValue]:
                 curCollisionTable['armorValues'][armorValue].append(groupNum)
