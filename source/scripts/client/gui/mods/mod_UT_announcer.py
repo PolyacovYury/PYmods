@@ -18,7 +18,7 @@ import os
 import traceback
 from Avatar import PlayerAvatar
 from collections import OrderedDict
-from constants import ARENA_PERIOD
+from constants import ARENA_PERIOD, ARENA_GUI_TYPE
 from debug_utils import LOG_ERROR
 from functools import partial
 from gui import IngameSoundNotifications
@@ -602,22 +602,32 @@ def firstCheck(targetID, attackerID, reason, squadChecked, killerID):
         LOG_NOTE('%s detected!' % ('Kamikaze' if isKamikaze else 'Ram kill'), targetID, attackerID)
         killCheck(30 if isKamikaze else 20)
     cStats = arena._ClientArena__statistics
-    frags = cStats.get(attackerID)['frags']
+    origFrags = frags = cStats.get(attackerID)['frags']
     if frags > 1:
+        checkMedals = True
+        if arena.guiType in (ARENA_GUI_TYPE.EPIC_RANDOM, ARENA_GUI_TYPE.EPIC_RANDOM_TRAINING):
+            if frags in (7, 8, 9, 10):
+                frags -= 2
+            elif frags in (12, 13):
+                frags -= 3
+            elif frags in (20, 21):
+                frags -= 7
+            else:
+                checkMedals = False
         if (_config.data['checkMedals'] and (
                 attacker['isPlayer'] and _config.data['checkMedals'] != 3 or
                 attacker['isAlly'] and not attacker['isPlayer'] and _config.data['checkMedals'] in (2, 4) or
-                not attacker['isAlly'] and _config.data['checkMedals'] >= 3) and (
+                not attacker['isAlly'] and _config.data['checkMedals'] >= 3) and checkMedals and (
                     frags in (5, 6, 13, 14) or attacker['vehicle']['vehicleType'].level >= 5 and frags in (7, 8, 9, 10))):
             callTextInit(_config.i18n['UI_message_frags_%s' % frags], targetID, attackerID, None)
             LOG_NOTE('Calling Medal killCheck function.', targetID, attackerID)
             LOG_NOTE('Medal checked frags:', frags)
             killCheck(frags)
         elif attacker['isPlayer'] or _config.data['allKill'] and (
-                        _config.data['allKill'] == 2 or cStats[BigWorld.player().playerVehicleID]['frags'] <= frags):
+                        _config.data['allKill'] == 2 or cStats[BigWorld.player().playerVehicleID]['frags'] <= origFrags):
             LOG_NOTE('Calling normal killCheck function.', targetID, attackerID)
-            LOG_NOTE('frags:', frags)
-            killCheck(frags)
+            LOG_NOTE('frags:', origFrags)
+            killCheck(origFrags)
 
 
 def checkOwnKiller():
