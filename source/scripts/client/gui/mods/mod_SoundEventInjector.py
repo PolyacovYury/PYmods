@@ -19,6 +19,7 @@ class _Config(PYmodsCore.Config):
         super(self.__class__, self).__init__('%(mod_ID)s')
         self.version = '1.0.0 (%(file_compile_date)s)'
         self.data = {'engines': {}, 'gun_reload_effects': {}, 'shot_effects': {}, 'sound_notifications': {}, 'guns': {}}
+        self.confList = set()
 
     def updateMod(self):
         pass
@@ -29,12 +30,14 @@ class _Config(PYmodsCore.Config):
             LOG_ERROR('%s config folder not found:' % self.ID, configPath)
             os.makedirs(configPath)
         for confPath in glob.iglob(configPath + '*.json'):
+            confName = os.path.basename(confPath).split('.')[0]
             try:
-                confdict = self.loadJson(os.path.basename(confPath).split('.')[0], {}, os.path.dirname(confPath) + '/')
+                confdict = self.loadJson(confName, {}, os.path.dirname(confPath) + '/')
             except StandardError:
                 print '%s: config %s is invalid.' % (self.ID, os.path.basename(confPath))
                 traceback.print_exc()
                 continue
+            self.confList.add(confName)
             for itemType, itemsDict in confdict.iteritems():
                 if itemType not in self.data:
                     continue
@@ -159,4 +162,4 @@ def new_readConfig(base, self):
 
 _config = _Config()
 _config.load()
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-')
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-13', _config.confList)
