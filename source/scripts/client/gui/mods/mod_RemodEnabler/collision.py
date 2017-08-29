@@ -48,11 +48,11 @@ def new_setupModel(base, self, buildIdx):
     failList = []
     for part in self.modifiedModelsDesc.keys():
         try:
-            self.modifiedModelsDesc[part]['model'] = BigWorld.Model(getattr(vDesc, part)['hitTester'].bspModelName)
+            self.modifiedModelsDesc[part]['model'] = BigWorld.Model(getattr(vDesc, part).hitTester.bspModelName)
             self.modifiedModelsDesc[part]['model'].visible = False
         except StandardError:
             self.collisionLoaded = False
-            failList.append(getattr(vDesc, part)['hitTester'].bspModelName)
+            failList.append(getattr(vDesc, part).hitTester.bspModelName)
 
     if failList:
         print 'RemodEnabler: collision load failed: models not found'
@@ -61,9 +61,9 @@ def new_setupModel(base, self, buildIdx):
         return
     if any((g_config.data['collisionEnabled'], g_config.data['collisionComparisonEnabled'])):
         # Getting offset matrices
-        hullOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.chassis['hullPosition'])
-        turretOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.hull['turretPositions'][0])
-        gunOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.turret['gunPosition'])
+        hullOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.chassis.hullPosition)
+        turretOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.hull.turretPositions[0])
+        gunOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.turret.gunPosition)
         # Getting local transform matrices
         hullMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), hullOffset)
         turretMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), turretOffset)
@@ -145,8 +145,8 @@ def addCollisionGUI(self):
     for moduleIdx, moduleName in enumerate(TankPartNames.ALL):
         self.collisionTable[moduleName] = curCollisionTable = {'textBoxes': [], 'texBoxes': [], 'armorValues': {}}
         moduleDict = getattr(vDesc, moduleName)
-        for Idx, groupNum in enumerate(sorted(moduleDict['materials'].keys())):
-            armorValue = int(moduleDict['materials'][groupNum].armor)
+        for Idx, groupNum in enumerate(sorted(moduleDict.materials.keys())):
+            armorValue = int(moduleDict.materials[groupNum].armor)
             curCollisionTable['armorValues'].setdefault(armorValue, [])
             if groupNum not in curCollisionTable['armorValues'][armorValue]:
                 curCollisionTable['armorValues'][armorValue].append(groupNum)

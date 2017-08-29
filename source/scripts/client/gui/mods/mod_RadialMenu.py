@@ -293,10 +293,8 @@ def findBestFitConf(commandConf):
     vehicleTypeDescr = g_sessionProvider.getArenaDP().getVehicleInfo().vehicleType
     vehicleType = vehicleTypeDescr.classTag
     vehicleName = vehicleTypeDescr.iconName
-    try:
+    if '-' in vehicleName:
         vehicleName = vehicleName.split('-', 1)[1]
-    except IndexError:
-        print 'RadialMenu: error extracting vehicle name:', vehicleName
     menuConf = None
     menuType = ''
     allMenuConf = commandConf.get('tankSpecific')

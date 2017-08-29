@@ -2,13 +2,19 @@ import PYmodsCore
 import ResMgr
 import copy
 import traceback
-from Vehicle import Vehicle
+from collections import namedtuple
 from gui.ClientHangarSpace import _VehicleAppearance
-from items.vehicle_config_types import GroundNode, GroundNodeGroup, TrackNode, Wheel, WheelGroup
+from items.components.chassis_components import *
+from items.components.chassis_components import SplineConfig, WheelsConfig
+from items.components.shared_components import Camouflage, ModelStatesPaths, NodesAndGroups
+from items.components.sound_components import WWTripleSoundConfig
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
-from .. import g_config
 from . import attached_models
+from .. import g_config
+
+TrackMaterials = namedtuple('TrackMaterials', ('lodDist', 'leftMaterial', 'rightMaterial', 'textureScale'))
+TrackParams = namedtuple('TrackParams', ('thickness', 'maxAmplitude', 'maxOffset', 'gravity'))
 
 
 def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
@@ -52,69 +58,86 @@ def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
 
 def apply(vDesc):
     for key in ('splineDesc', 'trackParams'):
-        if vDesc.chassis[key] is None:
-            vDesc.chassis[key] = {}
+        if getattr(vDesc.chassis, key) is None:
+            setattr(vDesc.chassis, key, {})
     data = g_config.OMDesc.data
     for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
         obj = eval(data['chassis'][key])
-        if key not in ('wheels', 'groundNodes', 'trackNodes') or any(
-                hasattr(d, '_fields') for l in obj.itervalues() if type(l) != float for d in l):
-            vDesc.chassis[key] = obj
-            continue
-        newObj = {}
-        if key == 'wheels':
-            newObj['groups'] = []
-            newObj['wheels'] = []
-            newObj['lodDist'] = obj['lodDist']
-            newObj['leadingWheelSyncAngle'] = obj['leadingWheelSyncAngle']
-            for d in obj['groups']:
-                newObj['groups'].append(WheelGroup(*d))
-            for d in obj['wheels']:
-                newObj['wheels'].append(Wheel(*(d[0], d[2], d[1], d[3], d[4])))
-        if key == 'groundNodes':
-            newObj['groups'] = []
-            newObj['nodes'] = []
-            for d in obj['groups']:
-                newObj['groups'].append(GroundNodeGroup(*(d[0], d[4], d[5], d[1], d[2], d[3])))
-            for d in obj['nodes']:
-                newObj['nodes'].append(GroundNode(*(d[1], d[0], d[2], d[3])))
-        if key == 'trackNodes':
-            newObj['groups'] = []
-            newObj['nodes'] = []
-            for d in obj['nodes']:
-                newObj['nodes'].append(TrackNode(*(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])))
-        vDesc.chassis[key] = newObj
+        newObj = None
+        if isinstance(obj, dict):
+            if key == 'traces':
+                newObj = Traces(**obj)
+            elif key == 'tracks':
+                newObj = TrackMaterials(**obj)
+            elif key == 'wheels':
+                groups = []
+                wheels = []
+                for d in obj['groups']:
+                    if not hasattr(d, '_fields'):
+                        d = WheelGroup(*d)
+                    groups.append(d)
+                for d in obj['wheels']:
+                    if not hasattr(d, '_fields'):
+                        d = Wheel(d[0], d[2], d[1], d[3], d[4])
+                    wheels.append(d)
+                newObj = WheelsConfig(lodDist=obj['lodDist'], groups=tuple(groups), wheels=tuple(wheels))
+            elif key == 'groundNodes':
+                groups = []
+                nodes = []
+                for d in obj['groups']:
+                    if not hasattr(d, '_fields'):
+                        d = GroundNodeGroup(*(d[0], d[4], d[5], d[1], d[2], d[3]))
+                    groups.append(d)
+                for d in obj['nodes']:
+                    if not hasattr(d, '_fields'):
+                        d = GroundNode(*(d[1], d[0], d[2], d[3]))
+                    nodes.append(d)
+                newObj = NodesAndGroups(nodes=tuple(nodes), groups=tuple(groups))
+            elif key == 'trackNodes':
+                nodes = []
+                for d in obj['nodes']:
+                    if not hasattr(d, '_fields'):
+                        d = TrackNode(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])
+                    nodes.append(d)
+                newObj = NodesAndGroups(nodes=tuple(nodes), groups=())
+            elif key == 'splineDesc':
+                newObj = SplineConfig(**obj)
+            elif key == 'trackParams':
+                newObj = TrackParams(**obj)
+        setattr(vDesc.chassis, key, newObj if newObj is not None else obj)
     if data['chassis']['AODecals']:
-        AODecalsOffset = vDesc.chassis['hullPosition'] - data['chassis']['hullPosition']
-        vDesc.chassis['AODecals'] = copy.deepcopy(data['chassis']['AODecals'])
-        vDesc.chassis['AODecals'][0].setElement(3, 1, AODecalsOffset.y)
-    for part in TankPartNames.ALL:
-        getattr(vDesc, part)['models']['undamaged'] = data[part]['undamaged']
+        AODecalsOffset = vDesc.chassis.hullPosition - data['chassis']['hullPosition']
+        vDesc.chassis.AODecals = copy.deepcopy(data['chassis']['AODecals'])
+        vDesc.chassis.AODecals[0].setElement(3, 1, AODecalsOffset.y)
+    for partName in TankPartNames.ALL:
+        part = getattr(vDesc, partName)
+        models = part.models
+        part.models = ModelStatesPaths(data[partName]['undamaged'], models.destroyed, models.exploded)
     if data['gun']['effects']:
         newGunEffects = g_cache._gunEffects.get(data['gun']['effects'])
         if newGunEffects:
-            vDesc.gun['effects'] = newGunEffects
+            vDesc.gun.effects = newGunEffects
     if data['gun']['reloadEffect']:
         newGunReloadEffect = g_cache._gunReloadEffects.get(data['gun']['reloadEffect'])
         if newGunReloadEffect:
-            vDesc.gun['reloadEffect'] = newGunReloadEffect
-    vDesc.gun['emblemSlots'] = data['gun']['emblemSlots']
+            vDesc.gun.reloadEffect = newGunReloadEffect
+    vDesc.gun.emblemSlots = data['gun']['emblemSlots']
     if data['hull']['emblemSlots']:
         cntClan = 1
         cntPlayer = cntInscription = 0
-        for part in ('hull', 'turret'):
-            for slot in getattr(vDesc, part)['emblemSlots']:
+        for partName in ('hull', 'turret'):
+            for slot in getattr(vDesc, partName).emblemSlots:
                 if slot.type == 'inscription':
                     cntInscription += 1
                 if slot.type == 'player':
                     cntPlayer += 1
         try:
-            vDesc.hull['emblemSlots'] = []
-            vDesc.turret['emblemSlots'] = []
-            for part in ('hull', 'turret'):
-                for slot in data[part]['emblemSlots']:
+            vDesc.hull.emblemSlots = []
+            vDesc.turret.emblemSlots = []
+            for partName in ('hull', 'turret'):
+                for slot in data[partName]['emblemSlots']:
                     if slot.type in ('player', 'inscription', 'clan'):
-                        getattr(vDesc, part)['emblemSlots'].append(slot)
+                        getattr(vDesc, partName).emblemSlots.append(slot)
                     if slot.type == 'player' and cntPlayer > 0:
                         cntPlayer -= 1
                     if slot.type == 'inscription' and cntInscription > 0:
@@ -131,38 +154,39 @@ def apply(vDesc):
     for partName in ('hull', 'turret'):
         if not data[partName]['emblemSlots']:
             part = getattr(vDesc, partName)
-            for i in range(len(part['emblemSlots'])):
-                part['emblemSlots'][i] = part['emblemSlots'][i]._replace(size=0.001)
+            for i in range(len(part.emblemSlots)):
+                part.emblemSlots[i] = part.emblemSlots[i]._replace(size=0.001)
 
     exclMask = data['common']['camouflage']['exclusionMask']
-    vDesc.type.camouflageExclusionMask = exclMask
-    if exclMask:
-        vDesc.type.camouflageTiling = data['common']['camouflage']['tiling']
-    for partName in ('hull', 'gun', 'turret'):
+    vDesc.type.camouflage = Camouflage(
+        data['common']['camouflage']['tiling'] if exclMask else vDesc.type.camouflage.tiling, exclMask)
+    for partName in TankPartNames.ALL[1:]:
         camoData = data[partName]['camouflage']
         exclMask = camoData['exclusionMask']
         if exclMask:
-            part = getattr(vDesc, partName)
-            part['camouflageExclusionMask'] = exclMask
-            part['camouflageTiling'] = camoData['tiling']
+            getattr(vDesc, partName).camouflage = Camouflage(camoData['tiling'], exclMask)
     exhaust = data['hull']['exhaust']
-    for effectDesc in vDesc.hull['customEffects']:
+    for effectDesc in vDesc.hull.customEffects:
         if exhaust['nodes']:
             effectDesc.nodes[:] = exhaust['nodes']
         effectDesc._selectorDesc = g_cache._customEffects['exhaust'].get(exhaust['pixie'], effectDesc._selectorDesc)
     for partName in ('chassis', 'engine'):
-        for key in ('wwsoundPC', 'wwsoundNPC'):
-            part = getattr(vDesc, partName)
-            soundID = data[partName][key]
-            if soundID:
-                part[key] = soundID
+        soundIDs = []
+        part = getattr(vDesc, partName)
+        partData = data[partName]
+        for key in ('wwsound', 'wwsoundPC', 'wwsoundNPC'):
+            soundID = partData[key]
+            if not soundID:
+                soundID = getattr(part.sounds, key)
+            soundIDs.append(soundID)
+        part.sounds = WWTripleSoundConfig(*soundIDs)
 
 
 def glass_create(vehicleID, vDesc, visible=False):
     try:
         resList = []
         for partName in TankPartNames.ALL[1:]:
-            modelPath = getattr(vDesc, partName)['models']['undamaged'].replace('.model', '_glass.model')
+            modelPath = getattr(vDesc, partName).models.undamaged.replace('.model', '_glass.model')
             if ResMgr.isFile(modelPath):
                 if partName == TankPartNames.GUN:
                     partName = TankNodeNames.GUN_INCLINATION
@@ -176,14 +200,6 @@ def glass_create(vehicleID, vDesc, visible=False):
 
 def glass_attach(vehicleID, visible=False):
     attached_models.attach(vehicleID, 'RE_glass', visible)
-
-
-@PYmodsCore.overrideMethod(Vehicle, 'getDescr')
-def new_getDescr(base, self, respawnCompactDescr):
-    vDesc = base(self, respawnCompactDescr)
-    if g_config.data['enabled']:
-        glass_create(self.id, vDesc, True)
-    return vDesc
 
 
 @PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__setupModel')

@@ -12,7 +12,7 @@ def create(vehicleID, vDesc, visible=False):
         sname = g_config.OSDesc['dynamic'].name
         resList = []
         for partName in TankPartNames.ALL[1:]:
-            modelPath = getattr(vDesc, partName)['models']['undamaged'].replace(
+            modelPath = getattr(vDesc, partName).models.undamaged.replace(
                 'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
             if partName == TankPartNames.GUN:
                 partName = TankNodeNames.GUN_INCLINATION
@@ -46,14 +46,7 @@ def new_targetFocus(base, self, entity):
     if entity in self._PlayerAvatar__vehicles:
         try:
             for vehicleID, dyn in attached_models.dynamic_db.iteritems():
-                if 'skins_dynamic' not in dyn:
-                    continue
-                dyn = dyn['skins_dynamic']
-                if dyn['loaded']:
-                    for modelDict in dyn['models'].itervalues():
-                        model = modelDict['model']
-                        if model is not None:
-                            model.visible = vehicleID == entity.id
+                attached_models.detach(vehicleID, modID='skins_dynamic', visible=vehicleID == entity.id)
         except StandardError:
             traceback.print_exc()
 
