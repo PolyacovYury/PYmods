@@ -67,7 +67,7 @@ def vDesc_process(vehicleID, vDesc, mode):
     remods.find(xmlName, isPlayerVehicle, isAlly, currentMode)
     for partName in TankPartNames.ALL + ('engine',):
         for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
-                vDesc.defaultVehicleDescr, vDesc.siegeVehicleDescr):
+                vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
             try:
                 setattr(descr, partName, getattr(descr, partName).copy())
             except StandardError:
@@ -99,7 +99,7 @@ def vDesc_process(vehicleID, vDesc, mode):
                 message = g_config.i18n['UI_install_default']
     else:
         for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
-                vDesc.defaultVehicleDescr, vDesc.siegeVehicleDescr):
+                vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
             remods.apply(descr)
         if collisionNotVisible:
             message = g_config.i18n['UI_install_remod'] + g_config.OMDesc.name.join(

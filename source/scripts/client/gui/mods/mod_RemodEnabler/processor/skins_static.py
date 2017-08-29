@@ -12,7 +12,7 @@ def apply(vDesc):
         sname = OSDesc.name
         for partName in TankPartNames.ALL:
             for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
-                    vDesc.defaultVehicleDescr, vDesc.siegeVehicleDescr):
+                    vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
                 modelPath = getattr(descr, partName).models.undamaged.replace(
                     'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
                 if os.path.isfile(BigWorld.curCV + '/' + modelPath):
