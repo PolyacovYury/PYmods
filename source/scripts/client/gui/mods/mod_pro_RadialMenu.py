@@ -1,23 +1,22 @@
 # -*- coding: utf-8 -*-
+import math
+import time
+
+import BigWorld
+import CommandMapping
+import Keys
+import Math
+import ResMgr
 import codecs
 import json
-import math
 import os
 import random
 import re
 import string
-import time
 import traceback
-from functools import partial
-
-import BigWorld
-import Math
-import ResMgr
-
-import CommandMapping
-import Keys
 from Avatar import PlayerAvatar
 from constants import ARENA_BONUS_TYPE
+from functools import partial
 from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared import radial_menu
 from gui.Scaleform.daapi.view.battle.shared.radial_menu import SHORTCUT_SETS, SHORTCUT_STATES, getKeyFromAction
@@ -298,7 +297,7 @@ class SafeFormatter(string.Formatter):
             except KeyError:
                 return key.join(('{', '}'))
         else:
-            super(SafeFormatter, self).get_value(key, args, kwargs)
+            super(self.__class__, self).get_value(key, args, kwargs)
 
 
 camMgr = CameraManager()
@@ -428,13 +427,14 @@ def findBestFitConf(commandConf):
             if isinstance(menuConf, str):
                 menuConf = allMenuConf.get(menuConf)
                 menuType = 'tankSpecific' + menuConf
-    if menuConf is None:
+    if menuConf is None and vehicleType is not None:
         menuConf = commandConf.get(vehicleType + 'Menu')
         menuType = vehicleType + 'Menu'
     if menuConf is None:
         menuConf = commandConf.get('TankMenu')
         menuType = 'TankMenu'
-    _config.bestConf, _config.confType = menuConf, menuType
+    if vehicleType is not None:
+        _config.bestConf, _config.confType = menuConf, menuType
     return menuConf, menuType
 
 

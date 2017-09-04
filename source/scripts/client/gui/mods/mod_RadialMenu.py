@@ -305,13 +305,14 @@ def findBestFitConf(commandConf):
             if isinstance(menuConf, str):
                 menuConf = allMenuConf.get(menuConf)
                 menuType = 'tankSpecific' + menuConf
-    if menuConf is None:
+    if menuConf is None and vehicleType is not None:
         menuConf = commandConf.get(vehicleType + 'Menu')
         menuType = vehicleType + 'Menu'
     if menuConf is None:
         menuConf = commandConf.get('TankMenu')
         menuType = 'TankMenu'
-    _config.bestConf, _config.confType = menuConf, menuType
+    if vehicleType is not None:
+        _config.bestConf, _config.confType = menuConf, menuType
     return menuConf, menuType
 
 
