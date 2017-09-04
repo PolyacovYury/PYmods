@@ -54,8 +54,9 @@ def vDesc_process(vehicleID, vDesc, mode):
     if mode == 'battle':
         currentMode = mode
         isPlayerVehicle = vehicleID == BigWorld.player().playerVehicleID
-        playerName = BigWorld.player().arena.vehicles.get(vehicleID)['name']
-        isAlly = BigWorld.player().arena.vehicles.get(vehicleID)['team'] == BigWorld.player().team
+        vehInfoVO = BigWorld.player().arena.vehicles[vehicleID]
+        playerName = vehInfoVO['name']
+        isAlly = vehInfoVO['team'] == BigWorld.player().team
     elif mode == 'hangar':
         currentMode = g_config.data['currentMode']
         isPlayerVehicle = currentMode == 'player'
