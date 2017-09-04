@@ -4,17 +4,22 @@ import traceback
 from CurrentVehicle import _RegularPreviewAppearance, g_currentPreviewVehicle
 from gui import SystemMessages
 from gui.ClientHangarSpace import _VehicleAppearance
+from helpers import dependency
 from items.vehicles import CompositeVehicleDescriptor
+from skeletons.gui.battle_session import IBattleSessionProvider
 from vehicle_systems import appearance_cache
 from vehicle_systems.tankStructure import TankPartNames
 from .. import g_config
 from . import remods, skins_dynamic, skins_static
 
+g_sessionProvider = dependency.instance(IBattleSessionProvider)
+
 
 @PYmodsCore.overrideMethod(_RegularPreviewAppearance, 'refreshVehicle')
 def new_refreshVehicle(base, self, item):
     if item and (g_config.OMDesc is not None or any(g_config.OSDesc.values())):
-        item = g_currentPreviewVehicle._CurrentPreviewVehicle__item = g_currentPreviewVehicle._CurrentPreviewVehicle__getPreviewVehicle(item.intCD)
+        item = g_currentPreviewVehicle._CurrentPreviewVehicle__item = \
+            g_currentPreviewVehicle._CurrentPreviewVehicle__getPreviewVehicle(item.intCD)
     base(self, item)
 
 
@@ -54,8 +59,9 @@ def vDesc_process(vehicleID, vDesc, mode):
     if mode == 'battle':
         currentMode = mode
         isPlayerVehicle = vehicleID == BigWorld.player().playerVehicleID
-        playerName = BigWorld.player().arena.vehicles.get(vehicleID)['name']
-        isAlly = BigWorld.player().arena.vehicles.get(vehicleID)['team'] == BigWorld.player().team
+        vehInfoVO = g_sessionProvider.getArenaDP().getVehicleInfo(vehicleID)
+        playerName = vehInfoVO.player.name
+        isAlly = vehInfoVO.team == BigWorld.player().team
     elif mode == 'hangar':
         currentMode = g_config.data['currentMode']
         isPlayerVehicle = currentMode == 'player'
