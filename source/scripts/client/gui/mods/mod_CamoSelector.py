@@ -693,7 +693,7 @@ def new_ca_getCamouflageParams(base, self, vDesc, vID):
         return result
     if 'modded' not in _config.camouflages:
         _config.readCamouflages(False)
-    if vDesc.name in _config.disable:
+    if vDesc.name in _config.disable or vDesc.type.hasCustomDefaultCamouflage:
         return result
     nationName, vehName = vDesc.name.split(':')
     isPlayer = vID == BigWorld.player().playerVehicleID
