@@ -340,12 +340,11 @@ class _Config(PYmodsCore.Config):
         except StandardError:
             traceback.print_exc()
 
-        self.interCamo = map(lambda x: x['name'], items.vehicles.g_cache.customization(0)['camouflages'].itervalues())
+        self.interCamo = [x['name'] for x in items.vehicles.g_cache.customization(0)['camouflages'].itervalues()]
         for nationID in xrange(1, len(nations.NAMES)):
-            camouflages = items.vehicles.g_cache.customization(nationID)['camouflages']
-            camoNames = map(lambda x: x['name'], camouflages.itervalues())
-            self.interCamo = filter(lambda x: x in camoNames, self.interCamo)
-        self.origInterCamo = filter(lambda x: x not in self.camouflages['modded'], self.interCamo)
+            camoNames = [x['name'] for x in items.vehicles.g_cache.customization(nationID)['camouflages'].itervalues()]
+            self.interCamo = [x for x in self.interCamo if x in camoNames]
+        self.origInterCamo = [x for x in self.interCamo if x not in self.camouflages['modded']]
         settings = self.loadJson('settings', {}, self.configPath)
         if 'disable' in settings:
             if not settings['disable']:
@@ -475,13 +474,17 @@ def new_customization(base, self, nationID):
         for configDir in _config.configFolders:
             customDescr = items.vehicles._readCustomization(
                 '../' + _config.configPath + 'camouflages/' + configDir + '/settings.xml', nationID, (0, 65535))
-            if 'custom_camo' in commonDescr['camouflageGroups'] and 'custom_camo' in customDescr['camouflageGroups']:
+            if 'custom_camo' in customDescr['camouflageGroups']:
+                if 'custom_camo' not in commonDescr['camouflageGroups']:
+                    commonDescr['camouflageGroups']['custom_camo'] = customDescr['camouflageGroups']['custom_camo']
+                    commonDescr['camouflageGroups']['custom_camo']['ids'][:] = []
                 del customDescr['camouflageGroups']['custom_camo']
             newID = max(commonDescr['camouflages'].iterkeys()) + 1
             camouflages = customDescr['camouflages'].values()
             customDescr['camouflages'].clear()
             for camo in camouflages:
                 customDescr['camouflages'][newID] = camo
+                commonDescr['camouflageGroups']['custom_camo']['ids'].append(newID)
                 newID += 1
             commonDescr = items.vehicles._joinCustomizationParams(nationID, commonDescr, customDescr)
         self._Cache__customization[nationID] = commonDescr
@@ -692,10 +695,10 @@ def new_onBecomeNonPlayer(base, self):
 @PYmodsCore.overrideMethod(CompoundAppearance, '_CompoundAppearance__getCamouflageParams')
 def new_ca_getCamouflageParams(base, self, vDesc, vID):
     result = base(self, vDesc, vID)
-    if not _config.data['enabled'] or result[0] is not None and _config.data['useBought']:
-        return result
     if 'modded' not in _config.camouflages:
         _config.readCamouflages(False)
+    if not _config.data['enabled'] or result[0] is not None and _config.data['useBought']:
+        return result
     if vDesc.name in _config.disable or vDesc.type.hasCustomDefaultCamouflage:
         return result
     nationName, vehName = vDesc.name.split(':')
