@@ -101,7 +101,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
         return False
 
     def onCancelClick(self):
-        BigWorld.wg_openWebBrowser('http://www.koreanrandom.com/forum/topic/22800-')
+        BigWorld.wg_openWebBrowser('http://forum.worldoftanks.ru/index.php?/topic/1890271-')
 
     def onWindowClose(self):
         g_config.loadingProxy = None
