@@ -326,20 +326,19 @@ class _Config(PYmodsCore.Config):
         self.configFolders.clear()
         self.camouflages = {'modded': {}}
         self.camouflagesCache = self.loadJson('camouflagesCache', self.camouflagesCache, self.configPath)
-        return
-        try:
-            camoDirPath = '../' + self.configPath + 'camouflages'
-            camoDirSect = ResMgr.openSection(camoDirPath)
-            camoNames = set(
-                (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x)) if camoDirSect is not None else [])
-            for camoName in camoNames:
-                self.configFolders[camoName] = confFolder = set()
-                settings = self.loadJson('settings', {}, self.configPath + 'camouflages/' + camoName + '/')
-                for key in settings:
-                    confFolder.add(key)
-                self.camouflages['modded'].update(settings)
-        except StandardError:
-            traceback.print_exc()
+        # try:
+        #     camoDirPath = '../' + self.configPath + 'camouflages'
+        #     camoDirSect = ResMgr.openSection(camoDirPath)
+        #     camoNames = set(
+        #         (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x)) if camoDirSect is not None else [])
+        #     for camoName in camoNames:
+        #         self.configFolders[camoName] = confFolder = set()
+        #         settings = self.loadJson('settings', {}, self.configPath + 'camouflages/' + camoName + '/')
+        #         for key in settings:
+        #             confFolder.add(key)
+        #         self.camouflages['modded'].update(settings)
+        # except StandardError:
+        #     traceback.print_exc()
 
         self.interCamo = [x['name'] for x in items.vehicles.g_cache.customization(0)['camouflages'].itervalues()]
         for nationID in xrange(1, len(nations.NAMES)):
