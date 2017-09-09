@@ -76,9 +76,9 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
         self.updateMessage()
         SoundGroups.g_instance.playSound2D(MINIMAP_ATTENTION_SOUND_ID)
 
-    def addBar(self, pkgName):
+    def addBar(self, line):
         self.curPercentage = 0
-        self.addLine(g_config.i18n['UI_loading_package'] % pkgName)
+        self.addLine(line)
         self.addLine(self.createBar())
 
     def createBar(self):
@@ -101,7 +101,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
         return False
 
     def onCancelClick(self):
-        BigWorld.wg_openWebBrowser('http://www.koreanrandom.com/forum/topic/22800-')
+        BigWorld.wg_openWebBrowser('http://forum.worldoftanks.ru/index.php?/topic/1890271-')
 
     def onWindowClose(self):
         g_config.loadingProxy = None
@@ -128,14 +128,17 @@ def skinCRC32All(callback):
         CRC32 = 0
         resultList = []
         for skin in PYmodsCore.remDups(dirSect.keys()):
-            g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
+            completionPercentage = 0
+            g_config.loadingProxy.addBar(g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
             skinCRC32 = 0
             skinSect = ResMgr.openSection(skinsPath + skin + '/vehicles/')
-            for nation in [] if skinSect is None else PYmodsCore.remDups(skinSect.keys()):
-                nationCRC32 = 0
+            nationsList = [] if skinSect is None else PYmodsCore.remDups(skinSect.keys())
+            natLen = len(nationsList)
+            for num, nation in enumerate(nationsList):
                 nationSect = ResMgr.openSection(skinsPath + skin + '/vehicles/' + nation)
-                for vehicleName in [] if nationSect is None else PYmodsCore.remDups(nationSect.keys()):
-                    vehicleCRC32 = 0
+                vehiclesList = [] if nationSect is None else PYmodsCore.remDups(nationSect.keys())
+                vehLen = len(vehiclesList)
+                for vehNum, vehicleName in enumerate(vehiclesList):
                     skinVehNamesLDict.setdefault(vehicleName.lower(), []).append(skin)
                     vehicleSect = ResMgr.openSection(skinsPath + skin + '/vehicles/' + nation + '/' + vehicleName)
                     for texture in [] if vehicleSect is None else (
@@ -143,14 +146,16 @@ def skinCRC32All(callback):
                         localPath = 'vehicles/' + nation + '/' + vehicleName + '/' + texture
                         texPath = skinsPath + skin + '/' + localPath
                         textureCRC32 = CRC32_from_file(texPath, localPath)
-                        vehicleCRC32 ^= textureCRC32
-                    nationCRC32 ^= vehicleCRC32
+                        skinCRC32 ^= textureCRC32
                     yield doFuncCall()
-                skinCRC32 ^= nationCRC32
-            g_config.loadingProxy.onComplete()
+                    currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
+                    if currentPercentage != completionPercentage:
+                        completionPercentage = currentPercentage
+                        g_config.loadingProxy.updatePercentage(completionPercentage)
+            g_config.loadingProxy.onBarComplete()
             if skinCRC32 in resultList:
-                print 'RemodEnabler: deleting duplicate skins pack:', skin.replace(os.sep, '/')
-                shutil.rmtree(skin)
+                print 'RemodEnabler: detected duplicate skins pack:', skin.replace(os.sep, '/')
+                # shutil.rmtree(skin)
                 continue
             CRC32 ^= skinCRC32
             resultList.append(skinCRC32)
@@ -215,7 +220,7 @@ def modelsProcess(callback):
         for vehPkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
             completionPercentage = 0
             filesCnt = 0
-            g_config.loadingProxy.addBar(os.path.basename(vehPkgPath))
+            g_config.loadingProxy.addBar(g_config.i18n['UI_loading_package'] % os.path.basename(vehPkgPath))
             vehPkg = ZipFile(vehPkgPath)
             fileNamesList = filter(
                 lambda x: x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats,

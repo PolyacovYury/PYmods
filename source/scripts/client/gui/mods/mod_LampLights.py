@@ -657,7 +657,8 @@ def inj_hkKeyEvent(event):
         if BattleApp and _config.data['enabled']:
             battleKeyControl(event)
     except StandardError:
-        print 'LampLights: ERROR at inj_hkKeyEvent\n%s' % traceback.print_exc()
+        print 'LampLights: ERROR at inj_hkKeyEvent'
+        traceback.print_exc()
 
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent

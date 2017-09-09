@@ -143,7 +143,8 @@ def inj_hkKeyEvent(event):
                 else:
                     SoundLoop(False)
     except StandardError:
-        print 'Horns: ERROR at inj_hkKeyEvent\n%s' % traceback.print_exc()
+        print 'Horns: ERROR at inj_hkKeyEvent'
+        traceback.print_exc()
 
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
