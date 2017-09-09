@@ -340,12 +340,11 @@ class _Config(PYmodsCore.Config):
         except StandardError:
             traceback.print_exc()
 
-        self.interCamo = map(lambda x: x['name'], items.vehicles.g_cache.customization(0)['camouflages'].itervalues())
+        self.interCamo = [x['name'] for x in items.vehicles.g_cache.customization(0)['camouflages'].itervalues()]
         for nationID in xrange(1, len(nations.NAMES)):
-            camouflages = items.vehicles.g_cache.customization(nationID)['camouflages']
-            camoNames = map(lambda x: x['name'], camouflages.itervalues())
-            self.interCamo = filter(lambda x: x in camoNames, self.interCamo)
-        self.origInterCamo = filter(lambda x: x not in self.camouflages['modded'], self.interCamo)
+            camoNames = [x['name'] for x in items.vehicles.g_cache.customization(nationID)['camouflages'].itervalues()]
+            self.interCamo = [x for x in self.interCamo if x in camoNames]
+        self.origInterCamo = [x for x in self.interCamo if x not in self.camouflages['modded']]
         settings = self.loadJson('settings', {}, self.configPath)
         if 'disable' in settings:
             if not settings['disable']:
@@ -692,9 +691,9 @@ def new_onBecomeNonPlayer(base, self):
 @PYmodsCore.overrideMethod(CompoundAppearance, '_CompoundAppearance__getCamouflageParams')
 def new_ca_getCamouflageParams(base, self, vDesc, vID):
     result = base(self, vDesc, vID)
-    return result
     if 'modded' not in _config.camouflages:
         _config.readCamouflages(False)
+    return result
     print vDesc.name, vDesc.type.hasCustomDefaultCamouflage, vDesc.name in _config.disable
     if not _config.data['enabled'] or result[0] is not None and _config.data['useBought']:
         return result
