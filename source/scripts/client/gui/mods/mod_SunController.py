@@ -143,7 +143,8 @@ def inj_hkKeyEvent(event):
         if BattleApp and _config.data['enabled']:
             battleKeyControl(event)
     except StandardError:
-        print '%s: ERROR at inj_hkKeyEvent\n%s' % (_config.ID, traceback.print_exc())
+        print '%s: ERROR at inj_hkKeyEvent' % _config.ID
+        traceback.print_exc()
 
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent

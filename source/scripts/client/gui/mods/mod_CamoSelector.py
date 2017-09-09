@@ -459,7 +459,8 @@ def inj_hkKeyEvent(event):
         if LobbyApp and _config.data['enabled']:
             lobbyKeyControl(event)
     except StandardError:
-        print 'CamoSelector: ERROR at inj_hkKeyEvent\n%s' % traceback.print_exc()
+        print 'CamoSelector: ERROR at inj_hkKeyEvent'
+        traceback.print_exc()
 
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
