@@ -6,9 +6,9 @@ import items.vehicles
 import nations
 import os
 import traceback
+from Avatar import PlayerAvatar
 from ReloadEffect import _BarrelReloadDesc
 from debug_utils import LOG_ERROR
-from gui import IngameSoundNotifications
 from helpers.EffectsList import _SoundEffectDesc
 from items.components import sound_components
 from material_kinds import EFFECT_MATERIALS
@@ -147,17 +147,18 @@ def new_readGun(base, xmlCtx, section, item, unlocksDescrs=None, _=None):
         _config.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', ''), item.effects)
 
 
-@PYmodsCore.overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '_IngameSoundNotifications__readConfig')
-def new_readConfig(base, self):
-    base(self)
-    events = self._IngameSoundNotifications__events
+@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__initGUI')
+def new_initGUI(base, self):
+    result = base(self)
+    events = self.soundNotifications._IngameSoundNotifications__events
     notificationsData = _config.data['sound_notifications']
     for eventName, event in events.iteritems():
         if eventName in notificationsData:
             for category in event:
                 event[category]['sound'] = notificationsData[eventName].get(category, event[category]['sound'])
 
-    self._IngameSoundNotifications__events = events
+    self.soundNotifications._IngameSoundNotifications__events = events
+    return result
 
 
 _config = _Config()
