@@ -326,19 +326,19 @@ class _Config(PYmodsCore.Config):
         self.configFolders.clear()
         self.camouflages = {'modded': {}}
         self.camouflagesCache = self.loadJson('camouflagesCache', self.camouflagesCache, self.configPath)
-        # try:
-        #     camoDirPath = '../' + self.configPath + 'camouflages'
-        #     camoDirSect = ResMgr.openSection(camoDirPath)
-        #     camoNames = set(
-        #         (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x)) if camoDirSect is not None else [])
-        #     for camoName in camoNames:
-        #         self.configFolders[camoName] = confFolder = set()
-        #         settings = self.loadJson('settings', {}, self.configPath + 'camouflages/' + camoName + '/')
-        #         for key in settings:
-        #             confFolder.add(key)
-        #         self.camouflages['modded'].update(settings)
-        # except StandardError:
-        #     traceback.print_exc()
+        try:
+            camoDirPath = '../' + self.configPath + 'camouflages'
+            camoDirSect = ResMgr.openSection(camoDirPath)
+            camoNames = set(
+                (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x)) if camoDirSect is not None else [])
+            for camoName in camoNames:
+                self.configFolders[camoName] = confFolder = set()
+                settings = self.loadJson('settings', {}, self.configPath + 'camouflages/' + camoName + '/')
+                for key in settings:
+                    confFolder.add(key)
+                self.camouflages['modded'].update(settings)
+        except StandardError:
+            traceback.print_exc()
 
         self.interCamo = [x['name'] for x in items.vehicles.g_cache.customization(0)['camouflages'].itervalues()]
         for nationID in xrange(1, len(nations.NAMES)):
@@ -471,22 +471,22 @@ def new_customization(base, self, nationID):
     commonDescr = base(self, nationID)
     if _config.data['enabled'] and _config.configFolders and nationID not in _config.changedNations:
         _config.changedNations.append(nationID)
-        for configDir in _config.configFolders:
-            customDescr = items.vehicles._readCustomization(
-                '../' + _config.configPath + 'camouflages/' + configDir + '/settings.xml', nationID, (0, 65535))
-            if 'custom_camo' in customDescr['camouflageGroups']:
-                if 'custom_camo' not in commonDescr['camouflageGroups']:
-                    commonDescr['camouflageGroups']['custom_camo'] = customDescr['camouflageGroups']['custom_camo']
-                    commonDescr['camouflageGroups']['custom_camo']['ids'][:] = []
-                del customDescr['camouflageGroups']['custom_camo']
-            newID = max(commonDescr['camouflages'].iterkeys()) + 1
-            camouflages = customDescr['camouflages'].values()
-            customDescr['camouflages'].clear()
-            for camo in camouflages:
-                customDescr['camouflages'][newID] = camo
-                commonDescr['camouflageGroups']['custom_camo']['ids'].append(newID)
-                newID += 1
-            commonDescr = items.vehicles._joinCustomizationParams(nationID, commonDescr, customDescr)
+        # for configDir in _config.configFolders:
+        #     customDescr = items.vehicles._readCustomization(
+        #         '../' + _config.configPath + 'camouflages/' + configDir + '/settings.xml', nationID, (0, 65535))
+        #     if 'custom_camo' in customDescr['camouflageGroups']:
+        #         if 'custom_camo' not in commonDescr['camouflageGroups']:
+        #             commonDescr['camouflageGroups']['custom_camo'] = customDescr['camouflageGroups']['custom_camo']
+        #             commonDescr['camouflageGroups']['custom_camo']['ids'][:] = []
+        #         del customDescr['camouflageGroups']['custom_camo']
+        #     newID = max(commonDescr['camouflages'].iterkeys()) + 1
+        #     camouflages = customDescr['camouflages'].values()
+        #     customDescr['camouflages'].clear()
+        #     for camo in camouflages:
+        #         customDescr['camouflages'][newID] = camo
+        #         commonDescr['camouflageGroups']['custom_camo']['ids'].append(newID)
+        #         newID += 1
+        #     commonDescr = items.vehicles._joinCustomizationParams(nationID, commonDescr, customDescr)
         self._Cache__customization[nationID] = commonDescr
     return commonDescr
 
