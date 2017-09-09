@@ -474,13 +474,17 @@ def new_customization(base, self, nationID):
         for configDir in _config.configFolders:
             customDescr = items.vehicles._readCustomization(
                 '../' + _config.configPath + 'camouflages/' + configDir + '/settings.xml', nationID, (0, 65535))
-            if 'custom_camo' in commonDescr['camouflageGroups'] and 'custom_camo' in customDescr['camouflageGroups']:
+            if 'custom_camo' in customDescr['camouflageGroups']:
+                if 'custom_camo' not in commonDescr['camouflageGroups']:
+                    commonDescr['camouflageGroups']['custom_camo'] = customDescr['camouflageGroups']['custom_camo']
+                    commonDescr['camouflageGroups']['custom_camo']['ids'][:] = []
                 del customDescr['camouflageGroups']['custom_camo']
             newID = max(commonDescr['camouflages'].iterkeys()) + 1
             camouflages = customDescr['camouflages'].values()
             customDescr['camouflages'].clear()
             for camo in camouflages:
                 customDescr['camouflages'][newID] = camo
+                commonDescr['camouflageGroups']['custom_camo']['ids'].append(newID)
                 newID += 1
             commonDescr = items.vehicles._joinCustomizationParams(nationID, commonDescr, customDescr)
         self._Cache__customization[nationID] = commonDescr
