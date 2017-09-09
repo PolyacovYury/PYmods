@@ -19,7 +19,7 @@ g_sessionProvider = dependency.instance(IBattleSessionProvider)
 def new_refreshVehicle(base, self, item):
     if item and (g_config.OMDesc is not None or any(g_config.OSDesc.values())):
         item = g_currentPreviewVehicle._CurrentPreviewVehicle__item = \
-            g_currentPreviewVehicle._CurrentPreviewVehicle__getPreviewVehicle(item.intCD)
+            g_currentPreviewVehicle._CurrentPreviewVehicle__makePreviewVehicleFromStrCD(item.descriptor.makeCompactDescr())
     base(self, item)
 
 
