@@ -326,6 +326,7 @@ class _Config(PYmodsCore.Config):
         self.configFolders.clear()
         self.camouflages = {'modded': {}}
         self.camouflagesCache = self.loadJson('camouflagesCache', self.camouflagesCache, self.configPath)
+        return
         try:
             camoDirPath = '../' + self.configPath + 'camouflages'
             camoDirSect = ResMgr.openSection(camoDirPath)
