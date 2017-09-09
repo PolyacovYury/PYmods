@@ -695,6 +695,7 @@ def new_ca_getCamouflageParams(base, self, vDesc, vID):
     if 'modded' not in _config.camouflages:
         _config.readCamouflages(False)
     print vDesc.name, vDesc.type.hasCustomDefaultCamouflage, vDesc.name in _config.disable
+    return result
     if not _config.data['enabled'] or result[0] is not None and _config.data['useBought']:
         return result
     if vDesc.name in _config.disable or vDesc.type.hasCustomDefaultCamouflage:
