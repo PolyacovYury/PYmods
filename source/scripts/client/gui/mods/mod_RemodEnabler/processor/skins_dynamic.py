@@ -11,7 +11,7 @@ def create(vehicleID, vDesc, visible=False):
     try:
         sname = g_config.OSDesc['dynamic'].name
         resList = []
-        for partName in TankPartNames.ALL[1:]:
+        for partName in TankPartNames.ALL:
             modelPath = getattr(vDesc, partName).models.undamaged.replace(
                 'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
             if partName == TankPartNames.GUN:
