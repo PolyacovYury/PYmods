@@ -545,15 +545,17 @@ def installSelectedCamo():
     compDescr = vDesc.type.compactDescr
     assert nations.NAMES[nationID] == nationName, (nationName, nations.NAMES[nationID])
     if g_customizationController.slots.currentSlotsData is None:
-        activeCamo = g_tankActiveCamouflage['historical'].get(vDesc.type.compactDescr)
+        activeCamo = g_tankActiveCamouflage['historical'].get(compDescr)
         if activeCamo is None:
-            activeCamo = g_tankActiveCamouflage.get(vDesc.type.compactDescr, 0)
+            activeCamo = g_tankActiveCamouflage.get(compDescr, 0)
         customization = items.vehicles.g_cache.customization(nationID)
         if _config.activePreviewCamo is not None:
             camoNames = {camouflage['name']: camoID for camoID, camouflage in customization['camouflages'].items()}
             camoID = camoNames[_config.activePreviewCamo]
+        elif compDescr in _config.hangarCamoCache:
+            camoID = _config.hangarCamoCache[compDescr][activeCamo][0]
         else:
-            camoID = _config.hangarCamoCache[vDesc.type.compactDescr][activeCamo][0]
+            return
         camouflage = customization['camouflages'][camoID]
         camoName = camouflage['name']
         nationConf = _config.camouflages.get(nations.NAMES[nationID])
@@ -600,7 +602,7 @@ def installSelectedCamo():
         selectedKinds.append(CAMOUFLAGE_KINDS[camoKind])
     slotList = heapq.nsmallest(1, selectedKinds, key=lambda x: abs(x - g_customizationController.slots.currentSlotIdx))
     slotIdx = slotList[0] if slotList else 0
-    g_tankActiveCamouflage[vDesc.type.compactDescr] = slotIdx
+    g_tankActiveCamouflage[compDescr] = slotIdx
     vDesc.camouflages = tuple(camoCache)
     _config.hangarCamoCache[compDescr] = tuple(camoCache)
     if vehName in _config.camouflagesCache.get(nationName, {}) and not _config.camouflagesCache[nationName][vehName]:
