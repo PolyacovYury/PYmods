@@ -259,39 +259,64 @@ def processMember(memberFileName, skinName):
         newModelPath = skinDir + memberFileName
         curModel = ResMgr.openSection(newModelPath, True)
         curModel.copy(oldModel)
-        if curModel is None:
-            print skinDir + memberFileName
-        if curModel.has_key('parent') and skinsSign not in curModel['parent'].asString:
-            curParent = skinDir + curModel['parent'].asString
-            curModel.writeString('parent', curParent.replace('\\', '/'))
-        if skinsSign not in curModel['nodefullVisual'].asString:
-            curVisual = skinDir + curModel['nodefullVisual'].asString
-            curModel.writeString('nodefullVisual', curVisual.replace('\\', '/'))
-        curModel.save()
+        models = [curModel]
+        if 'Chassis' in memberFileName:
+            dynModelPath = newModelPath.replace('Chassis', 'Chassis_dynamic')
+            dynModel = ResMgr.openSection(dynModelPath, True)
+            dynModel.copy(oldModel)
+            models.append(dynModel)
+        for idx, modelSect in enumerate(models):
+            if modelSect is None:
+                print skinDir + memberFileName
+            if modelSect.has_key('parent') and skinsSign not in modelSect['parent'].asString:
+                curParent = skinDir + modelSect['parent'].asString
+                if idx:
+                    curParent = curParent.replace('Chassis', 'Chassis_dynamic')
+                modelSect.writeString('parent', curParent.replace('\\', '/'))
+            if skinsSign not in modelSect['nodefullVisual'].asString:
+                curVisual = skinDir + modelSect['nodefullVisual'].asString
+                if idx:
+                    curVisual = curVisual.replace('Chassis', 'Chassis_dynamic')
+                modelSect.writeString('nodefullVisual', curVisual.replace('\\', '/'))
+            modelSect.save()
     elif '.visual' in memberFileName:
         oldVisual = ResMgr.openSection(memberFileName)
         newVisualPath = skinDir + memberFileName
         curVisual = ResMgr.openSection(newVisualPath, True)
         curVisual.copy(oldVisual)
-        for curName, curSect in curVisual.items():
-            if curName != 'renderSet':
-                continue
-            for curSubName, curSubSect in curSect['geometry'].items():
-                if curSubName != 'primitiveGroup':
+        visuals = [curVisual]
+        if 'Chassis' in memberFileName:
+            dynVisualPath = newVisualPath.replace('Chassis', 'Chassis_dynamic')
+            dynVisual = ResMgr.openSection(dynVisualPath, True)
+            dynVisual.copy(oldVisual)
+            visuals.append(dynVisual)
+        for idx, visualSect in enumerate(visuals):
+            for (curName, curSect), oldSect in zip(visualSect.items(), oldVisual.values()):
+                if curName != 'renderSet':
                     continue
-                for curPrimName, curProp in curSubSect['material'].items():
-                    if curPrimName != 'property' or not curProp.has_key('Texture'):
+                for (curSubName, curSSect), oldSSect in zip(curSect['geometry'].items(), oldSect['geometry'].values()):
+                    if curSubName != 'primitiveGroup':
                         continue
-                    curTexture = curProp['Texture'].asString
-                    if skinsSign not in curTexture and ResMgr.isFile(texDir + curTexture):
-                        curDiff = texDir + curTexture
-                        curProp.writeString('Texture', curDiff.replace('\\', '/'))
-                    elif skinsSign in curTexture and not ResMgr.isFile(curTexture):
-                        curDiff = curTexture.replace(texDir, '')
-                        curProp.writeString('Texture', curDiff.replace('\\', '/'))
+                    hasTracks = False
+                    for (curPName, curProp), oldProp in zip(curSSect['material'].items(), oldSSect['material'].values()):
+                        if curPName != 'property' or not curProp.has_key('Texture'):
+                            continue
+                        curTexture = curProp['Texture'].asString
+                        oldTexture = oldProp['Texture'].asString
+                        if skinsSign not in curTexture:
+                            newTexture = texDir + curTexture
+                            if idx and 'tracks' in curTexture and curProp.asString == 'diffuseMap':
+                                newTexture = skinsSign + 'tracks/track_AM.dds'
+                                hasTracks = True
+                            if ResMgr.isFile(newTexture):
+                                curProp.writeString('Texture', newTexture.replace('\\', '/'))
+                        elif skinsSign in curTexture and not ResMgr.isFile(curTexture):
+                            curProp.writeString('Texture', oldTexture.replace('\\', '/'))
+                    if hasTracks:
+                        curSSect['material'].writeString('fx', 'shaders/std_effects/lightonly_alpha.fx')
 
-        curVisual.writeString('primitivesName', os.path.splitext(memberFileName)[0])
-        curVisual.save()
+            visualSect.writeString('primitivesName', os.path.splitext(memberFileName)[0])
+            visualSect.save()
 
 
 @process
