@@ -297,6 +297,7 @@ def processMember(memberFileName, skinName):
                 for (curSubName, curSSect), oldSSect in zip(curSect['geometry'].items(), oldSect['geometry'].values()):
                     if curSubName != 'primitiveGroup':
                         continue
+                    hasTracks = False
                     for (curPName, curProp), oldProp in zip(curSSect['material'].items(), oldSSect['material'].values()):
                         if curPName != 'property' or not curProp.has_key('Texture'):
                             continue
@@ -306,10 +307,13 @@ def processMember(memberFileName, skinName):
                             newTexture = texDir + curTexture
                             if idx and 'tracks' in curTexture and curProp.asString == 'diffuseMap':
                                 newTexture = skinsSign + 'tracks/track_AM.dds'
+                                hasTracks = True
                             if ResMgr.isFile(newTexture):
                                 curProp.writeString('Texture', newTexture.replace('\\', '/'))
                         elif skinsSign in curTexture and not ResMgr.isFile(curTexture):
                             curProp.writeString('Texture', oldTexture.replace('\\', '/'))
+                    if hasTracks:
+                        curSSect['material'].writeString('fx', 'shaders/std_effects/lightonly_alpha.fx')
 
             visualSect.writeString('primitivesName', os.path.splitext(memberFileName)[0])
             visualSect.save()
