@@ -14,7 +14,9 @@ def create(vehicleID, vDesc, visible=False):
         for partName in TankPartNames.ALL:
             modelPath = getattr(vDesc, partName).models.undamaged.replace(
                 'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
-            if partName == TankPartNames.GUN:
+            if partName == TankPartNames.CHASSIS:
+                modelPath = modelPath.replace('Chassis', 'Chassis_dynamic')
+            elif partName == TankPartNames.GUN:
                 partName = TankNodeNames.GUN_INCLINATION
             resList.append((modelPath, partName))
         if resList:
