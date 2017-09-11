@@ -552,6 +552,8 @@ def installSelectedCamo():
         if _config.activePreviewCamo is not None:
             camoNames = {camouflage['name']: camoID for camoID, camouflage in customization['camouflages'].items()}
             camoID = camoNames[_config.activePreviewCamo]
+            if compDescr in _config.hangarCamoCache:
+                del _config.hangarCamoCache[compDescr]
         elif compDescr in _config.hangarCamoCache:
             camoID = _config.hangarCamoCache[compDescr][activeCamo][0]
         else:
