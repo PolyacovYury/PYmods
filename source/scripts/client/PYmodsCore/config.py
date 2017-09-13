@@ -294,7 +294,7 @@ class Config(object):
                                     subLevels -= 1
                                 else:
                                     break
-                        conf_changed = self.checkSubDict(
+                        conf_changed |= self.checkSubDict(
                             oldDict[subKey], conf_newL, config_newExcl, new_start_idx + 1, new_end_idx - 1)
                     elif oldDict[new_key] != decer.decode(new_value):
                         conf_newL[idx] = ':'.join(
