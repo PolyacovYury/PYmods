@@ -469,27 +469,27 @@ InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 
 @PYmodsCore.overrideMethod(items.vehicles.Cache, 'customization')
 def new_customization(base, self, nationID):
-    commonDescr = base(self, nationID)
+    origDescr = base(self, nationID)
     if _config.data['enabled'] and _config.configFolders and nationID not in _config.changedNations:
         _config.changedNations.append(nationID)
         for configDir in _config.configFolders:
-            customDescr = items.vehicles._readCustomization(
+            modDescr = items.vehicles._readCustomization(
                 '../' + _config.configPath + 'camouflages/' + configDir + '/settings.xml', nationID, (0, 65535))
-            if 'custom_camo' in customDescr['camouflageGroups']:
-                if 'custom_camo' not in commonDescr['camouflageGroups']:
-                    commonDescr['camouflageGroups']['custom_camo'] = customDescr['camouflageGroups']['custom_camo']
-                    commonDescr['camouflageGroups']['custom_camo']['ids'][:] = []
-                del customDescr['camouflageGroups']['custom_camo']
-            newID = max(commonDescr['camouflages'].iterkeys()) + 1
-            camouflages = customDescr['camouflages'].values()
-            customDescr['camouflages'].clear()
+            if 'custom_camo' in modDescr['camouflageGroups']:
+                if 'custom_camo' not in origDescr['camouflageGroups']:
+                    origDescr['camouflageGroups']['custom_camo'] = modDescr['camouflageGroups']['custom_camo']
+                    origDescr['camouflageGroups']['custom_camo']['ids'][:] = []
+                del modDescr['camouflageGroups']['custom_camo']
+            newID = max((max(origDescr['camouflages'].iterkeys()) + 1, 5001))
+            camouflages = modDescr['camouflages'].values()
+            modDescr['camouflages'].clear()
             for camo in camouflages:
-                customDescr['camouflages'][newID] = camo
-                commonDescr['camouflageGroups']['custom_camo']['ids'].append(newID)
+                modDescr['camouflages'][newID] = camo
+                origDescr['camouflageGroups']['custom_camo']['ids'].append(newID)
                 newID += 1
-            commonDescr = items.vehicles._joinCustomizationParams(nationID, commonDescr, customDescr)
-        self._Cache__customization[nationID] = commonDescr
-    return commonDescr
+            origDescr = items.vehicles._joinCustomizationParams(nationID, modDescr, origDescr)
+        self._Cache__customization[nationID] = origDescr
+    return origDescr
 
 
 @PYmodsCore.overrideMethod(DataAggregator, '_elementIsInShop')
