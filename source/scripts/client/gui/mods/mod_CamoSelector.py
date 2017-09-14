@@ -217,11 +217,12 @@ class CamoSelectorUI(AbstractWindowView):
 class _Config(PYmodsCore.Config):
     def __init__(self):
         super(self.__class__, self).__init__('%(mod_ID)s')
-        self.version = '2.5.5 (%(file_compile_date)s)'
+        self.version = '2.5.6 (%(file_compile_date)s)'
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'selectHotKey': ['KEY_F5', ['KEY_LCONTROL', 'KEY_RCONTROL']]}
         self.data = {'enabled': True, 'doRandom': True, 'useBought': True, 'hangarCamoKind': 0,
+                     'fullAlpha': False, 'disableWithDefault': False,
                      'selectHotkey': self.defaultKeys['selectHotkey'], 'selectHotKey': self.defaultKeys['selectHotKey']}
         self.disable = []
         self.i18n = {
@@ -264,6 +265,11 @@ class _Config(PYmodsCore.Config):
             'UI_setting_selectHotkey_text': 'Camouflage select hotkey',
             'UI_setting_selectHotkey_tooltip': (
                 'This hotkey will permanently install currently selected preview camouflage to current tank.'),
+            'UI_setting_disableWithDefault_text': 'Disable for vehicles with default camouflage',
+            'UI_setting_disableWithDefault_tooltip': 'If enabled, mod will ignore vehicles with a default camouflage.',
+            'UI_setting_fullAlpha_text': 'Non-transparent modded camouflages',
+            'UI_setting_fullAlpha_tooltip': 'If enabled, all modded camouflages lose their transparency.\n'
+                                            'Some call this "dirt-less skins".',
             'UI_setting_hangarCamoKind_text': 'Hangar camouflage kind',
             'UI_setting_hangarCamoKind_tooltip': 'This setting controls a kind which is used in hangar.',
             'UI_setting_hangarCamo_winter': 'Winter', 'UI_setting_hangarCamo_summer': 'Summer',
@@ -302,9 +308,11 @@ class _Config(PYmodsCore.Config):
                 'enabled': self.data['enabled'],
                 'column1': [self.createOptions('hangarCamoKind', [self.i18n['UI_setting_hangarCamo_%s' % x] for x in
                                                                   ('winter', 'summer', 'desert', 'random')]),
-                            self.createControl('doRandom')],
+                            self.createControl('doRandom'),
+                            self.createControl('disableWithDefault')],
                 'column2': [self.createHotKey('selectHotkey'),
-                            self.createControl('useBought')]}
+                            self.createControl('useBought'),
+                            self.createControl('fullAlpha')]}
 
     def onWindowClose(self):
         try:
@@ -313,6 +321,9 @@ class _Config(PYmodsCore.Config):
             PYmodsCore.refreshCurrentVehicle()
 
     def apply_settings(self, settings):
+        if 'fullAlpha' in settings and settings['fullAlpha'] != self.data['fullAlpha']:
+            self.changedNations[:] = []
+            items.vehicles.g_cache._Cache__customization = [None for _ in nations.NAMES]
         super(self.__class__, self).apply_settings(settings)
         self.hangarCamoCache.clear()
         if self.isModAdded:
@@ -484,6 +495,17 @@ def new_customization(base, self, nationID):
             camouflages = modDescr['camouflages'].values()
             modDescr['camouflages'].clear()
             for camo in camouflages:
+                if _config.data['fullAlpha']:
+                    colors = []
+                    for color in camo['colors'][:3]:
+                        rgba = []
+                        for idx in xrange(3):
+                            rgba.append(color - (color >> 8 << 8))
+                            color = color >> 8
+                        rgba.append(255)
+                        colors.append(rgba[0] + (rgba[1] << 8) + (rgba[2] << 16) + (rgba[3] << 24))
+                    colors.append(camo['colors'][3])
+                    camo['colors'] = tuple(colors)
                 modDescr['camouflages'][newID] = camo
                 origDescr['camouflageGroups']['custom_camo']['ids'].append(newID)
                 newID += 1
@@ -702,9 +724,8 @@ def new_ca_getCamouflageParams(base, self, vDesc, vID):
     result = base(self, vDesc, vID)
     if 'modded' not in _config.camouflages:
         _config.readCamouflages(False)
-    if not _config.data['enabled'] or result[0] is not None and _config.data['useBought']:
-        return result
-    if vDesc.name in _config.disable or vDesc.type.hasCustomDefaultCamouflage:
+    if (not _config.data['enabled'] or result[0] is not None and _config.data['useBought'] or vDesc.name in _config.disable
+            or vDesc.type.hasCustomDefaultCamouflage and _config.data['disableWithDefault']):
         return result
     nationName, vehName = vDesc.name.split(':')
     isPlayer = vID == BigWorld.player().playerVehicleID
@@ -799,7 +820,8 @@ def new_cs_recreateVehicle(base, self, vDesc, vState, onVehicleLoadedCallback=No
                 _config.activePreviewCamo = None
         elif vDesc.type.compactDescr in _config.hangarCamoCache:
             vDesc.camouflages = _config.hangarCamoCache[vDesc.type.compactDescr]
-        elif vDesc.name not in _config.disable:
+        elif vDesc.name not in _config.disable and not (
+                vDesc.type.hasCustomDefaultCamouflage and _config.data['disableWithDefault']):
             nationName, vehName = vDesc.name.split(':')
             selectedForVeh = _config.camouflagesCache.get(nationName, {}).get(vehName, {})
             selectedCamo = {}
