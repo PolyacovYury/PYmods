@@ -311,6 +311,7 @@ class _Config(PYmodsCore.Config):
                             self.createControl('doRandom'),
                             self.createControl('disableWithDefault')],
                 'column2': [self.createHotKey('selectHotkey'),
+                            self.createEmpty(), self.createEmpty(), self.createEmpty(),
                             self.createControl('useBought'),
                             self.createControl('fullAlpha')]}
 

@@ -61,7 +61,7 @@ class _Config(PYmodsCore.Config):
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [colourLabel,
-                            self.createControl('colour', 'TextInputColor', True)],
+                            self.createControl('colour', 'TextInputColor', empty=True)],
                 'column2': [self.createControl('crewColour'),
                             self.createControl('cleanColour')]}
 

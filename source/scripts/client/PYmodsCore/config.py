@@ -105,39 +105,50 @@ class Config(object):
             'UI_%s_%s_tooltip' % (ctx, varName), '') else ''
 
     def createLabel(self, varName, ctx='setting'):
-        return {'type': 'Label', 'text': self.getLabel(varName, ctx), 'tooltip': self.createTooltip(varName, ctx)}
+        return {'type': 'Label', 'text': self.getLabel(varName, ctx), 'tooltip': self.createTooltip(varName, ctx),
+                'label': self.getLabel(varName, ctx)}  # because Stepper needs label instead of text
 
-    def createControl(self, varName, contType='CheckBox', empty=False, button=None):
+    @staticmethod
+    def createEmpty():
+        return {'type': 'Empty'}
+
+    def createControl(self, varName, contType='CheckBox', width=200, empty=False, button=None):
         result = self.createLabel(varName) if not empty else {}
-        result.update({'type': contType, 'value': self.data[varName], 'varName': varName})
+        result.update({'type': contType, 'value': self.data[varName], 'varName': varName, 'width': width})
         if button is not None:
             result['button'] = button
         return result
 
-    def createOptions(self, varName, options, contType='Dropdown', empty=False, width=200, button=None):
-        result = self.createControl(varName, contType, empty, button)
+    def createOptions(self, varName, options, contType='Dropdown', width=200, empty=False, button=None):
+        result = self.createControl(varName, contType, width, empty, button)
         result.update({'width': width, 'itemRenderer': 'DropDownListItemRendererSound',
                        'options': [{'label': x} for x in options]})
         return result
 
     def createHotKey(self, varName, empty=False):
-        result = self.createControl(varName, 'HotKey', empty)
+        result = self.createControl(varName, 'HotKey', empty=empty)
         result['defaultValue'] = self.defaultKeys[varName]
         return result
 
-    def _createNumeric(self, varName, contType, vMin=0, vMax=0, empty=False, button=None):
-        result = self.createControl(varName, contType, empty, button)
+    def _createNumeric(self, varName, contType, vMin=0, vMax=0, width=200, empty=False, button=None):
+        result = self.createControl(varName, contType, width, empty, button)
         result.update({'minimum': vMin, 'maximum': vMax})
         return result
 
-    def createStepper(self, varName, vMin, vMax, step, manual=False, empty=False, button=None):
-        result = self._createNumeric(varName, 'NumericStepper', vMin, vMax, empty, button)
+    def createStepper(self, varName, vMin, vMax, step, manual=False, width=200, empty=False, button=None):
+        result = self._createNumeric(varName, 'NumericStepper', vMin, vMax, width, empty, button)
         result.update({'stepSize': step, 'canManualInput': manual})
         return result
 
-    def createSlider(self, varName, vMin, vMax, step, formatStr='{{value}}', empty=False, button=None):
-        result = self._createNumeric(varName, 'Slider', vMin, vMax, empty, button)
+    def createSlider(self, varName, vMin, vMax, step, formatStr='{{value}}', width=200, empty=False, button=None):
+        result = self._createNumeric(varName, 'Slider', vMin, vMax, width, empty, button)
         result.update({'snapInterval': step, 'format': formatStr})
+        return result
+
+    def createRangeSlider(self, varName, vMin, vMax, labelStep, divStep, step, minRange, width=200, empty=False, button=None):
+        result = self._createNumeric(varName, 'RangeSlider', vMin, vMax, width, empty, button)
+        result.update(
+            {'snapInterval': step, 'divisionLabelStep': labelStep, 'divisionStep': divStep, 'minRangeDistance': minRange})
         return result
 
     def apply_settings(self, settings):
@@ -157,7 +168,7 @@ class Config(object):
         pass
 
     def update_data(self, doPrint=False):
-        data = self.loadJson(self.ID, self.data, self.configPath)
+        data = self.loadJson(self.ID, self.data, self.configPath, doPrint=doPrint)
         for key in data:
             if key in self.data:
                 self.data[key] = data[key]
