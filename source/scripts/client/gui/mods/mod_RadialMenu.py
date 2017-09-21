@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 import math
 
-import Math
-
 import BigWorld
 import CommandMapping
 import Keys
+import Math
 import PYmodsCore
 import glob
 import os
 import string
 import traceback
 from Avatar import PlayerAvatar
+from DetachedTurret import DetachedTurret
 from constants import ARENA_BONUS_TYPE
 from functools import partial
 from gui import InputHandler
@@ -280,7 +280,8 @@ def getCrosshairType(player, target):
 
 
 def isTargetCorrect(player, target):
-    if target is not None and target.isAlive() and player is not None and isPlayerAvatar():
+    if target is not None and not isinstance(target, DetachedTurret) and target.isAlive() and player is not None and \
+            isPlayerAvatar():
         vInfo = g_sessionProvider.getArenaDP().getVehicleInfo(target.id)
         return not vInfo.isActionsDisabled()
     else:
