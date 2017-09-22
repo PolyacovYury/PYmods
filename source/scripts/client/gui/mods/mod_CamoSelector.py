@@ -441,7 +441,7 @@ def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
                     vehName = ':'.join((nations.NAMES[defNationID], vehName))
                 try:
                     nationID, vehID = items.vehicles.g_list.getIDsByName(vehName)
-                except StandardError:
+                except Exception:
                     _xml.raiseWrongXml(xmlCtx, sectionName, "unknown vehicle name '%s'" % vehName)
 
                 yield items.vehicles.VehicleValue(vehName, items.makeIntCompactDescrByID('vehicle', nationID, vehID), ctx,
