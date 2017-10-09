@@ -441,7 +441,7 @@ def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
                     vehName = ':'.join((nations.NAMES[defNationID], vehName))
                 try:
                     nationID, vehID = items.vehicles.g_list.getIDsByName(vehName)
-                except StandardError:
+                except Exception:
                     _xml.raiseWrongXml(xmlCtx, sectionName, "unknown vehicle name '%s'" % vehName)
 
                 yield items.vehicles.VehicleValue(vehName, items.makeIntCompactDescrByID('vehicle', nationID, vehID), ctx,
@@ -730,7 +730,7 @@ def new_ca_getCamouflageParams(base, self, vDesc, vID):
         return result
     nationName, vehName = vDesc.name.split(':')
     isPlayer = vID == BigWorld.player().playerVehicleID
-    isAlly = BigWorld.player().arena.vehicles[vID]['team'] == BigWorld.player().team
+    isAlly = BigWorld.player().guiSessionProvider.getArenaDP().getVehicleInfo(vID).team == BigWorld.player().team
     curTeam = 'Ally' if isAlly else 'Enemy'
     otherTeam = 'Ally' if not isAlly else 'Enemy'
     camoKind = BigWorld.player().arena.arenaType.vehicleCamouflageKind
