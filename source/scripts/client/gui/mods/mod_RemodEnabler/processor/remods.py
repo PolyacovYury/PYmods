@@ -3,7 +3,7 @@ import ResMgr
 import copy
 import traceback
 from collections import namedtuple
-from gui.ClientHangarSpace import _VehicleAppearance
+from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from items.components.chassis_components import *
 from items.components.chassis_components import SplineConfig, WheelsConfig
 from items.components.shared_components import Camouflage, ModelStatesPaths, NodesAndGroups
@@ -202,10 +202,10 @@ def glass_attach(vehicleID, visible=False):
     attached_models.attach(vehicleID, 'RE_glass', visible)
 
 
-@PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__setupModel')
+@PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__setupModel')
 def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     if g_config.data['enabled']:
-        vEntityId = self._VehicleAppearance__vEntityId
-        glass_create(vEntityId, self._VehicleAppearance__vDesc, True)
+        vEntityId = self._HangarVehicleAppearance__vEntity.id
+        glass_create(vEntityId, self._HangarVehicleAppearance__vDesc, True)
         glass_attach(vEntityId, True)
