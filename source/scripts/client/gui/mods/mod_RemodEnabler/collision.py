@@ -14,9 +14,12 @@ def clearCollision(self):
     if getattr(self, 'collisionLoaded', False):
         for moduleName, moduleDict in self.modifiedModelsDesc.items():
             if moduleDict['model'] in vEntity.models:
+                print 'deleting model for', moduleName
                 vEntity.delModel(moduleDict['model'])
                 if moduleDict['motor'] in tuple(moduleDict['model'].motors):
                     moduleDict['model'].delMotor(moduleDict['motor'])
+            else:
+                print 'model for', moduleName, 'not in models'
     if hasattr(self, 'collisionTable'):
         del self.collisionTable
 
