@@ -311,9 +311,13 @@ class _Config(PYmodsCore.Config):
                     os.remove(xmlOrig)
                 except StandardError:
                     traceback.print_exc()
-            newXml = BigWorld.curCV + '/engine_config_edited.xml'
+            newXml = './engine_config_edited.xml'
             if os.path.isfile(newXml):
                 os.rename(newXml, xmlOrig)
+            else:
+                newXml = BigWorld.curCV + '/engine_config_edited.xml'
+                if os.path.isfile(newXml):
+                    os.rename(newXml, xmlOrig)
         else:
             ResMgr.purge('engine_config_edited.xml')
         if any(self.editedBanks[key] for key in ('delete', 'create', 'move', 'remap')):
