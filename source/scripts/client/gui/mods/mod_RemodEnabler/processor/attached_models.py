@@ -77,10 +77,7 @@ def attach(vehicleID, modID=None, visible=False):
         vEntity = BigWorld.entity(vehicleID)
         if vEntity is None:
             return
-        if hasattr(vEntity, 'appearance'):
-            compoundModel = vEntity.appearance.compoundModel
-        else:
-            compoundModel = vEntity.model
+        compoundModel = vEntity.model
         scaleMat = mathUtils.createIdentityMatrix()
         attachMode = dyn['mode']
         if 'scale' in attachMode:
