@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-import Math
-
 import BigWorld
 import Keys
+import Math
 import PYmodsCore
 import ResMgr
 import glob
@@ -564,10 +563,13 @@ def lightsCreate(vehicleID, callPlace=''):
                                 LightSource.castShadows = confDict['cs']
                                 LightSource.multiplier = confDict['bright']
                                 if isinstance(confDict['colour'][0], tuple):
-                                    FrontLightShader = Math.Vector4Animation()
-                                    FrontLightShader.duration = confDict['dur']
-                                    FrontLightShader.keyframes = confDict['colour']
-                                    LightSource.colour = FrontLightShader
+                                    if confDict['type'] != 'spotLight':
+                                        FrontLightShader = Math.Vector4Animation()
+                                        FrontLightShader.duration = confDict['dur']
+                                        FrontLightShader.keyframes = confDict['colour']
+                                        LightSource.colorAnimator = FrontLightShader
+                                    else:
+                                        LightSource.colour = confDict['colour'][0]
                                 else:
                                     LightSource.colour = confDict['colour']
                             else:
@@ -585,7 +587,7 @@ def lightsCreate(vehicleID, callPlace=''):
                                 LightSource.source = fakeNode
                             elif not LightSource.attached:
                                 fakeNode.attach(LightSource)
-                            LightSource.visible = _config.isLampsVisible and name in _config.modes['constant']
+                            lightVisible(LightSource, _config.isLampsVisible and name in _config.modes['constant'])
                             lightDBDict[vehicleID][curName] = LightSource
 
                 except StandardError:
@@ -599,11 +601,21 @@ def lightsCreate(vehicleID, callPlace=''):
         print callPlace
 
 
+def lightVisible(obj, visible):
+    if isinstance(obj, BigWorld.Model):
+        obj.visible = visible
+    elif visible and obj.multiplier <= 1:
+        obj.multiplier *= 10000
+    elif not visible and obj.multiplier > 1:
+        obj.multiplier *= 0.0001
+
+
 def lightsDetach(vehicleID):
     if vehicleID in lightDBDict:
         for confKey in lightDBDict[vehicleID]:
-            lightDBDict[vehicleID][confKey].visible = False
-            if not isinstance(lightDBDict[vehicleID][confKey], BigWorld.Model):
+            if isinstance(lightDBDict[vehicleID][confKey], BigWorld.Model):
+                lightDBDict[vehicleID][confKey].visible = False
+            else:
                 lightDBDict[vehicleID][confKey].source = None
 
 
@@ -716,7 +728,7 @@ def new_onPeriodicTimer(base, self):
         for modeName in doVisible:
             for confKey in _config.modes[modeName]:
                 if confKey in curKey:
-                    lightInstance.visible = doVisible[modeName]
+                    lightVisible(lightInstance, doVisible[modeName])
 
     curSpeeds['curSpeed'] = curSpeed
     curSpeeds['curRSpeed'] = curRSpeed
@@ -732,9 +744,9 @@ def spotToggle(vehicleID, lightIdx, status):
         for confKey in _config.modes['spot']:
             for curKey in lightDBDict[vehicleID]:
                 if confKey in curKey and nodes[lightIdx] in curKey:
-                    lightDBDict[vehicleID][curKey].visible = status \
-                        if not isinstance(lightDBDict[vehicleID][curKey], BigWorld.Model) or lightIdx not in (1, 6) \
-                        else False
+                    lightVisible(lightDBDict[vehicleID][curKey],
+                                 status if not isinstance(lightDBDict[vehicleID][curKey], BigWorld.Model) or
+                                 lightIdx not in (1, 6) else False)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, 'targetFocus')
@@ -747,7 +759,7 @@ def new_targetFocus(base, self, entity):
             for vehicleID in lightDBDict:
                 for curKey in lightDBDict[vehicleID]:
                     if confKey in curKey:
-                        lightDBDict[vehicleID][curKey].visible = vehicleID == entity.id
+                        lightVisible(lightDBDict[vehicleID][curKey], vehicleID == entity.id)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, 'targetBlur')
@@ -760,4 +772,4 @@ def new_targetBlur(base, self, prevEntity):
             for vehicleID in lightDBDict:
                 for curKey in lightDBDict[vehicleID]:
                     if confKey in curKey:
-                        lightDBDict[vehicleID][curKey].visible = False
+                        lightVisible(lightDBDict[vehicleID][curKey], False)
