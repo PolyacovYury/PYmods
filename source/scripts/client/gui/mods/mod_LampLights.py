@@ -569,7 +569,11 @@ def lightsCreate(vehicleID, callPlace=''):
                                         FrontLightShader.keyframes = confDict['colour']
                                         LightSource.colorAnimator = FrontLightShader
                                     else:
-                                        LightSource.colour = confDict['colour'][0]
+                                        try:
+                                            LightSource.colour = confDict['colour'][0]
+                                        except TypeError:
+                                            print confDict['colour'][0], type(confDict['colour'][0])
+                                            raise
                                 else:
                                     LightSource.colour = confDict['colour']
                             else:
