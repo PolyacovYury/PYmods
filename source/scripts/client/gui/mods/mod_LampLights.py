@@ -567,9 +567,9 @@ def lightsCreate(vehicleID, callPlace=''):
                                     FrontLightShader = Math.Vector4Animation()
                                     FrontLightShader.duration = confDict['dur']
                                     FrontLightShader.keyframes = confDict['colour']
-                                    LightSource.shader = FrontLightShader
+                                    LightSource.colour = FrontLightShader
                                 else:
-                                    LightSource.shader = confDict['colour']
+                                    LightSource.colour = confDict['colour']
                             else:
                                 LightSource = BigWorld.Model(confDict['path'])
                             if '.' not in name:
