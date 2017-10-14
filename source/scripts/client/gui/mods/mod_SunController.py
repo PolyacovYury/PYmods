@@ -94,15 +94,15 @@ def sun_controller(isControlled=True):
     global timeBackup
     global wasSunControlled
     if isControlled:
-        timeBackup = BigWorld.timeOfDay('GetTime')
+        timeBackup = BigWorld.spaceTimeOfDay('GetTime')
         if _config.data['time'] != 24:
-            BigWorld.timeOfDay('%s:0' % _config.data['time'])
+            BigWorld.spaceTimeOfDay('%s:0' % _config.data['time'])
         else:
-            BigWorld.timeOfDay(time.strftime('%H:%M'))
+            BigWorld.spaceTimeOfDay(time.strftime('%H:%M'))
             _config.sunCallback = BigWorld.callback(60.0, sun_controller)
         wasSunControlled = True
     elif wasSunControlled:
-        BigWorld.timeOfDay(timeBackup)
+        BigWorld.spaceTimeOfDay(timeBackup)
         try:
             _config.sunCallback = BigWorld.cancelCallback(getattr(_config, 'sunCallback', None))
         except StandardError:
