@@ -553,10 +553,10 @@ def lightsCreate(vehicleID, callPlace=''):
                             curName = ':'.join((fullName, node))
                             if 'model' not in confDict['type']:
                                 if confDict['type'] == 'spotLight':
-                                    LightSource = BigWorld.PyChunkSpotLight()
+                                    LightSource = BigWorld.PySpotLight()
                                     LightSource.coneAngle = confDict['ca']
                                 else:
-                                    LightSource = BigWorld.PyChunkLight()
+                                    LightSource = BigWorld.PyOmniLight()
                                     if confDict['type'] != 'omniLight':
                                         LOG_ERROR('Unknown type of %s: %s. Set to omniLight' % (name, confDict['type']))
                                 LightSource.innerRadius = confDict['innerRadius']
