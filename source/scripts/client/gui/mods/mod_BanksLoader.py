@@ -29,7 +29,7 @@ class RestartButtons(object):
 class _Config(PYmodsCore.Config):
     def __init__(self):
         super(self.__class__, self).__init__('%(mod_ID)s')
-        self.version = '1.9.4 (%(file_compile_date)s)'
+        self.version = '1.9.5 (%(file_compile_date)s)'
         self.author = '%s and Ekspoint' % self.author
         self.data = {'defaultPool': 48,
                      'lowEnginePool': 36,
@@ -356,4 +356,8 @@ def new_Login_populate(base, self):
 @PYmodsCore.overrideMethod(LobbyView, '_populate')
 def new_Lobby_populate(base, self):
     base(self)
+    _config.onRequestRestart()
+
+
+def onAvatarBecomePlayer():
     _config.onRequestRestart()
