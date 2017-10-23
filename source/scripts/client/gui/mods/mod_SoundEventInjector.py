@@ -8,6 +8,7 @@ import os
 import traceback
 from Avatar import PlayerAvatar
 from ReloadEffect import _BarrelReloadDesc
+from constants import VEHICLE_MODE
 from debug_utils import LOG_ERROR
 from helpers.EffectsList import _SoundEffectDesc
 from items.components import sound_components
@@ -65,15 +66,8 @@ class _Config(PYmodsCore.Config):
 def new_readEngine(base, xmlCtx, section, item, *args):
     base(xmlCtx, section, item, *args)
     nationID, itemID = item.id
-    nationName = nations.NAMES[nationID]
-    enginesData = _config.data['engines']
-    if nationName not in enginesData:
-        return
-    engines = enginesData[nationName]
-    if item.name not in engines:
-        return
     sounds = item.sounds
-    itemData = engines[item.name]
+    itemData = _config.data['engines'].get(nations.NAMES[nationID], {}).get(item.name, {})
     item.sounds = sound_components.WWTripleSoundConfig(sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
                                                        itemData.get('wwsoundNPC', sounds.wwsoundNPC))
 
@@ -145,6 +139,24 @@ def new_readGun(base, xmlCtx, section, item, unlocksDescrs=None, _=None):
     nationID, itemID = item.id
     item.effects = items.vehicles.g_cache._gunEffects.get(
         _config.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', ''), item.effects)
+
+
+@PYmodsCore.overrideMethod(items.vehicles.VehicleType, '__init__')
+def new_vehicleType_init(base, self, nationID, basicInfo, xmlPath, vehMode=VEHICLE_MODE.DEFAULT):
+    base(self, nationID, basicInfo, xmlPath, vehMode)
+    for item in self.engines:
+        nationID, itemID = item.id
+        sounds = item.sounds
+        itemData = _config.data['engines'].get(nations.NAMES[nationID], {}).get(item.name, {})
+        item.sounds = sound_components.WWTripleSoundConfig(sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
+                                                           itemData.get('wwsoundNPC', sounds.wwsoundNPC))
+    for turrets in self.turrets:
+        for turret in turrets:
+            for item in turret.guns:
+                nationID, itemID = item.id
+                item.effects = items.vehicles.g_cache._gunEffects.get(
+                    _config.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', ''),
+                    item.effects)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__initGUI')
