@@ -104,10 +104,10 @@ def inj_hkKeyEvent(event):
                                     'addUnlockMode'] and _config.data['lockCamera']:
                                 SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_message_cameraUnlocked'],
                                                            SystemMessages.SM_TYPE.Warning)
-                            elif _config.data['currentCamPos'] >= len(_config.cameraPositions) + _config.data[
-                                    'addUnlockMode']:
-                                _config.data['currentCamPos'] = 0
                             else:
+                                if _config.data['currentCamPos'] >= len(_config.cameraPositions) + (_config.data[
+                                        'addUnlockMode'] and _config.data['lockCamera']):
+                                    _config.data['currentCamPos'] = 0
                                 setCameraLocation(_config.cameraPositions[_config.data['currentCamPos']])
             elif not _config.data['UIVisible']:
                 _config.data['currentCamPos'] = 0
