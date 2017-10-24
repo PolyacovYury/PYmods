@@ -27,11 +27,11 @@ class _Config(PYmodsCore.Config):
                      'camKey': self.defaultKeys['camKey'],
                      'lockCamera': True,
                      'addUnlockMode': True,
-                     'cameraPositions': [{'target_pos': [0.0, 1.2, 0.0],
-                                          'pivot_pos': [0.0, 1.0, 0.0],
-                                          'angles': [20.0, -13.0],
-                                          'dist': 10.0}],
                      'currentCamPos': 0}
+        self.cameraPositions = [{'target_pos': [0.0, 1.2, 0.0],
+                                 'pivot_pos': [0.0, 1.0, 0.0],
+                                 'angles': [20.0, -13.0],
+                                 'dist': 10.0}]
         self.i18n = {
             'UI_description': 'Hangar screenshots',
             'UI_message_cameraUnlocked': 'Camera unlocked.',
@@ -57,6 +57,10 @@ class _Config(PYmodsCore.Config):
                 'column2': [self.createHotKey('camkey'),
                             self.createControl('addUnlockMode')]}
 
+    def update_data(self, doPrint=False):
+        super(self.__class__, self).update_data(doPrint)
+        self.cameraPositions = self.loadJson('cameraPositions', self.cameraPositions, self.configPath, doPrint=doPrint)
+
 
 _config = _Config()
 _config.load()
@@ -70,8 +74,8 @@ def toggleHangarUI(visible):
 
 @PYmodsCore.overrideMethod(ClientHangarSpace, 'updateCameraByMouseMove')
 def new_updateCameraByMouseMove(base, *args):
-    if _config.data['UIVisible'] or not _config.data['cameraPositions'] or _config.data['currentCamPos'] == len(
-            _config.data['cameraPositions']) or not _config.data['lockCamera']:
+    if _config.data['UIVisible'] or not _config.cameraPositions or _config.data['currentCamPos'] == len(
+            _config.cameraPositions) or not _config.data['lockCamera']:
         base(*args)
 
 
@@ -90,21 +94,21 @@ def inj_hkKeyEvent(event):
                     if PYmodsCore.checkKeys(_config.data['togglekey']):
                         _config.data['UIVisible'] = not _config.data['UIVisible']
                         toggleHangarUI(_config.data['UIVisible'])
-                        if not _config.data['UIVisible'] and _config.data['cameraPositions'] and _config.data[
-                                'currentCamPos'] < len(_config.data['cameraPositions']):
-                            setCameraLocation(_config.data['cameraPositions'][_config.data['currentCamPos']])
+                        if not _config.data['UIVisible'] and _config.cameraPositions and _config.data[
+                                'currentCamPos'] < len(_config.cameraPositions):
+                            setCameraLocation(_config.cameraPositions[_config.data['currentCamPos']])
                     elif PYmodsCore.checkKeys(_config.data['camkey']):
-                        if not _config.data['UIVisible'] and _config.data['cameraPositions']:
+                        if not _config.data['UIVisible'] and _config.cameraPositions:
                             _config.data['currentCamPos'] += 1
-                            if _config.data['currentCamPos'] == len(_config.data['cameraPositions']) and _config.data[
+                            if _config.data['currentCamPos'] == len(_config.cameraPositions) and _config.data[
                                     'addUnlockMode'] and _config.data['lockCamera']:
                                 SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_message_cameraUnlocked'],
                                                            SystemMessages.SM_TYPE.Warning)
-                            elif _config.data['currentCamPos'] >= len(_config.data['cameraPositions']) + _config.data[
+                            elif _config.data['currentCamPos'] >= len(_config.cameraPositions) + _config.data[
                                     'addUnlockMode']:
                                 _config.data['currentCamPos'] = 0
                             else:
-                                setCameraLocation(_config.data['cameraPositions'][_config.data['currentCamPos']])
+                                setCameraLocation(_config.cameraPositions[_config.data['currentCamPos']])
             elif not _config.data['UIVisible']:
                 _config.data['currentCamPos'] = 0
                 _config.data['UIVisible'] = True
