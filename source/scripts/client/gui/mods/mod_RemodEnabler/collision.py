@@ -41,7 +41,7 @@ def new_setupModel(base, self, buildIdx):
     vEntityId = self._VehicleAppearance__vEntityId
     vEntity = BigWorld.entity(vEntityId)
     vDesc = self._VehicleAppearance__vDesc
-    model = vEntity.model
+    compoundModel = vEntity.model
     self.collisionLoaded = True
     self.modifiedModelsDesc = dict([(partName, {'model': None, 'matrix': None}) for partName in TankPartNames.ALL])
     self.modifiedModelsDesc.update([(
@@ -58,7 +58,7 @@ def new_setupModel(base, self, buildIdx):
                 _, addPartName, idxStr = partName.split('_')
                 modelName = getattr(vDesc.turrets[int(idxStr)], addPartName).hitTester.bspModelName
             self.modifiedModelsDesc[partName]['model'] = model = BigWorld.Model(modelName)
-            self.modifiedModelsDesc[partName]['model'].visible = False
+            model.visible = False
         except StandardError:
             self.collisionLoaded = False
             failList.append(modelName if modelName else partName)
@@ -99,10 +99,10 @@ def new_setupModel(base, self, buildIdx):
         addCollisionGUI(self)
     if g_config.data['collisionEnabled']:
         for moduleName in TankPartNames.ALL:
-            if model.node(moduleName) is not None:
+            if compoundModel.node(moduleName) is not None:
                 scaleMat = Math.Matrix()
                 scaleMat.setScale((0.001, 0.001, 0.001))
-                model.node(moduleName, scaleMat)
+                compoundModel.node(moduleName, scaleMat)
             else:
                 print 'RemodEnabler: model rescale for %s failed' % moduleName
 
