@@ -15,8 +15,8 @@ def clearCollision(self):
         for moduleName, moduleDict in self.modifiedModelsDesc.items():
             if moduleDict['model'] in tuple(BigWorld.entity(vEntityId).models):
                 BigWorld.entity(vEntityId).delModel(moduleDict['model'])
-                if moduleDict['motor'] in tuple(moduleDict['model'].motors):
-                    moduleDict['model'].delMotor(moduleDict['motor'])
+                for motor in tuple(moduleDict['model'].motors):
+                    moduleDict['model'].delMotor(motor)
     if hasattr(self, 'collisionTable'):
         del self.collisionTable
 
@@ -41,19 +41,27 @@ def new_setupModel(base, self, buildIdx):
     vEntityId = self._VehicleAppearance__vEntityId
     vEntity = BigWorld.entity(vEntityId)
     vDesc = self._VehicleAppearance__vDesc
-    model = vEntity.model
+    compoundModel = vEntity.model
     self.collisionLoaded = True
-    self.modifiedModelsDesc = dict(
-        [(part, {'model': None, 'motor': None, 'matrix': None}) for part in TankPartNames.ALL])
+    self.modifiedModelsDesc = dict([(partName, {'model': None, 'matrix': None}) for partName in TankPartNames.ALL])
+    self.modifiedModelsDesc.update([(
+        '%s%d' % ((TankPartNames.ADDITIONAL_TURRET if idx % 2 == 0 else TankPartNames.ADDITIONAL_GUN), (idx + 2)/2),
+        {'model': None, 'matrix': None})
+        for idx in xrange(len(vDesc.turrets[1:]) * 2)])
     failList = []
-    for part in self.modifiedModelsDesc.keys():
+    for partName in self.modifiedModelsDesc.keys():
+        modelName = ''
         try:
-            self.modifiedModelsDesc[part]['model'] = BigWorld.Model(getattr(vDesc, part).hitTester.bspModelName)
-            self.modifiedModelsDesc[part]['model'].visible = False
+            if 'additional' not in partName:
+                modelName = getattr(vDesc, partName).hitTester.bspModelName
+            else:
+                _, addPartName, idxStr = partName.split('_')
+                modelName = getattr(vDesc.turrets[int(idxStr)], addPartName).hitTester.bspModelName
+            self.modifiedModelsDesc[partName]['model'] = model = BigWorld.Model(modelName)
+            model.visible = False
         except StandardError:
             self.collisionLoaded = False
-            failList.append(getattr(vDesc, part).hitTester.bspModelName)
-
+            failList.append(modelName if modelName else partName)
     if failList:
         print 'RemodEnabler: collision load failed: models not found'
         print failList
@@ -61,27 +69,27 @@ def new_setupModel(base, self, buildIdx):
         return
     if any((g_config.data['collisionEnabled'], g_config.data['collisionComparisonEnabled'])):
         # Getting offset matrices
-        hullOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.chassis.hullPosition)
-        turretOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.hull.turretPositions[0])
-        gunOffset = mathUtils.createTranslationMatrix(vEntity.typeDescriptor.turret.gunPosition)
-        # Getting local transform matrices
-        hullMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), hullOffset)
-        turretMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), turretOffset)
-        gunMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), gunOffset)
-        # turretMP = mathUtils.MatrixProviders.product(vEntity.appearance.turretMatrix, turretOffset)
-        # gunMP = mathUtils.MatrixProviders.product(vEntity.appearance.gunMatrix, gunOffset)
-        # Getting full transform matrices relative to vehicle coordinate system
+        hullOffset = mathUtils.createTranslationMatrix(vDesc.chassis.hullPosition)
         self.modifiedModelsDesc[TankPartNames.CHASSIS]['matrix'] = fullChassisMP = mathUtils.createIdentityMatrix()
+        hullMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), hullOffset)
         self.modifiedModelsDesc[TankPartNames.HULL]['matrix'] = fullHullMP = mathUtils.MatrixProviders.product(
             hullMP, fullChassisMP)
-        self.modifiedModelsDesc[TankPartNames.TURRET][
-            'matrix'] = fullTurretMP = mathUtils.MatrixProviders.product(turretMP, fullHullMP)
-        self.modifiedModelsDesc[TankPartNames.GUN]['matrix'] = mathUtils.MatrixProviders.product(gunMP, fullTurretMP)
+        for idx, turretPosition in enumerate(vDesc.hull.turretPositions):
+            turretOffset = mathUtils.createTranslationMatrix(vDesc.hull.turretPositions[idx])
+            gunOffset = mathUtils.createTranslationMatrix(vDesc.turrets[idx].turret.gunPosition)
+        # Getting local transform matrices
+            turretMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), turretOffset)
+            gunMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), gunOffset)
+            # turretMP = mathUtils.MatrixProviders.product(vEntity.appearance.turretMatrix, turretOffset)
+            # gunMP = mathUtils.MatrixProviders.product(vEntity.appearance.gunMatrix, gunOffset)
+        # Getting full transform matrices relative to vehicle coordinate system
+            self.modifiedModelsDesc[TankPartNames.TURRET if not idx else '%s%d' % (TankPartNames.ADDITIONAL_TURRET, idx)][
+                'matrix'] = fullTurretMP = mathUtils.MatrixProviders.product(turretMP, fullHullMP)
+            self.modifiedModelsDesc[TankPartNames.GUN if not idx else '%s%d' % (TankPartNames.ADDITIONAL_GUN, idx)][
+                'matrix'] = mathUtils.MatrixProviders.product(gunMP, fullTurretMP)
         for moduleName, moduleDict in self.modifiedModelsDesc.items():
-            if moduleDict['motor'] not in tuple(moduleDict['model'].motors):
-                moduleDict['motor'] = BigWorld.Servo(
-                    mathUtils.MatrixProviders.product(moduleDict['matrix'], vEntity.matrix))
-                moduleDict['model'].addMotor(moduleDict['motor'])
+            motor = BigWorld.Servo(mathUtils.MatrixProviders.product(moduleDict['matrix'], vEntity.matrix))
+            moduleDict['model'].addMotor(motor)
             if moduleDict['model'] not in tuple(vEntity.models):
                 try:
                     vEntity.addModel(moduleDict['model'])
@@ -91,10 +99,10 @@ def new_setupModel(base, self, buildIdx):
         addCollisionGUI(self)
     if g_config.data['collisionEnabled']:
         for moduleName in TankPartNames.ALL:
-            if model.node(moduleName) is not None:
+            if compoundModel.node(moduleName) is not None:
                 scaleMat = Math.Matrix()
                 scaleMat.setScale((0.001, 0.001, 0.001))
-                model.node(moduleName, scaleMat)
+                compoundModel.node(moduleName, scaleMat)
             else:
                 print 'RemodEnabler: model rescale for %s failed' % moduleName
 
