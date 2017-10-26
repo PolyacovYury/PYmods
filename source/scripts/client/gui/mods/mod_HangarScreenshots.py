@@ -80,9 +80,10 @@ def new_updateCameraByMouseMove(base, *args):
 
 
 def setCameraLocation(settings):
-    g_hangarSpace.space.setCameraLocation(Math.Vector3(*settings['target_pos']), Math.Vector3(*settings['pivot_pos']),
-                                          math.radians(settings['angles'][0]), math.radians(settings['angles'][1]),
-                                          settings['dist'], True)
+    g_hangarSpace.space.setCameraLocation(
+        targetPos=Math.Vector3(*settings['target_pos']), pivotPos=Math.Vector3(*settings['pivot_pos']),
+        yaw=math.radians(settings['angles'][0]), pitch=math.radians(settings['angles'][1]), dist=settings['dist'],
+        ignoreConstraints=True)
 
 
 def inj_hkKeyEvent(event):
