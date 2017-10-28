@@ -180,32 +180,3 @@ def apply(vDesc):
                 soundID = getattr(part.sounds, key)
             soundIDs.append(soundID)
         part.sounds = WWTripleSoundConfig(*soundIDs)
-
-
-def glass_create(vehicleID, vDesc, visible=False):
-    try:
-        resList = []
-        for partName in TankPartNames.ALL[1:]:
-            modelPath = getattr(vDesc, partName).models.undamaged.replace('.model', '_glass.model')
-            if ResMgr.isFile(modelPath):
-                if partName == TankPartNames.GUN:
-                    partName = TankNodeNames.GUN_INCLINATION
-                resList.append((modelPath, partName))
-        if resList:
-            attached_models.create(vehicleID, 'RE_glass', 'motor', resList, visible)
-    except StandardError:
-        traceback.print_exc()
-        print vDesc.name
-
-
-def glass_attach(vehicleID, visible=False):
-    attached_models.attach(vehicleID, 'RE_glass', visible)
-
-
-@PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__setupModel')
-def new_setupModel(base, self, buildIdx):
-    base(self, buildIdx)
-    if g_config.data['enabled']:
-        vEntityId = self._VehicleAppearance__vEntityId
-        glass_create(vEntityId, self._VehicleAppearance__vDesc, True)
-        glass_attach(vEntityId, True)

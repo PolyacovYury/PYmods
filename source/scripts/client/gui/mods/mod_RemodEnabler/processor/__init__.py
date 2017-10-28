@@ -117,7 +117,6 @@ def vDesc_process(vehicleID, vDesc, mode):
         if collisionNotVisible:
             message = g_config.i18n['UI_install_remod'] + g_config.OMDesc.name.join(
                 ('<b>', '</b>.')) + '\n' + g_config.OMDesc.authorMessage
-    remods.glass_create(vehicleID, vDesc, True)
     if message is not None and mode == 'hangar':
         SystemMessages.pushMessage('PYmods_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
     debugOutput(xmlName, vehName, playerName)
