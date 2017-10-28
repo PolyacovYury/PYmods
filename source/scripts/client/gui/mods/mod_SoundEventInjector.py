@@ -175,4 +175,4 @@ def new_initGUI(base, self):
 
 _config = _Config()
 _config.load()
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-13', _config.confList)
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-13', _config.confList)

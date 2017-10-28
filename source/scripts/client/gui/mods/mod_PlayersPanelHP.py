@@ -111,7 +111,7 @@ try:
 
     mod_playersHP = PlayersPanelController()
     mod_playersHP.load()
-    statistic_mod = PYmodsCore.Analytics(mod_playersHP.ID, mod_playersHP.version.split(' ', 1)[0], 'UA-76792179-11')
+    statistic_mod = PYmodsCore.Analytics(mod_playersHP.ID, mod_playersHP.version, 'UA-76792179-11')
 
 except ImportError:
     vxBattleFlash = None

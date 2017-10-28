@@ -456,7 +456,7 @@ def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
 
 _config = _Config()
 _config.load()
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-7', _config.configFolders)
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-7', _config.configFolders)
 
 
 def lobbyKeyControl(event):

@@ -336,7 +336,7 @@ class _Config(PYmodsCore.Config):
 
 _config = _Config()
 _config.load()
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-9')
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-9')
 
 
 @PYmodsCore.overrideMethod(SimpleDialog, '_SimpleDialog__callHandler')
