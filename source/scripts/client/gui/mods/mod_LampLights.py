@@ -663,7 +663,7 @@ def inj_hkKeyEvent(event):
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-2', _config.configsDict)
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-2', _config.configsDict)
 curSpeedsDict = {}
 
 

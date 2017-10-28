@@ -340,7 +340,7 @@ class _Flash(object):
 
 _config = _Config()
 _config.load()
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-8')
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-8')
 PlayerAvatar.sounds = None
 try:
     from gui.mods.vxBattleFlash import *

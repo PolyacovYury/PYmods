@@ -171,4 +171,4 @@ def i18n_hook_makeString(key, *args, **kwargs):
         return old_makeString(key, *args, **kwargs)
 
 
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-6')
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-6')

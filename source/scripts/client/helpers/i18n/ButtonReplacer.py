@@ -327,4 +327,4 @@ def ButtonReplacer_hooks():
 
 
 BigWorld.callback(0.0, ButtonReplacer_hooks)
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version.split(' ', 1)[0], 'UA-76792179-1', _config.confMeta)
+statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-1', _config.confMeta)
