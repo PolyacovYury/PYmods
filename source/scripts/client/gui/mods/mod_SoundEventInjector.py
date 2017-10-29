@@ -45,7 +45,7 @@ class _Config(PYmodsCore.Config):
                 itemsData = self.data[itemType]
                 if itemType in ('engines', 'guns'):
                     for nationName, nationData in itemsDict.iteritems():
-                        if nationName not in nations.NAMES:
+                        if nationName.split(':')[0] not in nations.NAMES:
                             print '%s: unknown nation in %s data: %s' % (self.ID, itemType, nationName)
                             continue
                         itemsData[nationName] = {}
@@ -155,7 +155,9 @@ def new_vehicleType_init(base, self, nationID, basicInfo, xmlPath, vehMode=VEHIC
             for item in turret.guns:
                 nationID, itemID = item.id
                 item.effects = items.vehicles.g_cache._gunEffects.get(
-                    _config.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', ''),
+                    _config.data['guns'].get(self.name, {}).get(item.name, {}).get(
+                        'effects',
+                        _config.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', '')),
                     item.effects)
 
 
