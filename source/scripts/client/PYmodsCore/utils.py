@@ -155,17 +155,29 @@ class Analytics(object):
         self.mod_description = description
         self.mod_id_analytics = ID
         self.mod_version = version
+        self.confList = confList if confList else []
         self.analytics_started = False
-        self.analytics_ended = False
         self._thread_analytics = None
-        self.confList = confList if confList else ['(not set)']
+        self.user = None
         self.playerName = ''
+        self.old_user = None
         self.old_playerName = ''
         self.lang = ''
-        self.user = None
-        self.old_user = None
         g_playerEvents.onAccountShowGUI += self.start
         BigWorld.callback(0.0, self.game_fini_hook)
+
+    def template(self, old=False):
+        return {
+            'v': 1,  # Protocol version
+            'tid': '%s' % self.mod_id_analytics,  # Mod Analytics ID ('UA-XXX-Y')
+            'cid': '%s' % self.old_user if old else self.user,  # User ID
+            'an': '%s' % self.mod_description,  # Mod name
+            'av': '%s %s' % (self.mod_description, self.mod_version),  # App version.
+            'cd': '%s (Cluster: [%s], lang: [%s])' % (
+                self.old_playerName if old else self.playerName, AUTH_REALM, self.lang),  # Readable user name
+            'ul': '%s' % self.lang,  # client language
+            't': 'event'  # Hit type
+        }
 
     def game_fini_hook(self):
         import game
@@ -173,26 +185,21 @@ class Analytics(object):
         game.fini = lambda: (self.end(), old_fini())
 
     def analytics_start(self):
+        from helpers import getClientLanguage
+        self.lang = str(getClientLanguage()).upper()
+        template = self.template()
+        requestsPool = []
         if not self.analytics_started:
-            from helpers import getClientLanguage
-            self.lang = str(getClientLanguage()).upper()
-            paramDict = {
-                'v': 1,  # Version.
-                'tid': '%s' % self.mod_id_analytics,  # Код мода для сбора статистики
-                'cid': '%s' % self.user,  # ID пользователя
-                't': 'screenview',  # Screenview hit type.
-                'an': '%s' % self.mod_description,  # Имя мода
-                'av': '%s %s' % (self.mod_description, self.mod_version),  # App version.
-                'cd': '%s (Cluster: [%s], lang: [%s])' % (self.playerName, AUTH_REALM, self.lang),
-                'ul': '%s' % self.lang,
-                'sc': 'start'}
-            for confName in self.confList:
-                paramDict['aid'] = confName.split('.')[0]
-                param = urllib.urlencode(paramDict)
-                urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=param).read()
+            requestsPool.append(dict(template, sc='start', t='screenview'))
+            for idx, confName in enumerate(self.confList):
+                requestsPool.append(dict(template, ec='config', ea='collect', el=confName.split('.')[0]))
             self.analytics_started = True
             self.old_user = BigWorld.player().databaseID
             self.old_playerName = BigWorld.player().name
+        else:
+            requestsPool.append(dict(template, ec='session', ea='keep'))
+        for params in requestsPool:
+            urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=urllib.urlencode(params)).read()
 
     # noinspection PyUnusedLocal
     def start(self, ctx):
@@ -200,29 +207,19 @@ class Analytics(object):
         if self.user is not None and self.user != player.databaseID:
             self.old_user = player.databaseID
             self.old_playerName = player.name
-            self._thread_analytics = threading.Thread(target=self.end, name='Thread')
+            self._thread_analytics = threading.Thread(target=self.end, name=threading._newname('Analytics-%d'))
             self._thread_analytics.start()
         self.user = player.databaseID
         self.playerName = player.name
-        self._thread_analytics = threading.Thread(target=self.analytics_start, name='Thread')
+        self._thread_analytics = threading.Thread(target=self.analytics_start, name=threading._newname('Analytics-%d'))
         self._thread_analytics.start()
 
     def end(self):
         if self.analytics_started:
             from helpers import getClientLanguage
             self.lang = str(getClientLanguage()).upper()
-            param = urllib.urlencode({
-                'v': 1,  # Version.
-                'tid': '%s' % self.mod_id_analytics,  # Код мода для сбора статистики
-                'cid': self.old_user,  # Anonymous Client ID.
-                't': 'event',  # event hit type.
-                'an': '%s' % self.mod_description,  # Имя мода
-                'av': '%s %s' % (self.mod_description, self.mod_version),  # App version.
-                'cd': '%s (Cluster: [%s], lang: [%s])' % (self.old_playerName, AUTH_REALM, self.lang),
-                'ul': '%s' % self.lang,
-                'sc': 'end'
-            })
-            urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=param).read()
+            urllib2.urlopen(url='http://www.google-analytics.com/collect?',
+                            data=urllib.urlencode(dict(self.template(True), sc='end', ec='session', ea='end'))).read()
             self.analytics_started = False
 
 
