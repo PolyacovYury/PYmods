@@ -47,6 +47,7 @@ def new_updateHealth(base, self, healthStr, progress):
         if not progress:
             break
         if progress <= percentage < _config.currentPercent:
+            SoundGroups.g_instance.loadSoundBank('bootcamp_gui.bnk')
             SoundGroups.g_instance.playSound2D(_config.data['%spercent' % percentage])
             break
     _config.currentPercent = progress
