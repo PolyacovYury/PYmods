@@ -3,6 +3,7 @@ import BigWorld
 import PYmodsCore
 import glob
 import os
+import re
 import traceback
 from debug_utils import LOG_ERROR, LOG_WARNING
 
@@ -14,7 +15,7 @@ def __dir__():
 class _Config(PYmodsCore.Config):
     def __init__(self):
         super(self.__class__, self).__init__('%(mod_ID)s')
-        self.version = '2.1.2 (%(file_compile_date)s)'
+        self.version = '2.1.3 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'reReadAtEnd': True}
         self.i18n = {
@@ -159,170 +160,41 @@ def new_destroyGUI(self):
 
 
 def new_construct(self):
+    block = old_construct(self)
     from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-    from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
     from gui.shared.formatters import text_styles, icons
     from gui.shared.items_parameters import formatters as params_formatters, bonus_helper
-    from gui.shared.tooltips import formatters
     from gui.shared.utils.functions import stripColorTagDescrTags
     from helpers.i18n import makeString as _ms
     from items import ITEM_TYPES
-    block = []
-
-    def checkLocalization(key):
-        localization = _ms('#artefacts:%s' % key)
-        return key != localization, localization
-
-    if self.lobbyContext.getServerSettings().spgRedesignFeatures.isStunEnabled():
-        isRemovingStun = self.module.isRemovingStun
-    else:
-        isRemovingStun = False
-    onUseStr = '%s/removingStun/onUse' if isRemovingStun else '%s/onUse'
-    onUse = checkLocalization(onUseStr % self.module.descriptor.name)
-    always = checkLocalization('%s/always' % self.module.descriptor.name)
-    restriction = checkLocalization('%s/restriction' % self.module.descriptor.name)
-    if bonus_helper.isSituationalBonus(self.module.name):
-        effectDesc = text_styles.bonusPreviewText(stripColorTagDescrTags(_ms(self.module.fullDescription)))
-        # noinspection PyArgumentEqualDefault
-        icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_TOOLTIP_ASTERISK_OPTIONAL, 16, 16, 0, 4)
-        desc = params_formatters.packSituationalIcon(effectDesc, icon)
-    else:
-        desc = text_styles.bonusAppliedText(stripColorTagDescrTags(_ms(self.module.fullDescription)))
     if self.module.itemTypeID == ITEM_TYPES.optionalDevice:
-        block.append(formatters.packTitleDescBlock(title='', desc=desc, padding=formatters.packPadding(top=-8)))
-    else:
-        topPadding = 0
-        if always[0] and len(always[1]) > 0:
-            block.append(formatters.packTitleDescBlock(title=text_styles.middleTitle(TOOLTIPS.EQUIPMENT_ALWAYS),
-                                                       desc=text_styles.bonusAppliedText(always[1])))
-            topPadding = 5
-        if onUse[0] and len(onUse[1]) > 0:
-            block.append(formatters.packTitleDescBlock(title=text_styles.middleTitle(TOOLTIPS.EQUIPMENT_ONUSE),
-                                                       desc=text_styles.main(onUse[1]),
-                                                       padding=formatters.packPadding(top=topPadding)))
-            topPadding = 5
-        if restriction[0] and len(restriction[1]) > 0:
-            block.append(formatters.packTitleDescBlock(title=text_styles.middleTitle(TOOLTIPS.EQUIPMENT_RESTRICTION),
-                                                       desc=text_styles.main(restriction[1]),
-                                                       padding=formatters.packPadding(top=topPadding)))
+        if bonus_helper.isSituationalBonus(self.module.name):
+            effectDesc = text_styles.bonusPreviewText(stripColorTagDescrTags(_ms(self.module.fullDescription)))
+            # noinspection PyArgumentEqualDefault
+            icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_TOOLTIP_ASTERISK_OPTIONAL, 16, 16, 0, 4)
+            desc = params_formatters.packSituationalIcon(effectDesc, icon)
+        else:
+            desc = text_styles.bonusAppliedText(stripColorTagDescrTags(_ms(self.module.fullDescription)))
+        block[0]['data']['blocksData'][1]['data']['text'] = desc
     return block
 
 
-def new_MIW_populate(self):
-    from gui.shared.formatters import text_styles
-    from gui.shared.items_parameters import params_helper, formatters
-    from gui.shared.utils import GUN_RELOADING_TYPE, GUN_CAN_BE_CLIP, GUN_CLIP, CLIP_ICON_PATH, EXTRA_MODULE_INFO, \
-        HYDRAULIC_ICON_PATH
-    from gui.shared.gui_items import GUI_ITEM_TYPE
-    from gui.Scaleform.locale.MENU import MENU
-    from gui.shared.utils.functions import stripColorTagDescrTags
-    from helpers import i18n
-    from gui.Scaleform.framework.entities.View import View
-    from gui.Scaleform.genConsts.SLOT_HIGHLIGHT_TYPES import SLOT_HIGHLIGHT_TYPES
-    import re
-    _DEF_SHOT_DISTANCE = 720
-    super(View, self)._populate()
-    curModule = self.itemsCache.items.getItemByCD(self.moduleCompactDescr)
-    description = ''
-    if curModule.itemTypeID in (GUI_ITEM_TYPE.OPTIONALDEVICE, GUI_ITEM_TYPE.EQUIPMENT):
-        description = stripColorTagDescrTags(curModule.fullDescription)
-        description = re.sub(r'<[^>]*>', '', description)
-    if curModule.itemTypeID in (GUI_ITEM_TYPE.OPTIONALDEVICE, GUI_ITEM_TYPE.SHELL, GUI_ITEM_TYPE.EQUIPMENT):
-        icon = curModule.icon
-    else:
-        icon = curModule.level
-    extraModuleInfo = ''
-    moduleData = {'name': curModule.longUserName,
-                  'windowTitle': ' '.join([curModule.longUserName, i18n.makeString(MENU.MODULEINFO_TITLE)]),
-                  'type': curModule.itemTypeName,
-                  'description': description,
-                  'level': icon,
-                  'params': [],
-                  'compatible': [],
-                  'effects': {},
-                  'moduleLabel': curModule.getGUIEmblemID(),
-                  'moduleLevel': curModule.level}
-    params = params_helper.get(curModule, self._ModuleInfoWindow__vehicleDescr)
-    moduleParameters = params.get('parameters', {})
-    formattedModuleParameters = formatters.getFormattedParamsList(curModule.descriptor, moduleParameters)
-    extraParamsInfo = params.get('extras', {})
-    isGun = curModule.itemTypeID == GUI_ITEM_TYPE.GUN
-    isShell = curModule.itemTypeID == GUI_ITEM_TYPE.SHELL
-    isChassis = curModule.itemTypeID == GUI_ITEM_TYPE.CHASSIS
-    isOptionalDevice = curModule.itemTypeID == GUI_ITEM_TYPE.OPTIONALDEVICE
-    excludedParametersNames = extraParamsInfo.get('excludedParams', tuple())
-    if isGun:
-        if 'maxShotDistance' in moduleParameters:
-            if moduleParameters['maxShotDistance'] >= _DEF_SHOT_DISTANCE:
-                excludedParametersNames += ('maxShotDistance',)
-        gunReloadingType = extraParamsInfo[GUN_RELOADING_TYPE]
-        if gunReloadingType == GUN_CLIP:
-            description = i18n.makeString(MENU.MODULEINFO_CLIPGUNLABEL)
-            extraModuleInfo = CLIP_ICON_PATH
-        elif gunReloadingType == GUN_CAN_BE_CLIP:
-            otherParamsInfoList = []
-            for paramName, paramValue in formattedModuleParameters:
-                if paramName in excludedParametersNames:
-                    otherParamsInfoList.append({'type': formatters.formatModuleParamName(paramName) + '\n',
-                                                'value': text_styles.stats(paramValue)})
-
-            imgPathArr = CLIP_ICON_PATH.split('..')
-            imgPath = 'img://gui' + imgPathArr[1]
-            moduleData['otherParameters'] = {
-                'headerText': i18n.makeString(MENU.MODULEINFO_PARAMETERSCLIPGUNLABEL, imgPath),
-                'params': otherParamsInfoList}
-    if isChassis:
-        if moduleParameters['isHydraulic']:
-            description = i18n.makeString(MENU.MODULEINFO_HYDRAULICCHASSISLABEL)
-            extraModuleInfo = HYDRAULIC_ICON_PATH
-    moduleData['description'] = description
-    paramsList = []
-    for paramName, paramValue in formattedModuleParameters:
-        if paramName not in excludedParametersNames:
-            paramsList.append({'type': formatters.formatModuleParamName(paramName) + '\n',
-                               'value': text_styles.stats(paramValue)})
-
-    moduleData['parameters'] = {
-        'headerText': i18n.makeString(MENU.MODULEINFO_PARAMETERSLABEL) if len(paramsList) > 0 else '',
-        'params': paramsList}
-    moduleData[EXTRA_MODULE_INFO] = extraModuleInfo
-    moduleCompatibles = params.get('compatible', tuple())
-    for paramType, paramValue in moduleCompatibles:
-        compatible = moduleData.get('compatible')
-        compatible.append({'type': i18n.makeString(MENU.moduleinfo_compatible(paramType)),
-                           'value': paramValue})
-
-    if curModule.itemTypeID == GUI_ITEM_TYPE.EQUIPMENT:
-        effectsNameTemplate = '#artefacts:%s/%s'
-        if self.lobbyContext.getServerSettings().spgRedesignFeatures.isStunEnabled():
-            isRemovingStun = curModule.isRemovingStun
-        else:
-            isRemovingStun = False
-        onUseStr = 'removingStun/onUse' if isRemovingStun else 'onUse'
-        moduleData['effects'] = {'effectOnUse': i18n.makeString(effectsNameTemplate % (curModule.name, onUseStr)),
-                                 'effectAlways': i18n.makeString(effectsNameTemplate % (curModule.name, 'always')),
-                                 'effectRestriction': i18n.makeString(effectsNameTemplate % (curModule.name, 'restriction'))}
-        cooldownSeconds = curModule.descriptor.cooldownSeconds
-        if cooldownSeconds > 0:
-            moduleData['addParams'] = {'type': formatters.formatModuleParamName('cooldownSeconds') + '\n',
-                                       'value': text_styles.stats(cooldownSeconds) + '\n'}
-    if isShell and self._ModuleInfoWindow__isAdditionalInfoShow is not None:
-        moduleData['additionalInfo'] = self._ModuleInfoWindow__isAdditionalInfoShow
-    if isOptionalDevice:
-        moduleData['highlightType'] = SLOT_HIGHLIGHT_TYPES.EQUIPMENT_PLUS if curModule.isDeluxe() else SLOT_HIGHLIGHT_TYPES.NO_HIGHLIGHT
-    self.as_setModuleInfoS(moduleData)
-    self._updateActionButton()
+def new_setModuleInfoS(self, moduleInfo):
+    moduleInfo['description'] = re.sub(r'<[^>]*>', '', moduleInfo['description'])
+    old_setModuleInfoS(self, moduleInfo)
 
 
 # noinspection PyGlobalUndefined
 def ButtonReplacer_hooks():
-    global old_destroyGUI
+    global old_destroyGUI, old_setModuleInfoS, old_construct
     from Avatar import PlayerAvatar
-    from gui.Scaleform.daapi.view.lobby.ModuleInfoWindow import ModuleInfoWindow
+    from gui.Scaleform.daapi.view.meta.ModuleInfoMeta import ModuleInfoMeta
     from gui.shared.tooltips.module import EffectsBlockConstructor
     old_destroyGUI = PlayerAvatar._PlayerAvatar__destroyGUI
     PlayerAvatar._PlayerAvatar__destroyGUI = new_destroyGUI
-    ModuleInfoWindow._populate = new_MIW_populate
+    old_setModuleInfoS = ModuleInfoMeta.as_setModuleInfoS
+    ModuleInfoMeta.as_setModuleInfoS = new_setModuleInfoS
+    old_construct = EffectsBlockConstructor.construct
     EffectsBlockConstructor.construct = new_construct
 
 
