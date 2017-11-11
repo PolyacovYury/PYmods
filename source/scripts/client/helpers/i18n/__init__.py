@@ -17,10 +17,10 @@ def loadOriginalFile():
 loadOriginalFile()
 del loadOriginalFile
 
-filesList = [x for x in ResMgr.openSection('scripts/client/helpers/i18n').keys()
-             if x.endswith('.pyc') and '__init__' not in x]
+filesList = set(x.lower() for x in ResMgr.openSection('scripts/client/helpers/i18n').keys()
+                if x.endswith('.pyc') and '__init__' not in x)
 filesList = [fileName.replace('.pyc', '') for idx in xrange(2) for fileName in sorted(filesList) if
-             bool(idx) != bool('_' in fileName)]
+             bool(idx) != bool(fileName.startswith('_'))]
 _mods = {}
 for fileName in filesList:
     print '* Executing: ' + fileName
