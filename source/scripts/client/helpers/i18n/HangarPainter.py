@@ -191,7 +191,7 @@ def new_I18nDialog_init(base, self, *args):
     if _config.data['enabled']:
         TAG_RE = re.compile(r'<[^>]+>')
         for key in self._messageCtx:
-            self._messageCtx[key] = TAG_RE.sub('', self._messageCtx[key])
+            self._messageCtx[key] = TAG_RE.sub('', str(self._messageCtx[key]))
 
 
 def delayedHooks():
