@@ -154,7 +154,10 @@ class Config(object):
     def apply_settings(self, settings):
         for setting in settings:
             if setting in self.data:
-                self.data[setting] = settings[setting]
+                value = settings[setting]
+                if isinstance(value, unicode):
+                    value.encode('utf-8')
+                self.data[setting] = value
 
         self.writeHotKeys(self.data)
         self.loadJson(self.ID, self.data, self.configPath, True, False)

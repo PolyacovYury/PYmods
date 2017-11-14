@@ -15,7 +15,7 @@ def __dir__():
 class _Config(PYmodsCore.Config):
     def __init__(self):
         super(self.__class__, self).__init__('%(mod_ID)s')
-        self.version = '1.2.0 (%(file_compile_date)s)'
+        self.version = '1.2.0.1 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'debug': True,
                      'debugColour': True,
@@ -33,8 +33,7 @@ class _Config(PYmodsCore.Config):
             'UI_setting_crewColour_text': 'Enable crew names colouring',
             'UI_setting_crewColour_tooltip': (
                 'Crew names and ranks in the sidebar will be coloured, but it glitches in tankmen replacement '
-                'view.\n\nYou will need to select another vehicle for changes to take effect.\n\nIf you experience '
-                'issues after changing this setting - re-open this settings window.'),
+                'view.\n\nYou will need to select another vehicle for changes to take effect.'),
             'UI_restart_header': 'Restart request',
             'UI_restart_text': 'Hangar Painter: {reason}. Client restart required to accept changes.',
             'UI_restart_reason_colourChanged': 'text colour was changed',
