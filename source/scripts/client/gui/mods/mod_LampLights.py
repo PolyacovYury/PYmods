@@ -639,7 +639,7 @@ def battleKeyControl(event):
     if PYmodsCore.checkKeys(_config.data['hotkey']) and event.isKeyDown():
         _config.isLampsVisible = not _config.isLampsVisible
         if _config.isLampsVisible:
-            _config.readCurrentSettings(_config.data['Debug'])
+            _config.readCurrentSettings(not _config.data['Debug'])
             for vehicleID in BigWorld.player().arena.vehicles:
                 curVehicle = BigWorld.entity(vehicleID)
                 if curVehicle is not None and curVehicle.isAlive():

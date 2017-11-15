@@ -50,7 +50,8 @@ def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
         sname = snameList[snameIdx]
         g_config.OMDesc = g_config.OM.models[sname]
         selected['Remod'] = sname
-        PYmodsCore.loadJson(g_config.ID, 'remodsCache', selected, g_config.configPath, True, quiet=g_config.data['isDebug'])
+        PYmodsCore.loadJson(g_config.ID, 'remodsCache', selected, g_config.configPath, True,
+                            quiet=not g_config.data['isDebug'])
 
 
 def apply(vDesc):

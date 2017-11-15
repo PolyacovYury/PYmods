@@ -470,7 +470,7 @@ class RemodEnablerUI(AbstractWindowView):
         self.newRemodData = OrderedDict()
 
     def py_onRequestSettings(self):
-        g_config.readCurrentSettings(g_config.data['isDebug'])
+        g_config.readCurrentSettings(not g_config.data['isDebug'])
         texts = {
             'header': {
                 'main': g_config.i18n['UI_flash_header'],
@@ -653,7 +653,7 @@ class RemodEnablerUI(AbstractWindowView):
                             quiet=not g_config.data['isDebug'])
         PYmodsCore.loadJson(g_config.ID, 'settings', g_config.settings, g_config.configPath, True,
                             quiet=not g_config.data['isDebug'])
-        g_config.readCurrentSettings(g_config.data['isDebug'])
+        g_config.readCurrentSettings(not g_config.data['isDebug'])
         PYmodsCore.refreshCurrentVehicle()
 
     def py_onCreateRemod(self, settings):
