@@ -6,15 +6,24 @@ import os
 import re
 import traceback
 from debug_utils import LOG_ERROR, LOG_WARNING
-
+from functools import partial
 
 def __dir__():
     return ['i18n_hook_makeString']
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.textStack = {}
+        self.wasReplaced = {}
+        self.textId = {}
+        self.configsList = []
+        self.confMeta = {}
+        self.sectDict = {}
+        super(self.__class__, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
         self.version = '2.1.3 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'reReadAtEnd': True}
@@ -28,41 +37,35 @@ class _Config(PYmodsCore.Config):
             'UI_setting_meta_tooltip': '%(meta)s',
             'UI_setting_meta_no_configs': 'No configs were loaded.',
             'UI_setting_NDA': ' • No data available or provided.'}
-        self.textStack = {}
-        self.wasReplaced = {}
-        self.textId = {}
-        self.configsList = []
-        self.confMeta = {}
-        self.sectDict = {}
-        self.loadLang()
+        super(ConfigInterface, self).init()
 
-    def template_settings(self):
+    def createTemplate(self):
         metaList = map(lambda x: '\n'.join((self.confMeta[x][textType].rstrip() for textType in ('name', 'desc'))),
                        sorted(self.configsList, key=str.lower))
         metaStr = ('\n'.join(metaList)) if metaList else self.i18n['UI_setting_meta_no_configs']
-        capLabel = self.createLabel('meta')
-        capLabel['text'] = self.getLabel('caps').format(totalCfg=len(self.configsList), keys=len(self.sectDict))
+        capLabel = self.tb.createLabel('meta')
+        capLabel['text'] = self.tb.getLabel('caps').format(totalCfg=len(self.configsList), keys=len(self.sectDict))
         capLabel['tooltip'] %= {'meta': metaStr}
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [capLabel],
-                'column2': [self.createControl('reReadAtEnd')]}
+                'column2': [self.tb.createControl('reReadAtEnd')]}
 
-    def update_data(self, doPrint=False):
-        super(self.__class__, self).update_data()
+    def readCurrentSettings(self, quiet=True):
+        super(self.__class__, self).readCurrentSettings(quiet)
         self.configsList = []
         self.confMeta.clear()
         self.sectDict = {}
         configPath = self.configPath + 'configs/'
         if os.path.isdir(configPath):
-            if doPrint:
+            if not quiet:
                 print '%s: loading configs from %s:' % (self.ID, configPath)
             for conp in glob.iglob(configPath + '*.json'):
-                if doPrint:
+                if not quiet:
                     print '%s: loading %s' % (self.ID, os.path.basename(conp))
-                confdict = self.loadJson(os.path.basename(conp).split('.')[0], self.data,
-                                         os.path.dirname(conp) + '/')
+                confdict = PYmodsCore.loadJson(
+                    self.ID, os.path.basename(conp).split('.')[0], self.data, os.path.dirname(conp) + '/')
                 if os.path.basename(conp) not in self.configsList:
                     self.configsList.append(os.path.basename(conp))
                 self.confMeta[os.path.basename(conp)] = metaDict = {'name': '<b>%s</b>' % os.path.basename(conp),
@@ -93,15 +96,17 @@ class _Config(PYmodsCore.Config):
                                 textList.extend(filter(
                                     None, map(lambda txtStr: txtStr.rstrip(), confdict[key]['text'])))
 
-        elif doPrint:
+        elif not quiet:
             print '%s: config directory not found: %s' % (self.ID, configPath)
 
         for key in self.sectDict:
             self.sectDict[key]['textList'] = PYmodsCore.remDups(self.sectDict[key]['textList'])
 
+    def registerSettings(self):
+        BigWorld.callback(0, partial(BigWorld.callback, 0, super(ConfigInterface, self).registerSettings))
 
-_config = _Config()
-_config.load()
+
+_config = ConfigInterface()
 
 
 def old_makeString(*_, **kwargs):

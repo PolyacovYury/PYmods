@@ -5,24 +5,33 @@ from Avatar import PlayerAvatar
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.currentPercent = None
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
         self.version = '1.0.1 (%(file_compile_date)s)'
         self.data = {'10percent': 'percent_10',
                      '25percent': 'percent_25',
                      '50percent': 'percent_50'}
-        self.currentPercent = None
+        super(ConfigInterface, self).init()
+
+    def loadLang(self):
+        pass
 
     def updateMod(self):
         pass
 
-    def do_config_delayed(self):
+    def createTemplate(self):
+        pass
+
+    def registerSettings(self):
         pass
 
 
-_config = _Config()
-_config.load()
+_config = ConfigInterface()
 statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-12')
 
 

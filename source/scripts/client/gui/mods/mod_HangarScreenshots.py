@@ -12,10 +12,14 @@ from gui.app_loader.loader import g_appLoader
 from gui.shared.utils.HangarSpace import g_hangarSpace
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
-        self.version = '1.0.0 (%(file_compile_date)s)'
+        self.cameraPositions = []
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
+        self.version = '1.1.0 (%(file_compile_date)s)'
         self.author += ' (thx to Chirimen, alphasave1)'
         self.defaultKeys = {'togglekey': [Keys.KEY_F11], 'toggleKey': ['KEY_F11'],
                             'camkey': [Keys.KEY_F12], 'camKey': ['KEY_F12'], }
@@ -46,30 +50,30 @@ class _Config(PYmodsCore.Config):
             'UI_setting_addUnlockMode_text': 'Add unlocked camera mode into the list of modes',
             'UI_setting_addUnlockMode_tooltip': 'This setting adds another camera view "point" into the list which lets '
                                                 'you to move the camera with the mouse when hangar UI is turned off.'}
-        self.loadLang()
+        super(ConfigInterface, self).init()
 
-    def template_settings(self):
+    def createTemplate(self):
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [self.createHotKey('togglekey'),
-                            self.createControl('lockCamera')],
-                'column2': [self.createHotKey('camkey'),
-                            self.createControl('addUnlockMode')]}
+                'column1': [self.tb.createHotKey('togglekey'),
+                            self.tb.createControl('lockCamera')],
+                'column2': [self.tb.createHotKey('camkey'),
+                            self.tb.createControl('addUnlockMode')]}
 
-    def update_data(self, doPrint=False):
-        super(self.__class__, self).update_data(doPrint)
-        self.cameraPositions = self.loadJson('cameraPositions', self.cameraPositions, self.configPath, doPrint=doPrint)
+    def readCurrentSettings(self, quiet=True):
+        super(ConfigInterface, self).readCurrentSettings(quiet)
+        self.cameraPositions = PYmodsCore.loadJson(
+            self.ID, 'cameraPositions', self.cameraPositions, self.configPath, quiet=quiet)
 
 
-_config = _Config()
-_config.load()
+_config = ConfigInterface()
 
 
 def toggleHangarUI(visible):
     lobby = g_appLoader.getApp()
     hangar = lobby.containerManager.getView(ViewTypes.LOBBY_SUB)
-    hangar.flashObject.visible = not hangar.flashObject.visible
+    hangar.flashObject.visible = visible
 
 
 @PYmodsCore.overrideMethod(ClientHangarSpace, 'updateCameraByMouseMove')

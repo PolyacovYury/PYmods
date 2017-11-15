@@ -26,9 +26,15 @@ class RestartButtons(object):
         ]
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.editedBanks = {'create': [], 'delete': [], 'delete_engine': [], 'memory': [], 'move': [], 'remap': set(),
+                            'wotmod': []}
+        self.was_declined = False
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
         self.version = '1.9.5 (%(file_compile_date)s)'
         self.author = '%s and Ekspoint' % self.author
         self.data = {'defaultPool': 48,
@@ -54,12 +60,12 @@ class _Config(PYmodsCore.Config):
                      'UI_restart_memory': ' • values <b>changed</b> for memory settings: ',
                      'UI_restart_remap': ' • sections <b>changed</b> for these settings: ',
                      'UI_restart_wotmod': ' • configs <b>removed</b> from these packages: '}
-        self.editedBanks = {'create': [], 'delete': [], 'delete_engine': [], 'memory': [], 'move': [], 'remap': set(),
-                            'wotmod': []}
-        self.was_declined = False
-        self.loadLang()
+        super(ConfigInterface, self).init()
 
     def updateMod(self):
+        pass
+
+    def createTemplate(self):
         pass
 
     def onRestartConfirmed(self, buttonID):
@@ -329,13 +335,12 @@ class _Config(PYmodsCore.Config):
 
     def load(self):
         self.suppress_old_mod()
-        self.update_data(True)
+        self.readCurrentSettings(False)
         self.checkConfigs()
         print '%s: initialised.' % (self.message())
 
 
-_config = _Config()
-_config.load()
+_config = ConfigInterface()
 statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-9')
 
 

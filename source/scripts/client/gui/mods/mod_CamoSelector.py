@@ -46,17 +46,17 @@ class CamoSelectorUI(AbstractWindowView):
                 _config.i18n['UI_flash_camoMode_modded'], _config.i18n['UI_flash_camoMode_international']],
             'camouflages': [[] for _ in xrange(len(nations.NAMES) + 2)],
             'randomOptions': {'text': _config.i18n['UI_flash_randomOptions_text'],
-                              'tooltip': _config.createTooltip('randomOptions', 'flash'),
+                              'tooltip': _config.tb.createTooltip('randomOptions', 'flash'),
                               'options': [_config.i18n['UI_flash_randomOptions_OFF'],
                                           _config.i18n['UI_flash_randomOptions_overrideRandom'],
                                           _config.i18n['UI_flash_randomOptions_includeInRandom']]},
-            'useFor': {'header': _config.createLabel('useFor_header', 'flash'),
-                       'ally': _config.createLabel('useFor_ally', 'flash'),
-                       'enemy': _config.createLabel('useFor_enemy', 'flash')},
-            'kinds': {'header': _config.createLabel('kinds_header', 'flash'),
-                      'winter': _config.createLabel('kinds_winter', 'flash'),
-                      'summer': _config.createLabel('kinds_summer', 'flash'),
-                      'desert': _config.createLabel('kinds_desert', 'flash')},
+            'useFor': {'header': _config.tb.createLabel('useFor_header', 'flash'),
+                       'ally': _config.tb.createLabel('useFor_ally', 'flash'),
+                       'enemy': _config.tb.createLabel('useFor_enemy', 'flash')},
+            'kinds': {'header': _config.tb.createLabel('kinds_header', 'flash'),
+                      'winter': _config.tb.createLabel('kinds_winter', 'flash'),
+                      'summer': _config.tb.createLabel('kinds_summer', 'flash'),
+                      'desert': _config.tb.createLabel('kinds_desert', 'flash')},
             'installTooltip': _config.i18n['UI_flash_installTooltip'],
             'save': _config.i18n['UI_flash_save']}
         settings = [[] for _ in xrange(len(nations.NAMES) + 2)]
@@ -155,8 +155,8 @@ class CamoSelectorUI(AbstractWindowView):
                 for confFolderName in _config.configFolders:
                     configFolder = _config.configFolders[confFolderName]
                     if camoName in configFolder:
-                        _config.loadJson('settings', dict((key, nationConf[key]) for key in configFolder),
-                                         _config.configPath + 'camouflages/' + confFolderName + '/', True, False)
+                        PYmodsCore.loadJson(_config.ID, 'settings', dict((key, nationConf[key]) for key in configFolder),
+                                            _config.configPath + 'camouflages/' + confFolderName + '/', True, False)
                 if nationConf[camoName]['random_mode'] == 2 or nationConf[camoName]['random_mode'] == 1 and not isInter:
                     del nationConf[camoName]['random_mode']
                 kindNames = filter(None, nationConf[camoName]['kinds'].split(','))
@@ -175,7 +175,7 @@ class CamoSelectorUI(AbstractWindowView):
         for nation in nations.NAMES + ('international',):
             if nation in _config.camouflages:
                 newSettings[nation] = _config.camouflages[nation]
-        _config.loadJson('settings', newSettings, _config.configPath, True)
+        PYmodsCore.loadJson(_config.ID, 'settings', newSettings, _config.configPath, True)
 
         SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflageSave'],
                                    SystemMessages.SM_TYPE.CustomizationForGold)
@@ -214,9 +214,26 @@ class CamoSelectorUI(AbstractWindowView):
         installSelectedCamo()
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.disable = []
+        self.hangarCamoCache = {}
+        self.camouflagesCache = {}
+        self.camouflages = {}
+        self.configFolders = {}
+        self.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
+        self.interCamo = []
+        self.origInterCamo = []
+        self.changedNations = []
+        self.activePreviewCamo = None
+        self.UIProxy = None
+        self.backupNationID = None
+        self.backup = {'mode': 0, 'camoID': (len(nations.NAMES) + 2) * [0]}
+        self.isModAdded = False
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
         self.version = '2.5.6 (%(file_compile_date)s)'
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
@@ -224,7 +241,6 @@ class _Config(PYmodsCore.Config):
         self.data = {'enabled': True, 'doRandom': True, 'useBought': True, 'hangarCamoKind': 0,
                      'fullAlpha': False, 'disableWithDefault': False,
                      'selectHotkey': self.defaultKeys['selectHotkey'], 'selectHotKey': self.defaultKeys['selectHotKey']}
-        self.disable = []
         self.i18n = {
             'UI_description': 'Camouflage selector',
             'UI_flash_header': 'Camouflages setup',
@@ -287,45 +303,32 @@ class _Config(PYmodsCore.Config):
                                    '<b>{kind}</b> camouflages: <b>{name}</b>'),
             'UI_customOrInvalid_winter': 'winter', 'UI_customOrInvalid_summer': 'summer',
             'UI_customOrInvalid_desert': 'desert'}
-        self.hangarCamoCache = {}
-        self.camouflagesCache = {}
-        self.camouflages = {}
-        self.configFolders = {}
-        self.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
-        self.interCamo = []
-        self.origInterCamo = []
-        self.changedNations = []
-        self.activePreviewCamo = None
-        self.UIProxy = None
-        self.backupNationID = None
-        self.backup = {'mode': 0, 'camoID': (len(nations.NAMES) + 2) * [0]}
-        self.isModAdded = False
-        self.loadLang()
+        super(ConfigInterface, self).init()
 
-    def template_settings(self):
+    def createTemplate(self):
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [self.createOptions('hangarCamoKind', [self.i18n['UI_setting_hangarCamo_%s' % x] for x in
-                                                                  ('winter', 'summer', 'desert', 'random')]),
-                            self.createControl('doRandom'),
-                            self.createControl('disableWithDefault')],
-                'column2': [self.createHotKey('selectHotkey'),
-                            self.createEmpty(), self.createEmpty(),
-                            self.createControl('useBought'),
-                            self.createControl('fullAlpha')]}
+                'column1': [self.tb.createOptions('hangarCamoKind', [self.i18n['UI_setting_hangarCamo_%s' % x] for x in
+                                                                     ('winter', 'summer', 'desert', 'random')]),
+                            self.tb.createControl('doRandom'),
+                            self.tb.createControl('disableWithDefault')],
+                'column2': [self.tb.createHotKey('selectHotkey'),
+                            self.tb.createEmpty(), self.tb.createEmpty(),
+                            self.tb.createControl('useBought'),
+                            self.tb.createControl('fullAlpha')]}
 
-    def onWindowClose(self):
+    def onMSADestroy(self):
         try:
             from gui.mods import mod_remodenabler
         except StandardError:
             PYmodsCore.refreshCurrentVehicle()
 
-    def apply_settings(self, settings):
+    def onApplySettings(self, settings):
         if 'fullAlpha' in settings and settings['fullAlpha'] != self.data['fullAlpha']:
             self.changedNations[:] = []
             items.vehicles.g_cache._Cache__customization = [None for _ in nations.NAMES]
-        super(self.__class__, self).apply_settings(settings)
+        super(self.__class__, self).onApplySettings(settings)
         self.hangarCamoCache.clear()
         if self.isModAdded:
             kwargs = dict(id='CamoSelectorUI', enabled=self.data['enabled'])
@@ -337,7 +340,7 @@ class _Config(PYmodsCore.Config):
     def readCamouflages(self, doShopCheck):
         self.configFolders.clear()
         self.camouflages = {'modded': {}}
-        self.camouflagesCache = self.loadJson('camouflagesCache', self.camouflagesCache, self.configPath)
+        self.camouflagesCache = PYmodsCore.loadJson(self.ID, 'camouflagesCache', self.camouflagesCache, self.configPath)
         try:
             camoDirPath = '../' + self.configPath + 'camouflages'
             camoDirSect = ResMgr.openSection(camoDirPath)
@@ -345,7 +348,7 @@ class _Config(PYmodsCore.Config):
                 (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x)) if camoDirSect is not None else [])
             for camoName in camoNames:
                 self.configFolders[camoName] = confFolder = set()
-                settings = self.loadJson('settings', {}, self.configPath + 'camouflages/' + camoName + '/')
+                settings = PYmodsCore.loadJson(self.ID, 'settings', {}, self.configPath + 'camouflages/' + camoName + '/')
                 for key in settings:
                     confFolder.add(key)
                 self.camouflages['modded'].update(settings)
@@ -357,7 +360,7 @@ class _Config(PYmodsCore.Config):
             camoNames = [x['name'] for x in items.vehicles.g_cache.customization(nationID)['camouflages'].itervalues()]
             self.interCamo = [x for x in self.interCamo if x in camoNames]
         self.origInterCamo = [x for x in self.interCamo if x not in self.camouflages['modded']]
-        settings = self.loadJson('settings', {}, self.configPath)
+        settings = PYmodsCore.loadJson(self.ID, 'settings', {}, self.configPath)
         if 'disable' in settings:
             if not settings['disable']:
                 del settings['disable']
@@ -408,10 +411,10 @@ class _Config(PYmodsCore.Config):
             newSettings['disable'] = self.disable
         for nation in settings:
             newSettings[nation] = settings[nation]
-        self.loadJson('settings', newSettings, self.configPath, True)
+        PYmodsCore.loadJson(self.ID, 'settings', newSettings, self.configPath, True)
 
-    def do_config(self):
-        super(self.__class__, self).do_config()
+    def registerSettings(self):
+        super(self.__class__, self).registerSettings()
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('CamoSelectorUI', CamoSelectorUI, 'CamoSelector.swf', ViewTypes.WINDOW, None,
@@ -454,8 +457,7 @@ def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
                                                       ctx, subsection)
 
 
-_config = _Config()
-_config.load()
+_config = ConfigInterface()
 statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-7', _config.configFolders)
 
 
@@ -611,7 +613,7 @@ def installSelectedCamo():
             SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_installCamouflage'].format(
                 name=camoName, kind=_config.i18n['UI_setting_hangarCamo_%s' % CAMOUFLAGE_KIND_INDICES[camoKindNum]]),
                                        SystemMessages.SM_TYPE.CustomizationForGold)
-            _config.loadJson('camouflagesCache', _config.camouflagesCache, _config.configPath, True)
+            PYmodsCore.loadJson(_config.ID, 'camouflagesCache', _config.camouflagesCache, _config.configPath, True)
         return
     camoCache = list(vDesc.camouflages)
     for item in g_customizationController.cart.items:
@@ -634,7 +636,7 @@ def installSelectedCamo():
         del _config.camouflagesCache[nationName][vehName]
     if nationName in _config.camouflagesCache and not _config.camouflagesCache[nationName]:
         del _config.camouflagesCache[nationName]
-    _config.loadJson('camouflagesCache', _config.camouflagesCache, _config.configPath, True)
+    PYmodsCore.loadJson(_config.ID, 'camouflagesCache', _config.camouflagesCache, _config.configPath, True)
     PYmodsCore.refreshCurrentVehicle()
     SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflageSelect'],
                                SystemMessages.SM_TYPE.CustomizationForGold)
@@ -655,7 +657,7 @@ def new_removeSlot(base, self, cType, slotIdx):
             vehDict = _config.camouflagesCache[nationName][vehName]
             if vehDict.get(camoKind) is not None and vehDict[camoKind] == camoName:
                 del vehDict[camoKind]
-            _config.loadJson('camouflagesCache', _config.camouflagesCache, _config.configPath, True)
+            PYmodsCore.loadJson(_config.ID, 'camouflagesCache', _config.camouflagesCache, _config.configPath, True)
     base(self, cType, slotIdx)
 
 

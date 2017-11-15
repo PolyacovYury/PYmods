@@ -15,6 +15,7 @@ from adisp import AdispException, async, process
 from functools import partial
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
+from gui.Scaleform.framework import ViewTypes, ScopeTemplates, g_entitiesFactories, GroupedViewSettings
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader.loader import g_appLoader
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
@@ -106,6 +107,11 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
     def onWindowClose(self):
         g_config.loadingProxy = None
         self.destroy()
+
+
+g_entitiesFactories.addSettings(
+            GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
+                                '', None, ScopeTemplates.DEFAULT_SCOPE))
 
 
 def CRC32_from_file(filename, localPath):
@@ -205,7 +211,7 @@ def modelsCheck(callback):
     elif texReplaced and os.path.isdir(modelsDir):
         shutil.rmtree(modelsDir)
         os.makedirs(modelsDir)
-    g_config.loadJson('skinsCache', g_config.skinsCache, g_config.configPath, True)
+    PYmodsCore.loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
     BigWorld.callback(0.0, partial(callback, True))
 
 

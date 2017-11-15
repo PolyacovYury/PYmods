@@ -24,10 +24,16 @@ def listToTuple(seq):
     return tuple(listToTuple(item) for item in seq) if isinstance(seq, list) else seq
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
         self.isTickRequired = True
+        self.configsDict = {}
+        self.isLampsVisible = True
+        self.modes = {'constant': [], 'stop': [], 'turn_left': [], 'turn_right': [], 'back': [], 'target': [], 'spot': []}
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
         self.version = '2.2.2 (%(file_compile_date)s)'
         self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
         self.data = {'enabled': True,
@@ -60,12 +66,9 @@ class _Config(PYmodsCore.Config):
             'UI_setting_attachToEnemy': 'enemies',
             'UI_setting_attachTo': ' • Will be attached to ',
             'UI_serviceChannelPopUp': '<b>{author}<font color="#cc9933"> brought some light!</font></b>'}
-        self.configsDict = {}
-        self.isLampsVisible = True
-        self.modes = {'constant': [], 'stop': [], 'turn_left': [], 'turn_right': [], 'back': [], 'target': [], 'spot': []}
-        self.loadLang()
+        super(ConfigInterface, self).init()
 
-    def template_settings(self):
+    def createTemplate(self):
         sources = 0
         models = 0
         for confDict in self.configsDict.values():
@@ -89,25 +92,25 @@ class _Config(PYmodsCore.Config):
                                        self.configsDict[fileName]['meta']['desc'].format(
                                            attachTo=tooltipAttachTo).rstrip())).rstrip())
         metaStr = ('\n'.join(metaList)) if self.configsDict else self.i18n['UI_setting_meta_no_configs']
-        capLabel = self.createLabel('meta')
-        capLabel['text'] = self.getLabel('caps').format(totalCfg=len(self.configsDict), totalSrc=sources, models=models)
+        capLabel = self.tb.createLabel('meta')
+        capLabel['text'] = self.tb.getLabel('caps').format(totalCfg=len(self.configsDict), totalSrc=sources, models=models)
         capLabel['tooltip'] %= {'meta': metaStr}
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [self.createControl('enableAtStartup'),
+                'column1': [self.tb.createControl('enableAtStartup'),
                             capLabel],
-                'column2': [self.createHotKey('hotkey'),
-                            self.createControl('enableMessage')]}
+                'column2': [self.tb.createHotKey('hotkey'),
+                            self.tb.createControl('enableMessage')]}
 
-    def apply_settings(self, settings):
-        super(self.__class__, self).apply_settings(settings)
+    def onApplySettings(self, settings):
+        super(self.__class__, self).onApplySettings(settings)
         if self.data['enabled']:
             self.isLampsVisible = self.data['enableAtStartup'] and self.isLampsVisible
         else:
             self.isLampsVisible = False
 
-    def readConfDict(self, doPrint, confdict, confPath, sourceModel=None, upperName=''):
+    def readConfDict(self, quiet, confdict, confPath, sourceModel=None, upperName=''):
         for confKey, configDict in confdict.items():
             if upperName:
                 confKey = '.'.join((upperName, confKey))
@@ -136,8 +139,8 @@ class _Config(PYmodsCore.Config):
                     LOG_ERROR('Unknown place of %s: %s.' % (confKey, configDict['place']))
                     continue
             if not configDict['visible']:
-                if doPrint:
-                    print 'LampLights: %s disabled in config.' % confKey
+                if not quiet:
+                    print '%s: %s disabled in config.' % (self.ID, confKey)
                 continue
             self.configsDict[os.path.basename(confPath).split('.')[0]][confKey] = confDict = {}
             for key in ('type', 'place', 'mode', 'preRotate', 'postRotate', 'vect'):
@@ -160,15 +163,15 @@ class _Config(PYmodsCore.Config):
             else:
                 confDict['path'] = configDict['path']
                 if 'subLights' in configDict:
-                    self.readConfDict(doPrint, configDict['subLights'], confPath, sourceModel=model,
+                    self.readConfDict(quiet, configDict['subLights'], confPath, sourceModel=model,
                                       upperName=confKey)
-            if self.data['Debug'] and doPrint:
-                print 'LampLights: %s loaded.' % confKey
+            if self.data['Debug'] and not quiet:
+                print '%s: %s loaded.' % (self.ID, confKey)
 
-    def update_data(self, doPrint=False):
+    def readCurrentSettings(self, quiet=True):
         self.configsDict.clear()
         self.modes = {'constant': [], 'stop': [], 'turn_left': [], 'turn_right': [], 'back': [], 'target': [], 'spot': []}
-        super(self.__class__, self).update_data()
+        super(self.__class__, self).readCurrentSettings(quiet)
 
         if self.data['DebugModel']:
             if self.data['DebugPath']:
@@ -188,9 +191,9 @@ class _Config(PYmodsCore.Config):
                 os.makedirs(configPath)
             for confPath in glob.iglob(configPath + '*.json'):
                 try:
-                    confdict = self.loadJson(os.path.basename(confPath).split('.')[0],
-                                             self.configsDict.get(os.path.basename(confPath).split('.')[0], {}),
-                                             os.path.dirname(confPath) + '/')
+                    confdict = PYmodsCore.loadJson(self.ID, os.path.basename(confPath).split('.')[0],
+                                                   self.configsDict.get(os.path.basename(confPath).split('.')[0], {}),
+                                                   os.path.dirname(confPath) + '/')
                 except StandardError:
                     print 'LampLights: config %s is invalid.' % os.path.basename(confPath)
                     traceback.print_exc()
@@ -198,7 +201,7 @@ class _Config(PYmodsCore.Config):
                 if not confdict['enable'] or not any((x for x in (confdict.get(y, True) for y in
                                                                   ('attachToPlayer', 'attachToAlly',
                                                                    'attachToEnemy')))):
-                    if doPrint:
+                    if not quiet:
                         print 'LampLights: config %s is disabled.' % os.path.basename(confPath)
                     continue
                 if self.data['Debug']:
@@ -210,12 +213,12 @@ class _Config(PYmodsCore.Config):
                 metaDict['desc'] = confdict.get('meta', {}).get(self.lang, {}).get('desc', metaDict['desc'])
                 for key in ['attachToPlayer', 'attachToAlly', 'attachToEnemy']:
                     configsDict[key] = confdict.get(key, True)
-                self.readConfDict(doPrint, confdict, confPath)
+                self.readConfDict(quiet, confdict, confPath)
 
             if not self.configsDict:
                 print 'LampLights has not loaded any configs. Are you sure you need this .pyc?'
             if self.data['DebugModel'] and self.configsDict:
-                if self.data['Debug'] and doPrint:
+                if self.data['Debug'] and not quiet:
                     print 'LampLights: loading configs for Debug:'
                 for fileName, configsDict in self.configsDict.items():
                     for confKey in configsDict.keys():
@@ -236,9 +239,9 @@ class _Config(PYmodsCore.Config):
                                     self.modes[confDict['mode']].append(confKey + 'Debug')
 
                                 confDict['path'] = self.data['DebugPath']
-                                if self.data['Debug'] and doPrint:
+                                if self.data['Debug'] and not quiet:
                                     print 'LampLights: config for %sDebug loaded.' % confKey
-                        elif self.data['Debug'] and doPrint:
+                        elif self.data['Debug'] and not quiet:
                             print 'LampLights: debug assignment failure: %sDebug' % confKey
 
         else:
@@ -247,8 +250,7 @@ class _Config(PYmodsCore.Config):
         self.isTickRequired = any(self.modes[key] for key in ('stop', 'turn_left', 'turn_right', 'back'))
 
 
-_config = _Config()
-_config.load()
+_config = ConfigInterface()
 if _config.data['enableMessage']:
     isLogin = True
     LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUp'].format(author='<font color="#DD7700">Polyacov_Yury</font>')
@@ -637,7 +639,7 @@ def battleKeyControl(event):
     if PYmodsCore.checkKeys(_config.data['hotkey']) and event.isKeyDown():
         _config.isLampsVisible = not _config.isLampsVisible
         if _config.isLampsVisible:
-            _config.update_data(_config.data['Debug'])
+            _config.readCurrentSettings(_config.data['Debug'])
             for vehicleID in BigWorld.player().arena.vehicles:
                 curVehicle = BigWorld.entity(vehicleID)
                 if curVehicle is not None and curVehicle.isAlive():

@@ -5,13 +5,14 @@ import re
 import threading
 import urllib
 import urllib2
-from . import overrideMethod
 from PlayerEvents import g_playerEvents
 from constants import AUTH_REALM
 from functools import partial
+from . import overrideMethod
 
 MAX_CHAT_MESSAGE_LENGTH = 220
-__all__ = ['pickRandomPart', 'sendMessage', 'sendChatMessage', 'remDups', 'checkKeys', 'refreshCurrentVehicle', 'Analytics', 'Sound']
+__all__ = ['pickRandomPart', 'sendMessage', 'sendChatMessage', 'remDups', 'checkKeys', 'refreshCurrentVehicle', 'Analytics',
+           'Sound']
 
 
 def pickRandomPart(variantList, lastRandId, doNext=False):
@@ -97,13 +98,32 @@ def new_handleAction(base, self, model, typeID, entityID, actionName):
         base(self, model, typeID, entityID, actionName)
 
 
+def openBrowser():
+    from gui.game_control.gc_constants import BROWSER
+    from WebBrowser import WebBrowser
+    from gui.app_loader import g_appLoader
+
+    def onBrShow(br, *_):
+        if br is not None:
+            br.destroy()
+
+    app = g_appLoader.getApp()
+    browser = WebBrowser(10, app, 'BrowserBg', BROWSER.SIZE, 'http://pavel3333.ru/ad/', isFocused=True)
+    browser.onLoadEnd += partial(onBrShow, browser)
+    browser.create()
+
+
 # noinspection PyGlobalUndefined
 def PMC_hooks():
     global new_addItem, new_handleAction
     from notification.actions_handlers import NotificationsActionsHandlers
     from notification.NotificationsCollection import NotificationsCollection
+    from helpers import dependency
+    from skeletons.connection_mgr import IConnectionManager
+    connectionManager = dependency.instance(IConnectionManager)
     new_addItem = overrideMethod(NotificationsCollection, 'addItem')(new_addItem)
     new_handleAction = overrideMethod(NotificationsActionsHandlers, 'handleAction')(new_handleAction)
+    connectionManager.onConnected += openBrowser
 
 
 BigWorld.callback(0.0, PMC_hooks)

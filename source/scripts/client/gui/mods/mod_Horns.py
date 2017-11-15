@@ -10,9 +10,17 @@ from gui import InputHandler
 from gui.app_loader.loader import g_appLoader
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.lastRandID = {'ally': -1,
+                           'enemy': -1,
+                           'default': -1}
+        self.hornSoundEvent = None
+        self.soundCallback = None
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
         self.version = '2.4.1 (%(file_compile_date)s)'
         self.defaultKeys = {'hotkey': [Keys.KEY_G], 'hotKey': ['KEY_G']}
         self.data = {'enabled': True,
@@ -36,45 +44,38 @@ class _Config(PYmodsCore.Config):
             'allyText': ['{name}, what are you doing, man?'],
             'enemyText': ['{name}, ahoy!'],
             'defaultText': ['Hello everyone!']}
-        self.lastRandID = {'ally': -1,
-                           'enemy': -1,
-                           'default': -1}
-        self.hornSoundEvent = None
-        self.soundCallback = None
-        self.onButtonPress += self.buttonHandler
-        self.loadLang()
+        super(ConfigInterface, self).init()
 
-    def template_settings(self):
+    def createTemplate(self):
         tooltipVariants = {}
         for chatID in ('ally', 'enemy', 'default'):
             if self.i18n['%sText' % chatID]:
                 tooltipVariants[chatID] = ' • ' + '\n • '.join(self.i18n['%sText' % chatID])
             else:
                 tooltipVariants[chatID] = self.i18n['UI_setting_chatEnable_tooltip_empty']
-        chatCB = self.createControl('chatEnable')
+        chatCB = self.tb.createControl('chatEnable')
         chatCB['tooltip'] %= tooltipVariants
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [self.createSlider('event', 1, 8, 1, button={'iconSource': '../maps/icons/buttons/sound.png'})],
-                'column2': [self.createHotKey('hotkey'),
+                'column1': [self.tb.createSlider('event', 1, 8, 1, button={'iconSource': '../maps/icons/buttons/sound.png'})],
+                'column2': [self.tb.createHotKey('hotkey'),
                             chatCB]}
 
-    def buttonHandler(self, container, linkage, vName, index):
+    def onButtonPress(self, container, linkage, vName, value):
         if container != 'PYmodsGUI' or linkage != self.ID or vName != 'event':
             return
-        self.data[vName] = int(index)
+        self.data[vName] = int(value)
         SoundLoop(False)
         SoundLoop(True)
         self.soundCallback = BigWorld.callback(3.0, partial(SoundLoop, False))
 
-    def onWindowClose(self):
+    def onMSADestroy(self):
         SoundLoop(False)
-        self.update_data()
+        self.readCurrentSettings()
 
 
-_config = _Config()
-_config.load()
+_config = ConfigInterface()
 
 
 def __getBattleOn(player):

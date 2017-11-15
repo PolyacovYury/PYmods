@@ -6,15 +6,22 @@ import re
 import traceback
 import urllib2
 from debug_utils import LOG_ERROR
+from functools import partial
 
 
 def __dir__():
     return ['i18n_hook_makeString']
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.backupData = {}
+        self.blacklists = {}
+        self.needRestart = False
+        super(self.__class__, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
         self.version = '1.2.0.1 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'debug': True,
@@ -22,7 +29,6 @@ class _Config(PYmodsCore.Config):
                      'debugBegin': 0,
                      'crewColour': True,
                      'colour': '66CC00'}
-        self.backupData = {}
         self.i18n = {
             'UI_description': 'Hangar Painter',
             'UI_setting_colourCheck_text': 'Hangar texts colour:',
@@ -40,37 +46,34 @@ class _Config(PYmodsCore.Config):
             'UI_restart_reason_modDisabled': 'mod was disabled',
             'UI_restart_reason_modEnabled': 'mod was enabled',
             'UI_restart': 'Restart'}
-        self.blacklists = {}
-        self.needRestart = False
-        self.loadLang()
+        super(ConfigInterface, self).init()
 
-    def template_settings(self):
-        colourLabel = self.createLabel('colour')
-        colourLabel['text'] = self.getLabel('colourCheck')
+    def createTemplate(self):
+        colourLabel = self.tb.createControl('colour', 'TextInputColor')
+        colourLabel['text'] = self.tb.getLabel('colourCheck')
         colourLabel['tooltip'] %= {'colour': self.data['colour']}
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [colourLabel,
-                            self.createControl('colour', 'TextInputColor', empty=True)],
-                'column2': [self.createControl('crewColour')]}
+                'column1': [colourLabel],
+                'column2': [self.tb.createControl('crewColour')]}
 
-    def apply_settings(self, settings):
+    def onApplySettings(self, settings):
         for setting in settings:
             if setting in ('colour', 'enabled') and setting not in self.backupData:
                 self.backupData[setting] = self.data[setting]
 
-        super(self.__class__, self).apply_settings(settings)
+        super(self.__class__, self).onApplySettings(settings)
 
-    def onWindowClose(self):
+    def onMSADestroy(self):
         if any(self.data[setting] != self.backupData[setting] for setting in self.backupData):
             self.onRequestRestart(self.data[key] != self.backupData.get(key, self.data[key]) for key in
                                   ('colour', 'enabled'))
         self.backupData = {}
 
-    def update_data(self, doPrint=False):
-        super(self.__class__, self).update_data(doPrint)
-        self.blacklists = self.loadJson('blacklist', self.blacklists, self.configPath)
+    def readCurrentSettings(self, quiet=True):
+        super(self.__class__, self).readCurrentSettings(quiet)
+        self.blacklists = PYmodsCore.loadJson(self.ID, 'blacklist', self.blacklists, self.configPath)
 
     @staticmethod
     def onRestartConfirmed(*_):
@@ -94,8 +97,8 @@ class _Config(PYmodsCore.Config):
     def load(self):
         try:
             webConf_url = 'https://gist.githubusercontent.com/PolyacovYury/220e5da411d78e598687b23ab130e922/raw/'
-            webConf = self.byte_ify(json.loads(urllib2.urlopen(webConf_url).read()))
-            self.loadJson('blacklist', webConf, self.configPath, True)
+            webConf = PYmodsCore.config.json_reader.JSONLoader.byte_ify(json.loads(urllib2.urlopen(webConf_url).read()))
+            PYmodsCore.loadJson(self.ID, 'blacklist', webConf, self.configPath, True)
         except urllib2.URLError as e:
             if hasattr(e, 'reason'):
                 print '%s: blacklists config download failed: ' % self.ID, e.reason
@@ -103,9 +106,11 @@ class _Config(PYmodsCore.Config):
                 print '%s: GitHub internal error: ' % self.ID, e.code
         super(self.__class__, self).load()
 
+    def registerSettings(self):
+        BigWorld.callback(0, partial(BigWorld.callback, 0, super(ConfigInterface, self).registerSettings))
 
-_config = _Config()
-_config.load()
+
+_config = ConfigInterface()
 
 
 def old_makeString(*_, **kwargs):
@@ -181,8 +186,9 @@ def new_tankmanSkill_getValue(base, self):
 
 def new_tankmanAttr_getValue(base, self):
     result = base(self)
-    return "<font color='#%s'>%s</font>" % (_config.data['colour'], result) if _config.data['enabled'] and self._name in\
-        ('name', 'rank', 'role', 'isInTank', 'efficiencyRoleLevel', 'currentVehicleName') else result
+    return ("<font color='#%s'>%s</font>" % (_config.data['colour'], result)
+            if _config.data['enabled'] and
+            self._name in ('name', 'rank', 'role', 'efficiencyRoleLevel', 'currentVehicleName') else result)
 
 
 def new_I18nDialog_init(base, self, *args):
