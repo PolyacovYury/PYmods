@@ -29,11 +29,10 @@ from gui.app_loader.settings import GUI_GLOBAL_SPACE_ID
 from string import Template
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
-        self.version = '2.4.2 (%(file_compile_date)s)'
-        self.author = '%s (orig by locastan)' % self.author
+        self.timerSounds = ('sndStart', 'snd5min', 'snd3min', 'snd2min', 'snd1min', 'snd30sec', 'snd10sec', 'snd5sec',
+                            'sndFinish')
         self.colours = OrderedDict([
             ('UI_color_red', '#FF0000'), ('UI_color_nice_red', '#FA8072'), ('UI_color_chocolate', '#D3691E'),
             ('UI_color_orange', '#FFA500'), ('UI_color_gold', '#FFD700'), ('UI_color_cream', '#FCF5C8'),
@@ -44,6 +43,12 @@ class _Config(PYmodsCore.Config):
             ('UI_color_brown', '#A52A2B'),
             ('UI_color_wg_colorBlind', '#8378FC'), ('UI_color_wg_enemy', '#DB0400'), ('UI_color_wg_ally', '#80D639'),
             ('UI_color_wg_squadMan', '#FFB964'), ('UI_color_wg_player', '#FFE041')])
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
+        self.version = '2.4.2 (%(file_compile_date)s)'
+        self.author = '%s (orig by locastan)' % self.author
         # noinspection SpellCheckingInspection
         self.data = {'enabled': True, 'battleTimer': True, 'firstOption': 4, 'allKill': 2,
                      'checkMedals': 4, 'disStand': True, 'textLength': 3, 'textColour': 0, 'colourBlind': False,
@@ -63,8 +68,6 @@ class _Config(PYmodsCore.Config):
                                         'image': '../../scripts/client/gui/mods/mod_UT_announcer.png'},
                      'textShadow': {'enabled': True, 'alpha': 100, 'angle': 90, 'color': '#000000',
                                     'distance': 0, 'size': 2, 'strength': 200}}
-        self.timerSounds = ('sndStart', 'snd5min', 'snd3min', 'snd2min', 'snd1min', 'snd30sec', 'snd10sec', 'snd5sec',
-                            'sndFinish')
         # noinspection SpellCheckingInspection
         self.i18n = {
             'UI_description': 'Time and frags announcer',
@@ -150,9 +153,9 @@ class _Config(PYmodsCore.Config):
             'UI_color_hot_pink': 'Hot pink', 'UI_color_pink': 'Pink', 'UI_color_brown': 'Brown',
             'UI_color_wg_colorBlind': 'WG Color blind', 'UI_color_wg_enemy': 'WG Enemy', 'UI_color_wg_ally': 'WG Ally',
             'UI_color_wg_squadMan': 'WG Squadman', 'UI_color_wg_player': 'WG Player'}
-        self.loadLang()
+        super(ConfigInterface, self).init()
 
-    def template_settings(self):
+    def createTemplate(self):
         textExamples = []
         for key in ('UI_message_firstBlood_ally', 'UI_message_firstBlood_enemy', 'UI_message_payback'):
             isPlayer = {'attacker': 'firstBlood' not in key, 'target': False}
@@ -160,12 +163,12 @@ class _Config(PYmodsCore.Config):
             names = dict((key, self.i18n['UI_setting_player'] if isPlayer[key] else self.i18n['UI_setting_ally'] if isAlly[
                 key] else self.i18n['UI_setting_enemy']) for key in ('attacker', 'target'))
             names['squadMan'] = self.i18n['UI_setting_squadMan'] if 'firstBlood' not in key else ''
-            textFormat = formatText(self.i18n[key], isPlayer, isAlly, {'attacker': False, 'target': False}, names)
+            textFormat = self.formatText(self.i18n[key], isPlayer, isAlly, {'attacker': False, 'target': False}, names)
             text = '<font size="%s" face="%s" color="%s"><p align="center">%s</p></font>' % (
-                _config.data['textStyle']['size'], _config.data['textStyle']['font'],
-                _config.data['textStyle']['colour'], textFormat)
+                self.data['textStyle']['size'], self.data['textStyle']['font'],
+                self.data['textStyle']['colour'], textFormat)
             textExamples.append(text)
-        colourDropdown = self.createOptions(
+        colourDropdown = self.tb.createOptions(
             'textColour', map(lambda x: '<font color="%s">%s</font>' % (x[1], self.i18n[x[0]]), self.colours.iteritems()))
         colourDropdown['tooltip'] = colourDropdown['tooltip'].replace('{/BODY}', '\n'.join(textExamples) + '{/BODY}')
         firstKey = 'UI_setting_firstOption_'
@@ -177,29 +180,51 @@ class _Config(PYmodsCore.Config):
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [self.createStepper('textLength', 0, 5, 1),
+                'column1': [self.tb.createStepper('textLength', 0, 5, 1),
                             colourDropdown,
-                            self.createControl('colourBlind'),
-                            self.createControl('textLock'),
-                            self.createSlider('delay', 0, 5, 0.1, '{{value}} %s' % self.i18n['UI_setting_delay_seconds']),
-                            self.createControl('logging')],
-                'column2': [self.createOptions('firstOption', map(lambda x: self.i18n[firstKey + x], firstList)),
-                            self.createOptions('checkMedals', map(lambda x: self.i18n[medalsKey + x], medalsList)),
-                            self.createOptions('allKill', map(lambda x: self.i18n[allKey + x], allList)),
-                            self.createControl('battleTimer'),
-                            self.createControl('disStand')]}
+                            self.tb.createControl('colourBlind'),
+                            self.tb.createControl('textLock'),
+                            self.tb.createSlider('delay', 0, 5, 0.1, '{{value}} %s' % self.i18n['UI_setting_delay_seconds']),
+                            self.tb.createControl('logging')],
+                'column2': [self.tb.createOptions('firstOption', map(lambda x: self.i18n[firstKey + x], firstList)),
+                            self.tb.createOptions('checkMedals', map(lambda x: self.i18n[medalsKey + x], medalsList)),
+                            self.tb.createOptions('allKill', map(lambda x: self.i18n[allKey + x], allList)),
+                            self.tb.createControl('battleTimer'),
+                            self.tb.createControl('disStand')]}
 
-    def apply_settings(self, settings):
+    def onApplySettings(self, settings):
         self.data['textStyle']['colour'] = self.colours.values()[settings['textColour']]
-        super(self.__class__, self).apply_settings(settings)
+        super(self.__class__, self).onApplySettings(settings)
 
-    def update_settings(self):
-        super(self.__class__, self).update_settings()
+    def readCurrentSettings(self, quiet=True):
+        super(self.__class__, self).readCurrentSettings(quiet)
         colour = self.data['textStyle']['colour']
         colours = self.colours.values()
         self.data['textColour'] = colours.index(colour) if colour in colours else 10
         self.data['textStyle']['colour'] = self.colours.values()[self.data['textColour']]
-        super(self.__class__, self).apply_settings(self.data)
+        if quiet:
+            super(self.__class__, self).onApplySettings(self.data)
+
+    def formatText(self, newText, isPlayer, isAlly, isSquadMan, names):
+        colors = dict(
+            (key, 'player' if isPlayer[key] else 'squadMan' if isSquadMan[key] else 'ally' if isAlly[key] else 'colorBlind'
+             if self.data['colourBlind'] else 'enemy') for key in ('attacker', 'target'))
+        colors['squadMan'] = 'squadMan'
+        try:
+            assert names
+            for role in names:
+                name = names[role].decode('utf-8').split('[')[0]
+                names[role] = (name[:13] + (name[13:] and '..')).encode('utf-8')
+                if names[role]:
+                    names[role] = names[role].join(
+                        ("<font color='%s'>" % self.colours['UI_color_wg_%s' % colors[role]], '</font>'))
+            result = Template(newText).safe_substitute(**names)
+        except AssertionError:
+            result = 'Welcome back!'
+        except StandardError:
+            result = 'Welcome back!'
+            traceback.print_exc()
+        return result
 
 
 class _Flash(object):
@@ -230,7 +255,7 @@ class _Flash(object):
                                           _config.data['textPosition']['alignY'])
         _config.data['textPosition']['x'] = int(pos[0] + _config.data['textBackground']['width'] / 2)
         _config.data['textPosition']['y'] = int(pos[1])
-        _config.apply_settings(_config.data)
+        _config.onApplySettings(_config.data)
 
     def setup(self):
         if not (_config.data['enabled'] and _config.data['textLength'] and self.uiFlash):
@@ -338,8 +363,7 @@ class _Flash(object):
         BigWorld.callback(0.5, self.onTextRemovalComplete)
 
 
-_config = _Config()
-_config.load()
+_config = ConfigInterface()
 statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-8')
 PlayerAvatar.sounds = None
 try:
@@ -428,28 +452,6 @@ def checkSquadMan():
                     BigWorld.player().arena.UT['squadMan'][1] = vehicleID
 
 
-def formatText(newText, isPlayer, isAlly, isSquadMan, names):
-    colors = dict(
-        (key, 'player' if isPlayer[key] else 'squadMan' if isSquadMan[key] else 'ally' if isAlly[key] else 'colorBlind'
-            if _config.data['colourBlind'] else 'enemy') for key in ('attacker', 'target'))
-    colors['squadMan'] = 'squadMan'
-    try:
-        assert names
-        for role in names:
-            name = names[role].decode('utf-8').split('[')[0]
-            names[role] = (name[:13] + (name[13:] and '..')).encode('utf-8')
-            if names[role]:
-                names[role] = names[role].join(
-                    ("<font color='%s'>" % _config.colours['UI_color_wg_%s' % colors[role]], '</font>'))
-        result = Template(newText).safe_substitute(**names)
-    except AssertionError:
-        result = 'Welcome back!'
-    except StandardError:
-        result = 'Welcome back!'
-        traceback.print_exc()
-    return result
-
-
 def callTextInit(newText, targetID, attackerID, squadManID):
     arena = BigWorld.player().arena
     LOG_NOTE('text init:', newText, targetID, attackerID, squadManID)
@@ -466,7 +468,7 @@ def callTextInit(newText, targetID, attackerID, squadManID):
     except StandardError:
         names = {}
         traceback.print_exc()
-    text = formatText(newText, isPlayer, isAlly, isSquadMan, names)
+    text = _config.formatText(newText, isPlayer, isAlly, isSquadMan, names)
     battle = g_appLoader.getDefBattleApp()
     if battle is not None and _gui_flash is not None:
         _gui_flash.addText(text)

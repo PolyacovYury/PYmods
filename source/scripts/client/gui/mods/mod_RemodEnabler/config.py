@@ -87,15 +87,27 @@ class OSDescriptor(object):
         self.whitelist = set()
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('RemodEnabler')
-        self.version = '3.0.0 (%(file_compile_date)s)'
-        self.author = '%s (thx to atacms)' % self.author
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True},
                                   'dynamic': {'enabled': True, 'swapPlayer': False, 'swapAlly': True, 'swapEnemy': True}}
         self.defaultRemodConfig = {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True}
+        self.settings = {'remods': {}, 'skins': {}, 'skins_dynamic': {}}
+        self.skinsCache = {"CRC32": "", "version": ""}
+        self.OM = OM()
+        self.OS = OS()
+        self.OMDesc = None
+        self.OSDesc = {'static': None, 'dynamic': None}
+        self.curVehicleName = None
+        self.loadingProxy = None
+        self.isModAdded = False
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.ID = 'RemodEnabler'
+        self.version = '3.0.0 (%(file_compile_date)s)'
+        self.author = '%s (thx to atacms)' % self.author
         self.defaultKeys = {'DynamicSkinHotKey': ['KEY_F1', ['KEY_LCONTROL', 'KEY_RCONTROL']],
                             'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'ChangeViewHotKey': ['KEY_F2', ['KEY_LCONTROL', 'KEY_RCONTROL']],
@@ -203,36 +215,27 @@ class _Config(PYmodsCore.Config):
             'UI_mode_ally': 'ally tank preview',
             'UI_mode_enemy': 'enemy tank preview',
             'UI_mode_remod': 'all remods preview'}
-        self.settings = {'remods': {}, 'skins': {}, 'skins_dynamic': {}}
-        self.skinsCache = {"CRC32": "", "version": ""}
-        self.OM = OM()
-        self.OS = OS()
-        self.OMDesc = None
-        self.OSDesc = {'static': None, 'dynamic': None}
-        self.curVehicleName = None
-        self.loadingProxy = None
-        self.isModAdded = False
-        self.loadLang()
+        super(ConfigInterface, self).init()
 
-    def template_settings(self):
-        viewKey = self.createHotKey('ChangeViewHotkey')
+    def createTemplate(self):
+        viewKey = self.tb.createHotKey('ChangeViewHotkey')
         viewKey['tooltip'] %= {'remod': self.i18n['UI_setting_ChangeViewHotkey_remod'] if self.data['remod'] else ''}
         template = {'modDisplayName': self.i18n['UI_description'],
                     'settingsVersion': 200,
                     'enabled': self.data['enabled'],
-                    'column1': [self.createHotKey('DynamicSkinHotkey'),
-                                self.createControl('isDebug'),
-                                self.createControl('remod')],
+                    'column1': [self.tb.createHotKey('DynamicSkinHotkey'),
+                                self.tb.createControl('isDebug'),
+                                self.tb.createControl('remod')],
                     'column2': [viewKey,
-                                self.createHotKey('SwitchRemodHotkey'),
-                                self.createHotKey('CollisionHotkey')]}
+                                self.tb.createHotKey('SwitchRemodHotkey'),
+                                self.tb.createHotKey('CollisionHotkey')]}
         return template
 
-    def onWindowClose(self):
+    def onMSADestroy(self):
         PYmodsCore.refreshCurrentVehicle()
 
-    def apply_settings(self, settings):
-        super(self.__class__, self).apply_settings(settings)
+    def onApplySettings(self, settings):
+        super(ConfigInterface, self).onApplySettings(settings)
         if self.isModAdded:
             kwargs = dict(id='RemodEnablerUI', enabled=self.data['enabled'])
             try:
@@ -241,19 +244,18 @@ class _Config(PYmodsCore.Config):
                 BigWorld.g_modsListApi.updateMod(**kwargs)
 
     # noinspection PyUnresolvedReferences
-    def update_data(self, doPrint=False):
-        super(self.__class__, self).update_data()
-        self.settings = self.loadJson('settings', self.settings, self.configPath)
-        self.skinsCache.update(self.loadJson('skinsCache', self.skinsCache, self.configPath))
+    def readCurrentSettings(self, quiet=True):
+        super(ConfigInterface, self).readCurrentSettings()
+        self.settings = PYmodsCore.loadJson(self.ID, 'settings', self.settings, self.configPath)
+        self.skinsCache.update(PYmodsCore.loadJson(self.ID, 'skinsCache', self.skinsCache, self.configPath))
         configsPath = self.configPath + 'remods/*.json'
         self.OM.enabled = bool(glob.glob(configsPath))
         if self.OM.enabled:
-            self.OM.selected = self.loadJson('remodsCache', self.OM.selected, self.configPath)
+            self.OM.selected = PYmodsCore.loadJson(self.ID, 'remodsCache', self.OM.selected, self.configPath)
             snameList = set()
             for configPath in glob.iglob(configsPath):
                 sname = os.path.basename(configPath).split('.')[0]
-                confDict = self.loadJson(sname, {}, os.path.dirname(configPath) + '/',
-                                         encrypted=True)
+                confDict = PYmodsCore.loadJson(self.ID, sname, {}, os.path.dirname(configPath) + '/', encrypted=True)
                 if not confDict:
                     print '%s: error while reading %s.' % (self.ID, os.path.basename(configPath))
                     continue
@@ -335,10 +337,10 @@ class _Config(PYmodsCore.Config):
                     del self.settings['remods'][sname]
 
             if not self.OM.models:
-                if doPrint:
+                if not quiet:
                     print '%s: no configs found, model module standing down.' % self.ID
                 self.OM.enabled = False
-                self.loadJson('remodsCache', self.OM.selected, self.configPath, True, doPrint=doPrint)
+                PYmodsCore.loadJson(self.ID, 'remodsCache', self.OM.selected, self.configPath, True, quiet=quiet)
             else:
                 remodTanks = {key: set() for key in self.OM.selected}
                 for OMDesc in self.OM.models.values():
@@ -356,15 +358,15 @@ class _Config(PYmodsCore.Config):
                             del self.OM.selected[tankType][xmlName]
                 if self.OM.selected['Remod'] and self.OM.selected['Remod'] not in self.OM.models:
                     self.OM.selected['Remod'] = ''
-                self.loadJson('remodsCache', self.OM.selected, self.configPath, True, doPrint=doPrint)
+                PYmodsCore.loadJson(self.ID, 'remodsCache', self.OM.selected, self.configPath, True, quiet=quiet)
         else:
-            if doPrint:
+            if not quiet:
                 print '%s: no remods found, model module standing down.' % self.ID
             self.OM.enabled = False
-            self.loadJson('remodsCache', self.OM.selected, self.configPath, True, doPrint=doPrint)
+            PYmodsCore.loadJson(self.ID, 'remodsCache', self.OM.selected, self.configPath, True, quiet=quiet)
         self.OS.enabled = ResMgr.openSection('vehicles/skins/') is not None and ResMgr.isDir('vehicles/skins/')
         if self.OS.enabled:
-            self.OS.priorities = self.loadJson('skinsPriority', self.OS.priorities, self.configPath)
+            self.OS.priorities = PYmodsCore.loadJson(self.ID, 'skinsPriority', self.OS.priorities, self.configPath)
             skinDir = 'vehicles/skins/textures/'
             for skinTypeSuff in ('', '_dynamic'):
                 skinType = 'static' if not skinTypeSuff else skinTypeSuff[1:]
@@ -421,7 +423,7 @@ class _Config(PYmodsCore.Config):
                     if sname not in snameList:
                         del skinsSettings[sname]
             if not any(self.OS.models.values()):
-                if doPrint:
+                if not quiet:
                     print '%s: no skins configs found, skins module standing down.' % self.ID
                 self.OS.enabled = False
                 for skinType in self.OS.priorities:
@@ -434,24 +436,20 @@ class _Config(PYmodsCore.Config):
                             if sname not in self.OS.models[skinType]:
                                 self.OS.priorities[skinType][key].remove(sname)
         else:
-            if doPrint:
+            if not quiet:
                 print '%s: no skins found, skins module standing down.' % self.ID
             for skinType in self.OS.priorities:
                 for key in self.OS.priorities[skinType]:
                     self.OS.priorities[skinType][key] = []
-        self.loadJson('skinsPriority', self.OS.priorities, self.configPath, True, doPrint=doPrint)
-        self.loadJson('settings', self.settings, self.configPath, True, doPrint=doPrint)
+        PYmodsCore.loadJson(self.ID, 'skinsPriority', self.OS.priorities, self.configPath, True, quiet=quiet)
+        PYmodsCore.loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
 
-    def do_config(self):
-        super(self.__class__, self).do_config()
-        from .skinLoader import RemodEnablerLoading
+    def registerSettings(self):
+        super(ConfigInterface, self).registerSettings()
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
                          ScopeTemplates.GLOBAL_SCOPE, False))
-        g_entitiesFactories.addSettings(
-            GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
-                                '', None, ScopeTemplates.DEFAULT_SCOPE))
         kwargs = dict(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=True, lobby=True,
@@ -472,7 +470,7 @@ class RemodEnablerUI(AbstractWindowView):
         self.newRemodData = OrderedDict()
 
     def py_onRequestSettings(self):
-        g_config.update_data(g_config.data['isDebug'])
+        g_config.readCurrentSettings(not g_config.data['isDebug'])
         texts = {
             'header': {
                 'main': g_config.i18n['UI_flash_header'],
@@ -486,20 +484,20 @@ class RemodEnablerUI(AbstractWindowView):
             'remodCreateBtn': g_config.i18n['UI_flash_remodCreateBtn'],
             'skinsSetupBtn': g_config.i18n['UI_flash_skinSetupBtn'],
             'skinsPriorityBtn': g_config.i18n['UI_flash_skinPriorityBtn'],
-            'create': {'name': g_config.createLabel('remodCreate_name', 'flash'),
-                       'message': g_config.createLabel('remodCreate_message', 'flash')},
+            'create': {'name': g_config.tb.createLabel('remodCreate_name', 'flash'),
+                       'message': g_config.tb.createLabel('remodCreate_message', 'flash')},
             'skinTypes': [g_config.i18n['UI_flash_skinType_%s' % skinType] for skinType in ('static', 'dynamic')],
             'teams': [g_config.i18n['UI_flash_team_%s' % team] for team in ('player', 'ally', 'enemy')],
             'remodNames': [],
             'skinNames': [[], []],
             'whiteList': {'addBtn': g_config.i18n['UI_flash_whiteList_addBtn'],
-                          'label': g_config.createLabel('whiteList_header', 'flash'),
+                          'label': g_config.tb.createLabel('whiteList_header', 'flash'),
                           'defStr': g_config.i18n['UI_flash_whiteDropdown_default']},
-            'useFor': {'header': g_config.createLabel('useFor_header', 'flash'),
-                       'ally': g_config.createLabel('useFor_ally', 'flash'),
-                       'enemy': g_config.createLabel('useFor_enemy', 'flash'),
-                       'player': g_config.createLabel('useFor_player', 'flash'),
-                       'enable': g_config.createLabel('useFor_enable', 'flash')},
+            'useFor': {'header': g_config.tb.createLabel('useFor_header', 'flash'),
+                       'ally': g_config.tb.createLabel('useFor_ally', 'flash'),
+                       'enemy': g_config.tb.createLabel('useFor_enemy', 'flash'),
+                       'player': g_config.tb.createLabel('useFor_player', 'flash'),
+                       'enable': g_config.tb.createLabel('useFor_enable', 'flash')},
             'backBtn': g_config.i18n['UI_flash_backBtn'],
             'saveBtn': g_config.i18n['UI_flash_saveBtn']
         }
@@ -651,10 +649,11 @@ class RemodEnablerUI(AbstractWindowView):
         for idx, prioritiesArray in enumerate(settings.priorities):
             for teamIdx, team in enumerate(('Player', 'Ally', 'Enemy')):
                 g_config.OS.priorities[('static', 'dynamic')[idx]][team] = prioritiesArray[teamIdx]
-        g_config.loadJson('skinsPriority', g_config.OS.priorities, g_config.configPath, True,
-                          doPrint=g_config.data['isDebug'])
-        g_config.loadJson('settings', g_config.settings, g_config.configPath, True, doPrint=g_config.data['isDebug'])
-        g_config.update_data(g_config.data['isDebug'])
+        PYmodsCore.loadJson(g_config.ID, 'skinsPriority', g_config.OS.priorities, g_config.configPath, True,
+                            quiet=not g_config.data['isDebug'])
+        PYmodsCore.loadJson(g_config.ID, 'settings', g_config.settings, g_config.configPath, True,
+                            quiet=not g_config.data['isDebug'])
+        g_config.readCurrentSettings(not g_config.data['isDebug'])
         PYmodsCore.refreshCurrentVehicle()
 
     def py_onCreateRemod(self, settings):
@@ -668,8 +667,9 @@ class RemodEnablerUI(AbstractWindowView):
             data['authorMessage'] = settings.message
             for teamIdx, team in enumerate(OM.tankGroups):
                 data[team.lower() + 'Whitelist'] = ','.join(settings.whitelists[teamIdx])
-            g_config.loadJson(str(settings.name), data, g_config.configPath + 'remods/', True, False, sort_keys=False)
-            g_config.update_data()
+            PYmodsCore.loadJson(g_config.ID, str(settings.name), data, g_config.configPath + 'remods/', True, False,
+                                sort_keys=False)
+            g_config.readCurrentSettings()
             SystemMessages.pushMessage(
                 'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_success'], SystemMessages.SM_TYPE.CustomizationForGold)
         except StandardError:
@@ -757,8 +757,8 @@ def lobbyKeyControl(event):
                     continue
                 if vehName in selected:
                     selected[vehName] = getattr(curPRecord, 'name', '')
-                g_config.loadJson('remodsCache', g_config.OM.selected, g_config.configPath, True,
-                                  doPrint=g_config.data['isDebug'])
+                PYmodsCore.loadJson(g_config.ID, 'remodsCache', g_config.OM.selected, g_config.configPath, True,
+                                    quiet=not g_config.data['isDebug'])
                 break
         else:
             snameList = sorted(g_config.OM.models.keys())
@@ -770,8 +770,8 @@ def lobbyKeyControl(event):
                     snameIdx = 0
             sname = snameList[snameIdx]
             g_config.OM.selected['Remod'] = sname
-            g_config.loadJson('remodsCache', g_config.OM.selected, g_config.configPath, True,
-                              doPrint=g_config.data['isDebug'])
+            PYmodsCore.loadJson(g_config.ID, 'remodsCache', g_config.OM.selected, g_config.configPath, True,
+                                quiet=not g_config.data['isDebug'])
         PYmodsCore.refreshCurrentVehicle()
 
 
@@ -787,4 +787,4 @@ def inj_hkKeyEvent(event):
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
-g_config = _Config()
+g_config = ConfigInterface()

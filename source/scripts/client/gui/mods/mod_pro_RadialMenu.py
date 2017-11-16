@@ -57,7 +57,7 @@ class _Config(object):
         self.confType = ''
         self.wasAltMenuPressed = False
 
-    def update_data(self):
+    def readCurrentSettings(self):
         self.commands = {}
         data = self.loadJson(os.path.basename(self.filePath).split('.')[0], self.data, self.fileDir)
         for key in data:
@@ -158,7 +158,7 @@ class _Config(object):
         return config_new
 
     def load(self):
-        self.update_data()
+        self.readCurrentSettings()
         print '%s v.%s %s: initialized.' % (self.ID, self.version, self.author)
 
 

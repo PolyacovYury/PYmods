@@ -27,9 +27,18 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 g_sessionProvider = dependency.instance(IBattleSessionProvider)
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.configsMeta = {}
+        self.activeConfigs = []
+        self.commands = {}
+        self.wasAltMenuPressed = False
+        self.bestConf = None
+        self.confType = ''
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
         self.version = '2.1.2 (%(file_compile_date)s)'
         self.author = '%s (orig by locastan/tehHedger/TRJ_VoRoN)' % self.author
         self.defaultKeys = {'mapMenu_key': [Keys.KEY_LALT], 'mapMenu_Key': ['KEY_LALT']}
@@ -49,31 +58,25 @@ class _Config(PYmodsCore.Config):
             'UI_setting_selectedConfig_text': 'Active config:',
             'UI_setting_selectedConfig_tooltip': 'This config will be used when Radial menu is activated.',
             'UI_setting_selectedConfig_defaultMeta': 'Default messages'}
-        self.configsMeta = {}
-        self.activeConfigs = []
-        self.commands = {}
-        self.wasAltMenuPressed = False
-        self.bestConf = None
-        self.confType = ''
-        self.loadLang()
+        super(ConfigInterface, self).init()
 
-    def template_settings(self):
+    def createTemplate(self):
         optionsList = map(lambda x: self.configsMeta.get(x, x), self.activeConfigs)
-        infoLabel = self.createLabel('info')
+        infoLabel = self.tb.createLabel('info')
         infoLabel['text'] += 'wotspeak.ru'
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [self.createOptions('selectedConfig', optionsList)],
-                'column2': [self.createHotKey('mapMenu_key'),
+                'column1': [self.tb.createOptions('selectedConfig', optionsList)],
+                'column2': [self.tb.createHotKey('mapMenu_key'),
                             infoLabel]}
 
-    def apply_settings(self, settings):
-        super(self.__class__, self).apply_settings(settings)
-        self.update_data()
+    def onApplySettings(self, settings):
+        super(self.__class__, self).onApplySettings(settings)
+        self.readCurrentSettings()
 
-    def update_data(self, doPrint=False):
-        super(self.__class__, self).update_data()
+    def readCurrentSettings(self, quiet=True):
+        super(self.__class__, self).readCurrentSettings()
         self.activeConfigs[:] = ['default']
         self.configsMeta = {'default': self.i18n['UI_setting_selectedConfig_defaultMeta']}
         # noinspection SpellCheckingInspection
@@ -81,7 +84,7 @@ class _Config(PYmodsCore.Config):
         for confPath in glob.iglob(self.configPath + 'skins/*.json'):
             confName = os.path.basename(confPath).split('.')[0]
             try:
-                confDict = self.loadJson(confName, {}, os.path.dirname(confPath) + '/')
+                confDict = PYmodsCore.loadJson(self.ID, confName, {}, os.path.dirname(confPath) + '/')
             except StandardError:
                 print 'RadialMenu: config %s is invalid.' % os.path.basename(confPath)
                 traceback.print_exc()
@@ -214,7 +217,7 @@ class CustomMenuCommand:
             self.variantList.extend(variants)
 
         confDict['hotkey'] = []
-        _config.readHotKeys(confDict)
+        ConfigInterface.readHotKeys(confDict)
         self.hotKeys = confDict['hotkey']
 
     def __repr__(self):
@@ -264,8 +267,7 @@ class CustomMenuCommand:
             traceback.print_exc()
 
 
-_config = _Config()
-_config.load()
+_config = ConfigInterface()
 statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-10',
                                      [_config.activeConfigs[_config.data['selectedConfig']]])
 

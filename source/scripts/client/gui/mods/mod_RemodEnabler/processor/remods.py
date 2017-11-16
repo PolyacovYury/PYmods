@@ -1,16 +1,12 @@
 import PYmodsCore
-import ResMgr
 import copy
-import traceback
 from collections import namedtuple
-from gui.ClientHangarSpace import _VehicleAppearance
 from items.components.chassis_components import *
 from items.components.chassis_components import SplineConfig, WheelsConfig
 from items.components.shared_components import Camouflage, ModelStatesPaths, NodesAndGroups
 from items.components.sound_components import WWTripleSoundConfig
 from items.vehicles import g_cache
-from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
-from . import attached_models
+from vehicle_systems.tankStructure import TankPartNames
 from .. import g_config
 
 TrackMaterials = namedtuple('TrackMaterials', ('lodDist', 'leftMaterial', 'rightMaterial', 'textureScale'))
@@ -43,7 +39,8 @@ def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
         # noinspection PyUnboundLocalVariable
         if g_config.OMDesc is None and snameList[Idx] and xmlName in selected[curTankType]:
             del selected[curTankType][xmlName]
-        g_config.loadJson('remodsCache', selected, g_config.configPath, True, doPrint=g_config.data['isDebug'])
+        PYmodsCore.loadJson(
+            g_config.ID, 'remodsCache', selected, g_config.configPath, True, quiet=not g_config.data['isDebug'])
     else:
         snameList = sorted(g_config.OM.models.keys())
         if selected['Remod'] not in snameList:
@@ -53,7 +50,8 @@ def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
         sname = snameList[snameIdx]
         g_config.OMDesc = g_config.OM.models[sname]
         selected['Remod'] = sname
-        g_config.loadJson('remodsCache', selected, g_config.configPath, True, doPrint=g_config.data['isDebug'])
+        PYmodsCore.loadJson(g_config.ID, 'remodsCache', selected, g_config.configPath, True,
+                            quiet=not g_config.data['isDebug'])
 
 
 def apply(vDesc):

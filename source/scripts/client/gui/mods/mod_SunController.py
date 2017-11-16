@@ -11,9 +11,12 @@ from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.app_loader.loader import g_appLoader
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
         self.version = '2.2.2 (%(file_compile_date)s)'
         self.author = '%s (orig by Lp()rtii/Dellux) (thx to LSD_MAX/Delysid :P)' % self.author
         self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
@@ -40,25 +43,24 @@ class _Config(PYmodsCore.Config):
                 'This allows the mod to send a notification to service channel in no-GUI mode.'),
             'UI_serviceChannelPopUpAll': '<b>{author}<font color="#cc9933"> turned the Earth!</font></b>',
             'UI_serviceChannelPopUpAnd': '<b><font color="#cc9933">And turned the Earth!</font></b>'}
-        self.loadLang()
+        super(ConfigInterface, self).init()
 
-    def template_settings(self):
+    def createTemplate(self):
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [self.createSlider('time', 0, 24, 1, '{{value}}:00'),
-                            self.createControl('enableMessage')],
-                'column2': [self.createHotKey('hotkey'),
-                            self.createControl('enableAtStartup')]}
+                'column1': [self.tb.createSlider('time', 0, 24, 1, '{{value}}:00'),
+                            self.tb.createControl('enableMessage')],
+                'column2': [self.tb.createHotKey('hotkey'),
+                            self.tb.createControl('enableAtStartup')]}
 
-    def apply_settings(self, settings):
+    def onApplySettings(self, settings):
         global isSunControlled
-        super(self.__class__, self).apply_settings(settings)
-        isSunControlled = _config.data['enableAtStartup']
+        super(self.__class__, self).onApplySettings(settings)
+        isSunControlled = self.data['enableAtStartup']
 
 
-_config = _Config()
-_config.load()
+_config = ConfigInterface()
 if _config.data['enableMessage']:
     isLogin = True
 

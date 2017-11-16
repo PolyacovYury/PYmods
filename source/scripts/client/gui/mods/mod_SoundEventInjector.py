@@ -15,17 +15,24 @@ from items.components import sound_components
 from material_kinds import EFFECT_MATERIALS
 
 
-class _Config(PYmodsCore.Config):
+class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
+        self.confList = set()
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
         self.version = '1.0.1 (%(file_compile_date)s)'
         self.data = {'engines': {}, 'gun_reload_effects': {}, 'shot_effects': {}, 'sound_notifications': {}, 'guns': {}}
-        self.confList = set()
+        super(ConfigInterface, self).init()
 
     def updateMod(self):
         pass
 
-    def update_data(self, doPrint=False):
+    def createTemplate(self):
+        pass
+
+    def readCurrentSettings(self, quiet=True):
         configPath = self.configPath + 'configs/'
         if not os.path.exists(configPath):
             LOG_ERROR('%s config folder not found:' % self.ID, configPath)
@@ -33,7 +40,7 @@ class _Config(PYmodsCore.Config):
         for confPath in glob.iglob(configPath + '*.json'):
             confName = os.path.basename(confPath).split('.')[0]
             try:
-                confdict = self.loadJson(confName, {}, os.path.dirname(confPath) + '/')
+                confdict = PYmodsCore.loadJson(self.ID, confName, {}, os.path.dirname(confPath) + '/')
             except StandardError:
                 print '%s: config %s is invalid.' % (self.ID, os.path.basename(confPath))
                 traceback.print_exc()
@@ -56,10 +63,13 @@ class _Config(PYmodsCore.Config):
                         itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
 
     def load(self):
-        self.update_data(True)
+        self.readCurrentSettings(False)
         if any(self.data[key] for key in ('engines', 'gun_reload_effects', 'shot_effects', 'guns')):
             items.vehicles.init(True, None)
         print '%s: initialised.' % (self.message())
+
+
+_config = ConfigInterface()
 
 
 @PYmodsCore.overrideMethod(items.vehicles, '_readEngine')
@@ -175,6 +185,4 @@ def new_initGUI(base, self):
     return result
 
 
-_config = _Config()
-_config.load()
 statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-13', _config.confList)

@@ -10,26 +10,33 @@ from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 
 
-class PlayersPanelController(PYmodsCore.Config):
+class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
     vCache = property(lambda self: self.__vCache)
 
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
 
     def __init__(self):
-        super(self.__class__, self).__init__('%(mod_ID)s')
-        self.version = '1.1.1 (%(file_compile_date)s)'
-        self.author = 'by PolarFox (forked %s)' % self.author
-        self.data = {'textFields': {}}
         self.__hpCache = dict()
         self.__vCache = set()
         self.__component = None
+        super(PlayersPanelController, self).__init__()
+
+    def init(self):
+        self.ID = '%(mod_ID)s'
+        self.version = '1.1.1 (%(file_compile_date)s)'
+        self.author = 'by PolarFox (forked %s)' % self.author
+        self.data = {'textFields': {}}
         vxBattleFlash.register(self.ID)
         vxBattleFlash.onStateChanged += self.__onStateChanged
+        super(PlayersPanelController, self).init()
 
     def updateMod(self):
         pass
 
-    def do_config_delayed(self):
+    def createTemplate(self):
+        pass
+
+    def registerSettings(self):
         pass
 
     @staticmethod
@@ -110,7 +117,6 @@ try:
     from gui.mods.vxBattleFlash import *
 
     mod_playersHP = PlayersPanelController()
-    mod_playersHP.load()
     statistic_mod = PYmodsCore.Analytics(mod_playersHP.ID, mod_playersHP.version, 'UA-76792179-11')
 
 except ImportError:
