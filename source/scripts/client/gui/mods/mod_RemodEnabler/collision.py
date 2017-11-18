@@ -44,19 +44,11 @@ def new_setupModel(base, self, buildIdx):
     compoundModel = vEntity.model
     self.collisionLoaded = True
     self.modifiedModelsDesc = dict([(partName, {'model': None, 'matrix': None}) for partName in TankPartNames.ALL])
-    self.modifiedModelsDesc.update([(
-        '%s%d' % ((TankPartNames.ADDITIONAL_TURRET if idx % 2 == 0 else TankPartNames.ADDITIONAL_GUN), (idx + 2)/2),
-        {'model': None, 'matrix': None})
-        for idx in xrange(len(vDesc.turrets[1:]) * 2)])
     failList = []
     for partName in self.modifiedModelsDesc.keys():
         modelName = ''
         try:
-            if 'additional' not in partName:
-                modelName = getattr(vDesc, partName).hitTester.bspModelName
-            else:
-                _, addPartName, idxStr = partName.split('_')
-                modelName = getattr(vDesc.turrets[int(idxStr)], addPartName).hitTester.bspModelName
+            modelName = getattr(vDesc, partName).hitTester.bspModelName
             self.modifiedModelsDesc[partName]['model'] = model = BigWorld.Model(modelName)
             model.visible = False
         except StandardError:
@@ -75,6 +67,9 @@ def new_setupModel(base, self, buildIdx):
         self.modifiedModelsDesc[TankPartNames.HULL]['matrix'] = fullHullMP = mathUtils.MatrixProviders.product(
             hullMP, fullChassisMP)
         for idx, turretPosition in enumerate(vDesc.hull.turretPositions):
+            if idx:
+                print 'RemodEnabler: WARNING: multiple turrets are present!', vDesc.name
+                break
             turretOffset = mathUtils.createTranslationMatrix(vDesc.hull.turretPositions[idx])
             gunOffset = mathUtils.createTranslationMatrix(vDesc.turrets[idx].turret.gunPosition)
         # Getting local transform matrices
@@ -83,10 +78,9 @@ def new_setupModel(base, self, buildIdx):
             # turretMP = mathUtils.MatrixProviders.product(vEntity.appearance.turretMatrix, turretOffset)
             # gunMP = mathUtils.MatrixProviders.product(vEntity.appearance.gunMatrix, gunOffset)
         # Getting full transform matrices relative to vehicle coordinate system
-            self.modifiedModelsDesc[TankPartNames.TURRET if not idx else '%s%d' % (TankPartNames.ADDITIONAL_TURRET, idx)][
-                'matrix'] = fullTurretMP = mathUtils.MatrixProviders.product(turretMP, fullHullMP)
-            self.modifiedModelsDesc[TankPartNames.GUN if not idx else '%s%d' % (TankPartNames.ADDITIONAL_GUN, idx)][
-                'matrix'] = mathUtils.MatrixProviders.product(gunMP, fullTurretMP)
+            self.modifiedModelsDesc[TankPartNames.TURRET]['matrix'] = fullTurretMP = mathUtils.MatrixProviders.product(
+                turretMP, fullHullMP)
+            self.modifiedModelsDesc[TankPartNames.GUN]['matrix'] = mathUtils.MatrixProviders.product(gunMP, fullTurretMP)
         for moduleName, moduleDict in self.modifiedModelsDesc.items():
             motor = BigWorld.Servo(mathUtils.MatrixProviders.product(moduleDict['matrix'], vEntity.matrix))
             moduleDict['model'].addMotor(motor)
