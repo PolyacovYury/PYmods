@@ -8,7 +8,6 @@ import os
 import traceback
 from Avatar import PlayerAvatar
 from ReloadEffect import _BarrelReloadDesc
-from constants import VEHICLE_MODE
 from debug_utils import LOG_ERROR
 from helpers.EffectsList import _SoundEffectDesc
 from items.components import sound_components
@@ -25,6 +24,9 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         self.version = '1.0.1 (%(file_compile_date)s)'
         self.data = {'engines': {}, 'gun_reload_effects': {}, 'shot_effects': {}, 'sound_notifications': {}, 'guns': {}}
         super(ConfigInterface, self).init()
+
+    def loadLang(self):
+        pass
 
     def updateMod(self):
         pass
@@ -45,9 +47,13 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 print '%s: config %s is invalid.' % (self.ID, os.path.basename(confPath))
                 traceback.print_exc()
                 continue
+            if not quiet:
+                print '%s: loading %s.json' % (self.ID, confName)
             self.confList.add(confName)
             for itemType, itemsDict in confdict.iteritems():
                 if itemType not in self.data:
+                    if not quiet:
+                        print '%s: invalid item type in %s: %s' % (self.ID, confName, itemType)
                     continue
                 itemsData = self.data[itemType]
                 if itemType in ('engines', 'guns'):
@@ -55,27 +61,25 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                         if nationName.split(':')[0] not in nations.NAMES:
                             print '%s: unknown nation in %s data: %s' % (self.ID, itemType, nationName)
                             continue
-                        itemsData[nationName] = {}
-                        for itemName in nationData:
-                            itemsData[nationName][itemName] = nationData[itemName]
+                        itemsData.setdefault(nationName, {}).update(nationData)
                 if itemType in ('gun_reload_effects', 'shot_effects', 'sound_notifications'):
                     for itemName in itemsDict:
                         itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
 
     def load(self):
+        pass
+
+    def onInitComplete(self):
         self.readCurrentSettings(False)
         if any(self.data[key] for key in ('engines', 'gun_reload_effects', 'shot_effects', 'guns')):
             items.vehicles.init(True, None)
         print '%s: initialised.' % (self.message())
 
 
-_config = ConfigInterface()
-
-
 @PYmodsCore.overrideMethod(items.vehicles, '_readEngine')
 def new_readEngine(base, xmlCtx, section, item, *args):
     base(xmlCtx, section, item, *args)
-    nationID, itemID = item.id
+    nationID, _ = item.id
     sounds = item.sounds
     itemData = _config.data['engines'].get(nations.NAMES[nationID], {}).get(item.name, {})
     item.sounds = sound_components.WWTripleSoundConfig(sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
@@ -152,8 +156,8 @@ def new_readGun(base, xmlCtx, section, item, unlocksDescrs=None, _=None):
 
 
 @PYmodsCore.overrideMethod(items.vehicles.VehicleType, '__init__')
-def new_vehicleType_init(base, self, nationID, basicInfo, xmlPath, vehMode=VEHICLE_MODE.DEFAULT):
-    base(self, nationID, basicInfo, xmlPath, vehMode)
+def new_vehicleType_init(base, self, nationID, *args, **kwargs):
+    base(self, nationID, *args, **kwargs)
     for item in self.engines:
         nationID, itemID = item.id
         sounds = item.sounds
@@ -185,4 +189,6 @@ def new_initGUI(base, self):
     return result
 
 
+_config = ConfigInterface()
+_config.onInitComplete()
 statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-13', _config.confList)
