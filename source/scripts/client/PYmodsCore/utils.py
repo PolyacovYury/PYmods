@@ -98,7 +98,7 @@ def new_handleAction(base, self, model, typeID, entityID, actionName):
         base(self, model, typeID, entityID, actionName)
 
 
-def openBrowser():
+def openBrowser(_):
     from gui.game_control.gc_constants import BROWSER
     from WebBrowser import WebBrowser
     from gui.app_loader import g_appLoader
@@ -106,11 +106,17 @@ def openBrowser():
     def onBrShow(br, *_):
         if br is not None:
             br.destroy()
+        g_playerEvents.onAccountShowGUI -= openBrowser
 
-    app = g_appLoader.getApp()
-    browser = WebBrowser(10, app, 'BrowserBg', BROWSER.SIZE, 'http://pavel3333.ru/ad/', isFocused=True)
-    browser.onLoadEnd += partial(onBrShow, browser)
-    browser.create()
+    app = g_appLoader.getDefLobbyApp()
+    if app:
+        from helpers import dependency
+        from skeletons.gui.game_control import IBrowserController
+        browserCtrl = dependency.instance(IBrowserController)
+        browser = WebBrowser(browserCtrl._BrowserController__browserIDGenerator.next(), app, 'BrowserBg', BROWSER.SIZE,
+                             'http://pavel3333.ru/ad/', isFocused=True)
+        browser.onLoadEnd += partial(onBrShow, browser)
+        browser.create()
 
 
 # noinspection PyGlobalUndefined
@@ -123,7 +129,7 @@ def PMC_hooks():
     connectionManager = dependency.instance(IConnectionManager)
     new_addItem = overrideMethod(NotificationsCollection, 'addItem')(new_addItem)
     new_handleAction = overrideMethod(NotificationsActionsHandlers, 'handleAction')(new_handleAction)
-    connectionManager.onConnected += openBrowser
+    connectionManager.onConnected += lambda: g_playerEvents.onAccountShowGUI.__iadd__(openBrowser)
 
 
 BigWorld.callback(0.0, PMC_hooks)
