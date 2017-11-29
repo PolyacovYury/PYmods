@@ -45,15 +45,15 @@ class ConfigInterface(DummyConfigInterface):
 
     @property
     def tb(self):
-        if self.__tb is None:
-            self.__tb = TemplateBuilder(self.data, self.i18n, self.defaultKeys)
-        return self.__tb
+        if self._tb is None:
+            self._tb = TemplateBuilder(self.data, self.i18n, self.defaultKeys)
+        return self._tb
 
     @property
     def containerClass(self):
-        if self.__containerClass is None:
-            self.__containerClass = SettingContainer
-        return self.__containerClass
+        if self._containerClass is None:
+            self._containerClass = SettingContainer
+        return self._containerClass
 
     def message(self):
         return '%s v.%s %s' % (self.ID, self.version, self.author)
@@ -108,15 +108,15 @@ class ConfBlockInterface(DummyConfBlockInterface):
 
     @property
     def tb(self):
-        if self.__tb is None:
-            self.__tb = BlockTemplateBuilder(self.data, self.i18n, self.defaultKeys)
-        return self.__tb
+        if self._tb is None:
+            self._tb = BlockTemplateBuilder(self.data, self.i18n, self.defaultKeys)
+        return self._tb
 
     @property
     def containerClass(self):
-        if self.__containerClass is None:
-            self.__containerClass = SettingContainer
-        return self.__containerClass
+        if self._containerClass is None:
+            self._containerClass = SettingContainer
+        return self._containerClass
 
     def message(self):
         return '%s v.%s %s' % (self.ID, self.version, self.author)

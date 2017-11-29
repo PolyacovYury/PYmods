@@ -19,8 +19,8 @@ class DummyConfigInterface(object):
         self.i18n = {}
         self.lang = DEFAULT_LANGUAGE
         self.modSettingsID = self.ID + '_settings'
-        self.__tb = None
-        self.__containerClass = None
+        self._tb = None
+        self._containerClass = None
         self.init()
         self.loadLang()
         self.load()
@@ -47,9 +47,9 @@ class DummyConfigInterface(object):
 
     @property
     def tb(self):
-        if self.__tb is None:
-            self.__tb = DummyTemplateBuilder(self.i18n)
-        return self.__tb
+        if self._tb is None:
+            self._tb = DummyTemplateBuilder(self.i18n)
+        return self._tb
 
     def createTemplate(self):
         """
@@ -117,9 +117,9 @@ class DummyConfigInterface(object):
 
     @property
     def containerClass(self):
-        if self.__containerClass is None:
-            self.__containerClass = DummySettingContainer
-        return self.__containerClass
+        if self._containerClass is None:
+            self._containerClass = DummySettingContainer
+        return self._containerClass
 
     def registerSettings(self):
         registerSettings(self)
@@ -139,11 +139,11 @@ class DummyConfBlockInterface(object):
         self.ID = ''
         self.modsGroup = ''
         self.i18n = {}
-        self.__blockIDs = []  # overwrite in init() of derived class
+        self._blockIDs = []  # overwrite in init() of derived class
         self.lang = DEFAULT_LANGUAGE
         self.modSettingsID = self.ID + '_settings'
-        self.__tb = None
-        self.__containerClass = None
+        self._tb = None
+        self._containerClass = None
         self.init()
         self.configPath = './mods/configs/%s/%s/' % (self.modsGroup, self.ID)
         self.langPath = '%si18n/' % self.configPath
@@ -161,13 +161,13 @@ class DummyConfBlockInterface(object):
 
     @property
     def blockIDs(self):
-        return self.__blockIDs
+        return self._blockIDs
 
     @property
     def tb(self):
-        if self.__tb is None:
-            self.__tb = DummyBlockTemplateBuilder(self.i18n)
-        return self.__tb
+        if self._tb is None:
+            self._tb = DummyBlockTemplateBuilder(self.i18n)
+        return self._tb
 
     def createTemplate(self, blockID):
         raise NotImplementedError('Template for block %s is not created' % blockID)
@@ -203,9 +203,9 @@ class DummyConfBlockInterface(object):
 
     @property
     def containerClass(self):
-        if self.__containerClass is None:
-            self.__containerClass = DummySettingContainer
-        return self.__containerClass
+        if self._containerClass is None:
+            self._containerClass = DummySettingContainer
+        return self._containerClass
 
     def registerSettings(self):
         registerSettings(self, 'block')

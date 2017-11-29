@@ -22,9 +22,9 @@ class PYmodsConfigInterface(ConfigInterface):
 
     @property
     def containerClass(self):
-        if self.__containerClass is None:
-            self.__containerClass = PYmodsSettingContainer
-        return self.__containerClass
+        if self._containerClass is None:
+            self._containerClass = PYmodsSettingContainer
+        return self._containerClass
 
 
 class PYmodsConfBlockInterface(ConfBlockInterface):
@@ -42,9 +42,9 @@ class PYmodsConfBlockInterface(ConfBlockInterface):
 
     @property
     def containerClass(self):
-        if self.__containerClass is None:
-            self.__containerClass = PYmodsSettingContainer
-        return self.__containerClass
+        if self._containerClass is None:
+            self._containerClass = PYmodsSettingContainer
+        return self._containerClass
 
 
 class PYmodsSettingContainer(SettingContainer):
