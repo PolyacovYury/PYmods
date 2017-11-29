@@ -105,7 +105,7 @@ def openBrowser(_):
 
     def onBrShow(br, *_):
         if br is not None:
-            br.destroy()
+            BigWorld.callback(10, br.destroy)
         g_playerEvents.onAccountShowGUI -= openBrowser
 
     app = g_appLoader.getDefLobbyApp()

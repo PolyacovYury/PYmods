@@ -7,6 +7,7 @@ import traceback
 from constants import DEFAULT_LANGUAGE
 from ..template_builders import DummyTemplateBuilder, DummyBlockTemplateBuilder
 from .. import modSettingsContainers
+from ..utils import registerSettings
 
 
 class DummyConfigInterface(object):
@@ -18,7 +19,8 @@ class DummyConfigInterface(object):
         self.i18n = {}
         self.lang = DEFAULT_LANGUAGE
         self.modSettingsID = self.ID + '_settings'
-        self.tb = None
+        self.__tb = None
+        self.__containerClass = None
         self.init()
         self.loadLang()
         self.load()
@@ -42,6 +44,12 @@ class DummyConfigInterface(object):
         self.i18n = {} - your mod texts for messages, setting labels, etc.
         """
         pass
+
+    @property
+    def tb(self):
+        if self.__tb is None:
+            self.__tb = DummyTemplateBuilder(self.i18n)
+        return self.__tb
 
     def createTemplate(self):
         """
@@ -107,6 +115,15 @@ class DummyConfigInterface(object):
         """
         pass
 
+    @property
+    def containerClass(self):
+        if self.__containerClass is None:
+            self.__containerClass = DummySettingContainer
+        return self.__containerClass
+
+    def registerSettings(self):
+        registerSettings(self)
+
     def load(self):
         """
         Called after mod __init__() is complete.
@@ -114,43 +131,19 @@ class DummyConfigInterface(object):
         self.readCurrentSettings(False)
         self.registerSettings()
 
-    def registerSettings(self):
-        """
-        Register a settings block in this mod's settings window.
-        """
-        self.tb = DummyTemplateBuilder(self.i18n)
-        try:
-            from helpers import getClientLanguage
-            newLang = str(getClientLanguage()).lower()
-            if newLang != self.lang:
-                self.lang = newLang
-                self.loadLang()
-        except StandardError:
-            traceback.print_exc()
-        try:
-            # noinspection PyUnresolvedReferences
-            from gui.vxSettingsApi import vxSettingsApi
-            if self.modSettingsID not in modSettingsContainers:
-                msc = modSettingsContainers[self.modSettingsID] = DummySettingContainer(self.modSettingsID)
-                msc.onMSAPopulate += self.onMSAPopulate
-                msc.onMSADestroy += self.onMSADestroy
-            vxSettingsApi.addMod(self.modSettingsID, self.ID, self.createTemplate, self.getData(), self.onApplySettings,
-                                 self.onButtonPress)
-        except ImportError:
-            print '%s: no-GUI mode activated' % self.ID
-        except StandardError:
-            traceback.print_exc()
-
 
 class DummyConfBlockInterface(object):
+    isMSAWindowOpen = property(lambda self: modSettingsContainers[self.modSettingsID].isMSAWindowOpen)
+
     def __init__(self):
         self.ID = ''
         self.modsGroup = ''
         self.i18n = {}
-        self.blockIDs = []
+        self.__blockIDs = []  # overwrite in init() of derived class
         self.lang = DEFAULT_LANGUAGE
         self.modSettingsID = self.ID + '_settings'
-        self.tb = None
+        self.__tb = None
+        self.__containerClass = None
         self.init()
         self.configPath = './mods/configs/%s/%s/' % (self.modsGroup, self.ID)
         self.langPath = '%si18n/' % self.configPath
@@ -161,10 +154,20 @@ class DummyConfBlockInterface(object):
         raise NotImplementedError
 
     def getDataBlock(self, blockID):
-        pass
+        raise NotImplementedError('Data block for block %s is not defined' % blockID)
 
     def loadLang(self):
         pass
+
+    @property
+    def blockIDs(self):
+        return self.__blockIDs
+
+    @property
+    def tb(self):
+        if self.__tb is None:
+            self.__tb = DummyBlockTemplateBuilder(self.i18n)
+        return self.__tb
 
     def createTemplate(self, blockID):
         raise NotImplementedError('Template for block %s is not created' % blockID)
@@ -196,47 +199,25 @@ class DummyConfBlockInterface(object):
 
     def load(self):
         self.readCurrentSettings(False)
+        self.registerSettings()
+
+    @property
+    def containerClass(self):
+        if self.__containerClass is None:
+            self.__containerClass = DummySettingContainer
+        return self.__containerClass
 
     def registerSettings(self):
-        self.tb = DummyBlockTemplateBuilder(self.i18n)
-        try:
-            from helpers import getClientLanguage
-            newLang = str(getClientLanguage()).lower()
-            if newLang != self.lang:
-                self.lang = newLang
-                self.loadLang()
-        except StandardError:
-            traceback.print_exc()
-        try:
-            # noinspection PyUnresolvedReferences
-            from gui.vxSettingsApi import vxSettingsApi
-            if self.modSettingsID not in modSettingsContainers:
-                msc = modSettingsContainers[self.modSettingsID] = DummySettingContainer(self.modSettingsID)
-                msc.onMSAPopulate += self.onMSAPopulate
-                msc.onMSADestroy += self.onMSADestroy
-            vxSettingsApi.onDataChanged += self.onDataChanged
-            for blockID in self.blockIDs:
-                vxSettingsApi.addMod(self.modSettingsID, self.ID + blockID, partial(self.createTemplate, blockID),
-                                     self.getDataBlock(blockID), partial(self.onApplySettings, blockID), self.onButtonPress)
-        except ImportError:
-            print '%s: no-GUI mode activated' % self.ID
-        except StandardError:
-            traceback.print_exc()
+        registerSettings(self, 'block')
 
 
 class DummySettingContainer(object):
-    def __init__(self, ID):
+    def __init__(self, ID, configPath):
+        self.configPath = configPath
         self.ID = ID
         self.version = '2.0.3 (%(file_compile_date)s)'
         self.author = 'by spoter, satel1te (fork by Polyacov_Yury)'
         self.lang = DEFAULT_LANGUAGE
-        self.i18n = {}
-        self.onMSAPopulate = Event.Event()
-        self.onMSADestroy = Event.Event()
-        self.isMSAWindowOpen = False
-        self.load()
-
-    def loadLang(self):
         self.i18n = {'gui_name': "Mods settings",
                      'gui_description': "Modifications enabling and settings",
                      'gui_windowTitle': "Mods settings",
@@ -244,6 +225,13 @@ class DummySettingContainer(object):
                      'gui_buttonCancel': 'Cancel',
                      'gui_buttonApply': 'Apply',
                      'gui_enableButtonTooltip': '{HEADER}ON/OFF{/HEADER}{BODY}Enable/disable this mod{/BODY}'}
+        self.onMSAPopulate = Event.Event()
+        self.onMSADestroy = Event.Event()
+        self.isMSAWindowOpen = False
+        self.load()
+
+    def loadLang(self):
+        pass
 
     def feedbackHandler(self, container, eventType, *_):
         if container != self.ID:
