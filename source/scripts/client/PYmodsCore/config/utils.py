@@ -4,8 +4,6 @@ import BigWorld
 import Keys
 import traceback
 
-__all__ = ['modSettingsContainers', 'smart_update', 'readHotKeys', 'writeHotKeys', 'registerSettings']
-
 modSettingsContainers = {}
 
 

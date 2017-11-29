@@ -1,5 +1,3 @@
-from functools import partial
-
 from ..json_reader import loadJson
 from .Simple import ConfigInterface, ConfBlockInterface, SettingContainer
 

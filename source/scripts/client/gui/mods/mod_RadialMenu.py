@@ -217,7 +217,7 @@ class CustomMenuCommand:
             self.variantList.extend(variants)
 
         confDict['hotkey'] = []
-        ConfigInterface.readHotKeys(confDict)
+        PYmodsCore.config.utils.readHotKeys(confDict)
         self.hotKeys = confDict['hotkey']
 
     def __repr__(self):
