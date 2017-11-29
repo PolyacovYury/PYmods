@@ -49,7 +49,7 @@ class PYmodsConfBlockInterface(ConfBlockInterface):
 
 class PYmodsSettingContainer(SettingContainer):
     def loadLang(self):
-        self.loadJsonLang = partial(loadJson, self.ID, self.lang, self.i18n, self.langPath)
+        self.loadJsonLang = lambda: loadJson(self.ID, self.lang, self.i18n, self.langPath)
         self.i18n = {'gui_name': "PY's mods settings",
                      'gui_description': "<font color='#DD7700'><b>Polyacov_Yury</b></font>'s modifications enabling and "
                                         "settings",
