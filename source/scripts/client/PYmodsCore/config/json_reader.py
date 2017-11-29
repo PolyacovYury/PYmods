@@ -145,7 +145,7 @@ class JSONLoader:
                         new_end_idx = idx
                         while new_end_idx < end_idx:
                             curNewLine = cls.byte_ify(cls.json_comments(conf_newL[new_end_idx])[0])
-                            if '{' in curNewLine and new_end_idx > new_start_idx:
+                            if '{' in curNewLine and new_end_idx >= new_start_idx:
                                 subLevels += 1
                             if '}' not in curNewLine:
                                 new_end_idx += 1
@@ -158,7 +158,7 @@ class JSONLoader:
                                 else:
                                     break
                         conf_changed |= cls.checkSubDict(
-                            oldDict[subKey], conf_newL, config_newExcl, new_start_idx + 1, new_end_idx - 1)
+                            oldDict[subKey], conf_newL, config_newExcl, new_start_idx + 1, new_end_idx)
                     elif oldDict[new_key] != decer.decode(new_value):
                         conf_newL[idx] = ':'.join(
                             (newLine.split(':', 1)[0], newLine.split(':', 1)[1].replace(

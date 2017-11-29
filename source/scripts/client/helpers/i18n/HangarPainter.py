@@ -191,8 +191,8 @@ def new_tankmanAttr_getValue(base, self):
             self._name in ('name', 'rank', 'role', 'efficiencyRoleLevel', 'currentVehicleName') else result)
 
 
-def new_I18nDialog_init(base, self, *args):
-    base(self, *args)
+def new_I18nDialog_init(base, self, *args, **kwargs):
+    base(self, *args, **kwargs)
     if _config.data['enabled']:
         TAG_RE = re.compile(r'<[^>]+>')
         for key in self._messageCtx:
