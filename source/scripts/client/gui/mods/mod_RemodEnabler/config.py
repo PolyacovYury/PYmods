@@ -9,7 +9,7 @@ import os
 import traceback
 from collections import OrderedDict
 from gui import InputHandler, SystemMessages
-from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
+from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader

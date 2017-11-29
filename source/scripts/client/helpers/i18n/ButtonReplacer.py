@@ -8,6 +8,7 @@ import traceback
 from debug_utils import LOG_ERROR, LOG_WARNING
 from functools import partial
 
+
 def __dir__():
     return ['i18n_hook_makeString']
 
