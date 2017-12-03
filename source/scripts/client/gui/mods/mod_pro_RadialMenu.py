@@ -15,7 +15,7 @@ import re
 import string
 import traceback
 from Avatar import PlayerAvatar
-from DetachedTurret import DetachedTurret
+from Vehicle import Vehicle
 from constants import ARENA_BONUS_TYPE
 from functools import partial
 from gui import InputHandler
@@ -23,6 +23,7 @@ from gui.Scaleform.daapi.view.battle.shared import radial_menu
 from gui.Scaleform.daapi.view.battle.shared.radial_menu import SHORTCUT_SETS, SHORTCUT_STATES, getKeyFromAction
 from gui.Scaleform.genConsts.BATTLE_ICONS_CONSTS import BATTLE_ICONS_CONSTS
 from gui.app_loader.loader import g_appLoader
+from gui.battle_control import avatar_getter
 from gui.battle_control.controllers.chat_cmd_ctrl import CHAT_COMMANDS
 from gui.shared.utils.key_mapping import getScaleformKey
 from helpers import dependency, isPlayerAvatar
@@ -322,6 +323,7 @@ class CustomMenuCommand:
         self.variantList = []
         self.cmd = confDict.get('text', '')
         self.title = confDict.get('title', 'NO CONFIG')
+        self.inPostmortem = confDict.get('inPostmortem', False)
         chatMode = confDict.get('chatMode', 'Team')
         self.channel = chatMode if chatMode in self.ALL_CHANNELS else 'Team'
         self.builtinCmd = confDict.get('command', '').strip()
@@ -403,12 +405,9 @@ def getCrosshairType(player, target):
 
 
 def isTargetCorrect(player, target):
-    if target is not None and not isinstance(target, DetachedTurret) and target.isAlive() and player is not None and \
-            isPlayerAvatar():
-        vInfo = g_sessionProvider.getArenaDP().getVehicleInfo(target.id)
-        return not vInfo.isActionsDisabled()
-    else:
-        return False
+    if target is not None and isinstance(target, Vehicle) or target.isAlive() or player is not None and isPlayerAvatar():
+        return not g_sessionProvider.getArenaDP().getVehicleInfo(target.id).isActionsDisabled()
+    return False
 
 
 def findBestFitConf(commandConf):
@@ -521,32 +520,31 @@ def new_updateMenu(self):
 
 
 def onCustomAction(cmd, target):
-    if not cmd.checkCooldown():
+    if not cmd.checkCooldown() or not (cmd.inPostmortem or avatar_getter.isVehicleAlive()):
         return
+    player = BigWorld.player()
+    if target is None:
+        target = BigWorld.entities.get(player.playerVehicleID)
+    if cmd.channel == 'All' and player.arena.bonusType == ARENA_BONUS_TYPE.TRAINING:
+        chanId = 0
+    elif cmd.channel in ('Team', 'All'):
+        chanId = 1
     else:
-        player = BigWorld.player()
-        if target is None:
-            target = BigWorld.entities.get(player.playerVehicleID)
-        if cmd.channel == 'All' and player.arena.bonusType == ARENA_BONUS_TYPE.TRAINING:
-            chanId = 0
-        elif cmd.channel in ('Team', 'All'):
-            chanId = 1
-        else:
-            chanId = 2
-        targetInfo = player.arena.vehicles.get(target.id, {})
-        targetDict = {'name': target.publicInfo.name,
-                      'vehicle': targetInfo['vehicleType'].type.shortUserString,
-                      'clan': targetInfo['clanAbbrev']}
-        msg = cmd.format(targetDict)
-        if cmd.builtinCmd:
-            chatCommands = g_sessionProvider.shared.chatCommands
-            if chatCommands is not None:
-                chatCommands.handleChatCommand(cmd.builtinCmd, target.id)
-            BigWorld.callback(_config.data['chatDelay'] / 1000.0,
-                              partial(sendChatMessage, msg.decode('utf-8'), chanId, _config.data['chatDelay']))
-        else:
-            sendChatMessage(msg.decode('utf-8'), chanId, _config.data['chatDelay'])
-        cmd.updateCooldown()
+        chanId = 2
+    targetInfo = player.arena.vehicles.get(target.id, {})
+    targetDict = {'name': target.publicInfo.name,
+                  'vehicle': targetInfo['vehicleType'].type.shortUserString,
+                  'clan': targetInfo['clanAbbrev']}
+    msg = cmd.format(targetDict)
+    if cmd.builtinCmd:
+        chatCommands = g_sessionProvider.shared.chatCommands
+        if chatCommands is not None:
+            chatCommands.handleChatCommand(cmd.builtinCmd, target.id)
+        BigWorld.callback(_config.data['chatDelay'] / 1000.0,
+                          partial(sendChatMessage, msg.decode('utf-8'), chanId, _config.data['chatDelay']))
+    else:
+        sendChatMessage(msg.decode('utf-8'), chanId, _config.data['chatDelay'])
+    cmd.updateCooldown()
 
 
 def new_onAction(self, action):

@@ -8,6 +8,7 @@ from PYmodsCore import Sound
 from functools import partial
 from gui import InputHandler
 from gui.app_loader.loader import g_appLoader
+from gui.battle_control import avatar_getter
 
 
 class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
@@ -137,7 +138,7 @@ def inj_hkKeyEvent(event):
     try:
         if BattleApp and _config.data['enabled']:
             if not (len(_config.data['hotkey']) == 1 and BigWorld.player()._PlayerAvatar__forcedGuiCtrlModeFlags):
-                if PYmodsCore.checkKeys(_config.data['hotkey']) and event.isKeyDown():
+                if avatar_getter.isVehicleAlive() and event.isKeyDown() and PYmodsCore.checkKeys(_config.data['hotkey']):
                     SoundLoop(True)
                     if _config.data['chatEnable']:
                         calltext()
