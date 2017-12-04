@@ -405,7 +405,7 @@ def getCrosshairType(player, target):
 
 
 def isTargetCorrect(player, target):
-    if target is not None and isinstance(target, Vehicle) or target.isAlive() or player is not None and isPlayerAvatar():
+    if target is not None and isinstance(target, Vehicle) and target.isAlive() and player is not None and isPlayerAvatar():
         return not g_sessionProvider.getArenaDP().getVehicleInfo(target.id).isActionsDisabled()
     return False
 
