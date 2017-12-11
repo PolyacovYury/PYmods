@@ -19,6 +19,7 @@ from gui.ClientHangarSpace import ClientHangarSpace
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.LobbyView import _LobbySubViewsLifecycleHandler
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
+from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
@@ -26,6 +27,7 @@ from gui.app_loader import g_appLoader
 from gui.customization import ICustomizationService
 # from gui.customization.data_aggregator import DataAggregator
 from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items.customization.outfit import Area
 from helpers import i18n, dependency
 from items import _xml
 from items.components.c11n_constants import CustomizationType
@@ -648,19 +650,29 @@ def installSelectedCamo():
 @PYmodsCore.overrideMethod(MainView, 'clearCustomizationItem')
 def new_clearCustomizationItem(base, self, areaId, slotId, regionId, seasonIdx, *args, **kwargs):
     print areaId, slotId, regionId, seasonIdx
-    # if False and slotId == GUI_ITEM_TYPE.CAMOUFLAGE:
-    #     assert not g_currentPreviewVehicle.isPresent()
-    #     vDesc = g_currentVehicle.item.descriptor
-    #     nationName, vehName = vDesc.name.split(':')
-    #     item = [item for item in g_customizationController.cart.items if item['idx'] == slotIdx][0]
-    #     camoKind = CAMOUFLAGE_KIND_INDICES[slotIdx]
-    #     camoName = item['object']._rawData['name']
-    #     if _config.camouflagesCache.get(nationName, {}).get(vehName) is not None:
-    #         vehDict = _config.camouflagesCache[nationName][vehName]
-    #         if vehDict.get(camoKind) is not None and vehDict[camoKind] == camoName:
-    #             del vehDict[camoKind]
-    #         PYmodsCore.loadJson(_config.ID, 'camouflagesCache', _config.camouflagesCache, _config.configPath, True)
-    base(self, areaId, slotId, regionId, seasonIdx, *args, **kwargs)
+    try:
+        # received: 1 23 0 0
+        # areaId: Area.HULL
+        # slotId: GUI_ITEM_TYPE.PAINT
+        # regionId: idx of a part in MultiSlot
+        # seasonIdx: SEASONS_CONSTANTS.SUMMER_INDEX
+        if slotId == GUI_ITEM_TYPE.CAMOUFLAGE:
+            assert not g_currentPreviewVehicle.isPresent()
+            vDesc = g_currentVehicle.item.descriptor
+            nationName, vehName = vDesc.name.split(':')
+            season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
+            camoKind = SEASON_TYPE_TO_NAME[season]
+            outfit = self._modifiedOutfits[season]
+            item = outfit.getContainer(areaId).slotFor(slotId).getItem(idx=regionId)
+            # FUCK
+            # camoName = item
+        #    if _config.camouflagesCache.get(nationName, {}).get(vehName) is not None:
+        #        vehDict = _config.camouflagesCache[nationName][vehName]
+        #        if vehDict.get(camoKind) is not None and vehDict[camoKind] == camoName:
+        #            del vehDict[camoKind]
+        #        PYmodsCore.loadJson(_config.ID, 'camouflagesCache', _config.camouflagesCache, _config.configPath, True)
+    finally:
+        base(self, areaId, slotId, regionId, seasonIdx, *args, **kwargs)
 
 
 # @PYmodsCore.overrideMethod(_LobbySubViewsLifecycleHandler, 'onViewCreated')
