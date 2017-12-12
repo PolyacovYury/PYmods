@@ -647,6 +647,18 @@ def installSelectedCamo():
 #                                SystemMessages.SM_TYPE.CustomizationForGold)
 
 
+"""from gui.shared.utils.HangarSpace import g_hangarSpace
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items.customization.outfit import Area
+from gui.app_loader import g_appLoader
+from gui.Scaleform.framework import ViewTypes
+from items.components.c11n_constants import SeasonType
+import items.vehicles
+
+print items.vehicles.g_cache.customization20().camouflages[g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.LOBBY_SUB).getView().getModifiedOutfit(SeasonType.SUMMER).getContainer(Area.HULL).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(idx=0).id].texture
+"""
+
+
 @PYmodsCore.overrideMethod(MainView, 'clearCustomizationItem')
 def new_clearCustomizationItem(base, self, areaId, slotId, regionId, seasonIdx, *args, **kwargs):
     print areaId, slotId, regionId, seasonIdx
