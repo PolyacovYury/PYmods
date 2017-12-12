@@ -73,19 +73,12 @@ def vDesc_process(vehicleID, vDesc, mode):
     remods.find(xmlName, isPlayerVehicle, isAlly, currentMode)
     for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
             vDesc.defaultVehicleDescr, vDesc.siegeVehicleDescr):
-        for partName in TankPartNames.ALL[:2] + ('engine',):
+        for partName in TankPartNames.ALL + ('engine',):
             try:
                 setattr(descr, partName, getattr(descr, partName).copy())
             except StandardError:
                 traceback.print_exc()
                 print partName
-        for turretSlot in descr.turrets:
-            for partName in (TankPartNames.ALL[2:]):
-                try:
-                    setattr(turretSlot, partName, getattr(turretSlot, partName).copy())
-                except StandardError:
-                    traceback.print_exc()
-                    print partName
     message = None
     collisionNotVisible = not g_config.data['collisionEnabled'] and not g_config.data['collisionComparisonEnabled']
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
