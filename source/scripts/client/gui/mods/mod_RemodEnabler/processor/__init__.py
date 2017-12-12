@@ -71,6 +71,10 @@ def vDesc_process(vehicleID, vDesc, mode):
         return
     xmlName = vDesc.name.split(':')[1].lower()
     remods.find(xmlName, isPlayerVehicle, isAlly, currentMode)
+    vDesc.installComponent(vDesc.chassis.compactDescr)
+    vDesc.installComponent(vDesc.gun.compactDescr)
+    if len(vDesc.type.hulls) == 1:
+        vDesc.hull = vDesc.type.hulls[0]
     for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
             vDesc.defaultVehicleDescr, vDesc.siegeVehicleDescr):
         for partName in TankPartNames.ALL + ('engine',):
