@@ -71,7 +71,7 @@ def new_setupModel(base, self, buildIdx):
                 print 'RemodEnabler: WARNING: multiple turrets are present!', vDesc.name
                 break
             turretOffset = mathUtils.createTranslationMatrix(vDesc.hull.turretPositions[idx])
-            gunOffset = mathUtils.createTranslationMatrix(vDesc.turrets[idx].turret.gunPosition)
+            gunOffset = mathUtils.createTranslationMatrix(vDesc.turret.gunPosition)
         # Getting local transform matrices
             turretMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), turretOffset)
             gunMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), gunOffset)
