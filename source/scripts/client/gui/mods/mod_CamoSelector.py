@@ -17,7 +17,7 @@ from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from gui import InputHandler, SystemMessages, g_tankActiveCamouflage
 from gui.ClientHangarSpace import ClientHangarSpace
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.LobbyView import _LobbySubViewsCtrl
+from gui.Scaleform.daapi.view.lobby.LobbyView import _LobbySubViewsLifecycleHandler
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
@@ -661,31 +661,13 @@ def new_removeSlot(base, self, cType, slotIdx):
     base(self, cType, slotIdx)
 
 
-@PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoaded')
-def new_onViewLoaded(base, self, view, *_):
-    if view is not None and view.settings is not None:
-        alias = view.settings.alias
-        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
+@PYmodsCore.overrideMethod(_LobbySubViewsLifecycleHandler, 'onViewCreated')
+def new_onViewCreated(base, self, view):
+    if view is not None:
+        alias = view.key
+        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsLifecycleHandler__loadingSubViews:
             BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
     base(self, view)
-
-
-@PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoadCanceled')
-def new_onViewLoadCanceled(base, self, name, item, *_):
-    if item is not None and item.pyEntity is not None:
-        alias = item.pyEntity.settings.alias
-        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
-            BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
-    base(self, name, item)
-
-
-@PYmodsCore.overrideMethod(_LobbySubViewsCtrl, '_LobbySubViewsCtrl__onViewLoadError')
-def new_onViewLoadError(base, self, name, msg, item, *_):
-    if item is not None and item.pyEntity is not None:
-        alias = item.pyEntity.settings.alias
-        if alias == VIEW_ALIAS.LOBBY_CUSTOMIZATION and alias in self._LobbySubViewsCtrl__loadingSubViews:
-            BigWorld.callback(0.0, g_customizationController.events.onCartFilled)
-    base(self, name, msg, item)
 
 
 @PYmodsCore.overrideMethod(MainView, '_populate')

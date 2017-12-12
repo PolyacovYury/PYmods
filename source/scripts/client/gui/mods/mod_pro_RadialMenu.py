@@ -381,8 +381,8 @@ class CustomMenuCommand:
             argDict.update({'randPart': '',
                             'viewPos': camMgr.getViewPos(),
                             'ownPos': camMgr.getOwnPos(),
-                            'reload': '%.3g' % g_sessionProvider.shared.ammo.getGunReloadingState(0).getTimeLeft(),
-                            'ammo': g_sessionProvider.shared.ammo.getCurrentShells(0)[1],
+                            'reload': '%.3g' % g_sessionProvider.shared.ammo.getGunReloadingState().getTimeLeft(),
+                            'ammo': g_sessionProvider.shared.ammo.getCurrentShells()[1],
                             'ownVehicle': g_sessionProvider.getArenaDP().getVehicleInfo().vehicleType.shortName})
             argDict['randPart'], self.lastRandId = pickRandomPart(self.variantList, self.lastRandId, not self.randomChoice)
             argDict['randPart'] = safeFmt.format(argDict['randPart'], **argDict)
