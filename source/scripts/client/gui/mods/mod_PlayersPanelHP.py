@@ -18,7 +18,7 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
         self.__hpCache = dict()
         self.__vCache = set()
-        self.__component = None
+        self.uiFlash = None
         super(PlayersPanelController, self).__init__()
 
     def init(self):
@@ -26,8 +26,7 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
         self.version = '1.1.1 (%(file_compile_date)s)'
         self.author = 'by PolarFox (forked %s)' % self.author
         self.data = {'textFields': {}}
-        vxBattleFlash.register(self.ID)
-        vxBattleFlash.onStateChanged += self.__onStateChanged
+        vxEvents.onStateChanged += self.__onStateChanged
         super(PlayersPanelController, self).init()
 
     def updateMod(self):
@@ -65,7 +64,7 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
         currentHP = self.__hpCache[vehicleID]['current']
         maxHP = self.__hpCache[vehicleID]['max']
         for fieldName, fieldData in sorted(self.data['textFields'].iteritems()):
-            self.__component.as_setPPTextS(self.ID + fieldName, [vehicleID, (fieldData['%sText' % panelSide] % {
+            self.uiFlash.as_setPPTextS(self.ID + fieldName, [vehicleID, (fieldData['%sText' % panelSide] % {
                 'curHealth': currentHP,
                 'maxHealth': maxHP,
                 'barWidth': fieldData.get('%sWidth' % panelSide, 0) * (float(currentHP) / maxHP)
@@ -90,46 +89,38 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
             health = newHealth if newHealth > 0 else 0
             self.__hpCache[vehicleID]['current'] = health if vehicleID in self.__vCache else self.__hpCache[vehicleID][
                 'max']
-        if self.__component:
+        if self.uiFlash:
             self.setHPField(vehicleID)
 
     def validateCache(self, vehicleID):
         if vehicleID not in self.__vCache:
             self.__vCache.add(vehicleID)
 
-    def __onStateChanged(self, eventType, compID, compUI):
-        if compID != self.ID:
+    def __onStateChanged(self, eventType, parentUI, componentUI):
+        if parentUI != FLASH.COMPONENT_CORE_UI:
             return
-        if eventType == vxBattleFlashEvents.COMPONENT_READY:
-            self.__component = compUI
+        if eventType == BATTLE_FLASH_EVENT_ID.COMPONENT_READY:
+            self.uiFlash = componentUI
             self.__setSettings()
             self.onStartBattle()
-        if eventType == vxBattleFlashEvents.COMPONENT_DISPOSE:
-            self.onEndBattle()
-            self.__component = None
+        if eventType == BATTLE_FLASH_EVENT_ID.COMPONENT_DISPOSE:
+            self.uiFlash = None
 
     def __setSettings(self):
         for fieldName, fieldData in self.data['textFields'].iteritems():
-            self.__component.as_setPPConfigS(self.ID + fieldName, fieldData)
+            self.uiFlash.as_setPPConfigS(self.ID + fieldName, fieldData)
 
 
+mod_playersHP = None
 try:
-    from gui.mods.vxBattleFlash import *
-
+    from gui.vxBattleFlash import vxBattleFlash, vxBattleFlashAliases
+    from gui.vxBattleFlash.events import vxEvents, BATTLE_FLASH_EVENT_ID
+    from gui.vxBattleFlash.constants import FLASH
     mod_playersHP = PlayersPanelController()
     statistic_mod = PYmodsCore.Analytics(mod_playersHP.ID, mod_playersHP.version, 'UA-76792179-11')
-
 except ImportError:
-    vxBattleFlash = None
-    vxBattleFlashEvents = None
-    vxBattleFlashAliases = None
-    mod_playersHP = None
     print '%(mod_ID)s: Battle Flash API (vxBattleFlash) not found. Text viewing disabled.'
 except StandardError:
-    vxBattleFlash = None
-    vxBattleFlashEvents = None
-    vxBattleFlashAliases = None
-    mod_playersHP = None
     traceback.print_exc()
 else:
     @PYmodsCore.overrideMethod(ArenaVehiclesPlugin, '_ArenaVehiclesPlugin__setInAoI')
