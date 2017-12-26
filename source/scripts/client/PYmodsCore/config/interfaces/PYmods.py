@@ -10,9 +10,9 @@ class PYmodsConfigInterface(ConfigInterface):
         self.author = 'by Polyacov_Yury'
         self.modsGroup = 'PYmods'
         self.modSettingsID = 'PYmodsGUI'
-        self.loadJsonData = lambda: loadJson(self.ID, self.ID, self.data, self.configPath)
-        self.writeJsonData = lambda: loadJson(self.ID, self.ID, self.data, self.configPath, True, False)
-        self.loadJsonLang = lambda: loadJson(self.ID, self.lang, self.i18n, self.langPath)
+        self.loadJsonData = lambda **kwargs: loadJson(self.ID, self.ID, self.data, self.configPath, **kwargs)
+        self.writeJsonData = lambda **kwargs: loadJson(self.ID, self.ID, self.data, self.configPath, True, False, **kwargs)
+        self.loadJsonLang = lambda **kwargs: loadJson(self.ID, self.lang, self.i18n, self.langPath, **kwargs)
         super(PYmodsConfigInterface, self).init()
 
     def createTemplate(self):

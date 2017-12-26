@@ -235,21 +235,20 @@ class _Flash(object):
         self.callbacks = []
         self.isTextAdding = False
         self.isTextRemoving = False
-        vxBattleFlash.register(self.container)
-        vxBattleFlash.onStateChanged += self.__onStateChanged
-        vxBattleFlash.onUpdatePosition += self.__updatePosition
+        vxEvents.onStateChanged += self.__onStateChanged
+        vxEvents.onUpdatePosition += self.__updatePosition
 
-    def __onStateChanged(self, eventType, compID, compUI):
-        if compID != self.container:
+    def __onStateChanged(self, eventType, parentUI, componentUI):
+        if parentUI != FLASH.COMPONENT_CORE_UI:
             return
-        if eventType == vxBattleFlashEvents.COMPONENT_READY:
-            self.uiFlash = compUI
+        if eventType == BATTLE_FLASH_EVENT_ID.COMPONENT_READY:
+            self.uiFlash = componentUI
             self.setup()
-        if eventType == vxBattleFlashEvents.COMPONENT_DISPOSE:
+        if eventType == BATTLE_FLASH_EVENT_ID.COMPONENT_DISPOSE:
             self.uiFlash = None
 
-    def __updatePosition(self, compID, _, x, y):
-        if compID != self.container:
+    def __updatePosition(self, parentUI, componentUI, x, y):
+        if parentUI != FLASH.COMPONENT_CORE_UI or componentUI != self.container:
             return
         pos = vxBattleFlash.convertCoords(vxBattleFlashAliases.RELATIVE, x, y, _config.data['textPosition']['alignX'],
                                           _config.data['textPosition']['alignY'])
@@ -367,20 +366,15 @@ _config = ConfigInterface()
 statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-8')
 PlayerAvatar.sounds = None
 try:
-    from gui.mods.vxBattleFlash import *
-
+    from gui.vxBattleFlash import vxBattleFlash, vxBattleFlashAliases
+    from gui.vxBattleFlash.events import vxEvents, BATTLE_FLASH_EVENT_ID
+    from gui.vxBattleFlash.constants import FLASH
     _gui_flash = _Flash(_config.ID)
 except ImportError:
-    vxBattleFlash = None
-    vxBattleFlashEvents = None
-    vxBattleFlashAliases = None
-    _gui_flash = None
+    vxBattleFlash = vxBattleFlashAliases = vxEvents = BATTLE_FLASH_EVENT_ID = FLASH = _gui_flash = None
     LOG_ERROR('Battle Flash API (vxBattleFlash) not found. Text viewing disabled.')
 except StandardError:
-    vxBattleFlash = None
-    vxBattleFlashEvents = None
-    vxBattleFlashAliases = None
-    _gui_flash = None
+    vxBattleFlash = vxBattleFlashAliases = vxEvents = BATTLE_FLASH_EVENT_ID = FLASH = _gui_flash = None
     traceback.print_exc()
 
 
