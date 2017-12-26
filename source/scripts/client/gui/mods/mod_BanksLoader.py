@@ -28,21 +28,20 @@ class RestartButtons(object):
 
 class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
-        self.editedBanks = {'create': [], 'delete': [], 'delete_engine': [], 'memory': [], 'move': [], 'remap': set(),
-                            'wotmod': []}
+        self.editedBanks = {'create': [], 'delete': [], 'memory': [], 'move': [], 'remap': set(), 'wotmod': []}
         self.was_declined = False
         super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.9.5 (%(file_compile_date)s)'
+        self.version = '1.9.6 (%(file_compile_date)s)'
         self.author = '%s and Ekspoint' % self.author
-        self.data = {'defaultPool': 48,
-                     'lowEnginePool': 36,
-                     'preparedPool': 318,
-                     'streamingPool': 48,
-                     'IOPoolSize': 32,
-                     'max_voices': 310,
+        self.data = {'defaultPool': 36,
+                     'lowEnginePool': 10,
+                     'preparedPool': 200,
+                     'streamingPool': 8,
+                     'IOPoolSize': 8,
+                     'max_voices': 110,
                      'debug': False}
         self.i18n = {'UI_restart_header': 'Banks Loader by PY: restart',
                      'UI_restart_text': (
@@ -55,7 +54,6 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                      'UI_restart_reason': 'Exact changes:\n{}.\n',
                      'UI_restart_create': ' • sections <b>created</b> for these banks: ',
                      'UI_restart_delete': ' • sections <b>deleted</b> for these banks: ',
-                     'UI_restart_delete_engine': ' • sections <b>cleared</b> for these banks: ',
                      'UI_restart_move': ' • sections <b>moved</b> for these banks: ',
                      'UI_restart_memory': ' • values <b>changed</b> for memory settings: ',
                      'UI_restart_remap': ' • sections <b>changed</b> for these settings: ',
@@ -116,28 +114,28 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             os.rename(oldModName, oldModName + '1')
 
     def check_wotmods(self, mediaPath):
-        fileList = (path for path in ('/'.join((x[0], y)).replace(os.sep, '/') for x in os.walk(
-            BigWorld.curCV.replace('res_', '')) for y in x[2]) if path.endswith('.wotmod'))
-        for filePath in fileList:
-            if os.path.basename(filePath) == '_aaa_BanksLoader_audioMods.wotmod':
+        audio_mods_xml = '/'.join(('res', mediaPath, 'audio_mods.xml'))
+        for filePath in ('/'.join((x[0], y)).replace(os.sep, '/') for x in os.walk(
+                BigWorld.curCV.replace('res_', '')) for y in x[2]):
+            if not filePath.endswith('.wotmod') or os.path.basename(filePath) == '_aaa_BanksLoader_audioMods.wotmod':
                 continue
             zip_orig = zipfile.ZipFile(filePath)
             fileNames = zip_orig.namelist()
-            if '/'.join(('res', mediaPath, 'audio_mods.xml')) in fileNames:
+            if audio_mods_xml in fileNames:
                 self.editedBanks['wotmod'].append(os.path.basename(filePath))
                 bankFiles = [x for x in fileNames if x.startswith('res/' + mediaPath) and x.endswith('.bnk')]
                 new_filePath = filePath[:-7] + '_BanksLoader_ing' + '.wotmod'
                 zip_new = zipfile.ZipFile(new_filePath, 'w')
                 for fileInfo in zip_orig.infolist():
                     fileName = fileInfo.filename
-                    if fileName != '/'.join(('res', mediaPath, 'audio_mods.xml')):
+                    if fileName != audio_mods_xml:
                         zip_new.writestr(fileInfo, zip_orig.read(fileName))
                     elif bankFiles:
                         fileInfo.filename = bankFiles[0].replace('.bnk', '.xml')
                         zip_new.writestr(fileInfo, zip_orig.read(fileName))
                 zip_new.close()
                 zip_orig.close()
-                print 'BanksLoader: config cleaned from package', os.path.basename(filePath)
+                print '%s: config cleaned from package' % self.ID, os.path.basename(filePath)
                 if os.path.isfile(filePath):
                     try:
                         stat = os.stat(filePath)
@@ -164,20 +162,28 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         self.check_wotmods(mediaPath)
         if self.editedBanks['wotmod']:
             return
-        bankFiles = {'mods': set(), 'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')}}
-        pkg = zipfile.ZipFile('./res/packages/audioww.pkg')
-        bankFiles['pkg'] = {os.path.basename(name) for name in pkg.namelist()}
-        pkg.close()
+        bankFiles = {'mods': set(), 'pkg': set(),
+                     'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')
+                             if (path.endswith('.bnk') or path.endswith('.pck'))}}
+        for pkgPath in glob.iglob('./res/packages/audioww*.pkg'):
+            pkg = zipfile.ZipFile(pkgPath)
+            bankFiles['pkg'].update({os.path.basename(name) for name in pkg.namelist()})
+            pkg.close()
         bankFiles['orig'] = bankFiles['res'] | bankFiles['pkg']
+        bankFiles['mods'] = set(x for x in ResMgr.openSection(mediaPath).keys()
+                                if (x.endswith('.bnk') or x.endswith('.pck')) and x not in bankFiles['orig'])
+        bankFiles['all'] = bankFiles['orig'] | bankFiles['mods']
         active_profile_name = soundMgr['WWISE_active_profile'].asString
         active_profile = soundMgr[active_profile_name]
-        poolKeys = {'memoryManager': ['defaultPool', 'lowEnginePool', 'preparedPool', 'streamingPool', 'IOPoolSize'],
-                    'soundRender': ['max_voices']}
+        poolKeys = {'memoryManager': ('defaultPool', 'lowEnginePool', 'preparedPool', 'streamingPool', 'IOPoolSize'),
+                    'soundRender': ('max_voices',)}
         for poolKey, poolValuesList in poolKeys.iteritems():
             for poolValue in poolValuesList:
                 if active_profile[poolKey][poolValue].asInt != int(self.data[poolValue]):
                     self.editedBanks['memory'].append(poolValue)
                     active_profile[poolKey].writeInt(poolValue, self.data[poolValue])
+                    print '%s: changing value for memory setting' % self.ID, poolValue
+        moddedExist = []
         for name, section in active_profile.items():
             if 'soundbanks' not in name:
                 continue
@@ -185,14 +191,12 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 if sectName != 'project':
                     continue
                 bankName = project['name'].asString
-                if bankName not in bankFiles['orig']:
-                    print 'BanksLoader: clearing section for bank', bankName
-                    self.editedBanks['delete_engine'].append(bankName)
+                if bankName not in bankFiles['all']:
+                    print '%s: clearing engine_config section for bank' % self.ID, bankName
+                    self.editedBanks['delete'].append(bankName)
                     section.deleteSection(project)
-        self.editedBanks['delete_engine'] = PYmodsCore.remDups(self.editedBanks['delete_engine'])
-
-        bankFiles['mods'] = set(x for x in ResMgr.openSection(mediaPath).keys()
-                                if (x.endswith('.bnk') or x.endswith('.pck')) and x not in bankFiles['orig'])
+                elif bankName not in moddedExist:
+                    moddedExist.append(bankName)
         audio_mods = ResMgr.openSection('/'.join((mediaPath, 'audio_mods.xml')))
         audio_mods_new = ResMgr.openSection('/'.join((mediaPath, 'audio_mods_edited.xml')), True)
         if audio_mods is None:
@@ -216,6 +220,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 if sectName != key_to_sub[key] or not confSect.has_key('name') or not confSect.has_key('mod'):
                     conf.deleteSection(confSect)
                     self.editedBanks['remap'].add(key)
+                    print '%s: cleaned wrong section for setting' % self.ID, key
                     continue
                 result = {'name': confSect['name'].asString, 'mod': confSect['mod'].asString}
                 if key in subList:
@@ -224,6 +229,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                         if confSubName != 'state' or not confSubSect.has_key('name') or not confSubSect.has_key('mod'):
                             confSect.deleteSection(confSubSect)
                             self.editedBanks['remap'].add(key)
+                            print '%s: cleaned wrong section for setting' % self.ID, key
                             continue
                         stateList.append({'name': confSubSect['name'].asString, 'mod': confSubSect['mod'].asString})
                     result[subList[key]] = stateList
@@ -240,8 +246,8 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 continue
             for key in modsKeys:
                 if confSect.has_key(key):
-                    existingNames = map(lambda x: x['name'], confData[key])
-                    existingMods = map(lambda x: x['mod'], confData[key])
+                    existingNames = [x['name'] for x in confData[key]]
+                    existingMods = [x['mod'] for x in confData[key]]
                     bankEvents = bankData[key] = []
                     for sectName, subSect in confSect[key].items():
                         if sectName != key_to_sub[key] or not subSect.has_key('name') or not subSect.has_key('mod'):
@@ -250,6 +256,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                         mod = subSect['mod'].asString
                         if name in existingNames or mod in existingMods:
                             bankFiles['ignore'].add(bankName)
+                            print '%s: duplicate events in %s: name: %s, mod: %s' % (self.ID, confPath, name, mod)
                             break
                         result = {'name': name, 'mod': mod}
                         if key in subList:
@@ -266,30 +273,27 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             for key in confData:
                 if bankName not in bankFiles['ignore'] and key in bankData:
                     confData[key].extend(bankData[key])
-        moddedExist = []
         for bankSect in audio_mods_new['loadBanks'].values():
             bankName = bankSect.asString
-            if bankName not in bankFiles['mods'] or bankName in moddedExist or bankName in bankFiles['ignore']:
-                print 'BanksLoader: deleting section for bank', bankName
-                self.editedBanks['delete'].append(bankName)
-                audio_mods_new['loadBanks'].deleteSection(bankSect)
-                continue
-            moddedExist.append(bankName)
+            print '%s: clearing audio_mods section for bank' % self.ID, bankName
+            self.editedBanks['delete'].append(bankName)
+            audio_mods_new['loadBanks'].deleteSection(bankSect)
         self.editedBanks['delete'] = PYmodsCore.remDups(self.editedBanks['delete'])
         bankFiles['orig'] = set(map(str.lower, bankFiles['orig']))
         for bankName in sorted(bankFiles['mods']):
             if bankName not in bankFiles['orig'] and bankName not in moddedExist and bankName not in bankFiles['ignore']:
-                print 'BanksLoader: creating sections for bank', bankName
-                if bankName in self.editedBanks['delete_engine']:
-                    self.editedBanks['delete_engine'].remove(bankName)
+                print '%s: creating sections for bank' % self.ID, bankName
+                if bankName in self.editedBanks['delete']:
+                    self.editedBanks['delete'].remove(bankName)
                     self.editedBanks['move'].append(bankName)
                 else:
                     self.editedBanks['create'].append(bankName)
-                audio_mods_new['loadBanks'].createSection('bank').asString = bankName
+                active_profile.createSection('SFX_soundbanks_loadonce/project').writeString('name', bankName)
         for key in modsKeys:
             if confData_old[key] != confData[key]:
                 self.editedBanks['remap'].add(key)
             if key in self.editedBanks['remap']:
+                print '%s: creating section for setting' % self.ID, key
                 audio_mods_new.deleteSection(audio_mods_new[key])
                 newSect = audio_mods_new.createSection(key)
                 for data in confData[key]:
@@ -303,7 +307,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                             for subKey in subData:
                                 newSubSSect.createSection(subKey).asString = subData[subKey]
 
-        if any(self.editedBanks[key] for key in ('delete_engine', 'move', 'memory')):
+        if any(self.editedBanks[key] for key in ('delete', 'move', 'create', 'memory')):
             new_engine.save()
             xmlOrig = BigWorld.curCV + '/engine_config.xml'
             if os.path.isfile(xmlOrig):
@@ -311,12 +315,16 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                     os.remove(xmlOrig)
                 except StandardError:
                     traceback.print_exc()
-            newXml = BigWorld.curCV + '/engine_config_edited.xml'
+            newXml = './engine_config_edited.xml'
             if os.path.isfile(newXml):
                 os.rename(newXml, xmlOrig)
+            else:
+                newXml = BigWorld.curCV + '/engine_config_edited.xml'
+                if os.path.isfile(newXml):
+                    os.rename(newXml, xmlOrig)
         else:
             ResMgr.purge('engine_config_edited.xml')
-        if any(self.editedBanks[key] for key in ('delete', 'create', 'move', 'remap')):
+        if any(self.editedBanks[key] for key in ('delete', 'move', 'remap')):
             dirName = '/'.join((BigWorld.curCV, mediaPath))
             if not os.path.exists(dirName):
                 os.makedirs(dirName)
