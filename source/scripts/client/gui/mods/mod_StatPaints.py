@@ -35,7 +35,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                      'paint_hull': False,
                      'paint_turret': True,
                      'paint_gun': True,
-                     'scale': {2020: 264, 4185: 225, 6340: 203, 8525: 224, 9930: 204, 99999: 200}}
+                     'scale': {'2020': 264, '4185': 225, '6340': 203, '8525': 224, '9930': 204, '99999': 200}}
         self.i18n = {
             'UI_description': 'Statistics vehicle painter',
             'UI_setting_ignorePresentPaints_text': 'Ignore present paints',
@@ -152,9 +152,9 @@ def new__getVehicleOutfit(base, self, *args, **kwargs):
         return outfit
     paintID = None
     rating = g_config.dossiers[accountID]['wgr']
-    for value in sorted(g_config.data['scale']):
+    for value in sorted(int(x) for x in g_config.data['scale']):
         if rating < value:
-            paintID = g_config.data['scale'][value]
+            paintID = g_config.data['scale'][str(value)]
             break
     for fashionIdx, descId in enumerate(TankPartNames.ALL):
         if not g_config.data['paint_%s' % descId]:
