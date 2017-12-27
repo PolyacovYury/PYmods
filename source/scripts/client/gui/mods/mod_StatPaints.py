@@ -76,7 +76,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 return self.dossiers[databaseID]
         try:
             url = 'https://api.worldoftanks.{region}/wot/account/info/?application_id=demo&fields=global_rating&account_id' \
-                  '={id}'.format(region=userRegion(databaseID), id=databaseID)
+                  '={id}'.format(region=userRegion(int(databaseID)), id=databaseID)
             request = json.loads(urllib2.urlopen(url, timeout=1).read()).get('data', None)
         except IOError:
             request = None
