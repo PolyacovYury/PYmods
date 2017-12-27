@@ -121,6 +121,7 @@ def userRegion(databaseID):
 
 
 g_config = ConfigInterface()
+statistic_mod = PYmodsCore.Analytics(g_config.ID, g_config.version, 'UA-76792179-15')
 
 
 @PYmodsCore.overrideMethod(ClientArena, '_ClientArena__onVehicleListUpdate')
