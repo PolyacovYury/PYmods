@@ -97,8 +97,8 @@ class TemplateBuilder(object):
 
     def createRangeSlider(self, varName, vMin, vMax, labelStep, divStep, step, minRange, width=200, empty=False,
                           button=None):
-        return self.dummy.createRangeSlider(varName, vMin, vMax, labelStep, divStep, step, minRange, self.data[varName],
-                                            width, empty, button)
+        return self.dummy.createRangeSlider(
+            varName, vMin, vMax, labelStep, divStep, step, minRange, self.data[varName], width, empty, button)
 
 
 # noinspection PyMethodOverriding
@@ -107,48 +107,45 @@ class DummyBlockTemplateBuilder(DummyTemplateBuilder):
         super(DummyBlockTemplateBuilder, self).__init__(i18n)
         self.dummy = DummyTemplateBuilder(i18n)
 
-    def createEmpty(self):
-        return self.dummy.createEmpty()
-
-    def createLabel(self, varName, blockID, ctx='setting'):
+    def createLabel(self, blockID, varName, ctx='setting'):
         return self.dummy.createLabel('_'.join((blockID, varName)), ctx)
 
     def createControl(self, blockID, varName, value, contType='CheckBox', width=200, empty=False, button=None):
-        result = self.dummy.createControl(varName, value, contType, width, True, button)
-        result.update(self.createLabel(blockID, varName) if not empty else {})
+        result = self.createLabel(blockID, varName) if not empty else {}
+        result.update(self.dummy.createControl(varName, value, contType, width, True, button))
         return result
 
     def createOptions(self, blockID, varName, options, value, contType='Dropdown', width=200, empty=False, button=None):
-        result = self.dummy.createOptions(varName, options, value, contType, width, True, button)
-        result.update(self.createLabel(blockID, varName) if not empty else {})
+        result = self.createLabel(blockID, varName) if not empty else {}
+        result.update(self.dummy.createOptions(varName, options, value, contType, width, True, button))
         return result
 
     def createHotKey(self, blockID, varName, value, defaultValue, empty=False):
-        result = self.dummy.createHotKey(varName, value, defaultValue, True)
-        result.update(self.createLabel(blockID, varName) if not empty else {})
+        result = self.createLabel(blockID, varName) if not empty else {}
+        result.update(self.dummy.createHotKey(varName, value, defaultValue, True))
         return result
 
     def _createNumeric(self, blockID, varName, contType, value, vMin=0, vMax=0, width=200, empty=False, button=None):
-        result = self.dummy._createNumeric(varName, contType, value, vMin, vMax, width, True, button)
-        result.update(self.createLabel(blockID, varName) if not empty else {})
+        result = self.createLabel(blockID, varName) if not empty else {}
+        result.update(self.dummy._createNumeric(varName, contType, value, vMin, vMax, width, True, button))
         return result
 
     def createStepper(self, blockID, varName, vMin, vMax, step, value, manual=False, width=200, empty=False, button=None):
-        result = self.dummy.createStepper(varName, vMin, vMax, step, value, manual, width, True, button)
-        result.update(self.createLabel(blockID, varName) if not empty else {})
+        result = self.createLabel(blockID, varName) if not empty else {}
+        result.update(self.dummy.createStepper(varName, vMin, vMax, step, value, manual, width, True, button))
         return result
 
     def createSlider(self, blockID, varName, vMin, vMax, step, value, formatStr='{{value}}', width=200, empty=False,
                      button=None):
-        result = self.dummy.createSlider(varName, vMin, vMax, step, value, formatStr, width, True, button)
-        result.update(self.createLabel(blockID, varName) if not empty else {})
+        result = self.createLabel(blockID, varName) if not empty else {}
+        result.update(self.dummy.createSlider(varName, vMin, vMax, step, value, formatStr, width, True, button))
         return result
 
     def createRangeSlider(self, blockID, varName, vMin, vMax, labelStep, divStep, step, minRange, value, width=200,
                           empty=False, button=None):
-        result = self.dummy.createRangeSlider(
-            varName, vMin, vMax, labelStep, divStep, step, minRange, value, width, True, button)
-        result.update(self.createLabel(blockID, varName) if not empty else {})
+        result = self.createLabel(blockID, varName) if not empty else {}
+        result.update(self.dummy.createRangeSlider(
+            varName, vMin, vMax, labelStep, divStep, step, minRange, value, width, True, button))
         return result
 
 
@@ -162,6 +159,15 @@ class BlockTemplateBuilder(object):
     def createEmpty(self):
         return self.dummy.createEmpty()
 
+    def getLabel(self, varName, ctx='setting'):
+        return self.dummy.getLabel(varName, ctx)
+
+    def createLabel(self, varName, ctx='setting'):
+        return self.dummy.createLabel(varName, ctx)
+
+    def createTooltip(self, varName, ctx='setting'):
+        return self.dummy.createTooltip(varName, ctx)
+
     def createControl(self, blockID, varName, contType='CheckBox', width=200, empty=False, button=None):
         return self.dummy.createControl(blockID, varName, self.data[blockID][varName], contType, width, empty, button)
 
@@ -170,7 +176,7 @@ class BlockTemplateBuilder(object):
             blockID, varName, options, self.data[blockID][varName], contType, width, empty, button)
 
     def createHotKey(self, blockID, varName, empty=False):
-        return self.dummy.createHotKey(varName, self.data[blockID][varName], self.defaultKeys[varName], empty)
+        return self.dummy.createHotKey(blockID, varName, self.data[blockID][varName], self.defaultKeys[varName], empty)
 
     def _createNumeric(self, blockID, varName, contType, vMin=0, vMax=0, width=200, empty=False, button=None):
         return self.dummy._createNumeric(
