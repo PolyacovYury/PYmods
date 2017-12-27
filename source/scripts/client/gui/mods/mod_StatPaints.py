@@ -70,24 +70,29 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                     self.tb.createControl('paint_gun')
                 ]}
 
-    def loadPlayerStats(self, databaseID):
-        if databaseID in self.dossiers:
-            if (datetime.datetime.utcnow() - self.dossiers[databaseID]['time']).total_seconds() < 3600:
-                return self.dossiers[databaseID]
-        try:
-            url = 'https://api.worldoftanks.{region}/wot/account/info/?application_id=demo&fields=global_rating&account_id' \
-                  '={id}'.format(region=userRegion(int(databaseID)), id=databaseID)
-            request = json.loads(urllib2.urlopen(url, timeout=1).read()).get('data', None)
-        except IOError:
-            request = None
-        if request:
-            for databaseID in request:
-                dossier = request[databaseID]
-                self.dossiers[databaseID] = {'time': datetime.datetime.utcnow(), 'wgr': dossier['global_rating']}
-                vehicleID = BigWorld.player().guiSessionProvider.getCtx().getArenaDP().getVehIDByAccDBID(int(databaseID))
-                vehicle = BigWorld.entity(vehicleID)
-                if vehicle is not None:
-                    vehicle.appearance.setVehicle(vehicle)
+    def loadPlayerStats(self, databaseIDs):
+        regions = {}
+        for databaseID in databaseIDs:
+            regions.setdefault(userRegion(int(databaseID)), []).append(databaseID)
+        requests = []
+        for region in regions:
+            try:
+                url = ('https://api.worldoftanks.{'
+                       'region}/wot/account/info/?application_id=demo&fields=global_rating&account_id={id}').format(
+                    region=region, id=','.join(regions[region]))
+                requests.append(json.loads(urllib2.urlopen(url, timeout=1).read()).get('data', None))
+            except IOError:
+                pass
+        if requests:
+            for request in requests:
+                for databaseID in request:
+                    dossier = request[databaseID]
+                    self.dossiers[databaseID] = {'time': datetime.datetime.utcnow(), 'wgr': dossier['global_rating']}
+        for databaseID in databaseIDs:
+            vehicleID = BigWorld.player().guiSessionProvider.getCtx().getArenaDP().getVehIDByAccDBID(int(databaseID))
+            vehicle = BigWorld.entity(vehicleID)
+            if vehicle is not None:
+                vehicle.appearance.setVehicle(vehicle)
 
     def thread(self, databaseID):
         try:
@@ -98,10 +103,8 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
     def loadStats(self):
         arena = BigWorld.player().arena
-        if arena is not None:
-            if arena.bonusType != 6:  # If it isn't tutorial battle
-                for dbID in [str(pl['accountDBID']) for pl in arena.vehicles.values()]:
-                    self.thread(dbID)
+        if arena is not None and arena.bonusType != 6:  # If it isn't tutorial battle
+            self.thread([str(pl['accountDBID']) for pl in arena.vehicles.values()])
 
     def resetStats(self):
         self.dossiers.clear()
@@ -148,7 +151,7 @@ def new__getVehicleOutfit(base, self, *args, **kwargs):
         paintItems[paintID] = paintItem
     accountID = str(BigWorld.player().arena.vehicles[vehicle.id]['accountDBID'])
     if accountID not in g_config.dossiers:
-        g_config.thread(accountID)
+        g_config.thread([accountID])
         return outfit
     paintID = None
     rating = g_config.dossiers[accountID]['wgr']
