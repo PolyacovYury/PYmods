@@ -22,7 +22,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.2.0.1 (%(file_compile_date)s)'
+        self.version = '1.2.0.2 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'debug': True,
                      'debugColour': True,
@@ -196,7 +196,8 @@ def new_I18nDialog_init(base, self, *args, **kwargs):
     if _config.data['enabled']:
         TAG_RE = re.compile(r'<[^>]+>')
         for key in self._messageCtx:
-            self._messageCtx[key] = TAG_RE.sub('', str(self._messageCtx[key]))
+            if isinstance(self._messageCtx[key], basestring):
+                self._messageCtx[key] = TAG_RE.sub('', self._messageCtx[key])
 
 
 def delayedHooks():
