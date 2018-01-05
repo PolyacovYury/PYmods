@@ -1,8 +1,7 @@
-from functools import partial
-
 import BigWorld
 import Keys
 import traceback
+from functools import partial
 
 modSettingsContainers = {}
 
@@ -61,9 +60,10 @@ def registerSettings(config, mode='full'):
         # noinspection PyUnresolvedReferences
         from gui.vxSettingsApi import vxSettingsApi
         if config.modSettingsID not in modSettingsContainers:
-            msc = modSettingsContainers[config.modSettingsID] = config.containerClass(config.modSettingsID, config.configPath)
-            msc.onMSAPopulate += config.onMSAPopulate
-            msc.onMSADestroy += config.onMSADestroy
+            modSettingsContainers[config.modSettingsID] = config.containerClass(config.modSettingsID, config.configPath)
+        msc = modSettingsContainers[config.modSettingsID]
+        msc.onMSAPopulate += config.onMSAPopulate
+        msc.onMSADestroy += config.onMSADestroy
         vxSettingsApi.onDataChanged += config.onDataChanged
         if mode == 'block':
             for blockID in config.blockIDs:
