@@ -14,7 +14,7 @@ import traceback
 import weakref
 from Account import Account
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
-from adisp import process
+from gui.shared.utils.decorators import process
 from gui import InputHandler, SystemMessages, g_tankActiveCamouflage
 from gui.ClientHangarSpace import ClientHangarSpace
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
