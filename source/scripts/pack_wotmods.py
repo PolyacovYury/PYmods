@@ -22,6 +22,7 @@ def main():
         print "-q: output only error messages"
         print "-d destdir: directory to prepend to file paths for use in wotmod file"
         print "-s sourcedir: directory to pick files from"
+        print "directory|file: place to pick wotmod(s) from"
         sys.exit(2)
     maxlevels = 10
     quiet = 0
