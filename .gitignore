@@ -1,4 +1,5 @@
 .idea/
+release/
 uncompiled/
 *.cmd
 /source/scripts/others/
