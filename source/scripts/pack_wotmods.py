@@ -194,10 +194,18 @@ def pack_file(fullname, sdir=None, ddir=None, version_str=None, date=None, ix=No
                                 info.date_time = datetime.fromtimestamp(os.stat(card_glob[0]).st_mtime).timetuple()[:6]
             orig_infos = [x for x in orig_infos_full if x.filename in replaced or
                           x.filename.startswith(ddir) and os.path.exists(x.filename.replace(ddir, sdir))]
-            if not force and not orig_folder and not replaced and all(
-                    os.stat(x.filename.replace(ddir, sdir)).st_size == x.file_size for x in orig_infos if
-                    not x.filename.endswith('/')):
-                return success
+            if not force and not orig_folder and not replaced:
+                identical = True
+                for x in orig_infos:
+                    if not x.filename.endswith('/'):
+                        stat = os.stat(x.filename.replace(ddir, sdir))
+                        stat_date = datetime.fromtimestamp(stat.st_mtime)
+                        stat_date = stat_date.replace(second=stat_date.second / 2 * 2)
+                        if stat.st_size != x.file_size or stat_date.timetuple()[:6] != x.date_time:
+                            identical = False
+                            break
+                if identical:
+                    return success
             elif not orig_folder and quiet:
                 print 'Checking', fullname, '...'
             orig_infos_noex = [x for x in orig_infos_full if x not in orig_infos]
@@ -217,6 +225,7 @@ def pack_file(fullname, sdir=None, ddir=None, version_str=None, date=None, ix=No
                     with open(file_name, 'rb') as fin:
                         file_data = fin.read()
                 file_stamp = datetime.fromtimestamp(os.stat(file_name).st_mtime)
+                file_stamp = file_stamp.replace(second=file_stamp.second / 2 * 2)
                 if binascii.crc32(file_data) & 0xFFFFFFFF == info.CRC:
                     info.date_time = min(datetime(*info.date_time), file_stamp).timetuple()[:6]
                 else:
