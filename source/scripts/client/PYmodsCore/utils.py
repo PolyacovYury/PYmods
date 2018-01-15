@@ -45,7 +45,7 @@ def __splitMsg(msg):
 
 
 def __sendMessagePart(msg, chanId):
-    class PYmods_chat(object):
+    class ClientChat(object):
         from messenger.m_constants import PROTO_TYPE
         from messenger.proto import proto_getter
 
@@ -58,17 +58,17 @@ def __sendMessagePart(msg, chanId):
 
     msg = msg.encode('utf-8')
     import BattleReplay
-    if PYmods_chat.proto is None or BattleReplay.isPlaying():
+    if ClientChat.proto is None or BattleReplay.isPlaying():
         from messenger import MessengerEntry
         MessengerEntry.g_instance.gui.addClientMessage('OFFLINE: %s' % msg, True)
         return
     else:
         if chanId == 0:
-            PYmods_chat.proto.arenaChat.broadcast(msg, 1)
+            ClientChat.proto.arenaChat.broadcast(msg, 1)
         if chanId == 1:
-            PYmods_chat.proto.arenaChat.broadcast(msg, 0)
+            ClientChat.proto.arenaChat.broadcast(msg, 0)
         if chanId == 2:
-            PYmods_chat.proto.unitChat.broadcast(msg, 1)
+            ClientChat.proto.unitChat.broadcast(msg, 1)
 
 
 def sendChatMessage(fullMsg, chanId, delay):
@@ -80,8 +80,8 @@ def sendChatMessage(fullMsg, chanId, delay):
 
 
 def new_addItem(base, self, item):
-    if 'PYmods_SM' in item._vo['message']['message']:
-        item._vo['message']['message'] = item._vo['message']['message'].replace('PYmods_SM', '')
+    if 'temp_SM' in item._vo['message']['message']:
+        item._vo['message']['message'] = item._vo['message']['message'].replace('temp_SM', '')
         item._vo['notify'] = False
         if item._settings:
             item._settings.isNotify = False

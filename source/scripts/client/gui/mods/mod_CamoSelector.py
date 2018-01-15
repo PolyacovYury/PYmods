@@ -111,7 +111,7 @@ class CamoSelectorUI(AbstractWindowView):
 
     def onWindowClose(self):
         _config.activePreviewCamo = None
-        SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflageRestore'],
+        SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_camouflageRestore'],
                                    SystemMessages.SM_TYPE.CustomizationForGold)
         PYmodsCore.refreshCurrentVehicle()
         _config.UIProxy = None
@@ -177,7 +177,7 @@ class CamoSelectorUI(AbstractWindowView):
                 newSettings[nation] = _config.camouflages[nation]
         PYmodsCore.loadJson(_config.ID, 'settings', newSettings, _config.configPath, True)
 
-        SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflageSave'],
+        SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_camouflageSave'],
                                    SystemMessages.SM_TYPE.CustomizationForGold)
         PYmodsCore.refreshCurrentVehicle()
 
@@ -201,7 +201,7 @@ class CamoSelectorUI(AbstractWindowView):
             elif camoName in _config.interCamo:
                 del camoNames[camoName]
         _config.activePreviewCamo = sorted(camoNames.keys())[int(camoID)]
-        SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflagePreview'] +
+        SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_camouflagePreview'] +
                                    _config.activePreviewCamo.join(('<b>', '</b>')),
                                    SystemMessages.SM_TYPE.CustomizationForGold)
         _config.backup['mode'] = mode
@@ -547,7 +547,7 @@ def readInstalledCamouflages(self):
                 self.installCustomizationElement(itemIdx)
                 break
         else:
-            SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_customOrInvalid'].format(
+            SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_customOrInvalid'].format(
                 kind=_config.i18n['UI_customOrInvalid_%s' % CAMOUFLAGE_KIND_INDICES[idx]], name=camoName),
                                        SystemMessages.SM_TYPE.CustomizationForGold)
     g_customizationController._dataAggregator.start()
@@ -604,13 +604,13 @@ def installSelectedCamo():
         for camoKindNum in camoKindNums:
             if _config.camouflagesCache.get(nationName, {}).get(vehName, {}).get(
                     CAMOUFLAGE_KIND_INDICES[camoKindNum]) == camoName:
-                SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_installCamouflage_already'].format(
+                SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_installCamouflage_already'].format(
                     name=camoName, kind=_config.i18n['UI_setting_hangarCamo_%s' % CAMOUFLAGE_KIND_INDICES[camoKindNum]]),
                                            SystemMessages.SM_TYPE.CustomizationForGold)
                 continue
             _config.camouflagesCache.setdefault(nationName, {}).setdefault(vehName, {})[
                 CAMOUFLAGE_KIND_INDICES[camoKindNum]] = camoName
-            SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_installCamouflage'].format(
+            SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_installCamouflage'].format(
                 name=camoName, kind=_config.i18n['UI_setting_hangarCamo_%s' % CAMOUFLAGE_KIND_INDICES[camoKindNum]]),
                                        SystemMessages.SM_TYPE.CustomizationForGold)
             PYmodsCore.loadJson(_config.ID, 'camouflagesCache', _config.camouflagesCache, _config.configPath, True)
@@ -638,7 +638,7 @@ def installSelectedCamo():
         del _config.camouflagesCache[nationName]
     PYmodsCore.loadJson(_config.ID, 'camouflagesCache', _config.camouflagesCache, _config.configPath, True)
     PYmodsCore.refreshCurrentVehicle()
-    SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflageSelect'],
+    SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_camouflageSelect'],
                                SystemMessages.SM_TYPE.CustomizationForGold)
 
 
@@ -798,7 +798,7 @@ def new_cs_recreateVehicle(base, self, vDesc, vState, onVehicleLoadedCallback=No
                     vDesc.camouflages = tuple((camoID, time.time(), 7) for _ in xrange(3))
                     break
             else:
-                SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflagePreviewError'] +
+                SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_camouflagePreviewError'] +
                                            _config.activePreviewCamo.join(('<b>', '</b>')),
                                            SystemMessages.SM_TYPE.CustomizationForGold)
                 print 'CamoSelector: camouflage not found for nation %s: %s' % (nationID, _config.activePreviewCamo)
