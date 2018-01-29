@@ -1,11 +1,10 @@
-import datetime
-
 import BigWorld
 import PYmodsCore
 import json
 import threading
 import urllib2
 from ClientArena import ClientArena
+from functools import partial
 from gui.Scaleform.battle_entry import BattleEntry
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.customization.c11n_items import Paint
@@ -85,18 +84,22 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 pass
         if requests:
             for request in requests:
-                for databaseID in request:
-                    dossier = request[databaseID]
-                    self.dossiers[databaseID] = {'time': datetime.datetime.utcnow(), 'wgr': dossier['global_rating']}
+                if request:
+                    for databaseID in request:
+                        dossier = request[databaseID]
+                        self.dossiers[databaseID] = {'wgr': dossier['global_rating']}
+        BigWorld.callback(0, partial(self.updatePaints, databaseIDs))
+
+    def updatePaints(self, databaseIDs):
         for databaseID in databaseIDs:
             vehicleID = BigWorld.player().guiSessionProvider.getCtx().getArenaDP().getVehIDByAccDBID(int(databaseID))
             vehicle = BigWorld.entity(vehicleID)
             if vehicle is not None:
                 vehicle.appearance.setVehicle(vehicle)
 
-    def thread(self, databaseID):
+    def thread(self, databaseIDs):
         try:
-            self.threadArray.append(threading.Thread(target=self.loadPlayerStats, args=(databaseID,)))
+            self.threadArray.append(threading.Thread(target=self.loadPlayerStats, args=(databaseIDs,)))
             self.threadArray[-1].start()
         except StandardError:
             pass
@@ -107,6 +110,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             self.thread([str(pl['accountDBID']) for pl in arena.vehicles.values()])
 
     def resetStats(self):
+        self.threadArray[:] = []
         self.dossiers.clear()
 
 
