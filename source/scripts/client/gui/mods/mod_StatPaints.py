@@ -100,7 +100,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         for databaseID in databaseIDs:
             vehicleID = BigWorld.player().guiSessionProvider.getCtx().getArenaDP().getVehIDByAccDBID(int(databaseID))
             vehicle = BigWorld.entity(vehicleID)
-            if vehicle is not None:
+            if vehicle is not None and vehicle.appearance is not None:
                 vehicle.appearance.setVehicle(vehicle)
 
     def thread(self, databaseIDs):
