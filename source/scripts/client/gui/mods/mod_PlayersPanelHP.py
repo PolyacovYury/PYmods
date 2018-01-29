@@ -4,6 +4,7 @@ import PYmodsCore
 import traceback
 from Avatar import PlayerAvatar
 from Vehicle import Vehicle
+from constants import ARENA_GUI_TYPE
 from gui.Scaleform.daapi.view.battle.shared.minimap.plugins import ArenaVehiclesPlugin
 from gui.battle_control.arena_info import vos_collections
 from helpers import dependency
@@ -58,8 +59,11 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
             self.setHPField(vehicleID)
 
     def setHPField(self, vehicleID):
-        playerTeam = BigWorld.player().team
-        team = BigWorld.player().arena.vehicles[vehicleID]['team']
+        player = BigWorld.player()
+        if player.arena.guiType in (ARENA_GUI_TYPE.EPIC_RANDOM, ARENA_GUI_TYPE.EPIC_RANDOM_TRAINING):
+            return
+        playerTeam = player.team
+        team = player.arena.vehicles[vehicleID]['team']
         panelSide = 'left' if playerTeam == team else 'right'
         currentHP = self.__hpCache[vehicleID]['current']
         maxHP = self.__hpCache[vehicleID]['max']
