@@ -21,6 +21,7 @@ except ImportError:
 class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def __init__(self):
         self.dossiers = {}
+        self.pendingIDs = set()
         self.threadArray = []
         super(ConfigInterface, self).__init__()
 
@@ -72,29 +73,34 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def loadPlayerStats(self, databaseIDs):
         regions = {}
         for databaseID in databaseIDs:
-            regions.setdefault(userRegion(int(databaseID)), []).append(databaseID)
-        requests = []
+            if databaseID not in self.pendingIDs and databaseID not in self.dossiers:
+                self.pendingIDs.add(databaseID)
+                regions.setdefault(userRegion(int(databaseID)), []).append(databaseID)
+        results = []
         for region in regions:
             try:
-                url = ('https://api.worldoftanks.{'
-                       'region}/wot/account/info/?application_id=demo&fields=global_rating&account_id={id}').format(
-                    region=region, id=','.join(regions[region]))
-                requests.append(json.loads(urllib2.urlopen(url, timeout=1).read()).get('data', None))
+                results.append(json.loads(urllib2.urlopen((
+                    'https://api.worldoftanks.{'
+                    'region}/wot/account/info/?application_id=demo&fields=global_rating&account_id={id}').format(
+                    region=region, id=','.join(regions[region]))).read()).get('data', None))
             except IOError:
-                pass
-        if requests:
-            for request in requests:
-                if request:
-                    for databaseID in request:
-                        dossier = request[databaseID]
-                        self.dossiers[databaseID] = {'wgr': dossier['global_rating']}
+                for databaseID in regions[region]:
+                    self.pendingIDs.discard(databaseID)
+        for result in results:
+            if result:
+                for databaseID in result:
+                    dossier = result[databaseID]
+                    self.dossiers[databaseID] = {'wgr': dossier['global_rating']}
+                    self.pendingIDs.discard(databaseID)
+        for databaseID in databaseIDs:
+            self.pendingIDs.discard(databaseID)
         BigWorld.callback(0, partial(self.updatePaints, databaseIDs))
 
     def updatePaints(self, databaseIDs):
         for databaseID in databaseIDs:
             vehicleID = BigWorld.player().guiSessionProvider.getCtx().getArenaDP().getVehIDByAccDBID(int(databaseID))
             vehicle = BigWorld.entity(vehicleID)
-            if vehicle is not None:
+            if vehicle is not None and vehicle.appearance is not None:
                 vehicle.appearance.setVehicle(vehicle)
 
     def thread(self, databaseIDs):
@@ -112,6 +118,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def resetStats(self):
         self.threadArray[:] = []
         self.dossiers.clear()
+        self.pendingIDs.clear()
 
 
 def userRegion(databaseID):
@@ -156,7 +163,8 @@ def new__getVehicleOutfit(base, self, *args, **kwargs):
         paintItems[paintID] = paintItem
     accountID = str(BigWorld.player().arena.vehicles[vehicle.id]['accountDBID'])
     if accountID not in g_config.dossiers:
-        g_config.thread([accountID])
+        if accountID not in g_config.pendingIDs:
+            g_config.thread([accountID])
         return outfit
     paintID = None
     rating = g_config.dossiers[accountID]['wgr']
