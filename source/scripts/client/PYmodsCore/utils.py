@@ -45,7 +45,7 @@ def __splitMsg(msg):
 
 
 def __sendMessagePart(msg, chanId):
-    class PYmods_chat(object):
+    class ClientChat(object):
         from messenger.m_constants import PROTO_TYPE
         from messenger.proto import proto_getter
 
@@ -58,17 +58,17 @@ def __sendMessagePart(msg, chanId):
 
     msg = msg.encode('utf-8')
     import BattleReplay
-    if PYmods_chat.proto is None or BattleReplay.isPlaying():
+    if ClientChat.proto is None or BattleReplay.isPlaying():
         from messenger import MessengerEntry
         MessengerEntry.g_instance.gui.addClientMessage('OFFLINE: %s' % msg, True)
         return
     else:
         if chanId == 0:
-            PYmods_chat.proto.arenaChat.broadcast(msg, 1)
+            ClientChat.proto.arenaChat.broadcast(msg, 1)
         if chanId == 1:
-            PYmods_chat.proto.arenaChat.broadcast(msg, 0)
+            ClientChat.proto.arenaChat.broadcast(msg, 0)
         if chanId == 2:
-            PYmods_chat.proto.unitChat.broadcast(msg, 1)
+            ClientChat.proto.unitChat.broadcast(msg, 1)
 
 
 def sendChatMessage(fullMsg, chanId, delay):
@@ -80,8 +80,8 @@ def sendChatMessage(fullMsg, chanId, delay):
 
 
 def new_addItem(base, self, item):
-    if 'PYmods_SM' in item._vo['message']['message']:
-        item._vo['message']['message'] = item._vo['message']['message'].replace('PYmods_SM', '')
+    if 'temp_SM' in item._vo['message']['message']:
+        item._vo['message']['message'] = item._vo['message']['message'].replace('temp_SM', '')
         item._vo['notify'] = False
         if item._settings:
             item._settings.isNotify = False
@@ -189,6 +189,7 @@ class Analytics(object):
         self.old_user = None
         self.old_playerName = ''
         self.lang = ''
+        self.lastTime = BigWorld.time()
         g_playerEvents.onAccountShowGUI += self.start
         BigWorld.callback(0.0, self.game_fini_hook)
 
@@ -222,10 +223,13 @@ class Analytics(object):
             self.analytics_started = True
             self.old_user = BigWorld.player().databaseID
             self.old_playerName = BigWorld.player().name
-        else:
+        elif BigWorld.time() - self.lastTime >= 1200:
             requestsPool.append(dict(template, ec='session', ea='keep'))
-        for params in requestsPool:
-            urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=urllib.urlencode(params)).read()
+        if requestsPool:
+            self.lastTime = BigWorld.time()
+            from itertools import chain
+            urllib2.urlopen(url='http://www.google-analytics.com/batch?',
+                            data=urllib.urlencode(tuple(chain.from_iterable(r.items() for r in requestsPool)))).read()
 
     # noinspection PyUnusedLocal
     def start(self, ctx):

@@ -593,7 +593,7 @@ class RemodEnablerUI(AbstractWindowView):
                         data[partName]['emblemSlots'].append(slotDict)
             except StandardError:
                 SystemMessages.pushMessage(
-                    'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)
+                    'temp_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)
                 traceback.print_exc()
         else:
             self.py_sendMessage('', 'Add', 'notSupported')
@@ -659,7 +659,7 @@ class RemodEnablerUI(AbstractWindowView):
     def py_onCreateRemod(self, settings):
         try:
             if not settings.name:
-                SystemMessages.pushMessage('PYmods_SM' + g_config.i18n['UI_flash_remodCreate_name_empty'],
+                SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_flash_remodCreate_name_empty'],
                                            SystemMessages.SM_TYPE.Warning)
                 return
             from collections import OrderedDict
@@ -671,16 +671,16 @@ class RemodEnablerUI(AbstractWindowView):
                                 sort_keys=False)
             g_config.readCurrentSettings()
             SystemMessages.pushMessage(
-                'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_success'], SystemMessages.SM_TYPE.CustomizationForGold)
+                'temp_SM' + g_config.i18n['UI_flash_remodCreate_success'], SystemMessages.SM_TYPE.CustomizationForGold)
         except StandardError:
             SystemMessages.pushMessage(
-                'PYmods_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)
+                'temp_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)
             traceback.print_exc()
 
     @staticmethod
     def py_sendMessage(xmlName, action, status):
         SystemMessages.pushMessage(
-            'PYmods_SM' + g_config.i18n['UI_flash_vehicle%s_%s' % (action, status)] + xmlName.join(
+            'temp_SM' + g_config.i18n['UI_flash_vehicle%s_%s' % (action, status)] + xmlName.join(
                 ('<b>', '</b>.')), SystemMessages.SM_TYPE.CustomizationForGold)
 
     def onWindowClose(self):
@@ -707,7 +707,7 @@ def lobbyKeyControl(event):
         if g_config.data['isDebug']:
             print 'RemodEnabler: Changing display mode to %s' % g_config.data['currentMode']
         SystemMessages.pushMessage(
-            'PYmods_SM' + g_config.i18n['UI_mode'] + g_config.i18n['UI_mode_' + g_config.data['currentMode']].join(
+            'temp_SM' + g_config.i18n['UI_mode'] + g_config.i18n['UI_mode_' + g_config.data['currentMode']].join(
                 ('<b>', '</b>.')),
             SystemMessages.SM_TYPE.Warning)
         PYmodsCore.refreshCurrentVehicle()
@@ -716,27 +716,27 @@ def lobbyKeyControl(event):
             g_config.data['collisionComparisonEnabled'] = False
             if g_config.data['isDebug']:
                 print 'RemodEnabler: Disabling collision displaying'
-            SystemMessages.pushMessage('PYmods_SM' + g_config.i18n['UI_disableCollisionComparison'],
+            SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_disableCollisionComparison'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
         elif g_config.data['collisionEnabled']:
             g_config.data['collisionEnabled'] = False
             g_config.data['collisionComparisonEnabled'] = True
             if g_config.data['isDebug']:
                 print 'RemodEnabler: Enabling collision display comparison mode'
-            SystemMessages.pushMessage('PYmods_SM' + g_config.i18n['UI_enableCollisionComparison'],
+            SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_enableCollisionComparison'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
         else:
             g_config.data['collisionEnabled'] = True
             if g_config.data['isDebug']:
                 print 'RemodEnabler: Enabling collision display'
-            SystemMessages.pushMessage('PYmods_SM' + g_config.i18n['UI_enableCollision'],
+            SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_enableCollision'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
         PYmodsCore.refreshCurrentVehicle()
     if PYmodsCore.checkKeys(g_config.data['DynamicSkinHotkey']):
         enabled = g_config.data['dynamicSkinEnabled']
         g_config.data['dynamicSkinEnabled'] = not enabled
         SystemMessages.pushMessage(
-            'PYmods_SM' + g_config.i18n['UI_%sableDynamicSkin' % ('en' if not enabled else 'dis')],
+            'temp_SM' + g_config.i18n['UI_%sableDynamicSkin' % ('en' if not enabled else 'dis')],
             SystemMessages.SM_TYPE.CustomizationForGold)
         PYmodsCore.refreshCurrentVehicle()
     if g_config.OM.enabled and PYmodsCore.checkKeys(g_config.data['SwitchRemodHotkey']):

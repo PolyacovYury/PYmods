@@ -391,7 +391,7 @@ class CamoSelectorUI(AbstractWindowView):
 
     def onWindowClose(self):
         _config.activePreviewCamo = None
-        SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflageRestore'],
+        SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_camouflageRestore'],
                                    SystemMessages.SM_TYPE.CustomizationForGold)
         PYmodsCore.refreshCurrentVehicle()
         _config.UIProxy = None
@@ -457,7 +457,7 @@ class CamoSelectorUI(AbstractWindowView):
                 newSettings[nation] = _config.camouflages[nation]
         PYmodsCore.loadJson(_config.ID, 'settings', newSettings, _config.configPath, True)
 
-        SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflageSave'],
+        SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_camouflageSave'],
                                    SystemMessages.SM_TYPE.CustomizationForGold)
         PYmodsCore.refreshCurrentVehicle()
 
@@ -481,7 +481,7 @@ class CamoSelectorUI(AbstractWindowView):
             elif camoName in _config.interCamo:
                 del camoNames[camoName]
         _config.activePreviewCamo = sorted(camoNames.keys())[int(camoID)]
-        SystemMessages.pushMessage('PYmods_SM' + _config.i18n['UI_camouflagePreview'] +
+        SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_camouflagePreview'] +
                                    _config.activePreviewCamo.join(('<b>', '</b>')),
                                    SystemMessages.SM_TYPE.CustomizationForGold)
         _config.backup['mode'] = mode

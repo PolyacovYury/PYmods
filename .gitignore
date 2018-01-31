@@ -1,6 +1,9 @@
 .idea/
 uncompiled/
+release/
+release_hidden/
 *.cmd
+!/source/scripts/compile.cmd
 /source/scripts/others/
 /source/scripts/client_hidden/
 /source/scripts/client/gui/mods/__init__.py
