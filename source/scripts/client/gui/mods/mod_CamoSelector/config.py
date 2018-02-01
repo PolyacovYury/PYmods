@@ -140,6 +140,10 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             except AttributeError:
                 BigWorld.g_modsListApi.updateMod(**kwargs)
 
+    def readCurrentSettings(self, quiet=True):
+        super(ConfigInterface, self).readCurrentSettings(quiet)
+        self.readCamouflages(False)
+
     def readCamouflages(self, doShopCheck):
         self.configFolders.clear()
         self.camouflages = {'modded': {}}
