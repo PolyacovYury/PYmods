@@ -10,13 +10,6 @@ from .. import g_config, installSelectedCamo
 
 
 class CamoSelectorUI(AbstractWindowView):
-    proxy = None
-
-    def _populate(self):
-        super(self.__class__, self)._populate()
-        if self._isDAAPIInited():
-            self.proxy = weakref.proxy(self)
-
     def py_onSyncData(self):
         # noinspection PyUnresolvedReferences
         texts = {
@@ -93,7 +86,6 @@ class CamoSelectorUI(AbstractWindowView):
         SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_camouflageRestore'],
                                    SystemMessages.SM_TYPE.CustomizationForGold)
         refreshCurrentVehicle()
-        self.proxy = None
         self.destroy()
 
     def as_isModalS(self):

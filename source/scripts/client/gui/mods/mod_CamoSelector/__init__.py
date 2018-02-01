@@ -3,6 +3,7 @@ import time
 
 from PYmodsCore import refreshCurrentVehicle, overrideMethod, checkKeys, loadJson
 from .config import g_config
+from .views.settings import CamoSelectorUI
 import BigWorld
 import CurrentVehicle
 import Keys
@@ -254,11 +255,12 @@ def new_MV_populate(base, self):
 
 
 def updateGUIState():
-    if g_config.UIProxy is None:
+    view = g_appLoader.getDefLobbyApp().containerManager.getViewByKey('CamoSelectorUI')
+    if view is None:
         return
     nationID = CamoSelectorUI.getCurrentNation()
     if nationID is not None and g_config.backupNationID != nationID:
-        g_config.UIProxy.changeNation(nationID)
+        view.changeNation(nationID)
 
 
 # @overrideMethod(CurrentVehicle._CurrentVehicle, 'selectVehicle')

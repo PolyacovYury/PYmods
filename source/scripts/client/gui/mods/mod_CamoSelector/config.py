@@ -31,7 +31,6 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         self.origInterCamo = []
         self.changedNations = []
         self.activePreviewCamo = None
-        self.UIProxy = None
         self.backupNationID = None
         self.backup = {'mode': 0, 'camoID': (len(nations.NAMES) + 2) * [0]}
         self.isModAdded = False
