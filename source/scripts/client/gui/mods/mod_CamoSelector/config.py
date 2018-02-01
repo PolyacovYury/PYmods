@@ -10,9 +10,10 @@ from PYmodsCore import checkKeys
 from gui import InputHandler
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
-from items.vehicles import CAMOUFLAGE_KIND_INDICES
 from helpers import dependency
+from items.vehicles import CAMOUFLAGE_KIND_INDICES
 from skeletons.gui.customization import ICustomizationService
+from . import readers
 
 
 class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
@@ -127,9 +128,9 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             PYmodsCore.refreshCurrentVehicle()
 
     def onApplySettings(self, settings):
-        if 'fullAlpha' in settings and settings['fullAlpha'] != self.data['fullAlpha']:
-            self.changedNations[:] = []
-            items.vehicles.g_cache._Cache__customization = [None for _ in nations.NAMES]
+        # if 'fullAlpha' in settings and settings['fullAlpha'] != self.data['fullAlpha']:
+        #     self.changedNations[:] = []
+        #     items.vehicles.g_cache._Cache__customization = [None for _ in nations.NAMES]
         super(self.__class__, self).onApplySettings(settings)
         self.hangarCamoCache.clear()
         if self.isModAdded:
@@ -150,16 +151,20 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x)) if camoDirSect is not None else [])
             for camoName in camoNames:
                 self.configFolders[camoName] = confFolder = set()
+                readers.updateCustomizationCache(self.configPath + 'camouflages/' + camoName + '/',
+                                                 self.i18n['UI_flash_camoMode_modded'])
                 settings = PYmodsCore.loadJson(self.ID, 'settings', {}, self.configPath + 'camouflages/' + camoName + '/')
                 for key in settings:
                     confFolder.add(key)
                 self.camouflages['modded'].update(settings)
         except StandardError:
             traceback.print_exc()
+        return
 
-        self.interCamo = [x['name'] for x in items.vehicles.g_cache.customization(0)['camouflages'].itervalues()]
+        customization = items.vehicles.g_cache.customization
+        self.interCamo = [x['name'] for x in customization(0)['camouflages'].itervalues()]
         for nationID in xrange(1, len(nations.NAMES)):
-            camoNames = [x['name'] for x in items.vehicles.g_cache.customization(nationID)['camouflages'].itervalues()]
+            camoNames = [x['name'] for x in customization(nationID)['camouflages'].itervalues()]
             self.interCamo = [x for x in self.interCamo if x in camoNames]
         self.origInterCamo = [x for x in self.interCamo if x not in self.camouflages['modded']]
         settings = PYmodsCore.loadJson(self.ID, 'settings', {}, self.configPath)
@@ -176,7 +181,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 nationID = 0
             else:
                 nationID = nations.INDICES[nation]
-            camouflages = items.vehicles.g_cache.customization(nationID)['camouflages']
+            camouflages = customization(nationID)['camouflages']
             nationConf = settings[nation]
             camoNames = [camouflage['name'] for camouflage in camouflages.values()]
             for camoName in nationConf:

@@ -9,7 +9,6 @@ from PYmodsCore import overrideMethod
 from items.components import shared_components
 from items.components.c11n_constants import SeasonType
 from items.readers.c11n_readers import CamouflageXmlReader
-from . import g_config
 
 
 class LegacyCamouflageReader(CamouflageXmlReader):
@@ -49,21 +48,22 @@ def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
                                                       ctx, subsection)
 
 
-def updateCustomizationCache(cache, folder):
+def updateCustomizationCache(folder, groupName):
+    cache = iv.g_cache.customization20()
     createPriceGroup(cache)
-    __readCamoFolder(cache, cc.CamouflageItem, folder, cache.camouflages)
+    __readCamoFolder(groupName, cache, cc.CamouflageItem, folder, cache.camouflages)
 
 
-def __readCamoFolder(cache, itemCls, folder, storage):
+def __readCamoFolder(groupName, cache, itemCls, folder, storage):
     itemsFileName = os.path.join(folder, 'settings.xml')
     dataSection = ResMgr.openSection(itemsFileName)
     try:
-        _readItems(cache, itemCls, (None, 'settings.xml'), dataSection, storage)
+        _readItems(groupName, cache, itemCls, (None, 'settings.xml'), dataSection, storage)
     finally:
         ResMgr.purge(itemsFileName)
 
 
-def _readItems(cache, itemCls, xmlCtx, section, storage):
+def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
     """Read items and corresponding item groups from xml.
 
     :param itemCls: Target item class
@@ -81,7 +81,7 @@ def _readItems(cache, itemCls, xmlCtx, section, storage):
     itemPrototype.priceGroup = 'modded'
     itemPrototype.invisibilityFactor = 1
     itemPrototype.historical = False
-    itemPrototype.i18n = shared_components.I18nExposedComponent(g_config.i18n['UI_camouflageGroups_modded'], '')
+    itemPrototype.i18n = shared_components.I18nExposedComponent(groupName, '')
     group.itemPrototype = itemPrototype
     j = 0
     if section.has_key('camouflages'):
