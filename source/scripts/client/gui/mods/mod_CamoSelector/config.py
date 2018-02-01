@@ -36,7 +36,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
     def init(self):
         self.ID = 'CamoSelector'
-        self.version = '2.5.6 (%(file_compile_date)s)'
+        self.version = '2.0.0 (%(file_compile_date)s)'
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'selectHotKey': ['KEY_F5', ['KEY_LCONTROL', 'KEY_RCONTROL']]}
