@@ -1,8 +1,21 @@
+import nations
+import weakref
+import items.vehicles
+from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
+from PYmodsCore import refreshCurrentVehicle, loadJson
+from gui import SystemMessages
+from items.vehicles import CAMOUFLAGE_KINDS, CAMOUFLAGE_KIND_INDICES
+from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
+from .. import g_config, installSelectedCamo
+
+
 class CamoSelectorUI(AbstractWindowView):
+    proxy = None
+
     def _populate(self):
         super(self.__class__, self)._populate()
         if self._isDAAPIInited():
-            g_config.UIProxy = weakref.proxy(self)
+            self.proxy = weakref.proxy(self)
 
     def py_onSyncData(self):
         # noinspection PyUnresolvedReferences
@@ -80,7 +93,7 @@ class CamoSelectorUI(AbstractWindowView):
         SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_camouflageRestore'],
                                    SystemMessages.SM_TYPE.CustomizationForGold)
         refreshCurrentVehicle()
-        g_config.UIProxy = None
+        self.proxy = None
         self.destroy()
 
     def as_isModalS(self):
