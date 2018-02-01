@@ -206,6 +206,8 @@ def pack_file(fullname, sdir=None, ddir=None, version_str=None, date=None, ix=No
                             break
                 if identical:
                     return success
+                elif quiet:
+                    print 'Checking', fullname, '...'
             elif not orig_folder and quiet:
                 print 'Checking', fullname, '...'
             orig_infos_noex = [x for x in orig_infos_full if x not in orig_infos]
