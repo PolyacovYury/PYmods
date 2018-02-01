@@ -151,9 +151,9 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x)) if camoDirSect is not None else [])
             for camoName in camoNames:
                 self.configFolders[camoName] = confFolder = set()
-                readers.updateCustomizationCache('.' + self.configPath + 'camouflages/' + camoName + '/',
-                                                 self.i18n['UI_flash_camoMode_modded'])
-                settings = PYmodsCore.loadJson(self.ID, 'settings', {}, self.configPath + 'camouflages/' + camoName + '/')
+                fileName = self.configPath + 'camouflages/' + camoName + '/'
+                readers.updateCustomizationCache('.' + fileName,self.i18n['UI_flash_camoMode_modded'])
+                settings = PYmodsCore.loadJson(self.ID, 'settings', {}, fileName)
                 for key in settings:
                     confFolder.add(key)
                 self.camouflages['modded'].update(settings)

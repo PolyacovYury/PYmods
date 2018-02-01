@@ -56,7 +56,6 @@ def updateCustomizationCache(folder, groupName):
 
 def __readCamoFolder(groupName, cache, itemCls, folder, storage):
     itemsFileName = os.path.join(folder, 'settings.xml')
-    print itemsFileName
     dataSection = ResMgr.openSection(itemsFileName)
     try:
         _readItems(groupName, cache, itemCls, (None, 'settings.xml'), dataSection, storage)
@@ -93,8 +92,7 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
         item = itemCls(group)
         reader._readFromXml(item, iCtx, i_section)
         itemPrototype.i18n = shared_components.I18nExposedComponent(i_name, '')
-        if not item.id:
-            item.id = max(20000, *storage) + 1
+        item.id = max(20000, *storage) + 1
         if item.compactDescr in itemToGroup:
             ix.raiseWrongXml(iCtx, 'id', 'duplicate item. id: %s found in group %s' % (item.id, itemToGroup[item.compactDescr]))
         storage[item.id] = item
