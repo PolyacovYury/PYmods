@@ -111,10 +111,12 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
 
 
 def createPriceGroup(cache):
+    if 20000 in cache.priceGroups:
+        if cache.priceGroups[20000].name != 'modded':
+            ix.raiseWrongXml((None, ''), 'priceGroup', 'CamoSelector price group ID needs to be changed!')
+        return
     priceGroup = cc.PriceGroup()
     priceGroup.id = 20000
-    if priceGroup.id in cache.priceGroups:
-        ix.raiseWrongXml((None, None), 'priceGroup', 'CamoSelector price group ID needs to be changed!')
     priceGroup.name = intern('modded')
     priceGroup.notInShop = True
     priceGroup.tags = frozenset(map(intern, ('notInShop', 'legacy', 'camouflages', 'common') + nations.NAMES))
