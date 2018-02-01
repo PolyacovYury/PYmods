@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import time
 
-from PYmodsCore import refreshCurrentVehicle, overrideMethod, checkKeys, loadJson
+from PYmodsCore import overrideMethod
+from .utils import getCurrentNationID
 from .config import g_config
-from .views.settings import CamoSelectorUI
 import BigWorld
 import CurrentVehicle
 import Keys
@@ -258,7 +258,7 @@ def updateGUIState():
     view = g_appLoader.getDefLobbyApp().containerManager.getViewByKey('CamoSelectorUI')
     if view is None:
         return
-    nationID = CamoSelectorUI.getCurrentNation()
+    nationID = getCurrentNationID()
     if nationID is not None and g_config.backupNationID != nationID:
         view.changeNation(nationID)
 

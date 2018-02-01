@@ -1,12 +1,11 @@
 import nations
-import weakref
 import items.vehicles
-from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from PYmodsCore import refreshCurrentVehicle, loadJson
 from gui import SystemMessages
 from items.vehicles import CAMOUFLAGE_KINDS, CAMOUFLAGE_KIND_INDICES
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
-from .. import g_config, installSelectedCamo
+from .. import g_config
+from ..utils import getCurrentNationID
 
 
 class CamoSelectorUI(AbstractWindowView):
@@ -64,17 +63,7 @@ class CamoSelectorUI(AbstractWindowView):
                         camoSettings['kinds'][key] = kind == camouflageDesc['kind']
                 settings[idx].append(camoSettings)
         self.flashObject.as_syncData({'texts': texts, 'settings': settings, 'ids': g_config.backup})
-        self.changeNation(self.getCurrentNation())
-
-    @staticmethod
-    def getCurrentNation():
-        if g_currentPreviewVehicle.isPresent():
-            vDesc = g_currentPreviewVehicle.item.descriptor
-        elif g_currentVehicle.isPresent():
-            vDesc = g_currentVehicle.item.descriptor
-        else:
-            raise AttributeError('g_currentVehicle.item.descriptor not found')
-        return vDesc.type.customizationNationID
+        self.changeNation(getCurrentNationID())
 
     def changeNation(self, nationID):
         g_config.backupNationID = nationID
@@ -182,4 +171,4 @@ class CamoSelectorUI(AbstractWindowView):
 
     @staticmethod
     def py_onApplyPreset():
-        installSelectedCamo()
+        pass  # installSelectedCamo()
