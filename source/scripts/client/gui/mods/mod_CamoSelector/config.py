@@ -8,7 +8,6 @@ import nations
 import traceback
 from PYmodsCore import checkKeys
 from gui import InputHandler
-from gui.Scaleform.framework import g_entitiesFactories, ViewSettings, ScopeTemplates, ViewTypes
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from items.vehicles import CAMOUFLAGE_KIND_INDICES
@@ -36,7 +35,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         super(ConfigInterface, self).__init__()
 
     def init(self):
-        self.ID = '%(mod_ID)s'
+        self.ID = 'CamoSelector'
         self.version = '2.5.6 (%(file_compile_date)s)'
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
@@ -218,14 +217,6 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
     def registerSettings(self):
         super(self.__class__, self).registerSettings()
-        from .views.main_view import CamoSelectorMainView
-        from .views.settings import CamoSelectorUI
-        # noinspection PyArgumentList
-        g_entitiesFactories.initSettings((
-            ViewSettings('CamoSelectorUI', CamoSelectorUI, 'CamoSelector.swf', ViewTypes.WINDOW, None,
-                         ScopeTemplates.GLOBAL_SCOPE, False),
-            ViewSettings('CamoSelectorMainView', CamoSelectorMainView, 'customizationMainView.swf',
-                         ViewTypes.LOBBY_SUB, None, ScopeTemplates.LOBBY_SUB_SCOPE),))
         kwargs = dict(
             id='CamoSelectorUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/CamoSelector.png', enabled=self.data['enabled'], login=False, lobby=True,
