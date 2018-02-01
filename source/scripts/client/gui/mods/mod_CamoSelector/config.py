@@ -14,8 +14,6 @@ from gui.app_loader import g_appLoader
 from items.vehicles import CAMOUFLAGE_KIND_INDICES
 from helpers import dependency
 from skeletons.gui.customization import ICustomizationService
-from .views.main_view import CamoSelectorMainView
-from .views.settings import CamoSelectorUI
 from . import installSelectedCamo
 
 
@@ -222,6 +220,8 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
     def registerSettings(self):
         super(self.__class__, self).registerSettings()
+        from .views.main_view import CamoSelectorMainView
+        from .views.settings import CamoSelectorUI
         # noinspection PyArgumentList
         g_entitiesFactories.initSettings((
             ViewSettings('CamoSelectorUI', CamoSelectorUI, 'CamoSelector.swf', ViewTypes.WINDOW, None,
