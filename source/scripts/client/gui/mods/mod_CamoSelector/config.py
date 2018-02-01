@@ -15,7 +15,8 @@ from items.vehicles import CAMOUFLAGE_KIND_INDICES
 from helpers import dependency
 from skeletons.gui.customization import ICustomizationService
 from .views.main_view import CamoSelectorMainView
-from . import CamoSelectorUI, installSelectedCamo
+from .views.settings import CamoSelectorUI
+from . import installSelectedCamo
 
 
 class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
