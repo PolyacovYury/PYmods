@@ -56,6 +56,7 @@ def updateCustomizationCache(folder, groupName):
 
 def __readCamoFolder(groupName, cache, itemCls, folder, storage):
     itemsFileName = os.path.join(folder, 'settings.xml')
+    print itemsFileName
     dataSection = ResMgr.openSection(itemsFileName)
     try:
         _readItems(groupName, cache, itemCls, (None, 'settings.xml'), dataSection, storage)

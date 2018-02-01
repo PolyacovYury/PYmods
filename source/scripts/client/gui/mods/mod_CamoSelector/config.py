@@ -6,7 +6,7 @@ import ResMgr
 import items.vehicles
 import nations
 import traceback
-from PYmodsCore import checkKeys
+from PYmodsCore import checkKeys, remDups
 from gui import InputHandler
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
@@ -147,11 +147,11 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         try:
             camoDirPath = '../' + self.configPath + 'camouflages'
             camoDirSect = ResMgr.openSection(camoDirPath)
-            camoNames = set(
+            camoNames = remDups(
                 (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x)) if camoDirSect is not None else [])
             for camoName in camoNames:
                 self.configFolders[camoName] = confFolder = set()
-                readers.updateCustomizationCache(self.configPath + 'camouflages/' + camoName + '/',
+                readers.updateCustomizationCache('.' + self.configPath + 'camouflages/' + camoName + '/',
                                                  self.i18n['UI_flash_camoMode_modded'])
                 settings = PYmodsCore.loadJson(self.ID, 'settings', {}, self.configPath + 'camouflages/' + camoName + '/')
                 for key in settings:
