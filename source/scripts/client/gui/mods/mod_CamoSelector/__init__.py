@@ -4,6 +4,7 @@ import time
 from PYmodsCore import overrideMethod
 from .utils import getCurrentNationID
 from .config import g_config
+import views
 import BigWorld
 import CurrentVehicle
 import Keys
