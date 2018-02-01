@@ -14,7 +14,6 @@ from gui.app_loader import g_appLoader
 from items.vehicles import CAMOUFLAGE_KIND_INDICES
 from helpers import dependency
 from skeletons.gui.customization import ICustomizationService
-from . import installSelectedCamo
 
 
 class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
@@ -241,7 +240,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 def lobbyKeyControl(event):
     if event.isKeyDown() and not g_config.isMSAWindowOpen:
         if checkKeys(g_config.data['selectHotkey']):
-            installSelectedCamo()
+            pass  # installSelectedCamo()
 
 
 def inj_hkKeyEvent(event):
