@@ -1,6 +1,7 @@
 """ XFW Library (c) www.modxvm.com 2013-2017 """
 # forked by Polyacov_Yury
 import traceback
+from functools import partial
 
 __all__ = ['registerEvent', 'overrideMethod', 'overrideClassMethod', 'overrideStaticMethod']
 
@@ -64,21 +65,11 @@ def _override(cls, method, newm):
         setattr(cls, method, property(newm))
 
 
-def _OverrideMethod(handler, cls, method):
+def _OverrideMethod(handler, cls, method, decorator=None):
     orig = getattr(cls, method)
     newm = lambda *a, **k: handler(orig, *a, **k)
-    _override(cls, method, newm)
-
-
-def _OverrideStaticMethod(handler, cls, method):
-    orig = getattr(cls, method)
-    newm = staticmethod(lambda *a, **k: handler(orig, *a, **k))
-    _override(cls, method, newm)
-
-
-def _OverrideClassMethod(handler, cls, method):
-    orig = getattr(cls, method)
-    newm = classmethod(lambda *a, **k: handler(orig, *a, **k))
+    if decorator is not None:
+        newm = decorator(newm)
     _override(cls, method, newm)
 
 
@@ -94,5 +85,5 @@ def _hook_decorator(func):
 
 registerEvent = _hook_decorator(_RegisterEvent)
 overrideMethod = _hook_decorator(_OverrideMethod)
-overrideStaticMethod = _hook_decorator(_OverrideStaticMethod)
-overrideClassMethod = _hook_decorator(_OverrideClassMethod)
+overrideStaticMethod = _hook_decorator(partial(_OverrideMethod, decorator=staticmethod))
+overrideClassMethod = _hook_decorator(partial(_OverrideMethod, decorator=classmethod))
