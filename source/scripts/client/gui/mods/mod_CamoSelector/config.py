@@ -163,8 +163,8 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         except StandardError:
             traceback.print_exc()
         camouflages = items.vehicles.g_cache.customization20().camouflages
-        camoNames = {id: os.path.splitext(os.path.basename(x.texture)) for id, x in camouflages.iteritems() if 'modded' not in
-                     x.priceGroupTags}
+        camoNames = {id: os.path.splitext(os.path.basename(x.texture))[0] for id, x in camouflages.iteritems() if 'modded'
+                     not in x.priceGroupTags}
         camoIndices = {}
         for camoID, camoName in camoNames.iteritems():
             camoIndices.setdefault(camoName, []).append(camoID)
