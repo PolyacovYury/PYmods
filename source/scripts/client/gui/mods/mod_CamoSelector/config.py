@@ -178,7 +178,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 self.disable = settings['disable']
         if 'remap' in settings:
             conf = settings['remap']
-            for camoName in conf:
+            for camoName in conf.keys():
                 if camoName not in camoNames:
                     print '%s: unknown camouflage for remapping: %s' % (self.ID, camoName)
                     del conf[camoName]
