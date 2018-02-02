@@ -168,7 +168,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         camoIndices = {}
         for camoID, camoName in camoNames.iteritems():
             camoIndices.setdefault(camoName, []).append(camoID)
-        self.interCamo = [camoName for camoName, indices in camoIndices if len(indices) > 1]
+        self.interCamo = [camoName for camoName, indices in camoIndices.iteritems() if len(indices) > 1]
         self.hiddenCamo = [camoID for camoID in camoNames if 'notInShop' in camouflages[camoID].priceGroupTags]
         settings = PYmodsCore.loadJson(self.ID, 'settings', {}, self.configPath)
         if 'disable' in settings:
