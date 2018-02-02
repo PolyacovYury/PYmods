@@ -140,10 +140,6 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             except AttributeError:
                 BigWorld.g_modsListApi.updateMod(**kwargs)
 
-    def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
-        self.readCamouflages(False)
-
     def readCamouflages(self, doShopCheck):
         self.configFolders.clear()
         self.camouflages = {'modded': {}}
@@ -156,7 +152,6 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             for camoName in camoNames:
                 self.configFolders[camoName] = confFolder = set()
                 fileName = self.configPath + 'camouflages/' + camoName + '/'
-                readers.updateCustomizationCache('.' + fileName,self.i18n['UI_flash_camoMode_modded'])
                 settings = PYmodsCore.loadJson(self.ID, 'settings', {}, fileName)
                 for key in settings:
                     confFolder.add(key)

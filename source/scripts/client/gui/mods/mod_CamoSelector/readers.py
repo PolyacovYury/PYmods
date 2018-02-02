@@ -21,6 +21,17 @@ class LegacyCamouflageReader(CamouflageXmlReader):
             target.palettes = tuple(palettes)
 
 
+@overrideMethod(iv.Cache, 'customization20')
+def new_customization20(base, *args, **kwargs):
+    from . import g_config
+    cache = base(*args, **kwargs)
+    if g_config.data['enabled'] and 'modded' not in cache.priceGroupNames:
+        for configDir in g_config.configFolders:
+            filePath = g_config.configPath + 'camouflages/' + configDir + '/'
+            updateCustomizationCache('.' + filePath, g_config.i18n['UI_flash_camoMode_modded'])
+    return cache
+
+
 # noinspection PyUnboundLocalVariable,PyUnboundLocalVariable
 @overrideMethod(iv, '_vehicleValues')
 def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
