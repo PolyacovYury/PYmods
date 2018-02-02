@@ -1,24 +1,19 @@
 # coding=utf-8
 import BigWorld
 import Keys
-import PYmodsCore
 import ResMgr
 import items.vehicles
 import nations
 import os
 import traceback
-from PYmodsCore import checkKeys, remDups
+from PYmodsCore import PYmodsConfigInterface, checkKeys, loadJson, refreshCurrentVehicle, remDups
 from gui import InputHandler
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
-from helpers import dependency
 from items.components.c11n_constants import SeasonType
-from skeletons.gui.customization import ICustomizationService
 
 
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
-    customizationController = dependency.instance(ICustomizationService)
-
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.disable = []
         self.hangarCamoCache = {}
@@ -126,7 +121,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         try:
             from gui.mods import mod_remodenabler
         except ImportError:
-            PYmodsCore.refreshCurrentVehicle()
+            refreshCurrentVehicle()
 
     def onApplySettings(self, settings):
         super(self.__class__, self).onApplySettings(settings)
@@ -144,7 +139,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             return
         self.configFolders.clear()
         self.camouflages = {'modded': {}}
-        self.camouflagesCache = PYmodsCore.loadJson(self.ID, 'camouflagesCache', self.camouflagesCache, self.configPath)
+        self.camouflagesCache = loadJson(self.ID, 'camouflagesCache', self.camouflagesCache, self.configPath)
         try:
             camoDirPath = '../' + self.configPath + 'camouflages'
             camoDirSect = ResMgr.openSection(camoDirPath)
@@ -153,7 +148,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                     if camoDirSect is not None else []):
                 self.configFolders[camoName] = confFolder = set()
                 fileName = self.configPath + 'camouflages/' + camoName + '/'
-                settings = PYmodsCore.loadJson(self.ID, 'settings', {}, fileName)
+                settings = loadJson(self.ID, 'settings', {}, fileName)
                 if 'kinds' in settings:
                     settings['season'] = settings['kinds']
                     del settings['season']
@@ -178,7 +173,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             if set(nationsList) == set(xrange(len(nations.NAMES))):
                 self.interCamo.append(camoName)
         self.hiddenCamo = [camoID for camoID in camoNames if 'notInShop' in camouflages[camoID].priceGroupTags]
-        settings = PYmodsCore.loadJson(self.ID, 'settings', {}, self.configPath)
+        settings = loadJson(self.ID, 'settings', {}, self.configPath)
         if 'disable' in settings:
             if not settings['disable']:
                 del settings['disable']
@@ -228,7 +223,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             newSettings['disable'] = self.disable
         if 'remap' in settings:
             newSettings['remap'] = settings['remap']
-        PYmodsCore.loadJson(self.ID, 'settings', newSettings, self.configPath, True)
+        loadJson(self.ID, 'settings', newSettings, self.configPath, True)
 
     def registerSettings(self):
         super(self.__class__, self).registerSettings()
@@ -262,4 +257,4 @@ def inj_hkKeyEvent(event):
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 g_config = ConfigInterface()
-# TODO: statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-7', _config.configFolders)
+# TODO: statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-7', _config.configFolders)
