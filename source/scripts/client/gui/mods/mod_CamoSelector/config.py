@@ -168,7 +168,15 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         camoIndices = {}
         for camoID, camoName in camoNames.iteritems():
             camoIndices.setdefault(camoName, []).append(camoID)
-        self.interCamo = [camoName for camoName, indices in camoIndices.iteritems() if len(indices) > 1]
+        self.interCamo = []
+        for camoName, indices in camoIndices.iteritems():
+            nationsList = []
+            for ID in indices:
+                for filterNode in camouflages[ID].filter.include:
+                    if filterNode.nations:
+                        nationsList += filterNode.nations
+            if set(nationsList) == set(xrange(len(nations.NAMES))):
+                self.interCamo.append(camoName)
         self.hiddenCamo = [camoID for camoID in camoNames if 'notInShop' in camouflages[camoID].priceGroupTags]
         settings = PYmodsCore.loadJson(self.ID, 'settings', {}, self.configPath)
         if 'disable' in settings:
@@ -179,7 +187,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         if 'remap' in settings:
             conf = settings['remap']
             for camoName in conf.keys():
-                if camoName not in camoNames:
+                if camoName not in camoNames.values():
                     print '%s: unknown camouflage for remapping: %s' % (self.ID, camoName)
                     del conf[camoName]
             for camoID, camouflage in camouflages.items():
