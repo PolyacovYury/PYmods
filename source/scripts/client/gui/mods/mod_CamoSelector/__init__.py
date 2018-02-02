@@ -147,17 +147,17 @@ def installSelectedCamo():
 #         interConf = g_config.camouflages.get('international', {})
 #         camoKindNums = (camouflage['kind'],)
 #         if camoName in g_config.camouflages['modded']:
-#             camoKindNames = filter(None, g_config.camouflages['modded'].get(camoName, {}).get('kinds', '').split(','))
+#             camoKindNames = filter(None, g_config.camouflages['modded'].get(camoName, {}).get('season', '').split(','))
 #             camoKindNums = tuple(CAMOUFLAGE_KINDS[name] for name in camoKindNames)
 #         elif camoName in interConf:
-#             kindsStr = interConf.get(camoName, {}).get('kinds')
-#             if kindsStr is not None:
-#                 camoKindNames = filter(None, kindsStr.split(','))
+#             seasonStr = interConf.get(camoName, {}).get('season')
+#             if seasonStr is not None:
+#                 camoKindNames = filter(None, seasonStr.split(','))
 #                 camoKindNums = tuple(CAMOUFLAGE_KINDS[name] for name in camoKindNames)
 #         elif nationConf is not None:
-#             kindsStr = nationConf.get(camoName, {}).get('kinds')
-#             if kindsStr is not None:
-#                 camoKindNames = filter(None, kindsStr.split(','))
+#             seasonStr = nationConf.get(camoName, {}).get('season')
+#             if seasonStr is not None:
+#                 camoKindNames = filter(None, seasonStr.split(','))
 #                 camoKindNums = tuple(CAMOUFLAGE_KINDS[name] for name in camoKindNames)
 #         for camoKindNum in camoKindNums:
 #             if g_config.camouflagesCache.get(nationName, {}).get(vehName, {}).get(
@@ -182,10 +182,10 @@ def installSelectedCamo():
 #         g_config.camouflagesCache.setdefault(nationName, {}).setdefault(vehName, {})[
 #             CAMOUFLAGE_KIND_INDICES[camoKindNum]] = camoName
 #         camoCache[camoKindNum] = (item['object'].getID(), int(time.time()), 7)
-#     selectedKinds = []
+#     selectedSeason = []
 #     for camoKind in g_config.camouflagesCache.get(nationName, {}).get(vehName, {}):
-#         selectedKinds.append(CAMOUFLAGE_KINDS[camoKind])
-#     slotList = heapq.nsmallest(1, selectedKinds, key=lambda x: abs(x - g_customizationController.slots.currentSlotIdx))
+#         selectedSeason.append(CAMOUFLAGE_KINDS[camoKind])
+#     slotList = heapq.nsmallest(1, selectedSeason, key=lambda x: abs(x - g_customizationController.slots.currentSlotIdx))
 #     slotIdx = slotList[0] if slotList else 0
 #     g_tankActiveCamouflage[compDescr] = slotIdx
 #     vDesc.camouflages = tuple(camoCache)
@@ -316,7 +316,7 @@ def new_onBecomeNonPlayer(base, self):
 #             camouflage = camouflages[camoNames[camoName]]
 #             if camoConfig.get('random_mode', 2) != 1:
 #                 continue
-#             if camoKindName not in camoConfig.get('kinds', CAMOUFLAGE_KIND_INDICES[camouflage['kind']]):
+#             if camoKindName not in camoConfig.get('season', CAMOUFLAGE_KIND_INDICES[camouflage['kind']]):
 #                 continue
 #             if not camoConfig.get('useFor%s' % curTeam, True):
 #                 continue
@@ -353,7 +353,7 @@ def new_onBecomeNonPlayer(base, self):
 #                     continue
 #                 if vDesc.type.compactDescr not in camouflage['tiling']:
 #                     continue
-#                 if camoKindName not in camoConfig.get('kinds', CAMOUFLAGE_KIND_INDICES[camouflage['kind']]):
+#                 if camoKindName not in camoConfig.get('season', CAMOUFLAGE_KIND_INDICES[camouflage['kind']]):
 #                     continue
 #                 selectedCamouflages.append(camoID)
 #             if not any(checked.values()):
@@ -398,15 +398,15 @@ def new_onBecomeNonPlayer(base, self):
 #                 camoKindNames = (CAMOUFLAGE_KIND_INDICES[camouflage['kind']],)
 #                 if camoName in g_config.camouflages['modded']:
 #                     camoKindNames = filter(None,
-#                                            g_config.camouflages['modded'].get(camoName, {}).get('kinds', '').split(','))
+#                                            g_config.camouflages['modded'].get(camoName, {}).get('season', '').split(','))
 #                 elif camoName in interConf:
-#                     kindsStr = interConf.get(camoName, {}).get('kinds')
-#                     if kindsStr is not None:
-#                         camoKindNames = filter(None, kindsStr.split(','))
+#                     seasonStr = interConf.get(camoName, {}).get('season')
+#                     if seasonStr is not None:
+#                         camoKindNames = filter(None, seasonStr.split(','))
 #                 elif nationConf is not None:
-#                     kindsStr = nationConf.get(camoName, {}).get('kinds')
-#                     if kindsStr is not None:
-#                         camoKindNames = filter(None, kindsStr.split(','))
+#                     seasonStr = nationConf.get(camoName, {}).get('season')
+#                     if seasonStr is not None:
+#                         camoKindNames = filter(None, seasonStr.split(','))
 #                 for camoKindName in camoKindNames:
 #                     if selectedForVeh.get(camoKindName) is not None:
 #                         if camouflage['name'] == selectedForVeh[camoKindName]:

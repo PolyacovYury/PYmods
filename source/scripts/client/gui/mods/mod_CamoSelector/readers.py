@@ -112,7 +112,7 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
             priceGroupId = cache.priceGroupNames[item.priceGroup]
             item.priceGroupTags = groupsDict[priceGroupId].tags
             itemToGroup[item.compactDescr] = groupsDict[priceGroupId].compactDescr
-            itemNotInShop = i_section.readBool('notInShop', False)
+            itemNotInShop = i_section.readBool('notInShop', True)
             iv._copyPriceForItem(groupsDict[priceGroupId].compactDescr, item.compactDescr, itemNotInShop)
         else:
             ix.raiseWrongXml(iCtx, 'priceGroup', 'no price for item %s' % item.id)
@@ -127,7 +127,7 @@ def createPriceGroup(cache):
     priceGroup.id = 20000
     priceGroup.name = intern('modded')
     priceGroup.notInShop = True
-    priceGroup.tags = frozenset(map(intern, ('notInShop', 'legacy', 'camouflages', 'common') + nations.NAMES))
+    priceGroup.tags = frozenset(map(intern, ('modded', 'notInShop', 'legacy', 'camouflages', 'common') + nations.NAMES))
     for tag in priceGroup.tags:
         cache.priceGroupTags.setdefault(tag, []).append(priceGroup)
     cache.priceGroupNames[priceGroup.name] = priceGroup.id

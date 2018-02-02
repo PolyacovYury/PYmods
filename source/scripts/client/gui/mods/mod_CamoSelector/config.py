@@ -5,15 +5,15 @@ import PYmodsCore
 import ResMgr
 import items.vehicles
 import nations
+import os
 import traceback
 from PYmodsCore import checkKeys, remDups
 from gui import InputHandler
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from helpers import dependency
-from items.vehicles import CAMOUFLAGE_KIND_INDICES
+from items.components.c11n_constants import SeasonType
 from skeletons.gui.customization import ICustomizationService
-from . import readers
 
 
 class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
@@ -26,6 +26,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         self.camouflages = {}
         self.configFolders = {}
         self.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
+        self.hiddenCamo = []
         self.interCamo = []
         self.origInterCamo = []
         self.changedNations = []
@@ -67,13 +68,13 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 '<b>Attention</b>: a camouflage with no tick set will be considered disabled.'),
             'UI_flash_useFor_ally_text': 'Player and allies',
             'UI_flash_useFor_enemy_text': 'Enemies',
-            'UI_flash_kinds_header_text': 'Camouflage kinds:',
-            'UI_flash_kinds_header_tooltip': (
-                'This camouflage will appear on these kinds of maps.\n'
+            'UI_flash_season_header_text': 'Camouflage season:',
+            'UI_flash_season_header_tooltip': (
+                'This camouflage will appear on these map seasons.\n'
                 '<b>Attention</b>: a camouflage with no tick set will be considered disabled.'),
-            'UI_flash_kinds_winter_text': 'Winter',
-            'UI_flash_kinds_summer_text': 'Summer',
-            'UI_flash_kinds_desert_text': 'Desert',
+            'UI_flash_season_winter_text': 'Winter',
+            'UI_flash_season_summer_text': 'Summer',
+            'UI_flash_season_desert_text': 'Desert',
             'UI_flash_installTooltip': '{HEADER}Install{/HEADER}{BODY}"Buy" this camouflage for selected tank.{/BODY}',
             'UI_flash_save': 'Save',
             'UI_setting_doRandom_text': 'Select random camouflages',
@@ -124,13 +125,10 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def onMSADestroy(self):
         try:
             from gui.mods import mod_remodenabler
-        except StandardError:
+        except ImportError:
             PYmodsCore.refreshCurrentVehicle()
 
     def onApplySettings(self, settings):
-        # if 'fullAlpha' in settings and settings['fullAlpha'] != self.data['fullAlpha']:
-        #     self.changedNations[:] = []
-        #     items.vehicles.g_cache._Cache__customization = [None for _ in nations.NAMES]
         super(self.__class__, self).onApplySettings(settings)
         self.hangarCamoCache.clear()
         if self.isModAdded:
@@ -140,83 +138,88 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             except AttributeError:
                 BigWorld.g_modsListApi.updateMod(**kwargs)
 
-    def readCamouflages(self, doShopCheck):
+    def readCurrentSettings(self, quiet=True):
+        super(ConfigInterface, self).readCurrentSettings(quiet)
+        if 'modded' in self.camouflages:
+            return
         self.configFolders.clear()
         self.camouflages = {'modded': {}}
         self.camouflagesCache = PYmodsCore.loadJson(self.ID, 'camouflagesCache', self.camouflagesCache, self.configPath)
         try:
             camoDirPath = '../' + self.configPath + 'camouflages'
             camoDirSect = ResMgr.openSection(camoDirPath)
-            camoNames = remDups(
-                (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x)) if camoDirSect is not None else [])
-            for camoName in camoNames:
+            for camoName in remDups(
+                    (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x))
+                    if camoDirSect is not None else []):
                 self.configFolders[camoName] = confFolder = set()
                 fileName = self.configPath + 'camouflages/' + camoName + '/'
                 settings = PYmodsCore.loadJson(self.ID, 'settings', {}, fileName)
+                if 'kinds' in settings:
+                    settings['season'] = settings['kinds']
+                    del settings['season']
                 for key in settings:
                     confFolder.add(key)
                 self.camouflages['modded'].update(settings)
         except StandardError:
             traceback.print_exc()
-        return
-
-        customization = items.vehicles.g_cache.customization
-        self.interCamo = [x['name'] for x in customization(0)['camouflages'].itervalues()]
-        for nationID in xrange(1, len(nations.NAMES)):
-            camoNames = [x['name'] for x in customization(nationID)['camouflages'].itervalues()]
-            self.interCamo = [x for x in self.interCamo if x in camoNames]
-        self.origInterCamo = [x for x in self.interCamo if x not in self.camouflages['modded']]
+        camouflages = items.vehicles.g_cache.customization20().camouflages
+        camoNames = {id: os.path.splitext(os.path.basename(x.texture)) for id, x in camouflages.iteritems() if 'modded' not in
+                     x.priceGroupTags}
+        camoIndices = {}
+        for camoID, camoName in camoNames.iteritems():
+            camoIndices.setdefault(camoName, []).append(camoID)
+        self.interCamo = [camoName for camoName, indices in camoIndices if len(indices) > 1]
+        self.hiddenCamo = [camoID for camoID in camoNames if 'notInShop' in camouflages[camoID].priceGroupTags]
         settings = PYmodsCore.loadJson(self.ID, 'settings', {}, self.configPath)
         if 'disable' in settings:
             if not settings['disable']:
                 del settings['disable']
             else:
                 self.disable = settings['disable']
-        for nation in settings.keys():
-            if nation not in nations.NAMES:
-                if nation != 'international':
-                    del settings[nation]
-                    continue
-                nationID = 0
-            else:
-                nationID = nations.INDICES[nation]
-            camouflages = customization(nationID)['camouflages']
-            nationConf = settings[nation]
-            camoNames = [camouflage['name'] for camouflage in camouflages.values()]
-            for camoName in nationConf:
+        if 'remap' in settings:
+            conf = settings['remap']
+            for camoName in conf:
                 if camoName not in camoNames:
-                    del nationConf[camoName]
+                    print '%s: unknown camouflage for remapping: %s' % (self.ID, camoName)
+                    del conf[camoName]
             for camoID, camouflage in camouflages.items():
-                camoName = camouflage['name']
-                if camoName not in nationConf:
+                camoName = os.path.splitext(os.path.basename(camouflage.texture))
+                if camoName not in conf:
                     continue
-                camoInShop = not doShopCheck or self.customizationController.dataAggregator._elementIsInShop(
-                    camoID, 0, nationID)
-                if nationConf[camoName].get('random_mode') == 2 or nationConf[camoName].get(
+                camoInShop = camoID not in self.hiddenCamo
+                if conf[camoName].get('random_mode') == 2 or conf[camoName].get(
                         'random_mode') == 1 and camoName not in self.interCamo:
-                    del nationConf[camoName]['random_mode']
-                kinds = nationConf[camoName].get('kinds')
-                if kinds is not None:
-                    kindNames = filter(None, kinds.split(','))
-                    if len(kindNames) == 1 and kindNames[0] == CAMOUFLAGE_KIND_INDICES[
-                            camouflage['kind']] or camoInShop and doShopCheck:
-                        del nationConf[camoName]['kinds']
-                        if camoInShop:
-                            print '%s: in-shop camouflage kind changing is disabled (name: %s)' % (self.ID, camoName)
+                    del conf[camoName]['random_mode']
+                seasons = conf[camoName].get('season')
+                if seasons is not None:
+                    if camoInShop:
+                        del conf[camoName]['season']
+                        print '%s: in-shop camouflage kind changing is disabled (name: %s, season setting was %s)' % (
+                            self.ID, camoName, seasons)
+                    else:
+                        seasonNames = [x for x in seasons.split(',') if x]
+                        seasonType = 0
+                        for season in seasonNames:
+                            try:
+                                seasonType |= getattr(SeasonType, season.upper())
+                            except AttributeError:
+                                print '%s: unknown season name for camouflage %s: %s' % (self.ID, camoName, season)
+                        if seasonType == camouflage.season:
+                            del conf[camoName]['season']
                 for team in ('Ally', 'Enemy'):
-                    if nationConf[camoName].get('useFor%s' % team):
-                        del nationConf[camoName]['useFor%s' % team]
-                if not nationConf[camoName]:
-                    del nationConf[camoName]
-            if not nationConf:
-                del settings[nation]
+                    if conf[camoName].get('useFor%s' % team):
+                        del conf[camoName]['useFor%s' % team]
+                if not conf[camoName]:
+                    del conf[camoName]
+            if not conf:
+                del settings['remap']
             else:
-                self.camouflages[nation] = nationConf
+                self.camouflages['remap'] = conf
         newSettings = {}
         if self.disable:
             newSettings['disable'] = self.disable
-        for nation in settings:
-            newSettings[nation] = settings[nation]
+        if 'remap' in settings:
+            newSettings['remap'] = settings['remap']
         PYmodsCore.loadJson(self.ID, 'settings', newSettings, self.configPath, True)
 
     def registerSettings(self):

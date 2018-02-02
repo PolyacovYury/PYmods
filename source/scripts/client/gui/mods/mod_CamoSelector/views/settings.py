@@ -24,10 +24,10 @@ class CamoSelectorUI(AbstractWindowView):
             'useFor': {'header': g_config.tb.createLabel('useFor_header', 'flash'),
                        'ally': g_config.tb.createLabel('useFor_ally', 'flash'),
                        'enemy': g_config.tb.createLabel('useFor_enemy', 'flash')},
-            'kinds': {'header': g_config.tb.createLabel('kinds_header', 'flash'),
-                      'winter': g_config.tb.createLabel('kinds_winter', 'flash'),
-                      'summer': g_config.tb.createLabel('kinds_summer', 'flash'),
-                      'desert': g_config.tb.createLabel('kinds_desert', 'flash')},
+            'season': {'header': g_config.tb.createLabel('season_header', 'flash'),
+                      'winter': g_config.tb.createLabel('season_winter', 'flash'),
+                      'summer': g_config.tb.createLabel('season_summer', 'flash'),
+                      'desert': g_config.tb.createLabel('season_desert', 'flash')},
             'installTooltip': g_config.i18n['UI_flash_installTooltip'],
             'save': g_config.i18n['UI_flash_save']}
         settings = [[] for _ in xrange(len(nations.NAMES) + 2)]
@@ -55,12 +55,12 @@ class CamoSelectorUI(AbstractWindowView):
                                 'isInternational': camoName in g_config.interCamo,
                                 'useFor': {'ally': camouflage.get('useForAlly', True),
                                            'enemy': camouflage.get('useForEnemy', True)},
-                                'kinds': {}}
+                                'season': {}}
                 for key, kind in CAMOUFLAGE_KINDS.items():
-                    if camouflage.get('kinds') is not None:
-                        camoSettings['kinds'][key] = key in camouflage['kinds']
+                    if camouflage.get('season') is not None:
+                        camoSettings['season'][key] = key in camouflage['season']
                     else:
-                        camoSettings['kinds'][key] = kind == camouflageDesc['kind']
+                        camoSettings['season'][key] = kind == camouflageDesc['kind']
                 settings[idx].append(camoSettings)
         self.flashObject.as_syncData({'texts': texts, 'settings': settings, 'ids': g_config.backup})
         self.changeNation(getCurrentNationID())
@@ -107,11 +107,11 @@ class CamoSelectorUI(AbstractWindowView):
                 nationConf[camoName]['random_mode'] = newSettings.randomOption
                 nationConf[camoName]['useForAlly'] = newSettings.useFor.ally
                 nationConf[camoName]['useForEnemy'] = newSettings.useFor.enemy
-                enabledKinds = []
+                enabledSeason = []
                 for key in ('winter', 'summer', 'desert'):
-                    if getattr(newSettings.kinds, key):
-                        enabledKinds.append(key)
-                    nationConf[camoName]['kinds'] = ','.join(enabledKinds)
+                    if getattr(newSettings.season, key):
+                        enabledSeason.append(key)
+                    nationConf[camoName]['season'] = ','.join(enabledSeason)
                 for confFolderName in g_config.configFolders:
                     configFolder = g_config.configFolders[confFolderName]
                     if camoName in configFolder:
@@ -119,9 +119,9 @@ class CamoSelectorUI(AbstractWindowView):
                                             g_config.configPath + 'camouflages/' + confFolderName + '/', True, False)
                 if nationConf[camoName]['random_mode'] == 2 or nationConf[camoName]['random_mode'] == 1 and not isInter:
                     del nationConf[camoName]['random_mode']
-                kindNames = filter(None, nationConf[camoName]['kinds'].split(','))
+                kindNames = filter(None, nationConf[camoName]['season'].split(','))
                 if len(kindNames) == 1 and kindNames[0] == CAMOUFLAGE_KIND_INDICES[camouflageDesc['kind']] or camoInShop:
-                    del nationConf[camoName]['kinds']
+                    del nationConf[camoName]['season']
                 for team in ('Ally', 'Enemy'):
                     if nationConf[camoName]['useFor%s' % team]:
                         del nationConf[camoName]['useFor%s' % team]
