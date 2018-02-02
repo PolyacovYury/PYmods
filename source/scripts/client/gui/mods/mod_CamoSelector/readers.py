@@ -28,7 +28,7 @@ def new_customization20(base, *args, **kwargs):
     if g_config.data['enabled'] and 'modded' not in cache.priceGroupNames:
         for configDir in g_config.configFolders:
             filePath = g_config.configPath + 'camouflages/' + configDir + '/'
-            updateCustomizationCache('.' + filePath, g_config.i18n['UI_flash_camoMode_modded'])
+            updateCustomizationCache(cache, '.' + filePath, g_config.i18n['UI_flash_camoMode_modded'])
     return cache
 
 
@@ -59,8 +59,7 @@ def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
                                                       ctx, subsection)
 
 
-def updateCustomizationCache(folder, groupName):
-    cache = iv.g_cache.customization20()
+def updateCustomizationCache(cache, folder, groupName):
     createPriceGroup(cache)
     __readCamoFolder(groupName, cache, cc.CamouflageItem, folder, cache.camouflages)
 
