@@ -5,8 +5,8 @@ from PYmodsCore import overrideMethod
 from gui.Scaleform.framework.entities.View import ViewKey
 from .utils import getCurrentNationID
 from .config import g_config
-import settings
-import readers
+from . import settings
+from . import readers
 import BigWorld
 import CurrentVehicle
 import Keys
