@@ -52,6 +52,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_tabs_3_tooltip': '',
             'UI_flash_mode_setup': 'Setup',
             'UI_flash_mode_install': 'Install',
+            'UI_flash_commit_apply': 'Apply',
+            'UI_flash_commit_install': 'Install',
             'UI_flash_header': 'Camouflages setup',
             'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
                                         '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),
