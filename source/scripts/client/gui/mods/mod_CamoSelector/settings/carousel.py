@@ -1,4 +1,3 @@
-from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -15,7 +14,7 @@ from .shared import CUSTOMIZATION_TABS
 def comparisonKey(item):
     """ Comparison key to sort the the customization carousel.
     """
-    return TYPES_ORDER.index(item.itemTypeID), item.groupID, item.id
+    return 1, item.groupID, item.id
 
 
 class CustomizationBookmarkVO(object):
