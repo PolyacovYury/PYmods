@@ -1,9 +1,9 @@
-import nations
 import items.vehicles
-from PYmodsCore import refreshCurrentVehicle, loadJson
+import nations
+from PYmodsCore import loadJson, refreshCurrentVehicle
 from gui import SystemMessages
-from items.vehicles import CAMOUFLAGE_KINDS, CAMOUFLAGE_KIND_INDICES
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
+from items.vehicles import CAMOUFLAGE_KINDS, CAMOUFLAGE_KIND_INDICES
 from .. import g_config
 from ..utils import getCurrentNationID
 
@@ -25,9 +25,9 @@ class CamoSelectorUI(AbstractWindowView):
                        'ally': g_config.tb.createLabel('useFor_ally', 'flash'),
                        'enemy': g_config.tb.createLabel('useFor_enemy', 'flash')},
             'season': {'header': g_config.tb.createLabel('season_header', 'flash'),
-                      'winter': g_config.tb.createLabel('season_winter', 'flash'),
-                      'summer': g_config.tb.createLabel('season_summer', 'flash'),
-                      'desert': g_config.tb.createLabel('season_desert', 'flash')},
+                       'winter': g_config.tb.createLabel('season_winter', 'flash'),
+                       'summer': g_config.tb.createLabel('season_summer', 'flash'),
+                       'desert': g_config.tb.createLabel('season_desert', 'flash')},
             'installTooltip': g_config.i18n['UI_flash_installTooltip'],
             'save': g_config.i18n['UI_flash_save']}
         settings = [[] for _ in xrange(len(nations.NAMES) + 2)]
@@ -116,7 +116,7 @@ class CamoSelectorUI(AbstractWindowView):
                     configFolder = g_config.configFolders[confFolderName]
                     if camoName in configFolder:
                         loadJson(g_config.ID, 'settings', dict((key, nationConf[key]) for key in configFolder),
-                                            g_config.configPath + 'camouflages/' + confFolderName + '/', True, False)
+                                 g_config.configPath + 'camouflages/' + confFolderName + '/', True, False)
                 if nationConf[camoName]['random_mode'] == 2 or nationConf[camoName]['random_mode'] == 1 and not isInter:
                     del nationConf[camoName]['random_mode']
                 kindNames = filter(None, nationConf[camoName]['season'].split(','))

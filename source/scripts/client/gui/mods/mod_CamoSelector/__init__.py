@@ -2,9 +2,10 @@
 import time
 
 from PYmodsCore import overrideMethod
+from gui.Scaleform.framework.entities.View import ViewKey
 from .utils import getCurrentNationID
 from .config import g_config
-import views
+import settings
 import readers
 import BigWorld
 import CurrentVehicle
@@ -208,9 +209,10 @@ from gui.Scaleform.framework import ViewTypes
 from items.components.c11n_constants import SeasonType
 import items.vehicles
 
-print items.vehicles.g_cache.customization20().camouflages[g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.LOBBY_SUB).getView().getModifiedOutfit(SeasonType.SUMMER).getContainer(Area.HULL).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(idx=0).id].texture
+print items.vehicles.g_cache.customization20().camouflages[
+    g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.LOBBY_SUB).getView().getModifiedOutfit(
+        SeasonType.SUMMER).getContainer(Area.HULL).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(idx=0).id].texture
 """
-
 
 @overrideMethod(MainView, 'clearCustomizationItem')
 def new_clearCustomizationItem(base, self, areaId, slotId, regionId, seasonIdx, *args, **kwargs):
@@ -257,7 +259,7 @@ def new_MV_populate(base, self):
 
 
 def updateGUIState():
-    view = g_appLoader.getDefLobbyApp().containerManager.getViewByKey('CamoSelectorUI')
+    view = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey('CamoSelectorUI'))
     if view is None:
         return
     nationID = getCurrentNationID()
@@ -289,7 +291,8 @@ def new_onBecomeNonPlayer(base, self):
 #     result = base(self, vDesc, vID)
 #     if 'modded' not in g_config.camouflages:
 #         g_config.readCamouflages(False)
-#     if (not g_config.data['enabled'] or result[0] is not None and g_config.data['useBought'] or vDesc.name in g_config.disable
+#     if (not g_config.data['enabled'] or result[0] is not None and g_config.data['useBought'] or vDesc.name in
+#             g_config.disable
 #             or vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
 #         return result
 #     nationName, vehName = vDesc.name.split(':')

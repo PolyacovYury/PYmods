@@ -42,6 +42,16 @@ class ConfigInterface(PYmodsConfigInterface):
                      'selectHotkey': self.defaultKeys['selectHotkey'], 'selectHotKey': self.defaultKeys['selectHotKey']}
         self.i18n = {
             'UI_description': 'Camouflage selector',
+            'UI_flash_tabs_0_text': 'Shop',
+            'UI_flash_tabs_0_tooltip': '',
+            'UI_flash_tabs_1_text': 'Hidden',
+            'UI_flash_tabs_1_tooltip': '',
+            'UI_flash_tabs_2_text': 'International',
+            'UI_flash_tabs_2_tooltip': '',
+            'UI_flash_tabs_3_text': 'Custom',
+            'UI_flash_tabs_3_tooltip': '',
+            'UI_flash_mode_setup': 'Setup',
+            'UI_flash_mode_install': 'Install',
             'UI_flash_header': 'Camouflages setup',
             'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
                                         '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),

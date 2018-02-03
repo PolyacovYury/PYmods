@@ -104,7 +104,8 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
         itemPrototype.i18n = shared_components.I18nExposedComponent(i_name, '')
         item.id = max(20000, *storage) + 1
         if item.compactDescr in itemToGroup:
-            ix.raiseWrongXml(iCtx, 'id', 'duplicate item. id: %s found in group %s' % (item.id, itemToGroup[item.compactDescr]))
+            ix.raiseWrongXml(iCtx, 'id', 'duplicate item. id: %s found in group %s' % (
+                item.id, itemToGroup[item.compactDescr]))
         storage[item.id] = item
         if item.priceGroup:
             if item.priceGroup not in cache.priceGroupNames:
