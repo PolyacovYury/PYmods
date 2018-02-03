@@ -21,7 +21,7 @@ def __init__(base, self, cmProxy, ctx=None):
     self._item = self.itemsCache.items.getItemByCD(self._intCD)
 
 
-@overrideMethod(CustomizationItemCMHandler, '__init__')
+@overrideMethod(CustomizationItemCMHandler, 'fini')
 def fini(base, self):
     if isinstance(self._c11nView, MainView):
         base(self)
