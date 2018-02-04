@@ -3,7 +3,6 @@ from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import 
     CustomizationSeasonAndTypeFilterData, comparisonKey
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from helpers.i18n import makeString as _ms
@@ -34,7 +33,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         self._proxy = proxy
         self._currentlyApplied = set()
         self._allSeasonAndTabFilterData = {}
-        allItems = self.getAllItems(self._createBaseRequirements())
+        allItems = self._getAllItems(self._createBaseRequirements())
         for tabIndex in CUSTOMIZATION_TABS.ALL:
             self._allSeasonAndTabFilterData[tabIndex] = {}
             for season in SeasonType.COMMON_SEASONS:
@@ -43,19 +42,6 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         for item in sorted(allItems.itervalues(), key=comparisonKey):
             groupName = item.groupUserName
             for tabIndex in CUSTOMIZATION_TABS.ALL:
-                if tabIndex == CUSTOMIZATION_TABS.SHOP:
-                    if item.isHidden or item.priceGroup == 'modded':
-                        continue
-                if tabIndex == CUSTOMIZATION_TABS.HIDDEN:
-                    if not item.isHidden or os.path.splitext(os.path.basename(item.descriptor.texture))[0] in \
-                            g_config.interCamo or item.priceGroup == 'modded':
-                        continue
-                if tabIndex == CUSTOMIZATION_TABS.INTERNATIONAL:
-                    if os.path.splitext(os.path.basename(item.descriptor.texture))[0] not in g_config.interCamo:
-                        continue
-                if tabIndex == CUSTOMIZATION_TABS.CUSTOM:
-                    if item.priceGroup != 'modded':
-                        continue
                 for seasonType in SeasonType.COMMON_SEASONS:
                     if item.season & seasonType:
                         seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
@@ -107,11 +93,6 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
     @property
     def itemCount(self):
         return len(self._customizationItems)
-
-    def getAllItems(self, requirement):
-        camouflages = g_cache.customization20().camouflages.values()
-        return {item.intCD: item for item in (self.itemsCache.items.getItemByCD(camo.compactDescr) for camo in camouflages)
-                if requirement(item)}
 
     @property
     def totalItemCount(self):
@@ -192,11 +173,26 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         del self._customizationBookmarks[:]
         super(CustomizationCarouselDataProvider, self)._dispose()
 
+    def _getAllItems(self, requirement):
+        camouflages = g_cache.customization20().camouflages.values()
+        return {item.intCD: item for item in (self.itemsCache.items.getItemByCD(camo.compactDescr) for camo in camouflages)
+                if requirement(item)}
+
     def _createBaseRequirements(self, season=None):
         vehicle = self._currentVehicle.item
         season = season or SeasonType.ALL
-        criteria = REQ_CRITERIA.CUSTOM(lambda item: item.mayInstall(vehicle) and item.season & season)
+        criteria = REQ_CRITERIA.CUSTOM(
+            lambda item: self._isSuitableForTab(item) and item.mayInstall(vehicle) and item.season & season)
         return criteria
+
+    def _isSuitableForTab(self, item):
+        ct = CUSTOMIZATION_TABS
+        isInter = os.path.splitext(os.path.basename(item.descriptor.texture))[0] in g_config.interCamo
+        return not (
+                (self._tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'modded'))
+                or (self._tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'modded'))
+                or (self._tabIndex == ct.INTERNATIONAL and not isInter)
+                or (self._tabIndex == ct.CUSTOM and item.priceGroup != 'modded'))
 
     def _buildCustomizationItems(self):
         season = self._seasonID
@@ -213,7 +209,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         if self._onlyAppliedItems:
             appliedItems = self._proxy.getAppliedItems(isOriginal=False)
             requirement |= REQ_CRITERIA.CUSTOM(lambda item: item.intCD in appliedItems)
-        allItems = self.getAllItems(requirement)
+        allItems = self._getAllItems(requirement)
         self._customizationItems = []
         self._customizationBookmarks = []
         lastGroupID = None
