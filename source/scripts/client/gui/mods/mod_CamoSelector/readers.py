@@ -101,7 +101,7 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
         j += 1
         item = itemCls(group)
         reader._readFromXml(item, iCtx, i_section)
-        itemPrototype.i18n = shared_components.I18nExposedComponent(i_name, '')
+        item.i18n = shared_components.I18nExposedComponent(i_name, '')
         item.id = max(20000, *storage) + 1
         if item.compactDescr in itemToGroup:
             ix.raiseWrongXml(iCtx, 'id', 'duplicate item. id: %s found in group %s' % (

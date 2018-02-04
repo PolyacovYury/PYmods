@@ -274,12 +274,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.service.startHighlighter(chooseMode(self._mode, g_currentVehicle.item))
         self.__stopTimer()
         self.__setAnchorsInitData(self._tabIndex, True)
-        if self.__locatedOnEmblem:
-            self.__hangarSpace.clearSelectedEmblemInfo()
-            self.__hangarSpace.locateCameraToPreview()
-            self.__startTimer(ANCHOR_UPDATE_TIMER_DELAY, self.__updateAnchorPositions)
-        else:
-            self.__updateAnchorPositions()
+        self.__updateAnchorPositions()
         slotIdVO = None
         self.as_updateSelectedRegionsS(slotIdVO)
         self.refreshCarousel(rebuild=True)
