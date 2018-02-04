@@ -34,16 +34,13 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         self._proxy = proxy
         self._currentlyApplied = set()
         self._allSeasonAndTabFilterData = {}
-        requirement = self._createBaseRequirements()
-        camouflages = g_cache.customization20().camouflages.values()
-        allItems = [item for item in (self.itemsCache.items.getItemByCD(camo.compactDescr) for camo in camouflages)
-                    if requirement(item)]
+        allItems = self.getAllItems(self._createBaseRequirements())
         for tabIndex in CUSTOMIZATION_TABS.ALL:
             self._allSeasonAndTabFilterData[tabIndex] = {}
             for season in SeasonType.COMMON_SEASONS:
                 self._allSeasonAndTabFilterData[tabIndex][season] = CustomizationSeasonAndTypeFilterData()
 
-        for item in sorted(allItems, key=comparisonKey):
+        for item in sorted(allItems.itervalues(), key=comparisonKey):
             groupName = item.groupUserName
             for tabIndex in CUSTOMIZATION_TABS.ALL:
                 if tabIndex == CUSTOMIZATION_TABS.SHOP:
@@ -110,6 +107,11 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
     @property
     def itemCount(self):
         return len(self._customizationItems)
+
+    def getAllItems(self, requirement):
+        camouflages = g_cache.customization20().camouflages.values()
+        return {item.intCD: item for item in (self.itemsCache.items.getItemByCD(camo.compactDescr) for camo in camouflages)
+                if requirement(item)}
 
     @property
     def totalItemCount(self):
@@ -211,7 +213,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         if self._onlyAppliedItems:
             appliedItems = self._proxy.getAppliedItems(isOriginal=False)
             requirement |= REQ_CRITERIA.CUSTOM(lambda item: item.intCD in appliedItems)
-        allItems = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CAMOUFLAGE, requirement)
+        allItems = self.getAllItems(requirement)
         self._customizationItems = []
         self._customizationBookmarks = []
         lastGroupID = None
