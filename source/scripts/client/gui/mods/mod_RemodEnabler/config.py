@@ -446,6 +446,8 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
     def registerSettings(self):
         super(ConfigInterface, self).registerSettings()
+        if not hasattr(BigWorld, 'g_modsListApi'):
+            return
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,

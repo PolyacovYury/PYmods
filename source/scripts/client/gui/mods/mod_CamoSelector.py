@@ -415,6 +415,8 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
     def registerSettings(self):
         super(self.__class__, self).registerSettings()
+        if not hasattr(BigWorld, 'g_modsListApi'):
+            return
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('CamoSelectorUI', CamoSelectorUI, 'CamoSelector.swf', ViewTypes.WINDOW, None,
