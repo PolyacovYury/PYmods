@@ -29,7 +29,6 @@ from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.SystemMessages import CURRENCY_TO_SM_TYPE, SM_TYPE
 from gui.app_loader import g_appLoader
 from gui.app_loader.settings import GUI_GLOBAL_SPACE_ID as _SPACE_ID
-from gui.customization.shared import chooseMode
 from gui.shared import EVENT_BUS_SCOPE, events, g_eventBus
 from gui.shared.formatters import formatPrice, getItemPricesVO, icons, text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -49,7 +48,7 @@ from skeletons.gui.shared import IItemsCache
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
 from .item_vo import buildCustomizationItemDataVO
 from .processors import OutfitApplier
-from .shared import C11N_MODE, CUSTOMIZATION_TABS, POPOVER_ALIAS, getCustomPurchaseItems, getItemInventoryCount, \
+from .shared import C11N_MODE, CUSTOMIZATION_TABS, POPOVER_ALIAS, chooseMode, getCustomPurchaseItems, getItemInventoryCount, \
     getTotalPurchaseInfo
 from .. import g_config
 
@@ -727,22 +726,10 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Get tabs that are actually visible.
         """
         visibleTabs = []
-        anchorsData = g_currentVehicle.hangarSpace.getSlotPositions()
         for tabIdx in CUSTOMIZATION_TABS.VISIBLE:
-            itemTypeID = GUI_ITEM_TYPE.CAMOUFLAGE
             data = self._carouselDP.getSeasonAndTabData(tabIdx, self._currentSeason)
             if not data.itemCount:
                 continue
-            if itemTypeID in (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.EMBLEM):
-                for areaData in anchorsData.itervalues():
-                    if areaData.get(itemTypeID):
-                        hasSlots = True
-                        break
-                else:
-                    hasSlots = False
-
-                if not hasSlots:
-                    continue
             visibleTabs.append(tabIdx)
 
         return visibleTabs
