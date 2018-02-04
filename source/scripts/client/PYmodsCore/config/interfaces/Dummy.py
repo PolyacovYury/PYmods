@@ -1,17 +1,16 @@
-from functools import partial
-
 import BigWorld
 import Event
 import traceback
-
 from constants import DEFAULT_LANGUAGE
-from ..template_builders import DummyTemplateBuilder, DummyBlockTemplateBuilder
+from functools import partial
 from .. import modSettingsContainers
+from ..template_builders import DummyBlockTemplateBuilder, DummyTemplateBuilder
 from ..utils import registerSettings
 
 
 class DummyConfigInterface(object):
-    isMSAWindowOpen = property(lambda self: modSettingsContainers[self.modSettingsID].isMSAWindowOpen)
+    isMSAWindowOpen = property(lambda self: modSettingsContainers[
+        self.modSettingsID].isMSAWindowOpen if self.modSettingsID in modSettingsContainers else False)
 
     def __init__(self):
         """Declaration for attribute placeholders, all attributes should be defined in init(), getData() and loadLang()"""
