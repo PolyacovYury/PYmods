@@ -40,7 +40,6 @@ from gui.shared.utils.functions import makeTooltip
 from helpers import dependency, int2roman
 from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType
-from shared_utils import first
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.lobby_context import ILobbyContext
@@ -142,29 +141,32 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                                 'historicVO': self.__getHistoricIndicatorData()})
 
     def __setFooterInitData(self):
-        self.as_setBottomPanelInitDataS({'tabData': {'tabData': self.__getItemTabsData(),
-                                                     'selectedTab': self._tabIndex},
-                                         'tabsAvailableRegions': CUSTOMIZATION_TABS.AVAILABLE_REGIONS,
-                                         'defaultStyleLabel': VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL,
-                                         'carouselInitData': self.__getCarouselInitData(),
-                                         'switcherInitData': self.__getSwitcherInitData()})
-        self.as_setCarouselFiltersInitDataS({'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER,
-                                             'mainBtn': {'value': RES_ICONS.MAPS_ICONS_BUTTONS_FILTER,
-                                                         'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_MAINBTN},
-                                             'hotFilters': [{'value': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON,
-                                                             'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_STORAGEBTN,
-                                                             'selected': self._carouselDP.getOwnedFilter()},
-                                                            {'value': RES_ICONS.MAPS_ICONS_BUTTONS_EQUIPPED_ICON,
-                                                             'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_EQUIPPEDBTN,
-                                                             'selected': self._carouselDP.getAppliedFilter()}]})
+        self.as_setBottomPanelInitDataS(
+            {'tabData': {
+                'tabData': self.__getItemTabsData(),
+                'selectedTab': self._tabIndex},
+             'tabsAvailableRegions': CUSTOMIZATION_TABS.AVAILABLE_REGIONS,
+             'defaultStyleLabel': VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL,
+             'carouselInitData': self.__getCarouselInitData(),
+             'switcherInitData': self.__getSwitcherInitData()})
+        self.as_setCarouselFiltersInitDataS(
+            {'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER,
+             'mainBtn': {'value': RES_ICONS.MAPS_ICONS_BUTTONS_FILTER,
+                         'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_MAINBTN},
+             'hotFilters': [{'value': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON,
+                             'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_STORAGEBTN,
+                             'selected': self._carouselDP.getOwnedFilter()},
+                            {'value': RES_ICONS.MAPS_ICONS_BUTTONS_EQUIPPED_ICON,
+                             'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_EQUIPPEDBTN,
+                             'selected': self._carouselDP.getAppliedFilter()}]})
 
     def __getSwitcherInitData(self):
         """ Switcher is a style/custom selector.
         """
         return {'leftLabel': g_config.i18n['UI_flash_switcher_%s' % C11N_MODE.NAMES[self._mode]],
                 'rightLabel': g_config.i18n['UI_flash_switcher_%s' % C11N_MODE.NAMES[not self._mode]],
-                'leftEvent': '',
-                'rightEvent': '',
+                'leftEvent': 'installStyle',  # these are actually important o_o
+                'rightEvent': 'installStyles',
                 'isLeft': True}
 
     def __setBuyingPanelData(self, *_):
