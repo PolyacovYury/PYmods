@@ -1,3 +1,4 @@
+from CurrentVehicle import g_currentVehicle
 from collections import Counter
 from gui.Scaleform.daapi.view.lobby.customization.shared import Cart, PurchaseItem
 from gui.customization.shared import HighlightingMode
@@ -97,7 +98,7 @@ def getItemInventoryCount(item, outfitsInfo=None):
     """ Gets the actual available inventory count of an item.
     (including the items that had been put off but haven't been committed yet)
     """
-    inventoryCount = 0
+    inventoryCount = item.fullInventoryCount(g_currentVehicle.item)
     if not outfitsInfo:
         return inventoryCount
     intCD = item.intCD
