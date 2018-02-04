@@ -1,9 +1,11 @@
+import os
 from CurrentVehicle import g_currentVehicle
 from collections import Counter
 from gui.Scaleform.daapi.view.lobby.customization.shared import Cart, PurchaseItem
 from gui.customization.shared import HighlightingMode
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from shared_utils import CONST_CONTAINER
+from .. import g_config
 
 POPOVER_ALIAS = 'CamoSelectorCamoAnchorPropertiesUI'
 
@@ -108,3 +110,12 @@ def getItemInventoryCount(item, outfitsInfo=None):
         inventoryCount += old[intCD] - new[intCD]
 
     return max(0, inventoryCount)
+
+
+def _isSuitableForTab(self, item):
+    ct = CUSTOMIZATION_TABS
+    isInter = os.path.splitext(os.path.basename(item.descriptor.texture))[0] in g_config.interCamo
+    return not ((self._tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'modded'))
+                or (self._tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'modded'))
+                or (self._tabIndex == ct.INTERNATIONAL and not isInter)
+                or (self._tabIndex == ct.CUSTOM and item.priceGroup != 'modded'))

@@ -1,4 +1,3 @@
-import os
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationBookmarkVO, \
     CustomizationSeasonAndTypeFilterData, comparisonKey
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
@@ -11,8 +10,7 @@ from items.vehicles import g_cache
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
-from .shared import CUSTOMIZATION_TABS
-from .. import g_config
+from .shared import CUSTOMIZATION_TABS, _isSuitableForTab
 
 
 class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
@@ -42,14 +40,13 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         for item in sorted(allItems.itervalues(), key=comparisonKey):
             groupName = item.groupUserName
             for tabIndex in CUSTOMIZATION_TABS.ALL:
-                for seasonType in SeasonType.COMMON_SEASONS:
-                    if item.season & seasonType:
-                        if seasonType == SeasonType.SUMMER and tabIndex in (CUSTOMIZATION_TABS.HIDDEN, CUSTOMIZATION_TABS.INTERNATIONAL):
-                            print item.descriptor.id, getattr(item, 'name', '')
-                        seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
-                        if groupName and groupName not in seasonAndTabData.allGroups:
-                            seasonAndTabData.allGroups.append(groupName)
-                        seasonAndTabData.itemCount += 1
+                if _isSuitableForTab(item, tabIndex):
+                    for seasonType in SeasonType.COMMON_SEASONS:
+                        if item.season & seasonType:
+                            seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
+                            if groupName and groupName not in seasonAndTabData.allGroups:
+                                seasonAndTabData.allGroups.append(groupName)
+                            seasonAndTabData.itemCount += 1
 
         for tabIndex in CUSTOMIZATION_TABS.ALL:
             for seasonType in SeasonType.COMMON_SEASONS:
@@ -183,21 +180,13 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
     def _createBaseRequirements(self, season=None):
         vehicle = self._currentVehicle.item
         season = season or SeasonType.ALL
-        criteria = REQ_CRITERIA.CUSTOM(
-            lambda item: self._isSuitableForTab(item) and item.mayInstall(vehicle) and item.season & season)
+        criteria = REQ_CRITERIA.CUSTOM(lambda item: item.mayInstall(vehicle) and item.season & season)
         return criteria
-
-    def _isSuitableForTab(self, item):
-        ct = CUSTOMIZATION_TABS
-        isInter = os.path.splitext(os.path.basename(item.descriptor.texture))[0] in g_config.interCamo
-        return not ((self._tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'modded'))
-                    or (self._tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'modded'))
-                    or (self._tabIndex == ct.INTERNATIONAL and not isInter)
-                    or (self._tabIndex == ct.CUSTOM and item.priceGroup != 'modded'))
 
     def _buildCustomizationItems(self):
         season = self._seasonID
-        requirement = self._createBaseRequirements(season)
+        requirement = self._createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(
+            lambda item: _isSuitableForTab(item, self._tabIndex))
         seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][self._seasonID]
         allItemsGroup = len(seasonAndTabData.allGroups) - 1
         if seasonAndTabData.selectedGroupIndex != allItemsGroup:
