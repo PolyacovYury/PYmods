@@ -165,8 +165,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """
         return {'leftLabel': g_config.i18n['UI_flash_switcher_%s' % C11N_MODE.NAMES[self._mode]],
                 'rightLabel': g_config.i18n['UI_flash_switcher_%s' % C11N_MODE.NAMES[not self._mode]],
-                'leftEvent': 'installStyle',  # these are actually important o_o
-                'rightEvent': 'installStyles',
+                'leftEvent': 'installStyle%s' % ('s' if self._mode else ''),
+                'rightEvent': 'installStyle%s' % ('s' if not self._mode else ''),
                 'isLeft': True}
 
     def __setBuyingPanelData(self, *_):
