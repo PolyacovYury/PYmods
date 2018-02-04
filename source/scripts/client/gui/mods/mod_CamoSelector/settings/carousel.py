@@ -44,6 +44,8 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
             for tabIndex in CUSTOMIZATION_TABS.ALL:
                 for seasonType in SeasonType.COMMON_SEASONS:
                     if item.season & seasonType:
+                        if seasonType == SeasonType.SUMMER and tabIndex in (CUSTOMIZATION_TABS.HIDDEN, CUSTOMIZATION_TABS.INTERNATIONAL):
+                            print item.descriptor.id, getattr(item, 'name', '')
                         seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
                         if groupName and groupName not in seasonAndTabData.allGroups:
                             seasonAndTabData.allGroups.append(groupName)
