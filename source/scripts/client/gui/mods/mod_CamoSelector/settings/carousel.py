@@ -188,11 +188,10 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
     def _isSuitableForTab(self, item):
         ct = CUSTOMIZATION_TABS
         isInter = os.path.splitext(os.path.basename(item.descriptor.texture))[0] in g_config.interCamo
-        return not (
-                (self._tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'modded'))
-                or (self._tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'modded'))
-                or (self._tabIndex == ct.INTERNATIONAL and not isInter)
-                or (self._tabIndex == ct.CUSTOM and item.priceGroup != 'modded'))
+        return not ((self._tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'modded'))
+                    or (self._tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'modded'))
+                    or (self._tabIndex == ct.INTERNATIONAL and not isInter)
+                    or (self._tabIndex == ct.CUSTOM and item.priceGroup != 'modded'))
 
     def _buildCustomizationItems(self):
         season = self._seasonID
