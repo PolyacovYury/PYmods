@@ -309,23 +309,17 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Turn on the Custom customization mode
         (where you create vehicle's look by yourself).
         """
-        self.soundManager.playInstantSound(SOUNDS.TAB_SWITCH)
-        self._mode = C11N_MODE.SETUP
-        self._tabIndex = self._lastTab
-        self.refreshOutfit()
-        self.as_setBottomPanelTabsDataS({'tabData': self.__getItemTabsData(), 'selectedTab': self._tabIndex})
-        self._carouselDP.selectItem()
-        self.__setBuyingPanelData()
-        self.__setHeaderInitData()
+        self.switchMode(C11N_MODE.INSTALL)
 
     def switchToStyle(self):
         """ Turn on the Style customization mode
         (where you use predefined vehicle looks).
         """
+        self.switchMode(C11N_MODE.SETUP)
+
+    def switchMode(self, mode):
         self.soundManager.playInstantSound(SOUNDS.TAB_SWITCH)
-        self._mode = C11N_MODE.INSTALL
-        self._lastTab = self._tabIndex
-        self._tabIndex = CUSTOMIZATION_TABS.SHOP
+        self._mode = mode
         self.refreshOutfit()
         self.as_setBottomPanelTabsDataS({'tabData': self.__getItemTabsData(), 'selectedTab': self._tabIndex})
         self._carouselDP.selectItem()

@@ -1,3 +1,5 @@
+from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationSeasonAndTypeFilterData, \
+    comparisonKey, CustomizationBookmarkVO
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -9,37 +11,6 @@ from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from .shared import CUSTOMIZATION_TABS
-
-
-def comparisonKey(item):
-    """ Comparison key to sort the the customization carousel.
-    """
-    return 1, item.groupID, item.id
-
-
-class CustomizationBookmarkVO(object):
-    __slots__ = ('bookmarkName', 'bookmarkIndex')
-
-    def __init__(self, bookmarkName, bookmarkIndex):
-        self.bookmarkName = bookmarkName
-        self.bookmarkIndex = bookmarkIndex
-
-    def asDict(self):
-        """
-        Creates a dictionary with the class' relevant data.
-        :return: data object
-        """
-        return {'bookmarkName': self.bookmarkName,
-                'bookmarkIndex': self.bookmarkIndex}
-
-
-class CustomizationSeasonAndTypeFilterData(object):
-    __slots__ = ('allGroups', 'selectedGroupIndex', 'itemCount')
-
-    def __init__(self):
-        self.allGroups = []
-        self.selectedGroupIndex = -1
-        self.itemCount = 0
 
 
 class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
@@ -61,7 +32,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         self._currentlyApplied = set()
         self._allSeasonAndTabFilterData = {}
         requirement = self._createBaseRequirements()
-        allItems = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, requirement)
+        allItems = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CAMOUFLAGE, requirement)
         for tabIndex in CUSTOMIZATION_TABS.ALL:
             self._allSeasonAndTabFilterData[tabIndex] = {}
             for season in SeasonType.COMMON_SEASONS:
