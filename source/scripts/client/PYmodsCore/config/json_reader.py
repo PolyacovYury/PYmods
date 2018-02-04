@@ -23,13 +23,13 @@ class JSONObjectEncoder(json.JSONEncoder):
             if isinstance(o, (list, tuple)):
                 primitives_only = True
                 for item in o:
-                    if isinstance(item, (list, tuple, dict)):
+                    if isinstance(item, dict):
                         primitives_only = False
                         break
                 output = []
                 if primitives_only:
                     for item in o:
-                        output.append(json.dumps(item))
+                        output.append(self.encode(item))
                     return "[" + ", ".join(output) + "]"
                 else:
                     self.current_indent += self.indent
