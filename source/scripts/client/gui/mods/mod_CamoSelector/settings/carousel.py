@@ -202,7 +202,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
             selectedGroup = seasonAndTabData.allGroups[seasonAndTabData.selectedGroupIndex]
             requirement |= REQ_CRITERIA.CUSTOMIZATION.ONLY_IN_GROUP(selectedGroup)
         if self._historicOnlyItems:
-            requirement |= ~REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
+            requirement |= REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
         if self._onlyOwnedAndFreeItems:
             requirement |= REQ_CRITERIA.CUSTOM(lambda item: self._proxy.getItemInventoryCount(item) > 0)
         if self._onlyAppliedItems:
