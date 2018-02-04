@@ -142,9 +142,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                                 'historicVO': self.__getHistoricIndicatorData()})
 
     def __setFooterInitData(self):
-        tabsData = self.__getItemTabsData()
-        self._tabIndex = first(tabsData, {}).get('id')
-        self.as_setBottomPanelInitDataS({'tabData': {'tabData': tabsData,
+        self.as_setBottomPanelInitDataS({'tabData': {'tabData': self.__getItemTabsData(),
                                                      'selectedTab': self._tabIndex},
                                          'tabsAvailableRegions': CUSTOMIZATION_TABS.AVAILABLE_REGIONS,
                                          'defaultStyleLabel': VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL,
@@ -159,6 +157,15 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                                                             {'value': RES_ICONS.MAPS_ICONS_BUTTONS_EQUIPPED_ICON,
                                                              'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_EQUIPPEDBTN,
                                                              'selected': self._carouselDP.getAppliedFilter()}]})
+
+    def __getSwitcherInitData(self):
+        """ Switcher is a style/custom selector.
+        """
+        return {'leftLabel': g_config.i18n['UI_flash_switcher_%s' % C11N_MODE.NAMES[self._mode]],
+                'rightLabel': g_config.i18n['UI_flash_switcher_%s' % C11N_MODE.NAMES[not self._mode]],
+                'leftEvent': '',
+                'rightEvent': '',
+                'isLeft': True}
 
     def __setBuyingPanelData(self, *_):
         """ Update the buying panel according to the current state of cart.
@@ -321,7 +328,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.soundManager.playInstantSound(SOUNDS.TAB_SWITCH)
         self._mode = mode
         self.refreshOutfit()
-        self.as_setBottomPanelTabsDataS({'tabData': self.__getItemTabsData(), 'selectedTab': self._tabIndex})
+        self.__setFooterInitData()
         self._carouselDP.selectItem()
         self.__setBuyingPanelData()
         self.__setHeaderInitData()
@@ -670,15 +677,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def onSelectHotFilter(self, index, value):
         (self._carouselDP.setOwnedFilter, self._carouselDP.setAppliedFilter)[index](value)
         self.refreshCarousel(rebuild=True)
-
-    def __getSwitcherInitData(self):
-        """ Switcher is a style/custom selector.
-        """
-        return {'leftLabel': g_config.i18n['UI_flash_mode_install'],
-                'rightLabel': g_config.i18n['UI_flash_mode_setup'],
-                'leftEvent': 'installStyle',
-                'rightEvent': 'installStyles',
-                'isLeft': self._mode == C11N_MODE.INSTALL}
 
     def __getHistoricIndicatorData(self):
         """ Historicity indicator and name of the current style or custom outfit.

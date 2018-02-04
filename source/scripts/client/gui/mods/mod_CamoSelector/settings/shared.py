@@ -11,6 +11,7 @@ class C11N_MODE(CONST_CONTAINER):
     """ Customization mode.
     """
     INSTALL, SETUP = range(2)
+    NAMES = {INSTALL: 'install', SETUP: 'setup'}
     REGIONS = {SETUP: HighlightingMode.WHOLE_VEHICLE, INSTALL: HighlightingMode.CAMO_REGIONS}
 
 
