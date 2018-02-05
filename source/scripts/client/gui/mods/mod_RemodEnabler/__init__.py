@@ -1,4 +1,4 @@
-__modID__ = '%(modID)s'
+__modID__ = '%(mod_ID)s'
 __date__ = '%(file_compile_date)s'
 import PYmodsCore
 from config import g_config
