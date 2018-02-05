@@ -270,32 +270,29 @@ def do_compile(file, cfile=None, dfile=None, doraise=False, timeStr=''):
 
     """
     with open(file, 'U') as f:
-        try:
-            maxTS = timestamp = long(os.fstat(f.fileno()).st_mtime)
-            access = long(os.fstat(f.fileno()).st_atime)
-        except AttributeError:
-            maxTS = timestamp = long(os.stat(file).st_mtime)
-            access = long(os.stat(file).st_atime)
-        codestring = f.read()
         if timeStr:
             maxTS = timestamp = int(timeStr)
-        if '__init__' in file or 'onfig' in file:
-            for path in ('/'.join((x[0], y)).replace(os.sep, '/') for x in os.walk(os.path.dirname(file)) for y in x[2]):
-                if not path.endswith('.py'):
-                    continue
-                timeStr = subprocess.check_output(
-                    ['git', '--no-pager', 'log', '-n', '1', '--format="%ct"', '--', path])[1:-2]
-                if not timeStr:
-                    mtime = int(os.stat(path).st_mtime)
-                else:
-                    mtime = int(timeStr)
-                if mtime > maxTS:
-                    maxTS = mtime
-        codestring = multireplace(codestring,
-                                  {'%(file_compile_date)s': time.strftime('%d.%m.%Y', time.localtime(maxTS)),
-                                   '%(mod_ID)s': multireplace(os.path.basename(file), {'.py': '', 'mod_': ''})})
-        if '%(mod_ID)s' in codestring:
-            print file, 'compile failed'
+        else:
+            try:
+                maxTS = timestamp = long(os.fstat(f.fileno()).st_mtime)
+            except AttributeError:
+                maxTS = timestamp = long(os.stat(file).st_mtime)
+        codestring = f.read()
+        modName = file
+        if '__init__' in file:
+            modName = os.path.dirname(file)
+            if '%(file_compile_date)s' in codestring:
+                for path in ('/'.join((x[0], y)).replace(os.sep, '/') for x in os.walk(modName) for y in x[2]):
+                    if not path.endswith('.py'):
+                        continue
+                    timeStr = subprocess.check_output(
+                        ['git', '--no-pager', 'log', '-n', '1', '--format="%ct"', '--', path])[1:-2]
+                    mtime = int(os.stat(path).st_mtime) if not timeStr else int(timeStr)
+                    if mtime > maxTS:
+                        maxTS = mtime
+        codestring = multireplace(
+            codestring, {'%(file_compile_date)s': time.strftime('%d.%m.%Y', time.localtime(maxTS)),
+                         '%(mod_ID)s': multireplace(os.path.basename(modName), {'.py': '', 'mod_': ''})})
     try:
         codeobject = __builtin__.compile(codestring, dfile or file, 'exec')
     except Exception, err:
@@ -315,7 +312,7 @@ def do_compile(file, cfile=None, dfile=None, doraise=False, timeStr=''):
         fc.seek(0, 0)
         fc.write(py_compile.MAGIC)
     if timeStr:
-        os.utime(cfile, (access, timestamp))
+        os.utime(cfile, (time.time(), timestamp))
 
 
 def multireplace(string, replacements):

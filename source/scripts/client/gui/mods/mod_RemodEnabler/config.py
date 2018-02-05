@@ -18,6 +18,7 @@ from items.components import component_constants
 from items.components.shared_components import EmblemSlot
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
+from . import __modID__, __date__
 
 
 def readAODecals(confList):
@@ -105,8 +106,8 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         super(ConfigInterface, self).__init__()
 
     def init(self):
-        self.ID = 'RemodEnabler'
-        self.version = '3.0.0 (%(file_compile_date)s)'
+        self.ID = __modID__
+        self.version = '3.0.0 (%s)' % __date__
         self.author = '%s (thx to atacms)' % self.author
         self.defaultKeys = {'DynamicSkinHotKey': ['KEY_F1', ['KEY_LCONTROL', 'KEY_RCONTROL']],
                             'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
