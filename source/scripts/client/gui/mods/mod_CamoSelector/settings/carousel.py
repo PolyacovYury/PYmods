@@ -8,7 +8,7 @@ from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
-from .shared import CUSTOMIZATION_TABS, _isSuitableForTab
+from .shared import CUSTOMIZATION_TABS, isItemSuitableForTab
 
 
 class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
@@ -36,7 +36,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         for item in sorted(allItems.itervalues(), key=comparisonKey):
             groupName = item.groupUserName
             for tabIndex in CUSTOMIZATION_TABS.ALL:
-                if _isSuitableForTab(item, tabIndex):
+                if isItemSuitableForTab(item, tabIndex):
                     for seasonType in SeasonType.COMMON_SEASONS:
                         if item.season & seasonType:
                             seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
@@ -182,7 +182,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
     def _buildCustomizationItems(self):
         season = self._seasonID
         requirement = self._createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(
-            lambda item: _isSuitableForTab(item, self._tabIndex))
+            lambda item: isItemSuitableForTab(item, self._tabIndex))
         seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][self._seasonID]
         allItemsGroup = len(seasonAndTabData.allGroups) - 1
         if seasonAndTabData.selectedGroupIndex != allItemsGroup:

@@ -12,6 +12,7 @@ from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from items.components.c11n_constants import SeasonType
 from . import __modID__, __date__
+from .settings.shared import getCamoTextureName
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -171,8 +172,7 @@ class ConfigInterface(PYmodsConfigInterface):
         except StandardError:
             traceback.print_exc()
         camouflages = items.vehicles.g_cache.customization20().camouflages
-        camoNames = {id: os.path.splitext(os.path.basename(x.texture))[0] for id, x in camouflages.iteritems() if 'modded'
-                     not in x.priceGroupTags}
+        camoNames = {id: getCamoTextureName(x) for id, x in camouflages.iteritems() if 'modded' not in x.priceGroupTags}
         camoIndices = {}
         for camoID, camoName in camoNames.iteritems():
             camoIndices.setdefault(camoName, []).append(camoID)
@@ -185,6 +185,8 @@ class ConfigInterface(PYmodsConfigInterface):
                         nationsList += filterNode.nations
             if set(nationsList) == set(xrange(len(nations.NAMES))):
                 self.interCamo.append(camoName)
+            elif len(set(nationsList)) > 1:
+                print camoName, set(nationsList)
         self.hiddenCamo = [camoID for camoID in camoNames if 'notInShop' in camouflages[camoID].priceGroupTags]
         settings = loadJson(self.ID, 'settings', {}, self.configPath)
         if 'disable' in settings:
@@ -199,7 +201,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     print '%s: unknown camouflage for remapping: %s' % (self.ID, camoName)
                     del conf[camoName]
             for camoID, camouflage in camouflages.items():
-                camoName = os.path.splitext(os.path.basename(camouflage.texture))
+                camoName = getCamoTextureName(camouflage.texture)
                 if camoName not in conf:
                     continue
                 camoInShop = camoID not in self.hiddenCamo

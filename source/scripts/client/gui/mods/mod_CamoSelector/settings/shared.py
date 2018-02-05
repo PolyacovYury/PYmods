@@ -5,7 +5,6 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import Cart, PurchaseIt
 from gui.customization.shared import HighlightingMode
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from shared_utils import CONST_CONTAINER
-from .. import g_config
 
 POPOVER_ALIAS = 'CamoSelectorCamoAnchorPropertiesUI'
 
@@ -112,9 +111,18 @@ def getItemInventoryCount(item, outfitsInfo=None):
     return max(0, inventoryCount)
 
 
-def _isSuitableForTab(item, tabIndex):
+def getCamoTextureName(camo):
+    return os.path.splitext(os.path.basename(camo.texture))[0]
+
+
+def isCamoInternational(storage, camo):
+    return getCamoTextureName(camo) in storage.interCamo
+
+
+def isItemSuitableForTab(item, tabIndex):
+    from .. import g_config
     ct = CUSTOMIZATION_TABS
-    isInter = os.path.splitext(os.path.basename(item.descriptor.texture))[0] in g_config.interCamo
+    isInter = isCamoInternational(g_config, item.descriptor)
     return not ((tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'modded'))
                 or (tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'modded'))
                 or (tabIndex == ct.INTERNATIONAL and not isInter)
