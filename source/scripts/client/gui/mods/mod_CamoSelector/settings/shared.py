@@ -1,10 +1,10 @@
-import os
 from CurrentVehicle import g_currentVehicle
 from collections import Counter
 from gui.Scaleform.daapi.view.lobby.customization.shared import Cart, PurchaseItem
 from gui.customization.shared import HighlightingMode
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from shared_utils import CONST_CONTAINER
+from ..utils import isCamoInternational
 
 POPOVER_ALIAS = 'CamoSelectorCamoAnchorPropertiesUI'
 
@@ -109,14 +109,6 @@ def getItemInventoryCount(item, outfitsInfo=None):
         inventoryCount += old[intCD] - new[intCD]
 
     return max(0, inventoryCount)
-
-
-def getCamoTextureName(camo):
-    return os.path.splitext(os.path.basename(camo.texture))[0]
-
-
-def isCamoInternational(storage, camo):
-    return getCamoTextureName(camo) in storage.interCamo
 
 
 def isItemSuitableForTab(item, tabIndex):

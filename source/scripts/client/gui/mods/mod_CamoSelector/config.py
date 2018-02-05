@@ -4,7 +4,6 @@ import Keys
 import ResMgr
 import items.vehicles
 import nations
-import os
 import traceback
 from PYmodsCore import PYmodsConfigInterface, checkKeys, loadJson, refreshCurrentVehicle, remDups
 from gui import InputHandler
@@ -12,7 +11,7 @@ from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from items.components.c11n_constants import SeasonType
 from . import __modID__, __date__
-from .settings.shared import getCamoTextureName
+from .utils import getCamoTextureName
 
 
 class ConfigInterface(PYmodsConfigInterface):

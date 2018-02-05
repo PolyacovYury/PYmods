@@ -1,3 +1,5 @@
+import os
+
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 
 
@@ -13,3 +15,11 @@ def getCurrentDesc():
 
 def getCurrentNationID():
     return getCurrentDesc().type.customizationNationID
+
+
+def getCamoTextureName(camo):
+    return os.path.splitext(os.path.basename(camo.texture))[0]
+
+
+def isCamoInternational(storage, camo):
+    return getCamoTextureName(camo) in storage.interCamo
