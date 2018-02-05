@@ -15,10 +15,10 @@ class LegacyCamouflageReader(CamouflageXmlReader):
     def _readFromXml(self, target, xmlCtx, section):
         super(LegacyCamouflageReader, self)._readFromXml(target, xmlCtx, section)
         if section.has_key('colors'):
-            palettes = [[]]
-            for p_name, p_section in section['colors'].items():
-                palettes[0].append(iv._readColor(((xmlCtx, 'colors'), 'palette 0'), p_section, ''))
-            target.palettes = tuple(palettes)
+            palette = []
+            for c_name in section['colors'].keys():
+                palette.append(iv._readColor(((xmlCtx, 'colors'), 'palette 0'), section, c_name))
+            target.palettes = (palette,)
 
 
 @overrideMethod(iv.Cache, 'customization20')
@@ -84,7 +84,6 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
     itemPrototype = itemCls()
     itemPrototype.season = SeasonType.ALL
     itemPrototype.priceGroup = 'modded'
-    itemPrototype.invisibilityFactor = 0
     itemPrototype.historical = False
     itemPrototype.i18n = shared_components.I18nExposedComponent(groupName, '')
     group.itemPrototype = itemPrototype
@@ -98,6 +97,7 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
         reader._readFromXml(item, iCtx, i_section)
         item.i18n = shared_components.I18nExposedComponent(i_name, '')
         item.id = max(20000, *storage) + 1
+        item.invisibilityFactor = 0
         if item.compactDescr in itemToGroup:
             ix.raiseWrongXml(iCtx, 'id', 'duplicate item. id: %s found in group %s' % (
                 item.id, itemToGroup[item.compactDescr]))
