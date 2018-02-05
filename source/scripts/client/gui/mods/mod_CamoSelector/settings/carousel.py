@@ -7,16 +7,12 @@ from helpers import dependency
 from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
-from skeletons.gui.customization import ICustomizationService
-from skeletons.gui.server_events import IEventsCache
 from skeletons.gui.shared import IItemsCache
 from .shared import CUSTOMIZATION_TABS, _isSuitableForTab
 
 
 class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
-    service = dependency.descriptor(ICustomizationService)
     itemsCache = dependency.descriptor(IItemsCache)
-    eventsCache = dependency.descriptor(IEventsCache)
 
     def __init__(self, currentVehicle, carouselItemWrapper, proxy):
         super(CustomizationCarouselDataProvider, self).__init__()

@@ -566,13 +566,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def _carouseItemWrapper(self, itemCD):
         item = self.itemsCache.items.getItemByCD(itemCD)
         itemInventoryCount = self.getItemInventoryCount(item)
-        if item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION:
-            showUnsupportedAlert = not self._isDeferredRenderer
-        else:
-            showUnsupportedAlert = False
         isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
-        return buildCustomizationItemDataVO(item, itemInventoryCount, showUnsupportedAlert=showUnsupportedAlert,
-                                            isCurrentlyApplied=isCurrentlyApplied)
+        return buildCustomizationItemDataVO(item, itemInventoryCount, isCurrentlyApplied=isCurrentlyApplied)
 
     def __carveUpOutfits(self):
         """ Fill up the internal structures with vehicle's outfits.
