@@ -89,7 +89,7 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
     itemPrototype = itemCls()
     itemPrototype.season = SeasonType.ALL
     itemPrototype.priceGroup = 'modded'
-    itemPrototype.invisibilityFactor = 1
+    itemPrototype.invisibilityFactor = 0
     itemPrototype.historical = False
     itemPrototype.i18n = shared_components.I18nExposedComponent(groupName, '')
     group.itemPrototype = itemPrototype
