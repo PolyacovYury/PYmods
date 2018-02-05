@@ -26,7 +26,7 @@ def new_customization20(base, *args, **kwargs):
     from . import g_config
     cache = base(*args, **kwargs)
     if g_config.data['enabled'] and 'modded' not in cache.priceGroupNames:
-        for configDir in g_config.configFolders:
+        for configDir in sorted(g_config.configFolders, key=lambda s: s.lower()):
             filePath = g_config.configPath + 'camouflages/' + configDir + '/'
             updateCustomizationCache(cache, '.' + filePath, g_config.i18n['UI_flash_camoMode_modded'])
     return cache
