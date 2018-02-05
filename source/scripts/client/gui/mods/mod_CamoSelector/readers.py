@@ -1,11 +1,11 @@
 import ResMgr
-import items
 import items._xml as ix
-import items.vehicles as iv
 import items.components.c11n_components as cc
+import items.vehicles as iv
 import nations
 import os
 from PYmodsCore import overrideMethod
+from items import makeIntCompactDescrByID as makeCD
 from items.components import shared_components
 from items.components.c11n_constants import SeasonType
 from items.readers.c11n_readers import CamouflageXmlReader
@@ -32,31 +32,26 @@ def new_customization20(base, *args, **kwargs):
     return cache
 
 
-# noinspection PyUnboundLocalVariable,PyUnboundLocalVariable
 @overrideMethod(iv, '_vehicleValues')
 def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
     section = section[sectionName]
     if section is None:
         return
-    else:
-        ctx = (xmlCtx, sectionName)
-        for vehName, subsection in section.items():
-            if 'all' not in vehName:
-                if ':' not in vehName:
-                    vehName = ':'.join((nations.NAMES[defNationID], vehName))
-                try:
-                    nationID, vehID = iv.g_list.getIDsByName(vehName)
-                except Exception:
-                    ix.raiseWrongXml(xmlCtx, sectionName, "unknown vehicle name '%s'" % vehName)
-
-                yield items.vehicles.VehicleValue(vehName, items.makeIntCompactDescrByID('vehicle', nationID, vehID), ctx,
-                                                  subsection)
-            else:
-                for vehNameAll in items.vehicles.g_list._VehicleList__ids.keys():
-                    nationID, vehID = items.vehicles.g_list.getIDsByName(vehNameAll)
-                    yield items.vehicles.VehicleValue(vehNameAll,
-                                                      items.makeIntCompactDescrByID('vehicle', nationID, vehID),
-                                                      ctx, subsection)
+    ctx = (xmlCtx, sectionName)
+    for vehName, subsection in section.items():
+        if vehName != 'all':
+            if ':' not in vehName:
+                vehName = ':'.join((nations.NAMES[defNationID], vehName))
+            try:
+                nationID, vehID = iv.g_list.getIDsByName(vehName)
+            except Exception:
+                ix.raiseWrongXml(xmlCtx, sectionName, "unknown vehicle name '%s'" % vehName)
+            # noinspection PyUnboundLocalVariable
+            yield iv.VehicleValue(vehName, makeCD('vehicle', nationID, vehID), ctx, subsection)
+        else:
+            for vehNameAll in iv.g_list._VehicleList__ids.keys():
+                nationID, vehID = iv.g_list.getIDsByName(vehNameAll)
+                yield iv.VehicleValue(vehNameAll, makeCD('vehicle', nationID, vehID), ctx, subsection)
 
 
 def updateCustomizationCache(cache, folder, groupName):
