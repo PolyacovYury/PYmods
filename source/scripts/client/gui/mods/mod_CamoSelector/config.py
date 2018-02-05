@@ -11,6 +11,7 @@ from gui import InputHandler
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from items.components.c11n_constants import SeasonType
+from . import __modID__, __date__
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -32,8 +33,8 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).__init__()
 
     def init(self):
-        self.ID = 'CamoSelector'
-        self.version = '2.0.0 (%(file_compile_date)s)'
+        self.ID = __modID__
+        self.version = '2.0.0 (%s)' % __date__
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'selectHotKey': ['KEY_F5', ['KEY_LCONTROL', 'KEY_RCONTROL']]}

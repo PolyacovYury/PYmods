@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+__modID__ = '%(mod_ID)s'
+__date__ = '%(file_compile_date)s'
 import time
 
 from PYmodsCore import overrideMethod
