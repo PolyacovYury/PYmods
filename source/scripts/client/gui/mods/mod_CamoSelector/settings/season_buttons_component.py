@@ -26,7 +26,6 @@ class PropertySheetSeasonButtonsComponent(PropertySheetSeasonButtonsComponentMet
         self._regionId = -1
         self._renderers = None
         self._c11nView = None
-        return
 
     def show(self):
         self.__registerHandlers()
@@ -42,7 +41,6 @@ class PropertySheetSeasonButtonsComponent(PropertySheetSeasonButtonsComponentMet
         self._areaId = -1
         self._slotId = -1
         self._regionId = -1
-        return
 
     def refreshSeasonButtons(self):
         if self.__isComponentValid():
@@ -63,7 +61,6 @@ class PropertySheetSeasonButtonsComponent(PropertySheetSeasonButtonsComponentMet
         self._renderers = None
         self.__unregisterHandlers()
         super(PropertySheetSeasonButtonsComponent, self)._dispose()
-        return
 
     def __registerHandlers(self):
         self.service.onPropertySheetShow += self.__onVehicleOutfitChanged
@@ -83,8 +80,6 @@ class PropertySheetSeasonButtonsComponent(PropertySheetSeasonButtonsComponentMet
                 newRenderer.seasonIDX = idx
                 self.__determineRendererState(newRenderer, idx, item, activeItem, False)
                 self._renderers[idx] = newRenderer
-
-        return
 
     def __determineRendererState(self, renderer, seasonIDX, currentItem, activeItem, showGlow):
         self._activeSeason = self._c11nView.getCurrentSeason()
@@ -111,7 +106,6 @@ class PropertySheetSeasonButtonsComponent(PropertySheetSeasonButtonsComponentMet
                                SEASON_TYPE_TO_IDX[self._activeSeason])
         renderer.showPurchaseGlow = (showGlow and renderer.requiresPurchase and currentItem == activeItem and currentItem is
                                      not None)
-        return
 
     def __getState(self, activeCustomizationItem, currentCustomizationItem, applicableToCurrentSeason, wouldAddItem):
         if activeCustomizationItem is None:
@@ -169,7 +163,6 @@ class PropertySheetSeasonButtonsComponent(PropertySheetSeasonButtonsComponentMet
             self._slotId = slotId
             self._regionId = regionId
             self.__createRenderers()
-        return
 
     def __refreshRenderers(self):
         outfit = self._c11nView.getModifiedOutfit(self._activeSeason)

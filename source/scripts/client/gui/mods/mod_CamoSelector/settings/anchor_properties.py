@@ -49,7 +49,6 @@ class AnchorProperties(CustomizationAnchorPropertiesMeta):
         self._c11nView = None
         self._item = None
         self._component = None
-        return
 
     def applyData(self, areaID, slotID, regionID):
         slot = self._c11nView.getCurrentOutfit().getContainer(areaID).slotFor(slotID)
@@ -81,7 +80,6 @@ class AnchorProperties(CustomizationAnchorPropertiesMeta):
         self._item = None
         self._component = None
         super(AnchorProperties, self)._dispose()
-        return
 
     def _extractDataFromElement(self):
         self._isEmpty = not self._item

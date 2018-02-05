@@ -78,7 +78,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__hangarSpace = g_hangarSpace.space
         self.__locatedOnEmblem = False
         self.itemIsPicked = False
-        return
 
     def _populate(self):
         super(CamoSelectorMainView, self)._populate()
@@ -278,7 +277,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         slotIdVO = None
         self.as_updateSelectedRegionsS(slotIdVO)
         self.refreshCarousel(rebuild=True)
-        return
 
     def installCustomizationElement(self, intCD, areaId, slotId, regionId, seasonIdx):
         """ Install the given item on a vehicle.
@@ -397,7 +395,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__setBuyingPanelData()
         self.as_refreshAnchorPropertySheetS()
         self.refreshCarousel(rebuild=self._carouselDP.getAppliedFilter() or self._carouselDP.getOwnedFilter())
-        return
 
     def updatePropertySheetButtons(self, areaId, slotId, regionId):
         self.service.onPropertySheetShow(areaId, slotId, regionId)
@@ -587,13 +584,11 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         if hovered:
             self.soundManager.playInstantSound(SOUNDS.HOVER)
             return
-        else:
-            if tankPartID != -1 and regionID != -1:
-                slotId = CustomizationSlotIdVO(tankPartID, typeID, regionID)._asdict()
-                if selected:
-                    self.soundManager.playInstantSound(SOUNDS.CHOOSE)
-            self.as_onRegionHighlightedS(slotId)
-            return
+        if tankPartID != -1 and regionID != -1:
+            slotId = CustomizationSlotIdVO(tankPartID, typeID, regionID)._asdict()
+            if selected:
+                self.soundManager.playInstantSound(SOUNDS.CHOOSE)
+        self.as_onRegionHighlightedS(slotId)
 
     def __onSpaceCreateHandler(self):
         self.refreshOutfit()
@@ -664,7 +659,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             self.as_updateAnchorDataS(CustomizationAnchorInitVO(anchorVOs, doRegions)._asdict())
         else:
             self.as_setAnchorInitS(CustomizationAnchorInitVO(anchorVOs, doRegions)._asdict())
-        return
 
     def onSelectHotFilter(self, index, value):
         (self._carouselDP.setOwnedFilter, self._carouselDP.setAppliedFilter)[index](value)
@@ -721,13 +715,11 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def __onNotifySpaceMoved(self, _):
         if self.__anchorPositionCallbackID is None:
             self.__startTimer(ANCHOR_UPDATE_TIMER_DELAY, self.__updateAnchorPositions)
-        return
 
     def __onNotifyCursorDragging(self, event):
         isDragging = event.ctx.get('isDragging', False)
         if not isDragging and self.__anchorPositionCallbackID is None:
             self.__startTimer(ANCHOR_UPDATE_TIMER_DELAY, self.__updateAnchorPositions)
-        return
 
     def __startTimer(self, delay, handler):
         self.__finishTime = BigWorld.time() + delay
@@ -745,7 +737,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             BigWorld.cancelCallback(self.__anchorPositionCallbackID)
             self.__anchorPositionCallbackID = None
             self.__finishTime = 0
-        return
 
     @async
     def __confirmHeaderNavigation(self, callback):

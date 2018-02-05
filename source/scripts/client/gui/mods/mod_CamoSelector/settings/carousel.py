@@ -54,7 +54,6 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         self._itemSizeData = []
         self._customizationBookmarks = []
         self._selectedIdx = -1
-        return
 
     def clear(self):
         del self._customizationItems[:]
@@ -109,7 +108,6 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
             self._selectIntCD = None
         else:
             self._selectIntCD = item.intCD
-        return
 
     def selectItemIdx(self, itemIndex):
         """ Select a Customization Item by index.
@@ -209,5 +207,3 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
                 self._customizationBookmarks.append(CustomizationBookmarkVO(curItem.groupUserName, idx).asDict())
             self._customizationItems.append(curItem.intCD)
             self._itemSizeData.append(curItem.isWide())
-
-        return
