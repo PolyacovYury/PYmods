@@ -295,9 +295,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__stopTimer()
         self.__setAnchorsInitData(self._tabIndex, True)
         self.__updateAnchorPositions()
-        # slotIdVO = None
-        # self.as_updateSelectedRegionsS(slotIdVO)
         self.refreshCarousel(rebuild=True)
+        if self._mode == C11N_MODE.SETUP:
+            self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
 
     def installCustomizationElement(self, intCD, areaId, slotId, regionId, seasonIdx):
         """ Install the given item on a vehicle.

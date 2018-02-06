@@ -121,7 +121,7 @@ def _getData(base, self):
     if self._item:
         for idx in RAND_MODE.NAMES:
             swatchScales.append({'paletteIcon': '',
-                                 'label': g_config.i18n['UI_flash_randomOptions_%s' % RAND_MODE.NAMES[idx]],
+                                 'label': g_config.i18n['UI_flash_randMode_%s' % RAND_MODE.NAMES[idx]],
                                  'selected': self._c11nView.getRandMode() == idx,
                                  'value': idx})
 
