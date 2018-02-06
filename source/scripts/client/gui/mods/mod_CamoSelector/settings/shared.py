@@ -14,7 +14,6 @@ class C11N_MODE(CONST_CONTAINER):
     """
     INSTALL, SETUP = range(2)
     NAMES = {INSTALL: 'install', SETUP: 'setup'}
-    REGIONS = {SETUP: HighlightingMode.CAMO_REGIONS, INSTALL: HighlightingMode.CAMO_REGIONS}
 
 
 class CUSTOMIZATION_TABS(CONST_CONTAINER):
@@ -31,11 +30,11 @@ class CUSTOMIZATION_TABS(CONST_CONTAINER):
 def chooseMode(settingMode, vehicle):
     """ Choose mode for the highlighter from the given item type and vehicle.
     """
-    if settingMode == C11N_MODE.INSTALL:
-        if vehicle.turret.isGunCarriage:
-            return HighlightingMode.CAMO_REGIONS_SKIP_TURRET
-        return HighlightingMode.CAMO_REGIONS
-    return HighlightingMode.WHOLE_VEHICLE
+    # if settingMode == C11N_MODE.INSTALL:
+    if vehicle.turret.isGunCarriage:
+        return HighlightingMode.CAMO_REGIONS_SKIP_TURRET
+    return HighlightingMode.CAMO_REGIONS
+    # return HighlightingMode.WHOLE_VEHICLE
 
 
 def getCustomPurchaseItems(outfitsInfo):
