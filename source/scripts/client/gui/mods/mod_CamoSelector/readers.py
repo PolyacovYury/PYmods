@@ -17,7 +17,7 @@ class LegacyCamouflageReader(CamouflageXmlReader):
         if section.has_key('colors'):
             palette = []
             for c_name in section['colors'].keys():
-                palette.append(iv._readColor(((xmlCtx, 'colors'), 'palette 0'), section, c_name))
+                palette.append(iv._readColor((xmlCtx, 'colors'), section['colors'], c_name))
             target.palettes = (palette,)
 
 
