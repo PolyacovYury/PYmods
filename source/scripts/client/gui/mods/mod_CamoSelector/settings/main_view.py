@@ -292,8 +292,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """
         self.soundManager.playInstantSound(SOUNDS.TAB_SWITCH)
         self._tabIndex = tabIndex
-        self.service.stopHighlighter()
-        self.service.startHighlighter(chooseMode(self._mode, g_currentVehicle.item))
         self.__stopTimer()
         self.__setAnchorsInitData(self._tabIndex, True)
         self.__updateAnchorPositions()
@@ -334,15 +332,15 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Turn on the Custom customization mode
         (where you create vehicle's look by yourself).
         """
-        self.service.resumeHighlighter()
+        self.service.startHighlighter(chooseMode(self._mode, g_currentVehicle.item))
         self.switchMode(C11N_MODE.INSTALL)
 
     def switchToStyle(self):
         """ Turn on the Style customization mode
         (where you use predefined vehicle looks).
         """
-        self.service.suspendHighlighter()
         self.switchMode(C11N_MODE.SETUP)
+        self.service.stopHighlighter()
         self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
 
     def switchMode(self, mode):
