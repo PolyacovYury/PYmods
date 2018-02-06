@@ -23,93 +23,72 @@ from ..shared import RAND_MODE
 from .. import g_config
 
 
+@overrideMethod(CamoAnchorProperties, 'applyData')
+def applyData(base, self, areaID, slotID, regionID):
+    print areaID, slotID, regionID
+    print 'applyData', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
+    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+        return base(self, areaID, slotID, regionID)
+    slot = self._c11nView.getCurrentOutfit().getContainer(areaID).slotFor(slotID)
+    self._item = slot.getItem(regionID)
+    self._component = slot.getComponent(regionID)
+    self._extractDataFromElement()
+    self._sendData(self._getData())
 
 
-class AnchorProperties(CustomizationAnchorPropertiesMeta):
-    __metaclass__ = ABCMeta
-    itemsCache = dependency.descriptor(IItemsCache)
+@overrideMethod(CamoAnchorProperties, '_extractDataFromElement')
+def _extractDataFromElement(base, self):
+    print 'extractDataFromElement', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
+    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+        return base(self)
+    self._isEmpty = not self._item
+    if not self._isEmpty:
+        self._name = text_styles.highTitle(self._item.userName)
+        self._desc = self.__generateDescription()
+    else:
+        itemTypeID = GUI_ITEM_TYPE.CAMOUFLAGE
+        itemTypeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
+        self._name = text_styles.highTitle(_ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYTEXT,
+                                               elementType=_ms(ITEM_TYPES.customization(itemTypeName))))
+        self._desc = text_styles.neutral(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYSLOT_HINT)
 
-    def __init__(self):
-        super(AnchorProperties, self).__init__()
-        self._c11nView = None
-        self._item = None
-        self._component = None
+@overrideMethod(CamoAnchorProperties)
+def _getItemData(base, self):
+    """
+    generates data for the carousel item renderer
+    :return: carousel item renderer VO
+    """
+    print 'getItemData', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
+    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+        return base(self)
+    rendererVO = None
+    if self._item is not None:
+        rendererVO = buildCustomizationItemDataVO(self._item, count=self._c11nView.getItemInventoryCount(
+            self._item) if self._item.isRentable else None, plainView=True)
+    return rendererVO
 
-    def applyData(self, areaID, slotID, regionID):
-        slot = self._c11nView.getCurrentOutfit().getContainer(areaID).slotFor(slotID)
-        self._item = slot.getItem(regionID)
-        self._component = slot.getComponent(regionID)
-        self._extractDataFromElement()
-        self._sendData(self._getData())
 
-    def refreshData(self):
-        """
-        Collects property data and sends to UI
-        """
-        self._extractDataFromElement()
-        self._sendData(self._getData())
-
-    def _getAnchorType(self):
-        return ANCHOR_TYPE.NONE
-
-    @abstractmethod
-    def _getData(self):
-        return None
-
-    def _populate(self):
-        super(AnchorProperties, self)._populate()
-        self._c11nView = self.app.containerManager.getContainer(ViewTypes.LOBBY_SUB).getView()
-
-    def _dispose(self):
-        self._c11nView = None
-        self._item = None
-        self._component = None
-        super(AnchorProperties, self)._dispose()
-
-    def _extractDataFromElement(self):
-        self._isEmpty = not self._item
-        if not self._isEmpty:
-            self._name = text_styles.highTitle(self._item.userName)
-            self._desc = self.__generateDescription()
-        else:
-            itemTypeID = GUI_ITEM_TYPE.CAMOUFLAGE
-            itemTypeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
-            self._name = text_styles.highTitle(_ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYTEXT,
-                                                   elementType=_ms(ITEM_TYPES.customization(itemTypeName))))
-            self._desc = text_styles.neutral(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYSLOT_HINT)
-
-    def _sendData(self, data):
-        # noinspection PyUnresolvedReferences
-        self.as_setPopoverDataS(data)
-
-    def _getItemData(self):
-        """
-        generates data for the carousel item renderer
-        :return: carousel item renderer VO
-        """
-        rendererVO = None
-        if self._item is not None:
-            rendererVO = buildCustomizationItemDataVO(self._item, count=self._c11nView.getItemInventoryCount(
-                self._item) if self._item.isRentable else None, plainView=True)
-        return rendererVO
-
-    def __generateDescription(self):
-        mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYSLOT
-        if self._item is not None:
-            if self._item.isAllSeason():
-                mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_ANY
-            elif self._item.isSummer():
-                mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_SUMMER
-            elif self._item.isWinter():
-                mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_WINTER
-            elif self._item.isDesert():
-                mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_DESERT
-        desc = _ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_DESCRIPTION_MAP, mapType=text_styles.stats(mapValue))
-        if self._item.groupUserName:
-            desc = text_styles.concatStylesToSingleLine(desc,
-                                                        _ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_DESCRIPTION_TYPE,
-                                                            elementType=text_styles.stats(self._item.groupUserName)))
-        return text_styles.main(desc)
+@overrideMethod(CamoAnchorProperties, '_CamoAnchorProperties__generateDescription')
+def __generateDescription(base, self):
+    print 'generateDescription', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
+    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+        return base(self)
+    mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYSLOT
+    if self._item is not None:
+        if self._item.isAllSeason():
+            mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_ANY
+        elif self._item.isSummer():
+            mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_SUMMER
+        elif self._item.isWinter():
+            mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_WINTER
+        elif self._item.isDesert():
+            mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_DESERT
+    desc = _ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_DESCRIPTION_MAP, mapType=text_styles.stats(mapValue))
+    if self._item.groupUserName:
+        desc = text_styles.concatStylesToSingleLine(desc,
+                                                    _ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_DESCRIPTION_TYPE,
+                                                        elementType=text_styles.stats(self._item.groupUserName)))
+    return text_styles.main(desc)
 
 
 @overrideMethod(CamoAnchorProperties, 'setCamoColor')
@@ -139,6 +118,7 @@ def setCamoScale(base, self, scale, scaleIndex):
 
 @overrideMethod(CamoAnchorProperties, '_getData')
 def _getData(base, self):
+    print 'getData', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
     if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
         return base(self)
     swatchColors = []
