@@ -322,7 +322,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.soundManager.playInstantSound(SOUNDS.TAB_SWITCH)
         self._mode = mode
         if self._mode == C11N_MODE.SETUP:
-            self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 0, 0, True, False)
+            self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 1, True, False)
         self.refreshOutfit()
         self.__setFooterInitData()
         self._carouselDP.selectItem()
@@ -587,7 +587,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             self.soundManager.playInstantSound(SOUNDS.HOVER)
             return
         if tankPartID != -1 and regionID != -1:
-            slotId = CustomizationSlotIdVO(tankPartID, GUI_ITEM_TYPE.CAMOUFLAGE,
+            slotId = CustomizationSlotIdVO(tankPartID if self._mode == C11N_MODE.INSTALL else 1, typeID,
                                            regionID if self._mode == C11N_MODE.INSTALL else 1)._asdict()
             if selected:
                 self.soundManager.playInstantSound(SOUNDS.CHOOSE)
