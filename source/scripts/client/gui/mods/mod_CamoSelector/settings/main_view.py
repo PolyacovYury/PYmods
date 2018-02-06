@@ -107,6 +107,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__setBuyingPanelData()
         self.__setSeasonData()
         self.refreshOutfit()
+        self.service.startHighlighter(chooseMode(self._mode, g_currentVehicle.item))
 
     def _dispose(self):
         if g_appLoader.getSpaceID() != _SPACE_ID.LOGIN:
