@@ -1,23 +1,17 @@
 from PYmodsCore import overrideMethod
-from abc import ABCMeta, abstractmethod
-from gui.Scaleform.daapi.view.lobby.customization.anchor_properties import ANCHOR_TYPE
 from gui.Scaleform.daapi.view.lobby.customization.camo_anchor_properties import CustomizationCamoAnchorVO, \
     CustomizationCamoSwatchVO, _DEFAULT_COLORNUM, _PALETTE_BACKGROUND, _PALETTE_HEIGHT, _PALETTE_TEXTURE, \
     _PALETTE_WIDTH, CamoAnchorProperties
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import buildCustomizationItemDataVO
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
-from gui.Scaleform.daapi.view.meta.CustomizationAnchorPropertiesMeta import CustomizationAnchorPropertiesMeta
-from gui.Scaleform.framework import ViewTypes
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.c11n_items import camoIconTemplate
-from helpers import dependency
 from helpers.i18n import makeString as _ms
-from skeletons.gui.shared import IItemsCache
 from .shared import C11N_MODE
 from ..shared import RAND_MODE
 from .. import g_config
@@ -51,6 +45,7 @@ def _extractDataFromElement(base, self):
         self._name = text_styles.highTitle(_ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYTEXT,
                                                elementType=_ms(ITEM_TYPES.customization(itemTypeName))))
         self._desc = text_styles.neutral(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYSLOT_HINT)
+
 
 @overrideMethod(CamoAnchorProperties)
 def _getItemData(base, self):

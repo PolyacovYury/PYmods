@@ -1,4 +1,7 @@
+import anchor_properties
 import cm_handler
+import processors
+import season_buttons_component
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from .main_view import CamoSelectorMainView
 from .settings import CamoSelectorUI
