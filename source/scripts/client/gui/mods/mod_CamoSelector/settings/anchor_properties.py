@@ -131,7 +131,7 @@ def _getData(base, self):
         colorNum = 2
         red = 255 + 255 << 24
         green = 255 << 8 + 255 << 24
-        palettes = [(green, green), (red, red), (red, green)]
+        palettes = [(green, green, 0, 0), (red, red, 0, 0), (red, green, 0, 0)]
 
         for idx, palette in enumerate(palettes):
             texture = _PALETTE_TEXTURE.format(colornum=colorNum)
