@@ -14,7 +14,7 @@ class C11N_MODE(CONST_CONTAINER):
     """
     INSTALL, SETUP = range(2)
     NAMES = {INSTALL: 'install', SETUP: 'setup'}
-    REGIONS = {SETUP: HighlightingMode.WHOLE_VEHICLE, INSTALL: HighlightingMode.CAMO_REGIONS}
+    REGIONS = {SETUP: HighlightingMode.CAMO_REGIONS, INSTALL: HighlightingMode.CAMO_REGIONS}
 
 
 class CUSTOMIZATION_TABS(CONST_CONTAINER):
