@@ -63,8 +63,8 @@ def _getItemData(base, self):
     return rendererVO
 
 
-@overrideMethod(CamoAnchorProperties, '_CamoAnchorProperties__generateDescription')
-def __generateDescription(base, self):
+@overrideMethod(CamoAnchorProperties, '_AnchorProperties__generateDescription')
+def _generateDescription(base, self):
     print 'generateDescription', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
     if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
         return base(self)
