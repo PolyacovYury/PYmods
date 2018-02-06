@@ -586,8 +586,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         if hovered:
             self.soundManager.playInstantSound(SOUNDS.HOVER)
             return
-        if self._mode == C11N_MODE.SETUP:
-            print tankPartID, regionID
+        if self._mode == C11N_MODE.SETUP and (tankPartID == -1 or regionID == -1):
+            return
         if tankPartID != -1 and regionID != -1:
             slotId = CustomizationSlotIdVO(tankPartID, GUI_ITEM_TYPE.CAMOUFLAGE, regionID)._asdict()
             if selected:
