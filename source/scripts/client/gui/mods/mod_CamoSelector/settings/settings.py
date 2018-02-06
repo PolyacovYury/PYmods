@@ -5,7 +5,7 @@ from gui import SystemMessages
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from items.vehicles import CAMOUFLAGE_KINDS, CAMOUFLAGE_KIND_INDICES
 from .. import g_config
-from ..utils import getCurrentNationID
+from ..shared import getCurrentNationID
 
 
 class CamoSelectorUI(AbstractWindowView):

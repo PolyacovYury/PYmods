@@ -1,6 +1,5 @@
 import cm_handler
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
-from .anchor_properties import CamoAnchorProperties
 from .main_view import CamoSelectorMainView
 from .settings import CamoSelectorUI
 

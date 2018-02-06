@@ -11,7 +11,7 @@ from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from items.components.c11n_constants import SeasonType
 from . import __modID__, __date__
-from .utils import getCamoTextureName
+from .shared import getCamoTextureName
 
 
 class ConfigInterface(PYmodsConfigInterface):

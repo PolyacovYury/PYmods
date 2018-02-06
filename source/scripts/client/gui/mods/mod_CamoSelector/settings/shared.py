@@ -4,7 +4,7 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import Cart, PurchaseIt
 from gui.customization.shared import HighlightingMode
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from shared_utils import CONST_CONTAINER
-from ..utils import isCamoInternational
+from ..shared import isCamoInternational
 
 
 class C11N_MODE(CONST_CONTAINER):

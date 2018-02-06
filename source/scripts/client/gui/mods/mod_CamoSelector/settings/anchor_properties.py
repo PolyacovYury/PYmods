@@ -2,11 +2,10 @@ from PYmodsCore import overrideMethod
 from abc import ABCMeta, abstractmethod
 from gui.Scaleform.daapi.view.lobby.customization.anchor_properties import ANCHOR_TYPE
 from gui.Scaleform.daapi.view.lobby.customization.camo_anchor_properties import CustomizationCamoAnchorVO, \
-    CustomizationCamoSwatchVO, _DEFAULT_COLORNUM, _MAX_PALETTES, _PALETTE_BACKGROUND, _PALETTE_HEIGHT, _PALETTE_TEXTURE, \
+    CustomizationCamoSwatchVO, _DEFAULT_COLORNUM, _PALETTE_BACKGROUND, _PALETTE_HEIGHT, _PALETTE_TEXTURE, \
     _PALETTE_WIDTH, CamoAnchorProperties
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import buildCustomizationItemDataVO
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
-from gui.Scaleform.daapi.view.lobby.customization.shared import CAMO_SCALE_SIZE
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
 from gui.Scaleform.daapi.view.meta.CustomizationAnchorPropertiesMeta import CustomizationAnchorPropertiesMeta
 from gui.Scaleform.framework import ViewTypes
