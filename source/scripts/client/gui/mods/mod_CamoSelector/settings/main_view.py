@@ -258,7 +258,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         elif idx == 2:
             self._ally = True
             self._enemy = True
-        assert idx < 2
+        assert idx < 2, idx
         self.__setBuyingPanelData()
 
     def changeCamoRandMode(self, idx):

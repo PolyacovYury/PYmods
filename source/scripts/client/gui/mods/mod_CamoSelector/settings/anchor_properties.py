@@ -125,12 +125,9 @@ def _getData(base, self):
                                  'selected': self._c11nView.getRandMode() == idx,
                                  'value': idx})
 
-        colorNum = _DEFAULT_COLORNUM
-        for palette in self._item.palettes:
-            colorNum = max(colorNum, sum(((color >> 24) / 255.0 > 0 for color in palette)))
         colorNum = 2
-        red = 255 + 255 << 24
-        green = 255 << 8 + 255 << 24
+        red = 255 + (255 << 24)
+        green = (255 << 8) + (255 << 24)
         palettes = [(green, green, 0, 0), (red, red, 0, 0), (red, green, 0, 0)]
 
         for idx, palette in enumerate(palettes):
