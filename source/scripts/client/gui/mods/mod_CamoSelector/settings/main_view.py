@@ -651,8 +651,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             for slot in (x for x in container.slots() if x.getType() == cType):
                 for regionId, region in enumerate(slot.getRegions()):
                     slotId = CustomizationSlotIdVO(container.getAreaID(), slot.getType(), regionId)
-                    #popoverAlias = POPOVER_ALIAS if self._mode == C11N_MODE.SETUP else \
-                    popoverAlias = CUSTOMIZATION_ALIASES.CUSTOMIZATION_CAMO_POPOVER
+                    popoverAlias = POPOVER_ALIAS
                     item = slot.getItem(regionId)
                     itemIntCD = item.intCD if item is not None else 0
                     if self.__getAnchorPositionData(slotId, region) is not None:
