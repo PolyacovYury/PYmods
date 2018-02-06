@@ -19,12 +19,13 @@ def __determineRendererState(base, self, renderer, seasonIDX, currentItem, activ
     if currentItem is None and activeItem:
         wouldAddItem = self._c11nView.getItemInventoryCount(activeItem) == 0
     renderer.itemIntCD = currentItem.intCD if currentItem is not None else -1
-    state = self.__getState(activeItem, currentItem, self.__isApplicableToActiveSeason(activeItem, seasonIDX),
-                            wouldAddItem)
-    action = self.__getAction(state)
+    state = self._PropertySheetSeasonButtonsComponent__getState(
+        activeItem, currentItem, self._PropertySheetSeasonButtonsComponent__isApplicableToActiveSeason(activeItem, seasonIDX),
+        wouldAddItem)
+    action = self._PropertySheetSeasonButtonsComponent__getAction(state)
     renderer.action = action[0]
     renderer.actionText = action[1]
-    renderer.seasonIcon = self.__getSeasonIcon(SEASON_IDX_TO_TYPE[seasonIDX], state)
+    renderer.seasonIcon = self._PropertySheetSeasonButtonsComponent__getSeasonIcon(SEASON_IDX_TO_TYPE[seasonIDX], state)
     renderer.applyItemIntCD = activeItem.intCD if activeItem is not None else -1
     smallSlotVO = {'itemIcon': currentItem.icon if currentItem is not None else '',
                    'itemIsWide': currentItem.isWide() if currentItem is not None else False}

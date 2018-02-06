@@ -38,7 +38,7 @@ def _extractDataFromElement(base, self):
     self._isEmpty = not self._item
     if not self._isEmpty:
         self._name = text_styles.highTitle(self._item.userName)
-        self._desc = self.__generateDescription()
+        self._desc = self._AnchorProperties__generateDescription()
     else:
         itemTypeID = GUI_ITEM_TYPE.CAMOUFLAGE
         itemTypeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
