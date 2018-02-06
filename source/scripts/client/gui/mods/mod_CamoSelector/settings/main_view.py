@@ -582,15 +582,13 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.as_setAnchorPositionsS(self._getUpdatedAnchorPositions())
 
     def __onRegionHighlighted(self, typeID, tankPartID, regionID, selected, hovered):
-        print typeID, tankPartID, regionID, selected, hovered
         slotId = None
         if hovered:
             self.soundManager.playInstantSound(SOUNDS.HOVER)
             return
-        print tankPartID, regionID
         if tankPartID != -1 and regionID != -1:
             slotId = CustomizationSlotIdVO(tankPartID if self._mode == C11N_MODE.INSTALL else 1, typeID,
-                                           regionID if self._mode == C11N_MODE.INSTALL else 1)._asdict()
+                                           regionID)._asdict()
             if selected:
                 self.soundManager.playInstantSound(SOUNDS.CHOOSE)
         self.as_onRegionHighlightedS(slotId)
