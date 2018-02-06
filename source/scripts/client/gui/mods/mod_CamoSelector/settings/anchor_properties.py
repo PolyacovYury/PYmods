@@ -20,26 +20,6 @@ from skeletons.gui.shared import IItemsCache
 from .item_vo import buildCustomizationItemDataVO
 
 
-class AnchorDataVO(object):
-    __slots__ = ('name', 'desc', 'isEmpty', 'itemRendererVO')
-
-    def __init__(self, name, desc, isEmpty, itemRendererVO):
-        self.name = name
-        self.desc = desc
-        self.isEmpty = isEmpty
-        self.itemRendererVO = itemRendererVO
-
-    def asDict(self):
-        """
-        Creates a dictionary with the class' relevant data.
-        :return: data object
-        """
-        return {'name': self.name,
-                'desc': self.desc,
-                'isEmpty': self.isEmpty,
-                'itemRendererVO': self.itemRendererVO}
-
-
 class AnchorProperties(CustomizationAnchorPropertiesMeta):
     __metaclass__ = ABCMeta
     itemsCache = dependency.descriptor(IItemsCache)

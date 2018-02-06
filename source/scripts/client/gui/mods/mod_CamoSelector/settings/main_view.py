@@ -589,7 +589,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         if self._mode == C11N_MODE.SETUP and (tankPartID == -1 or regionID == -1):
             return
         if tankPartID != -1 and regionID != -1:
-            slotId = CustomizationSlotIdVO(tankPartID, GUI_ITEM_TYPE.CAMOUFLAGE, regionID)._asdict()
+            slotId = CustomizationSlotIdVO(tankPartID, GUI_ITEM_TYPE.CAMOUFLAGE,
+                                           regionID if self._mode == C11N_MODE.INSTALL else 1)._asdict()
             if selected:
                 self.soundManager.playInstantSound(SOUNDS.CHOOSE)
         self.as_onRegionHighlightedS(slotId)
