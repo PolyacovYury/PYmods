@@ -321,8 +321,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def switchMode(self, mode):
         self.soundManager.playInstantSound(SOUNDS.TAB_SWITCH)
         self._mode = mode
-        # if self._mode == C11N_MODE.SETUP:
-        #     self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 1, True, False)
+        if self._mode == C11N_MODE.SETUP:
+            self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
         self.refreshOutfit()
         self.__setFooterInitData()
         self._carouselDP.selectItem()
