@@ -47,7 +47,7 @@ def _extractDataFromElement(base, self):
         self._desc = text_styles.neutral(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYSLOT_HINT)
 
 
-@overrideMethod(CamoAnchorProperties)
+@overrideMethod(CamoAnchorProperties, '_getItemData')
 def _getItemData(base, self):
     """
     generates data for the carousel item renderer
