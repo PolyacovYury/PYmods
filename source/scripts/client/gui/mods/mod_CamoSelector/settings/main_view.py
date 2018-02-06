@@ -273,8 +273,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__stopTimer()
         self.__setAnchorsInitData(self._tabIndex, True)
         self.__updateAnchorPositions()
-        slotIdVO = None
-        self.as_updateSelectedRegionsS(slotIdVO)
+        # slotIdVO = None
+        # self.as_updateSelectedRegionsS(slotIdVO)
         self.refreshCarousel(rebuild=True)
 
     def installCustomizationElement(self, intCD, areaId, slotId, regionId, seasonIdx):
