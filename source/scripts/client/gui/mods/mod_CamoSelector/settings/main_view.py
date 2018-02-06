@@ -95,7 +95,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.service.onRegionHighlighted += self.__onRegionHighlighted
         self.itemsCache.onSyncCompleted += self.__onCacheReSync
         self.__carveUpOutfits()
-        self._mode = C11N_MODE.SETUP
         self._carouselDP = CustomizationCarouselDataProvider(g_currentVehicle, self._carouseItemWrapper, self)
         self._carouselDP.setFlashObject(self.as_getDataProviderS())
         self._carouselDP.setEnvironment(self.app)
@@ -322,6 +321,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def switchMode(self, mode):
         self.soundManager.playInstantSound(SOUNDS.TAB_SWITCH)
         self._mode = mode
+        # if self._mode == C11N_MODE.SETUP:
+        #     self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, C11N_MODE.REGIONS[self._mode], )
         self.refreshOutfit()
         self.__setFooterInitData()
         self._carouselDP.selectItem()
@@ -570,7 +571,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Fill up the internal structures with vehicle's outfits.
         """
         for season in SeasonType.COMMON_SEASONS:
-            outfit = self.service.getCustomOutfit(season)
+            outfit = self.service.getEmptyOutfit()
+            # TODO: fill it up with installed camouflages
             self._originalOutfits[season] = outfit.copy()
             self._modifiedOutfits[season] = outfit.copy()
 
@@ -585,7 +587,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             self.soundManager.playInstantSound(SOUNDS.HOVER)
             return
         if tankPartID != -1 and regionID != -1:
-            slotId = CustomizationSlotIdVO(tankPartID, typeID, regionID)._asdict()
+            if self._mode == C11N_MODE.SETUP:
+                print tankPartID, regionID
+            slotId = CustomizationSlotIdVO(tankPartID, GUI_ITEM_TYPE.CAMOUFLAGE, regionID)._asdict()
             if selected:
                 self.soundManager.playInstantSound(SOUNDS.CHOOSE)
         self.as_onRegionHighlightedS(slotId)
