@@ -47,9 +47,10 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
 from .processors import OutfitApplier
-from .shared import C11N_MODE, CUSTOMIZATION_TABS, POPOVER_ALIAS, chooseMode, getCustomPurchaseItems, getItemInventoryCount, \
+from .shared import C11N_MODE, CUSTOMIZATION_TABS, chooseMode, getCustomPurchaseItems, getItemInventoryCount, \
     getTotalPurchaseInfo
 from .. import g_config
+from ..shared import RAND_MODE
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):
@@ -71,6 +72,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self._modifiedOutfits = {}
         self._currentOutfit = None
         self._mode = C11N_MODE.INSTALL
+        self._randMode = RAND_MODE.INCLUDE
+        self._ally = True
+        self._enemy = True
         self._isDeferredRenderer = True
         self.__anchorPositionCallbackID = None
         self._state = {}
@@ -240,6 +244,26 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.as_refreshAnchorPropertySheetS()
         self.__setAnchorsInitData(self._tabIndex, True, True)
 
+    def changeCamoTeamMode(self, idx):
+        if self._randMode == RAND_MODE.OFF:
+            self._ally = False
+            self._enemy = False
+        elif idx == 0:
+            self._ally = True
+            self._enemy = False
+        elif idx == 1:
+            self._ally = False
+            self._enemy = True
+        elif idx == 2:
+            self._ally = True
+            self._enemy = True
+        assert idx < 2
+        self.__setBuyingPanelData()
+
+    def changeCamoRandMode(self, idx):
+        assert idx in RAND_MODE.NAMES
+        self._randMode = idx
+
     def refreshCarousel(self, rebuild=False):
         if rebuild:
             self._carouselDP.buildList(self._tabIndex, self._currentSeason, refresh=False)
@@ -310,19 +334,20 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Turn on the Custom customization mode
         (where you create vehicle's look by yourself).
         """
+        self.service.resumeHighlighter()
         self.switchMode(C11N_MODE.INSTALL)
 
     def switchToStyle(self):
         """ Turn on the Style customization mode
         (where you use predefined vehicle looks).
         """
+        self.service.suspendHighlighter()
         self.switchMode(C11N_MODE.SETUP)
+        self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
 
     def switchMode(self, mode):
         self.soundManager.playInstantSound(SOUNDS.TAB_SWITCH)
         self._mode = mode
-        if self._mode == C11N_MODE.SETUP:
-            self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
         self.refreshOutfit()
         self.__setFooterInitData()
         self._carouselDP.selectItem()
@@ -436,13 +461,26 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         return self._modifiedOutfits.get(season)
 
     def getMode(self):
-        return C11N_MODE.INSTALL
+        return self._mode
 
     def getCurrentSeason(self):
         return self._currentSeason
 
     def getCurrentTab(self):
         return self._tabIndex
+
+    def getRandMode(self):
+        return self._randMode
+
+    def getIsAlly(self):
+        return self._ally
+
+    def getIsEnemy(self):
+        return self._enemy
+
+    def getTeamMode(self):
+        return -1 if not (self._ally or self._enemy) else 0 if (self._ally and not self._enemy) else 1 if (
+                    not self._ally and self._enemy) else 2
 
     def getAppliedItems(self, isOriginal=True):
         outfits = self._originalOutfits if isOriginal else self._modifiedOutfits

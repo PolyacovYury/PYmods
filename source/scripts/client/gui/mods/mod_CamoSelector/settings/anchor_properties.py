@@ -1,9 +1,11 @@
+from PYmodsCore import overrideMethod
 from abc import ABCMeta, abstractmethod
 from gui.Scaleform.daapi.view.lobby.customization.anchor_properties import ANCHOR_TYPE
 from gui.Scaleform.daapi.view.lobby.customization.camo_anchor_properties import CustomizationCamoAnchorVO, \
     CustomizationCamoSwatchVO, _DEFAULT_COLORNUM, _MAX_PALETTES, _PALETTE_BACKGROUND, _PALETTE_HEIGHT, _PALETTE_TEXTURE, \
-    _PALETTE_WIDTH
+    _PALETTE_WIDTH, CamoAnchorProperties
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import buildCustomizationItemDataVO
+from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.daapi.view.lobby.customization.shared import CAMO_SCALE_SIZE
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
 from gui.Scaleform.daapi.view.meta.CustomizationAnchorPropertiesMeta import CustomizationAnchorPropertiesMeta
@@ -16,8 +18,12 @@ from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.c11n_items import camoIconTemplate
 from helpers import dependency
 from helpers.i18n import makeString as _ms
-from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
+from .shared import C11N_MODE
+from ..shared import RAND_MODE
+from .. import g_config
+
+
 
 
 class AnchorProperties(CustomizationAnchorPropertiesMeta):
@@ -107,69 +113,61 @@ class AnchorProperties(CustomizationAnchorPropertiesMeta):
         return text_styles.main(desc)
 
 
-# noinspection PyAbstractClass
-class CustomizationCamoAnchorPropertiesMeta(AnchorProperties):
-    def setCamoColor(self, swatchID):
-        self._printOverrideError('setCamoColor')
-
-    def setCamoScale(self, scale, index):
-        self._printOverrideError('setCamoScale')
-
-    def as_setPopoverDataS(self, data):
-        """
-        :param data: Represented by CustomizationCamoAnchorVO (AS)
-        """
-        return self.flashObject.as_setPopoverData(data) if self._isDAAPIInited() else None
+@overrideMethod(CamoAnchorProperties, 'setCamoColor')
+def setCamoColor(base, self, paletteIdx):
+    """
+    sets the current camo's palette to the palette at the provided index
+    :param paletteIdx:
+    """
+    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+        return base(self, paletteIdx)
+    self._c11nView.soundManager.playInstantSound(SOUNDS.SELECT)
+    self._c11nView.changeCamoTeamMode(paletteIdx)
 
 
-class CamoAnchorProperties(CustomizationCamoAnchorPropertiesMeta):
-    service = dependency.descriptor(ICustomizationService)
+@overrideMethod(CamoAnchorProperties, 'setCamoScale')
+def setCamoScale(base, self, scale, scaleIndex):
+    """
+    Set the scale of the camo to the provided scale value
+    :param scale: the new value for camo's patternSize. represents amount of tiling to do
+    :param scaleIndex: the index of the camo scale slider that was selected
+    """
+    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+        return base(self, scale, scaleIndex)
+    self._c11nView.soundManager.playInstantSound(SOUNDS.SELECT)
+    self._c11nView.changeCamoRandMode(scaleIndex)
 
-    def setCamoColor(self, paletteIdx):
-        """
-        sets the current camo's palette to the palette at the provided index
-        :param paletteIdx:
-        """
-        self._c11nView.soundManager.playInstantSound(SOUNDS.SELECT)
-        self._component.palette = paletteIdx
-        self.service.onOutfitChanged()
 
-    def setCamoScale(self, scale, scaleIndex):
-        """
-        Set the scale of the camo to the provided scale value
-        :param scale: the new value for camo's patternSize. represents amount of tiling to do
-        :param scaleIndex: the index of the camo scale slider that was selected
-        """
-        self._c11nView.soundManager.playInstantSound(SOUNDS.SELECT)
-        self._component.patternSize = scale
-        self.service.onOutfitChanged()
+@overrideMethod(CamoAnchorProperties, '_getData')
+def _getData(base, self):
+    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+        return base(self)
+    swatchColors = []
+    swatchScales = []
+    if self._item:
+        for idx in RAND_MODE.NAMES:
+            swatchScales.append({'paletteIcon': '',
+                                 'label': g_config.i18n['UI_flash_randomOptions_%s' % RAND_MODE.NAMES[idx]],
+                                 'selected': self._c11nView.getRandMode() == idx,
+                                 'value': idx})
 
-    def _getAnchorType(self):
-        return ANCHOR_TYPE.CAMO
+        colorNum = _DEFAULT_COLORNUM
+        for palette in self._item.palettes:
+            colorNum = max(colorNum, sum(((color >> 24) / 255.0 > 0 for color in palette)))
+        colorNum = 2
+        red = 255 + 255 << 24
+        green = 255 << 8 + 255 << 24
+        palettes = [(green, green), (red, red), (red, green)]
 
-    def _getData(self):
-        swatchColors = []
-        swatchScales = []
-        if self._item:
-            for idx in xrange(len(CAMO_SCALE_SIZE)):
-                swatchScales.append({'paletteIcon': '',
-                                     'label': CAMO_SCALE_SIZE[idx],
-                                     'selected': self._component.patternSize == idx,
-                                     'value': idx})
+        for idx, palette in enumerate(palettes):
+            texture = _PALETTE_TEXTURE.format(colornum=colorNum)
+            icon = camoIconTemplate(texture, _PALETTE_WIDTH, _PALETTE_HEIGHT, palette, background=_PALETTE_BACKGROUND)
+            swatchColors.append(CustomizationCamoSwatchVO(icon, idx == self._c11nView.getTeamMode())._asdict())
 
-            colorNum = _DEFAULT_COLORNUM
-            for palette in self._item.palettes:
-                colorNum = max(colorNum, sum(((color >> 24) / 255.0 > 0 for color in palette)))
-
-            for idx, palette in enumerate(self._item.palettes[:_MAX_PALETTES]):
-                texture = _PALETTE_TEXTURE.format(colornum=colorNum)
-                icon = camoIconTemplate(texture, _PALETTE_WIDTH, _PALETTE_HEIGHT, palette, background=_PALETTE_BACKGROUND)
-                swatchColors.append(CustomizationCamoSwatchVO(icon, idx == self._component.palette)._asdict())
-
-        scaleText = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_CAMO_SCALE
-        itemData = self._getItemData()
-        if itemData is None:
-            itemData = {'intCD': 0,
-                        'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_TANK_POPOVER_SMALL}
-        return CustomizationCamoAnchorVO(self._name, self._desc, self._isEmpty, itemData, swatchColors, scaleText,
-                                         swatchScales).asDict()
+    scaleText = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_CAMO_SCALE
+    itemData = self._getItemData()
+    if itemData is None:
+        itemData = {'intCD': 0,
+                    'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_TANK_POPOVER_SMALL}
+    return CustomizationCamoAnchorVO(self._name, self._desc, self._isEmpty, itemData, swatchColors, scaleText,
+                                     swatchScales).asDict()

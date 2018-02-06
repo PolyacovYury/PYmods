@@ -1,6 +1,14 @@
 import os
 
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
+from shared_utils import CONST_CONTAINER
+
+
+class RAND_MODE(CONST_CONTAINER):
+    """ Customization mode.
+    """
+    OFF, INCLUDE, OVERRIDE = range(3)
+    NAMES = {OFF: 'off', INCLUDE: 'include', OVERRIDE: 'override'}
 
 
 def getCurrentDesc():
