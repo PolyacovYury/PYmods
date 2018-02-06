@@ -627,7 +627,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                                            regionID)._asdict()
             if selected:
                 self.soundManager.playInstantSound(SOUNDS.CHOOSE)
-        self.as_onRegionHighlightedS(slotId)
+        if self._mode == C11N_MODE.INSTALL or slotId is not None:
+            self.as_onRegionHighlightedS(slotId)
 
     def __onSpaceCreateHandler(self):
         self.refreshOutfit()
