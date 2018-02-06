@@ -11,6 +11,7 @@ from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogMeta
 from gui.Scaleform.daapi.view.lobby.customization import CustomizationItemCMHandler
 from gui.Scaleform.daapi.view.lobby.customization.customization_cm_handlers import CustomizationOptions
+from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import buildCustomizationItemDataVO
 from gui.Scaleform.daapi.view.lobby.customization.main_view import ANCHOR_ALPHA_MIN, ANCHOR_FADE_EXPO, \
     ANCHOR_UPDATE_FREQUENCY, ANCHOR_UPDATE_TIMER_DELAY, AnchorPositionData, CustomizationAnchorInitVO, \
     CustomizationAnchorPositionVO, CustomizationAnchorsSetVO, CustomizationCarouselDataVO, CustomizationSlotIdVO, \
@@ -45,7 +46,6 @@ from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
-from .item_vo import buildCustomizationItemDataVO
 from .processors import OutfitApplier
 from .shared import C11N_MODE, CUSTOMIZATION_TABS, POPOVER_ALIAS, chooseMode, getCustomPurchaseItems, getItemInventoryCount, \
     getTotalPurchaseInfo

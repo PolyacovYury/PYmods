@@ -3,6 +3,7 @@ from gui.Scaleform.daapi.view.lobby.customization.anchor_properties import ANCHO
 from gui.Scaleform.daapi.view.lobby.customization.camo_anchor_properties import CustomizationCamoAnchorVO, \
     CustomizationCamoSwatchVO, _DEFAULT_COLORNUM, _MAX_PALETTES, _PALETTE_BACKGROUND, _PALETTE_HEIGHT, _PALETTE_TEXTURE, \
     _PALETTE_WIDTH
+from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import buildCustomizationItemDataVO
 from gui.Scaleform.daapi.view.lobby.customization.shared import CAMO_SCALE_SIZE
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
 from gui.Scaleform.daapi.view.meta.CustomizationAnchorPropertiesMeta import CustomizationAnchorPropertiesMeta
@@ -17,7 +18,6 @@ from helpers import dependency
 from helpers.i18n import makeString as _ms
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.shared import IItemsCache
-from .item_vo import buildCustomizationItemDataVO
 
 
 class AnchorProperties(CustomizationAnchorPropertiesMeta):
