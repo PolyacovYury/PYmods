@@ -200,7 +200,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     print '%s: unknown camouflage for remapping: %s' % (self.ID, camoName)
                     del conf[camoName]
             for camoID, camouflage in camouflages.items():
-                camoName = getCamoTextureName(camouflage.texture)
+                camoName = getCamoTextureName(camouflage)
                 if camoName not in conf:
                     continue
                 camoInShop = camoID not in self.hiddenCamo
