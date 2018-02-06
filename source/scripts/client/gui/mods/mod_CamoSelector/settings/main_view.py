@@ -436,7 +436,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         return self._modifiedOutfits.get(season)
 
     def getMode(self):
-        return self._mode
+        return C11N_MODE.INSTALL
 
     def getCurrentSeason(self):
         return self._currentSeason
