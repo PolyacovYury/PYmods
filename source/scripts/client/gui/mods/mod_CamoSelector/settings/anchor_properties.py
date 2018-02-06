@@ -85,7 +85,7 @@ class AnchorProperties(CustomizationAnchorPropertiesMeta):
         rendererVO = None
         if self._item is not None:
             rendererVO = buildCustomizationItemDataVO(self._item, count=self._c11nView.getItemInventoryCount(
-                self._item) if self._item.isRentable else None)
+                self._item) if self._item.isRentable else None, plainView=True)
         return rendererVO
 
     def __generateDescription(self):

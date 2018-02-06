@@ -565,7 +565,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         item = self.itemsCache.items.getItemByCD(itemCD)
         itemInventoryCount = self.getItemInventoryCount(item)
         isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
-        return buildCustomizationItemDataVO(item, itemInventoryCount, isCurrentlyApplied=isCurrentlyApplied)
+        return buildCustomizationItemDataVO(item, itemInventoryCount, isCurrentlyApplied=isCurrentlyApplied, plainView=True)
 
     def __carveUpOutfits(self):
         """ Fill up the internal structures with vehicle's outfits.
