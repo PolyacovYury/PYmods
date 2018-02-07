@@ -219,8 +219,10 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
                     nationUserName = g_config.i18n['UI_flashCol_camoGroup_special']
                 if '<font' not in nationUserName:
                     groupName = ' / '.join((nationUserName.split(' ')[0], groupName))
-                else:  # HangarPainter support
+                elif '>' in groupName:  # HangarPainter support
                     groupName = ' / '.join((nationUserName.rsplit(' ', 1)[0], groupName.split('>', 1)[1]))
+                else:
+                    groupName = nationUserName
             if item.intCD == self._selectIntCD:
                 self._selectedIdx = len(self._customizationItems)
                 self._selectIntCD = None
