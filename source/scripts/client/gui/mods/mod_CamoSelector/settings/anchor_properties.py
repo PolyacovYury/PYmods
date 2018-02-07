@@ -19,7 +19,7 @@ from .. import g_config
 
 @overrideMethod(CamoAnchorProperties, 'applyData')
 def applyData(base, self, areaID, slotID, regionID):
-    print areaID, slotID, regionID
+    print self, self.__class__, areaID, slotID, regionID
     print 'applyData', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
     if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
         return base(self, areaID, slotID, regionID)
