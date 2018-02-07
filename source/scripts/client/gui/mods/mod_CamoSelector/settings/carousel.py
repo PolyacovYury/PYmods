@@ -204,9 +204,11 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         self._customizationBookmarks = []
         lastGroupName = None
         for idx, curItem in enumerate(sorted(allItems.itervalues(), key=comparisonKey)):
-            groupName = ' / '.join((_ms(
-                '#vehicle_customization:repaint/%s_base_color' % nations.NAMES[curItem.nationID]).split(' ')[0],
-                                    curItem.groupUserName))
+            nationUserName = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[curItem.nationID])
+            if '<font' not in nationUserName:
+                groupName = ' / '.join((nationUserName.split(' ')[0], curItem.groupUserName))
+            else:  # HangarPainter support
+                groupName = ' / '.join((nationUserName.rsplit(' ', 1)[0], curItem.groupUserName.split('>', 1)[1]))
             if curItem.intCD == self._selectIntCD:
                 self._selectedIdx = len(self._customizationItems)
                 self._selectIntCD = None
