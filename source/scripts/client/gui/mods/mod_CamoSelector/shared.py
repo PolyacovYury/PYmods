@@ -15,7 +15,7 @@ class TEAM_MODE(CONST_CONTAINER):
     """ Customization mode.
     """
     ALLY, ENEMY, BOTH = range(1, 4)
-    NAMES = {ALLY: 'ally', ENEMY: 'enemy', BOTH: 'all'}
+    NAMES = {ALLY: 'ally', ENEMY: 'enemy', BOTH: 'both'}
 
 
 def getCurrentDesc():
