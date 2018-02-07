@@ -215,15 +215,17 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
                 if len(nationIDs) == 1:
                     nationUserName = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
                 elif len(nationIDs) > 1:
-                    nationUserName = g_config.i18n['UI_flashCol_camoGroup_multinational']
+                    nationUserName = g_config.i18n['UI_flashCol_camoGroup_multinational'] + ' '
                 else:
-                    nationUserName = g_config.i18n['UI_flashCol_camoGroup_special']
+                    nationUserName = g_config.i18n['UI_flashCol_camoGroup_special'] + ' '
                 if '<font' not in nationUserName:
                     groupName = ' / '.join((nationUserName.split(' ')[0], groupName))
                 elif '>' in groupName:  # HangarPainter support
                     groupName = ' / '.join((nationUserName.rsplit(' ', 1)[0], groupName.split('>', 1)[1]))
+                elif not groupName:
+                    groupName = g_config.i18n['UI_flashCol_camoGroup_special']
                 else:
-                    groupName = nationUserName
+                    print 'CamoSelector: camo group name with unexpected properties:', groupName
             if item.intCD == self._selectIntCD:
                 self._selectedIdx = len(self._customizationItems)
                 self._selectIntCD = None

@@ -68,6 +68,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flashCol_teamMode_both': 'All',
             'UI_flashCol_camoGroup_multinational': 'Multinational',
             'UI_flashCol_camoGroup_special': 'Special',
+            'UI_flashCol_camoGroup_modded': 'Custom',
             'UI_flash_header': 'Camouflages setup',
             'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
                                         '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),
