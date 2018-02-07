@@ -221,7 +221,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def onSelectItem(self, index):
         """ Select item in the carousel
         """
-        print 'item selected', self._mode
+        print 'item selected', self._mode, index
         if self._mode == C11N_MODE.SETUP:
             pass
         self._carouselDP.selectItemIdx(index)
@@ -415,6 +415,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Remove the given item from every outfit.
         Don't care about mode there.
         """
+        print 'item removed', intCDs
         self.soundManager.playInstantSound(SOUNDS.REMOVE)
         for outfit in self._modifiedOutfits.itervalues():
             for slot in outfit.slots():
