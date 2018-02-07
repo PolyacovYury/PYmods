@@ -1,7 +1,6 @@
 from PYmodsCore import overrideMethod
-from gui.Scaleform.daapi.view.lobby.customization.camo_anchor_properties import CustomizationCamoAnchorVO, \
-    CustomizationCamoSwatchVO, _DEFAULT_COLORNUM, _PALETTE_BACKGROUND, _PALETTE_HEIGHT, _PALETTE_TEXTURE, \
-    _PALETTE_WIDTH, CamoAnchorProperties
+from gui.Scaleform.daapi.view.lobby.customization.camo_anchor_properties import CamoAnchorProperties, \
+    CustomizationCamoAnchorVO
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import buildCustomizationItemDataVO
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
@@ -10,11 +9,10 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
-from gui.shared.gui_items.customization.c11n_items import camoIconTemplate
 from helpers.i18n import makeString as _ms
 from .shared import C11N_MODE
-from ..shared import RAND_MODE
 from .. import g_config
+from ..shared import RAND_MODE, TEAM_MODE
 
 
 @overrideMethod(CamoAnchorProperties, '_extractDataFromElement')
@@ -100,18 +98,14 @@ def _getData(base, self):
     swatchScales = []
     if self._item:
         for idx in RAND_MODE.NAMES:
-            swatchScales.append({'paletteIcon': '',
-                                 'label': g_config.i18n['UI_flash_randMode_%s' % RAND_MODE.NAMES[idx]],
-                                 'selected': self._c11nView.getRandMode() == idx,
-                                 'value': idx})
+            swatchScales.append({'paletteIcon': '', 'selected': self._c11nView.getRandMode() == idx,
+                                 'label': g_config.i18n['UI_flash_randMode_%s' % RAND_MODE.NAMES[idx]], 'value': idx})
         red = 255 + (255 << 24)
         green = (255 << 8) + (255 << 24)
         palettes = [(green, green, 0, 0), (red, red, 0, 0), (red, green, 0, 0)]
         for idx, palette in enumerate(palettes):
-            texture = _PALETTE_TEXTURE.format(colornum=2)
-            icon = camoIconTemplate(texture, _PALETTE_WIDTH, _PALETTE_HEIGHT, palette, background=_PALETTE_BACKGROUND)
-            swatchColors.append(dict(CustomizationCamoSwatchVO(icon, idx == self._c11nView.getTeamMode())._asdict(),
-                                     label='test'))
+            swatchColors.append({'paletteIcon': '', 'selected': idx == self._c11nView.getTeamMode(),
+                                 'label': g_config.i18n['UI_flash_teamMode_%s' % TEAM_MODE.NAMES[idx]]})
     itemData = self._getItemData()
     if itemData is None:
         itemData = {'intCD': 0,

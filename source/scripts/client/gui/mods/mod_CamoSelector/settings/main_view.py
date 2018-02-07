@@ -50,7 +50,7 @@ from .processors import OutfitApplier
 from .shared import C11N_MODE, CUSTOMIZATION_TABS, chooseMode, getCustomPurchaseItems, getItemInventoryCount, \
     getTotalPurchaseInfo
 from .. import g_config
-from ..shared import RAND_MODE
+from ..shared import RAND_MODE, TEAM_MODE
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):
@@ -247,23 +247,18 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
 
     def changeCamoTeamMode(self, idx):
         if self._randMode == RAND_MODE.OFF:
-            self._ally = False
-            self._enemy = False
-        elif idx == 0:
-            self._ally = True
-            self._enemy = False
-        elif idx == 1:
-            self._ally = False
-            self._enemy = True
-        elif idx == 2:
-            self._ally = True
-            self._enemy = True
-        assert idx < 2, idx
+            idx = 0
+        self._ally = bool(idx & TEAM_MODE.ALLY)
+        self._enemy = bool(idx & TEAM_MODE.ENEMY)
         self.__setBuyingPanelData()
 
     def changeCamoRandMode(self, idx):
         assert idx in RAND_MODE.NAMES
         self._randMode = idx
+        if self._randMode == RAND_MODE.OFF:
+            self._ally = False
+            self._enemy = False
+            self.__updateAnchorPositions()
 
     def refreshCarousel(self, rebuild=False):
         if rebuild:

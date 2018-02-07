@@ -11,6 +11,13 @@ class RAND_MODE(CONST_CONTAINER):
     NAMES = {OFF: 'off', RANDOM: 'random', TEAM: 'team'}
 
 
+class TEAM_MODE(CONST_CONTAINER):
+    """ Customization mode.
+    """
+    ALLY, ENEMY, BOTH = range(1, 4)
+    NAMES = {ALLY: 'ally', ENEMY: 'enemy', BOTH: 'all'}
+
+
 def getCurrentDesc():
     if g_currentPreviewVehicle.isPresent():
         vDesc = g_currentPreviewVehicle.item.descriptor
