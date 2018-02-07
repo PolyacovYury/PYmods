@@ -206,11 +206,12 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         from .. import g_config
         for idx, item in enumerate(sorted(allItems.itervalues(), key=comparisonKey)):
             groupName = item.groupUserName
-            if not isCamoInternational(g_config, item.descriptor) and item.descriptor.filter:
+            if not isCamoInternational(g_config, item.descriptor):
                 nationIDs = []
-                for filterNode in item.descriptor.filter.include:
-                    if filterNode.nations:
-                        nationIDs += filterNode.nations
+                if item.descriptor.filter:
+                    for filterNode in item.descriptor.filter.include:
+                        if filterNode.nations:
+                            nationIDs += filterNode.nations
                 if len(nationIDs) == 1:
                     nationUserName = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
                 elif len(nationIDs) > 1:
