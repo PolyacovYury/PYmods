@@ -7,22 +7,25 @@ import PYmodsCore
 import ResMgr
 import SoundGroups
 import glob
-import shutil
 import os
+import shutil
 import traceback
 import weakref
 from adisp import AdispException, async, process
 from functools import partial
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
-from gui.Scaleform.daapi.view.login.LoginView import LoginView
-from gui.Scaleform.framework import ViewTypes, ScopeTemplates, g_entitiesFactories, GroupedViewSettings
-from gui.Scaleform.framework.managers.loaders import ViewLoadParams
-from gui.app_loader.loader import g_appLoader
+from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
+from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
+from gui.Scaleform.daapi.view.login.LoginView import LoginView
 from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
+from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewTypes, g_entitiesFactories
+from gui.Scaleform.framework.entities.View import ViewKey
+from gui.Scaleform.framework.managers.loaders import ViewLoadParams
+from gui.app_loader.loader import g_appLoader
 from helpers import getClientVersion
 from zipfile import ZipFile
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from . import g_config
 
 
@@ -48,6 +51,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
         super(self.__class__, self).__init__()
         self.lines = []
         self.curPercentage = 0
+        self.doLogin = False
         g_config.loadingProxy = weakref.proxy(self)
 
     def _populate(self):
@@ -57,8 +61,11 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
     def __initTexts(self):
         self.updateTitle(g_config.i18n['UI_loading_header_CRC32'])
         self.updateMessage()
-        self.as_setCancelLabelS(g_config.i18n['UI_loading_bugReport'])
+        self.updateCancelLabel()
         self.as_showAutoLoginBtnS(False)
+
+    def updateCancelLabel(self):
+        self.as_setCancelLabelS(g_config.i18n['UI_loading_autoLogin%s' % ('_cancel' if self.doLogin else '')])
 
     def updateTitle(self, title):
         self.as_setTitleS(title)
@@ -102,16 +109,23 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
         return False
 
     def onCancelClick(self):
-        BigWorld.wg_openWebBrowser('http://forum.worldoftanks.ru/index.php?/topic/1890271-')
+        self.doLogin = not self.doLogin
+        self.updateCancelLabel()
 
     def onWindowClose(self):
         g_config.loadingProxy = None
         self.destroy()
+        if self.doLogin:
+            loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
+            if loginView and loginView._rememberUser:
+                password = '*' * loginView.loginManager.getPreference('password_length')
+                login = loginView.loginManager.getPreference('login')
+                loginView.onLogin(login, password, loginView._servers.selectedServer['data'], False)
 
 
 g_entitiesFactories.addSettings(
-            GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
-                                '', None, ScopeTemplates.DEFAULT_SCOPE))
+    GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
+                        '', None, ScopeTemplates.DEFAULT_SCOPE))
 
 
 def CRC32_from_file(filename, localPath):
