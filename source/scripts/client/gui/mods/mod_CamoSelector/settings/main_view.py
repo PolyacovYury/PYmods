@@ -70,7 +70,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self._lastTab = CUSTOMIZATION_TABS.SHOP
         self._originalOutfits = {}
         self._modifiedOutfits = {}
+        self._originalSettings = g_config.camouflages
         self._currentOutfit = None
+        self._setupOutfit = None
         self._mode = C11N_MODE.INSTALL
         self._randMode = RAND_MODE.RANDOM
         self._ally = True
@@ -219,12 +221,18 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def onSelectItem(self, index):
         """ Select item in the carousel
         """
+        print 'item selected', self._mode
+        if self._mode == C11N_MODE.SETUP:
+            pass
         self._carouselDP.selectItemIdx(index)
         self.soundManager.playInstantSound(SOUNDS.SELECT)
 
     def onPickItem(self):
         """ Pick item in the carousel
         """
+        print 'item picked', self._mode
+        if self._mode == C11N_MODE.SETUP:
+            self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
         if not self.itemIsPicked:
             self.soundManager.playInstantSound(SOUNDS.PICK)
             self.itemIsPicked = True
@@ -273,7 +281,10 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def refreshOutfit(self):
         """ Apply any changes to the vehicle's 3d model.
         """
-        self._currentOutfit = self._modifiedOutfits[self._currentSeason]
+        if self._mode == C11N_MODE.INSTALL:
+            self._currentOutfit = self._modifiedOutfits[self._currentSeason]
+        else:
+            self._currentOutfit = self._setupOutfit
         self.service.tryOnOutfit(self._currentOutfit)
         g_tankActiveCamouflage[g_currentVehicle.item.intCD] = self._currentSeason
 
@@ -298,6 +309,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def installCustomizationElement(self, intCD, areaId, slotId, regionId, seasonIdx):
         """ Install the given item on a vehicle.
         """
+        print 'install element', self._mode, intCD, areaId, slotId, regionId, seasonIdx
         if self.itemIsPicked:
             self.soundManager.playInstantSound(SOUNDS.APPLY)
         item = self.itemsCache.items.getItemByCD(intCD)
@@ -314,6 +326,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Removes the item from the given region.
         (called from property sheet).
         """
+        print 'item cleared', self._mode, areaId, slotId, regionId, seasonIdx
         self.soundManager.playInstantSound(SOUNDS.REMOVE)
         season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
         outfit = self._modifiedOutfits[season]
@@ -602,13 +615,16 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def __carveUpOutfits(self):
         """ Fill up the internal structures with vehicle's outfits.
         """
+        self._setupOutfit = self.service.getEmptyOutfit()
         for season in SeasonType.COMMON_SEASONS:
-            outfit = self.service.getEmptyOutfit()
+            outfit = self.service.getCustomOutfit(season)
             # TODO: fill it up with installed camouflages
             self._originalOutfits[season] = outfit.copy()
             self._modifiedOutfits[season] = outfit.copy()
-
-        self._currentOutfit = self._modifiedOutfits[self._currentSeason]
+        if self._mode == C11N_MODE.INSTALL:
+            self._currentOutfit = self._modifiedOutfits[self._currentSeason]
+        else:
+            self._currentOutfit = self._setupOutfit
 
     def __updateAnchorPositions(self, _=None):
         self.as_setAnchorPositionsS(self._getUpdatedAnchorPositions())
