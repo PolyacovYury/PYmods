@@ -17,31 +17,16 @@ from ..shared import RAND_MODE
 from .. import g_config
 
 
-@overrideMethod(CamoAnchorProperties, 'applyData')
-def applyData(base, self, areaID, slotID, regionID):
-    print self, self.__class__, areaID, slotID, regionID
-    print 'applyData', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
-    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
-        return base(self, areaID, slotID, regionID)
-    slot = self._c11nView.getCurrentOutfit().getContainer(areaID).slotFor(slotID)
-    self._item = slot.getItem(regionID)
-    self._component = slot.getComponent(regionID)
-    self._extractDataFromElement()
-    self._sendData(self._getData())
-
-
 @overrideMethod(CamoAnchorProperties, '_extractDataFromElement')
 def _extractDataFromElement(base, self):
-    print 'extractDataFromElement', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
-    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+    if isinstance(self._c11nView, MainView):
         return base(self)
     self._isEmpty = not self._item
     if not self._isEmpty:
         self._name = text_styles.highTitle(self._item.userName)
         self._desc = self._AnchorProperties__generateDescription()
     else:
-        itemTypeID = GUI_ITEM_TYPE.CAMOUFLAGE
-        itemTypeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
+        itemTypeName = GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]
         self._name = text_styles.highTitle(_ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYTEXT,
                                                elementType=_ms(ITEM_TYPES.customization(itemTypeName))))
         self._desc = text_styles.neutral(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYSLOT_HINT)
@@ -49,17 +34,12 @@ def _extractDataFromElement(base, self):
 
 @overrideMethod(CamoAnchorProperties, '_getItemData')
 def _getItemData(base, self):
-    """
-    generates data for the carousel item renderer
-    :return: carousel item renderer VO
-    """
-    print 'getItemData', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
-    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+    if isinstance(self._c11nView, MainView):
         return base(self)
     rendererVO = None
     if self._item is not None:
         rendererVO = buildCustomizationItemDataVO(self._item, count=self._c11nView.getItemInventoryCount(
-            self._item) if self._item.isRentable else None, plainView=True)
+            self._item) if self._item.isRentable else None, plainView=True)  # no bonus shall be displayed
     return rendererVO
 
 
@@ -80,9 +60,9 @@ def _generateDescription(base, self):
             mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_STYLE_DESERT
     desc = _ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_DESCRIPTION_MAP, mapType=text_styles.stats(mapValue))
     if self._item.groupUserName:
-        desc = text_styles.concatStylesToSingleLine(desc,
-                                                    _ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_DESCRIPTION_TYPE,
-                                                        elementType=text_styles.stats(self._item.groupUserName)))
+        desc = text_styles.concatStylesToSingleLine(
+            desc, _ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_INFOTYPE_DESCRIPTION_TYPE, elementType=text_styles.stats(
+                self._item.groupUserName)))
     return text_styles.main(desc)
 
 
@@ -124,21 +104,17 @@ def _getData(base, self):
                                  'label': g_config.i18n['UI_flash_randMode_%s' % RAND_MODE.NAMES[idx]],
                                  'selected': self._c11nView.getRandMode() == idx,
                                  'value': idx})
-
-        colorNum = 2
         red = 255 + (255 << 24)
         green = (255 << 8) + (255 << 24)
         palettes = [(green, green, 0, 0), (red, red, 0, 0), (red, green, 0, 0)]
-
         for idx, palette in enumerate(palettes):
-            texture = _PALETTE_TEXTURE.format(colornum=colorNum)
+            texture = _PALETTE_TEXTURE.format(colornum=2)
             icon = camoIconTemplate(texture, _PALETTE_WIDTH, _PALETTE_HEIGHT, palette, background=_PALETTE_BACKGROUND)
-            swatchColors.append(CustomizationCamoSwatchVO(icon, idx == self._c11nView.getTeamMode())._asdict())
-
-    scaleText = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_CAMO_SCALE
+            swatchColors.append(dict(CustomizationCamoSwatchVO(icon, idx == self._c11nView.getTeamMode())._asdict(),
+                                     label='test'))
     itemData = self._getItemData()
     if itemData is None:
         itemData = {'intCD': 0,
                     'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_TANK_POPOVER_SMALL}
-    return CustomizationCamoAnchorVO(self._name, self._desc, self._isEmpty, itemData, swatchColors, scaleText,
-                                     swatchScales).asDict()
+    return CustomizationCamoAnchorVO(self._name, self._desc, self._isEmpty, itemData, swatchColors,
+                                     g_config.i18n['UI_flash_randMode_label'], swatchScales).asDict()
