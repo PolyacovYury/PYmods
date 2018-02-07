@@ -44,12 +44,16 @@ class ConfigInterface(PYmodsConfigInterface):
         self.i18n = {
             'UI_description': 'Camouflage selector',
             'UI_flash_tabs_0_text': 'Shop',
+            'UI_flash_tabs_0_label': 'Shop',
             'UI_flash_tabs_0_tooltip': '',
             'UI_flash_tabs_1_text': 'Hidden',
+            'UI_flash_tabs_1_label': 'Hidden',
             'UI_flash_tabs_1_tooltip': '',
             'UI_flash_tabs_2_text': 'International',
+            'UI_flash_tabs_2_label': 'International',
             'UI_flash_tabs_2_tooltip': '',
             'UI_flash_tabs_3_text': 'Custom',
+            'UI_flash_tabs_3_label': 'Custom',
             'UI_flash_tabs_3_tooltip': '',
             'UI_flash_switcher_setup': 'SETUP',
             'UI_flash_switcher_install': 'INSTALL',
@@ -62,6 +66,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_teamMode_ally': 'Ally',
             'UI_flash_teamMode_enemy': 'Enemy',
             'UI_flash_teamMode_both': 'All',
+            'UI_flash_camoGroup_multinational': 'Multinational',
+            'UI_flash_camoGroup_special': 'Special',
             'UI_flash_header': 'Camouflages setup',
             'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
                                         '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),
@@ -123,6 +129,17 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_customOrInvalid_winter': 'winter', 'UI_customOrInvalid_summer': 'summer',
             'UI_customOrInvalid_desert': 'desert'}
         super(ConfigInterface, self).init()
+
+    def loadLang(self):
+        super(ConfigInterface, self).loadLang()
+        try:
+            from helpers.i18n.hangarpainter import _config
+            for key in self.i18n:
+                if not key.startswith('UI_flash_') or key.startswith('UI_flash_tabs_') and key.endswith('_label'):
+                    continue
+                self.i18n[key] = "<font color='#%s'>%s</font>" % (_config.data['colour'], self.i18n[key])
+        except ImportError:
+            pass
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['UI_description'],

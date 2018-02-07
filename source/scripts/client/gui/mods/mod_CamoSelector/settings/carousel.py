@@ -3,6 +3,7 @@ from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import 
     CustomizationSeasonAndTypeFilterData
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui.mods.mod_CamoSelector.shared import isCamoInternational
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from helpers.i18n import makeString as _ms
@@ -185,8 +186,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
 
     def _buildCustomizationItems(self):
         season = self._seasonID
-        requirement = _createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(
-            lambda item: isItemSuitableForTab(item, self._tabIndex))
+        requirement = _createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(lambda i: isItemSuitableForTab(i, self._tabIndex))
         seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][self._seasonID]
         allItemsGroup = len(seasonAndTabData.allGroups) - 1
         if seasonAndTabData.selectedGroupIndex != allItemsGroup:
@@ -203,17 +203,29 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         self._customizationItems = []
         self._customizationBookmarks = []
         lastGroupName = None
-        for idx, curItem in enumerate(sorted(allItems.itervalues(), key=comparisonKey)):
-            nationUserName = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[curItem.nationID])
-            if '<font' not in nationUserName:
-                groupName = ' / '.join((nationUserName.split(' ')[0], curItem.groupUserName))
-            else:  # HangarPainter support
-                groupName = ' / '.join((nationUserName.rsplit(' ', 1)[0], curItem.groupUserName.split('>', 1)[1]))
-            if curItem.intCD == self._selectIntCD:
+        from .. import g_config
+        for idx, item in enumerate(sorted(allItems.itervalues(), key=comparisonKey)):
+            groupName = item.groupUserName
+            if not isCamoInternational(g_config, item.descriptor) and item.descriptor.filter:
+                nationIDs = []
+                for filterNode in item.descriptor.filter.include:
+                    if filterNode.nations:
+                        nationIDs += filterNode.nations
+                if len(nationIDs == 1):
+                    nationUserName = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
+                elif len(nationIDs) > 1:
+                    nationUserName = g_config.i18n['UI_flash_camoGroup_multinational']
+                else:
+                    nationUserName = g_config.i18n['UI_flash_camoGroup_special']
+                if '<font' not in nationUserName:
+                    groupName = ' / '.join((nationUserName.split(' ')[0], groupName))
+                else:  # HangarPainter support
+                    groupName = ' / '.join((nationUserName.rsplit(' ', 1)[0], groupName.split('>', 1)[1]))
+            if item.intCD == self._selectIntCD:
                 self._selectedIdx = len(self._customizationItems)
                 self._selectIntCD = None
             if groupName != lastGroupName:
                 lastGroupName = groupName
                 self._customizationBookmarks.append(CustomizationBookmarkVO(groupName, idx).asDict())
-            self._customizationItems.append(curItem.intCD)
-            self._itemSizeData.append(curItem.isWide())
+            self._customizationItems.append(item.intCD)
+            self._itemSizeData.append(item.isWide())
