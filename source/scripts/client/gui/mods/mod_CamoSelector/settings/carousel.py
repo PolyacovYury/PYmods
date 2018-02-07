@@ -11,6 +11,11 @@ from skeletons.gui.shared import IItemsCache
 from .shared import CUSTOMIZATION_TABS, isItemSuitableForTab
 
 
+def _createBaseRequirements(season=None):
+    season = season or SeasonType.ALL
+    return REQ_CRITERIA.CUSTOM(lambda item: item.season & season)
+
+
 class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
     itemsCache = dependency.descriptor(IItemsCache)
 
@@ -27,7 +32,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         self._proxy = proxy
         self._currentlyApplied = set()
         self._allSeasonAndTabFilterData = {}
-        allItems = self._getAllItems(self._createBaseRequirements())
+        allItems = self._getAllItems(_createBaseRequirements())
         for tabIndex in CUSTOMIZATION_TABS.ALL:
             self._allSeasonAndTabFilterData[tabIndex] = {}
             for season in SeasonType.COMMON_SEASONS:
@@ -171,15 +176,9 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         return {item.intCD: item for item in (self.itemsCache.items.getItemByCD(camo.compactDescr) for camo in camouflages)
                 if requirement(item)}
 
-    def _createBaseRequirements(self, season=None):
-        vehicle = self._currentVehicle.item
-        season = season or SeasonType.ALL
-        criteria = REQ_CRITERIA.CUSTOM(lambda item: item.mayInstall(vehicle) and item.season & season)
-        return criteria
-
     def _buildCustomizationItems(self):
         season = self._seasonID
-        requirement = self._createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(
+        requirement = _createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(
             lambda item: isItemSuitableForTab(item, self._tabIndex))
         seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][self._seasonID]
         allItemsGroup = len(seasonAndTabData.allGroups) - 1
