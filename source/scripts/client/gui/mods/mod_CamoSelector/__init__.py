@@ -285,7 +285,7 @@ def updateGUIState():
 def new_onBecomeNonPlayer(base, self):
     base(self)
     g_config.hangarCamoCache.clear()
-    g_config.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
+    g_config.teamCamo = dict.fromkeys(('Ally', 'Enemy'))
 
 
 # @overrideMethod(CompoundAppearance, '_CompoundAppearance__getCamouflageParams')
@@ -334,12 +334,12 @@ def new_onBecomeNonPlayer(base, self):
 #                 print 'CamoSelector: a vehicle was not whitelisted and (or) blacklisted, but is missing:', vehName
 #                 print camouflage['tiling']
 #     if overriders:
-#         if g_config.currentOverriders[curTeam] is None:
-#             otherOverrider = g_config.currentOverriders[otherTeam]
+#         if g_config.teamCamo[curTeam] is None:
+#             otherOverrider = g_config.teamCamo[otherTeam]
 #             if len(overriders) > 1 and otherOverrider in overriders:
 #                 overriders.remove(otherOverrider)
-#             g_config.currentOverriders[curTeam] = overriders[vID % len(overriders)]
-#         selectedCamouflages = [camoNames[g_config.currentOverriders[curTeam]]]
+#             g_config.teamCamo[curTeam] = overriders[vID % len(overriders)]
+#         selectedCamouflages = [camoNames[g_config.teamCamo[curTeam]]]
 #     if g_config.data['doRandom'] and not selectedCamouflages:
 #         for camoID, camouflage in camouflages.items():
 #             camoName = camouflage['name']

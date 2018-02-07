@@ -7,8 +7,8 @@ from shared_utils import CONST_CONTAINER
 class RAND_MODE(CONST_CONTAINER):
     """ Customization mode.
     """
-    OFF, INCLUDE, OVERRIDE = range(3)
-    NAMES = {OFF: 'off', INCLUDE: 'include', OVERRIDE: 'override'}
+    OFF, RANDOM, TEAM = range(3)
+    NAMES = {OFF: 'off', RANDOM: 'random', TEAM: 'team'}
 
 
 def getCurrentDesc():

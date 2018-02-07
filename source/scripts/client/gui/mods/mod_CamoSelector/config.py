@@ -21,7 +21,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.camouflagesCache = {}
         self.camouflages = {}
         self.configFolders = {}
-        self.currentOverriders = dict.fromkeys(('Ally', 'Enemy'))
+        self.teamCamo = dict.fromkeys(('Ally', 'Enemy'))
         self.hiddenCamo = []
         self.interCamo = []
         self.origInterCamo = []
@@ -57,8 +57,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_commit_install': 'Install',
             'UI_flash_randMode_label': 'Random selection mode',
             'UI_flash_randMode_off': 'Disable',
-            'UI_flash_randMode_include': 'Include',
-            'UI_flash_randMode_override': 'Override',
+            'UI_flash_randMode_random': 'Random',
+            'UI_flash_randMode_team': 'Team',
             'UI_flash_header': 'Camouflages setup',
             'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
                                         '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),

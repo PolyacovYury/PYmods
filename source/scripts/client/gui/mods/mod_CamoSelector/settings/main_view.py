@@ -72,7 +72,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self._modifiedOutfits = {}
         self._currentOutfit = None
         self._mode = C11N_MODE.INSTALL
-        self._randMode = RAND_MODE.INCLUDE
+        self._randMode = RAND_MODE.RANDOM
         self._ally = True
         self._enemy = True
         self._isDeferredRenderer = True
