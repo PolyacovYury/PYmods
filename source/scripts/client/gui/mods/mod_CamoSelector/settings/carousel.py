@@ -213,9 +213,9 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
                 else:
                     nationUserName = g_config.i18n['UI_flashCol_camoGroup_special']
                 if not groupName:
-                    groupName = nationUserName
+                    groupName = g_config.i18n['UI_flashCol_camoGroup_special']
                 else:  # HangarPainter support
-                    nationUserName.replace('</font>', '')
+                    nationUserName = nationUserName.replace('</font>', '')
                     if ' ' in nationUserName.replace('<font ', ''):
                         nationUserName = nationUserName.rsplit(' ', 1)[0]
                     if '>' in groupName:
