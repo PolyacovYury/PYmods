@@ -314,8 +314,13 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             self.soundManager.playInstantSound(SOUNDS.APPLY)
         item = self.itemsCache.items.getItemByCD(intCD)
         season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
-        outfit = self._modifiedOutfits[season]
-        outfit.getContainer(areaId).slotFor(slotId).set(item, idx=regionId)
+        if self._mode == C11N_MODE.INSTALL:
+            outfit = self._modifiedOutfits[season]
+            outfit.getContainer(areaId).slotFor(slotId).set(item, idx=regionId)
+        else:
+            outfit = self._setupOutfit
+            for areaId in xrange(1, 4):
+                outfit.getContainer(areaId).slotFor(slotId).set(item, idx=regionId)
         outfit.invalidate()
         self.refreshOutfit()
         self.__setBuyingPanelData()
