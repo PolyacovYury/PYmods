@@ -73,7 +73,7 @@ def setCamoColor(base, self, paletteIdx):
     if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
         return base(self, paletteIdx)
     self._c11nView.soundManager.playInstantSound(SOUNDS.SELECT)
-    self._c11nView.changeCamoTeamMode(paletteIdx)
+    self._c11nView.changeCamoTeamMode(paletteIdx + 1)
 
 
 @overrideMethod(CamoAnchorProperties, 'setCamoScale')
@@ -100,12 +100,9 @@ def _getData(base, self):
         for idx in RAND_MODE.NAMES:
             swatchScales.append({'paletteIcon': '', 'selected': self._c11nView.getRandMode() == idx,
                                  'label': g_config.i18n['UI_flash_randMode_%s' % RAND_MODE.NAMES[idx]], 'value': idx})
-        red = 255 + (255 << 24)
-        green = (255 << 8) + (255 << 24)
-        palettes = [(green, green, 0, 0), (red, red, 0, 0), (red, green, 0, 0)]
-        for idx, palette in enumerate(palettes):
-            swatchColors.append({'paletteIcon': '', 'selected': idx == self._c11nView.getTeamMode(),
-                                 'label': g_config.i18n['UI_flash_teamMode_%s' % TEAM_MODE.NAMES[idx]]})
+        for idx in TEAM_MODE.NAMES:
+            swatchColors.append({'paletteIcon': '', 'selected': self._c11nView.getTeamMode() == idx,
+                                 'label': g_config.i18n['UI_flash_teamMode_%s' % TEAM_MODE.NAMES[idx]], 'value': idx})
     itemData = self._getItemData()
     if itemData is None:
         itemData = {'intCD': 0,

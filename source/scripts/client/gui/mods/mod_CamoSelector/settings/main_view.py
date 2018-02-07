@@ -473,8 +473,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         return self._enemy
 
     def getTeamMode(self):
-        return -1 if not (self._ally or self._enemy) else 0 if (self._ally and not self._enemy) else 1 if (
-                    not self._ally and self._enemy) else 2
+        return 0 if not (self._ally or self._enemy) else 1 if (self._ally and not self._enemy) else 2 if (
+                    not self._ally and self._enemy) else 3
 
     def getAppliedItems(self, isOriginal=True):
         outfits = self._originalOutfits if isOriginal else self._modifiedOutfits
