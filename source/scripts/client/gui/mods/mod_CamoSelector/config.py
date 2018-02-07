@@ -43,31 +43,31 @@ class ConfigInterface(PYmodsConfigInterface):
                      'selectHotkey': self.defaultKeys['selectHotkey'], 'selectHotKey': self.defaultKeys['selectHotKey']}
         self.i18n = {
             'UI_description': 'Camouflage selector',
-            'UI_flash_tabs_0_text': 'Shop',
             'UI_flash_tabs_0_label': 'Shop',
-            'UI_flash_tabs_0_tooltip': '',
-            'UI_flash_tabs_1_text': 'Hidden',
+            'UI_flashCol_tabs_0_text': 'Shop',
+            'UI_flashCol_tabs_0_tooltip': '',
             'UI_flash_tabs_1_label': 'Hidden',
-            'UI_flash_tabs_1_tooltip': '',
-            'UI_flash_tabs_2_text': 'International',
+            'UI_flashCol_tabs_1_text': 'Hidden',
+            'UI_flashCol_tabs_1_tooltip': '',
             'UI_flash_tabs_2_label': 'International',
-            'UI_flash_tabs_2_tooltip': '',
-            'UI_flash_tabs_3_text': 'Custom',
+            'UI_flashCol_tabs_2_text': 'International',
+            'UI_flashCol_tabs_2_tooltip': '',
             'UI_flash_tabs_3_label': 'Custom',
-            'UI_flash_tabs_3_tooltip': '',
+            'UI_flashCol_tabs_3_text': 'Custom',
+            'UI_flashCol_tabs_3_tooltip': '',
             'UI_flash_switcher_setup': 'SETUP',
             'UI_flash_switcher_install': 'INSTALL',
             'UI_flash_commit_apply': 'Apply',
             'UI_flash_commit_install': 'Install',
-            'UI_flash_randMode_label': 'Random selection mode',
-            'UI_flash_randMode_off': 'Disable',
-            'UI_flash_randMode_random': 'Random',
-            'UI_flash_randMode_team': 'Team',
-            'UI_flash_teamMode_ally': 'Ally',
-            'UI_flash_teamMode_enemy': 'Enemy',
-            'UI_flash_teamMode_both': 'All',
-            'UI_flash_camoGroup_multinational': 'Multinational',
-            'UI_flash_camoGroup_special': 'Special',
+            'UI_flashCol_randMode_label': 'Random selection mode',
+            'UI_flashCol_randMode_off': 'Disable',
+            'UI_flashCol_randMode_random': 'Random',
+            'UI_flashCol_randMode_team': 'Team',
+            'UI_flashCol_teamMode_ally': 'Ally',
+            'UI_flashCol_teamMode_enemy': 'Enemy',
+            'UI_flashCol_teamMode_both': 'All',
+            'UI_flashCol_camoGroup_multinational': 'Multinational',
+            'UI_flashCol_camoGroup_special': 'Special',
             'UI_flash_header': 'Camouflages setup',
             'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
                                         '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),
@@ -135,7 +135,7 @@ class ConfigInterface(PYmodsConfigInterface):
         try:
             from helpers.i18n.hangarpainter import _config
             for key in self.i18n:
-                if not key.startswith('UI_flash_') or key.startswith('UI_flash_tabs_') and key.endswith('_label'):
+                if not key.startswith('UI_flashCol_'):
                     continue
                 self.i18n[key] = "<font color='#%s'>%s</font>" % (_config.data['colour'], self.i18n[key])
         except ImportError:

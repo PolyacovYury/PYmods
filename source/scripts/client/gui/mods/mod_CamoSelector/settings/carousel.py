@@ -211,12 +211,12 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
                 for filterNode in item.descriptor.filter.include:
                     if filterNode.nations:
                         nationIDs += filterNode.nations
-                if len(nationIDs == 1):
+                if len(nationIDs) == 1:
                     nationUserName = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
                 elif len(nationIDs) > 1:
-                    nationUserName = g_config.i18n['UI_flash_camoGroup_multinational']
+                    nationUserName = g_config.i18n['UI_flashCol_camoGroup_multinational']
                 else:
-                    nationUserName = g_config.i18n['UI_flash_camoGroup_special']
+                    nationUserName = g_config.i18n['UI_flashCol_camoGroup_special']
                 if '<font' not in nationUserName:
                     groupName = ' / '.join((nationUserName.split(' ')[0], groupName))
                 else:  # HangarPainter support

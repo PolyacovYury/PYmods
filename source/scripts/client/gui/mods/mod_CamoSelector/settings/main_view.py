@@ -751,8 +751,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         data = []
         for tabIdx in self.__getVisibleTabs():
             data.append({'label': g_config.i18n['UI_flash_tabs_%s_label' % tabIdx],
-                         'tooltip': makeTooltip(g_config.i18n['UI_flash_tabs_%s_text' % tabIdx],
-                                                g_config.i18n['UI_flash_tabs_%s_tooltip' % tabIdx]),
+                         'tooltip': makeTooltip(g_config.i18n['UI_flashCol_tabs_%s_text' % tabIdx],
+                                                g_config.i18n['UI_flashCol_tabs_%s_tooltip' % tabIdx]),
                          'id': tabIdx})
 
         return data
