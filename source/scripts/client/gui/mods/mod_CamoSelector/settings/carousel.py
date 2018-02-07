@@ -1,6 +1,6 @@
 import nations
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationBookmarkVO, \
-    CustomizationSeasonAndTypeFilterData
+    CustomizationSeasonAndTypeFilterData, comparisonKey
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.shared.utils.requesters import REQ_CRITERIA
@@ -11,12 +11,6 @@ from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
 from .shared import CUSTOMIZATION_TABS, isItemSuitableForTab
 from ..shared import isCamoInternational
-
-
-def comparisonKey(item):
-    """ Comparison key to sort the the customization carousel.
-    """
-    return item.nationID, item.groupID, item.id
 
 
 def _createBaseRequirements(season=None):
