@@ -1,5 +1,6 @@
+import nations
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationBookmarkVO, \
-    CustomizationSeasonAndTypeFilterData, comparisonKey
+    CustomizationSeasonAndTypeFilterData
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.shared.utils.requesters import REQ_CRITERIA
@@ -9,6 +10,12 @@ from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
 from .shared import CUSTOMIZATION_TABS, isItemSuitableForTab
+
+
+def comparisonKey(item):
+    """ Comparison key to sort the the customization carousel.
+    """
+    return item.nationID, item.groupID, item.id
 
 
 def _createBaseRequirements(season=None):
@@ -195,14 +202,16 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         allItems = self._getAllItems(requirement)
         self._customizationItems = []
         self._customizationBookmarks = []
-        lastGroupID = None
+        lastGroupName = None
         for idx, curItem in enumerate(sorted(allItems.itervalues(), key=comparisonKey)):
-            groupID = curItem.groupID
+            groupName = ' / '.join((_ms(
+                '#vehicle_customization:repaint/%s_base_color' % nations.NAMES[curItem.nationID]).split(' ')[0],
+                                    curItem.groupUserName))
             if curItem.intCD == self._selectIntCD:
                 self._selectedIdx = len(self._customizationItems)
                 self._selectIntCD = None
-            if groupID != lastGroupID:
-                lastGroupID = groupID
-                self._customizationBookmarks.append(CustomizationBookmarkVO(curItem.groupUserName, idx).asDict())
+            if groupName != lastGroupName:
+                lastGroupName = groupName
+                self._customizationBookmarks.append(CustomizationBookmarkVO(groupName, idx).asDict())
             self._customizationItems.append(curItem.intCD)
             self._itemSizeData.append(curItem.isWide())
