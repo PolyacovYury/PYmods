@@ -59,6 +59,9 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_randMode_off': 'Disable',
             'UI_flash_randMode_random': 'Random',
             'UI_flash_randMode_team': 'Team',
+            'UI_flash_teamMode_ally': 'Ally',
+            'UI_flash_teamMode_enemy': 'Enemy',
+            'UI_flash_teamMode_both': 'All',
             'UI_flash_header': 'Camouflages setup',
             'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
                                         '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),

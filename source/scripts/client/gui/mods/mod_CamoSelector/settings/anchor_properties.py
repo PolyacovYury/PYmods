@@ -43,7 +43,6 @@ def _getItemData(base, self):
 
 @overrideMethod(CamoAnchorProperties, '_AnchorProperties__generateDescription')
 def _generateDescription(base, self):
-    print 'generateDescription', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
     if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
         return base(self)
     mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYSLOT
@@ -91,7 +90,6 @@ def setCamoScale(base, self, scale, scaleIndex):
 
 @overrideMethod(CamoAnchorProperties, '_getData')
 def _getData(base, self):
-    print 'getData', isinstance(self._c11nView, MainView), self._c11nView.getMode() == C11N_MODE.INSTALL
     if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
         return base(self)
     swatchColors = []
