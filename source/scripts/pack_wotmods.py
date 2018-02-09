@@ -217,9 +217,11 @@ def pack_file(fullname, sdir=None, ddir=None, version_str=None, date=None, ix=No
         max_time = datetime(1970, 1, 1)
         with zipfile.ZipFile(fullname, 'w', mode) as zf_new:
             for info, data in zip(orig_infos_noex, orig_datas_noex):
+                info.extra = ''
                 max_time = max(max_time, datetime(*info.date_time))
                 zf_new.writestr(info, data)
             for info in orig_infos:
+                info.extra = ''
                 file_name = info.filename.replace(ddir, sdir)
                 if os.path.isdir(file_name):
                     file_data = ''
