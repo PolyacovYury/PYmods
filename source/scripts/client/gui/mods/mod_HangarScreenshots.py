@@ -6,9 +6,9 @@ import Math
 import PYmodsCore
 import traceback
 from gui import InputHandler, SystemMessages
-from gui.ClientHangarSpace import ClientHangarSpace
 from gui.Scaleform.framework import ViewTypes
 from gui.app_loader.loader import g_appLoader
+from gui.hangar_camera_manager import HangarCameraManager
 from gui.shared.utils.HangarSpace import g_hangarSpace
 
 
@@ -76,7 +76,7 @@ def toggleHangarUI(visible):
     hangar.flashObject.visible = visible
 
 
-@PYmodsCore.overrideMethod(ClientHangarSpace, 'updateCameraByMouseMove')
+@PYmodsCore.overrideMethod(HangarCameraManager, '_HangarCameraManager__updateCameraByMouseMove')
 def new_updateCameraByMouseMove(base, *args):
     if _config.data['UIVisible'] or not _config.cameraPositions or _config.data['currentCamPos'] == len(
             _config.cameraPositions) or not _config.data['lockCamera']:
