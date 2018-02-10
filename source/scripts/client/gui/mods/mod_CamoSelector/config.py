@@ -187,23 +187,24 @@ class ConfigInterface(PYmodsConfigInterface):
                 self.configFolders[camoName] = confFolder = set()
                 fileName = self.configPath + 'camouflages/' + camoName + '/'
                 settings = loadJson(self.ID, 'settings', {}, fileName)
-                if 'kinds' in settings:
-                    settings['season'] = settings['kinds']
-                    del settings['kinds']
-                if 'season' in settings:
-                    seasonNames = [x for x in settings['season'].split(',') if x]
-                    seasonType = 0
-                    for season in seasonNames:
-                        if season in SEASON_NAME_TO_TYPE:
-                            seasonType |= SEASON_NAME_TO_TYPE[season]
-                        else:
-                            print '%s: unknown season name for camouflage %s: %s' % (self.ID, camoName, season)
-                            settings['season'] = settings['season'].replace(season, '')
-                    while ',,' in settings['season']:
-                        settings['season'] = settings['season'].replace(',,', ',')
-                else:
-                    settings['season'] = ','.join(SEASONS_CONSTANTS.SEASONS)
                 for key in settings:
+                    conf = settings[key]
+                    if 'kinds' in conf:
+                        conf['season'] = conf['kinds']
+                        del conf['kinds']
+                    if 'season' in conf:
+                        seasonNames = [x for x in conf['season'].split(',') if x]
+                        seasonType = 0
+                        for season in seasonNames:
+                            if season in SEASON_NAME_TO_TYPE:
+                                seasonType |= SEASON_NAME_TO_TYPE[season]
+                            else:
+                                print '%s: unknown season name for camouflage %s: %s' % (self.ID, key, season)
+                                conf['season'] = conf['season'].replace(season, '')
+                        while ',,' in conf['season']:
+                            conf['season'] = conf['season'].replace(',,', ',')
+                    else:
+                        conf['season'] = ','.join(SEASONS_CONSTANTS.SEASONS)
                     confFolder.add(key)
                 self.camouflages['modded'].update(settings)
         except StandardError:
