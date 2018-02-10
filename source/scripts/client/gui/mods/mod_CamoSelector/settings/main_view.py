@@ -1,11 +1,11 @@
 import math
+from functools import partial
 
 import BigWorld
 from AvatarInputHandler import cameras, mathUtils
 from CurrentVehicle import g_currentVehicle
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from adisp import async
-from functools import partial
 from gui import DialogsInterface, SystemMessages, g_tankActiveCamouflage
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogMeta
@@ -22,6 +22,7 @@ from gui.Scaleform.daapi.view.lobby.customization.sound_constants import C11N_SO
 from gui.Scaleform.daapi.view.meta.CustomizationMainViewMeta import CustomizationMainViewMeta
 from gui.Scaleform.framework.managers.view_lifecycle_watcher import ViewLifecycleWatcher
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES
+from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
@@ -50,7 +51,7 @@ from .processors import OutfitApplier
 from .shared import C11nMode, C11nTabs, chooseMode, getCustomPurchaseItems, getItemInventoryCount, \
     getTotalPurchaseInfo
 from .. import g_config
-from ..shared import RandMode, TeamMode
+from ..shared import RandMode, TeamMode, getCamoTextureName, SEASON_NAME_TO_TYPE
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):
@@ -70,10 +71,10 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self._lastTab = C11nTabs.SHOP
         self._originalOutfits = {}
         self._modifiedOutfits = {}
-        self._originalSettings = g_config.camouflages
         self._currentOutfit = None
         self._setupOutfit = None
         self._mode = C11nMode.INSTALL
+        self._currentSettings = {'modded': {}, 'remap': {}}
         self._randMode = RandMode.RANDOM
         self._ally = True
         self._enemy = True
@@ -222,19 +223,15 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def onSelectItem(self, index):
         """ Select item in the carousel
         """
-        print 'item selected', self._mode, index
-        if self._mode == C11nMode.SETUP:
-            pass
         self._carouselDP.selectItemIdx(index)
         self.soundManager.playInstantSound(SOUNDS.SELECT)
 
     def onPickItem(self):
         """ Pick item in the carousel
         """
-        print 'item picked', self._mode
         if self._mode == C11nMode.SETUP:
             self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
-        if not self.itemIsPicked:
+        elif not self.itemIsPicked:
             self.soundManager.playInstantSound(SOUNDS.PICK)
             self.itemIsPicked = True
 
@@ -310,7 +307,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def installCustomizationElement(self, intCD, areaId, slotId, regionId, seasonIdx):
         """ Install the given item on a vehicle.
         """
-        print 'install element', self._mode, intCD, areaId, slotId, regionId, seasonIdx
         if self.itemIsPicked:
             self.soundManager.playInstantSound(SOUNDS.APPLY)
         item = self.itemsCache.items.getItemByCD(intCD)
@@ -322,6 +318,29 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             outfit = self._setupOutfit
             for areaId in xrange(1, 4):
                 outfit.getContainer(areaId).slotFor(slotId).set(item, idx=regionId)
+            itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (
+                getCamoTextureName(item.descriptor), 'remap')
+            itemSettings = self._currentSettings[itemKey].setdefault(itemName, {})
+            itemOrigSettings = g_config.camouflages[itemKey].get(itemName, {})
+            itemSeasonsStr = itemSettings.get('season', itemOrigSettings.get('season', None))
+            if itemSeasonsStr is not None:
+                itemSeasons = SeasonType.UNDEFINED
+                for season in itemSeasonsStr.split(','):
+                    itemSeasons |= SEASON_NAME_TO_TYPE[season]
+            else:
+                itemSeasons = item.season
+            if seasonIdx not in SEASON_IDX_TO_TYPE:  # item is selected from carousel, not changed from property sheet
+                self._settingSeason = itemSeasons
+                self._randMode = itemSettings.get('random_mode', itemOrigSettings.get('random_mode', RandMode.RANDOM))
+                self._ally = itemSettings.get('useForAlly', itemOrigSettings.get('useForAlly', True))
+                self._enemy = itemSettings.get('useForEnemy', itemOrigSettings.get('useForEnemy', True))
+            else:
+                self._settingSeason |= SEASON_IDX_TO_TYPE[seasonIdx]
+                newSeasons = set()
+                if itemSeasonsStr is not None:
+                    [newSeasons.add(x) for x in SEASONS_CONSTANTS.SEASONS if x in itemSeasonsStr]
+                newSeasons.add(SEASON_TYPE_TO_NAME[SEASON_IDX_TO_TYPE[seasonIdx]])
+                itemSettings['season'] = ','.join(x for x in SEASONS_CONSTANTS.SEASONS if x in newSeasons)
         outfit.invalidate()
         self.refreshOutfit()
         self.__setBuyingPanelData()
@@ -332,11 +351,29 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Removes the item from the given region.
         (called from property sheet).
         """
-        print 'item cleared', self._mode, areaId, slotId, regionId, seasonIdx
         self.soundManager.playInstantSound(SOUNDS.REMOVE)
-        season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
-        outfit = self._modifiedOutfits[season]
-        outfit.getContainer(areaId).slotFor(slotId).remove(idx=regionId)
+        if self._mode == C11nMode.INSTALL:
+            season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
+            outfit = self._modifiedOutfits[season]
+            outfit.getContainer(areaId).slotFor(slotId).remove(idx=regionId)
+        else:
+            item = self._setupOutfit.getContainer(areaId).slotFor(slotId).getItem(regionId)
+            itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (
+                getCamoTextureName(item.descriptor), 'remap')
+            itemSettings = self._currentSettings[itemKey].setdefault(itemName, {})
+            itemOrigSettings = g_config.camouflages[itemKey].get(itemName, {})
+            itemSeasonsStr = itemSettings.get('season', itemOrigSettings.get('season', None))
+            if seasonIdx not in SEASON_IDX_TO_TYPE:
+                print 'WARNING', seasonIdx
+            else:
+                newSeasons = set()
+                if itemSeasonsStr is not None:
+                    [newSeasons.add(x) for x in SEASONS_CONSTANTS.SEASONS if x in itemSeasonsStr]
+                newSeasons.discard(SEASON_TYPE_TO_NAME[SEASON_IDX_TO_TYPE[seasonIdx]])
+                itemSettings['season'] = ','.join(x for x in SEASONS_CONSTANTS.SEASONS if x in newSeasons)
+                self._settingSeason = SeasonType.UNDEFINED
+                for season in newSeasons:
+                    self._settingSeason |= SEASON_NAME_TO_TYPE[season]
         self.refreshOutfit()
         self.__setAnchorsInitData(self._tabIndex, True, True)
         self.__setBuyingPanelData()
@@ -516,6 +553,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
 
     @process('buyAndInstall')
     def buyAndExit(self, purchaseItems):
+        print purchaseItems
         self.itemsCache.onSyncCompleted -= self.__onCacheReSync
         cart = getTotalPurchaseInfo(purchaseItems)
         groupHasItems = {SeasonType.WINTER: False,

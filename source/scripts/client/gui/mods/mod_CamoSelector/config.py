@@ -1,20 +1,25 @@
 # coding=utf-8
+import traceback
+
 import BigWorld
 import Keys
 import ResMgr
 import items.vehicles
 import nations
-import traceback
 from PYmodsCore import PYmodsConfigInterface, checkKeys, loadJson, refreshCurrentVehicle, remDups
 from gui import InputHandler
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
+from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
-from items.components.c11n_constants import SeasonType
-from . import __modID__, __date__
-from .shared import getCamoTextureName
+from helpers import dependency
+from skeletons.gui.shared import IItemsCache
+from . import __date__, __modID__
+from .shared import getCamoTextureName, SEASON_NAME_TO_TYPE
 
 
 class ConfigInterface(PYmodsConfigInterface):
+    itemsCache = dependency.descriptor(IItemsCache)
+
     def __init__(self):
         self.disable = []
         self.hangarCamoCache = {}
@@ -22,13 +27,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.camouflages = {}
         self.configFolders = {}
         self.teamCamo = dict.fromkeys(('Ally', 'Enemy'))
-        self.hiddenCamo = []
         self.interCamo = []
-        self.origInterCamo = []
-        self.changedNations = []
-        self.activePreviewCamo = None
-        self.backupNationID = None
-        self.backup = {'mode': 0, 'camoID': (len(nations.NAMES) + 2) * [0]}
         self.isModAdded = False
         super(ConfigInterface, self).__init__()
 
@@ -190,7 +189,20 @@ class ConfigInterface(PYmodsConfigInterface):
                 settings = loadJson(self.ID, 'settings', {}, fileName)
                 if 'kinds' in settings:
                     settings['season'] = settings['kinds']
-                    del settings['season']
+                    del settings['kinds']
+                if 'season' in settings:
+                    seasonNames = [x for x in settings['season'].split(',') if x]
+                    seasonType = 0
+                    for season in seasonNames:
+                        if season in SEASON_NAME_TO_TYPE:
+                            seasonType |= SEASON_NAME_TO_TYPE[season]
+                        else:
+                            print '%s: unknown season name for camouflage %s: %s' % (self.ID, camoName, season)
+                            settings['season'] = settings['season'].replace(season, '')
+                    while ',,' in settings['season']:
+                        settings['season'] = settings['season'].replace(',,', ',')
+                else:
+                    settings['season'] = ','.join(SEASONS_CONSTANTS.SEASONS)
                 for key in settings:
                     confFolder.add(key)
                 self.camouflages['modded'].update(settings)
@@ -208,11 +220,10 @@ class ConfigInterface(PYmodsConfigInterface):
                 for filterNode in camouflages[ID].filter.include:
                     if filterNode.nations:
                         nationsList += filterNode.nations
-            if set(nationsList) == set(xrange(len(nations.NAMES))):
+            if set(nationsList) == set(idx for idx, name in enumerate(nations.NAMES) if name != 'italy'):
                 self.interCamo.append(camoName)
             elif len(set(nationsList)) > 1:
                 print camoName, set(nationsList)
-        self.hiddenCamo = [camoID for camoID in camoNames if 'notInShop' in camouflages[camoID].priceGroupTags]
         settings = loadJson(self.ID, 'settings', {}, self.configPath)
         if 'disable' in settings:
             if not settings['disable']:
@@ -229,30 +240,31 @@ class ConfigInterface(PYmodsConfigInterface):
                 camoName = getCamoTextureName(camouflage)
                 if camoName not in conf:
                     continue
-                camoInShop = camoID not in self.hiddenCamo
-                if conf[camoName].get('random_mode') == 2 or conf[camoName].get(
-                        'random_mode') == 1 and camoName not in self.interCamo:
-                    del conf[camoName]['random_mode']
-                seasons = conf[camoName].get('season')
-                if seasons is not None:
-                    if camoInShop:
-                        del conf[camoName]['season']
-                        print '%s: in-shop camouflage kind changing is disabled (name: %s, season setting was %s)' % (
-                            self.ID, camoName, seasons)
+                camoConf = conf[camoName]
+                if camoConf.get('random_mode') == 2 or camoConf.get('random_mode') == 1 and camoName not in self.interCamo:
+                    del camoConf['random_mode']
+                if 'season' in camoConf:
+                    if not self.itemsCache.items.getItemByCD(camouflage.compactDescr).isHidden:
+                        del camoConf['season']
+                        print '%s: in-shop camouflage season changing is disabled (name: %s, season setting was %s)' % (
+                            self.ID, camoName, camoConf['season'])
                     else:
-                        seasonNames = [x for x in seasons.split(',') if x]
+                        seasonNames = [x for x in camoConf['season'].split(',') if x]
                         seasonType = 0
                         for season in seasonNames:
-                            try:
-                                seasonType |= getattr(SeasonType, season.upper())
-                            except AttributeError:
+                            if season in SEASON_NAME_TO_TYPE:
+                                seasonType |= SEASON_NAME_TO_TYPE[season]
+                            else:
                                 print '%s: unknown season name for camouflage %s: %s' % (self.ID, camoName, season)
+                                camoConf['season'] = camoConf['season'].replace(season, '')
+                        while ',,' in camoConf['season']:
+                            camoConf['season'] = camoConf['season'].replace(',,', ',')
                         if seasonType == camouflage.season:
-                            del conf[camoName]['season']
+                            del camoConf['season']
                 for team in ('Ally', 'Enemy'):
-                    if conf[camoName].get('useFor%s' % team):
-                        del conf[camoName]['useFor%s' % team]
-                if not conf[camoName]:
+                    if camoConf.get('useFor%s' % team):
+                        del camoConf['useFor%s' % team]
+                if not camoConf:
                     del conf[camoName]
             if not conf:
                 del settings['remap']
@@ -261,8 +273,7 @@ class ConfigInterface(PYmodsConfigInterface):
         newSettings = {}
         if self.disable:
             newSettings['disable'] = self.disable
-        if 'remap' in settings:
-            newSettings['remap'] = settings['remap']
+        newSettings['remap'] = settings.get('remap', {})
         loadJson(self.ID, 'settings', newSettings, self.configPath, True)
 
     def registerSettings(self):
