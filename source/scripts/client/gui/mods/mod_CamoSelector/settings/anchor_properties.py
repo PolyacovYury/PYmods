@@ -94,7 +94,10 @@ def setCamoScale(base, self, scale, scaleIndex):
 @overrideMethod(CamoAnchorProperties, '_getData')
 def _getData(base, self):
     if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11nMode.INSTALL:
-        return base(self)
+        result = base(self)
+        for swatch in result['swatchColors']:
+            swatch['label'] = ''
+        return result
     swatchColors = []
     swatchScales = []
     if self._item:
