@@ -15,7 +15,7 @@ def __determineRendererState(base, self, renderer, seasonIDX, currentItem, activ
     self._activeSeason = self._c11nView.getCurrentSeason()
     seasonType = SEASON_IDX_TO_TYPE[seasonIDX]
     activeItem = self._c11nView.getCurrentOutfit().getContainer(self._areaId).slotFor(self._slotId).getItem(self._regionId)
-    currentItem = None if not self._c11nView.getSettingSeason() & seasonType else currentItem
+    currentItem = None if not self._c11nView.getSettingSeason() & seasonType else activeItem
     renderer.itemIntCD = currentItem.intCD if currentItem is not None else -1
     state = __getState(
         activeItem, currentItem, bool(self._c11nView.getCurrentTab()) or
