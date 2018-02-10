@@ -4,11 +4,14 @@ from gui.Scaleform.daapi.view.lobby.customization.camo_anchor_properties import 
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import buildCustomizationItemDataVO
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
+from gui.Scaleform.framework import ViewTypes
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui.app_loader import g_appLoader
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
+from helpers import i18n
 from helpers.i18n import makeString as _ms
 from .shared import C11nMode
 from .. import g_config
@@ -107,3 +110,12 @@ def _getData(base, self):
                     'icon': RES_ICONS.MAPS_ICONS_LIBRARY_TANKITEM_BUY_TANK_POPOVER_SMALL}
     return CustomizationCamoAnchorVO(self._name, self._desc, self._isEmpty, itemData, swatchColors,
                                      g_config.i18n['UI_flashCol_randMode_label'], swatchScales).asDict()
+
+
+@overrideMethod(i18n, 'makeString')
+def new_makeString(base, key, *args, **kwargs):
+    if key == VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_CAMO_COLOR:
+        view = g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.LOBBY_SUB).getView()
+        if not isinstance(view, MainView) and view.getMode() == C11nMode.SETUP:
+            return g_config.i18n['UI_flashCol_teamMode_label']
+    return base(key, *args, **kwargs)
