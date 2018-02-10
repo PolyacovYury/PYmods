@@ -47,10 +47,10 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
 from .processors import OutfitApplier
-from .shared import C11N_MODE, CUSTOMIZATION_TABS, chooseMode, getCustomPurchaseItems, getItemInventoryCount, \
+from .shared import C11nMode, C11nTabs, chooseMode, getCustomPurchaseItems, getItemInventoryCount, \
     getTotalPurchaseInfo
 from .. import g_config
-from ..shared import RAND_MODE, TEAM_MODE
+from ..shared import RandMode, TeamMode
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):
@@ -66,17 +66,18 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.fadeAnchorsOut = False
         self.anchorMinScale = 0.75
         self._currentSeason = SeasonType.SUMMER
-        self._tabIndex = CUSTOMIZATION_TABS.SHOP
-        self._lastTab = CUSTOMIZATION_TABS.SHOP
+        self._tabIndex = C11nTabs.SHOP
+        self._lastTab = C11nTabs.SHOP
         self._originalOutfits = {}
         self._modifiedOutfits = {}
         self._originalSettings = g_config.camouflages
         self._currentOutfit = None
         self._setupOutfit = None
-        self._mode = C11N_MODE.INSTALL
-        self._randMode = RAND_MODE.RANDOM
+        self._mode = C11nMode.INSTALL
+        self._randMode = RandMode.RANDOM
         self._ally = True
         self._enemy = True
+        self._settingSeason = SeasonType.UNDEFINED
         self._isDeferredRenderer = True
         self.__anchorPositionCallbackID = None
         self._state = {}
@@ -150,7 +151,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             {'tabData': {
                 'tabData': self.__getItemTabsData(),
                 'selectedTab': self._tabIndex},
-             'tabsAvailableRegions': CUSTOMIZATION_TABS.AVAILABLE_REGIONS,
+             'tabsAvailableRegions': C11nTabs.AVAILABLE_REGIONS,
              'defaultStyleLabel': VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL,
              'carouselInitData': self.__getCarouselInitData(),
              'switcherInitData': self.__getSwitcherInitData()})
@@ -168,8 +169,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def __getSwitcherInitData(self):
         """ Switcher is a style/custom selector.
         """
-        return {'leftLabel': g_config.i18n['UI_flash_switcher_%s' % C11N_MODE.NAMES[self._mode]],
-                'rightLabel': g_config.i18n['UI_flash_switcher_%s' % C11N_MODE.NAMES[not self._mode]],
+        return {'leftLabel': g_config.i18n['UI_flash_switcher_%s' % C11nMode.NAMES[self._mode]],
+                'rightLabel': g_config.i18n['UI_flash_switcher_%s' % C11nMode.NAMES[not self._mode]],
                 'leftEvent': 'installStyle%s' % ('s' if self._mode else ''),
                 'rightEvent': 'installStyle%s' % ('s' if not self._mode else ''),
                 'isLeft': True}
@@ -222,7 +223,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Select item in the carousel
         """
         print 'item selected', self._mode, index
-        if self._mode == C11N_MODE.SETUP:
+        if self._mode == C11nMode.SETUP:
             pass
         self._carouselDP.selectItemIdx(index)
         self.soundManager.playInstantSound(SOUNDS.SELECT)
@@ -231,7 +232,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Pick item in the carousel
         """
         print 'item picked', self._mode
-        if self._mode == C11N_MODE.SETUP:
+        if self._mode == C11nMode.SETUP:
             self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
         if not self.itemIsPicked:
             self.soundManager.playInstantSound(SOUNDS.PICK)
@@ -254,16 +255,16 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__setAnchorsInitData(self._tabIndex, True, True)
 
     def changeCamoTeamMode(self, idx):
-        if self._randMode == RAND_MODE.OFF:
+        if self._randMode == RandMode.OFF:
             idx = 0
-        self._ally = bool(idx & TEAM_MODE.ALLY)
-        self._enemy = bool(idx & TEAM_MODE.ENEMY)
+        self._ally = bool(idx & TeamMode.ALLY)
+        self._enemy = bool(idx & TeamMode.ENEMY)
         self.__setBuyingPanelData()
 
     def changeCamoRandMode(self, idx):
-        assert idx in RAND_MODE.NAMES
+        assert idx in RandMode.NAMES
         self._randMode = idx
-        if self._randMode == RAND_MODE.OFF:
+        if self._randMode == RandMode.OFF:
             self._ally = False
             self._enemy = False
             self.__updateAnchorPositions()
@@ -281,7 +282,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def refreshOutfit(self):
         """ Apply any changes to the vehicle's 3d model.
         """
-        if self._mode == C11N_MODE.INSTALL:
+        if self._mode == C11nMode.INSTALL:
             self._currentOutfit = self._modifiedOutfits[self._currentSeason]
         else:
             self._currentOutfit = self._setupOutfit
@@ -303,7 +304,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__setAnchorsInitData(self._tabIndex, True)
         self.__updateAnchorPositions()
         self.refreshCarousel(rebuild=True)
-        if self._mode == C11N_MODE.SETUP:
+        if self._mode == C11nMode.SETUP:
             self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
 
     def installCustomizationElement(self, intCD, areaId, slotId, regionId, seasonIdx):
@@ -314,7 +315,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             self.soundManager.playInstantSound(SOUNDS.APPLY)
         item = self.itemsCache.items.getItemByCD(intCD)
         season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
-        if self._mode == C11N_MODE.INSTALL:
+        if self._mode == C11nMode.INSTALL:
             outfit = self._modifiedOutfits[season]
             outfit.getContainer(areaId).slotFor(slotId).set(item, idx=regionId)
         else:
@@ -347,13 +348,13 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         (where you create vehicle's look by yourself).
         """
         self.service.startHighlighter(chooseMode(self._mode, g_currentVehicle.item))
-        self.switchMode(C11N_MODE.INSTALL)
+        self.switchMode(C11nMode.INSTALL)
 
     def switchToStyle(self):
         """ Turn on the Style customization mode
         (where you use predefined vehicle looks).
         """
-        self.switchMode(C11N_MODE.SETUP)
+        self.switchMode(C11nMode.SETUP)
         self.service.stopHighlighter()
         self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
 
@@ -627,7 +628,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             # TODO: fill it up with installed camouflages
             self._originalOutfits[season] = outfit.copy()
             self._modifiedOutfits[season] = outfit.copy()
-        if self._mode == C11N_MODE.INSTALL:
+        if self._mode == C11nMode.INSTALL:
             self._currentOutfit = self._modifiedOutfits[self._currentSeason]
         else:
             self._currentOutfit = self._setupOutfit
@@ -641,11 +642,11 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             self.soundManager.playInstantSound(SOUNDS.HOVER)
             return
         if tankPartID != -1 and regionID != -1:
-            slotId = CustomizationSlotIdVO(tankPartID if self._mode == C11N_MODE.INSTALL else 1, typeID,
+            slotId = CustomizationSlotIdVO(tankPartID if self._mode == C11nMode.INSTALL else 1, typeID,
                                            regionID)._asdict()
             if selected:
                 self.soundManager.playInstantSound(SOUNDS.CHOOSE)
-        if self._mode == C11N_MODE.INSTALL or slotId is not None:
+        if self._mode == C11nMode.INSTALL or slotId is not None:
             self.as_onRegionHighlightedS(slotId)
 
     def __onSpaceCreateHandler(self):
@@ -761,7 +762,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Get tabs that are actually visible.
         """
         visibleTabs = []
-        for tabIdx in CUSTOMIZATION_TABS.VISIBLE:
+        for tabIdx in C11nTabs.VISIBLE:
             data = self._carouselDP.getSeasonAndTabData(tabIdx, self._currentSeason)
             if not data.itemCount:
                 continue

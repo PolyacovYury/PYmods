@@ -1,3 +1,5 @@
+import traceback
+
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.daapi.view.lobby.customization.property_sheet_season_buttons_component import \

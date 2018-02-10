@@ -4,14 +4,14 @@ from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from shared_utils import CONST_CONTAINER
 
 
-class RAND_MODE(CONST_CONTAINER):
+class RandMode(CONST_CONTAINER):
     """ Customization mode.
     """
     OFF, RANDOM, TEAM = range(3)
     NAMES = {OFF: 'off', RANDOM: 'random', TEAM: 'team'}
 
 
-class TEAM_MODE(CONST_CONTAINER):
+class TeamMode(CONST_CONTAINER):
     """ Customization mode.
     """
     ALLY, ENEMY, BOTH = range(1, 4)

@@ -7,14 +7,14 @@ from shared_utils import CONST_CONTAINER
 from ..shared import isCamoInternational
 
 
-class C11N_MODE(CONST_CONTAINER):
+class C11nMode(CONST_CONTAINER):
     """ Customization mode.
     """
     INSTALL, SETUP = range(2)
     NAMES = {INSTALL: 'install', SETUP: 'setup'}
 
 
-class CUSTOMIZATION_TABS(CONST_CONTAINER):
+class C11nTabs(CONST_CONTAINER):
     """
     Enumeration of customization item browser tabs.
     The order of the ALL property corresponds to the order the tab names will appear in.
@@ -28,7 +28,7 @@ class CUSTOMIZATION_TABS(CONST_CONTAINER):
 def chooseMode(settingMode, vehicle):
     """ Choose mode for the highlighter from the given item type and vehicle.
     """
-    # if settingMode == C11N_MODE.INSTALL:
+    # if settingMode == C11nMode.INSTALL:
     if vehicle.turret.isGunCarriage:
         return HighlightingMode.CAMO_REGIONS_SKIP_TURRET
     return HighlightingMode.CAMO_REGIONS
@@ -110,7 +110,7 @@ def getItemInventoryCount(item, outfitsInfo=None):
 
 def isItemSuitableForTab(item, tabIndex):
     from .. import g_config
-    ct = CUSTOMIZATION_TABS
+    ct = C11nTabs
     isInter = isCamoInternational(g_config, item.descriptor)
     return not ((tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'modded'))
                 or (tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'modded'))

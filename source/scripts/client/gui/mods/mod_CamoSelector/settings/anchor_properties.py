@@ -10,9 +10,9 @@ from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from helpers.i18n import makeString as _ms
-from .shared import C11N_MODE
+from .shared import C11nMode
 from .. import g_config
-from ..shared import RAND_MODE, TEAM_MODE
+from ..shared import RandMode, TeamMode
 
 
 @overrideMethod(CamoAnchorProperties, '_extractDataFromElement')
@@ -43,7 +43,7 @@ def _getItemData(base, self):
 
 @overrideMethod(CamoAnchorProperties, '_AnchorProperties__generateDescription')
 def _generateDescription(base, self):
-    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11nMode.INSTALL:
         return base(self)
     mapValue = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYSLOT
     if self._item is not None:
@@ -69,7 +69,7 @@ def setCamoColor(base, self, paletteIdx):
     sets the current camo's palette to the palette at the provided index
     :param paletteIdx:
     """
-    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11nMode.INSTALL:
         return base(self, paletteIdx)
     self._c11nView.soundManager.playInstantSound(SOUNDS.SELECT)
     self._c11nView.changeCamoTeamMode(paletteIdx + 1)
@@ -82,7 +82,7 @@ def setCamoScale(base, self, scale, scaleIndex):
     :param scale: the new value for camo's patternSize. represents amount of tiling to do
     :param scaleIndex: the index of the camo scale slider that was selected
     """
-    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11nMode.INSTALL:
         return base(self, scale, scaleIndex)
     self._c11nView.soundManager.playInstantSound(SOUNDS.SELECT)
     self._c11nView.changeCamoRandMode(scaleIndex)
@@ -90,17 +90,17 @@ def setCamoScale(base, self, scale, scaleIndex):
 
 @overrideMethod(CamoAnchorProperties, '_getData')
 def _getData(base, self):
-    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11N_MODE.INSTALL:
+    if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11nMode.INSTALL:
         return base(self)
     swatchColors = []
     swatchScales = []
     if self._item:
-        for idx in RAND_MODE.NAMES:
+        for idx in RandMode.NAMES:
             swatchScales.append({'paletteIcon': '', 'selected': self._c11nView.getRandMode() == idx,
-                                 'label': g_config.i18n['UI_flash_randMode_%s' % RAND_MODE.NAMES[idx]], 'value': idx})
-        for idx in TEAM_MODE.NAMES:
+                                 'label': g_config.i18n['UI_flash_randMode_%s' % RandMode.NAMES[idx]], 'value': idx})
+        for idx in TeamMode.NAMES:
             swatchColors.append({'paletteIcon': '', 'selected': self._c11nView.getTeamMode() == idx,
-                                 'label': g_config.i18n['UI_flash_teamMode_%s' % TEAM_MODE.NAMES[idx]], 'value': idx})
+                                 'label': g_config.i18n['UI_flash_teamMode_%s' % TeamMode.NAMES[idx]], 'value': idx})
     itemData = self._getItemData()
     if itemData is None:
         itemData = {'intCD': 0,

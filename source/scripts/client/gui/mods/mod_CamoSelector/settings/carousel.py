@@ -9,7 +9,7 @@ from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
-from .shared import CUSTOMIZATION_TABS, isItemSuitableForTab
+from .shared import C11nTabs, isItemSuitableForTab
 from ..shared import isCamoInternational
 
 
@@ -35,14 +35,14 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         self._currentlyApplied = set()
         self._allSeasonAndTabFilterData = {}
         allItems = self._getAllItems(_createBaseRequirements())
-        for tabIndex in CUSTOMIZATION_TABS.ALL:
+        for tabIndex in C11nTabs.ALL:
             self._allSeasonAndTabFilterData[tabIndex] = {}
             for season in SeasonType.COMMON_SEASONS:
                 self._allSeasonAndTabFilterData[tabIndex][season] = CustomizationSeasonAndTypeFilterData()
 
         for item in sorted(allItems.itervalues(), key=comparisonKey):
             groupName = item.groupUserName
-            for tabIndex in CUSTOMIZATION_TABS.ALL:
+            for tabIndex in C11nTabs.ALL:
                 if isItemSuitableForTab(item, tabIndex):
                     for seasonType in SeasonType.COMMON_SEASONS:
                         if item.season & seasonType:
@@ -51,7 +51,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
                                 seasonAndTabData.allGroups.append(groupName)
                             seasonAndTabData.itemCount += 1
 
-        for tabIndex in CUSTOMIZATION_TABS.ALL:
+        for tabIndex in C11nTabs.ALL:
             for seasonType in SeasonType.COMMON_SEASONS:
                 seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
                 seasonAndTabData.allGroups.append(_ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_FILTER_ALLGROUPS))
