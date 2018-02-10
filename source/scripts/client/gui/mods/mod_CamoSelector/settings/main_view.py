@@ -111,7 +111,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__setBuyingPanelData()
         self.__setSeasonData()
         self.refreshOutfit()
-        self.service.startHighlighter(chooseMode(self._mode, g_currentVehicle.item))
+        self.service.startHighlighter(chooseMode(g_currentVehicle.item))
 
     def _dispose(self):
         if g_appLoader.getSpaceID() != _SPACE_ID.LOGIN:
@@ -384,7 +384,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Turn on the Custom customization mode
         (where you create vehicle's look by yourself).
         """
-        self.service.startHighlighter(chooseMode(self._mode, g_currentVehicle.item))
+        self.service.startHighlighter(chooseMode(g_currentVehicle.item))
         self.switchMode(C11nMode.INSTALL)
 
     def switchToStyle(self):

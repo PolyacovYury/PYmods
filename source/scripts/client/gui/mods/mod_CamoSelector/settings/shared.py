@@ -25,14 +25,10 @@ class C11nTabs(CONST_CONTAINER):
     VISIBLE = ALL
 
 
-def chooseMode(settingMode, vehicle):
-    """ Choose mode for the highlighter from the given item type and vehicle.
-    """
-    # if settingMode == C11nMode.INSTALL:
+def chooseMode(vehicle):
     if vehicle.turret.isGunCarriage:
         return HighlightingMode.CAMO_REGIONS_SKIP_TURRET
     return HighlightingMode.CAMO_REGIONS
-    # return HighlightingMode.WHOLE_VEHICLE
 
 
 def getCustomPurchaseItems(outfitsInfo):

@@ -1,7 +1,7 @@
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.daapi.view.lobby.customization.property_sheet_season_buttons_component import \
-    PropertySheetSeasonButtonsComponent, SeasonButtonStates
+    PropertySheetSeasonButtonsComponent
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_IDX
 from gui.shared.formatters import getItemPricesVO
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
@@ -29,7 +29,6 @@ def __determineRendererState(base, self, renderer, seasonIDX, currentItem, activ
                    'itemIsWide': currentItem.isWide() if currentItem is not None else False}
     renderer.smallSlotVO = smallSlotVO
     renderer.wouldAddItem = False
-    # itemForPurchase = currentItem if currentItem is not None else activeItem
     buyPrice = ITEM_PRICE_EMPTY
     renderer.buyPrice = getItemPricesVO(buyPrice)[0]
     renderer.currencyType = buyPrice.getCurrency() if buyPrice is not ITEM_PRICE_EMPTY else ''

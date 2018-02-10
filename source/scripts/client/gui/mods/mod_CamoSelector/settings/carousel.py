@@ -189,10 +189,10 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         if self._historicOnlyItems:
             requirement |= REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
         if self._onlyOwnedAndFreeItems:
-            requirement |= REQ_CRITERIA.CUSTOM(lambda item: self._proxy.getItemInventoryCount(item) > 0)
+            requirement |= REQ_CRITERIA.CUSTOM(lambda x: self._proxy.getItemInventoryCount(x) > 0)
         if self._onlyAppliedItems:
             appliedItems = self._proxy.getAppliedItems(isOriginal=False)
-            requirement |= REQ_CRITERIA.CUSTOM(lambda item: item.intCD in appliedItems)
+            requirement |= REQ_CRITERIA.CUSTOM(lambda x: x.intCD in appliedItems)
         allItems = self._getAllItems(requirement)
         self._customizationItems = []
         self._customizationBookmarks = []

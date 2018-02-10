@@ -68,10 +68,6 @@ def _generateDescription(base, self):
 
 @overrideMethod(CamoAnchorProperties, 'setCamoColor')
 def setCamoColor(base, self, paletteIdx):
-    """
-    sets the current camo's palette to the palette at the provided index
-    :param paletteIdx:
-    """
     if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11nMode.INSTALL:
         return base(self, paletteIdx)
     self._c11nView.soundManager.playInstantSound(SOUNDS.SELECT)
@@ -80,11 +76,6 @@ def setCamoColor(base, self, paletteIdx):
 
 @overrideMethod(CamoAnchorProperties, 'setCamoScale')
 def setCamoScale(base, self, scale, scaleIndex):
-    """
-    Set the scale of the camo to the provided scale value
-    :param scale: the new value for camo's patternSize. represents amount of tiling to do
-    :param scaleIndex: the index of the camo scale slider that was selected
-    """
     if isinstance(self._c11nView, MainView) or self._c11nView.getMode() == C11nMode.INSTALL:
         return base(self, scale, scaleIndex)
     self._c11nView.soundManager.playInstantSound(SOUNDS.SELECT)
