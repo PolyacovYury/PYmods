@@ -17,9 +17,9 @@ def __determineRendererState(base, self, renderer, seasonIDX, currentItem, activ
     activeItem = self._c11nView.getCurrentOutfit().getContainer(self._areaId).slotFor(self._slotId).getItem(self._regionId)
     currentItem = None if not self._c11nView.getSettingSeason() & seasonType else activeItem
     renderer.itemIntCD = currentItem.intCD if currentItem is not None else -1
-    state = __getState(
+    state = self._PropertySheetSeasonButtonsComponent__getState(
         activeItem, currentItem, bool(self._c11nView.getCurrentTab()) or
-        self._PropertySheetSeasonButtonsComponent__isApplicableToActiveSeason(activeItem, seasonIDX))
+        self._PropertySheetSeasonButtonsComponent__isApplicableToActiveSeason(activeItem, seasonIDX), False)
     action = self._PropertySheetSeasonButtonsComponent__getAction(state)
     renderer.action = action[0]
     renderer.actionText = action[1]
@@ -36,19 +36,3 @@ def __determineRendererState(base, self, renderer, seasonIDX, currentItem, activ
     renderer.showBorder = renderer.seasonIDX == SEASON_TYPE_TO_IDX[self._activeSeason]
     renderer.showPurchaseGlow = (showGlow and renderer.requiresPurchase and currentItem == activeItem and currentItem is
                                  not None)
-
-
-def __getState(activeCustomizationItem, currentCustomizationItem, applicableToCurrentSeason):
-    if activeCustomizationItem is None:
-        state = SeasonButtonStates.EMPTY if currentCustomizationItem is None else SeasonButtonStates.FILLED
-    elif currentCustomizationItem is None:
-        state = SeasonButtonStates.EMPTY_APPLY if applicableToCurrentSeason else SeasonButtonStates.LOCKED_EMPTY
-    elif activeCustomizationItem == currentCustomizationItem:
-        state = SeasonButtonStates.GLOWING
-    elif applicableToCurrentSeason:
-        state = SeasonButtonStates.FILLED
-    else:
-        state = SeasonButtonStates.LOCKED_FILLED
-    if state == SeasonButtonStates.EMPTY_ADD and activeCustomizationItem and activeCustomizationItem.isHidden:
-        state = SeasonButtonStates.EMPTY_APPLY
-    return state
