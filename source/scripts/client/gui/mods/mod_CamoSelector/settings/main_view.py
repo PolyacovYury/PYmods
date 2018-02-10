@@ -496,6 +496,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         return 0 if not (self._ally or self._enemy) else 1 if (self._ally and not self._enemy) else 2 if (
                     not self._ally and self._enemy) else 3
 
+    def getSettingSeason(self):
+        return self._settingSeason
+
     def getAppliedItems(self, isOriginal=True):
         outfits = self._originalOutfits if isOriginal else self._modifiedOutfits
         seasons = SeasonType.COMMON_SEASONS if isOriginal else (self._currentSeason,)
