@@ -236,6 +236,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 elif camoName in camoIndices:
                     for camoID in camoIndices[camoName]:
                         conf[camoID] = conf[camoName].copy()
+                    del conf[camoName]
             for camoID, camouflage in camouflages.items():
                 if camoID not in conf:
                     continue
