@@ -6,6 +6,7 @@ import items.vehicles
 from AvatarInputHandler import cameras, mathUtils
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import loadJson
+from PYmodsCore.config.utils import smart_update
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from adisp import async
 from gui import DialogsInterface, SystemMessages, g_tankActiveCamouflage
@@ -280,7 +281,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         for camoID, camoName in camoNames.iteritems():
             camoIndices.setdefault(camoName, []).append(camoID)
         camoIndices.update({x.userKey: [idx] for idx, x in camouflages.iteritems() if 'modded' in x.priceGroupTags})
-        print allSettings
         for itemsKey in allSettings:
             itemSettings = allSettings[itemsKey]
             for camoName in itemSettings.keys():
@@ -603,7 +603,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     @process('buyAndInstall')
     def buyAndExit(self, purchaseItems):
         self._currentSettings = self._cleanSettings(self._currentSettings)
-        g_config.camouflages.update(self._currentSettings)
+        for itemsKey in self._currentSettings:
+            for camoName in self._currentSettings[itemsKey]:
+                g_config.camouflages[itemsKey].setdefault(camoName, {}).update(self._currentSettings)
         if self._currentSettings['remap']:
             newSettings = {'disable': g_config.disable,
                            'remap': g_config.camouflages['remap']}
