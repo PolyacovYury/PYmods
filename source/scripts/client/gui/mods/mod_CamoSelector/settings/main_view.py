@@ -457,7 +457,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def closeWindow(self):
         purchaseItems = self.getPurchaseItems()
         cart = getTotalPurchaseInfo(purchaseItems)
-        if cart.numTotal:
+        if cart.numTotal or any(self._cleanSettings(self._currentSettings).itervalues()):
             DialogsInterface.showDialog(I18nConfirmDialogMeta('customization/close'), self.__onConfirmCloseWindow)
         else:
             self.__onConfirmCloseWindow(proceed=True)
@@ -895,7 +895,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def __confirmHeaderNavigation(self, callback):
         purchaseItems = self.getPurchaseItems()
         cart = getTotalPurchaseInfo(purchaseItems)
-        if cart.numTotal:
+        if cart.numTotal or any(self._cleanSettings(self._currentSettings).itervalues()):
             DialogsInterface.showI18nConfirmDialog('customization/close', callback)
         else:
             callback(True)
