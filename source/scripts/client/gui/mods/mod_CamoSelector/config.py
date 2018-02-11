@@ -241,6 +241,9 @@ class ConfigInterface(PYmodsConfigInterface):
                 if camoConf.get('random_mode') == RandMode.RANDOM or camoConf.get(
                         'random_mode') == RandMode.TEAM and camoName not in self.interCamo:
                     del camoConf['random_mode']
+                if 'kinds' in camoConf:
+                    camoConf['season'] = camoConf['kinds']
+                    del camoConf['kinds']
                 if 'season' in camoConf:
                     seasonNames = [x for x in camoConf['season'].split(',') if x]
                     seasonType = 0
