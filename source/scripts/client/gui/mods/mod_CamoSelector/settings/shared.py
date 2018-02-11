@@ -33,6 +33,8 @@ TAB_TO_RAND_MODE = {
 
 
 def isItemSuitableForTab(item, tabIndex):
+    if item is None:
+        return False
     from .. import g_config
     ct = C11nTabs
     isInter = isCamoInternational(g_config, item.descriptor)
