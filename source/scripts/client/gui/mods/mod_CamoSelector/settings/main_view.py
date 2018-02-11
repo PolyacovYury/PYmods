@@ -18,7 +18,7 @@ from gui.Scaleform.daapi.view.lobby.customization.main_view import ANCHOR_ALPHA_
     CustomizationAnchorPositionVO, CustomizationAnchorsSetVO, CustomizationCarouselDataVO, CustomizationSlotIdVO, \
     CustomizationSlotUpdateVO, _C11nWindowsLifecycleHandler
 from gui.Scaleform.daapi.view.lobby.customization.shared import OutfitInfo, SEASONS_ORDER, SEASON_IDX_TO_TYPE, \
-    SEASON_TYPE_TO_NAME
+    SEASON_TYPE_TO_NAME, getTotalPurchaseInfo, getCustomPurchaseItems, getItemInventoryCount
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import C11N_SOUND_SPACE, SOUNDS
 from gui.Scaleform.daapi.view.meta.CustomizationMainViewMeta import CustomizationMainViewMeta
 from gui.Scaleform.framework.managers.view_lifecycle_watcher import ViewLifecycleWatcher
@@ -32,6 +32,7 @@ from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.SystemMessages import CURRENCY_TO_SM_TYPE, SM_TYPE
 from gui.app_loader import g_appLoader
 from gui.app_loader.settings import GUI_GLOBAL_SPACE_ID as _SPACE_ID
+from gui.customization.shared import chooseMode
 from gui.shared import EVENT_BUS_SCOPE, events, g_eventBus
 from gui.shared.formatters import formatPrice, getItemPricesVO, icons, text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -49,8 +50,7 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
 from .processors import OutfitApplier
-from .shared import C11nMode, C11nTabs, chooseMode, getCustomPurchaseItems, getItemInventoryCount, \
-    getTotalPurchaseInfo
+from .shared import C11nMode, C11nTabs
 from .. import g_config
 from ..shared import RandMode, TeamMode, getCamoTextureName, SEASON_NAME_TO_TYPE
 
@@ -112,7 +112,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__setBuyingPanelData()
         self.__setSeasonData()
         self.refreshOutfit()
-        self.service.startHighlighter(chooseMode(g_currentVehicle.item))
+        self.service.startHighlighter(chooseMode(GUI_ITEM_TYPE.CAMOUFLAGE, g_currentVehicle.item))
 
     def _dispose(self):
         if g_appLoader.getSpaceID() != _SPACE_ID.LOGIN:
@@ -183,9 +183,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         purchaseItems = self.getPurchaseItems()
         cart = getTotalPurchaseInfo(purchaseItems)
         totalPriceVO = getItemPricesVO(cart.totalPrice)
-        cleanSettings = self._cleanSettings(self._currentSettings.copy())
+        cleanSettings = self._cleanSettings(self._currentSettings)
         keys = []
-        if cart.totalPrice != ITEM_PRICE_EMPTY:
+        if cart.numTotal:
             keys.append('install')
             self.as_showBuyingPanelS()
         else:
@@ -219,11 +219,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.soundManager.playInstantSound(SOUNDS.SELECT)
         purchaseItems = self.getPurchaseItems()
         cart = getTotalPurchaseInfo(purchaseItems)
-        if cart.totalPrice == ITEM_PRICE_EMPTY:
-            self.buyAndExit(purchaseItems)
-        else:
-            self.as_hideAnchorPropertySheetS()
-            self.fireEvent(events.LoadViewEvent(VIEW_ALIAS.CUSTOMIZATION_PURCHASE_WINDOW), EVENT_BUS_SCOPE.LOBBY)
+        self.buyAndExit(purchaseItems)
 
     def onSelectItem(self, index):
         """ Select item in the carousel
@@ -429,7 +425,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Turn on the Custom customization mode
         (where you create vehicle's look by yourself).
         """
-        self.service.startHighlighter(chooseMode(g_currentVehicle.item))
+        self.service.startHighlighter(chooseMode(GUI_ITEM_TYPE.CAMOUFLAGE, g_currentVehicle.item))
         self.switchMode(C11nMode.INSTALL)
 
     def switchToStyle(self):
@@ -493,11 +489,11 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Get the unhistorical items for the Unhistorical popover (in the header)
         """
         self.soundManager.playInstantSound(SOUNDS.SELECT)
-        items = []
+        nonHistoricItems = []
         for outfit in self._modifiedOutfits.itervalues():
-            items.extend((item for item in outfit.items() if not item.isHistorical()))
+            nonHistoricItems.extend((item for item in outfit.nonHistoricItems() if not item.isHistorical()))
 
-        return {'items': [item.intCD for item in sorted(items, key=comparisonKey)]}
+        return {'items': [item.intCD for item in sorted(nonHistoricItems, key=comparisonKey)]}
 
     def removeItems(self, *intCDs):
         """ Remove the given item from every outfit.
