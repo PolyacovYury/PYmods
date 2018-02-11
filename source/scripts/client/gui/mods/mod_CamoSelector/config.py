@@ -230,12 +230,18 @@ class ConfigInterface(PYmodsConfigInterface):
         if 'remap' in settings:
             conf = settings['remap']
             for camoName in conf.keys():
-                if camoName not in camoIndices and camoName not in camoNames:
-                    print '%s: unknown camouflage for remapping: %s' % (self.ID, camoName)
+                try:
+                    camoName = int(camoName)
+                except ValueError:
+                    if camoName not in camoIndices:
+                        print '%s: unknown camouflage for remapping: %s' % (self.ID, camoName)
+                    else:
+                        for camoID in camoIndices[camoName]:
+                            conf[camoID] = conf[camoName].copy()
                     del conf[camoName]
-                elif camoName in camoIndices:
-                    for camoID in camoIndices[camoName]:
-                        conf[camoID] = conf[camoName].copy()
+                    continue
+                if camoName not in camoNames:
+                    print '%s: unknown camouflage for remapping: %s' % (self.ID, camoName)
                     del conf[camoName]
             for camoID, camouflage in camouflages.items():
                 if camoID not in conf:
