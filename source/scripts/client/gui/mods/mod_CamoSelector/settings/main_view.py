@@ -1,7 +1,8 @@
 import math
 from functools import partial
-import items.vehicles
+
 import BigWorld
+import items.vehicles
 from AvatarInputHandler import cameras, mathUtils
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import loadJson
@@ -18,7 +19,7 @@ from gui.Scaleform.daapi.view.lobby.customization.main_view import ANCHOR_ALPHA_
     CustomizationAnchorPositionVO, CustomizationAnchorsSetVO, CustomizationCarouselDataVO, CustomizationSlotIdVO, \
     CustomizationSlotUpdateVO, _C11nWindowsLifecycleHandler
 from gui.Scaleform.daapi.view.lobby.customization.shared import OutfitInfo, SEASONS_ORDER, SEASON_IDX_TO_TYPE, \
-    SEASON_TYPE_TO_NAME, getTotalPurchaseInfo, getCustomPurchaseItems, getItemInventoryCount
+    SEASON_TYPE_TO_NAME, getCustomPurchaseItems, getItemInventoryCount, getTotalPurchaseInfo
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import C11N_SOUND_SPACE, SOUNDS
 from gui.Scaleform.daapi.view.meta.CustomizationMainViewMeta import CustomizationMainViewMeta
 from gui.Scaleform.framework.managers.view_lifecycle_watcher import ViewLifecycleWatcher
@@ -52,7 +53,7 @@ from .carousel import CustomizationCarouselDataProvider, comparisonKey
 from .processors import OutfitApplier
 from .shared import C11nMode, C11nTabs
 from .. import g_config
-from ..shared import RandMode, TeamMode, getCamoTextureName, SEASON_NAME_TO_TYPE
+from ..shared import RandMode, SEASON_NAME_TO_TYPE, TeamMode, getCamoTextureName
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):
@@ -272,8 +273,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         settings['useForEnemy'] = self._enemy
         settings['random_mode'] = self._randMode
 
-    @staticmethod
-    def _cleanSettings(allSettings):
+    def _cleanSettings(self, allSettings):
         camouflages = items.vehicles.g_cache.customization20().camouflages
         camoNames = {idx: getCamoTextureName(x) for idx, x in camouflages.iteritems() if 'modded' not in x.priceGroupTags}
         camoIndices = {}
@@ -286,7 +286,15 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                 origSetting = g_config.camouflages[itemsKey].get(camoName, {})
                 camoSetting = itemSettings[camoName]
                 if 'season' in camoSetting:
-                    if 'season' not in origSetting:
+                    if itemsKey == 'remap' and not all(
+                            self.itemsCache.items.getItemByCD(camouflages[idx].compactDescr).isHidden
+                            for idx in camoIndices[camoName]):
+                        print '%s: in-shop camouflage season changing is disabled (name: %s, season setting was %s)' % (
+                            g_config.ID, camoName, camoSetting['season'])
+                        del camoSetting['season']
+                        if 'season' in origSetting:
+                            del origSetting['season']
+                    elif 'season' not in origSetting:
                         itemSeasons = SeasonType.UNDEFINED
                         for season in SEASONS_CONSTANTS.SEASONS:
                             if season in camoSetting['season']:

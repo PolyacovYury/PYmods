@@ -11,15 +11,12 @@ from gui import InputHandler
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
-from helpers import dependency
-from skeletons.gui.shared import IItemsCache
+from gui.shared.gui_items.customization.c11n_items import Camouflage
 from . import __date__, __modID__
 from .shared import RandMode, SEASON_NAME_TO_TYPE, getCamoTextureName
 
 
 class ConfigInterface(PYmodsConfigInterface):
-    itemsCache = dependency.descriptor(IItemsCache)
-
     def __init__(self):
         self.disable = []
         self.hangarCamoCache = {}
@@ -245,23 +242,18 @@ class ConfigInterface(PYmodsConfigInterface):
                         'random_mode') == RandMode.TEAM and camoName not in self.interCamo:
                     del camoConf['random_mode']
                 if 'season' in camoConf:
-                    if not self.itemsCache.items.getItemByCD(camouflage.compactDescr).isHidden:
-                        print '%s: in-shop camouflage season changing is disabled (name: %s, season setting was %s)' % (
-                            self.ID, camoName, camoConf['season'])
+                    seasonNames = [x for x in camoConf['season'].split(',') if x]
+                    seasonType = 0
+                    for season in seasonNames:
+                        if season in SEASON_NAME_TO_TYPE:
+                            seasonType |= SEASON_NAME_TO_TYPE[season]
+                        else:
+                            print '%s: unknown season name for camouflage %s: %s' % (self.ID, camoName, season)
+                            camoConf['season'] = camoConf['season'].replace(season, '')
+                    while ',,' in camoConf['season']:
+                        camoConf['season'] = camoConf['season'].replace(',,', ',')
+                    if seasonType == camouflage.season:
                         del camoConf['season']
-                    else:
-                        seasonNames = [x for x in camoConf['season'].split(',') if x]
-                        seasonType = 0
-                        for season in seasonNames:
-                            if season in SEASON_NAME_TO_TYPE:
-                                seasonType |= SEASON_NAME_TO_TYPE[season]
-                            else:
-                                print '%s: unknown season name for camouflage %s: %s' % (self.ID, camoName, season)
-                                camoConf['season'] = camoConf['season'].replace(season, '')
-                        while ',,' in camoConf['season']:
-                            camoConf['season'] = camoConf['season'].replace(',,', ',')
-                        if seasonType == camouflage.season:
-                            del camoConf['season']
                 for team in ('Ally', 'Enemy'):
                     if camoConf.get('useFor%s' % team):
                         del camoConf['useFor%s' % team]
