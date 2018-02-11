@@ -6,7 +6,6 @@ import items.vehicles
 from AvatarInputHandler import cameras, mathUtils
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import loadJson
-from PYmodsCore.config.utils import smart_update
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from adisp import async
 from gui import DialogsInterface, SystemMessages, g_tankActiveCamouflage
@@ -54,7 +53,7 @@ from .carousel import CustomizationCarouselDataProvider, comparisonKey
 from .processors import OutfitApplier
 from .shared import C11nMode, C11nTabs
 from .. import g_config
-from ..shared import RandMode, SEASON_NAME_TO_TYPE, TeamMode, getCamoTextureName
+from ..shared import RandMode, SEASON_NAME_TO_TYPE, TeamMode
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):
@@ -267,8 +266,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
 
     def _updateCurrentSettings(self):
         item = self._currentOutfit.getContainer(1).slotFor(24).getItem(0)
-        itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (
-            getCamoTextureName(item.descriptor), 'remap')
+        itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (item.id, 'remap')
         settings = self._currentSettings[itemKey].setdefault(itemName, {})
         settings['useForAlly'] = self._ally
         settings['useForEnemy'] = self._enemy
@@ -276,22 +274,16 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
 
     def _cleanSettings(self, allSettings, checkSeasons=True):
         camouflages = items.vehicles.g_cache.customization20().camouflages
-        camoNames = {idx: getCamoTextureName(x) for idx, x in camouflages.iteritems() if 'modded' not in x.priceGroupTags}
-        camoIndices = {}
-        for camoID, camoName in camoNames.iteritems():
-            camoIndices.setdefault(camoName, []).append(camoID)
-        camoIndices.update({x.userKey: [idx] for idx, x in camouflages.iteritems() if 'modded' in x.priceGroupTags})
         for itemsKey in allSettings:
             itemSettings = allSettings[itemsKey]
-            for camoName in itemSettings.keys():
-                origSetting = g_config.camouflages[itemsKey].get(camoName, {})
-                camoSetting = itemSettings[camoName]
+            for camoID in itemSettings.keys():
+                origSetting = g_config.camouflages[itemsKey].get(camoID, {})
+                camoSetting = itemSettings[camoID]
                 if 'season' in camoSetting:
-                    if checkSeasons and itemsKey == 'remap' and not all(
-                            self.itemsCache.items.getItemByCD(camouflages[idx].compactDescr).isHidden
-                            for idx in camoIndices[camoName]):
-                        print '%s: in-shop camouflage season changing is disabled (name: %s, season setting was %s)' % (
-                            g_config.ID, camoName, camoSetting['season'] or 'empty')
+                    if checkSeasons and itemsKey == 'remap' and not self.itemsCache.items.getItemByCD(
+                            camouflages[camoID].compactDescr).isHidden:
+                        print '%s: in-shop camouflage season changing is disabled (id: %s, season setting was %s)' % (
+                            g_config.ID, camoID, camoSetting['season'] or 'empty')
                         del camoSetting['season']
                         if 'season' in origSetting:
                             del origSetting['season']
@@ -300,7 +292,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                         for season in SEASONS_CONSTANTS.SEASONS:
                             if season in camoSetting['season']:
                                 itemSeasons |= SEASON_NAME_TO_TYPE[season]
-                        if all(itemSeasons & camouflages[idx].season for idx in camoIndices[camoName]):
+                        if itemSeasons & camouflages[camoID].season:
                             del camoSetting['season']
                     elif origSetting['season'] == camoSetting['season']:
                         del camoSetting['season']
@@ -312,7 +304,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                     if camoSetting['random_mode'] == origSetting.get('random_mode', RandMode.RANDOM):
                         del camoSetting['random_mode']
                 if not camoSetting:
-                    del itemSettings[camoName]
+                    del itemSettings[camoID]
         return allSettings
 
     def refreshCarousel(self, rebuild=False):
@@ -367,8 +359,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             outfit = self._setupOutfit
             for areaId in xrange(1, 4):
                 outfit.getContainer(areaId).slotFor(slotId).set(item, idx=regionId)
-            itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (
-                getCamoTextureName(item.descriptor), 'remap')
+            itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (item.id, 'remap')
             itemSettings = self._currentSettings[itemKey].setdefault(itemName, {})
             itemOrigSettings = g_config.camouflages[itemKey].get(itemName, {})
             itemSeasonsStr = itemSettings.get('season', itemOrigSettings.get('season', None))
@@ -408,8 +399,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             outfit.getContainer(areaId).slotFor(slotId).remove(idx=regionId)
         else:
             item = self._setupOutfit.getContainer(areaId).slotFor(slotId).getItem(regionId)
-            itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (
-                getCamoTextureName(item.descriptor), 'remap')
+            itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (item.id, 'remap')
             itemSettings = self._currentSettings[itemKey].setdefault(itemName, {})
             itemOrigSettings = g_config.camouflages[itemKey].get(itemName, {})
             itemSeasonsStr = itemSettings.get('season', itemOrigSettings.get('season', None))
