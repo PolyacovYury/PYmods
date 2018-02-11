@@ -4,7 +4,7 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import Cart, PurchaseIt
 from gui.customization.shared import HighlightingMode
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from shared_utils import CONST_CONTAINER
-from ..shared import isCamoInternational
+from ..shared import isCamoInternational, RandMode
 
 
 class C11nMode(CONST_CONTAINER):
@@ -21,9 +21,15 @@ class C11nTabs(CONST_CONTAINER):
     """
     SHOP, HIDDEN, INTERNATIONAL, CUSTOM = range(4)
     AVAILABLE_REGIONS = (SHOP, HIDDEN, INTERNATIONAL, CUSTOM)
-    TEAM = (INTERNATIONAL, CUSTOM)
     ALL = (SHOP, HIDDEN, INTERNATIONAL, CUSTOM)
     VISIBLE = ALL
+
+
+TAB_TO_RAND_MODE = {
+    C11nTabs.SHOP: (RandMode.OFF, RandMode.RANDOM),
+    C11nTabs.HIDDEN: (RandMode.OFF, RandMode.RANDOM),
+    C11nTabs.INTERNATIONAL: (RandMode.OFF, RandMode.RANDOM, RandMode.TEAM),
+    C11nTabs.CUSTOM: (RandMode.OFF, RandMode.RANDOM, RandMode.TEAM)}
 
 
 def chooseMode(vehicle):

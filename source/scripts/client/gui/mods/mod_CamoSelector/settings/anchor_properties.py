@@ -13,7 +13,7 @@ from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from helpers import i18n
 from helpers.i18n import makeString as _ms
-from .shared import C11nMode, isItemSuitableForTab, C11nTabs
+from .shared import C11nMode, isItemSuitableForTab, C11nTabs, TAB_TO_RAND_MODE
 from .. import g_config
 from ..shared import RandMode, TeamMode
 
@@ -92,10 +92,12 @@ def _getData(base, self):
     swatchColors = []
     swatchScales = []
     if self._item:
-        modes = 3
-        if not any(isItemSuitableForTab(self._item, tab) for tab in C11nTabs.TEAM):
-            modes = 2
-        for idx in RandMode.NAMES[:modes]:
+        modes = RandMode.NAMES.keys()
+        for tabIndex in C11nTabs.ALL:
+            if isItemSuitableForTab(self._item, tabIndex):
+                modes = TAB_TO_RAND_MODE[tabIndex]
+                break
+        for idx in modes:
             swatchScales.append({'paletteIcon': '', 'selected': self._c11nView.getRandMode() == idx,
                                  'label': g_config.i18n['UI_flash_randMode_%s' % RandMode.NAMES[idx]], 'value': idx})
         for idx in TeamMode.NAMES:
