@@ -292,7 +292,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                         for season in SEASONS_CONSTANTS.SEASONS:
                             if season in camoSetting['season']:
                                 itemSeasons |= SEASON_NAME_TO_TYPE[season]
-                        if itemSeasons == camouflages[camoID].season:
+                        camoSeason = camouflages[camoID].season
+                        if itemSeasons == (camoSeason if camoSeason < 8 else camoSeason - 8):
                             del camoSetting['season']
                     elif origSetting['season'] == camoSetting['season']:
                         del camoSetting['season']
