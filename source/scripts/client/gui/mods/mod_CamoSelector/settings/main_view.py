@@ -49,11 +49,11 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
+from vehicle_systems.tankStructure import TankPartIndexes
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
-from .processors import OutfitApplier
 from .shared import C11nMode, C11nTabs
 from .. import g_config
-from ..shared import RandMode, SEASON_NAME_TO_TYPE, TeamMode
+from ..shared import RandMode, SEASON_NAME_TO_TYPE, TeamMode, applyCache
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):
@@ -188,6 +188,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         keys = []
         if cart.numTotal:
             keys.append('install')
+        if cart.totalPrice != ITEM_PRICE_EMPTY:
             self.as_showBuyingPanelS()
         else:
             self.as_hideBuyingPanelS()
@@ -499,7 +500,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Remove the given item from every outfit.
         Don't care about mode there.
         """
-        print 'item removed', intCDs
         self.soundManager.playInstantSound(SOUNDS.REMOVE)
         for outfit in self._modifiedOutfits.itervalues():
             for slot in outfit.slots():
@@ -606,50 +606,33 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                 configFolder = g_config.configFolders[confFolderName]
                 loadJson(g_config.ID, 'settings', {key: g_config.camouflages['modded'][key] for key in configFolder},
                          g_config.configPath + 'camouflages/' + confFolderName + '/', True, False)
-        print purchaseItems
         self.itemsCache.onSyncCompleted -= self.__onCacheReSync
+        boughtOutfits = {season: self.service.getCustomOutfit(season) for season in SeasonType.COMMON_SEASONS}
         cart = getTotalPurchaseInfo(purchaseItems)
-        groupHasItems = {SeasonType.WINTER: False,
-                         SeasonType.SUMMER: False,
-                         SeasonType.DESERT: False}
-        modifiedOutfits = {season: outfit.copy() for season, outfit in self._modifiedOutfits.iteritems()}
-        results = []
+        nationName, vehicleName = g_currentVehicle.item.descriptor.name.split(':')
+        vehConfig = g_config.camouflagesCache.get(nationName, {}).get(vehicleName, {})
         for pItem in purchaseItems:
-            if not pItem.selected:
-                if pItem.slot:
-                    slot = modifiedOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot)
-                    slot.remove(pItem.regionID)
-            groupHasItems[pItem.group] = True
-
-        empty = self.service.getEmptyOutfit()
-        for season in SeasonType.COMMON_SEASONS:
-            if groupHasItems[season]:
-                yield OutfitApplier(g_currentVehicle.item, empty, season).request()
-
-        for season in SeasonType.COMMON_SEASONS:
-            if groupHasItems[season]:
-                outfit = modifiedOutfits[season]
-                result = yield OutfitApplier(g_currentVehicle.item, outfit, season).request()
-                results.append(result)
-
-        errorCount = 0
-        for result in results:
-            if not result.success:
-                errorCount += 1
-            if result.userMsg:
-                SystemMessages.pushI18nMessage(result.userMsg, type=result.sysMsgType)
-
-        if not errorCount:
-            if cart.totalPrice != ITEM_PRICE_EMPTY:
-                msgCtx = {'money': formatPrice(cart.totalPrice.price),
-                          'count': cart.numSelected}
-                SystemMessages.pushI18nMessage(MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONSBUY,
-                                               type=CURRENCY_TO_SM_TYPE.get(cart.totalPrice.getCurrency(byWeight=True),
-                                                                            SM_TYPE.PurchaseForGold), **msgCtx)
-            else:
-                SystemMessages.pushI18nMessage(MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS,
-                                               type=SM_TYPE.Information)
-            self.__onCacheReSync()
+            assert pItem.slot == GUI_ITEM_TYPE.CAMOUFLAGE
+            if pItem.selected:
+                if pItem.item == boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getItem(
+                        pItem.regionID) and not pItem.isDismantling:
+                    vehConfig.get(SEASON_TYPE_TO_NAME[pItem.group], {}).pop(TankPartIndexes.getName(pItem.areaID))
+                else:
+                    component = self._modifiedOutfits[pItem.group].getContainer(pItem.areaID).slotFor(
+                        pItem.slot).getComponent(pItem.regionID)
+                    g_config.camouflagesCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
+                        SEASON_TYPE_TO_NAME[pItem.group], {})[TankPartIndexes.getName(pItem.areaID)] = (
+                        [pItem.item.id, component.palette, component.patternSize] if not pItem.isDismantling else [])
+        if cart.totalPrice != ITEM_PRICE_EMPTY:
+            msgCtx = {'money': formatPrice(cart.totalPrice.price),
+                      'count': cart.numSelected}
+            SystemMessages.pushI18nMessage(MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONSBUY,
+                                           type=CURRENCY_TO_SM_TYPE.get(cart.totalPrice.getCurrency(byWeight=True),
+                                                                        SM_TYPE.PurchaseForGold), **msgCtx)
+        else:
+            SystemMessages.pushI18nMessage(MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS,
+                                           type=SM_TYPE.Information)
+        self.__onCacheReSync()
         self.itemsCache.onSyncCompleted += self.__onCacheReSync
 
     # noinspection PyUnusedLocal
@@ -716,9 +699,10 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         """ Fill up the internal structures with vehicle's outfits.
         """
         self._setupOutfit = self.service.getEmptyOutfit()
+        descriptor = g_currentVehicle.item.descriptor
         for season in SeasonType.COMMON_SEASONS:
             outfit = self.service.getCustomOutfit(season)
-            # TODO: fill it up with installed camouflages
+            applyCache(outfit, SEASON_TYPE_TO_NAME[season], descriptor, g_config)
             self._originalOutfits[season] = outfit.copy()
             self._modifiedOutfits[season] = outfit.copy()
         if self._mode == C11nMode.INSTALL:
