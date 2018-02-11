@@ -290,7 +290,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                             self.itemsCache.items.getItemByCD(camouflages[idx].compactDescr).isHidden
                             for idx in camoIndices[camoName]):
                         print '%s: in-shop camouflage season changing is disabled (name: %s, season setting was %s)' % (
-                            g_config.ID, camoName, camoSetting['season'])
+                            g_config.ID, camoName, camoSetting['season'] or 'empty')
                         del camoSetting['season']
                         if 'season' in origSetting:
                             del origSetting['season']
