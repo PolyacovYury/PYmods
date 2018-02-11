@@ -298,8 +298,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                 if 'season' in camoSetting:
                     if 'season' not in origSetting:
                         itemSeasons = SeasonType.UNDEFINED
-                        for season in camoSetting['season'].split(','):
-                            itemSeasons |= SEASON_NAME_TO_TYPE[season]
+                        for season in SEASONS_CONSTANTS.SEASONS:
+                            if season in camoSetting['season']:
+                                itemSeasons |= SEASON_NAME_TO_TYPE[season]
                         if all(itemSeasons & camouflages[idx].season for idx in camoIndices[camoName]):
                             del camoSetting['season']
                     elif origSetting['season'] == camoSetting['season']:
@@ -374,8 +375,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             itemSeasonsStr = itemSettings.get('season', itemOrigSettings.get('season', None))
             if itemSeasonsStr is not None:
                 itemSeasons = SeasonType.UNDEFINED
-                for season in itemSeasonsStr.split(','):
-                    itemSeasons |= SEASON_NAME_TO_TYPE[season]
+                for season in SEASONS_CONSTANTS.SEASONS:
+                    if season in itemSeasonsStr:
+                        itemSeasons |= SEASON_NAME_TO_TYPE[season]
             else:
                 itemSeasons = item.season
                 itemSeasonsStr = itemSettings['season'] = ','.join(
