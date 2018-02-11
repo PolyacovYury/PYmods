@@ -530,8 +530,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         return self._enemy
 
     def getTeamMode(self):
-        return 0 if not (self._ally or self._enemy) else 1 if (self._ally and not self._enemy) else 2 if (
-                    not self._ally and self._enemy) else 3
+        return 0 | self._ally and TeamMode.ALLY | self._enemy and TeamMode.ENEMY
 
     def getSettingSeason(self):
         return self._settingSeason
