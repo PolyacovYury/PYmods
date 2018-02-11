@@ -184,7 +184,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         purchaseItems = self.getPurchaseItems()
         cart = getTotalPurchaseInfo(purchaseItems)
         totalPriceVO = getItemPricesVO(cart.totalPrice)
-        cleanSettings = self._cleanSettings(self._currentSettings)
+        cleanSettings = self._cleanSettings(self._currentSettings, checkSeasons=False)
         keys = []
         if cart.numTotal:
             keys.append('install')
@@ -273,7 +273,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         settings['useForEnemy'] = self._enemy
         settings['random_mode'] = self._randMode
 
-    def _cleanSettings(self, allSettings):
+    def _cleanSettings(self, allSettings, checkSeasons=True):
         camouflages = items.vehicles.g_cache.customization20().camouflages
         camoNames = {idx: getCamoTextureName(x) for idx, x in camouflages.iteritems() if 'modded' not in x.priceGroupTags}
         camoIndices = {}
@@ -286,7 +286,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                 origSetting = g_config.camouflages[itemsKey].get(camoName, {})
                 camoSetting = itemSettings[camoName]
                 if 'season' in camoSetting:
-                    if itemsKey == 'remap' and not all(
+                    if checkSeasons and itemsKey == 'remap' and not all(
                             self.itemsCache.items.getItemByCD(camouflages[idx].compactDescr).isHidden
                             for idx in camoIndices[camoName]):
                         print '%s: in-shop camouflage season changing is disabled (name: %s, season setting was %s)' % (
