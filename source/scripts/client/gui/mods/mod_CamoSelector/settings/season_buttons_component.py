@@ -18,7 +18,7 @@ def __determineRendererState(base, self, renderer, seasonIDX, currentItem, activ
     currentItem = None if not self._c11nView.getSettingSeason() & seasonType else activeItem
     renderer.itemIntCD = currentItem.intCD if currentItem is not None else -1
     state = self._PropertySheetSeasonButtonsComponent__getState(
-        activeItem, currentItem, not isItemSuitableForTab(currentItem, C11nTabs.SHOP) or
+        activeItem, currentItem, not isItemSuitableForTab(activeItem, C11nTabs.SHOP) or
         self._PropertySheetSeasonButtonsComponent__isApplicableToActiveSeason(activeItem, seasonIDX), False)
     action = self._PropertySheetSeasonButtonsComponent__getAction(state)
     renderer.action = action[0]
