@@ -49,7 +49,7 @@ class JSONObjectEncoder(json.JSONEncoder):
                     keys = sorted(keys)
                 for key in keys:
                     output.append(self.current_indent_str + (
-                        json.dumps(key) if not isinstance(o, int) else json.dumps(str(key))) + ": " + self.encode(o[key]))
+                        json.dumps(key) if not isinstance(key, int) else json.dumps(str(key))) + ": " + self.encode(o[key]))
                 self.current_indent -= self.indent
                 self.current_indent_str = " " * self.current_indent
                 return "{\n" + ",\n".join(output) + "\n" + self.current_indent_str + "}"
