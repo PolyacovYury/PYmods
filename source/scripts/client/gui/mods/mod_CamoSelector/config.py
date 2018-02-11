@@ -223,8 +223,6 @@ class ConfigInterface(PYmodsConfigInterface):
                         nationsList += filterNode.nations
             if set(nationsList) == set(idx for idx, name in enumerate(nations.NAMES) if name != 'italy'):
                 self.interCamo.append(camoName)
-            elif len(set(nationsList)) > 1:
-                print camoName, set(nationsList)
         settings = loadJson(self.ID, 'settings', {}, self.configPath)
         if 'disable' in settings:
             if not settings['disable']:
