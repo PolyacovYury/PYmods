@@ -257,21 +257,15 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__setAnchorsInitData(self._tabIndex, True, True)
 
     def changeCamoTeamMode(self, idx):
-        if self._randMode == RandMode.OFF:
-            idx = 0
         self._ally = bool(idx & TeamMode.ALLY)
         self._enemy = bool(idx & TeamMode.ENEMY)
         self._updateCurrentSettings()
         self.__setBuyingPanelData()
 
     def changeCamoRandMode(self, idx):
-        assert idx in RandMode.NAMES
         self._randMode = idx
-        if self._randMode == RandMode.OFF:
-            self._ally = False
-            self._enemy = False
-            self.__updateAnchorPositions()
         self._updateCurrentSettings()
+        self.__setBuyingPanelData()
 
     def _updateCurrentSettings(self):
         item = self._currentOutfit.getContainer(1).slotFor(24).getItem(0)
@@ -581,7 +575,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         return self._enemy
 
     def getTeamMode(self):
-        return 0 | self._ally and TeamMode.ALLY | self._enemy and TeamMode.ENEMY
+        return 0 | (self._ally and TeamMode.ALLY) | (self._enemy and TeamMode.ENEMY)
 
     def getSettingSeason(self):
         return self._settingSeason

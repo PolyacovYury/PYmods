@@ -92,12 +92,7 @@ def _getData(base, self):
     swatchColors = []
     swatchScales = []
     if self._item:
-        modes = RandMode.NAMES.keys()
-        for tabIndex in C11nTabs.ALL:
-            if isItemSuitableForTab(self._item, tabIndex):
-                modes = TAB_TO_RAND_MODE[tabIndex]
-                break
-        for idx in modes:
+        for idx in RandMode.NAMES:
             swatchScales.append({'paletteIcon': '', 'selected': self._c11nView.getRandMode() == idx,
                                  'label': g_config.i18n['UI_flash_randMode_%s' % RandMode.NAMES[idx]], 'value': idx})
         for idx in TeamMode.NAMES:

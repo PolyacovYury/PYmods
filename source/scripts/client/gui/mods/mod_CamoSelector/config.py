@@ -246,9 +246,9 @@ class ConfigInterface(PYmodsConfigInterface):
                     del camoConf['random_mode']
                 if 'season' in camoConf:
                     if not self.itemsCache.items.getItemByCD(camouflage.compactDescr).isHidden:
-                        del camoConf['season']
                         print '%s: in-shop camouflage season changing is disabled (name: %s, season setting was %s)' % (
                             self.ID, camoName, camoConf['season'])
+                        del camoConf['season']
                     else:
                         seasonNames = [x for x in camoConf['season'].split(',') if x]
                         seasonType = 0
