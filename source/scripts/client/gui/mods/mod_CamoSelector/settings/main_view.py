@@ -605,7 +605,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self._currentSettings = self._cleanSettings(self._currentSettings)
         for itemsKey in self._currentSettings:
             for camoName in self._currentSettings[itemsKey]:
-                g_config.camouflages[itemsKey].setdefault(camoName, {}).update(self._currentSettings)
+                g_config.camouflages[itemsKey].setdefault(camoName, {}).update(self._currentSettings[itemsKey][camoName])
         if self._currentSettings['remap']:
             newSettings = {'disable': g_config.disable,
                            'remap': g_config.camouflages['remap']}
