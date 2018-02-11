@@ -1,9 +1,10 @@
 import math
 from functools import partial
-
+import items.vehicles
 import BigWorld
 from AvatarInputHandler import cameras, mathUtils
 from CurrentVehicle import g_currentVehicle
+from PYmodsCore import loadJson
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from adisp import async
 from gui import DialogsInterface, SystemMessages, g_tankActiveCamouflage
@@ -182,13 +183,17 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         purchaseItems = self.getPurchaseItems()
         cart = getTotalPurchaseInfo(purchaseItems)
         totalPriceVO = getItemPricesVO(cart.totalPrice)
+        cleanSettings = self._cleanSettings(self._currentSettings.copy())
+        keys = []
         if cart.totalPrice != ITEM_PRICE_EMPTY:
-            label = g_config.i18n['UI_flash_commit_install']
+            keys.append('install')
             self.as_showBuyingPanelS()
         else:
-            label = g_config.i18n['UI_flash_commit_apply']
             self.as_hideBuyingPanelS()
-        isApplyEnabled = bool(cart.numTotal)
+        if any(cleanSettings.itervalues()) or not keys:
+            keys.append('apply')
+        label = g_config.i18n['UI_flash_commit_' + '_and_'.join(keys)]
+        isApplyEnabled = bool(cart.numTotal) or any(cleanSettings.itervalues())
         shortage = self.itemsCache.items.stats.money.getShortage(cart.totalPrice.price)
         self.as_setBottomPanelHeaderS({'buyBtnEnabled': isApplyEnabled,
                                        'buyBtnLabel': label,
@@ -256,6 +261,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             idx = 0
         self._ally = bool(idx & TeamMode.ALLY)
         self._enemy = bool(idx & TeamMode.ENEMY)
+        self._updateCurrentSettings()
         self.__setBuyingPanelData()
 
     def changeCamoRandMode(self, idx):
@@ -265,6 +271,49 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             self._ally = False
             self._enemy = False
             self.__updateAnchorPositions()
+        self._updateCurrentSettings()
+
+    def _updateCurrentSettings(self):
+        item = self._currentOutfit.getContainer(1).slotFor(24).getItem(0)
+        itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (
+            getCamoTextureName(item.descriptor), 'remap')
+        settings = self._currentSettings[itemKey].setdefault(itemName, {})
+        settings['useForAlly'] = self._ally
+        settings['useForEnemy'] = self._enemy
+        settings['random_mode'] = self._randMode
+
+    @staticmethod
+    def _cleanSettings(allSettings):
+        camouflages = items.vehicles.g_cache.customization20().camouflages
+        camoNames = {idx: getCamoTextureName(x) for idx, x in camouflages.iteritems() if 'modded' not in x.priceGroupTags}
+        camoIndices = {}
+        for camoID, camoName in camoNames.iteritems():
+            camoIndices.setdefault(camoName, []).append(camoID)
+        camoIndices.update({x.userKey: [idx] for idx, x in camouflages.iteritems() if 'modded' in x.priceGroupTags})
+        for itemsKey in allSettings:
+            itemSettings = allSettings[itemsKey]
+            for camoName in itemSettings.keys():
+                origSetting = g_config.camouflages[itemsKey].get(camoName, {})
+                camoSetting = itemSettings[camoName]
+                if 'season' in camoSetting:
+                    if 'season' not in origSetting:
+                        itemSeasons = SeasonType.UNDEFINED
+                        for season in camoSetting['season'].split(','):
+                            itemSeasons |= SEASON_NAME_TO_TYPE[season]
+                        if all(itemSeasons & camouflages[idx].season for idx in camoIndices[camoName]):
+                            del camoSetting['season']
+                    elif origSetting['season'] == camoSetting['season']:
+                        del camoSetting['season']
+                for team in ('useForAlly', 'useForEnemy'):
+                    if team in camoSetting:
+                        if origSetting.get(team, True) == camoSetting[team]:
+                            del camoSetting[team]
+                if 'random_mode' in camoSetting:
+                    if camoSetting['random_mode'] == origSetting.get('random_mode', RandMode.RANDOM):
+                        del camoSetting['random_mode']
+                if not camoSetting:
+                    del itemSettings[camoName]
+        return allSettings
 
     def refreshCarousel(self, rebuild=False):
         if rebuild:
@@ -310,8 +359,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         if self.itemIsPicked:
             self.soundManager.playInstantSound(SOUNDS.APPLY)
         item = self.itemsCache.items.getItemByCD(intCD)
-        season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
         if self._mode == C11nMode.INSTALL:
+            season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
             outfit = self._modifiedOutfits[season]
             outfit.getContainer(areaId).slotFor(slotId).set(item, idx=regionId)
         else:
@@ -329,6 +378,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                     itemSeasons |= SEASON_NAME_TO_TYPE[season]
             else:
                 itemSeasons = item.season
+                itemSeasonsStr = itemSettings['season'] = ','.join(
+                    x for x in SEASONS_CONSTANTS.SEASONS if SEASON_NAME_TO_TYPE[x] & itemSeasons)
             if seasonIdx not in SEASON_IDX_TO_TYPE:  # item is selected from carousel, not changed from property sheet
                 self._settingSeason = itemSeasons
                 self._randMode = itemSettings.get('random_mode', itemOrigSettings.get('random_mode', RandMode.RANDOM))
@@ -336,9 +387,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                 self._enemy = itemSettings.get('useForEnemy', itemOrigSettings.get('useForEnemy', True))
             else:
                 self._settingSeason |= SEASON_IDX_TO_TYPE[seasonIdx]
-                newSeasons = set()
-                if itemSeasonsStr is not None:
-                    [newSeasons.add(x) for x in SEASONS_CONSTANTS.SEASONS if x in itemSeasonsStr]
+                newSeasons = set(x for x in SEASONS_CONSTANTS.SEASONS if x in itemSeasonsStr)
                 newSeasons.add(SEASON_TYPE_TO_NAME[SEASON_IDX_TO_TYPE[seasonIdx]])
                 itemSettings['season'] = ','.join(x for x in SEASONS_CONSTANTS.SEASONS if x in newSeasons)
         outfit.invalidate()
@@ -552,6 +601,17 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
 
     @process('buyAndInstall')
     def buyAndExit(self, purchaseItems):
+        self._currentSettings = self._cleanSettings(self._currentSettings)
+        g_config.camouflages.update(self._currentSettings)
+        if self._currentSettings['remap']:
+            newSettings = {'disable': g_config.disable,
+                           'remap': g_config.camouflages['remap']}
+            loadJson(g_config.ID, 'settings', newSettings, g_config.configPath, True)
+        if self._currentSettings['modded']:
+            for confFolderName in g_config.configFolders:
+                configFolder = g_config.configFolders[confFolderName]
+                loadJson(g_config.ID, 'settings', {key: g_config.camouflages['modded'][key] for key in configFolder},
+                         g_config.configPath + 'camouflages/' + confFolderName + '/', True, False)
         print purchaseItems
         self.itemsCache.onSyncCompleted -= self.__onCacheReSync
         cart = getTotalPurchaseInfo(purchaseItems)
@@ -567,7 +627,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                     slot.remove(pItem.regionID)
             groupHasItems[pItem.group] = True
 
-        groupHasItems[self._currentSeason] = True
         empty = self.service.getEmptyOutfit()
         for season in SeasonType.COMMON_SEASONS:
             if groupHasItems[season]:

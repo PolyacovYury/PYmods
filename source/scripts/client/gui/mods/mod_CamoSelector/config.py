@@ -14,7 +14,7 @@ from gui.app_loader import g_appLoader
 from helpers import dependency
 from skeletons.gui.shared import IItemsCache
 from . import __date__, __modID__
-from .shared import getCamoTextureName, SEASON_NAME_TO_TYPE
+from .shared import RandMode, SEASON_NAME_TO_TYPE, getCamoTextureName
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -58,6 +58,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_switcher_install': 'INSTALL',
             'UI_flash_commit_apply': 'Apply',
             'UI_flash_commit_install': 'Install',
+            'UI_flash_commit_install_and_apply': 'Install and apply',
             'UI_flashCol_randMode_label': 'Random selection mode',
             'UI_flash_randMode_off': 'Disable',
             'UI_flash_randMode_random': 'Random',
@@ -240,7 +241,8 @@ class ConfigInterface(PYmodsConfigInterface):
                 if camoName not in conf:
                     continue
                 camoConf = conf[camoName]
-                if camoConf.get('random_mode') == 2 or camoConf.get('random_mode') == 1 and camoName not in self.interCamo:
+                if camoConf.get('random_mode') == RandMode.RANDOM or camoConf.get(
+                        'random_mode') == RandMode.TEAM and camoName not in self.interCamo:
                     del camoConf['random_mode']
                 if 'season' in camoConf:
                     if not self.itemsCache.items.getItemByCD(camouflage.compactDescr).isHidden:
