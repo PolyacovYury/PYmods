@@ -243,6 +243,8 @@ class ConfigInterface(PYmodsConfigInterface):
                 if camoName not in camoNames:
                     print '%s: unknown camouflage for remapping: %s' % (self.ID, camoName)
                     del conf[camoName]
+                else:
+                    conf[camoName] = conf.pop(str(camoName))
             for camoID, camouflage in camouflages.items():
                 if camoID not in conf:
                     continue
