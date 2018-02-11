@@ -280,6 +280,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         for camoID, camoName in camoNames.iteritems():
             camoIndices.setdefault(camoName, []).append(camoID)
         camoIndices.update({x.userKey: [idx] for idx, x in camouflages.iteritems() if 'modded' in x.priceGroupTags})
+        print allSettings
         for itemsKey in allSettings:
             itemSettings = allSettings[itemsKey]
             for camoName in itemSettings.keys():
