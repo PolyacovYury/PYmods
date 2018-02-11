@@ -205,7 +205,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         conf['season'] = ','.join(SEASONS_CONSTANTS.SEASONS)
                     confFolder.add(key)
                 self.camouflages['modded'].update(settings)
-                loadJson(self.ID, 'settings', settings, fileName)
+                loadJson(self.ID, 'settings', settings, fileName, True)
         except StandardError:
             traceback.print_exc()
         camouflages = items.vehicles.g_cache.customization20().camouflages
