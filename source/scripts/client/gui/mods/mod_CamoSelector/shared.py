@@ -83,4 +83,4 @@ def applyCache(outfit, season, descriptor, config):
         component.palette = paletteIdx
         component.patternSize = scale
     if not seasonConfig:
-        vehConfig.pop(season)
+        vehConfig.pop(season, {})

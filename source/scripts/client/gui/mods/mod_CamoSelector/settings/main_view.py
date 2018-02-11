@@ -616,7 +616,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             if pItem.selected:
                 if pItem.item == boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getItem(
                         pItem.regionID) and not pItem.isDismantling:
-                    vehConfig.get(SEASON_TYPE_TO_NAME[pItem.group], {}).pop(TankPartIndexes.getName(pItem.areaID))
+                    vehConfig.get(SEASON_TYPE_TO_NAME[pItem.group], {}).pop(TankPartIndexes.getName(pItem.areaID), [])
                 else:
                     component = self._modifiedOutfits[pItem.group].getContainer(pItem.areaID).slotFor(
                         pItem.slot).getComponent(pItem.regionID)
