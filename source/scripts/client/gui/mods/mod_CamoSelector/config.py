@@ -6,12 +6,12 @@ import Keys
 import ResMgr
 import items.vehicles
 import nations
+from CurrentVehicle import g_currentVehicle
 from PYmodsCore import PYmodsConfigInterface, checkKeys, loadJson, refreshCurrentVehicle, remDups
 from gui import InputHandler
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
-from gui.shared.gui_items.customization.c11n_items import Camouflage
 from . import __date__, __modID__
 from .shared import RandMode, SEASON_NAME_TO_TYPE, getCamoTextureName
 
@@ -274,7 +274,8 @@ class ConfigInterface(PYmodsConfigInterface):
         kwargs = dict(
             id='CamoSelectorUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/CamoSelector.png', enabled=self.data['enabled'], login=False, lobby=True,
-            callback=lambda: g_appLoader.getDefLobbyApp().loadView(ViewLoadParams('CamoSelectorMainView')))
+            callback=lambda: None if g_currentVehicle.item is None else (
+                self.onMSAPopulate(), g_appLoader.getDefLobbyApp().loadView(ViewLoadParams('CamoSelectorMainView'))))
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
         except AttributeError:
