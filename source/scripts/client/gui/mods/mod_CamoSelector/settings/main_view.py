@@ -591,7 +591,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         return any((outfit.has(item) for outfit in self._originalOutfits.itervalues())) or any(
             (outfit.has(item) for outfit in self._modifiedOutfits.itervalues()))
 
-    @process('buyAndInstall')
     def buyAndExit(self, purchaseItems):
         self._currentSettings = self._cleanSettings(self._currentSettings)
         for itemsKey in self._currentSettings:
