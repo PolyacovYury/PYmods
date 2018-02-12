@@ -616,8 +616,10 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                 boughtSlot = boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot)
                 component = self._modifiedOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getComponent(
                     pItem.regionID)
-                if pItem.item == boughtSlot.getItem(pItem.regionID) and component == boughtSlot.getComponent(
-                        pItem.regionID) and not pItem.isDismantling:
+                bComponent = boughtSlot.getComponent(pItem.regionID)
+                if pItem.item == boughtSlot.getItem(pItem.regionID) and \
+                        component.palette == bComponent.palette and component.patternSize == bComponent.patternSize and \
+                        not pItem.isDismantling:
                     vehConfig.get(SEASON_TYPE_TO_NAME[pItem.group], {}).pop(TankPartIndexes.getName(pItem.areaID), [])
                 else:
                     g_config.camouflagesCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
