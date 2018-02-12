@@ -13,7 +13,7 @@ from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from helpers import i18n
 from helpers.i18n import makeString as _ms
-from .shared import C11nMode, isItemSuitableForTab, C11nTabs, TAB_TO_RAND_MODE
+from .shared import C11nMode
 from .. import g_config
 from ..shared import RandMode, TeamMode
 

@@ -1,12 +1,11 @@
 # coding=utf-8
-import traceback
-
 import BigWorld
 import Keys
 import ResMgr
 import items.vehicles
 import nations
-from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
+import traceback
+from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from PYmodsCore import PYmodsConfigInterface, checkKeys, loadJson, refreshCurrentVehicle, remDups
 from gui import InputHandler
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams

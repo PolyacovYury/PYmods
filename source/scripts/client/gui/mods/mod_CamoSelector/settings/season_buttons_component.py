@@ -5,7 +5,7 @@ from gui.Scaleform.daapi.view.lobby.customization.property_sheet_season_buttons_
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_IDX
 from gui.shared.formatters import getItemPricesVO
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
-from .shared import C11nMode, isItemSuitableForTab, C11nTabs
+from .shared import C11nMode, C11nTabs, isItemSuitableForTab
 
 
 @overrideMethod(PropertySheetSeasonButtonsComponent, '_PropertySheetSeasonButtonsComponent__determineRendererState')
@@ -18,8 +18,10 @@ def __determineRendererState(base, self, renderer, seasonIDX, currentItem, activ
     currentItem = None if not self._c11nView.getSettingSeason() & seasonType else activeItem
     renderer.itemIntCD = currentItem.intCD if currentItem is not None else -1
     state = self._PropertySheetSeasonButtonsComponent__getState(
-        activeItem, currentItem, not isItemSuitableForTab(activeItem, C11nTabs.SHOP) or
-        self._PropertySheetSeasonButtonsComponent__isApplicableToActiveSeason(activeItem, seasonIDX), False)
+        activeItem, currentItem,
+        not isItemSuitableForTab(activeItem, C11nTabs.SHOP) or
+        self._PropertySheetSeasonButtonsComponent__isApplicableToActiveSeason(activeItem, seasonIDX),
+        False)
     action = self._PropertySheetSeasonButtonsComponent__getAction(state)
     renderer.action = action[0]
     renderer.actionText = action[1]

@@ -1,5 +1,5 @@
-import os
 import items.vehicles
+import os
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.shared.gui_items import GUI_ITEM_TYPE

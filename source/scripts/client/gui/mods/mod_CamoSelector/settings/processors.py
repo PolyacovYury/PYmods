@@ -1,8 +1,7 @@
 from PYmodsCore import overrideMethod
+from gui.ClientHangarSpace import _VehicleAppearance
 from gui.Scaleform.framework import ViewTypes
 from gui.app_loader import g_appLoader
-from gui.shared.gui_items.processors import Processor, makeI18nError
-from gui.ClientHangarSpace import _VehicleAppearance
 
 
 @overrideMethod(_VehicleAppearance, '_VehicleAppearance__getActiveOutfit')

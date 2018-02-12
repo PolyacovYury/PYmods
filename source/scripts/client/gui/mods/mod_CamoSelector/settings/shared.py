@@ -1,10 +1,5 @@
-from CurrentVehicle import g_currentVehicle
-from collections import Counter
-from gui.Scaleform.daapi.view.lobby.customization.shared import Cart, PurchaseItem
-from gui.customization.shared import HighlightingMode
-from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from shared_utils import CONST_CONTAINER
-from ..shared import isCamoInternational, RandMode
+from ..shared import RandMode, isCamoInternational
 
 
 class C11nMode(CONST_CONTAINER):

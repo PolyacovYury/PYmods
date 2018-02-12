@@ -1,5 +1,4 @@
 import math
-from functools import partial
 
 import BigWorld
 import items.vehicles
@@ -8,6 +7,7 @@ from CurrentVehicle import g_currentVehicle
 from PYmodsCore import loadJson
 from account_helpers.settings_core.settings_constants import GRAPHICS
 from adisp import async
+from functools import partial
 from gui import DialogsInterface, SystemMessages, g_tankActiveCamouflage
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogMeta
@@ -154,10 +154,10 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             {'tabData': {
                 'tabData': self.__getItemTabsData(),
                 'selectedTab': self._tabIndex},
-             'tabsAvailableRegions': C11nTabs.AVAILABLE_REGIONS,
-             'defaultStyleLabel': VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL,
-             'carouselInitData': self.__getCarouselInitData(),
-             'switcherInitData': self.__getSwitcherInitData()})
+                'tabsAvailableRegions': C11nTabs.AVAILABLE_REGIONS,
+                'defaultStyleLabel': VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL,
+                'carouselInitData': self.__getCarouselInitData(),
+                'switcherInitData': self.__getSwitcherInitData()})
         self.as_setCarouselFiltersInitDataS(
             {'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER,
              'mainBtn': {'value': RES_ICONS.MAPS_ICONS_BUTTONS_FILTER,
