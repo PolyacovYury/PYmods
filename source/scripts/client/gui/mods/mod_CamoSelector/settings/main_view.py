@@ -771,9 +771,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__restoreState()
         self.__setHeaderInitData()
         self.__setBuyingPanelData()
-        self.as_refreshAnchorPropertySheetS()
         self.refreshCarousel(rebuild=self._needFullRebuild)
         self.refreshOutfit()
+        self.as_refreshAnchorPropertySheetS()
         self._needFullRebuild = False
 
     def __preserveState(self):
