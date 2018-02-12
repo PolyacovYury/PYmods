@@ -70,15 +70,15 @@ def applyCache(outfit, season, descriptor, config):
             print '%s: wrong camouflage ID for %s: %s' % (config.ID, areaName, camoID)
             del seasonConfig[areaName]
             continue
-        item = itemsCache.items.getItemByCD(camouflages[camoID].camouflages)
+        item = itemsCache.items.getItemByCD(camouflages[camoID].compactDescr)
         if paletteIdx > len(item.palettes):
             print '%s: wrong palette idx for %s camouflage: %s (available: %s)' % (
                 config.ID, areaName, paletteIdx, range(len(item.palettes)))
             del seasonConfig[areaName]
             continue
-        if scale not in item.scales:
+        if scale > len(item.scales):
             print '%s: wrong scale for %s camouflage: %s (available: %s)' % (
-                config.ID, areaName, scale, item.scales)
+                config.ID, areaName, scale, range(len(item.scales)))
         slot.set(item)
         component = slot.getComponent()
         component.palette = paletteIdx

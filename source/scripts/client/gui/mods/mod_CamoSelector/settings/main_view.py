@@ -622,6 +622,15 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                     g_config.camouflagesCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
                         SEASON_TYPE_TO_NAME[pItem.group], {})[TankPartIndexes.getName(pItem.areaID)] = (
                         [pItem.item.id, component.palette, component.patternSize] if not pItem.isDismantling else [])
+        for nationName in g_config.camouflagesCache.keys():
+            for vehicleName in g_config.camouflagesCache[nationName].keys():
+                for season in g_config.camouflagesCache[nationName][vehicleName].keys():
+                    if not g_config.camouflagesCache[nationName][vehicleName][season]:
+                        del g_config.camouflagesCache[nationName][vehicleName][season]
+                if not g_config.camouflagesCache[nationName][vehicleName]:
+                    del g_config.camouflagesCache[nationName][vehicleName]
+            if not g_config.camouflagesCache[nationName]:
+                del g_config.camouflagesCache[nationName]
         loadJson(g_config.ID, 'camouflagesCache', g_config.camouflagesCache, g_config.configPath, True)
         if cart.totalPrice != ITEM_PRICE_EMPTY:
             msgCtx = {'money': formatPrice(cart.totalPrice.price),
