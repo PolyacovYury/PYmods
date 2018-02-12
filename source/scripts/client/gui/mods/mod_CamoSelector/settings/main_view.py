@@ -613,12 +613,13 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         for pItem in purchaseItems:
             assert pItem.slot == GUI_ITEM_TYPE.CAMOUFLAGE
             if pItem.selected:
-                if pItem.item == boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getItem(
+                boughtSlot = boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot)
+                component = self._modifiedOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getComponent(
+                    pItem.regionID)
+                if pItem.item == boughtSlot.getItem(pItem.regionID) and component == boughtSlot.getComponent(
                         pItem.regionID) and not pItem.isDismantling:
                     vehConfig.get(SEASON_TYPE_TO_NAME[pItem.group], {}).pop(TankPartIndexes.getName(pItem.areaID), [])
                 else:
-                    component = self._modifiedOutfits[pItem.group].getContainer(pItem.areaID).slotFor(
-                        pItem.slot).getComponent(pItem.regionID)
                     g_config.camouflagesCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
                         SEASON_TYPE_TO_NAME[pItem.group], {})[TankPartIndexes.getName(pItem.areaID)] = (
                         [pItem.item.id, component.palette, component.patternSize] if not pItem.isDismantling else [])
