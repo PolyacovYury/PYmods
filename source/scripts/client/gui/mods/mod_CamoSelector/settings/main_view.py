@@ -266,7 +266,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__setBuyingPanelData()
 
     def _updateCurrentSettings(self):
-        item = self._currentOutfit.getContainer(1).slotFor(24).getItem(0)
+        item = self._currentOutfit.getContainer(1).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(0)
         itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (item.id, 'remap')
         settings = self._currentSettings[itemKey].setdefault(itemName, {})
         settings['useForAlly'] = self._ally

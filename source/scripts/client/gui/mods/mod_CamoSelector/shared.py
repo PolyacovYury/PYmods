@@ -2,6 +2,7 @@ import os
 import items.vehicles
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.shared import IItemsCache
@@ -60,9 +61,9 @@ def applyCache(outfit, season, descriptor, config):
             print '%s: exception while reading camouflages cache for %s in %s: %s' % (
                 config.ID, descriptor.name, areaName, e.message)
             continue
-        slot = outfit.getContainer(areaId).slotFor(24)
+        slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
         if not seasonConfig[areaName]:
-            slot.remove()
+            slot.remove(0)
             continue
         camoID, paletteIdx, scale = seasonConfig[areaName]
         if camoID not in camouflages:
