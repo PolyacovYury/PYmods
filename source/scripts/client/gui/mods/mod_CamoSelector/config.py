@@ -6,7 +6,7 @@ import Keys
 import ResMgr
 import items.vehicles
 import nations
-from CurrentVehicle import g_currentVehicle
+from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PYmodsCore import PYmodsConfigInterface, checkKeys, loadJson, refreshCurrentVehicle, remDups
 from gui import InputHandler
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
@@ -286,7 +286,7 @@ class ConfigInterface(PYmodsConfigInterface):
         kwargs = dict(
             id='CamoSelectorUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/CamoSelector.png', enabled=self.data['enabled'], login=False, lobby=True,
-            callback=lambda: None if g_currentVehicle.item is None else (
+            callback=lambda: None if g_currentVehicle.item is None or g_currentPreviewVehicle.item is not None else (
                 self.onMSAPopulate(), g_appLoader.getDefLobbyApp().loadView(ViewLoadParams('CamoSelectorMainView'))))
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
