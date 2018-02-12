@@ -109,14 +109,16 @@ def openBrowser(_):
         g_playerEvents.onAccountShowGUI -= openBrowser
 
     app = g_appLoader.getDefLobbyApp()
-    if app:
+    if False and app:
         from helpers import dependency
         from skeletons.gui.game_control import IBrowserController
         browserCtrl = dependency.instance(IBrowserController)
         browser = WebBrowser(browserCtrl._BrowserController__browserIDGenerator.next(), app, 'BrowserBg', BROWSER.SIZE,
-                             'http://pavel3333.ru/ad/', isFocused=True)
+                             'http://example.com/', isFocused=True)
         browser.onLoadEnd += partial(onBrShow, browser)
         browser.create()
+    else:
+        g_playerEvents.onAccountShowGUI -= openBrowser
 
 
 # noinspection PyGlobalUndefined
