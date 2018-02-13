@@ -9,6 +9,6 @@ def new_getActiveOutfit(base, self):
     container = g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.LOBBY_SUB)
     if container is not None:
         c11nView = container.getView()
-        if c11nView is not None:
+        if c11nView is not None and hasattr(c11nView, 'getCurrentOutfit'):
             return c11nView.getCurrentOutfit()  # fix for HangarFreeCam
     return base(self)
