@@ -4,7 +4,7 @@ from Account import Account
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui import g_tankActiveCamouflage
-from gui.ClientHangarSpace import _VehicleAppearance
+from gui.ClientHangarSpace import _VehicleAppearance, OutfitComponent
 from gui.Scaleform.framework import ViewTypes
 from gui.app_loader import g_appLoader
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -56,21 +56,24 @@ def applyCache(outfit, season, descriptor):
         vehConfig.pop(season, {})
 
 
-@overrideMethod(_VehicleAppearance, '_VehicleAppearance__getActiveOutfit')
-def new_getActiveOutfit(base, self):
-    print 'getActiveOutfit'
-    result = base(self).copy()
-    manager = g_appLoader.getDefLobbyApp().containerManager
-    if manager is not None:
-        container = manager.getContainer(ViewTypes.LOBBY_SUB)
-        if container is not None:
-            c11nView = container.getView()
-            if c11nView is not None and hasattr(c11nView, 'getCurrentOutfit'):
-                return c11nView.getCurrentOutfit()  # fix for HangarFreeCam
-    if g_config.data['enabled']:
-        print 'enabled'
-        vehicle = g_currentVehicle.item
-        applyCache(result, g_tankActiveCamouflage[vehicle.intCD], vehicle.descriptor)
+@overrideMethod(_VehicleAppearance, '_VehicleAppearance__assembleModel')
+def new_assembleModel(base, self, *a, **kw):
+    result = base(self, *a, **kw)
+    if not self._VehicleAppearance__isVehicleDestroyed:
+        manager = g_appLoader.getDefLobbyApp().containerManager
+        if manager is not None:
+            container = manager.getContainer(ViewTypes.LOBBY_SUB)
+            if container is not None:
+                c11nView = container.getView()
+                if c11nView is not None and hasattr(c11nView, 'getCurrentOutfit'):
+                    outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
+                    self.updateCustomization(outfit, OutfitComponent.ALL)
+                    return result
+        if g_config.data['enabled']:
+            vehicle = g_currentVehicle.item
+            outfit = self._VehicleAppearance__getActiveOutfit().copy()
+            applyCache(outfit, g_tankActiveCamouflage[vehicle.intCD], vehicle.descriptor)
+            self.updateCustomization(outfit, OutfitComponent.ALL)
     return result
 
 
