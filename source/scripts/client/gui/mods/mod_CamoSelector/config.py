@@ -31,25 +31,22 @@ class ConfigInterface(PYmodsConfigInterface):
         self.ID = __modID__
         self.version = '2.0.0 (%s)' % __date__
         self.author = '%s (thx to tratatank, Blither!)' % self.author
-        self.defaultKeys = {'selectHotkey': [Keys.KEY_F5, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
-                            'selectHotKey': ['KEY_F5', ['KEY_LCONTROL', 'KEY_RCONTROL']]}
         self.data = {'enabled': True, 'doRandom': True, 'useBought': True, 'hangarCamoKind': 0,
-                     'fullAlpha': False, 'disableWithDefault': False,
-                     'selectHotkey': self.defaultKeys['selectHotkey'], 'selectHotKey': self.defaultKeys['selectHotKey']}
+                     'fullAlpha': False, 'disableWithDefault': False}
         self.i18n = {
             'UI_description': 'Camouflage selector',
             'UI_flash_tabs_0_label': 'Shop',
             'UI_flashCol_tabs_0_text': 'Shop',
-            'UI_flashCol_tabs_0_tooltip': '',
+            'UI_flashCol_tabs_0_tooltip': 'Those which can be bought freely',
             'UI_flash_tabs_1_label': 'Hidden',
             'UI_flashCol_tabs_1_text': 'Hidden',
-            'UI_flashCol_tabs_1_tooltip': '',
+            'UI_flashCol_tabs_1_tooltip': 'Those which are inaccessible under usual circumstances',
             'UI_flash_tabs_2_label': 'International',
             'UI_flashCol_tabs_2_text': 'International',
-            'UI_flashCol_tabs_2_tooltip': '',
+            'UI_flashCol_tabs_2_tooltip': 'Those which are available for all nations',
             'UI_flash_tabs_3_label': 'Custom',
             'UI_flashCol_tabs_3_text': 'Custom',
-            'UI_flashCol_tabs_3_tooltip': '',
+            'UI_flashCol_tabs_3_tooltip': 'Those which were added via config files',
             'UI_flash_switcher_setup': 'SETUP',
             'UI_flash_switcher_install': 'INSTALL',
             'UI_flash_commit_apply': 'Apply',
@@ -66,66 +63,21 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flashCol_camoGroup_multinational': 'Multinational',
             'UI_flashCol_camoGroup_special': 'Special',
             'UI_flashCol_camoGroup_modded': 'Custom',
-            'UI_flash_header': 'Camouflages setup',
-            'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
-                                        '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),
-            'UI_flash_camoMode_modded': 'Modded',
-            'UI_flash_camoMode_international': 'International',
-            'UI_flash_randomOptions_text': 'Random selection mode',
-            'UI_flash_randomOptions_tooltip': (
-                ' • <b>OFF</b>: camouflage is disabled.\n • <b>Override random selection</b>: this camouflage gets '
-                'included into a list of camouflages which appear <b>instead of</b> default ones when a random option is '
-                'being selected.\n • <b>Include in random selection</b>: this camouflage is included into a list of '
-                'camouflages which may appear <b>along with</b> default ones when a random option is being selected. '
-                'Please note that these camouflages get <b>overridden</b> by ones that have an option above selected.'),
-            'UI_flash_randomOptions_OFF': 'OFF',
-            'UI_flash_randomOptions_overrideRandom': 'Override random selection',
-            'UI_flash_randomOptions_includeInRandom': 'Include in random selection',
-            'UI_flash_useFor_header_text': 'Use this camouflage for:',
-            'UI_flash_useFor_header_tooltip': (
-                'This camouflage will be used for these groups of tanks.\n'
-                '<b>Attention</b>: a camouflage with no tick set will be considered disabled.'),
-            'UI_flash_useFor_ally_text': 'Player and allies',
-            'UI_flash_useFor_enemy_text': 'Enemies',
-            'UI_flash_season_header_text': 'Camouflage season:',
-            'UI_flash_season_header_tooltip': (
-                'This camouflage will appear on these map seasons.\n'
-                '<b>Attention</b>: a camouflage with no tick set will be considered disabled.'),
-            'UI_flash_season_winter_text': 'Winter',
-            'UI_flash_season_summer_text': 'Summer',
-            'UI_flash_season_desert_text': 'Desert',
-            'UI_flash_installTooltip': '{HEADER}Install{/HEADER}{BODY}"Buy" this camouflage for selected tank.{/BODY}',
-            'UI_flash_save': 'Save',
+            'UI_message_applied_money': 'Customization elements applied.\nWould buy %(count)s items, would spend %(money)s.',
             'UI_setting_doRandom_text': 'Select random camouflages',
             'UI_setting_doRandom_tooltip': (
                 'If enabled, mod will select a random available camouflage if no other option is provided.'),
             'UI_setting_useBought_text': 'Use bought camouflages in battle',
             'UI_setting_useBought_tooltip': "If enabled, mod will preserve bought camouflages on other players' tanks.",
-            'UI_setting_selectHotkey_text': 'Camouflage select hotkey',
-            'UI_setting_selectHotkey_tooltip': (
-                'This hotkey will permanently install currently selected preview camouflage to current tank.'),
             'UI_setting_disableWithDefault_text': 'Disable for vehicles with default camouflage',
             'UI_setting_disableWithDefault_tooltip': 'If enabled, mod will ignore vehicles with a default camouflage.',
-            'UI_setting_fullAlpha_text': 'Non-transparent modded camouflages',
-            'UI_setting_fullAlpha_tooltip': 'If enabled, all modded camouflages lose their transparency.\n'
+            'UI_setting_fullAlpha_text': 'Non-transparent custom camouflages',
+            'UI_setting_fullAlpha_tooltip': 'If enabled, all custom camouflages lose their transparency.\n'
                                             'Some call this "dirt-less skins".',
-            'UI_setting_hangarCamoKind_text': 'Hangar camouflage kind',
-            'UI_setting_hangarCamoKind_tooltip': 'This setting controls a kind which is used in hangar.',
+            'UI_setting_hangarCamoKind_text': 'Hangar camouflage season',
+            'UI_setting_hangarCamoKind_tooltip': 'This setting controls the season which is used in hangar.',
             'UI_setting_hangarCamo_winter': 'Winter', 'UI_setting_hangarCamo_summer': 'Summer',
-            'UI_setting_hangarCamo_desert': 'Desert', 'UI_setting_hangarCamo_random': 'Random',
-            'UI_camouflagePreview': '<b>Camouflage Selector:</b>\nCamouflage previewing:\n',
-            'UI_camouflagePreviewError': '<b>Camouflage Selector:</b>\nCamouflage not found:\n',
-            'UI_camouflageRestore': '<b>Camouflage Selector:</b>\nLoading previous camouflage.',
-            'UI_camouflageSave': '<b>Camouflage Selector:</b>\nSaving custom camouflage settings.',
-            'UI_camouflageSelect': '<b>Camouflage Selector:</b>\nInstalling selected camouflages.',
-            'UI_installCamouflage': ('<b>Camouflage Selector:</b>\nCamouflage installed: <b>{name}</b>, '
-                                     'camouflage kind: <b>{kind}</b>'),
-            'UI_installCamouflage_already': ('<b>Camouflage Selector:</b>\nCamouflage <b>already</b> installed: '
-                                             '<b>{name}</b>, camouflage kind: <b>{kind}</b>'),
-            'UI_customOrInvalid': ('<b>Camouflage Selector:</b>\nCustom or invalid camouflage detected for '
-                                   '<b>{kind}</b> camouflages: <b>{name}</b>'),
-            'UI_customOrInvalid_winter': 'winter', 'UI_customOrInvalid_summer': 'summer',
-            'UI_customOrInvalid_desert': 'desert'}
+            'UI_setting_hangarCamo_desert': 'Desert', 'UI_setting_hangarCamo_random': 'Random'}
         super(ConfigInterface, self).init()
 
     def loadLang(self):
@@ -159,6 +111,9 @@ class ConfigInterface(PYmodsConfigInterface):
             refreshCurrentVehicle()
 
     def onApplySettings(self, settings):
+        if settings['fullAlpha'] != self.data['fullAlpha']:
+            items.vehicles.g_cache._Cache__customization20 = None
+            items.vehicles.g_cache.customization20()
         super(self.__class__, self).onApplySettings(settings)
         self.hangarCamoCache.clear()
         if self.isModAdded:
@@ -170,10 +125,8 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings(quiet)
-        if 'modded' in self.camouflages:
-            return
         self.configFolders.clear()
-        self.camouflages = {'remap': {}, 'modded': {}}
+        self.camouflages = {'remap': {}, 'custom': {}}
         self.camouflagesCache = loadJson(self.ID, 'camouflagesCache', self.camouflagesCache, self.configPath)
         try:
             camoDirPath = '../' + self.configPath + 'camouflages'
@@ -203,12 +156,12 @@ class ConfigInterface(PYmodsConfigInterface):
                     else:
                         conf['season'] = ','.join(SEASONS_CONSTANTS.SEASONS)
                     confFolder.add(key)
-                self.camouflages['modded'].update(settings)
+                self.camouflages['custom'].update(settings)
                 loadJson(self.ID, 'settings', settings, fileName, True)
         except StandardError:
             traceback.print_exc()
         camouflages = items.vehicles.g_cache.customization20().camouflages
-        camoNames = {id: getCamoTextureName(x) for id, x in camouflages.iteritems() if 'modded' not in x.priceGroupTags}
+        camoNames = {id: getCamoTextureName(x) for id, x in camouflages.iteritems() if 'custom' not in x.priceGroupTags}
         camoIndices = {}
         for camoID, camoName in camoNames.iteritems():
             camoIndices.setdefault(camoName, []).append(camoID)
@@ -249,8 +202,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 if camoID not in conf:
                     continue
                 camoConf = conf[camoID]
-                if camoConf.get('random_mode') == RandMode.RANDOM or camoConf.get(
-                        'random_mode') == RandMode.TEAM and camoID not in self.interCamo:
+                if camoConf.get('random_mode') == RandMode.RANDOM:
                     del camoConf['random_mode']
                 if 'kinds' in camoConf:
                     camoConf['season'] = camoConf['kinds']
@@ -282,35 +234,18 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def registerSettings(self):
         super(self.__class__, self).registerSettings()
-        kwargs = dict(
-            id='CamoSelectorUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
-            icon='gui/flash/CamoSelector.png', enabled=self.data['enabled'], login=False, lobby=True,
-            callback=lambda: None if g_currentVehicle.item is None or g_currentPreviewVehicle.item is not None else (
-                self.onMSAPopulate(), g_appLoader.getDefLobbyApp().loadView(ViewLoadParams('CamoSelectorMainView'))))
-        try:
-            BigWorld.g_modsListApi.addModification(**kwargs)
-        except AttributeError:
-            BigWorld.g_modsListApi.addMod(**kwargs)
-        self.isModAdded = True
+        if hasattr(BigWorld, 'g_modsListApi'):
+            kwargs = dict(
+                id='CamoSelectorUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
+                icon='gui/flash/CamoSelector.png', enabled=self.data['enabled'], login=False, lobby=True,
+                callback=lambda: None if g_currentVehicle.item is None or g_currentPreviewVehicle.item is not None else (
+                    self.onMSAPopulate(), g_appLoader.getDefLobbyApp().loadView(ViewLoadParams('CamoSelectorMainView'))))
+            try:
+                BigWorld.g_modsListApi.addModification(**kwargs)
+            except AttributeError:
+                BigWorld.g_modsListApi.addMod(**kwargs)
+            self.isModAdded = True
 
 
-def lobbyKeyControl(event):
-    if event.isKeyDown() and not g_config.isMSAWindowOpen:
-        if checkKeys(g_config.data['selectHotkey']):
-            pass  # installSelectedCamo()
-
-
-def inj_hkKeyEvent(event):
-    LobbyApp = g_appLoader.getDefLobbyApp()
-    try:
-        if LobbyApp and g_config.data['enabled']:
-            lobbyKeyControl(event)
-    except StandardError:
-        print 'CamoSelector: ERROR at inj_hkKeyEvent'
-        traceback.print_exc()
-
-
-InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
-InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 g_config = ConfigInterface()
 # TODO: statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-7', _config.configFolders)

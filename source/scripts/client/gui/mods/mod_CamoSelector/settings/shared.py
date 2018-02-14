@@ -33,7 +33,7 @@ def isItemSuitableForTab(item, tabIndex):
     from .. import g_config
     ct = C11nTabs
     isInter = isCamoInternational(g_config, item.descriptor)
-    return not ((tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'modded'))
-                or (tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'modded'))
+    return not ((tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'custom'))
+                or (tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'custom'))
                 or (tabIndex == ct.INTERNATIONAL and not isInter)
-                or (tabIndex == ct.CUSTOM and item.priceGroup != 'modded'))
+                or (tabIndex == ct.CUSTOM and item.priceGroup != 'custom'))

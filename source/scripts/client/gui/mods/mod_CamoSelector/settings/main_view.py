@@ -76,7 +76,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self._currentOutfit = None
         self._setupOutfit = None
         self._mode = C11nMode.INSTALL
-        self._currentSettings = {'modded': {}, 'remap': {}}
+        self._currentSettings = {'custom': {}, 'remap': {}}
         self._randMode = RandMode.RANDOM
         self._ally = True
         self._enemy = True
@@ -220,7 +220,6 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__releaseItemSound()
         self.soundManager.playInstantSound(SOUNDS.SELECT)
         purchaseItems = self.getPurchaseItems()
-        cart = getTotalPurchaseInfo(purchaseItems)
         self.buyAndExit(purchaseItems)
 
     def onSelectItem(self, index):
@@ -267,7 +266,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
 
     def _updateCurrentSettings(self):
         item = self._currentOutfit.getContainer(1).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(0)
-        itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (item.id, 'remap')
+        itemName, itemKey = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
         settings = self._currentSettings[itemKey].setdefault(itemName, {})
         settings['useForAlly'] = self._ally
         settings['useForEnemy'] = self._enemy
@@ -361,7 +360,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             outfit = self._setupOutfit
             for areaId in xrange(1, 4):
                 outfit.getContainer(areaId).slotFor(slotId).set(item, idx=regionId)
-            itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (item.id, 'remap')
+            itemName, itemKey = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
             itemSettings = self._currentSettings[itemKey].setdefault(itemName, {})
             itemOrigSettings = g_config.camouflages[itemKey].get(itemName, {})
             itemSeasonsStr = itemSettings.get('season', itemOrigSettings.get('season', None))
@@ -401,7 +400,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             outfit.getContainer(areaId).slotFor(slotId).remove(idx=regionId)
         else:
             item = self._setupOutfit.getContainer(areaId).slotFor(slotId).getItem(regionId)
-            itemName, itemKey = (item.descriptor.userKey, 'modded') if item.priceGroup == 'modded' else (item.id, 'remap')
+            itemName, itemKey = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
             itemSettings = self._currentSettings[itemKey].setdefault(itemName, {})
             itemOrigSettings = g_config.camouflages[itemKey].get(itemName, {})
             itemSeasonsStr = itemSettings.get('season', itemOrigSettings.get('season', None))
@@ -600,10 +599,10 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             newSettings = {'disable': g_config.disable,
                            'remap': g_config.camouflages['remap']}
             loadJson(g_config.ID, 'settings', newSettings, g_config.configPath, True)
-        if self._currentSettings['modded']:
+        if self._currentSettings['custom']:
             for confFolderName in g_config.configFolders:
                 configFolder = g_config.configFolders[confFolderName]
-                loadJson(g_config.ID, 'settings', {key: g_config.camouflages['modded'][key] for key in configFolder},
+                loadJson(g_config.ID, 'settings', {key: g_config.camouflages['custom'][key] for key in configFolder},
                          g_config.configPath + 'camouflages/' + confFolderName + '/', True, False)
         self.itemsCache.onSyncCompleted -= self.__onCacheReSync
         boughtOutfits = {season: self.service.getCustomOutfit(season) for season in SeasonType.COMMON_SEASONS}
@@ -638,9 +637,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         if cart.totalPrice != ITEM_PRICE_EMPTY:
             msgCtx = {'money': formatPrice(cart.totalPrice.price),
                       'count': cart.numSelected}
-            SystemMessages.pushI18nMessage(MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONSBUY,
-                                           type=CURRENCY_TO_SM_TYPE.get(cart.totalPrice.getCurrency(byWeight=True),
-                                                                        SM_TYPE.PurchaseForGold), **msgCtx)
+            SystemMessages.pushMessage(g_config.i18n['UI_message_applied_money'] % msgCtx,
+                                       type=CURRENCY_TO_SM_TYPE.get(cart.totalPrice.getCurrency(byWeight=True),
+                                                                    SM_TYPE.PurchaseForGold))
         else:
             SystemMessages.pushI18nMessage(MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS,
                                            type=SM_TYPE.Information)
@@ -714,7 +713,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         descriptor = g_currentVehicle.item.descriptor
         for season in SeasonType.COMMON_SEASONS:
             outfit = self.service.getCustomOutfit(season)
-            applyCache(outfit, SEASON_TYPE_TO_NAME[season], descriptor, g_config)
+            applyCache(outfit, SEASON_TYPE_TO_NAME[season], descriptor)
             self._originalOutfits[season] = outfit.copy()
             self._modifiedOutfits[season] = outfit.copy()
         if self._mode == C11nMode.INSTALL:

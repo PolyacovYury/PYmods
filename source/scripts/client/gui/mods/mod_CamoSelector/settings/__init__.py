@@ -1,16 +1,10 @@
-import anchor_properties
-import cm_handler
-import processors
-import season_buttons_component
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
+from . import anchor_properties, cm_handler, season_buttons_component
 from .main_view import CamoSelectorMainView
-from .settings import CamoSelectorUI
 
-__all__ = ['CamoSelectorUI', 'CamoSelectorMainView']
+__all__ = ['CamoSelectorMainView']
 
 # noinspection PyArgumentList
-g_entitiesFactories.initSettings((
-    ViewSettings('CamoSelectorUI', CamoSelectorUI, 'CamoSelector.swf', ViewTypes.WINDOW, None,
-                 ScopeTemplates.GLOBAL_SCOPE, False),
+g_entitiesFactories.addSettings(
     ViewSettings('CamoSelectorMainView', CamoSelectorMainView, 'customizationMainView.swf',
-                 ViewTypes.LOBBY_SUB, None, ScopeTemplates.LOBBY_SUB_SCOPE),))
+                 ViewTypes.LOBBY_SUB, None, ScopeTemplates.LOBBY_SUB_SCOPE))
