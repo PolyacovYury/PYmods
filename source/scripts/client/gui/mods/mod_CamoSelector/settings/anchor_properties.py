@@ -13,7 +13,6 @@ from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from helpers import i18n
 from helpers.i18n import makeString as _ms
-from . import g_config
 from .shared import C11nMode, RandMode, TeamMode
 
 
@@ -88,6 +87,7 @@ def _getData(base, self):
         for swatch in result['swatchColors']:
             swatch['label'] = ''
         return result
+    from . import g_config
     swatchColors = []
     swatchScales = []
     if self._item:
@@ -108,7 +108,9 @@ def _getData(base, self):
 @overrideMethod(i18n, 'makeString')
 def new_makeString(base, key, *args, **kwargs):
     if key == VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_CAMO_COLOR:
+        print 'TEXT DETECTED'
         view = g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.LOBBY_SUB).getView()
         if not isinstance(view, MainView) and view.getMode() == C11nMode.SETUP:
+            from . import g_config
             return g_config.i18n['UI_flashCol_teamMode_label']
     return base(key, *args, **kwargs)
