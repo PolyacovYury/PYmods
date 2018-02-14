@@ -2,7 +2,6 @@ import os
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from shared_utils import CONST_CONTAINER
-from . import g_config
 
 
 class RandMode(CONST_CONTAINER):
@@ -40,8 +39,9 @@ def getCamoTextureName(camo):
     return os.path.splitext(os.path.basename(camo.texture))[0]
 
 
-def isCamoInternational(storage, camo):
-    return getCamoTextureName(camo) in storage.interCamo
+def isCamoInternational(camo):
+    from . import g_config
+    return getCamoTextureName(camo) in g_config.interCamo
 
 
 class C11nMode(CONST_CONTAINER):
@@ -73,7 +73,7 @@ def isItemSuitableForTab(item, tabIndex):
     if item is None:
         return False
     ct = C11nTabs
-    isInter = isCamoInternational(g_config, item.descriptor)
+    isInter = isCamoInternational(item.descriptor)
     return not ((tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'custom'))
                 or (tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'custom'))
                 or (tabIndex == ct.INTERNATIONAL and not isInter)
