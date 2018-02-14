@@ -1,3 +1,4 @@
+from config import g_config
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from . import anchor_properties, cm_handler, season_buttons_component
 from .main_view import CamoSelectorMainView

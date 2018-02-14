@@ -1,18 +1,16 @@
 # coding=utf-8
 import BigWorld
-import Keys
 import ResMgr
 import items.vehicles
 import nations
 import traceback
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
-from PYmodsCore import PYmodsConfigInterface, checkKeys, loadJson, refreshCurrentVehicle, remDups
-from gui import InputHandler
+from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
-from . import __date__, __modID__
-from .shared import RandMode, SEASON_NAME_TO_TYPE, getCamoTextureName
+from .. import __date__, __modID__
+from ..shared import RandMode, SEASON_NAME_TO_TYPE, getCamoTextureName
 
 
 class ConfigInterface(PYmodsConfigInterface):

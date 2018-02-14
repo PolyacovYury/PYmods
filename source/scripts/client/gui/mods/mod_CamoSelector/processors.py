@@ -8,7 +8,7 @@ from gui.Scaleform.framework import ViewTypes
 from gui.app_loader import g_appLoader
 from items.vehicles import CAMOUFLAGE_KIND_INDICES
 from vehicle_systems.CompoundAppearance import CompoundAppearance
-from . import g_config
+from .settings import g_config
 from .shared import SEASON_NAME_TO_TYPE, applyCache
 
 
@@ -45,9 +45,6 @@ def new_getVehicleOutfit(base, self, *a, **kw):
             result, SEASON_NAME_TO_TYPE[CAMOUFLAGE_KIND_INDICES[BigWorld.player().arena.arenaType.vehicleCamouflageKind]],
             self._CompoundAppearance__typeDesc)
     return result
-
-
-
 
 # @overrideMethod(CompoundAppearance, '_CompoundAppearance__getCamouflageParams')
 # def new_ca_getCamouflageParams(base, self, vDesc, vID):

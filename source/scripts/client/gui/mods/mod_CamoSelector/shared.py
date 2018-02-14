@@ -7,7 +7,7 @@ from helpers import dependency
 from shared_utils import CONST_CONTAINER
 from skeletons.gui.shared import IItemsCache
 from vehicle_systems.tankStructure import TankPartNames
-from . import g_config
+from .settings import g_config
 
 
 class RandMode(CONST_CONTAINER):

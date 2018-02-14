@@ -50,9 +50,9 @@ from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from vehicle_systems.tankStructure import TankPartIndexes
+from . import g_config
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
 from .shared import C11nMode, C11nTabs
-from .. import g_config
 from ..shared import RandMode, SEASON_NAME_TO_TYPE, TeamMode, applyCache
 
 

@@ -9,6 +9,7 @@ from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
+from . import g_config
 from .shared import C11nTabs, isItemSuitableForTab
 from ..shared import isCamoInternational
 
@@ -197,7 +198,6 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         self._customizationItems = []
         self._customizationBookmarks = []
         lastGroupName = None
-        from .. import g_config
         for idx, item in enumerate(sorted(allItems.itervalues(), key=comparisonKey)):
             groupName = item.groupUserName
             if not isCamoInternational(g_config, item.descriptor):

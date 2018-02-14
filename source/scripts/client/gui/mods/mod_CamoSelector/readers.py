@@ -9,6 +9,7 @@ from items import makeIntCompactDescrByID as makeCD
 from items.components import shared_components
 from items.components.c11n_constants import SeasonType
 from items.readers.c11n_readers import CamouflageXmlReader
+from .settings import g_config
 
 
 class LegacyCamouflageReader(CamouflageXmlReader):
@@ -23,7 +24,7 @@ class LegacyCamouflageReader(CamouflageXmlReader):
             for paletteNum in xrange(len(target.palettes)):
                 for idx, color in enumerate(target.palettes[paletteNum]):
                     rgba = []
-                    for idx in xrange(3):
+                    for _ in xrange(3):
                         rgba.append(color - (color >> 8 << 8))
                         color = color >> 8
                     rgba.append(255)
@@ -32,7 +33,6 @@ class LegacyCamouflageReader(CamouflageXmlReader):
 
 @overrideMethod(iv.Cache, 'customization20')
 def new_customization20(base, *args, **kwargs):
-    from . import g_config
     cache = base(*args, **kwargs)
     if g_config.data['enabled'] and 'custom' not in cache.priceGroupNames:
         for configDir in sorted(g_config.configFolders, key=lambda s: s.lower()):
