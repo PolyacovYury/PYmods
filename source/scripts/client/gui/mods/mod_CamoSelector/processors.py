@@ -58,6 +58,7 @@ def applyCache(outfit, season, descriptor):
 
 @overrideMethod(_VehicleAppearance, '_VehicleAppearance__getActiveOutfit')
 def new_getActiveOutfit(base, self):
+    print 'getActiveOutfit'
     result = base(self).copy()
     manager = g_appLoader.getDefLobbyApp().containerManager
     if manager is not None:
@@ -67,6 +68,7 @@ def new_getActiveOutfit(base, self):
             if c11nView is not None and hasattr(c11nView, 'getCurrentOutfit'):
                 return c11nView.getCurrentOutfit()  # fix for HangarFreeCam
     if g_config.data['enabled']:
+        print 'enabled'
         vehicle = g_currentVehicle.item
         applyCache(result, g_tankActiveCamouflage[vehicle.intCD], vehicle.descriptor)
     return result
