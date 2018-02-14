@@ -33,6 +33,9 @@ class ConfigInterface(PYmodsConfigInterface):
                      'fullAlpha': False, 'disableWithDefault': False}
         self.i18n = {
             'UI_description': 'Camouflage selector',
+            'UI_flash_header': 'Camouflages setup',
+            'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
+                                        '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),
             'UI_flash_tabs_0_label': 'Shop',
             'UI_flashCol_tabs_0_text': 'Shop',
             'UI_flashCol_tabs_0_tooltip': 'Those which can be bought freely',
@@ -97,8 +100,7 @@ class ConfigInterface(PYmodsConfigInterface):
                                                                      ('winter', 'summer', 'desert', 'random')]),
                             self.tb.createControl('doRandom'),
                             self.tb.createControl('disableWithDefault')],
-                'column2': [self.tb.createHotKey('selectHotkey'),
-                            self.tb.createEmpty(), self.tb.createEmpty(),
+                'column2': [self.tb.createEmpty(), self.tb.createEmpty(),
                             self.tb.createControl('useBought'),
                             self.tb.createControl('fullAlpha')]}
 
