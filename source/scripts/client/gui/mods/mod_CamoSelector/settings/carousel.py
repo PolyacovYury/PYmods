@@ -199,7 +199,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         lastGroupName = None
         for idx, item in enumerate(sorted(allItems.itervalues(), key=comparisonKey)):
             groupName = item.groupUserName
-            if not isCamoInternational(g_config, item.descriptor):
+            if not isCamoInternational(item.descriptor):
                 nationIDs = []
                 if item.descriptor.filter:
                     for filterNode in item.descriptor.filter.include:
