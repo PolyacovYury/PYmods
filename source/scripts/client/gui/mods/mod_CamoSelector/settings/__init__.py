@@ -6,6 +6,5 @@ from .main_view import CamoSelectorMainView
 __all__ = ['CamoSelectorMainView']
 
 # noinspection PyArgumentList
-g_entitiesFactories.addSettings(
-    ViewSettings('CamoSelectorMainView', CamoSelectorMainView, 'customizationMainView.swf',
-                 ViewTypes.LOBBY_SUB, None, ScopeTemplates.LOBBY_SUB_SCOPE))
+g_entitiesFactories.addSettings(ViewSettings('CamoSelectorMainView', CamoSelectorMainView, 'customizationMainView.swf',
+                                ViewTypes.LOBBY_SUB, None, ScopeTemplates.LOBBY_SUB_SCOPE))
