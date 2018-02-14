@@ -53,7 +53,6 @@ from vehicle_systems.tankStructure import TankPartIndexes
 from . import g_config
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
 from .shared import C11nMode, C11nTabs, RandMode, SEASON_NAME_TO_TYPE, TeamMode
-from ..processors import applyCache
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):
@@ -709,6 +708,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def __carveUpOutfits(self):
         """ Fill up the internal structures with vehicle's outfits.
         """
+        from ..processors import applyCache
         self._setupOutfit = self.service.getEmptyOutfit()
         descriptor = g_currentVehicle.item.descriptor
         for season in SeasonType.COMMON_SEASONS:
