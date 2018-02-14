@@ -199,27 +199,26 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         lastGroupName = None
         for idx, item in enumerate(sorted(allItems.itervalues(), key=comparisonKey)):
             groupName = item.groupUserName
-            if not isCamoInternational(item.descriptor):
-                nationIDs = []
-                if item.descriptor.filter:
-                    for filterNode in item.descriptor.filter.include:
-                        if filterNode.nations:
-                            nationIDs += filterNode.nations
-                if len(nationIDs) == 1:
-                    nationUserName = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
-                elif len(nationIDs) > 1:
-                    nationUserName = g_config.i18n['UI_flashCol_camoGroup_multinational']
-                else:
-                    nationUserName = g_config.i18n['UI_flashCol_camoGroup_special']
-                if not groupName:
-                    groupName = g_config.i18n['UI_flashCol_camoGroup_special']
-                else:  # HangarPainter support
-                    nationUserName = nationUserName.replace('</font>', '')
-                    if ' ' in nationUserName.replace('<font ', ''):
-                        nationUserName = nationUserName.rsplit(' ', 1)[0]
-                    if '>' in groupName:
-                        groupName = groupName.split('>', 1)[1]
-                    groupName = ' / '.join((nationUserName, groupName))
+            nationIDs = []
+            if item.descriptor.filter:
+                for filterNode in item.descriptor.filter.include:
+                    if filterNode.nations:
+                        nationIDs += filterNode.nations
+            if len(nationIDs) == 1:
+                nationUserName = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
+            elif len(nationIDs) > 1:
+                nationUserName = g_config.i18n['UI_flashCol_camoGroup_multinational']
+            else:
+                nationUserName = g_config.i18n['UI_flashCol_camoGroup_special']
+            if not groupName:
+                groupName = g_config.i18n['UI_flashCol_camoGroup_special']
+            else:  # HangarPainter support
+                nationUserName = nationUserName.replace('</font>', '')
+                if ' ' in nationUserName.replace('<font ', ''):
+                    nationUserName = nationUserName.rsplit(' ', 1)[0]
+                if '>' in groupName:
+                    groupName = groupName.split('>', 1)[1]
+                groupName = ' / '.join((nationUserName, groupName))
             if item.intCD == self._selectIntCD:
                 self._selectedIdx = len(self._customizationItems)
                 self._selectIntCD = None
