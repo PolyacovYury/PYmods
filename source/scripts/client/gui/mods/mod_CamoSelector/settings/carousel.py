@@ -10,8 +10,7 @@ from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
 from . import g_config
-from .shared import C11nTabs, isItemSuitableForTab
-from ..shared import isCamoInternational
+from .shared import C11nTabs, isCamoInternational, isItemSuitableForTab
 
 
 def _createBaseRequirements(season=None):

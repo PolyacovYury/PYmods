@@ -9,8 +9,8 @@ from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, r
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
+from .shared import RandMode, SEASON_NAME_TO_TYPE, getCamoTextureName
 from .. import __date__, __modID__
-from ..shared import RandMode, SEASON_NAME_TO_TYPE, getCamoTextureName
 
 
 class ConfigInterface(PYmodsConfigInterface):

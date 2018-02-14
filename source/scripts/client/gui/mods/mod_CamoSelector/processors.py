@@ -1,4 +1,5 @@
 import BigWorld
+import items.vehicles
 from Account import Account
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
@@ -6,10 +7,53 @@ from gui import g_tankActiveCamouflage
 from gui.ClientHangarSpace import _VehicleAppearance
 from gui.Scaleform.framework import ViewTypes
 from gui.app_loader import g_appLoader
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from helpers import dependency
 from items.vehicles import CAMOUFLAGE_KIND_INDICES
+from skeletons.gui.shared import IItemsCache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
+from vehicle_systems.tankStructure import TankPartNames
 from .settings import g_config
-from .shared import SEASON_NAME_TO_TYPE, applyCache
+from .settings.shared import SEASON_NAME_TO_TYPE
+
+
+def applyCache(outfit, season, descriptor):
+    itemsCache = dependency.instance(IItemsCache)
+    nationName, vehicleName = descriptor.name.split(':')
+    camouflages = items.vehicles.g_cache.customization20().camouflages
+    vehConfig = g_config.camouflagesCache.get(nationName, {}).get(vehicleName, {})
+    seasonConfig = vehConfig.get(season, {})
+    for areaName in seasonConfig.keys():
+        try:
+            areaId = TankPartNames.getIdx(areaName)
+        except Exception as e:
+            print '%s: exception while reading camouflages cache for %s in %s: %s' % (
+                g_config.ID, descriptor.name, areaName, e.message)
+            continue
+        slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
+        if not seasonConfig[areaName]:
+            slot.remove(0)
+            continue
+        camoID, paletteIdx, scale = seasonConfig[areaName]
+        if camoID not in camouflages:
+            print '%s: wrong camouflage ID for %s: %s' % (g_config.ID, areaName, camoID)
+            del seasonConfig[areaName]
+            continue
+        item = itemsCache.items.getItemByCD(camouflages[camoID].compactDescr)
+        if paletteIdx > len(item.palettes):
+            print '%s: wrong palette idx for %s camouflage: %s (available: %s)' % (
+                g_config.ID, areaName, paletteIdx, range(len(item.palettes)))
+            del seasonConfig[areaName]
+            continue
+        if scale > len(item.scales):
+            print '%s: wrong scale for %s camouflage: %s (available: %s)' % (
+                g_config.ID, areaName, scale, range(len(item.scales)))
+        slot.set(item)
+        component = slot.getComponent()
+        component.palette = paletteIdx
+        component.patternSize = scale
+    if not seasonConfig:
+        vehConfig.pop(season, {})
 
 
 @overrideMethod(_VehicleAppearance, '_VehicleAppearance__getActiveOutfit')

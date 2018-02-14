@@ -52,8 +52,8 @@ from skeletons.gui.shared import IItemsCache
 from vehicle_systems.tankStructure import TankPartIndexes
 from . import g_config
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
-from .shared import C11nMode, C11nTabs
-from ..shared import RandMode, SEASON_NAME_TO_TYPE, TeamMode, applyCache
+from .shared import C11nMode, C11nTabs, RandMode, SEASON_NAME_TO_TYPE, TeamMode
+from ..processors import applyCache
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):
