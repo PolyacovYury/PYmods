@@ -16,11 +16,13 @@ from .. import __date__, __modID__
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.disable = []
+        self.camoForSeason = {}
+        self.arenaCamoCache = {}
         self.hangarCamoCache = {}
         self.camouflagesCache = {}
         self.camouflages = {}
         self.configFolders = {}
-        self.teamCamo = dict.fromkeys(('Ally', 'Enemy'))
+        self.teamCamo = dict.fromkeys(('ally', 'enemy'))
         self.interCamo = []
         self.isModAdded = False
         super(ConfigInterface, self).__init__()
@@ -30,7 +32,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.version = '2.0.0 (%s)' % __date__
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.data = {'enabled': True, 'doRandom': True, 'useBought': True, 'hangarCamoKind': 0,
-                     'fullAlpha': False, 'disableWithDefault': False}
+                     'fullAlpha': False, 'disableWithDefault': False, 'fillEmptySlots': True, 'uniformOutfit': False}
         self.i18n = {
             'UI_description': 'Camouflage selector',
             'UI_flash_header': 'Camouflages setup',
@@ -75,6 +77,11 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_fullAlpha_text': 'Non-transparent custom camouflages',
             'UI_setting_fullAlpha_tooltip': 'If enabled, all custom camouflages lose their transparency.\n'
                                             'Some call this "dirt-less skins".',
+            'UI_setting_fillEmptySlots_text': 'Fill empty slots',
+            'UI_setting_fillEmptySlots_tooltip': 'Add random camouflages if a vehicle has empty slots for them.',
+            'UI_setting_uniformOutfit_text': 'Same look for all parts',
+            'UI_setting_uniformOutfit_tooltip':
+                'Random camouflages are picked up so that a vehicle has the same camouflage on all parts.',
             'UI_setting_hangarCamoKind_text': 'Hangar camouflage season',
             'UI_setting_hangarCamoKind_tooltip': 'This setting controls the season which is used in hangar.',
             'UI_setting_hangarCamo_winter': 'Winter', 'UI_setting_hangarCamo_summer': 'Summer',
@@ -111,7 +118,7 @@ class ConfigInterface(PYmodsConfigInterface):
             refreshCurrentVehicle()
 
     def onApplySettings(self, settings):
-        if settings['fullAlpha'] != self.data['fullAlpha']:
+        if 'fullAlpha' in settings and settings['fullAlpha'] != self.data['fullAlpha']:
             items.vehicles.g_cache._Cache__customization20 = None
             items.vehicles.g_cache.customization20()
         super(self.__class__, self).onApplySettings(settings)

@@ -9,6 +9,7 @@ class RandMode(CONST_CONTAINER):
     """
     OFF, RANDOM, TEAM = range(3)
     NAMES = {OFF: 'off', RANDOM: 'random', TEAM: 'team'}
+    INDICES = {v: k for k, v in NAMES.iteritems()}
 
 
 class TeamMode(CONST_CONTAINER):
@@ -16,6 +17,7 @@ class TeamMode(CONST_CONTAINER):
     """
     ALLY, ENEMY, BOTH = range(1, 4)
     NAMES = {ALLY: 'ally', ENEMY: 'enemy', BOTH: 'both'}
+    INDICES = {v: k for k, v in NAMES.iteritems()}
 
 
 SEASON_NAME_TO_TYPE = {v: k for k, v in SEASON_TYPE_TO_NAME.iteritems()}
