@@ -212,7 +212,8 @@ def new_onBecomePlayer(base, self, *args, **kwargs):
 
 
 @overrideMethod(Account, 'onBecomeNonPlayer')
-def new_onBecomeNonPlayer(base, self):
+def new_onBecomePlayer(base, self):
     base(self)
+    collectCamouflageData()
     g_config.hangarCamoCache.clear()
-    g_config.teamCamo = dict.fromkeys(('Ally', 'Enemy'))
+    g_config.teamCamo = dict.fromkeys(('ally', 'enemy'))
