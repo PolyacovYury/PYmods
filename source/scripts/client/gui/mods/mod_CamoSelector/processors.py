@@ -208,12 +208,13 @@ def new_getVehicleOutfit(base, self, *a, **kw):
 @overrideMethod(PlayerAvatar, 'onBecomePlayer')
 def new_onBecomePlayer(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
+    g_config.arenaCamoCache.clear()
     collectCamouflageData()
 
 
-@overrideMethod(Account, 'onBecomeNonPlayer')
+@overrideMethod(Account, 'onBecomePlayer')
 def new_onBecomePlayer(base, self):
     base(self)
-    collectCamouflageData()
     g_config.hangarCamoCache.clear()
+    collectCamouflageData()
     g_config.teamCamo = dict.fromkeys(('ally', 'enemy'))
