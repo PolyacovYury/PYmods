@@ -713,7 +713,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         descriptor = g_currentVehicle.item.descriptor
         for season in SeasonType.COMMON_SEASONS:
             outfit = self.service.getCustomOutfit(season).copy()
-            applyCache(outfit, SEASON_TYPE_TO_NAME[season], descriptor)
+            applyCache(outfit, season, descriptor)
             self._originalOutfits[season] = outfit.copy()
             self._modifiedOutfits[season] = outfit.copy()
         if self._mode == C11nMode.INSTALL:

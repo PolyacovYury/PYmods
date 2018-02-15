@@ -5,19 +5,20 @@ from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui import g_tankActiveCamouflage
 from gui.ClientHangarSpace import _VehicleAppearance, OutfitComponent
+from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework import ViewTypes
 from gui.app_loader import g_appLoader
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency
-from items.vehicles import CAMOUFLAGE_KIND_INDICES
+from items.components.c11n_constants import SeasonType
 from skeletons.gui.shared import IItemsCache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from .settings import g_config
-from .settings.shared import SEASON_NAME_TO_TYPE
 
 
 def applyCache(outfit, season, descriptor):
+    season = SEASON_TYPE_TO_NAME[season]
     itemsCache = dependency.instance(IItemsCache)
     nationName, vehicleName = descriptor.name.split(':')
     camouflages = items.vehicles.g_cache.customization20().camouflages
@@ -60,9 +61,7 @@ def applyCache(outfit, season, descriptor):
 @overrideMethod(_VehicleAppearance, '_VehicleAppearance__assembleModel')
 def new_assembleModel(base, self, *a, **kw):
     result = base(self, *a, **kw)
-    print 'assembleModel'
     if not self._VehicleAppearance__isVehicleDestroyed:
-        print 'not destroyed'
         manager = g_appLoader.getDefLobbyApp().containerManager
         if manager is not None:
             container = manager.getContainer(ViewTypes.LOBBY_SUB)
@@ -73,12 +72,9 @@ def new_assembleModel(base, self, *a, **kw):
                     self.updateCustomization(outfit, OutfitComponent.ALL)
                     return result
         if g_config.data['enabled']:
-            print 'data enabled'
             vehicle = g_currentVehicle.item
             outfit = self._VehicleAppearance__getActiveOutfit().copy()
-            print outfit.pack().makeCompDescr()
             applyCache(outfit, g_tankActiveCamouflage[vehicle.intCD], vehicle.descriptor)
-            print outfit.pack().makeCompDescr()
             self.updateCustomization(outfit, OutfitComponent.ALL)
     return result
 
@@ -96,9 +92,8 @@ def new_getVehicleOutfit(base, self, *a, **kw):
     if not self._CompoundAppearance__vehicle:
         return result
     if g_config.data['enabled']:
-        applyCache(
-            result, SEASON_NAME_TO_TYPE[CAMOUFLAGE_KIND_INDICES[BigWorld.player().arena.arenaType.vehicleCamouflageKind]],
-            self._CompoundAppearance__typeDesc)
+        applyCache(result, SeasonType.fromArenaKind(BigWorld.player().arena.arenaType.vehicleCamouflageKind),
+                   self._CompoundAppearance__typeDesc)
     return result
 
 # @overrideMethod(CompoundAppearance, '_CompoundAppearance__getCamouflageParams')
