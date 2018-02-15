@@ -59,7 +59,9 @@ def applyCache(outfit, season, descriptor):
 @overrideMethod(_VehicleAppearance, '_VehicleAppearance__assembleModel')
 def new_assembleModel(base, self, *a, **kw):
     result = base(self, *a, **kw)
+    print 'assembleModel'
     if not self._VehicleAppearance__isVehicleDestroyed:
+        print 'not destroyed'
         manager = g_appLoader.getDefLobbyApp().containerManager
         if manager is not None:
             container = manager.getContainer(ViewTypes.LOBBY_SUB)
@@ -70,9 +72,12 @@ def new_assembleModel(base, self, *a, **kw):
                     self.updateCustomization(outfit, OutfitComponent.ALL)
                     return result
         if g_config.data['enabled']:
+            print 'data enabled'
             vehicle = g_currentVehicle.item
             outfit = self._VehicleAppearance__getActiveOutfit().copy()
+            print outfit.pack().makeCompDescr()
             applyCache(outfit, g_tankActiveCamouflage[vehicle.intCD], vehicle.descriptor)
+            print outfit.pack().makeCompDescr()
             self.updateCustomization(outfit, OutfitComponent.ALL)
     return result
 
