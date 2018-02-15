@@ -109,7 +109,9 @@ def processRandomOutfit(outfit, season, vehCache, vID=None):
     canBeUniform = len(outfitItems) <= 1
     if canBeUniform:
         camoID = None if not outfitItems else outfitItems.pop()
-    for areaId, areaName in enumerate(TankPartNames.ALL)[1:]:
+    for areaId, areaName in enumerate(TankPartNames.ALL):
+        if not areaId:
+            continue
         slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
         item = slot.getItem(0)
         if item is not None:
