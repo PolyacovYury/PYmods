@@ -54,6 +54,7 @@ def applyCache(outfit, season, descriptor):
         component.patternSize = scale
     if not seasonConfig:
         vehConfig.pop(season, {})
+    outfit.invalidate()
 
 
 @overrideMethod(_VehicleAppearance, '_VehicleAppearance__assembleModel')
