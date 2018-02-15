@@ -10,7 +10,6 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_N
 from gui.Scaleform.framework import ViewTypes
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
-from gui.mods.mod_CamoSelector.settings.shared import RandMode, SEASON_NAME_TO_TYPE, TeamMode
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.customization.outfit import Outfit
 from helpers import dependency
@@ -19,6 +18,7 @@ from skeletons.gui.shared import IItemsCache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from .settings import g_config
+from .settings.shared import RandMode, SEASON_NAME_TO_TYPE, TeamMode
 
 
 def applyCache(outfit, season, vehName, vehCache):
@@ -78,7 +78,7 @@ def collectCamouflageData():
             camoCfg = g_config.camouflages[itemKey][itemName]
             itemMode = camoCfg.get('random_mode', itemMode)
             itemTeam = 0 | (camoCfg.get('useForAlly', True) and TeamMode.ALLY) | (
-                        camoCfg.get('useForEnemy', True) and TeamMode.ENEMY)
+                    camoCfg.get('useForEnemy', True) and TeamMode.ENEMY)
             if 'season' in camoCfg:
                 itemSeason = SeasonType.UNDEFINED
                 for season in SEASONS_CONSTANTS.SEASONS:
