@@ -185,7 +185,7 @@ def new_assembleModel(base, self, *a, **kw):
                 g_tankActiveCamouflage[vehicle.intCD] = season
             else:
                 outfit = self._HangarVehicleAppearance__getActiveOutfit().copy()
-                if g_tankActiveCamouflage[vehicle.intCD] == SeasonType.EVENT:
+                if g_tankActiveCamouflage.get(vehicle.intCD, SeasonType.EVENT) == SeasonType.EVENT:
                     active = []
                     for season in SeasonType.SEASONS:
                         if vehicle.hasOutfitWithItems(season):
