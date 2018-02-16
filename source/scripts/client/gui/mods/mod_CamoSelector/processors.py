@@ -180,6 +180,12 @@ def new_assembleModel(base, self, *a, **kw):
                 g_tankActiveCamouflage[vehicle.intCD] = season
             else:
                 outfit = self._HangarVehicleAppearance__getActiveOutfit().copy()
+                if g_tankActiveCamouflage[vehicle.intCD] == SeasonType.EVENT:
+                    active = []
+                    for season in SeasonType.SEASONS:
+                        if vehicle.hasOutfitWithItems(season):
+                            active.append(season)
+                    g_tankActiveCamouflage[vehicle.intCD] = random.choice(active) if active else SeasonType.SUMMER
             if not g_config.data['useBought']:
                 outfit = Outfit()
             seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[vehicle.intCD]]
