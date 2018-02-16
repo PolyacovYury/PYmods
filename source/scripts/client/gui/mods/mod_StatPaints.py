@@ -147,8 +147,8 @@ def new_BattleEntry_beforeDelete(base, self, *args, **kwargs):
     g_config.resetStats()
 
 
-@PYmodsCore.overrideMethod(CompoundAppearance, '_CompoundAppearance__getVehicleOutfit')
-def new__getVehicleOutfit(base, self, *args, **kwargs):
+@PYmodsCore.overrideMethod(CompoundAppearance, '_CompoundAppearance__prepareOutfit')
+def new__prepareOutfit(base, self, *args, **kwargs):
     outfit = base(self, *args, **kwargs)
     vehicle = self._CompoundAppearance__vehicle
     fashions = self._CompoundAppearance__fashions
