@@ -714,12 +714,13 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         from ..processors import applyCache
         self._setupOutfit = self.service.getEmptyOutfit()
         descriptor = g_currentVehicle.item.descriptor
-        nationName, vehicleName = descriptor.name.split(':')
+        nationName, vehName = descriptor.name.split(':')
         for season in SeasonType.COMMON_SEASONS:
             outfit = self.service.getCustomOutfit(season).copy()
-            applyCache(outfit, season, vehicleName, g_config.camouflagesCache.get(nationName, {}).get(vehicleName, {}))
+            seasonName = SEASON_TYPE_TO_NAME[season]
+            applyCache(outfit, vehName, g_config.camouflagesCache.get(nationName, {}).get(vehName, {}).get(seasonName, {}))
             self._originalOutfits[season] = outfit.copy()
-            applyCache(outfit, season, vehicleName, g_config.hangarCamoCache.get(nationName, {}).get(vehicleName, {}))
+            applyCache(outfit, vehName, g_config.hangarCamoCache.get(nationName, {}).get(vehName, {}).get(seasonName, {}))
             self._modifiedOutfits[season] = outfit.copy()
         if self._mode == C11nMode.INSTALL:
             self._currentOutfit = self._modifiedOutfits[self._currentSeason]
