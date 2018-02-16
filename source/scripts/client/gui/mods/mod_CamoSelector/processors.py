@@ -97,6 +97,8 @@ def collectCamouflageData():
 
 
 def processRandomOutfit(outfit, seasonName, seasonCache, vID=None):
+    import bwpydevd
+    bwpydevd.startPyDevD('pycharm', suspend=True)
     if not g_config.camoForSeason:
         collectCamouflageData()
     if vID is not None:
