@@ -108,7 +108,8 @@ class ConfigInterface(PYmodsConfigInterface):
                                                                      ('winter', 'summer', 'desert', 'random')]),
                             self.tb.createControl('doRandom'),
                             self.tb.createControl('disableWithDefault')],
-                'column2': [self.tb.createEmpty(), self.tb.createEmpty(),
+                'column2': [self.tb.createControl('fillEmptySlots'),
+                            self.tb.createControl('uniformOutfit'),
                             self.tb.createControl('useBought'),
                             self.tb.createControl('fullAlpha')]}
 
