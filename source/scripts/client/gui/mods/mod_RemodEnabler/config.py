@@ -540,7 +540,7 @@ class RemodEnablerUI(AbstractWindowView):
                 data['authorMessage'] = ''
                 for team in OM.tankGroups:
                     data[team.lower() + 'Whitelist'] = [currentVehicle] if currentVehicle else []
-                vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
+                vDesc = g_hangarSpace.space.getVehicleEntity().appearance._HangarVehicleAppearance__vDesc
                 for key in TankPartNames.ALL + ('engine',):
                     data[key] = OrderedDict()
                 for key in TankPartNames.ALL:
@@ -623,7 +623,7 @@ class RemodEnablerUI(AbstractWindowView):
 
     @staticmethod
     def py_getCurrentVehicleName():
-        vDesc = g_hangarSpace._HangarSpace__space._ClientHangarSpace__vAppearance._VehicleAppearance__vDesc
+        vDesc = g_hangarSpace.space.getVehicleEntity().appearance._HangarVehicleAppearance__vDesc
         return vDesc.name.split(':')[1].lower()
 
     def py_onRequestVehicleDelete(self, teamIdx):
