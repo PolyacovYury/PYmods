@@ -15,10 +15,11 @@ from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
 from gui.shared.utils.HangarSpace import g_hangarSpace
 from items.components import component_constants
+from items.components.chassis_components import SplineConfig
 from items.components.shared_components import EmblemSlot
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
-from . import __modID__, __date__
+from . import __date__, __modID__
 
 
 def readAODecals(confList):
@@ -547,11 +548,17 @@ class RemodEnablerUI(AbstractWindowView):
                     data[key]['undamaged'] = getattr(vDesc, key).models.undamaged
                 chassis = data['chassis']
                 for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
-                    obj = str(getattr(vDesc.chassis, key))
-                    if key == 'tracks':
-                        obj = obj.replace('TrackNode', 'TrackMaterials')
-                    elif key == 'trackParams':
-                        obj = obj.replace('TrackNode', 'TrackParams')
+                    obj = getattr(vDesc.chassis, key)
+                    if key != 'splineDesc':
+                        obj = str(obj)
+                        if key == 'tracks':
+                            obj = obj.replace('TrackNode', 'TrackMaterials')
+                        elif key == 'trackParams':
+                            obj = obj.replace('TrackNode', 'TrackParams')
+                    else:
+                        obj = 'SplineConfig(%s)' % (', '.join(
+                            ("%s=%s" % (attrName.strip('_'), repr(getattr(obj, attrName.strip('_')))) for attrName in
+                             SplineConfig.__slots__)))
                     chassis[key] = obj
                 chassis['hullPosition'] = vDesc.chassis.hullPosition.tuple()
                 chassis['AODecals'] = []
