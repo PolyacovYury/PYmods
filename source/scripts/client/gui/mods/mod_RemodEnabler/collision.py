@@ -38,27 +38,27 @@ def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     if not g_config.data['enabled']:
         return
-    vEntity = self._HangarVehicleAppearance__vEntity
-    vDesc = self._HangarVehicleAppearance__vDesc
-    compoundModel = vEntity.model
-    self.collisionLoaded = True
-    self.modifiedModelsDesc = dict([(partName, {'model': None, 'matrix': None}) for partName in TankPartNames.ALL])
-    failList = []
-    for partName in self.modifiedModelsDesc.keys():
-        modelName = ''
-        try:
-            modelName = getattr(vDesc, partName).hitTester.bspModelName
-            self.modifiedModelsDesc[partName]['model'] = model = BigWorld.Model(modelName)
-            model.visible = False
-        except StandardError:
-            self.collisionLoaded = False
-            failList.append(modelName if modelName else partName)
-    if failList:
-        print 'RemodEnabler: collision load failed: models not found'
-        print failList
-    if not self.collisionLoaded:
-        return
     if any((g_config.data['collisionEnabled'], g_config.data['collisionComparisonEnabled'])):
+        vEntity = self._HangarVehicleAppearance__vEntity
+        vDesc = self._HangarVehicleAppearance__vDesc
+        compoundModel = vEntity.model
+        self.collisionLoaded = True
+        self.modifiedModelsDesc = dict([(partName, {'model': None, 'matrix': None}) for partName in TankPartNames.ALL])
+        failList = []
+        for partName in self.modifiedModelsDesc.keys():
+            modelName = ''
+            try:
+                modelName = getattr(vDesc, partName).hitTester.bspModelName
+                self.modifiedModelsDesc[partName]['model'] = model = BigWorld.Model(modelName)
+                model.visible = False
+            except StandardError:
+                self.collisionLoaded = False
+                failList.append(modelName if modelName else partName)
+        if failList:
+            print 'RemodEnabler: collision load failed: models not found'
+            print failList
+        if not self.collisionLoaded:
+            return
         # Getting offset matrices
         hullOffset = mathUtils.createTranslationMatrix(vDesc.chassis.hullPosition)
         self.modifiedModelsDesc[TankPartNames.CHASSIS]['matrix'] = fullChassisMP = mathUtils.createIdentityMatrix()
