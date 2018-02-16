@@ -6,7 +6,7 @@ from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui import g_tankActiveCamouflage
-from gui.ClientHangarSpace import OutfitComponent, _VehicleAppearance
+from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework import ViewTypes
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
@@ -155,7 +155,7 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None):
             seasonCache[areaName] = []
 
 
-@overrideMethod(_VehicleAppearance, '_VehicleAppearance__assembleModel')
+@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__assembleModel')
 def new_assembleModel(base, self, *a, **kw):
     result = base(self, *a, **kw)
     if not self._VehicleAppearance__isVehicleDestroyed:
@@ -166,7 +166,7 @@ def new_assembleModel(base, self, *a, **kw):
                 c11nView = container.getView()
                 if c11nView is not None and hasattr(c11nView, 'getCurrentOutfit'):
                     outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
-                    self.updateCustomization(outfit, OutfitComponent.ALL)
+                    self.updateCustomization(outfit)
                     return result
         vehicle = g_currentVehicle.item
         vDesc = vehicle.descriptor
@@ -193,12 +193,12 @@ def new_assembleModel(base, self, *a, **kw):
                     seasonName, {})
                 processRandomOutfit(outfit, seasonName, seasonCache)
                 applyCache(outfit, vehicleName, seasonCache)
-            self.updateCustomization(outfit, OutfitComponent.ALL)
+            self.updateCustomization(outfit)
     return result
 
 
-@overrideMethod(CompoundAppearance, '_CompoundAppearance__getVehicleOutfit')
-def new_getVehicleOutfit(base, self, *a, **kw):
+@overrideMethod(CompoundAppearance, '_CompoundAppearance__prepareOutfit')
+def new_prepareOutfit(base, self, *a, **kw):
     result = base(self, *a, **kw).copy()
     vDesc = self._CompoundAppearance__typeDesc
     if not self._CompoundAppearance__vehicle or not vDesc:
