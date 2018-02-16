@@ -37,7 +37,7 @@ def new_customization20(base, *args, **kwargs):
     if g_config.data['enabled'] and 'custom' not in cache.priceGroupNames:
         for configDir in sorted(g_config.configFolders, key=lambda s: s.lower()):
             filePath = g_config.configPath + 'camouflages/' + configDir + '/'
-            updateCustomizationCache(cache, '.' + filePath, g_config.i18n['UI_flashCol_camoGroup_modded'])
+            updateCustomizationCache(cache, '.' + filePath, g_config.i18n['UI_flashCol_camoGroup_custom'])
     return cache
 
 
