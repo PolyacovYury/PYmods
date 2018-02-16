@@ -3,7 +3,7 @@ import items.vehicles
 import random
 from Account import Account
 from Avatar import PlayerAvatar
-from CurrentVehicle import g_currentVehicle
+from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PYmodsCore import overrideMethod
 from gui import g_tankActiveCamouflage
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
@@ -168,7 +168,12 @@ def new_assembleModel(base, self, *a, **kw):
                     outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
                     self.updateCustomization(outfit)
                     return result
-        vehicle = g_currentVehicle.item
+        if g_currentPreviewVehicle.isPresent():
+            vehicle = g_currentPreviewVehicle.item
+        elif g_currentVehicle.isPresent():
+            vehicle = g_currentVehicle.item
+        else:
+            return result
         vDesc = vehicle.descriptor
         if g_config.data['enabled'] and vDesc.name not in g_config.disable and not (
                 vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
