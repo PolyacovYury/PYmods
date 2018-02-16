@@ -44,7 +44,11 @@ def applyCache(outfit, vehName, seasonCache):
             print '%s: wrong camouflage ID for %s: %s' % (g_config.ID, areaName, camoID)
             del seasonCache[areaName]
             continue
-        item = itemsCache.items.getItemByCD(camouflages[camoID].compactDescr)
+        intCD = camouflages[camoID].compactDescr
+        if itemsCache.items.isSynced():
+            item = itemsCache.items.getItemByCD(intCD)
+        else:
+            item = Camouflage(intCD)
         if paletteIdx > len(item.palettes):
             print '%s: wrong palette idx for %s camouflage: %s (available: %s)' % (
                 g_config.ID, areaName, paletteIdx, range(len(item.palettes)))
