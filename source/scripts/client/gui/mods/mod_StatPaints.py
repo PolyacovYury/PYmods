@@ -97,8 +97,11 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         BigWorld.callback(0, partial(self.updatePaints, databaseIDs))
 
     def updatePaints(self, databaseIDs):
+        player = BigWorld.player()
+        if not hasattr(player, 'guiSessionProvider'):
+            return BigWorld.callback(1, partial(self.updatePaints, databaseIDs))
         for databaseID in databaseIDs:
-            vehicleID = BigWorld.player().guiSessionProvider.getCtx().getArenaDP().getVehIDByAccDBID(int(databaseID))
+            vehicleID = player.guiSessionProvider.getCtx().getArenaDP().getVehIDByAccDBID(int(databaseID))
             vehicle = BigWorld.entity(vehicleID)
             if vehicle is not None and vehicle.appearance is not None:
                 vehicle.appearance.setVehicle(vehicle)
@@ -158,7 +161,7 @@ def new__getVehicleOutfit(base, self, *args, **kwargs):
     paints = g_cache.customization20().paints
     for paintID in g_config.data['scale'].itervalues():
         paintItem = Paint(paints[paintID].compactDescr)
-        if paintItem.descriptor.filter and not paintItem.descriptor.filter.matchVehicleType(vehicle.typeDescriptor.type):
+        if not paintItem.descriptor.matchVehicleType(vehicle.typeDescriptor.type):
             return outfit
         paintItems[paintID] = paintItem
     accountID = str(BigWorld.player().arena.vehicles[vehicle.id]['accountDBID'])
