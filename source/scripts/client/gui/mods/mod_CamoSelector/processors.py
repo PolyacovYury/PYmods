@@ -210,7 +210,8 @@ def new_assembleModel(base, self, *a, **kw):
 
 @overrideMethod(CompoundAppearance, '_CompoundAppearance__prepareOutfit')
 def new_prepareOutfit(base, self, *a, **kw):
-    result = base(self, *a, **kw).copy()
+    base(self, *a, **kw)
+    result = self._CompoundAppearance__outfit.copy()
     vDesc = self._CompoundAppearance__typeDesc
     if not self._CompoundAppearance__vehicle or not vDesc:
         return result
@@ -233,7 +234,7 @@ def new_prepareOutfit(base, self, *a, **kw):
             seasonCache = g_config.arenaCamoCache.setdefault(vID, {})
             processRandomOutfit(result, seasonName, seasonCache, vID)
             applyCache(result, vehicleName, seasonCache)
-    return result
+    self._CompoundAppearance__outfit = result
 
 
 @overrideMethod(PlayerAvatar, 'onBecomePlayer')
