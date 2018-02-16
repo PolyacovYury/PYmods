@@ -82,7 +82,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_fillEmptySlots_tooltip': 'Add random camouflages if a vehicle has empty slots for them.',
             'UI_setting_uniformOutfit_text': 'Same look for all parts',
             'UI_setting_uniformOutfit_tooltip':
-                'Random camouflages are picked up so that a vehicle has the same camouflage on all parts.',
+                'Random camouflages are picked up so that a vehicle has the same camouflage on all parts (if possible).',
             'UI_setting_hangarCamoKind_text': 'Hangar camouflage season',
             'UI_setting_hangarCamoKind_tooltip': 'This setting controls the season which is used in hangar.',
             'UI_setting_hangarCamo_winter': 'Winter', 'UI_setting_hangarCamo_summer': 'Summer',
