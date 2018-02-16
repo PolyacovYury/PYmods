@@ -158,7 +158,7 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None):
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__assembleModel')
 def new_assembleModel(base, self, *a, **kw):
     result = base(self, *a, **kw)
-    if not self._VehicleAppearance__isVehicleDestroyed:
+    if not self._HangarVehicleAppearance__isVehicleDestroyed:
         manager = g_appLoader.getDefLobbyApp().containerManager
         if manager is not None:
             container = manager.getContainer(ViewTypes.LOBBY_SUB)
@@ -179,7 +179,7 @@ def new_assembleModel(base, self, *a, **kw):
                 outfit = vehicle.getOutfit(season).copy()
                 g_tankActiveCamouflage[vehicle.intCD] = season
             else:
-                outfit = self._VehicleAppearance__getActiveOutfit().copy()
+                outfit = self._HangarVehicleAppearance__getActiveOutfit().copy()
             if not g_config.data['useBought']:
                 outfit = Outfit()
             seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[vehicle.intCD]]
