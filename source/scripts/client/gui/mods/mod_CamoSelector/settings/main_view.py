@@ -588,7 +588,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         if cart.totalPrice != ITEM_PRICE_EMPTY:
             msgCtx = {'money': formatPrice(cart.totalPrice.price),
                       'count': cart.numSelected}
-            SystemMessages.pushMessage(g_config.i18n['UI_message_applied_money'] % msgCtx,
+            SystemMessages.pushMessage(g_config.i18n['UI_flashCol_applied_money'] % msgCtx,
                                        type=CURRENCY_TO_SM_TYPE.get(cart.totalPrice.getCurrency(byWeight=True),
                                                                     SM_TYPE.PurchaseForGold))
         else:
