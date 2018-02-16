@@ -618,14 +618,17 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                 component = self._modifiedOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getComponent(
                     pItem.regionID)
                 bComponent = boughtSlot.getComponent(pItem.regionID)
+                seasonName = SEASON_TYPE_TO_NAME[pItem.group]
                 if pItem.item == boughtSlot.getItem(pItem.regionID) and \
                         component.palette == bComponent.palette and component.patternSize == bComponent.patternSize and \
                         not pItem.isDismantling:
-                    vehConfig.get(SEASON_TYPE_TO_NAME[pItem.group], {}).pop(TankPartIndexes.getName(pItem.areaID), [])
+                    vehConfig.get(seasonName, {}).pop(TankPartIndexes.getName(pItem.areaID), [])
                 else:
                     g_config.camouflagesCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
-                        SEASON_TYPE_TO_NAME[pItem.group], {})[TankPartIndexes.getName(pItem.areaID)] = (
+                        seasonName, {})[TankPartIndexes.getName(pItem.areaID)] = (
                         [pItem.item.id, component.palette, component.patternSize] if not pItem.isDismantling else [])
+                g_config.hangarCamoCache.get(nationName, {}).get(vehicleName, {}).get(seasonName, {}).pop(
+                    TankPartIndexes.getName(pItem.areaID), {})
         for nationName in g_config.camouflagesCache.keys():
             for vehicleName in g_config.camouflagesCache[nationName].keys():
                 for season in g_config.camouflagesCache[nationName][vehicleName].keys():
