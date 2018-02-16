@@ -104,6 +104,7 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None):
         teamMode = 'ally' if isAlly else 'enemy'
     else:
         teamMode = None
+    random.seed(vID)
     camoID = None
     camouflages = items.vehicles.g_cache.customization20().camouflages
     itemsCache = dependency.instance(IItemsCache)
@@ -126,20 +127,18 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None):
                 camoForSeason = g_config.camoForSeason[seasonName]
                 if teamMode is not None and camoForSeason[teamMode]:
                     if g_config.teamCamo[teamMode] is None:
-                        camoID = camoForSeason[teamMode][vID % len(camoForSeason[teamMode])]
+                        camoID = random.choice(camoForSeason[teamMode])
                         item = camouflages[camoID]
-                        patternSize = vID % len(item.scales)
-                        palette = vID % len(item.palettes)
+                        patternSize = random.randrange(len(item.scales))
+                        palette = random.randrange(len(item.palettes))
                         g_config.teamCamo[teamMode] = [camoID, palette, patternSize]
                     else:
                         camoID, palette, patternSize = g_config.teamCamo[teamMode]
                 elif camoForSeason['random']:
-                    if vID is None:
-                        vID = random.randrange(len(camoForSeason['random']))
-                    camoID = camoForSeason['random'][vID % len(camoForSeason['random'])]
+                    camoID = random.choice(camoForSeason['random'])
                     item = camouflages[camoID]
-                    patternSize = vID % len(item.scales)
-                    palette = vID % len(item.palettes)
+                    patternSize = random.randrange(len(item.scales))
+                    palette = random.randrange(len(item.palettes))
         if camoID is not None:
             intCD = camouflages[camoID].compactDescr
             if itemsCache.items.isSynced():
@@ -153,6 +152,7 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None):
             seasonCache[areaName] = [camoID, palette, patternSize]
         else:
             seasonCache[areaName] = []
+    random.seed()
 
 
 @overrideMethod(_VehicleAppearance, '_VehicleAppearance__assembleModel')
