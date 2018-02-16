@@ -509,6 +509,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.refreshOutfit()
         self.__setHeaderInitData()
         self.__setBuyingPanelData()
+        self.__setAnchorsInitData(self._tabIndex, True, True)
         self.as_refreshAnchorPropertySheetS()
         self.refreshCarousel(rebuild=self._carouselDP.getAppliedFilter() or self._carouselDP.getOwnedFilter())
 
