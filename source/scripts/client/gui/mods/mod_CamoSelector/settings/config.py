@@ -67,7 +67,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flashCol_camoGroup_multinational': 'Multinational',
             'UI_flashCol_camoGroup_special': 'Special',
             'UI_flashCol_camoGroup_modded': 'Custom',
-            'UI_message_applied_money': 'Customization elements applied.\nWould buy %(count)s items, would spend %(money)s.',
+            'UI_flashCol_applied_money': 'Customization elements applied.\nWould buy %(count)s items, would spend %(money)s.',
             'UI_setting_doRandom_text': 'Select random camouflages',
             'UI_setting_doRandom_tooltip': (
                 'If enabled, mod will select a random available camouflage if no other option is provided.'),
