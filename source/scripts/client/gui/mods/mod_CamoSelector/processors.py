@@ -19,7 +19,7 @@ from skeletons.gui.shared import IItemsCache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from .settings import g_config
-from .settings.shared import RandMode, SEASON_NAME_TO_TYPE, TeamMode
+from .settings.shared import RandMode, TeamMode
 
 
 def applyCache(outfit, vehName, seasonCache):
@@ -65,7 +65,9 @@ def applyCache(outfit, vehName, seasonCache):
 
 def collectCamouflageData():
     camouflages = items.vehicles.g_cache.customization20().camouflages
-    g_config.camoForSeason = dict.fromkeys(SEASONS_CONSTANTS.SEASONS, {'random': [], 'ally': [], 'enemy': []})
+    g_config.camoForSeason = {}
+    for season in SEASONS_CONSTANTS.SEASONS:
+        g_config.camoForSeason[season] = {'random': [], 'ally': [], 'enemy': []}
     for camoID, camouflage in camouflages.iteritems():
         itemName, itemKey = (camouflage.userKey, 'custom') if camouflage.priceGroup == 'custom' else (
             camoID, 'remap')
@@ -81,7 +83,7 @@ def collectCamouflageData():
                 itemSeason = SeasonType.UNDEFINED
                 for season in SEASONS_CONSTANTS.SEASONS:
                     if season in camoCfg['season']:
-                        itemSeason |= SEASON_NAME_TO_TYPE[season]
+                        itemSeason |= getattr(SeasonType, season.upper())
         for season in SeasonType.COMMON_SEASONS:
             camoForSeason = g_config.camoForSeason[SEASON_TYPE_TO_NAME[season]]
             if itemSeason & season:

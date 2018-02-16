@@ -20,9 +20,6 @@ class TeamMode(CONST_CONTAINER):
     INDICES = {v: k for k, v in NAMES.iteritems()}
 
 
-SEASON_NAME_TO_TYPE = {v: k for k, v in SEASON_TYPE_TO_NAME.iteritems()}
-
-
 def getCurrentDesc():
     if g_currentPreviewVehicle.isPresent():
         vDesc = g_currentPreviewVehicle.item.descriptor

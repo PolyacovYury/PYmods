@@ -52,7 +52,7 @@ from skeletons.gui.shared import IItemsCache
 from vehicle_systems.tankStructure import TankPartIndexes
 from . import g_config
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
-from .shared import C11nMode, C11nTabs, RandMode, SEASON_NAME_TO_TYPE, TeamMode
+from .shared import C11nMode, C11nTabs, RandMode, TeamMode
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):
@@ -290,7 +290,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                         itemSeasons = SeasonType.UNDEFINED
                         for season in SEASONS_CONSTANTS.SEASONS:
                             if season in camoSetting['season']:
-                                itemSeasons |= SEASON_NAME_TO_TYPE[season]
+                                itemSeasons |= getattr(SeasonType, season.upper())
                         camoSeason = camouflages[camoID].season
                         if itemSeasons == (camoSeason if camoSeason < 8 else camoSeason - 8):
                             del camoSetting['season']
@@ -367,11 +367,11 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                 itemSeasons = SeasonType.UNDEFINED
                 for season in SEASONS_CONSTANTS.SEASONS:
                     if season in itemSeasonsStr:
-                        itemSeasons |= SEASON_NAME_TO_TYPE[season]
+                        itemSeasons |= getattr(SeasonType, season.upper())
             else:
                 itemSeasons = item.season
                 itemSeasonsStr = itemSettings['season'] = ','.join(
-                    x for x in SEASONS_CONSTANTS.SEASONS if SEASON_NAME_TO_TYPE[x] & itemSeasons)
+                    x for x in SEASONS_CONSTANTS.SEASONS if getattr(SeasonType, x.upper()) & itemSeasons)
             if seasonIdx not in SEASON_IDX_TO_TYPE:  # item is selected from carousel, not changed from property sheet
                 self._settingSeason = itemSeasons
                 self._randMode = itemSettings.get('random_mode', itemOrigSettings.get('random_mode', RandMode.RANDOM))
@@ -413,7 +413,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                 itemSettings['season'] = ','.join(x for x in SEASONS_CONSTANTS.SEASONS if x in newSeasons)
                 self._settingSeason = SeasonType.UNDEFINED
                 for season in newSeasons:
-                    self._settingSeason |= SEASON_NAME_TO_TYPE[season]
+                    self._settingSeason |= getattr(SeasonType, season.upper())
         self.refreshOutfit()
         self.__setAnchorsInitData(self._tabIndex, True, True)
         self.__setBuyingPanelData()

@@ -9,7 +9,8 @@ from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, r
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
-from .shared import RandMode, SEASON_NAME_TO_TYPE, getCamoTextureName
+from items.components.c11n_constants import SeasonType
+from .shared import RandMode, getCamoTextureName
 from .. import __date__, __modID__
 
 
@@ -151,10 +152,10 @@ class ConfigInterface(PYmodsConfigInterface):
                         del conf['kinds']
                     if 'season' in conf:
                         seasonNames = [x for x in conf['season'].split(',') if x]
-                        seasonType = 0
+                        seasonType = SeasonType.UNDEFINED
                         for season in seasonNames:
-                            if season in SEASON_NAME_TO_TYPE:
-                                seasonType |= SEASON_NAME_TO_TYPE[season]
+                            if season in SEASONS_CONSTANTS.SEASONS:
+                                seasonType |= getattr(SeasonType, season.upper())
                             else:
                                 print '%s: unknown season name for camouflage %s: %s' % (self.ID, key, season)
                                 conf['season'] = conf['season'].replace(season, '')
@@ -216,10 +217,10 @@ class ConfigInterface(PYmodsConfigInterface):
                     del camoConf['kinds']
                 if 'season' in camoConf:
                     seasonNames = [x for x in camoConf['season'].split(',') if x]
-                    seasonType = 0
+                    seasonType = SeasonType.UNDEFINED
                     for season in seasonNames:
-                        if season in SEASON_NAME_TO_TYPE:
-                            seasonType |= SEASON_NAME_TO_TYPE[season]
+                        if season in SEASONS_CONSTANTS.SEASONS:
+                            seasonType |= getattr(SeasonType, season.upper())
                         else:
                             print '%s: unknown season name for camouflage %s: %s' % (self.ID, camoID, season)
                             camoConf['season'] = camoConf['season'].replace(season, '')
