@@ -166,9 +166,8 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                      'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')
                              if (path.endswith('.bnk') or path.endswith('.pck'))}}
         for pkgPath in glob.iglob('./res/packages/audioww*.pkg'):
-            pkg = zipfile.ZipFile(pkgPath)
-            bankFiles['pkg'].update({os.path.basename(name) for name in pkg.namelist()})
-            pkg.close()
+            with zipfile.ZipFile(pkgPath) as pkg:
+                bankFiles['pkg'].update({os.path.basename(name) for name in pkg.namelist()})
         bankFiles['orig'] = bankFiles['res'] | bankFiles['pkg']
         bankFiles['mods'] = set(x for x in ResMgr.openSection(mediaPath).keys()
                                 if (x.endswith('.bnk') or x.endswith('.pck')) and x not in bankFiles['orig'])
