@@ -42,7 +42,8 @@ def __determineRendererState(base, self, renderer, seasonIDX, currentItem, activ
 def new_isApplicableToActiveSeason(base, self, activeSeasonSlot, seasonIDX):
     if isinstance(self._c11nView, MainView):
         return base(self, activeSeasonSlot, seasonIDX)
-    assert self._c11nView.getMode() == C11nMode.INSTALL
+    if activeSeasonSlot is None:
+        return False
     itemName, itemKey = (activeSeasonSlot.descriptor.userKey, 'custom') if activeSeasonSlot.priceGroup == 'custom' else (
         activeSeasonSlot.id, 'remap')
     itemSeason = activeSeasonSlot.season
@@ -53,4 +54,4 @@ def new_isApplicableToActiveSeason(base, self, activeSeasonSlot, seasonIDX):
             for season in SEASONS_CONSTANTS.SEASONS:
                 if season in camoCfg['season']:
                     itemSeason |= getattr(SeasonType, season.upper())
-    return False if activeSeasonSlot is None else itemSeason & SEASON_IDX_TO_TYPE[seasonIDX]
+    return itemSeason & SEASON_IDX_TO_TYPE[seasonIDX]
