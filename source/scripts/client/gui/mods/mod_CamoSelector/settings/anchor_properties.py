@@ -105,12 +105,11 @@ def _getData(base, self):
                                      g_config.i18n['UI_flashCol_randMode_label'], swatchScales).asDict()
 
 
-@overrideMethod(i18n, 'makeString')
-def new_makeString(base, key, *args, **kwargs):
-    if key == VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_CAMO_COLOR:
-        print 'TEXT DETECTED'
+@overrideMethod(i18n._Translations, 'gettext')
+def new_gettext(base, self, key, *args, **kwargs):
+    if key == VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_CAMO_COLOR.split(':', 1)[1]:
         view = g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.LOBBY_SUB).getView()
         if not isinstance(view, MainView) and view.getMode() == C11nMode.SETUP:
             from . import g_config
             return g_config.i18n['UI_flashCol_teamMode_label']
-    return base(key, *args, **kwargs)
+    return base(self, key, *args, **kwargs)
