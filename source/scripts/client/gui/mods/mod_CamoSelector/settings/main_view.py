@@ -446,7 +446,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.soundManager.playInstantSound(SOUNDS.SELECT)
         nonHistoricItems = []
         for outfit in self._modifiedOutfits.itervalues():
-            nonHistoricItems.extend((item for item in outfit.nonHistoricItems() if not item.isHistorical()))
+            nonHistoricItems.extend((item for item in outfit.items() if not item.isHistorical()))
 
         return {'items': [item.intCD for item in sorted(nonHistoricItems, key=comparisonKey)]}
 

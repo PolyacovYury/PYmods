@@ -112,10 +112,17 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None):
     camoID = None
     camouflages = items.vehicles.g_cache.customization20().camouflages
     itemsCache = dependency.instance(IItemsCache)
-    outfitItems = set(item.id for item in outfit.items() if item and item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE)
-    canBeUniform = len(outfitItems) <= 1
+    outfitItemIDs = set()
+    outfitItems = set()
+    for slot in outfit.slots():
+        item = slot.getItem(0)
+        if item is not None and item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
+            component = slot.getComponent(0)
+            outfitItemIDs.add(item.id)
+            outfitItems.add((item.id, component.palette, component.patternSize))
+    canBeUniform = len(outfitItemIDs) <= 1
     if canBeUniform:
-        camoID = None if not outfitItems else outfitItems.pop()
+        camoID, palette, patternSize = (None, None, None) if not outfitItemIDs else outfitItems.pop()
     for areaId, areaName in enumerate(TankPartNames.ALL):
         if not areaId:
             continue
