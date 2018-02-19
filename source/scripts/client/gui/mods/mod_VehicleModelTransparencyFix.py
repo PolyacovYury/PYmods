@@ -3,7 +3,7 @@ from vehicle_systems.components.highlighter import Highlighter
 
 def new_doHighlight(self, status, args):
     if self._Highlighter__isPlayersVehicle:
-        status &= ~self.HIGHLIGHT_SIMPLE | ~self.HIGHLIGHT_ON
+        status &= ~self.HIGHLIGHT_SIMPLE & ~self.HIGHLIGHT_ON
     old_doHighlight(self, status, args)
 
 
