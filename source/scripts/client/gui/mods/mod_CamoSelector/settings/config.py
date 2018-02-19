@@ -5,7 +5,7 @@ import items.vehicles
 import nations
 import traceback
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
-from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups
+from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups, Analytics
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
@@ -257,4 +257,4 @@ class ConfigInterface(PYmodsConfigInterface):
 
 
 g_config = ConfigInterface()
-# TODO: statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-7', _config.configFolders)
+statistic_mod = Analytics(g_config.ID, g_config.version, 'UA-76792179-7', g_config.configFolders)
