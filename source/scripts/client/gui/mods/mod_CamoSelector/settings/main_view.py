@@ -1,14 +1,11 @@
-import math
 import struct
 
-import BigWorld
 import items.vehicles
-from AvatarInputHandler import cameras, mathUtils
+from AvatarInputHandler import cameras
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import loadJson
 from account_helpers.settings_core.settings_constants import GRAPHICS, GAME
 from adisp import async, process as adisp_process
-from functools import partial
 from gui import DialogsInterface, SystemMessages, g_tankActiveCamouflage
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogMeta

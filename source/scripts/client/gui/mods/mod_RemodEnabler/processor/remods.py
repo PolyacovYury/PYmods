@@ -1,7 +1,6 @@
 import PYmodsCore
 import copy
 from collections import namedtuple
-from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from items.components.chassis_components import *
 from items.components.chassis_components import SplineConfig, WheelsConfig
 from items.components.shared_components import Camouflage, ModelStatesPaths, NodesAndGroups

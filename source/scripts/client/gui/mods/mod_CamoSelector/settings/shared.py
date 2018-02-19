@@ -1,13 +1,12 @@
 import os
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
-from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from shared_utils import CONST_CONTAINER
 
 
 class RandMode(CONST_CONTAINER):
     """ Customization mode.
     """
-    OFF, TEAM, RANDOM= range(3)
+    OFF, TEAM, RANDOM = range(3)
     NAMES = {OFF: 'off', RANDOM: 'random', TEAM: 'team'}
     INDICES = {v: k for k, v in NAMES.iteritems()}
 
