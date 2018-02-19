@@ -13,7 +13,6 @@ import traceback
 import weakref
 from adisp import AdispException, async, process
 from functools import partial
-from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
