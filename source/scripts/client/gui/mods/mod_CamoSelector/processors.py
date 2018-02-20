@@ -121,8 +121,8 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None):
             outfitItemIDs.add(item.id)
             outfitItems.add((item.id, component.palette, component.patternSize))
     canBeUniform = len(outfitItemIDs) <= 1
-    if canBeUniform:
-        camoID, palette, patternSize = (None, None, None) if not outfitItemIDs else outfitItems.pop()
+    if canBeUniform and outfitItemIDs:
+        camoID, palette, patternSize = outfitItems.pop()
     for areaId, areaName in enumerate(TankPartNames.ALL):
         if not areaId:
             continue
