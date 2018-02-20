@@ -173,7 +173,7 @@ def refreshCurrentVehicle():
         g_currentVehicle.refreshModel()
     from ClientSelectableCameraVehicle import ClientSelectableCameraVehicle
     for entity in ClientSelectableCameraVehicle.allCameraObjects:
-        if isinstance(entity, ClientSelectableCameraVehicle):
+        if isinstance(entity, ClientSelectableCameraVehicle) and hasattr(entity, 'appearance'):
             entity.recreateVehicle(state=entity.appearance._HangarVehicleAppearance__vState)
 
 
