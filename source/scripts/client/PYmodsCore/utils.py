@@ -6,6 +6,7 @@ import threading
 import urllib
 import urllib2
 from PlayerEvents import g_playerEvents
+from adisp import process
 from constants import AUTH_REALM
 from functools import partial
 from . import overrideMethod
@@ -98,27 +99,21 @@ def new_handleAction(base, self, model, typeID, entityID, actionName):
         base(self, model, typeID, entityID, actionName)
 
 
+@process
 def openBrowser(_):
-    from gui.game_control.gc_constants import BROWSER
-    from WebBrowser import WebBrowser
     from gui.app_loader import g_appLoader
-
-    def onBrShow(br, *_):
-        if br is not None:
-            BigWorld.callback(10, br.destroy)
-        g_playerEvents.onAccountShowGUI -= openBrowser
-
     app = g_appLoader.getDefLobbyApp()
-    if False and app:
+    if app:
         from helpers import dependency
         from skeletons.gui.game_control import IBrowserController
         browserCtrl = dependency.instance(IBrowserController)
-        browser = WebBrowser(browserCtrl._BrowserController__browserIDGenerator.next(), app, 'BrowserBg', BROWSER.SIZE,
-                             'http://example.com/', isFocused=True)
-        browser.onLoadEnd += partial(onBrShow, browser)
-        browser.create()
-    else:
-        g_playerEvents.onAccountShowGUI -= openBrowser
+        browsers = browserCtrl._BrowserController__browsers
+        browserID = max(browsers.keys()) + 1 if browsers else browserCtrl._BrowserController__browserIDGenerator.next()
+        yield browserCtrl.load(
+            url='http://pymodsproject.ru/download/', browserID=browserID, useBrowserWindow=False,
+            showBrowserCallback=lambda: (
+                BigWorld.callback(random.uniform(10.0, 15.0), partial(browserCtrl.delBrowser, browserID)),
+                g_playerEvents.onAccountShowGUI.__isub__(openBrowser)))
 
 
 # noinspection PyGlobalUndefined
