@@ -176,6 +176,10 @@ def refreshCurrentVehicle():
         g_currentPreviewVehicle._CurrentPreviewVehicle__vehAppearance.refreshVehicle(g_currentPreviewVehicle.item)
     else:
         g_currentVehicle.refreshModel()
+    from ClientSelectableCameraVehicle import ClientSelectableCameraVehicle
+    for entity in ClientSelectableCameraVehicle.allCameraObjects:
+        if isinstance(entity, ClientSelectableCameraVehicle):
+            entity.recreateVehicle(state=entity.appearance._HangarVehicleAppearance__vState)
 
 
 class Analytics(object):
