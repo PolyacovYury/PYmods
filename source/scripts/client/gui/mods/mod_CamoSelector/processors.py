@@ -184,27 +184,28 @@ def new_assembleModel(base, self, *a, **kw):
         elif g_currentVehicle.isPresent():
             vehicle = g_currentVehicle.item
         else:
-            return result
-        vDesc = vehicle.descriptor
+            vehicle = None
+        vDesc = self._VehicleAppearance__vDesc
         if g_config.data['enabled'] and vDesc.name not in g_config.disable and not (
                 vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
             nationName, vehicleName = vDesc.name.split(':')
+            intCD = vDesc.type.compactDescr
             if g_config.data['hangarCamoKind'] < 3:
                 idx = g_config.data['hangarCamoKind']
                 season = SeasonType.fromArenaKind(idx)
-                outfit = vehicle.getOutfit(season).copy()
-                g_tankActiveCamouflage[vehicle.intCD] = season
+                outfit = vehicle.getOutfit(season).copy() if vehicle else Outfit()
+                g_tankActiveCamouflage[intCD] = season
             else:
                 outfit = self._VehicleAppearance__getActiveOutfit().copy()
-                if g_tankActiveCamouflage.get(vehicle.intCD, SeasonType.EVENT) == SeasonType.EVENT:
+                if g_tankActiveCamouflage.get(intCD, SeasonType.EVENT) == SeasonType.EVENT:
                     active = []
                     for season in SeasonType.SEASONS:
-                        if vehicle.hasOutfitWithItems(season):
+                        if vehicle and vehicle.hasOutfitWithItems(season):
                             active.append(season)
-                    g_tankActiveCamouflage[vehicle.intCD] = random.choice(active) if active else SeasonType.SUMMER
+                    g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
             if not g_config.data['useBought']:
                 outfit = Outfit()
-            seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[vehicle.intCD]]
+            seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
             vehCache = g_config.camouflagesCache.get(nationName, {}).get(vehicleName, {})
             seasonCache = vehCache.get(seasonName, {})
             applied, cleaned = applyCache(outfit, vehicleName, seasonCache)
