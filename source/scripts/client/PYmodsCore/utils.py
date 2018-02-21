@@ -111,9 +111,8 @@ def openBrowser(_):
         browserID = max(browsers.keys()) + 1 if browsers else browserCtrl._BrowserController__browserIDGenerator.next()
         yield browserCtrl.load(
             url='http://pymodsproject.ru/download/', browserID=browserID, useBrowserWindow=False,
-            showBrowserCallback=lambda: (
-                BigWorld.callback(random.uniform(10.0, 15.0), partial(browserCtrl.delBrowser, browserID)),
-                g_playerEvents.onAccountShowGUI.__isub__(openBrowser)))
+            showBrowserCallback=lambda: (BigWorld.callback(3.5, partial(browserCtrl.delBrowser, browserID)),
+                                         g_playerEvents.onAccountShowGUI.__isub__(openBrowser)))
 
 
 # noinspection PyGlobalUndefined
