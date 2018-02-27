@@ -204,11 +204,9 @@ class Analytics(object):
             self.old_playerName = BigWorld.player().name
         elif BigWorld.time() - self.lastTime >= 1200:
             requestsPool.append(dict(template, ec='session', ea='keep'))
-        if requestsPool:
+        for params in requestsPool:
             self.lastTime = BigWorld.time()
-            from itertools import chain
-            urllib2.urlopen(url='http://www.google-analytics.com/batch?',
-                            data=urllib.urlencode(tuple(chain.from_iterable(r.items() for r in requestsPool)))).read()
+            urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=urllib.urlencode(params)).read()
 
     # noinspection PyUnusedLocal
     def start(self, ctx):
