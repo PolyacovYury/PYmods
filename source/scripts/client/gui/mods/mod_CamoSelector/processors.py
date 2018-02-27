@@ -13,7 +13,7 @@ from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.customization.c11n_items import Camouflage
-from gui.shared.gui_items.customization.outfit import Outfit
+from gui.shared.gui_items.customization.outfit import Outfit, Area
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
 from skeletons.gui.shared import IItemsCache
@@ -100,7 +100,7 @@ def collectCamouflageData():
                             camoForSeason[TeamMode.NAMES[team]].append(camoID)
 
 
-def processRandomOutfit(outfit, seasonName, seasonCache, vID=None):
+def processRandomOutfit(outfit, seasonName, seasonCache, vID=None, hasTurrets=True):
     if not g_config.camoForSeason:
         collectCamouflageData()
     if vID is not None:
@@ -114,17 +114,20 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None):
     itemsCache = dependency.instance(IItemsCache)
     outfitItemIDs = set()
     outfitItems = set()
-    for slot in outfit.slots():
-        item = slot.getItem(0)
-        if item is not None and item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
-            component = slot.getComponent(0)
-            outfitItemIDs.add(item.id)
-            outfitItems.add((item.id, component.palette, component.patternSize))
+    for container in outfit.containers():
+        if not hasTurrets and container.getAreaID() == Area.TURRET:
+            continue
+        for slot in container.slots():
+            item = slot.getItem(0)
+            if item is not None and item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
+                component = slot.getComponent(0)
+                outfitItemIDs.add(item.id)
+                outfitItems.add((item.id, component.palette, component.patternSize))
     canBeUniform = len(outfitItemIDs) <= 1
     if canBeUniform and outfitItemIDs:
         camoID, palette, patternSize = outfitItems.pop()
     for areaId, areaName in enumerate(TankPartNames.ALL):
-        if not areaId:
+        if areaName == TankPartNames.CHASSIS or not hasTurrets and areaName == TankPartNames.TURRET:
             continue
         slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
         item = slot.getItem(0)
@@ -214,7 +217,8 @@ def new_assembleModel(base, self, *a, **kw):
             if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
                 seasonCache = g_config.hangarCamoCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
                     seasonName, {})
-                processRandomOutfit(outfit, seasonName, seasonCache)
+                processRandomOutfit(outfit, seasonName, seasonCache,
+                                    hasTurrets=len(vDesc.hull.fakeTurrets['lobby']) != len(vDesc.turrets))
                 applyCache(outfit, vehicleName, seasonCache)
             self.updateCustomization(outfit)
     return result
@@ -244,7 +248,8 @@ def new_prepareOutfit(base, self, *a, **kw):
                 vehCache.pop(seasonName, {})
         if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
             seasonCache = g_config.arenaCamoCache.setdefault(vID, {})
-            processRandomOutfit(result, seasonName, seasonCache, vID)
+            processRandomOutfit(result, seasonName, seasonCache, vID,
+                                len(vDesc.hull.fakeTurrets['lobby']) != len(vDesc.turrets))
             applyCache(result, vehicleName, seasonCache)
     self._CompoundAppearance__outfit = result
 
