@@ -109,8 +109,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__setBuyingPanelData()
         self.__setSeasonData()
         self._vehicleCustomizationAnchorsUpdater = _VehicleCustomizationAnchorsUpdater(self.service)
-        self._vehicleCustomizationAnchorsUpdater.startUpdater()
+        self._vehicleCustomizationAnchorsUpdater.startUpdater(self.settingsCore.interfaceScale.get())
         self.refreshOutfit()
+        self.settingsCore.interfaceScale.onScaleExactlyChanged += self.__onInterfaceScaleChanged
         self.settingsCore.onSettingsChanged += self.__onSettingsChanged
         self.__updateCameraParallaxFlag()
         self.service.startHighlighter(chooseMode(GUI_ITEM_TYPE.CAMOUFLAGE, g_currentVehicle.item))
@@ -120,6 +121,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             self.__releaseItemSound()
             self.soundManager.playInstantSound(SOUNDS.EXIT)
         self.settingsCore.onSettingsChanged -= self.__onSettingsChanged
+        self.settingsCore.interfaceScale.onScaleExactlyChanged -= self.__onInterfaceScaleChanged
         self._vehicleCustomizationAnchorsUpdater.stopUpdater()
         self._vehicleCustomizationAnchorsUpdater = None
         if self.__locatedOnEmblem and g_hangarSpace.spaceInited:
@@ -180,21 +182,21 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
 
     def __setBuyingPanelData(self, *_):
         purchaseItems = self.getPurchaseItems()
-        cart = getTotalPurchaseInfo(purchaseItems)
-        totalPriceVO = getItemPricesVO(cart.totalPrice)
+        cartInfo = getTotalPurchaseInfo(purchaseItems)
+        totalPriceVO = getItemPricesVO(cartInfo.totalPrice)
         cleanSettings = self._cleanSettings(self._currentSettings, checkSeasons=False)
         keys = []
-        if cart.numTotal:
+        if cartInfo.numTotal:
             keys.append('install')
-        if cart.totalPrice != ITEM_PRICE_EMPTY:
+        if cartInfo.totalPrice != ITEM_PRICE_EMPTY:
             self.as_showBuyingPanelS()
         else:
             self.as_hideBuyingPanelS()
         if any(cleanSettings.itervalues()) or not keys:
             keys.append('apply')
         label = g_config.i18n['UI_flash_commit_' + '_and_'.join(keys)]
-        isApplyEnabled = bool(cart.numTotal) or any(cleanSettings.itervalues())
-        shortage = self.itemsCache.items.stats.money.getShortage(cart.totalPrice.price)
+        isApplyEnabled = bool(cartInfo.numTotal) or any(cleanSettings.itervalues())
+        shortage = self.itemsCache.items.stats.money.getShortage(cartInfo.totalPrice.price)
         self.as_setBottomPanelHeaderS({'buyBtnEnabled': isApplyEnabled,
                                        'buyBtnLabel': label,
                                        'enoughMoney': getItemPricesVO(ItemPrice(shortage, shortage))[0],
@@ -822,3 +824,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def __updateCameraParallaxFlag(self):
         parallaxEnabled = bool(self.settingsCore.getSetting(GAME.HANGAR_CAM_PARALLAX_ENABLED))
         self.as_setParallaxFlagS(parallaxEnabled)
+
+    def __onInterfaceScaleChanged(self, scale):
+        if self._vehicleCustomizationAnchorsUpdater is not None:
+            self._vehicleCustomizationAnchorsUpdater.setInterfaceScale(scale)
