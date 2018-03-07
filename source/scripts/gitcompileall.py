@@ -89,7 +89,7 @@ def compile_file(fullname, ddir=None, force=0, rx=None, quiet=0):
         if tail == '.py':
             timeStr = subprocess.check_output(
                 ['git', '--no-pager', 'log', '-n', '1', '--format="%ct"', '--', fullname])[1:-2]
-            if not force:
+            if not force and '__init__' not in fullname:
                 try:
                     if not timeStr:
                         mtime = int(os.stat(fullname).st_mtime)

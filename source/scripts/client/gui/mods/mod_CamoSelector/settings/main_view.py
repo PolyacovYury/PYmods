@@ -576,7 +576,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         for nationName in g_config.camouflagesCache.keys():
             for vehicleName in g_config.camouflagesCache[nationName].keys():
                 for season in g_config.camouflagesCache[nationName][vehicleName].keys():
-                    if not g_currentVehicle.item.hasTurrets:
+                    if g_currentVehicle.item.turret.isGunCarriage:
                         g_config.camouflagesCache[nationName][vehicleName][season].pop('turret', {})
                     if not g_config.camouflagesCache[nationName][vehicleName][season]:
                         del g_config.camouflagesCache[nationName][vehicleName][season]

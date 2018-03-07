@@ -100,7 +100,7 @@ def collectCamouflageData():
                             camoForSeason[TeamMode.NAMES[team]].append(camoID)
 
 
-def processRandomOutfit(outfit, seasonName, seasonCache, vID=None, hasTurrets=True):
+def processRandomOutfit(outfit, seasonName, seasonCache, vID=None, isGunCarriage=True):
     if not g_config.camoForSeason:
         collectCamouflageData()
     if vID is not None:
@@ -115,7 +115,7 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None, hasTurrets=Tr
     outfitItemIDs = set()
     outfitItems = set()
     for container in outfit.containers():
-        if not hasTurrets and container.getAreaID() == Area.TURRET:
+        if isGunCarriage and container.getAreaID() == Area.TURRET:
             continue
         for slot in container.slots():
             item = slot.getItem(0)
@@ -127,7 +127,7 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None, hasTurrets=Tr
     if canBeUniform and outfitItemIDs:
         camoID, palette, patternSize = outfitItems.pop()
     for areaId, areaName in enumerate(TankPartNames.ALL):
-        if areaName == TankPartNames.CHASSIS or not hasTurrets and areaName == TankPartNames.TURRET:
+        if areaName == TankPartNames.CHASSIS or isGunCarriage and areaName == TankPartNames.TURRET:
             continue
         slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
         item = slot.getItem(0)
@@ -217,8 +217,7 @@ def new_assembleModel(base, self, *a, **kw):
             if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
                 seasonCache = g_config.hangarCamoCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
                     seasonName, {})
-                processRandomOutfit(outfit, seasonName, seasonCache,
-                                    hasTurrets=len(vDesc.hull.fakeTurrets['lobby']) != len(vDesc.turrets))
+                processRandomOutfit(outfit, seasonName, seasonCache, isGunCarriage=vDesc.turret.isGunCarriage)
                 applyCache(outfit, vehicleName, seasonCache)
             self.updateCustomization(outfit)
     return result
@@ -248,8 +247,7 @@ def new_prepareOutfit(base, self, *a, **kw):
                 vehCache.pop(seasonName, {})
         if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
             seasonCache = g_config.arenaCamoCache.setdefault(vID, {})
-            processRandomOutfit(result, seasonName, seasonCache, vID,
-                                len(vDesc.hull.fakeTurrets['lobby']) != len(vDesc.turrets))
+            processRandomOutfit(result, seasonName, seasonCache, vID, isGunCarriage=vDesc.turret.isGunCarriage)
             applyCache(result, vehicleName, seasonCache)
     self._CompoundAppearance__outfit = result
 

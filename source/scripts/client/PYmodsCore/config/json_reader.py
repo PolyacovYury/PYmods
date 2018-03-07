@@ -61,19 +61,18 @@ class JSONObjectEncoder(json.JSONEncoder):
 
 class JSONLoader:
     @classmethod
-    def byte_ify(cls, inputs):
-        if inputs:
-            if isinstance(inputs, dict):
-                return {cls.byte_ify(key): cls.byte_ify(value) for key, value in inputs.iteritems()}
-            elif isinstance(inputs, list):
-                return [cls.byte_ify(element) for element in inputs]
-            elif isinstance(inputs, tuple):
-                return tuple(cls.byte_ify(element) for element in inputs)
-            elif isinstance(inputs, unicode):
+    def byte_ify(cls, inputs, ignore_dicts=False):
+        if inputs:  # https://stackoverflow.com/a/33571117
+            if isinstance(inputs, unicode):
                 # noinspection PyArgumentEqualDefault
                 return inputs.encode('utf-8')
-            else:
-                return inputs
+            elif isinstance(inputs, list):
+                return [cls.byte_ify(element, ignore_dicts=True) for element in inputs]
+            elif isinstance(inputs, tuple):
+                return tuple(cls.byte_ify(element, ignore_dicts=True) for element in inputs)
+            elif isinstance(inputs, dict) and not ignore_dicts:
+                return {cls.byte_ify(key, ignore_dicts=True): cls.byte_ify(value, ignore_dicts=True) for key, value in
+                        inputs.iteritems()}
         return inputs
 
     @staticmethod
@@ -115,12 +114,11 @@ class JSONLoader:
     def json_file_write(cls, new_path, data, encrypted):
         kwargs = {'mode': 'w', 'encoding': 'utf-8-sig'} if not encrypted else {'mode': 'wb'}
         with codecs.open(new_path, **kwargs) as json_file:
-            writeToConf = cls.byte_ify(data)
             if encrypted:
-                writeToConf = cls.encrypt(writeToConf)
-            json_file.write(writeToConf)
+                data = cls.encrypt(data)
+            json_file.write(data)
 
-    @classmethod
+    @classmethod  # TODO: rewrite this. It heavily relies on the fact that the input is pretty-printed and can't handle arrays
     def checkSubDict(cls, oldDict, conf_newL, config_newExcl, start_idx, end_idx):
         conf_changed = False
         decer = json.JSONDecoder(encoding='utf-8')
@@ -146,15 +144,13 @@ class JSONLoader:
                         new_start_idx = idx
                         new_end_idx = idx
                         while new_end_idx < end_idx:
-                            curNewLine = cls.byte_ify(cls.json_comments(conf_newL[new_end_idx])[0])
+                            curNewLine = cls.json_comments(conf_newL[new_end_idx])[0]
                             if '{' in curNewLine and new_end_idx >= new_start_idx:
                                 subLevels += 1
                             if '}' not in curNewLine:
                                 new_end_idx += 1
                                 continue
                             else:
-                                subLevels -= 1
-                            if '}' in cls.json_comments(curNewLine)[0].strip():
                                 if subLevels > 0:
                                     subLevels -= 1
                                 else:
@@ -203,8 +199,7 @@ class JSONLoader:
                         print e
 
                 else:
-                    conf_changed = not config_oldS == cls.json_dumps(
-                        cls.byte_ify(json.loads(cls.json_comments(config_newD)[0])), sort_keys)
+                    conf_changed = not config_oldS == cls.json_comments(config_newD)[0]
                     if conf_changed:
                         conf_newL = cls.byte_ify(config_oldS).split('\n')
                 if conf_changed:
@@ -223,7 +218,7 @@ class JSONLoader:
                     if not isEncrypted and encrypted:
                         confData = confData.decode('utf-8-sig')
                     data, excluded = cls.json_comments(confData)
-                    config_new = cls.byte_ify(json.loads(data))
+                    config_new = cls.byte_ify(json.loads(data, object_hook=cls.byte_ify), ignore_dicts=True)
             except StandardError:
                 print new_path
                 traceback.print_exc()
