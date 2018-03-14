@@ -1,12 +1,12 @@
-import struct
-
 import items.vehicles
+import struct
 from AvatarInputHandler import cameras
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import loadJson
 from account_helpers.settings_core.settings_constants import GRAPHICS, GAME
 from adisp import async, process as adisp_process
 from gui import DialogsInterface, SystemMessages, g_tankActiveCamouflage
+from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogMeta
 from gui.Scaleform.daapi.view.lobby.customization import CustomizationItemCMHandler
@@ -98,6 +98,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.service.onOutfitChanged += self.__onOutfitChanged
         g_eventBus.addListener(CameraRelatedEvents.IDLE_CAMERA, self.__onNotifyHangarCameraIdleStateChanged)
         g_hangarSpace.onSpaceCreate += self.__onSpaceCreateHandler
+        g_hangarSpace.onSpaceRefresh += self.__onSpaceRefreshHandler
         self.service.onRegionHighlighted += self.__onRegionHighlighted
         self.itemsCache.onSyncCompleted += self.__onCacheReSync
         self.__carveUpOutfits()
@@ -137,6 +138,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.service.onOutfitChanged -= self.__onOutfitChanged
         g_eventBus.removeListener(CameraRelatedEvents.IDLE_CAMERA, self.__onNotifyHangarCameraIdleStateChanged)
         g_hangarSpace.onSpaceCreate -= self.__onSpaceCreateHandler
+        g_hangarSpace.onSpaceRefresh -= self.__onSpaceRefreshHandler
         self.service.onRegionHighlighted -= self.__onRegionHighlighted
         self.itemsCache.onSyncCompleted -= self.__onCacheReSync
         if g_currentVehicle.item:
@@ -676,8 +678,12 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             self.as_onRegionHighlightedS(slotId)
 
     def __onSpaceCreateHandler(self):
+        Waiting.hide('loadHangarSpace')
         self.refreshOutfit()
         self.__updateAnchorPositions()
+
+    def __onSpaceRefreshHandler(self):
+        Waiting.show('loadHangarSpace')
 
     def __onConfirmCloseWindow(self, proceed):
         if proceed:
