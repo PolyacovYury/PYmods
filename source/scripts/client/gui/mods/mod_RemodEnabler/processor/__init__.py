@@ -63,7 +63,7 @@ def vDesc_process(vehicleID, vDesc, mode):
         playerName = vehInfoVO.player.name
         isAlly = vehInfoVO.team == BigWorld.player().team
     elif mode == 'hangar':
-        currentMode = g_config.data['currentMode']
+        currentMode = g_config.currentMode
         isPlayerVehicle = currentMode == 'player'
         playerName = None
         isAlly = currentMode == 'ally'
@@ -84,17 +84,17 @@ def vDesc_process(vehicleID, vDesc, mode):
                 traceback.print_exc()
                 print partName
     message = None
-    collisionNotVisible = not g_config.data['collisionEnabled'] and not g_config.data['collisionComparisonEnabled']
+    collisionNotVisible = not g_config.collisionEnabled and not g_config.collisionComparisonEnabled
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
     vehDefNation = vDesc.chassis.hitTester.bspModelName.split('/')[1]
     if g_config.OMDesc is None:
         if vehNation == vehDefNation:
-            if g_config.data['skinsFound']:
+            if g_config.skinsFound:
                 skins_find(vehName, isPlayerVehicle, isAlly, currentMode, skinType='dynamic')
                 if g_config.OSDesc['dynamic'] is not None:
                     skins_dynamic.create(vehicleID, vDesc, mode == 'hangar' and (
-                        g_config.data['dynamicSkinEnabled'] and not g_config.data['collisionComparisonEnabled']))
-                    if g_config.data['dynamicSkinEnabled'] and collisionNotVisible:
+                            g_config.dynamicSkinEnabled and not g_config.collisionComparisonEnabled))
+                    if g_config.dynamicSkinEnabled and collisionNotVisible:
                         message = g_config.i18n['UI_install_skin_dynamic'] + g_config.OSDesc['dynamic'].name.join(
                             ('<b>', '</b>.'))
                 skins_find(vehName, isPlayerVehicle, isAlly, currentMode)
@@ -102,7 +102,7 @@ def vDesc_process(vehicleID, vDesc, mode):
         elif g_config.data['isDebug']:
             print 'RemodEnabler: unknown vehicle nation for %s: %s' % (vehName, vehNation)
         if g_config.data['isDebug'] and (
-                g_config.OSDesc['dynamic'] is None or not g_config.data['dynamicSkinEnabled']) and collisionNotVisible:
+                g_config.OSDesc['dynamic'] is None or not g_config.dynamicSkinEnabled) and collisionNotVisible:
             if g_config.OSDesc['static'] is not None:
                 message = g_config.i18n['UI_install_skin'] + g_config.OSDesc['static'].name.join(('<b>', '</b>.'))
             else:

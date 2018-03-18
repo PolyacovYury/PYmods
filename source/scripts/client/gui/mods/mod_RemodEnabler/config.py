@@ -96,6 +96,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         self.defaultRemodConfig = {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True}
         self.settings = {'remods': {}, 'skins': {}, 'skins_dynamic': {}}
         self.skinsCache = {"CRC32": "", "version": ""}
+        self.skinsFound = False
         self.OM = OM()
         self.OS = OS()
         self.OMDesc = None
@@ -103,6 +104,11 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         self.curVehicleName = None
         self.loadingProxy = None
         self.isModAdded = False
+        self.collisionEnabled = False
+        self.collisionComparisonEnabled = False
+        self.dynamicSkinEnabled = False
+        self.isInHangar = False
+        self.currentMode = self.possibleModes[0]
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -119,11 +125,6 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                             'CollisionHotkey': [Keys.KEY_F4, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
         self.data = {'enabled': True,
                      'isDebug': True,
-                     'skinsFound': False,
-                     'collisionEnabled': False,
-                     'collisionComparisonEnabled': False,
-                     'dynamicSkinEnabled': False,
-                     'isInHangar': False,
                      'DynamicSkinHotKey': self.defaultKeys['DynamicSkinHotKey'],
                      'DynamicSkinHotkey': self.defaultKeys['DynamicSkinHotkey'],
                      'ChangeViewHotKey': self.defaultKeys['ChangeViewHotKey'],
@@ -132,7 +133,6 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                      'CollisionHotkey': self.defaultKeys['CollisionHotkey'],
                      'SwitchRemodHotKey': self.defaultKeys['SwitchRemodHotKey'],
                      'SwitchRemodHotkey': self.defaultKeys['SwitchRemodHotkey'],
-                     'currentMode': self.possibleModes[0],
                      'remod': True}
         self.i18n = {
             'UI_description': 'Remod Enabler',
@@ -469,7 +469,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 class RemodEnablerUI(AbstractWindowView):
     def _populate(self):
         super(self.__class__, self)._populate()
-        self.modeBackup = g_config.data['currentMode']
+        self.modeBackup = g_config.currentMode
         self.remodBackup = g_config.OM.selected['Remod']
         self.newRemodData = OrderedDict()
 
@@ -511,7 +511,7 @@ class RemodEnablerUI(AbstractWindowView):
             'priorities': [[g_config.OS.priorities[sType][team] for team in ('Player', 'Ally', 'Enemy')] for sType in
                            ('static', 'dynamic')],
             'whitelists': [],
-            'isInHangar': g_config.data['isInHangar']
+            'isInHangar': g_config.isInHangar
         }
         for sname in sorted(g_config.OM.models):
             OMSettings = g_config.settings['remods'][sname]
@@ -612,12 +612,12 @@ class RemodEnablerUI(AbstractWindowView):
 
     @staticmethod
     def py_onShowRemod(remodIdx):
-        g_config.data['currentMode'] = 'remod'
+        g_config.currentMode = 'remod'
         g_config.OM.selected['Remod'] = sorted(g_config.OM.models)[remodIdx]
         PYmodsCore.refreshCurrentVehicle()
 
     def py_onModelRestore(self):
-        g_config.data['currentMode'] = self.modeBackup
+        g_config.currentMode = self.modeBackup
         g_config.OM.selected['Remod'] = self.remodBackup
         PYmodsCore.refreshCurrentVehicle()
 
@@ -702,50 +702,47 @@ def lobbyKeyControl(event):
         return
     if (g_config.OM.enabled or g_config.OS.enabled) and PYmodsCore.checkKeys(g_config.data['ChangeViewHotkey']):
         while True:
-            newModeNum = g_config.possibleModes.index(g_config.data['currentMode']) + 1
-            if newModeNum >= len(g_config.possibleModes):
-                newModeNum = 0
-            g_config.data['currentMode'] = g_config.possibleModes[newModeNum]
-            if g_config.data.get(g_config.data['currentMode'], True):
+            newModeNum = (g_config.possibleModes.index(g_config.currentMode) + 1) % len(g_config.possibleModes)
+            g_config.currentMode = g_config.possibleModes[newModeNum]
+            if g_config.data.get(g_config.currentMode, True):
                 break
         if g_config.data['isDebug']:
-            print 'RemodEnabler: Changing display mode to %s' % g_config.data['currentMode']
+            print 'RemodEnabler: Changing display mode to %s' % g_config.currentMode
         SystemMessages.pushMessage(
-            'temp_SM' + g_config.i18n['UI_mode'] + g_config.i18n['UI_mode_' + g_config.data['currentMode']].join(
-                ('<b>', '</b>.')),
+            'temp_SM' + g_config.i18n['UI_mode'] + g_config.i18n['UI_mode_' + g_config.currentMode].join(('<b>', '</b>.')),
             SystemMessages.SM_TYPE.Warning)
         PYmodsCore.refreshCurrentVehicle()
     if PYmodsCore.checkKeys(g_config.data['CollisionHotkey']):
-        if g_config.data['collisionComparisonEnabled']:
-            g_config.data['collisionComparisonEnabled'] = False
+        if g_config.collisionComparisonEnabled:
+            g_config.collisionComparisonEnabled = False
             if g_config.data['isDebug']:
                 print 'RemodEnabler: Disabling collision displaying'
             SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_disableCollisionComparison'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
-        elif g_config.data['collisionEnabled']:
-            g_config.data['collisionEnabled'] = False
-            g_config.data['collisionComparisonEnabled'] = True
+        elif g_config.collisionEnabled:
+            g_config.collisionEnabled = False
+            g_config.collisionComparisonEnabled = True
             if g_config.data['isDebug']:
                 print 'RemodEnabler: Enabling collision display comparison mode'
             SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_enableCollisionComparison'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
         else:
-            g_config.data['collisionEnabled'] = True
+            g_config.collisionEnabled = True
             if g_config.data['isDebug']:
                 print 'RemodEnabler: Enabling collision display'
             SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_enableCollision'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
         PYmodsCore.refreshCurrentVehicle()
     if PYmodsCore.checkKeys(g_config.data['DynamicSkinHotkey']):
-        enabled = g_config.data['dynamicSkinEnabled']
-        g_config.data['dynamicSkinEnabled'] = not enabled
+        enabled = g_config.dynamicSkinEnabled
+        g_config.dynamicSkinEnabled = not enabled
         SystemMessages.pushMessage(
             'temp_SM' + g_config.i18n['UI_%sableDynamicSkin' % ('en' if not enabled else 'dis')],
             SystemMessages.SM_TYPE.CustomizationForGold)
         PYmodsCore.refreshCurrentVehicle()
     if g_config.OM.enabled and PYmodsCore.checkKeys(g_config.data['SwitchRemodHotkey']):
-        if g_config.data['currentMode'] != 'remod':
-            curTankType = g_config.data['currentMode'].capitalize()
+        if g_config.currentMode != 'remod':
+            curTankType = g_config.currentMode.capitalize()
             snameList = sorted(g_config.OM.models.keys()) + ['']
             selected = g_config.OM.selected[curTankType]
             vehName = g_config.curVehicleName

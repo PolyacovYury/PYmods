@@ -59,7 +59,7 @@ def new_setupModel(base, self, buildIdx):
         print failList
     if not self.collisionLoaded:
         return
-    if any((g_config.data['collisionEnabled'], g_config.data['collisionComparisonEnabled'])):
+    if any((g_config.collisionEnabled, g_config.collisionComparisonEnabled)):
         # Getting offset matrices
         hullOffset = mathUtils.createTranslationMatrix(vDesc.chassis.hullPosition)
         self.modifiedModelsDesc[TankPartNames.CHASSIS]['matrix'] = fullChassisMP = mathUtils.createIdentityMatrix()
@@ -91,7 +91,7 @@ def new_setupModel(base, self, buildIdx):
                     pass
             moduleDict['model'].visible = True
         addCollisionGUI(self)
-    if g_config.data['collisionEnabled']:
+    if g_config.collisionEnabled:
         for moduleName in TankPartNames.ALL:
             if compoundModel.node(moduleName) is not None:
                 scaleMat = Math.Matrix()
