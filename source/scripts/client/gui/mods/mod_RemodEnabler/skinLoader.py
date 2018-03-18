@@ -192,9 +192,10 @@ def skinCRC32All(callback):
 
 
 @async
-def rmtree(rootPath):
+@process
+def rmtree(rootPath, callback):
     g_config.loadingProxy.updateTitle(g_config.i18n['UI_loading_header_models_clean'])
-    g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
+    g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins_clean'])
     rootDirs = os.listdir(rootPath)
     for skinPack in rootDirs:
         g_config.loadingProxy.addBar(g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
@@ -212,6 +213,9 @@ def rmtree(rootPath):
                     completionPercentage = currentPercentage
                     g_config.loadingProxy.updatePercentage(completionPercentage)
         g_config.loadingProxy.onBarComplete()
+        shutil.rmtree(os.path.join(rootPath, skinPack))
+    shutil.rmtree(os.path.join(rootPath))
+    BigWorld.callback(1.0, partial(callback, True))
 
 
 @async
