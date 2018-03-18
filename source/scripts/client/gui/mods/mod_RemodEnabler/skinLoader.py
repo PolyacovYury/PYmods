@@ -192,6 +192,30 @@ def skinCRC32All(callback):
 
 
 @async
+def rmtree(rootPath):
+    g_config.loadingProxy.updateTitle(g_config.i18n['UI_loading_header_models_clean'])
+    g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
+    rootDirs = os.listdir(rootPath)
+    for skinPack in rootDirs:
+        g_config.loadingProxy.addBar(g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
+        completionPercentage = 0
+        nationsList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles'))
+        natLen = len(nationsList)
+        for num, nation in enumerate(nationsList):
+            vehiclesList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles', nation))
+            vehLen = len(vehiclesList)
+            for vehNum, vehicleName in enumerate(vehiclesList):
+                shutil.rmtree(os.path.join(rootPath, skinPack, 'vehicles', nation, vehicleName))
+                yield doFuncCall()
+                currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
+                if currentPercentage != completionPercentage:
+                    completionPercentage = currentPercentage
+                    g_config.loadingProxy.updatePercentage(completionPercentage)
+        g_config.loadingProxy.onBarComplete()
+
+
+@async
+@process
 def modelsCheck(callback):
     global clientIsNew, skinsModelsMissing, needToReReadSkinsModels
     lastVersion = g_config.skinsCache['version']
@@ -213,15 +237,15 @@ def modelsCheck(callback):
     needToReReadSkinsModels = g_config.skinsFound and (clientIsNew or skinsModelsMissing or texReplaced)
     if g_config.skinsFound and clientIsNew:
         if os.path.isdir(modelsDir):
-            shutil.rmtree(modelsDir)
+            yield rmtree(modelsDir)
         g_config.skinsCache['version'] = getClientVersion()
     if g_config.skinsFound and not os.path.isdir(modelsDir):
         os.makedirs(modelsDir)
     elif not g_config.skinsFound and os.path.isdir(modelsDir):
         print 'RemodEnabler: no skins found, deleting %s' % modelsDir
-        shutil.rmtree(modelsDir)
+        yield rmtree(modelsDir)
     elif texReplaced and os.path.isdir(modelsDir):
-        shutil.rmtree(modelsDir)
+        yield rmtree(modelsDir)
         os.makedirs(modelsDir)
     PYmodsCore.loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
     BigWorld.callback(0.0, partial(callback, True))
