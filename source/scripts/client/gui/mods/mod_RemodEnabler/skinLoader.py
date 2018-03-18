@@ -13,6 +13,7 @@ import traceback
 import weakref
 from adisp import AdispException, async, process
 from functools import partial
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
@@ -24,19 +25,18 @@ from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader.loader import g_appLoader
 from helpers import getClientVersion
 from zipfile import ZipFile
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from . import g_config
 
 
 def skinsPresenceCheck():
     dirSect = ResMgr.openSection('vehicles/skins/textures/')
     if dirSect is not None and dirSect.keys():
-        g_config.data['skinsFound'] = True
+        g_config.skinsFound = True
 
 
 texReplaced = False
 skinsChecked = False
-g_config.data['skinsFound'] = False
+g_config.skinsFound = False
 skinsPresenceCheck()
 clientIsNew = True
 skinsModelsMissing = True
@@ -141,7 +141,7 @@ def skinCRC32All(callback):
     skinsPath = 'vehicles/skins/textures/'
     dirSect = ResMgr.openSection(skinsPath)
     if dirSect is not None and dirSect.keys():
-        g_config.data['skinsFound'] = True
+        g_config.skinsFound = True
         print 'RemodEnabler: listing %s for CRC32' % skinsPath
         g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
         CRC32 = 0
@@ -174,7 +174,6 @@ def skinCRC32All(callback):
             g_config.loadingProxy.onBarComplete()
             if skinCRC32 in resultList:
                 print 'RemodEnabler: detected duplicate skins pack:', skin.replace(os.sep, '/')
-                # shutil.rmtree(skin)
                 continue
             CRC32 ^= skinCRC32
             resultList.append(skinCRC32)
@@ -193,6 +192,30 @@ def skinCRC32All(callback):
 
 
 @async
+def rmtree(rootPath):
+    g_config.loadingProxy.updateTitle(g_config.i18n['UI_loading_header_models_clean'])
+    g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
+    rootDirs = os.listdir(rootPath)
+    for skinPack in rootDirs:
+        g_config.loadingProxy.addBar(g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
+        completionPercentage = 0
+        nationsList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles'))
+        natLen = len(nationsList)
+        for num, nation in enumerate(nationsList):
+            vehiclesList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles', nation))
+            vehLen = len(vehiclesList)
+            for vehNum, vehicleName in enumerate(vehiclesList):
+                shutil.rmtree(os.path.join(rootPath, skinPack, 'vehicles', nation, vehicleName))
+                yield doFuncCall()
+                currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
+                if currentPercentage != completionPercentage:
+                    completionPercentage = currentPercentage
+                    g_config.loadingProxy.updatePercentage(completionPercentage)
+        g_config.loadingProxy.onBarComplete()
+
+
+@async
+@process
 def modelsCheck(callback):
     global clientIsNew, skinsModelsMissing, needToReReadSkinsModels
     lastVersion = g_config.skinsCache['version']
@@ -211,18 +234,18 @@ def modelsCheck(callback):
             print 'RemodEnabler: skins models dir is empty'
     else:
         print 'RemodEnabler: skins models dir not found'
-    needToReReadSkinsModels = g_config.data['skinsFound'] and (clientIsNew or skinsModelsMissing or texReplaced)
-    if g_config.data['skinsFound'] and clientIsNew:
+    needToReReadSkinsModels = g_config.skinsFound and (clientIsNew or skinsModelsMissing or texReplaced)
+    if g_config.skinsFound and clientIsNew:
         if os.path.isdir(modelsDir):
-            shutil.rmtree(modelsDir)
+            yield rmtree(modelsDir)
         g_config.skinsCache['version'] = getClientVersion()
-    if g_config.data['skinsFound'] and not os.path.isdir(modelsDir):
+    if g_config.skinsFound and not os.path.isdir(modelsDir):
         os.makedirs(modelsDir)
-    elif not g_config.data['skinsFound'] and os.path.isdir(modelsDir):
+    elif not g_config.skinsFound and os.path.isdir(modelsDir):
         print 'RemodEnabler: no skins found, deleting %s' % modelsDir
-        shutil.rmtree(modelsDir)
+        yield rmtree(modelsDir)
     elif texReplaced and os.path.isdir(modelsDir):
-        shutil.rmtree(modelsDir)
+        yield rmtree(modelsDir)
         os.makedirs(modelsDir)
     PYmodsCore.loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
     BigWorld.callback(0.0, partial(callback, True))
@@ -341,7 +364,7 @@ def processMember(memberFileName, skinName):
 @process
 def skinLoader():
     global skinsChecked
-    if g_config.data['enabled'] and g_config.data['skinsFound'] and not skinsChecked:
+    if g_config.data['enabled'] and g_config.skinsFound and not skinsChecked:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
             lobbyApp.loadView(ViewLoadParams('RemodEnablerLoading'))
@@ -363,7 +386,7 @@ def skinLoader():
 @PYmodsCore.overrideMethod(LoginView, '_populate')
 def new_Login_populate(base, self):
     base(self)
-    g_config.data['isInHangar'] = False
+    g_config.isInHangar = False
     if g_config.data['enabled']:
         BigWorld.callback(3.0, skinLoader)
 
@@ -371,4 +394,4 @@ def new_Login_populate(base, self):
 @PYmodsCore.overrideMethod(LobbyView, '_populate')
 def new_Lobby_populate(base, self):
     base(self)
-    g_config.data['isInHangar'] = True
+    g_config.isInHangar = True

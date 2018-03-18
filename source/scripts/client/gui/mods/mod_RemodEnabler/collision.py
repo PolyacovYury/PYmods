@@ -38,7 +38,7 @@ def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     if not g_config.data['enabled']:
         return
-    if any((g_config.data['collisionEnabled'], g_config.data['collisionComparisonEnabled'])):
+    if any((g_config.collisionEnabled, g_config.collisionComparisonEnabled)):
         vEntity = self._HangarVehicleAppearance__vEntity
         vDesc = self._HangarVehicleAppearance__vDesc
         compoundModel = vEntity.model
@@ -90,7 +90,7 @@ def new_setupModel(base, self, buildIdx):
                     pass
             moduleDict['model'].visible = True
         addCollisionGUI(self)
-    if g_config.data['collisionEnabled']:
+    if g_config.collisionEnabled:
         for moduleName in TankPartNames.ALL:
             if compoundModel.node(moduleName) is not None:
                 scaleMat = Math.Matrix()

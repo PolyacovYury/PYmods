@@ -39,7 +39,7 @@ def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     if g_config.OSDesc['dynamic'] is not None:
         attach(self._HangarVehicleAppearance__vEntity.id,
-               g_config.data['dynamicSkinEnabled'] and not g_config.data['collisionComparisonEnabled'])
+               g_config.dynamicSkinEnabled and not g_config.collisionComparisonEnabled)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, 'targetFocus')
