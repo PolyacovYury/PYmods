@@ -38,8 +38,7 @@ def destroy(vehicleID):
 def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     if g_config.OSDesc['dynamic'] is not None:
-        attach(self._VehicleAppearance__vEntityId,
-               g_config.data['dynamicSkinEnabled'] and not g_config.data['collisionComparisonEnabled'])
+        attach(self._VehicleAppearance__vEntityId, g_config.dynamicSkinEnabled and not g_config.collisionComparisonEnabled)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, 'targetFocus')
