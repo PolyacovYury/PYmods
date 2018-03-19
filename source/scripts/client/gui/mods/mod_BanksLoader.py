@@ -67,7 +67,6 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         pass
 
     def onRestartConfirmed(self, buttonID):
-        print buttonID
         if buttonID == 'submit':
             print '%s: client restart confirmed.' % self.ID
             BigWorld.savePreferences()
