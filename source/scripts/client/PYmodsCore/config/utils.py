@@ -7,12 +7,17 @@ modSettingsContainers = {}
 
 
 def smart_update(dict1, dict2):
+    changed = False
     for k in dict1:
-        if isinstance(dict1[k], dict):
-            smart_update(dict1[k], dict2.get(k, {}))
-        elif k in dict2:
-            v = dict2[k]
-            dict1[k] = v.encode('utf-8') if isinstance(v, unicode) else v
+        v = dict2.get(k)
+        if isinstance(v, dict):
+            changed |= smart_update(dict1[k], v)
+        elif v is not None:
+            if isinstance(v, unicode):
+                v = v.encode('utf-8')
+            changed |= dict1[k] != v
+            dict1[k] = v
+    return changed
 
 
 def readHotKeys(data):

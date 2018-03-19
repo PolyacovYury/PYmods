@@ -132,8 +132,7 @@ class JSONLoader:
                 if not success:
                     read_contents = cls.json_dumps(oldConfig, sort_keys)
                 read_data = cls.byte_ify(json.loads(read_contents, object_pairs_hook=OrderedDict))  # maintains ordering
-                if read_data != oldConfig:
-                    smart_update(read_data, oldConfig)
+                if smart_update(read_data, oldConfig):
                     read_lines = cls.byte_ify(cls.json_dumps(read_data, False)).split('\n')
                     for lineNum in sorted(read_excluded):
                         comment, mode = read_excluded[lineNum]
