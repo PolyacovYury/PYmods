@@ -67,6 +67,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         pass
 
     def onRestartConfirmed(self, buttonID):
+        print buttonID
         if buttonID == 'submit':
             print '%s: client restart confirmed.' % self.ID
             BigWorld.savePreferences()
@@ -353,7 +354,7 @@ statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-9
 
 @PYmodsCore.overrideMethod(SimpleDialog, '_SimpleDialog__callHandler')
 def new_callHandler(base, self, buttonID):
-    if self._SimpleDialog__handler == _config.onRestartConfirmed:
+    if len(self._SimpleDialog__buttons) == 3:
         self._SimpleDialog__handler(buttonID)
         self._SimpleDialog__isProcessed = True
     else:
