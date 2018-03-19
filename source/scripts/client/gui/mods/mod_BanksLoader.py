@@ -355,6 +355,7 @@ statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-9
 def new_callHandler(base, self, buttonID):
     if self._SimpleDialog__handler == _config.onRestartConfirmed:
         self._SimpleDialog__handler(buttonID)
+        self._SimpleDialog__isProcessed = True
     else:
         base(self, buttonID)
 
