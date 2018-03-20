@@ -149,6 +149,10 @@ def refreshCurrentVehicle():
         g_currentPreviewVehicle._CurrentPreviewVehicle__vehAppearance.refreshVehicle(g_currentPreviewVehicle.item)
     else:
         g_currentVehicle.refreshModel()
+    from HeroTank import HeroTank
+    for entity in HeroTank.allCameraObjects:
+        if isinstance(entity, HeroTank):
+            entity.recreateVehicle()
 
 
 class Analytics(object):

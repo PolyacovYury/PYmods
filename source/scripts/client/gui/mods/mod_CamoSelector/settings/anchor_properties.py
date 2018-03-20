@@ -1,5 +1,3 @@
-import gettext
-
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.camo_anchor_properties import CamoAnchorProperties, \
     CustomizationCamoAnchorVO
@@ -13,6 +11,7 @@ from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.app_loader import g_appLoader
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
+from helpers import i18n
 from helpers.i18n import makeString as _ms
 from .shared import C11nMode, RandMode, TeamMode
 
@@ -106,7 +105,7 @@ def _getData(base, self):
                                      g_config.i18n['UI_flashCol_randMode_label'], swatchScales).asDict()
 
 
-@overrideMethod(gettext.GNUTranslations, 'gettext')
+@overrideMethod(i18n._Translations, 'gettext')
 def new_gettext(base, self, key, *args, **kwargs):
     if key == VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_CAMO_COLOR.split(':', 1)[1]:
         view = g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.LOBBY_SUB).getView()

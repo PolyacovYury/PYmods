@@ -1,7 +1,7 @@
 import PYmodsCore
 import traceback
 from Avatar import PlayerAvatar
-from gui.ClientHangarSpace import _VehicleAppearance
+from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 from . import attached_models
 from .. import g_config
@@ -34,11 +34,12 @@ def destroy(vehicleID):
     attached_models.detach(vehicleID, 'destroy', 'skins_dynamic')
 
 
-@PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__setupModel')
+@PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__setupModel')
 def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     if g_config.OSDesc['dynamic'] is not None:
-        attach(self._VehicleAppearance__vEntityId, g_config.dynamicSkinEnabled and not g_config.collisionComparisonEnabled)
+        attach(self._HangarVehicleAppearance__vEntity.id,
+               g_config.dynamicSkinEnabled and not g_config.collisionComparisonEnabled)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, 'targetFocus')

@@ -181,7 +181,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 for filterNode in camouflages[ID].filter.include:
                     if filterNode.nations:
                         nationsList += filterNode.nations
-            if set(nationsList) == set(idx for idx, name in enumerate(nations.NAMES) if name != 'italy'):
+            if set(nationsList) >= set(idx for idx, name in enumerate(nations.NAMES) if name != 'italy'):
                 self.interCamo.append(camoName)
         settings = loadJson(self.ID, 'settings', {}, self.configPath)
         if 'disable' in settings:

@@ -4,62 +4,61 @@ import Math
 import PYmodsCore
 import material_kinds
 from AvatarInputHandler import mathUtils
-from gui.ClientHangarSpace import _VehicleAppearance
+from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from . import g_config
 
 
 def clearCollision(self):
-    vEntityId = self._VehicleAppearance__vEntityId
+    vEntity = self._HangarVehicleAppearance__vEntity
     if getattr(self, 'collisionLoaded', False):
         for moduleName, moduleDict in self.modifiedModelsDesc.items():
-            if moduleDict['model'] in tuple(BigWorld.entity(vEntityId).models):
-                BigWorld.entity(vEntityId).delModel(moduleDict['model'])
+            if moduleDict['model'] in tuple(vEntity.models):
+                vEntity.delModel(moduleDict['model'])
                 for motor in tuple(moduleDict['model'].motors):
                     moduleDict['model'].delMotor(motor)
     if hasattr(self, 'collisionTable'):
         del self.collisionTable
 
 
-@PYmodsCore.overrideMethod(_VehicleAppearance, 'refresh')
-def new_refresh(base, self):
+@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'refresh')
+def new_refresh(base, self, *args):
     clearCollision(self)
-    base(self)
+    base(self, *args)
 
 
-@PYmodsCore.overrideMethod(_VehicleAppearance, 'recreate')
-def new_recreate(base, self, vDesc, vState, onVehicleLoadedCallback=None):
+@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'recreate')
+def new_recreate(base, self, *args):
     clearCollision(self)
-    base(self, vDesc, vState, onVehicleLoadedCallback)
+    base(self, *args)
 
 
-@PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__setupModel')
+@PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__setupModel')
 def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     if not g_config.data['enabled']:
         return
-    vEntityId = self._VehicleAppearance__vEntityId
-    vEntity = BigWorld.entity(vEntityId)
-    vDesc = self._VehicleAppearance__vDesc
-    compoundModel = vEntity.model
-    self.collisionLoaded = True
-    self.modifiedModelsDesc = dict([(partName, {'model': None, 'matrix': None}) for partName in TankPartNames.ALL])
-    failList = []
-    for partName in self.modifiedModelsDesc.keys():
-        modelName = ''
-        try:
-            modelName = getattr(vDesc, partName).hitTester.bspModelName
-            self.modifiedModelsDesc[partName]['model'] = model = BigWorld.Model(modelName)
-            model.visible = False
-        except StandardError:
-            self.collisionLoaded = False
-            failList.append(modelName if modelName else partName)
-    if failList:
-        print 'RemodEnabler: collision load failed: models not found'
-        print failList
-    if not self.collisionLoaded:
-        return
     if any((g_config.collisionEnabled, g_config.collisionComparisonEnabled)):
+        vEntity = self._HangarVehicleAppearance__vEntity
+        vDesc = self._HangarVehicleAppearance__vDesc
+        compoundModel = vEntity.model
+        self.collisionLoaded = True
+        self.modifiedModelsDesc = dict([(partName, {'model': None, 'matrix': None}) for partName in TankPartNames.ALL])
+        failList = []
+        for partName in self.modifiedModelsDesc.keys():
+            modelName = ''
+            try:
+                modelName = getattr(vDesc, partName).hitTester.bspModelName
+                self.modifiedModelsDesc[partName]['model'] = model = BigWorld.Model(modelName)
+                model.visible = False
+            except StandardError:
+                self.collisionLoaded = False
+                failList.append(modelName if modelName else partName)
+        if failList:
+            print 'RemodEnabler: collision load failed: models not found'
+            print failList
+        if not self.collisionLoaded:
+            return
         # Getting offset matrices
         hullOffset = mathUtils.createTranslationMatrix(vDesc.chassis.hullPosition)
         self.modifiedModelsDesc[TankPartNames.CHASSIS]['matrix'] = fullChassisMP = mathUtils.createIdentityMatrix()
@@ -142,7 +141,7 @@ class TexBox(GUIBox):
 
 
 def addCollisionGUI(self):
-    vDesc = self._VehicleAppearance__vDesc
+    vDesc = self._HangarVehicleAppearance__vDesc
     self.collisionTable = {}
     for moduleIdx, moduleName in enumerate(TankPartNames.ALL):
         self.collisionTable[moduleName] = curCollisionTable = {'textBoxes': [], 'texBoxes': [], 'armorValues': {}}
