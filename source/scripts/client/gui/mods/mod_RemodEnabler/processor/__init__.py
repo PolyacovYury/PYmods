@@ -3,7 +3,7 @@ import PYmodsCore
 import traceback
 from CurrentVehicle import _RegularPreviewAppearance, g_currentPreviewVehicle
 from gui import SystemMessages
-from gui.ClientHangarSpace import _VehicleAppearance
+from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from helpers import dependency
 from items.vehicles import CompositeVehicleDescriptor
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -126,9 +126,9 @@ def new_cacheAppearance(base, self, vId, info, *args):
     return base(self, vId, info, *args)
 
 
-@PYmodsCore.overrideMethod(_VehicleAppearance, '_VehicleAppearance__startBuild')
+@PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled']:
         g_config.curVehicleName = vDesc.name.split(':')[1].lower()
-        vDesc_process(self._VehicleAppearance__vEntityId, vDesc, 'hangar')
+        vDesc_process(self._HangarVehicleAppearance__vEntity.id, vDesc, 'hangar')
     base(self, vDesc, vState)

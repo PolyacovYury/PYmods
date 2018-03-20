@@ -6,7 +6,7 @@ from Avatar import PlayerAvatar
 from AvatarInputHandler import mathUtils
 from Vehicle import Vehicle
 from functools import partial
-from gui.ClientHangarSpace import _VehicleAppearance
+from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from .. import g_config
 
@@ -77,10 +77,7 @@ def attach(vehicleID, modID=None, visible=False):
         vEntity = BigWorld.entity(vehicleID)
         if vEntity is None:
             return
-        if hasattr(vEntity, 'appearance'):
-            compoundModel = vEntity.appearance.compoundModel
-        else:
-            compoundModel = vEntity.model
+        compoundModel = vEntity.model
         scaleMat = mathUtils.createIdentityMatrix()
         attachMode = dyn['mode']
         if 'scale' in attachMode:
@@ -156,13 +153,13 @@ def new_destroyGUI(base, self):
     base(self)
 
 
-@PYmodsCore.overrideMethod(_VehicleAppearance, 'refresh')
-def new_refresh(base, self):
+@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'refresh')
+def new_refresh(base, self, *args):
     destroy_all()
-    base(self)
+    base(self, *args)
 
 
-@PYmodsCore.overrideMethod(_VehicleAppearance, 'recreate')
-def new_recreate(base, self, vDesc, vState, onVehicleLoadedCallback=None):
+@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'recreate')
+def new_recreate(base, self, *args):
     destroy_all()
-    base(self, vDesc, vState, onVehicleLoadedCallback)
+    base(self, *args)

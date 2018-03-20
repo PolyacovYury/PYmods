@@ -6,7 +6,7 @@ from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PYmodsCore import overrideMethod
 from gui import g_tankActiveCamouflage
-from gui.ClientHangarSpace import OutfitComponent, _VehicleAppearance
+from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework import ViewTypes
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
@@ -169,10 +169,10 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None, isGunCarriage
     random.seed()
 
 
-@overrideMethod(_VehicleAppearance, '_VehicleAppearance__assembleModel')
+@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__assembleModel')
 def new_assembleModel(base, self, *a, **kw):
     result = base(self, *a, **kw)
-    if not self._VehicleAppearance__isVehicleDestroyed:
+    if not self._HangarVehicleAppearance__isVehicleDestroyed:
         manager = g_appLoader.getDefLobbyApp().containerManager
         if manager is not None:
             container = manager.getContainer(ViewTypes.LOBBY_SUB)
@@ -180,7 +180,7 @@ def new_assembleModel(base, self, *a, **kw):
                 c11nView = container.getView()
                 if c11nView is not None and hasattr(c11nView, 'getCurrentOutfit'):
                     outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
-                    self.updateCustomization(outfit, OutfitComponent.ALL)
+                    self.updateCustomization(outfit)
                     return result
         if g_currentPreviewVehicle.isPresent():
             vehicle = g_currentPreviewVehicle.item
@@ -188,7 +188,7 @@ def new_assembleModel(base, self, *a, **kw):
             vehicle = g_currentVehicle.item
         else:
             vehicle = None
-        vDesc = self._VehicleAppearance__vDesc
+        vDesc = self._HangarVehicleAppearance__vDesc
         if g_config.data['enabled'] and vDesc.name not in g_config.disable and not (
                 vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
             nationName, vehicleName = vDesc.name.split(':')
@@ -199,7 +199,7 @@ def new_assembleModel(base, self, *a, **kw):
                 outfit = vehicle.getOutfit(season).copy() if vehicle else Outfit()
                 g_tankActiveCamouflage[intCD] = season
             else:
-                outfit = self._VehicleAppearance__getActiveOutfit().copy()
+                outfit = self._HangarVehicleAppearance__getActiveOutfit().copy()
                 if g_tankActiveCamouflage.get(intCD, SeasonType.EVENT) == SeasonType.EVENT:
                     active = []
                     for season in SeasonType.SEASONS:
@@ -219,13 +219,14 @@ def new_assembleModel(base, self, *a, **kw):
                     seasonName, {})
                 processRandomOutfit(outfit, seasonName, seasonCache, isGunCarriage=vDesc.turret.isGunCarriage)
                 applyCache(outfit, vehicleName, seasonCache)
-            self.updateCustomization(outfit, OutfitComponent.ALL)
+            self.updateCustomization(outfit)
     return result
 
 
-@overrideMethod(CompoundAppearance, '_CompoundAppearance__getVehicleOutfit')
-def new_getVehicleOutfit(base, self, *a, **kw):
-    result = base(self, *a, **kw).copy()
+@overrideMethod(CompoundAppearance, '_CompoundAppearance__prepareOutfit')
+def new_prepareOutfit(base, self, *a, **kw):
+    base(self, *a, **kw)
+    result = self._CompoundAppearance__outfit.copy()
     vDesc = self._CompoundAppearance__typeDesc
     if not self._CompoundAppearance__vehicle or not vDesc:
         return result
@@ -248,7 +249,7 @@ def new_getVehicleOutfit(base, self, *a, **kw):
             seasonCache = g_config.arenaCamoCache.setdefault(vID, {})
             processRandomOutfit(result, seasonName, seasonCache, vID, isGunCarriage=vDesc.turret.isGunCarriage)
             applyCache(result, vehicleName, seasonCache)
-    return result
+    self._CompoundAppearance__outfit = result
 
 
 @overrideMethod(PlayerAvatar, 'onBecomePlayer')
