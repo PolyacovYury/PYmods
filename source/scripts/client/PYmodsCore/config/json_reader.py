@@ -121,7 +121,6 @@ class JSONLoader:
 
     @classmethod
     def loadJson(cls, ID, name, oldConfig, path, save=False, rewrite=True, quiet=False, encrypted=False, sort_keys=True):
-        __ = rewrite  # legacy
         config_new = oldConfig
         if not os.path.exists(path):
             os.makedirs(path)
@@ -132,17 +131,24 @@ class JSONLoader:
                 if not success:
                     read_contents = cls.json_dumps(oldConfig, sort_keys)
                 read_data = cls.byte_ify(json.loads(read_contents, object_pairs_hook=OrderedDict))  # maintains ordering
-                if smart_update(read_data, oldConfig):
-                    read_lines = cls.byte_ify(cls.json_dumps(read_data, False)).split('\n')
+                if rewrite:
+                    updated = read_data != oldConfig
+                    read_data = oldConfig
+                    sort_keys = True
+                else:
+                    updated = smart_update(read_data, oldConfig)
+                    sort_keys = False
+                if updated:
+                    write_lines = cls.byte_ify(cls.json_dumps(read_data, sort_keys)).split('\n')
                     for lineNum in sorted(read_excluded):
                         comment, mode = read_excluded[lineNum]
                         if mode:
-                            read_lines.insert(lineNum, comment)
+                            write_lines.insert(lineNum, comment)
                         else:
-                            read_lines[lineNum] += comment
+                            write_lines[lineNum] += comment
                     if not quiet:
                         print '%s: updating config: %s' % (ID, new_path)
-                    cls.json_file_write(new_path, '\n'.join(read_lines), encrypted)
+                    cls.json_file_write(new_path, '\n'.join(write_lines), encrypted)
             else:
                 cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
         elif os.path.isfile(new_path):
