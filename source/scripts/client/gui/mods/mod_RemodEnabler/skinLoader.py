@@ -13,6 +13,7 @@ import traceback
 import weakref
 from adisp import AdispException, async, process
 from functools import partial
+from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
@@ -366,7 +367,7 @@ def processMember(memberFileName, skinName):
 
 
 @process
-def skinLoader():
+def skinLoader(loginView):
     global skinsChecked
     if g_config.data['enabled'] and g_config.skinsFound and not skinsChecked:
         lobbyApp = g_appLoader.getDefLobbyApp()
@@ -385,6 +386,7 @@ def skinLoader():
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, g_config.loadingProxy.onWindowClose)
         skinsChecked = True
+        loginView._setData()
 
 
 @PYmodsCore.overrideMethod(LoginView, '_populate')
@@ -392,7 +394,10 @@ def new_Login_populate(base, self):
     base(self)
     g_config.isInHangar = False
     if g_config.data['enabled']:
-        BigWorld.callback(3.0, skinLoader)
+        if g_config.skinsFound and not skinsChecked:
+            self.as_setDefaultValuesS('', '', self._rememberUser, GUI_SETTINGS.rememberPassVisible,
+                                      GUI_SETTINGS.igrCredentialsReset, not GUI_SETTINGS.isEmpty('recoveryPswdURL'))
+        BigWorld.callback(3.0, partial(skinLoader, self))
 
 
 @PYmodsCore.overrideMethod(LobbyView, '_populate')
