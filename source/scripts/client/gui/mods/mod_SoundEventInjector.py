@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import PYmodsCore
 import ResMgr
+import SoundGroups
 import glob
 import items.vehicles
 import nations
@@ -9,7 +10,7 @@ import traceback
 from Avatar import PlayerAvatar
 from ReloadEffect import _BarrelReloadDesc
 from debug_utils import LOG_ERROR
-from helpers.EffectsList import _SoundEffectDesc
+from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc
 from items.components import sound_components
 from material_kinds import EFFECT_MATERIALS
 
@@ -122,9 +123,9 @@ def new_readShotEffects(base, xmlCtx, section):
         for effType in (x for x in ('projectile',) if x in effData):
             typeData = effData[effType]
             for effectDesc in res[effType][2]._EffectsList__effectDescList:
-                if isinstance(effectDesc, _SoundEffectDesc):
-                    effectDesc._soundNames = tuple(typeData.get(key, effectDesc._soundNames[idx]) for idx, key in
-                                                   enumerate(('wwsoundPC', 'wwsoundNPC')))
+                if isinstance(effectDesc, _TracerSoundEffectDesc):
+                    effectDesc._soundName = tuple(typeData.get(key, effectDesc._soundName[idx]) for idx, key in
+                                                  enumerate(('wwsoundPC', 'wwsoundNPC')))
         for effType in (x for x in (tuple(x + 'Hit' for x in EFFECT_MATERIALS) + (
                 'armorBasicRicochet', 'armorRicochet', 'armorResisted', 'armorHit', 'armorCriticalHit')) if x in effData):
             typeData = effData[effType]
@@ -187,6 +188,18 @@ def new_initGUI(base, self):
 
     self.soundNotifications._IngameSoundNotifications__events = events
     return result
+
+
+@PYmodsCore.overrideMethod(PlayerAvatar, 'updateVehicleGunReloadTime')
+def updateVehicleGunReloadTime(base, self, vehicleID, timeLeft, baseTime):
+    if self._PlayerAvatar__prevGunReloadTimeLeft != timeLeft and timeLeft == 0.0:
+        try:
+            if 'fx' in _config.data['sound_notifications'].get('gun_reloaded', {}):
+                SoundGroups.g_instance.playSound2D(_config.data['sound_notifications']['gun_reloaded']['fx'])
+        except StandardError:
+            traceback.print_exc()
+
+    base(self, vehicleID, timeLeft, baseTime)
 
 
 _config = ConfigInterface()
