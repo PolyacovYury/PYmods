@@ -124,7 +124,7 @@ def new_readShotEffects(base, xmlCtx, section):
             typeData = effData[effType]
             for effectDesc in res[effType][2]._EffectsList__effectDescList:
                 if isinstance(effectDesc, _TracerSoundEffectDesc):
-                    effectDesc._soundName = tuple(typeData.get(key, effectDesc._soundName[idx]) for idx, key in
+                    effectDesc._soundName = tuple((typeData.get(key, effectDesc._soundName[idx]),) for idx, key in
                                                   enumerate(('wwsoundPC', 'wwsoundNPC')))
         for effType in (x for x in (tuple(x + 'Hit' for x in EFFECT_MATERIALS) + (
                 'armorBasicRicochet', 'armorRicochet', 'armorResisted', 'armorHit', 'armorCriticalHit')) if x in effData):
