@@ -127,6 +127,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             'UI_setting_delay_seconds': 'sec.',
             'UI_setting_ally': 'Ally', 'UI_setting_enemy': 'Enemy', 'UI_setting_player': 'Player',
             'UI_setting_squadMan': 'Squadman',
+            'UI_message_vehicleDestroyed': 'Player vehicle destroyed!',
             'UI_message_firstBlood': '$attacker drew First Blood!',
             'UI_message_firstBlood_ally': '$attacker killed first enemy!',
             'UI_message_firstBlood_enemy': '$attacker killed first ally!',
@@ -509,14 +510,19 @@ def checkSquadKills(targetID, attackerID, reason):
 
 
 def firstCheck(targetID, attackerID, reason, squadChecked, killerID):
-    arena = BigWorld.player().arena
+    player = BigWorld.player()
+    arena = player.arena
     if not hasattr(arena, 'firstBloods'):
         arena.firstBloods = {'notFirst': False, 'player': False, 'ally': False, 'enemy': False}
-    attacker = {'vehicle': arena.vehicles[attackerID], 'isPlayer': attackerID == BigWorld.player().playerVehicleID,
+    if attackerID not in arena.vehicles:
+        if targetID == player.playerVehicleID:
+            _gui_flash.addText(_config.i18n['UI_message_vehicleDestroyed'])
+        return
+    attacker = {'vehicle': arena.vehicles[attackerID], 'isPlayer': attackerID == player.playerVehicleID,
                 'isSquadMan': attackerID in arena.UT['squadMan']}
-    attacker['isAlly'] = attacker['vehicle']['team'] == BigWorld.player().team
+    attacker['isAlly'] = attacker['vehicle']['team'] == player.team
     target = {'vehicle': arena.vehicles[targetID]}
-    target['isAlly'] = target['vehicle']['team'] == BigWorld.player().team
+    target['isAlly'] = target['vehicle']['team'] == player.team
     if attackerID != targetID and attacker['isAlly'] != target['isAlly'] and not all(arena.firstBloods.values()):
         if not _config.data['firstOption']:
             if not arena.firstBloods['notFirst']:
@@ -620,7 +626,7 @@ def firstCheck(targetID, attackerID, reason, squadChecked, killerID):
             LOG_NOTE('Medal checked frags:', frags)
             killCheck(origFrags)
         elif attacker['isPlayer'] or _config.data['allKill'] and (
-                        _config.data['allKill'] == 2 or cStats[BigWorld.player().playerVehicleID]['frags'] <= origFrags):
+                _config.data['allKill'] == 2 or cStats[player.playerVehicleID]['frags'] <= origFrags):
             LOG_NOTE('Calling normal killCheck function.', targetID, attackerID)
             LOG_NOTE('frags:', origFrags)
             killCheck(origFrags)
