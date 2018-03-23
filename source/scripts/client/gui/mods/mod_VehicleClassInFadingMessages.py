@@ -14,7 +14,7 @@ def new_formatEntities(self, args, extra=None):
             if arg:
                 colour = 'green' if isAlly(vID) else 'red'
                 args[argName] = arg.replace(
-                    '(', "(<img src='img://gui/maps/icons/vehicleTypes/%s/%s.png' width='17' height='21' vspace='-6'/>" % (
+                    '(', "(<img src='img://gui/maps/icons/vehicleTypes/%s/%s.png' width='17' height='21' vspace='-5'/>" % (
                         colour, getVehicleClass(vID)))
 
 
