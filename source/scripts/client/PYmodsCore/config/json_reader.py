@@ -1,10 +1,11 @@
 # coding=utf-8
 import binascii
+import zlib
+
 import codecs
 import json
 import os
 import re
-import zlib
 from collections import OrderedDict
 from .utils import smart_update
 
@@ -27,8 +28,7 @@ class JSONObjectEncoder(json.JSONEncoder):
                 if self.sort_keys:
                     keys = sorted(keys)
                 i += self.indent
-                return '{\n%s\n%s}' % (',\n'.join(' ' * i + '%s: %s' % (
-                    json.dumps(k) if not isinstance(k, int) else json.dumps(str(k)), self.encode(o[k], i)) for k in keys),
+                return '{\n%s\n%s}' % (',\n'.join(' ' * i + '%s: %s' % (json.dumps(k), self.encode(o[k], i)) for k in keys),
                                        ' ' * (i - self.indent))
             else:
                 return super(JSONObjectEncoder, self).encode(o)
@@ -51,6 +51,17 @@ class JSONLoader:
                 return OrderedDict((cls.byte_ify(key), cls.byte_ify(value)) for key, value in inputs.iteritems())
             elif isinstance(inputs, dict) and not ignore_dicts:
                 return {cls.byte_ify(key, ignore_dicts=True): cls.byte_ify(value, ignore_dicts=True) for key, value in
+                        inputs.iteritems()}
+        return inputs
+
+    @classmethod
+    def stringed_ints(cls, inputs):
+        if inputs:
+            if isinstance(inputs, OrderedDict):
+                return OrderedDict(((str(key) if isinstance(key, int) else key), cls.stringed_ints(value)) for key, value in
+                                   inputs.iteritems())
+            elif isinstance(inputs, dict):
+                return {(str(key) if isinstance(key, int) else key): cls.stringed_ints(value) for key, value in
                         inputs.iteritems()}
         return inputs
 
@@ -122,6 +133,7 @@ class JSONLoader:
     @classmethod
     def loadJson(cls, ID, name, oldConfig, path, save=False, rewrite=True, quiet=False, encrypted=False, sort_keys=True):
         config_new = oldConfig
+        oldConfig = cls.stringed_ints(oldConfig)
         if not os.path.exists(path):
             os.makedirs(path)
         new_path = '%s%s.json' % (path, name)
