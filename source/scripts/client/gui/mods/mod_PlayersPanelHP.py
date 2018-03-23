@@ -24,11 +24,14 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.1.1 (%(file_compile_date)s)'
+        self.version = '1.1.2 (%(file_compile_date)s)'
         self.author = 'by PolarFox (forked %s)' % self.author
         self.data = {'textFields': {}}
         vxEvents.onStateChanged += self.__onStateChanged
         super(PlayersPanelController, self).init()
+
+    def loadLang(self):
+        pass
 
     def updateMod(self):
         pass
