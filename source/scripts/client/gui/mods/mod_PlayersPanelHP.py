@@ -42,6 +42,9 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
     def registerSettings(self):
         pass
 
+    def readCurrentSettings(self, quiet=True):
+        self.data['textFields'].update(self.loadJsonData().get('textFields', {}))
+
     @staticmethod
     def getVehicleHealth(vehicleID):
         if hasattr(BigWorld.entity(vehicleID), 'health'):
