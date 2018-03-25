@@ -1,40 +1,56 @@
-import Math
-import ResMgr
-
 import BigWorld
 import Keys
+import Math
 import bisect
 from AvatarInputHandler.DynamicCameras.SniperCamera import SniperCamera
 from AvatarInputHandler.control_modes import SniperControlMode
+from PYmodsCore import PYmodsConfigInterface, overrideMethod, Analytics, checkKeys
 from vehicle_systems.tankStructure import TankPartNames
 
-showHull = True
-changeZoom = True
-zoom = 0.8
-keySV = Keys.KEY_F11
-blacklist = ['germany:Karl', 'ussr:R00_T_50_2', 'usa:A00_T110E5', 'france:F00_AMX_50Foch_155']
-conf = ResMgr.openSection('../mods/configs/ShowVehicle/ShowVehicle.xml')
-if conf is not None:
-    changeZoom = conf.readBool('changeZoom', True)
-    zoom = conf.readFloat('zoom', 0.8)
-    keyS = conf.readString('hotKey', 'KEY_F11')
-    if not hasattr(Keys, keyS):
-        print 'ShowVehicle: hotkey config not valid, returned to KEY_F11'
-    else:
-        keySV = getattr(Keys, keyS)
-    blacklist = [name.strip() for name in conf.readString('blacklist', '').split(',')]
-else:
-    print 'ShowVehicle: config not found, creating default'
-    newConf = ResMgr.openSection('../mods/configs/ShowVehicle/ShowVehicle.xml', True)
-    newConf.writeString('hotKey', 'KEY_F11')
-    newConf.writeString('blacklist', ','.join(blacklist))
-    newConf.writeBool('changeZoom', True)
-    newConf.writeFloat('zoom', 0.8)
-    newConf.save()
+
+class ConfigInterface(PYmodsConfigInterface):
+    def init(self):
+        self.ID = '%(mod_ID)s'
+        self.version = '1.0.0 (%(file_compile_date)s)'
+        self.author += ' (formerly by l3VGV, supported by KL1SK)'
+        self.defaultKeys = {'hotkey': [Keys.KEY_F11], 'hotKey': ['KEY_F11']}
+        self.data = {'enabled': True, 'isEnabled': True, 'changeZoom': True, 'zoomValue': 0.8,
+                     'blacklist': 'germany:Karl,ussr:R00_T_50_2,usa:A00_T110E5,france:F00_AMX_50Foch_155',
+                     'hotkey': self.defaultKeys['hotkey'], 'hotKey': self.defaultKeys['hotKey']}
+        self.i18n = {
+            'name': 'Show vehicle in sniper mode',
+            'UI_setting_isEnabled_text': 'Active at battle start',
+            'UI_setting_isEnabled_tooltip': 'Vehicle hull is displayed in sniper mode on battle start.',
+            'UI_setting_changeZoom_text': 'Add another zoom value',
+            'UI_setting_changeZoom_tooltip':
+                'The mod adds another zoom value in sniper mode so that you could see your vehicle hull better.',
+            'UI_setting_zoomValue_text': 'Additional zoom value',
+            'UI_setting_zoomValue_tooltip': 'The value that gets added into the list of zoom values.',
+            'UI_setting_blacklist_text': 'Vehicle blacklist',
+            'UI_setting_blacklist_tooltip': 'The list of vehicles that do not get processed by the mod.\n\nI have no idea, '
+                                            'why the users wanted this, since the mod has a toggle hotkey, but ok.',
+            'UI_setting_hotkey_text': 'Toggle hotkey',
+            'UI_setting_hotkey_tooltip': 'This hotkey only works in sniper mode and toggles vehicle hull displaying.'}
+        super(ConfigInterface, self).init()
+
+    def createTemplate(self):
+        return {'modDisplayName': self.i18n['name'],
+                'settingsVersion': 1,
+                'enabled': self.data['enabled'],
+                'column1': [self.tb.createControl('changeZoom'),
+                            self.tb.createStepper('zoomValue', 0.1, 1.0, 0.1, True),
+                            self.tb.createControl('blacklist', 'TextInputField', 800)],
+                'column2': [self.tb.createHotKey('hotkey'),
+                            self.tb.createControl('isEnabled')]}
+
+
+config = ConfigInterface()
+analytics = Analytics(config.ID, config.version, 'UA-76792179-20')
 
 
 def addValues(zooms, exposures):
-    if showHull:
+    zoom = config.data['zoomValue']
+    if config.data['isEnabled']:
         if zoom not in zooms:
             bisect.insort(zooms, zoom)
         if 0.7 not in exposures:
@@ -46,50 +62,44 @@ def addValues(zooms, exposures):
             exposures.remove(0.7)
 
 
-def sV_SniperCamera_enable(self, targetPos, saveZoom):
-    addValues(self._SniperCamera__cfg['zooms'], self._SniperCamera__dynamicCfg['zoomExposure'])
-    OLD_SniperCamera_enable(self, targetPos, saveZoom)
-    if showHull:
-        show_Hull(True)
+@overrideMethod(SniperCamera, 'enable')
+def new_SniperCamera_enable(base, self, *a, **kw):
+    if config.data['enabled']:
+        addValues(self._SniperCamera__cfg['zooms'], self._SniperCamera__dynamicCfg['zoomExposure'])
+    base(self, *a, **kw)
+    if config.data['enabled'] and config.data['isEnabled']:
+        hide_hull(True)
 
 
-def sV_SniperCamera_disable(self):
-    if showHull:
-        show_Hull(False)
-    OLD_SniperCamera_disable(self)
+@overrideMethod(SniperCamera, 'disable')
+def new_SniperCamera_disable(base, self):
+    if config.data['enabled'] and config.data['isEnabled']:
+        hide_hull(False)
+    base(self)
 
 
-def show_Hull(show):
+def hide_hull(hide):
     player = BigWorld.player()
     vehicle = player.getVehicleAttached()
-    if vehicle is not None and player.vehicleTypeDescriptor.name not in blacklist:
-        vehicle.show(show)
+    if vehicle is not None and player.vehicleTypeDescriptor.name not in config.data['blacklist']:
+        vehicle.show(hide)
         scaleMatrix = Math.Matrix()
-        scaleMatrix.setScale((0.001,) * 3 if show else (1.0,) * 3)
+        scaleMatrix.setScale((0.001,) * 3 if hide else (1.0,) * 3)
         vehicle.appearance.compoundModel.node(TankPartNames.GUN, scaleMatrix)
 
 
-def sV_SniperControlMode_handleKeyEvent(self, isDown, key, mods, event=None):
-    global showHull
-    if isDown and key == keySV and mods == 0:
-        showHull = not showHull
-        show_Hull(showHull)
+@overrideMethod(SniperControlMode, 'handleKeyEvent')
+def new_SniperControlMode_handleKeyEvent(base, self, isDown, key, mods, event=None):
+    if config.data['enabled'] and isDown and checkKeys(config.data['hotkey']):
+        config.data['isEnabled'] = not config.data['isEnabled']
+        hide_hull(config.data['isEnabled'])
         addValues(self._cam._SniperCamera__cfg['zooms'], self._cam._SniperCamera__dynamicCfg['zoomExposure'])
-    OLD_SniperControlMode_handleKeyEvent(self, isDown, key, mods, event)
+    base(self, isDown, key, mods, event)
 
 
-def sV_SniperCamera_getZooms(self):
-    zooms = OLD_SniperCamera_getZooms(self)
-    if not self._SniperCamera__cfg['increasedZoom'] and zoom in zooms:
+@overrideMethod(SniperCamera, '_SniperCamera__getZooms')
+def new_SniperCamera_getZooms(base, self):
+    zooms = base(self)
+    if not self._SniperCamera__cfg['increasedZoom'] and config.data['zoomValue'] in zooms:
         zooms.append(self._SniperCamera__cfg['zooms'][3])
     return zooms
-
-
-OLD_SniperCamera_enable = SniperCamera.enable
-SniperCamera.enable = sV_SniperCamera_enable
-OLD_SniperCamera_disable = SniperCamera.disable
-SniperCamera.disable = sV_SniperCamera_disable
-OLD_SniperControlMode_handleKeyEvent = SniperControlMode.handleKeyEvent
-SniperControlMode.handleKeyEvent = sV_SniperControlMode_handleKeyEvent
-OLD_SniperCamera_getZooms = SniperCamera._SniperCamera__getZooms
-SniperCamera._SniperCamera__getZooms = sV_SniperCamera_getZooms
