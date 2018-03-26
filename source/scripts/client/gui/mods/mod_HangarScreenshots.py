@@ -74,6 +74,7 @@ def toggleHangarUI(visible):
     lobby = g_appLoader.getApp()
     hangar = lobby.containerManager.getView(ViewTypes.LOBBY_SUB)
     hangar.flashObject.visible = visible
+    lobby.graphicsOptimizationManager.switchOptimizationEnabled(visible)
 
 
 @PYmodsCore.overrideMethod(HangarCameraManager, '_HangarCameraManager__updateCameraByMouseMove')
