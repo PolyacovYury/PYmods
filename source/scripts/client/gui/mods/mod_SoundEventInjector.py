@@ -192,13 +192,13 @@ def new_initGUI(base, self):
 
 @PYmodsCore.overrideMethod(PlayerAvatar, 'updateVehicleGunReloadTime')
 def updateVehicleGunReloadTime(base, self, vehicleID, timeLeft, baseTime):
-    if self._PlayerAvatar__prevGunReloadTimeLeft != timeLeft and timeLeft == 0.0:
+    if ((self._PlayerAvatar__prevGunReloadTimeLeft != timeLeft and timeLeft == 0.0) and not
+            self.guiSessionProvider.shared.vehicleState.isInPostmortem):
         try:
             if 'fx' in _config.data['sound_notifications'].get('gun_reloaded', {}):
                 SoundGroups.g_instance.playSound2D(_config.data['sound_notifications']['gun_reloaded']['fx'])
         except StandardError:
             traceback.print_exc()
-
     base(self, vehicleID, timeLeft, baseTime)
 
 
