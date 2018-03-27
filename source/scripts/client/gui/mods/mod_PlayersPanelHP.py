@@ -143,6 +143,8 @@ else:
                     if vehicleID in mod_playersHP.vCache:
                         break
                     mod_playersHP.updateHealth(vehicleID)
+        except StandardError:
+            traceback.print_exc()
         finally:
             return result
 
@@ -154,6 +156,8 @@ else:
             vehicleID = vehicle.id
             mod_playersHP.validateCache(vehicleID)
             mod_playersHP.updateHealth(vehicleID)
+        except StandardError:
+            traceback.print_exc()
         finally:
             return result
 
@@ -163,5 +167,7 @@ else:
         result = base(self, newHealth, attackerID, attackReasonID)
         try:
             mod_playersHP.updateHealth(self.id, newHealth)
+        except StandardError:
+            traceback.print_exc()
         finally:
             return result
