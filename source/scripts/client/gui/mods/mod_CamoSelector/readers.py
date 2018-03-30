@@ -4,11 +4,12 @@ import items.components.c11n_components as cc
 import items.vehicles as iv
 import nations
 import os
+import traceback
 from PYmodsCore import overrideMethod
 from items import makeIntCompactDescrByID as makeCD
 from items.components import shared_components
 from items.components.c11n_constants import SeasonType
-from items.readers.c11n_readers import CamouflageXmlReader
+from items.readers.c11n_readers import CamouflageXmlReader, PaintXmlReader
 from .settings import g_config
 
 
@@ -35,10 +36,30 @@ class LegacyCamouflageReader(CamouflageXmlReader):
 def new_customization20(base, *args, **kwargs):
     cache = base(*args, **kwargs)
     if g_config.data['enabled'] and 'custom' not in cache.priceGroupNames:
+        createPriceGroup(cache)
+        groupName = g_config.i18n['UI_flashCol_camoGroup_custom']
         for configDir in sorted(g_config.configFolders, key=lambda s: s.lower()):
             filePath = g_config.configPath + 'camouflages/' + configDir + '/'
-            updateCustomizationCache(cache, '.' + filePath, g_config.i18n['UI_flashCol_camoGroup_custom'])
+            __readCamoFolder(groupName, cache, cc.CamouflageItem, '.' + filePath, cache.camouflages)
+        __readPaintFolder(groupName, cache, cc.PaintItem, '.' + g_config.configPath + 'paints/', cache.paints)
     return cache
+
+
+def createPriceGroup(cache):
+    if 20000 in cache.priceGroups:
+        if cache.priceGroups[20000].name != 'custom':
+            ix.raiseWrongXml((None, ''), 'priceGroup', 'CamoSelector price group ID needs to be changed!')
+        return
+    priceGroup = cc.PriceGroup()
+    priceGroup.id = 20000
+    priceGroup.name = intern('custom')
+    priceGroup.notInShop = True
+    priceGroup.tags = frozenset(map(intern, ('custom', 'notInShop', 'legacy', 'paints', 'camouflages', 'common') +
+                                    nations.NAMES))
+    for tag in priceGroup.tags:
+        cache.priceGroupTags.setdefault(tag, []).append(priceGroup)
+    cache.priceGroupNames[priceGroup.name] = priceGroup.id
+    cache.priceGroups[priceGroup.id] = priceGroup
 
 
 @overrideMethod(iv, '_vehicleValues')
@@ -63,30 +84,32 @@ def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
                 yield iv.VehicleValue(vehNameAll, makeCD('vehicle', nationID, vehID), ctx, subsection)
 
 
-def updateCustomizationCache(cache, folder, groupName):
-    createPriceGroup(cache)
-    __readCamoFolder(groupName, cache, cc.CamouflageItem, folder, cache.camouflages)
-
-
 def __readCamoFolder(groupName, cache, itemCls, folder, storage):
     itemsFileName = os.path.join(folder, 'settings.xml')
     dataSection = ResMgr.openSection(itemsFileName)
     try:
         _readItems(groupName, cache, itemCls, (None, 'settings.xml'), dataSection, storage)
+    except StandardError:
+        traceback.print_exc()
     finally:
         ResMgr.purge(itemsFileName)
 
 
-def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
-    """Read items and corresponding item groups from xml.
+def __readPaintFolder(groupName, cache, itemCls, folder, storage):
+    folderSection = ResMgr.openSection(folder)
+    if folderSection is not None:
+        for itemsFileName, section in folderSection.items():
+            if itemsFileName.endswith('.xml'):
+                try:
+                    _readItems(groupName, cache, itemCls, (None, itemsFileName), section, storage)
+                except StandardError:
+                    traceback.print_exc()
+                finally:
+                    ResMgr.purge(itemsFileName)
 
-    :param itemCls: Target item class
-    :param xmlCtx: Tuple with xml context used by ResMgr
-    :param section: Section pointing to xml element with item group collection
-    :param storage: dict to store loaded values
-    :return: dictionary {id, item} of loaded items
-    """
-    reader = LegacyCamouflageReader()
+
+def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
+    reader = LegacyCamouflageReader() if itemCls == cc.CamouflageItem else PaintXmlReader()
     groupsDict = cache.priceGroups
     itemToGroup = cache.itemToPriceGroup
     group = cc.ItemGroup(itemCls)
@@ -104,9 +127,10 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
         j += 1
         item = itemCls(group)
         reader._readFromXml(item, iCtx, i_section)
-        item.i18n = shared_components.I18nExposedComponent(i_name, '')
+        if itemCls == cc.CamouflageItem:
+            item.invisibilityFactor = 0
+            item.i18n = shared_components.I18nExposedComponent(i_name, '')
         item.id = max(20000, *storage) + 1
-        item.invisibilityFactor = 0
         if item.compactDescr in itemToGroup:
             ix.raiseWrongXml(iCtx, 'id', 'duplicate item. id: %s found in group %s' % (
                 item.id, itemToGroup[item.compactDescr]))
@@ -121,19 +145,3 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
             iv._copyPriceForItem(groupsDict[priceGroupId].compactDescr, item.compactDescr, itemNotInShop)
         else:
             ix.raiseWrongXml(iCtx, 'priceGroup', 'no price for item %s' % item.id)
-
-
-def createPriceGroup(cache):
-    if 20000 in cache.priceGroups:
-        if cache.priceGroups[20000].name != 'custom':
-            ix.raiseWrongXml((None, ''), 'priceGroup', 'CamoSelector price group ID needs to be changed!')
-        return
-    priceGroup = cc.PriceGroup()
-    priceGroup.id = 20000
-    priceGroup.name = intern('custom')
-    priceGroup.notInShop = True
-    priceGroup.tags = frozenset(map(intern, ('custom', 'notInShop', 'legacy', 'camouflages', 'common') + nations.NAMES))
-    for tag in priceGroup.tags:
-        cache.priceGroupTags.setdefault(tag, []).append(priceGroup)
-    cache.priceGroupNames[priceGroup.name] = priceGroup.id
-    cache.priceGroups[priceGroup.id] = priceGroup

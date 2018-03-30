@@ -4,6 +4,7 @@ from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import 
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from helpers.i18n import makeString as _ms
@@ -11,7 +12,7 @@ from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
 from . import g_config
-from .shared import C11nTabs, isItemSuitableForTab
+from .shared import C11nTabs, isCamoInternational
 
 
 def getItemSeason(item):
@@ -58,7 +59,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         for item in sorted(allItems.itervalues(), key=comparisonKey):
             groupName = item.groupUserName
             for tabIndex in C11nTabs.ALL:
-                if isItemSuitableForTab(item, tabIndex):
+                if self.isItemSuitableForTab(item, tabIndex):
                     for seasonType in SeasonType.COMMON_SEASONS:
                         if item.season & seasonType:
                             seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
@@ -189,13 +190,30 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         super(CustomizationCarouselDataProvider, self)._dispose()
 
     def _getAllItems(self, requirement):
+        paints = g_cache.customization20().paints.values()
         camouflages = g_cache.customization20().camouflages.values()
-        return {item.intCD: item for item in (self.itemsCache.items.getItemByCD(camo.compactDescr) for camo in camouflages)
-                if requirement(item)}
+        return {item.intCD: item for item in
+                (self.itemsCache.items.getItemByCD(item.compactDescr) for item in paints + camouflages) if requirement(item)}
+
+    def isItemSuitableForTab(self, item, tabIndex):
+        if item is None:
+            return False
+        ct = C11nTabs
+        vehicle = self._currentVehicle.item
+        if tabIndex in ct.PAINTS:
+            return item.itemTypeID == GUI_ITEM_TYPE.PAINT and item.mayInstall(vehicle) and (tabIndex == ct.PAINT) == \
+                   (item.priceGroup != 'custom')
+        isInter = isCamoInternational(item.descriptor)
+        return (item.itemTypeID != GUI_ITEM_TYPE.PAINT) and not (
+                (tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'custom')) or
+                (tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'custom')) or
+                (tabIndex == ct.INTERNATIONAL and not isInter) or
+                (tabIndex == ct.CUSTOM and item.priceGroup != 'custom'))
 
     def _buildCustomizationItems(self):
         season = self._seasonID
-        requirement = _createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(lambda i: isItemSuitableForTab(i, self._tabIndex))
+        requirement = _createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(
+            lambda i: self.isItemSuitableForTab(i, self._tabIndex))
         seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][self._seasonID]
         allItemsGroup = len(seasonAndTabData.allGroups) - 1
         if seasonAndTabData.selectedGroupIndex != allItemsGroup:
