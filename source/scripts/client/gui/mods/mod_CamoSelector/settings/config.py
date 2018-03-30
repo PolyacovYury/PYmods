@@ -3,6 +3,7 @@ import BigWorld
 import ResMgr
 import items.vehicles
 import nations
+import os
 import traceback
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups, Analytics
@@ -20,7 +21,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.camoForSeason = {}
         self.arenaCamoCache = {}
         self.hangarCamoCache = {}
-        self.camouflagesCache = {}
+        self.outfitCache = {}
         self.camouflages = {}
         self.configFolders = {}
         self.teamCamo = dict.fromkeys(('ally', 'enemy'))
@@ -30,7 +31,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = __modID__
-        self.version = '2.0.0 (%s)' % __date__
+        self.version = '2.1.0 (%s)' % __date__
         self.author = '%s (thx to tratatank, Blither!)' % self.author
         self.data = {'enabled': True, 'doRandom': True, 'useBought': True, 'hangarCamoKind': 0,
                      'fullAlpha': False, 'disableWithDefault': False, 'fillEmptySlots': True, 'uniformOutfit': False}
@@ -39,18 +40,24 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_header': 'Camouflages setup',
             'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
                                         '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),
-            'UI_flash_tabs_0_label': 'Shop',
-            'UI_flashCol_tabs_0_text': 'Shop',
-            'UI_flashCol_tabs_0_tooltip': 'Those which can be bought freely',
-            'UI_flash_tabs_1_label': 'Hidden',
-            'UI_flashCol_tabs_1_text': 'Hidden',
-            'UI_flashCol_tabs_1_tooltip': 'Those which are inaccessible under usual circumstances',
-            'UI_flash_tabs_2_label': 'International',
-            'UI_flashCol_tabs_2_text': 'International',
-            'UI_flashCol_tabs_2_tooltip': 'Those which are available for all nations',
-            'UI_flash_tabs_3_label': 'Custom',
-            'UI_flashCol_tabs_3_text': 'Custom',
-            'UI_flashCol_tabs_3_tooltip': 'Those which were added via config files',
+            'UI_flash_tabs_0_label': 'Paint',
+            'UI_flashCol_tabs_0_text': 'Paint',
+            'UI_flashCol_tabs_0_tooltip': 'Not camouflages at all. Paints. :)',
+            'UI_flash_tabs_1_label': 'Custom paint',
+            'UI_flashCol_tabs_1_text': 'Custom paint',
+            'UI_flashCol_tabs_1_tooltip': 'Because not all colors are in the game.',
+            'UI_flash_tabs_2_label': 'Shop',
+            'UI_flashCol_tabs_2_text': 'Shop',
+            'UI_flashCol_tabs_2_tooltip': 'Those which can be bought freely',
+            'UI_flash_tabs_3_label': 'Hidden',
+            'UI_flashCol_tabs_3_text': 'Hidden',
+            'UI_flashCol_tabs_3_tooltip': 'Those which are inaccessible under usual circumstances',
+            'UI_flash_tabs_4_label': 'International',
+            'UI_flashCol_tabs_4_text': 'International',
+            'UI_flashCol_tabs_4_tooltip': 'Those which are available for all nations',
+            'UI_flash_tabs_5_label': 'Custom',
+            'UI_flashCol_tabs_5_text': 'Custom',
+            'UI_flashCol_tabs_5_tooltip': 'Those which were added via config files',
             'UI_flash_switcher_setup': 'SETUP',
             'UI_flash_switcher_install': 'INSTALL',
             'UI_flash_commit_apply': 'Apply',
@@ -136,7 +143,16 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).readCurrentSettings(quiet)
         self.configFolders.clear()
         self.camouflages = {'remap': {}, 'custom': {}}
-        self.camouflagesCache = loadJson(self.ID, 'camouflagesCache', self.camouflagesCache, self.configPath)
+        self.outfitCache = loadJson(self.ID, 'outfitCache', self.outfitCache, self.configPath)
+        if os.path.isfile('%s%s.json' % (self.configPath, 'camouflagesCache')):
+            camouflagesCache = loadJson(self.ID, 'camouflagesCache', {}, self.configPath)
+            for nat in camouflagesCache:
+                for vehName in camouflagesCache[nat]:
+                    for season in camouflagesCache[nat][vehName]:
+                        self.outfitCache.setdefault(nat, {}).setdefault(vehName, {}).setdefault(season, {})['camo'] = \
+                            camouflagesCache[nat][vehName][season]
+            os.remove('%s%s.json' % (self.configPath, 'camouflagesCache'))
+            loadJson(self.ID, 'outfitCache', self.outfitCache, self.configPath, True)
         try:
             camoDirPath = '../' + self.configPath + 'camouflages'
             camoDirSect = ResMgr.openSection(camoDirPath)

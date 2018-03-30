@@ -115,7 +115,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.settingsCore.interfaceScale.onScaleExactlyChanged += self.__onInterfaceScaleChanged
         self.settingsCore.onSettingsChanged += self.__onSettingsChanged
         self.__updateCameraParallaxFlag()
-        self.service.startHighlighter(chooseMode(GUI_ITEM_TYPE.CAMOUFLAGE, g_currentVehicle.item))
+        self.service.startHighlighter(chooseMode(
+            GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT, g_currentVehicle.item))
 
     def _dispose(self):
         if g_appLoader.getSpaceID() != _SPACE_ID.LOGIN:
@@ -321,6 +322,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def showGroupFromTab(self, tabIndex):
         self.soundManager.playInstantSound(SOUNDS.TAB_SWITCH)
         self._tabIndex = tabIndex
+        if self._mode == C11nMode.INSTALL:
+            self.service.startHighlighter(chooseMode(
+                GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT, g_currentVehicle.item))
         self.__setAnchorsInitData(self._tabIndex, True)
         self.__updateAnchorPositions()
         self.refreshCarousel(rebuild=True)
@@ -398,13 +402,16 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.refreshCarousel(rebuild=self._carouselDP.getAppliedFilter() or self._carouselDP.getOwnedFilter())
 
     def switchToCustom(self, updateUI=True):
-        self.service.startHighlighter(chooseMode(GUI_ITEM_TYPE.CAMOUFLAGE, g_currentVehicle.item))
+        self.service.startHighlighter(chooseMode(
+            GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT, g_currentVehicle.item))
         self.switchMode(C11nMode.INSTALL)
 
     def switchToStyle(self):
+        if self._tabIndex in C11nTabs.PAINTS:
+            self._tabIndex = C11nTabs.SHOP
         self.switchMode(C11nMode.SETUP)
-        self.service.stopHighlighter()
         self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
+        self.service.stopHighlighter()
 
     def switchMode(self, mode):
         self.soundManager.playInstantSound(SOUNDS.TAB_SWITCH)
@@ -557,36 +564,51 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         boughtOutfits = {season: self.service.getCustomOutfit(season) for season in SeasonType.COMMON_SEASONS}
         cart = getTotalPurchaseInfo(purchaseItems)
         nationName, vehicleName = g_currentVehicle.item.descriptor.name.split(':')
-        vehConfig = g_config.camouflagesCache.get(nationName, {}).get(vehicleName, {})
-        for pItem in purchaseItems:
-            assert pItem.slot == GUI_ITEM_TYPE.CAMOUFLAGE
-            if pItem.selected:
+        vehConfig = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
+        for pItem in (x for x in purchaseItems if x.selected):
+            seasonName = SEASON_TYPE_TO_NAME[pItem.group]
+            if pItem.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
                 bItem, bComp = boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot)._items.get(
                     pItem.regionID, (None, None))
                 component = self._modifiedOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getComponent(
                     pItem.regionID)
-                seasonName = SEASON_TYPE_TO_NAME[pItem.group]
                 if pItem.isDismantling and (not bItem or not bComp) or not pItem.isDismantling and pItem.item == bItem and \
                         component.palette == bComp.palette and component.patternSize == bComp.patternSize:
-                    vehConfig.get(seasonName, {}).pop(TankPartIndexes.getName(pItem.areaID), [])
+                    vehConfig.get(seasonName, {}).get('camo', {}).pop(TankPartIndexes.getName(pItem.areaID), [])
                 else:
-                    g_config.camouflagesCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
-                        seasonName, {})[TankPartIndexes.getName(pItem.areaID)] = (
+                    g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
+                        seasonName, {}).setdefault('camo', {})[TankPartIndexes.getName(pItem.areaID)] = (
                         [pItem.item.id, component.palette, component.patternSize] if not pItem.isDismantling else [])
                 g_config.hangarCamoCache.get(nationName, {}).get(vehicleName, {}).get(seasonName, {}).pop(
                     TankPartIndexes.getName(pItem.areaID), {})
-        for nationName in g_config.camouflagesCache.keys():
-            for vehicleName in g_config.camouflagesCache[nationName].keys():
-                for season in g_config.camouflagesCache[nationName][vehicleName].keys():
-                    if g_currentVehicle.item.turret.isGunCarriage:
-                        g_config.camouflagesCache[nationName][vehicleName][season].pop('turret', {})
-                    if not g_config.camouflagesCache[nationName][vehicleName][season]:
-                        del g_config.camouflagesCache[nationName][vehicleName][season]
-                if not g_config.camouflagesCache[nationName][vehicleName]:
-                    del g_config.camouflagesCache[nationName][vehicleName]
-            if not g_config.camouflagesCache[nationName]:
-                del g_config.camouflagesCache[nationName]
-        loadJson(g_config.ID, 'camouflagesCache', g_config.camouflagesCache, g_config.configPath, True)
+            elif pItem.slot == GUI_ITEM_TYPE.PAINT:
+                bItem = boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getItem(pItem.regionID)
+                if pItem.isDismantling and not bItem or not pItem.isDismantling and pItem.item == bItem:
+                    vehConfig.get(seasonName, {}).get('paint', {}).get(TankPartIndexes.getName(pItem.areaID), {}).pop(str(
+                        pItem.regionID), None)
+                else:
+                    g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
+                        seasonName, {}).setdefault('paint', {}).setdefault(TankPartIndexes.getName(pItem.areaID), {})[
+                        str(pItem.regionID)] = (pItem.item.id if not pItem.isDismantling else None)
+        for nationName in g_config.outfitCache.keys():
+            for vehicleName in g_config.outfitCache[nationName].keys():
+                for season in g_config.outfitCache[nationName][vehicleName].keys():
+                    for itemType in g_config.outfitCache[nationName][vehicleName][season].keys():
+                        if itemType == 'camo' and g_currentVehicle.item.turret.isGunCarriage:
+                            g_config.outfitCache[nationName][vehicleName][season][itemType].pop('turret', None)
+                        elif itemType == 'paint':
+                            for areaName in g_config.outfitCache[nationName][vehicleName][season][itemType].keys():
+                                if not g_config.outfitCache[nationName][vehicleName][season][itemType][areaName]:
+                                    del g_config.outfitCache[nationName][vehicleName][season][itemType][areaName]
+                        if not g_config.outfitCache[nationName][vehicleName][season][itemType]:
+                            del g_config.outfitCache[nationName][vehicleName][season][itemType]
+                    if not g_config.outfitCache[nationName][vehicleName][season]:
+                        del g_config.outfitCache[nationName][vehicleName][season]
+                if not g_config.outfitCache[nationName][vehicleName]:
+                    del g_config.outfitCache[nationName][vehicleName]
+            if not g_config.outfitCache[nationName]:
+                del g_config.outfitCache[nationName]
+        loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
         if cart.totalPrice != ITEM_PRICE_EMPTY:
             msgCtx = {'money': formatPrice(cart.totalPrice.price),
                       'count': cart.numSelected}
@@ -617,8 +639,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         anchorVOs = []
         anchorPosData = []
         outfit = self.service.getEmptyOutfit()
+        cType = GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT
         for container in outfit.containers():
-            for slot in (x for x in container.slots() if x.getType() == GUI_ITEM_TYPE.CAMOUFLAGE):
+            for slot in (x for x in container.slots() if x.getType() == cType):
                 for regionId, region in enumerate(slot.getRegions()):
                     slotId = CustomizationSlotIdVO(container.getAreaID(), slot.getType(), regionId)
                     anchorData = self.__getAnchorPositionData(slotId, region)
@@ -645,16 +668,18 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         return buildCustomizationItemDataVO(item, itemInventoryCount, isCurrentlyApplied=isCurrentlyApplied, plainView=True)
 
     def __carveUpOutfits(self):
-        from ..processors import applyCache
+        from ..processors import applyCamoCache, applyPaintCache
         self._setupOutfit = self.service.getEmptyOutfit()
         descriptor = g_currentVehicle.item.descriptor
         nationName, vehName = descriptor.name.split(':')
         for season in SeasonType.COMMON_SEASONS:
             outfit = self.service.getCustomOutfit(season).copy()
             seasonName = SEASON_TYPE_TO_NAME[season]
-            applyCache(outfit, vehName, g_config.camouflagesCache.get(nationName, {}).get(vehName, {}).get(seasonName, {}))
+            seasonCache = g_config.outfitCache.get(nationName, {}).get(vehName, {}).get(seasonName, {})
+            applyCamoCache(outfit, vehName, seasonCache.get('camo', {}))
+            applyPaintCache(outfit, vehName, seasonCache.get('paint', {}))
             self._originalOutfits[season] = outfit.copy()
-            applyCache(outfit, vehName, g_config.hangarCamoCache.get(nationName, {}).get(vehName, {}).get(seasonName, {}))
+            applyCamoCache(outfit, vehName, g_config.hangarCamoCache.get(nationName, {}).get(vehName, {}).get(seasonName, {}))
             self._modifiedOutfits[season] = outfit.copy()
         if self._mode == C11nMode.INSTALL:
             self._currentOutfit = self._modifiedOutfits[self._currentSeason]
@@ -739,12 +764,13 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             return struct.unpack('I', s)[0]
 
         anchorVOs = []
-        cType = GUI_ITEM_TYPE.CAMOUFLAGE
+        cType = GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT
         for container in self._currentOutfit.containers():
             for slot in (x for x in container.slots() if x.getType() == cType):
                 for regionId, region in enumerate(slot.getRegions()):
                     slotId = CustomizationSlotIdVO(container.getAreaID(), slot.getType(), regionId)
-                    popoverAlias = CUSTOMIZATION_ALIASES.CUSTOMIZATION_CAMO_POPOVER
+                    popoverAlias = CUSTOMIZATION_ALIASES.CUSTOMIZATION_CAMO_POPOVER if self._tabIndex in C11nTabs.CAMO else \
+                        CUSTOMIZATION_ALIASES.CUSTOMIZATION_PAINT_POPOVER
                     item = slot.getItem(regionId)
                     itemIntCD = item.intCD if item is not None else 0
                     uid = customizationSlotIdToUid(slotId)
@@ -795,6 +821,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def __getVisibleTabs(self):
         visibleTabs = []
         for tabIdx in C11nTabs.VISIBLE:
+            if self._mode == C11nMode.SETUP and tabIdx in C11nTabs.PAINTS:
+                continue
             data = self._carouselDP.getSeasonAndTabData(tabIdx, self._currentSeason)
             if not data.itemCount:
                 continue

@@ -12,7 +12,7 @@ from gui.Scaleform.framework import ViewTypes
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.customization.c11n_items import Camouflage
+from gui.shared.gui_items.customization.c11n_items import Camouflage, Paint
 from gui.shared.gui_items.customization.outfit import Outfit, Area
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
@@ -23,7 +23,7 @@ from .settings import g_config
 from .settings.shared import RandMode, TeamMode
 
 
-def applyCache(outfit, vehName, seasonCache):
+def applyCamoCache(outfit, vehName, seasonCache):
     itemsCache = dependency.instance(IItemsCache)
     camouflages = items.vehicles.g_cache.customization20().camouflages
     applied = False
@@ -62,6 +62,43 @@ def applyCache(outfit, vehName, seasonCache):
         component.palette = paletteIdx
         component.patternSize = scale
         applied = True
+    if not seasonCache:
+        cleaned = True
+    outfit.invalidate()
+    return applied, cleaned
+
+
+def applyPaintCache(outfit, vehName, seasonCache):
+    itemsCache = dependency.instance(IItemsCache)
+    paints = items.vehicles.g_cache.customization20().paints
+    applied = False
+    cleaned = False
+    for areaName in seasonCache.keys():
+        try:
+            areaId = TankPartNames.getIdx(areaName)
+        except Exception as e:
+            print '%s: exception while reading camouflages cache for %s in %s: %s' % (
+                g_config.ID, vehName, areaName, e.message)
+            continue
+        slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.PAINT)
+        for regionIdx in seasonCache[areaName].keys():
+            paintID = seasonCache[areaName][regionIdx]
+            if not paintID:
+                slot.remove(int(regionIdx))
+                continue
+            if paintID not in paints:
+                print '%s: wrong paint ID for %s, idx %s: %s' % (g_config.ID, areaName, regionIdx, paintID)
+                del seasonCache[areaName][regionIdx]
+                continue
+            intCD = paints[paintID].compactDescr
+            if itemsCache.items.isSynced():
+                item = itemsCache.items.getItemByCD(intCD)
+            else:
+                item = Paint(intCD)
+            slot.set(item, int(regionIdx))
+            applied = True
+        if not seasonCache[areaName]:
+            del seasonCache[areaName]
     if not seasonCache:
         cleaned = True
     outfit.invalidate()
@@ -110,6 +147,8 @@ def processRandomOutfit(outfit, seasonName, seasonCache, vID=None, isGunCarriage
         teamMode = None
     random.seed(vID)
     camoID = None
+    palette = None
+    patternSize = None
     camouflages = items.vehicles.g_cache.customization20().camouflages
     itemsCache = dependency.instance(IItemsCache)
     outfitItemIDs = set()
@@ -209,16 +248,20 @@ def new_assembleModel(base, self, *a, **kw):
             if not g_config.data['useBought']:
                 outfit = Outfit()
             seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
-            vehCache = g_config.camouflagesCache.get(nationName, {}).get(vehicleName, {})
-            seasonCache = vehCache.get(seasonName, {})
-            applied, cleaned = applyCache(outfit, vehicleName, seasonCache)
+            vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
+            __, cleaned = applyPaintCache(outfit, vehicleName, vehCache.get(seasonName, {}).get('paint', {}))
             if cleaned:
-                vehCache.pop(seasonName, {})
+                vehCache.get(seasonName, {}).pop('paint', None)
+            applied, cleaned = applyCamoCache(outfit, vehicleName, vehCache.get(seasonName, {}).get('camo', {}))
+            if cleaned:
+                vehCache.get(seasonName, {}).pop('camo', None)
+            if not vehCache.get(seasonName, None):
+                vehCache.pop(seasonName, None)
             if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
                 seasonCache = g_config.hangarCamoCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
                     seasonName, {})
                 processRandomOutfit(outfit, seasonName, seasonCache, isGunCarriage=vDesc.turret.isGunCarriage)
-                applyCache(outfit, vehicleName, seasonCache)
+                applyCamoCache(outfit, vehicleName, seasonCache)
             self.updateCustomization(outfit)
     return result
 
@@ -240,15 +283,19 @@ def new_prepareOutfit(base, self, *a, **kw):
         applied = False
         cleaned = False
         if self._CompoundAppearance__vehicle.isPlayerVehicle:
-            vehCache = g_config.camouflagesCache.get(nationName, {}).get(vehicleName, {})
-            seasonCache = vehCache.get(seasonName, {})
-            applied, cleaned = applyCache(result, vehicleName, seasonCache)
+            vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
+            __, cleaned = applyPaintCache(result, vehicleName, vehCache.get(seasonName, {}).get('paint', {}))
             if cleaned:
-                vehCache.pop(seasonName, {})
+                vehCache.get(seasonName, {}).pop('paint', None)
+            applied, cleaned = applyCamoCache(result, vehicleName, vehCache.get(seasonName, {}).get('camo', {}))
+            if cleaned:
+                vehCache.get(seasonName, {}).pop('camo', None)
+            if not vehCache.get(seasonName, None):
+                vehCache.pop(seasonName, None)
         if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
             seasonCache = g_config.arenaCamoCache.setdefault(vID, {})
             processRandomOutfit(result, seasonName, seasonCache, vID, isGunCarriage=vDesc.turret.isGunCarriage)
-            applyCache(result, vehicleName, seasonCache)
+            applyCamoCache(result, vehicleName, seasonCache)
     self._CompoundAppearance__outfit = result
 
 
