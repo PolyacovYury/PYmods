@@ -79,7 +79,7 @@ def new_getTarget(base, self):
 
 
 def new_setPlayerInfo(attrClass, base, self, vehicleID):
-    base(self)
+    base(self, vehicleID)
     if config.data['enabled']:
         pInfo = getattr(self, '_%s__playerInfo' % attrClass)
         fullName = config.reformat(self.sessionProvider.getCtx(), vehicleID, pInfo.playerFullName)
