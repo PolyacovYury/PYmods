@@ -3,23 +3,24 @@ import math
 
 import Keys
 import Math
-import PYmodsCore
 import traceback
+from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKeys, Analytics
 from gui import InputHandler, SystemMessages
+from gui.ClientHangarSpace import hangarCFG
 from gui.Scaleform.framework import ViewTypes
 from gui.app_loader.loader import g_appLoader
 from gui.hangar_camera_manager import HangarCameraManager
 from gui.shared.utils.HangarSpace import g_hangarSpace
 
 
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
-        self.cameraPositions = []
+        self.cameraPos = []
         super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.1.0 (%(file_compile_date)s)'
+        self.version = '1.1.1 (%(file_compile_date)s)'
         self.author += ' (thx to Chirimen, alphasave1)'
         self.defaultKeys = {'togglekey': [Keys.KEY_F11], 'toggleKey': ['KEY_F11'],
                             'camkey': [Keys.KEY_F12], 'camKey': ['KEY_F12'], }
@@ -32,10 +33,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                      'lockCamera': True,
                      'addUnlockMode': True,
                      'currentCamPos': 0}
-        self.cameraPositions = [{'target_pos': [0.0, 1.2, 0.0],
-                                 'pivot_pos': [0.0, 1.0, 0.0],
-                                 'angles': [20.0, -13.0],
-                                 'dist': 10.0}]
+        self.cameraPos = [{'target_pos': "", 'pivot_pos': "", 'angles': [20.0, -13.0], 'dist': 10.0}]
         self.i18n = {
             'UI_description': 'Hangar screenshots',
             'UI_message_cameraUnlocked': 'Camera unlocked.',
@@ -63,11 +61,10 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings(quiet)
-        self.cameraPositions = PYmodsCore.loadJson(
-            self.ID, 'cameraPositions', self.cameraPositions, self.configPath, quiet=quiet)
+        self.cameraPos = loadJson(self.ID, 'cameraPositions', self.cameraPos, self.configPath, quiet=quiet)
 
 
-_config = ConfigInterface()
+config = ConfigInterface()
 
 
 def toggleHangarUI(visible):
@@ -77,53 +74,53 @@ def toggleHangarUI(visible):
     lobby.graphicsOptimizationManager.switchOptimizationEnabled(visible)
 
 
-@PYmodsCore.overrideMethod(HangarCameraManager, '_HangarCameraManager__updateCameraByMouseMove')
+@overrideMethod(HangarCameraManager, '_HangarCameraManager__updateCameraByMouseMove')
 def new_updateCameraByMouseMove(base, *args):
-    if _config.data['UIVisible'] or not _config.cameraPositions or _config.data['currentCamPos'] == len(
-            _config.cameraPositions) or not _config.data['lockCamera']:
+    if config.data['UIVisible'] or not config.cameraPos or config.data['currentCamPos'] == len(
+            config.cameraPos) or not config.data['lockCamera']:
         base(*args)
 
 
 def setCameraLocation(settings):
+    cfg = hangarCFG()
     g_hangarSpace.space.setCameraLocation(
-        Math.Vector3(*settings['target_pos']), Math.Vector3(*settings['pivot_pos']),
+        cfg['%scam_start_target_pos' % settings['target_pos']], Math.Vector3(*settings['pivot_pos']) if isinstance(
+            settings['pivot_pos'], list) else cfg['%scam_pivot_pos' % settings['pivot_pos']],
         math.radians(settings['angles'][0]), math.radians(settings['angles'][1]), settings['dist'],
         None, True)
 
 
 def inj_hkKeyEvent(event):
     LobbyApp = g_appLoader.getDefLobbyApp()
+    if not LobbyApp:
+        return
     try:
-        if LobbyApp:
-            if _config.data['enabled']:
-                if event.isKeyDown():
-                    if PYmodsCore.checkKeys(_config.data['togglekey']):
-                        _config.data['UIVisible'] = not _config.data['UIVisible']
-                        toggleHangarUI(_config.data['UIVisible'])
-                        if not _config.data['UIVisible'] and _config.cameraPositions and _config.data[
-                                'currentCamPos'] < len(_config.cameraPositions):
-                            setCameraLocation(_config.cameraPositions[_config.data['currentCamPos']])
-                    elif PYmodsCore.checkKeys(_config.data['camkey']):
-                        if not _config.data['UIVisible'] and _config.cameraPositions:
-                            _config.data['currentCamPos'] += 1
-                            if _config.data['currentCamPos'] == len(_config.cameraPositions) and _config.data[
-                                    'addUnlockMode'] and _config.data['lockCamera']:
-                                SystemMessages.pushMessage('temp_SM' + _config.i18n['UI_message_cameraUnlocked'],
-                                                           SystemMessages.SM_TYPE.Warning)
-                            else:
-                                if _config.data['currentCamPos'] >= len(_config.cameraPositions) + (_config.data[
-                                        'addUnlockMode'] and _config.data['lockCamera']):
-                                    _config.data['currentCamPos'] = 0
-                                setCameraLocation(_config.cameraPositions[_config.data['currentCamPos']])
-            elif not _config.data['UIVisible']:
-                _config.data['currentCamPos'] = 0
-                _config.data['UIVisible'] = True
-                toggleHangarUI(True)
+        if config.data['enabled']:
+            if event.isKeyDown() and checkKeys(config.data['togglekey']):
+                config.data['UIVisible'] = not config.data['UIVisible']
+                toggleHangarUI(config.data['UIVisible'])
+                if not config.data['UIVisible'] and config.cameraPos and config.data['currentCamPos'] < len(config.cameraPos):
+                    setCameraLocation(config.cameraPos[config.data['currentCamPos']])
+            elif event.isKeyDown() and checkKeys(config.data['camkey']) and not config.data['UIVisible'] and config.cameraPos:
+                config.data['currentCamPos'] += 1
+                if config.data['currentCamPos'] == len(config.cameraPos) and config.data[
+                        'addUnlockMode'] and config.data['lockCamera']:
+                    SystemMessages.pushMessage(
+                        'temp_SM' + config.i18n['UI_message_cameraUnlocked'], SystemMessages.SM_TYPE.Warning)
+                else:
+                    if config.data['currentCamPos'] >= len(config.cameraPos) + (config.data[
+                            'addUnlockMode'] and config.data['lockCamera']):
+                        config.data['currentCamPos'] = 0
+                    setCameraLocation(config.cameraPos[config.data['currentCamPos']])
+        elif not config.data['UIVisible']:
+            config.data['currentCamPos'] = 0
+            config.data['UIVisible'] = True
+            toggleHangarUI(True)
     except StandardError:
-        print '%s: ERROR at inj_hkKeyEvent' % _config.ID
+        print '%s: ERROR at inj_hkKeyEvent' % config.ID
         traceback.print_exc()
 
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-14')
+analytics = Analytics(config.ID, config.version, 'UA-76792179-14')
