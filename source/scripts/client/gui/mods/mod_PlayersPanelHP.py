@@ -74,7 +74,9 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
         currentHP = self.__hpCache[vehicleID]['current']
         maxHP = self.__hpCache[vehicleID]['max']
         for fieldName, fieldData in sorted(self.data['textFields'].iteritems()):
-            barWidth = fieldData.get('%sWidth' % panelSide, 0) * (float(currentHP) / maxHP)
+            barWidth = currentHP
+            if '%sWidth' % panelSide in fieldData:
+                barWidth = fieldData['%sWidth' % panelSide] * (float(currentHP) / maxHP)
             self.uiFlash.as_setPPTextS(self.ID + fieldName, [vehicleID, (fieldData['%sText' % panelSide] % {
                 'curHealth': currentHP,
                 'maxHealth': maxHP,
