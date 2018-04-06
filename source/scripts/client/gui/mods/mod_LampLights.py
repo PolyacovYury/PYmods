@@ -33,7 +33,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '2.2.3 (%(file_compile_date)s)'
+        self.version = '2.2.3.1 (%(file_compile_date)s)'
         self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
         self.data = {'enabled': True,
                      'enableAtStartup': True,
@@ -620,6 +620,7 @@ def lightsDetach(vehicleID):
             else:
                 lightDBDict[vehicleID][confKey].source = None
                 lightVisible(lightDBDict[vehicleID][confKey], False)
+                lightDBDict[vehicleID][confKey].destroyLight()
 
 
 def lightsDestroy(vehicleID, callPlace=''):
