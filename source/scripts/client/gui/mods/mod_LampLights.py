@@ -618,9 +618,9 @@ def lightsDetach(vehicleID):
             if isinstance(lightDBDict[vehicleID][confKey], BigWorld.Model):
                 lightDBDict[vehicleID][confKey].visible = False
             else:
-                lightDBDict[vehicleID][confKey].source = None
                 lightVisible(lightDBDict[vehicleID][confKey], False)
                 lightDBDict[vehicleID][confKey].destroyLight()
+                lightDBDict[vehicleID][confKey] = None
 
 
 def lightsDestroy(vehicleID, callPlace=''):
