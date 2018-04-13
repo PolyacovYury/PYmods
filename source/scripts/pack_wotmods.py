@@ -159,8 +159,8 @@ def pack_file(fullname, sdir=None, ddir=None, version_str=None, date=None, ix=No
             orig_folder = ''
             if version_str:
                 import re
-                folder_ix = re.compile('mods/[.\d]*/$')
-                folder_ix_all = re.compile('mods/[.\d]*/')
+                folder_ix = re.compile('mods/[.\d]*( Common Test)?/$')
+                folder_ix_all = re.compile('mods/[.\d]*( Common Test)?/')
                 for info in orig_infos_full:
                     filename = info.filename
                     if folder_ix_all.search(filename) and 'mods/%s/' % version_str not in filename:
