@@ -31,6 +31,7 @@ from gui.SystemMessages import CURRENCY_TO_SM_TYPE, SM_TYPE
 from gui.app_loader import g_appLoader
 from gui.app_loader.settings import GUI_GLOBAL_SPACE_ID as _SPACE_ID
 from gui.customization.shared import chooseMode
+from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.shared import EVENT_BUS_SCOPE, events, g_eventBus
 from gui.shared.formatters import formatPrice, getItemPricesVO, icons, text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -39,7 +40,6 @@ from gui.shared.utils import toUpper
 from gui.shared.utils.HangarSpace import g_hangarSpace
 from gui.shared.utils.decorators import process
 from gui.shared.utils.functions import makeTooltip
-from hangar_camera_common import CameraRelatedEvents
 from helpers import dependency, int2roman
 from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType
@@ -98,6 +98,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.service.onOutfitChanged += self.__onOutfitChanged
         g_eventBus.addListener(CameraRelatedEvents.IDLE_CAMERA, self.__onNotifyHangarCameraIdleStateChanged)
         g_hangarSpace.onSpaceCreate += self.__onSpaceCreateHandler
+        g_hangarSpace.onSpaceDestroy += self.__onSpaceDestroyHandler
         g_hangarSpace.onSpaceRefresh += self.__onSpaceRefreshHandler
         self.service.onRegionHighlighted += self.__onRegionHighlighted
         self.itemsCache.onSyncCompleted += self.__onCacheReSync
@@ -139,6 +140,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.service.onOutfitChanged -= self.__onOutfitChanged
         g_eventBus.removeListener(CameraRelatedEvents.IDLE_CAMERA, self.__onNotifyHangarCameraIdleStateChanged)
         g_hangarSpace.onSpaceCreate -= self.__onSpaceCreateHandler
+        g_hangarSpace.onSpaceDestroy -= self.__onSpaceDestroyHandler
         g_hangarSpace.onSpaceRefresh -= self.__onSpaceRefreshHandler
         self.service.onRegionHighlighted -= self.__onRegionHighlighted
         self.itemsCache.onSyncCompleted -= self.__onCacheReSync
@@ -706,6 +708,10 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         Waiting.hide('loadHangarSpace')
         self.refreshOutfit()
         self.__updateAnchorPositions()
+
+    def __onSpaceDestroyHandler(self, _):
+        Waiting.hide('loadHangarSpace')
+        self.__onConfirmCloseWindow(proceed=True)
 
     def __onSpaceRefreshHandler(self):
         Waiting.show('loadHangarSpace')
