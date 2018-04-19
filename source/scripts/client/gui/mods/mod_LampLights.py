@@ -704,6 +704,13 @@ def new_onRoundFinished(base, *a, **kw):
     base(*a, **kw)
 
 
+@PYmodsCore.overrideMethod(PlayerAvatar, 'leaveArena')
+def new_leaveArena(base, *a, **kw):
+    for vehID in lightDBDict.keys():
+        lightsDestroy(vehID, 'Avatar.leaveArena')
+    base(*a, **kw)
+
+
 @PYmodsCore.overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
 def new_oVHC(base, self, *args):
     vehicle = self._CompoundAppearance__vehicle
