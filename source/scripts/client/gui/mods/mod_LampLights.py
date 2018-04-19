@@ -697,13 +697,6 @@ def new_vehicle_onLeaveWorld(base, self, *args):
     base(self, *args)
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, 'onRoundFinished')
-def new_onRoundFinished(base, *a, **kw):
-    for vehID in lightDBDict.keys():
-        lightsDestroy(vehID, 'Avatar.onRoundFinished')
-    base(*a, **kw)
-
-
 @PYmodsCore.overrideMethod(PlayerAvatar, 'leaveArena')
 def new_leaveArena(base, *a, **kw):
     for vehID in lightDBDict.keys():
