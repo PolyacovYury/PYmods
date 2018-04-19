@@ -683,11 +683,11 @@ statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-2
 curSpeedsDict = {}
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, 'vehicle_onLeaveWorld')
-def new_vehicle_onLeaveWorld(base, self, vehicle):
-    if vehicle.isStarted:
-        lightsDestroy(vehicle.id, 'Avatar.vehicle_onLeaveWorld')
-    base(self, vehicle)
+@PYmodsCore.overrideMethod(Vehicle, 'stopVisual')
+def new_vehicle_onLeaveWorld(base, self, *args):
+    if self.isStarted:
+        lightsDestroy(self.id, 'Vehicle.stopVisual')
+    base(self, *args)
 
 
 @PYmodsCore.overrideMethod(Vehicle, 'startVisual')
