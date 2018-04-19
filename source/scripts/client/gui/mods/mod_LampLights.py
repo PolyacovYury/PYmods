@@ -683,6 +683,13 @@ statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-2
 curSpeedsDict = {}
 
 
+@PYmodsCore.overrideMethod(Vehicle, 'startVisual')
+def new_startVisual(base, self):
+    base(self)
+    if self.isStarted and self.isAlive() and _config.data['enabled'] and _config.isLampsVisible:
+        BigWorld.callback(0.1, partial(lightsCreate, self.id, 'Vehicle.startVisual'))
+
+
 @PYmodsCore.overrideMethod(Vehicle, 'stopVisual')
 def new_vehicle_onLeaveWorld(base, self, *args):
     if self.isStarted:
@@ -690,11 +697,11 @@ def new_vehicle_onLeaveWorld(base, self, *args):
     base(self, *args)
 
 
-@PYmodsCore.overrideMethod(Vehicle, 'startVisual')
-def new_startVisual(base, self):
-    base(self)
-    if self.isStarted and self.isAlive() and _config.data['enabled'] and _config.isLampsVisible:
-        BigWorld.callback(0.1, partial(lightsCreate, self.id, 'Vehicle.startVisual'))
+@PYmodsCore.overrideMethod(PlayerAvatar, 'onRoundFinished')
+def new_onRoundFinished(base, *a, **kw):
+    for vehID in lightDBDict:
+        lightsDestroy(vehID, 'Avatar.onRoundFinished')
+    base(*a, **kw)
 
 
 @PYmodsCore.overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
