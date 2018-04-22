@@ -137,7 +137,7 @@ def collectCamouflageData():
                             camoForSeason[TeamMode.NAMES[team]].append(camoID)
 
 
-def processRandomOutfit(outfit, seasonName, seasonCache, vID=None, isGunCarriage=True):
+def processRandomCamouflages(outfit, seasonName, seasonCache, vID=None, isGunCarriage=True):
     if not g_config.camoForSeason:
         collectCamouflageData()
     if vID is not None:
@@ -235,7 +235,7 @@ def new_assembleModel(base, self, *a, **kw):
             if g_config.data['hangarCamoKind'] < 3:
                 idx = g_config.data['hangarCamoKind']
                 season = SeasonType.fromArenaKind(idx)
-                outfit = vehicle.getOutfit(season).copy() if vehicle else Outfit()
+                outfit = vehicle.getOutfit(season).copy() if vehicle else self.itemsFactory.createOutfit()
                 g_tankActiveCamouflage[intCD] = season
             else:
                 outfit = self._HangarVehicleAppearance__getActiveOutfit().copy()
@@ -246,7 +246,7 @@ def new_assembleModel(base, self, *a, **kw):
                             active.append(season)
                     g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
             if not g_config.data['useBought']:
-                outfit = Outfit()
+                outfit = self.itemsFactory.createOutfit()
             seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
             vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
             __, cleaned = applyPaintCache(outfit, vehicleName, vehCache.get(seasonName, {}).get('paint', {}))
@@ -260,29 +260,29 @@ def new_assembleModel(base, self, *a, **kw):
             if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
                 seasonCache = g_config.hangarCamoCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
                     seasonName, {})
-                processRandomOutfit(outfit, seasonName, seasonCache, isGunCarriage=vDesc.turret.isGunCarriage)
+                processRandomCamouflages(outfit, seasonName, seasonCache, isGunCarriage=vDesc.turret.isGunCarriage)
                 applyCamoCache(outfit, vehicleName, seasonCache)
+            self._HangarVehicleAppearance__outfit = outfit
             self.updateCustomization(outfit)
     return result
 
 
-@overrideMethod(CompoundAppearance, '_CompoundAppearance__prepareOutfit')
-def new_prepareOutfit(base, self, *a, **kw):
-    base(self, *a, **kw)
+@overrideMethod(CompoundAppearance, '_CompoundAppearance__applyVehicleOutfit')
+def new_applyVehicleOutfit(base, self, *a, **kw):
     result = self._CompoundAppearance__outfit.copy()
+    vID = self._CompoundAppearance__vID
     vDesc = self._CompoundAppearance__typeDesc
-    if not self._CompoundAppearance__vehicle or not vDesc:
+    if not vDesc:
         return result
     if g_config.data['enabled'] and vDesc.name not in g_config.disable and not (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
         if not g_config.data['useBought']:
             result = Outfit()
-        vID = self._CompoundAppearance__vehicle.id
         seasonName = SEASON_TYPE_TO_NAME[SeasonType.fromArenaKind(BigWorld.player().arena.arenaType.vehicleCamouflageKind)]
         nationName, vehicleName = vDesc.name.split(':')
         applied = False
         cleaned = False
-        if self._CompoundAppearance__vehicle.isPlayerVehicle:
+        if self._CompoundAppearance__vID == BigWorld.player().playerVehicleID:
             vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
             __, cleaned = applyPaintCache(result, vehicleName, vehCache.get(seasonName, {}).get('paint', {}))
             if cleaned:
@@ -294,9 +294,10 @@ def new_prepareOutfit(base, self, *a, **kw):
                 vehCache.pop(seasonName, None)
         if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
             seasonCache = g_config.arenaCamoCache.setdefault(vID, {})
-            processRandomOutfit(result, seasonName, seasonCache, vID, isGunCarriage=vDesc.turret.isGunCarriage)
+            processRandomCamouflages(result, seasonName, seasonCache, vID, isGunCarriage=vDesc.turret.isGunCarriage)
             applyCamoCache(result, vehicleName, seasonCache)
     self._CompoundAppearance__outfit = result
+    base(self, *a, **kw)
 
 
 @overrideMethod(PlayerAvatar, 'onBecomePlayer')

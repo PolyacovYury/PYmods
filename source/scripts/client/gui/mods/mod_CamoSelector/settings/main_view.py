@@ -482,9 +482,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def onLobbyClick(self):
         pass
 
-    # noinspection SpellCheckingInspection
     def setEnableMultiselectRegions(self, isEnabled):
-        self.service.setSelectHighlighting(isEnabled)
+        pass
 
     def onChangeSize(self):
         self.__updateAnchorPositions()
