@@ -84,7 +84,10 @@ def applyPaintCache(outfit, vehName, seasonCache):
         for regionIdx in seasonCache[areaName].keys():
             paintID = seasonCache[areaName][regionIdx]
             if not paintID:
-                slot.remove(int(regionIdx))
+                try:
+                    slot.remove(int(regionIdx))
+                except KeyError:  # a paint is being deleted while not applied at all. possible change after last cache update
+                    del seasonCache[areaName][regionIdx]  # so we remove an obsolete key. no removing of non-existing stuff
                 continue
             if paintID not in paints:
                 print '%s: wrong paint ID for %s, idx %s: %s' % (g_config.ID, areaName, regionIdx, paintID)
