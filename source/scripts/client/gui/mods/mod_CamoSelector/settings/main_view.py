@@ -1,3 +1,4 @@
+import BigWorld
 import items.vehicles
 import struct
 from AvatarInputHandler import cameras
@@ -6,6 +7,7 @@ from PYmodsCore import loadJson
 from account_helpers.settings_core.settings_constants import GRAPHICS, GAME
 from adisp import async, process as adisp_process
 from gui import DialogsInterface, SystemMessages, g_tankActiveCamouflage
+from gui.ClientUpdateManager import g_clientUpdateManager
 from gui.Scaleform.Waiting import Waiting
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogMeta
@@ -16,11 +18,10 @@ from gui.Scaleform.daapi.view.lobby.customization.main_view import AnchorPositio
     CustomizationAnchorPositionVO, CustomizationAnchorsSetVO, CustomizationCarouselDataVO, CustomizationSlotIdVO, \
     CustomizationSlotUpdateVO, _C11nWindowsLifecycleHandler, _VehicleCustomizationAnchorsUpdater
 from gui.Scaleform.daapi.view.lobby.customization.shared import OutfitInfo, SEASONS_ORDER, SEASON_IDX_TO_TYPE, \
-    SEASON_TYPE_TO_NAME, getCustomPurchaseItems, getItemInventoryCount, getTotalPurchaseInfo
+    SEASON_TYPE_TO_NAME, getCustomPurchaseItems, getItemInventoryCount, getTotalPurchaseInfo, CUSTOMIZATION_POPOVER_ALIASES
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import C11N_SOUND_SPACE, SOUNDS
 from gui.Scaleform.daapi.view.meta.CustomizationMainViewMeta import CustomizationMainViewMeta
 from gui.Scaleform.framework.managers.view_lifecycle_watcher import ViewLifecycleWatcher
-from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -35,6 +36,7 @@ from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.shared import EVENT_BUS_SCOPE, events, g_eventBus
 from gui.shared.formatters import formatPrice, getItemPricesVO, icons, text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items.customization.outfit import Area
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY, ItemPrice
 from gui.shared.utils import toUpper
 from gui.shared.utils.HangarSpace import g_hangarSpace
@@ -50,7 +52,7 @@ from skeletons.gui.shared import IItemsCache
 from vehicle_systems.tankStructure import TankPartIndexes
 from . import g_config
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
-from .shared import C11nMode, C11nTabs, RandMode, TeamMode
+from .shared import C11nMode, C11nTabs, RandMode, TeamMode, tabToItem
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):
@@ -64,10 +66,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         super(CamoSelectorMainView, self).__init__()
         self.__viewLifecycleWatcher = ViewLifecycleWatcher()
         self.fadeAnchorsOut = False
-        self.anchorMinScale = 0.75
         self._currentSeason = SeasonType.SUMMER
-        self._tabIndex = C11nTabs.SHOP
-        self._lastTab = C11nTabs.SHOP
+        self._tabIndex = C11nTabs.CAMO_SHOP
+        self._lastTab = C11nTabs.CAMO_SHOP
         self._originalOutfits = {}
         self._modifiedOutfits = {}
         self._currentOutfit = None
@@ -82,142 +83,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__anchorPositionCallbackID = None
         self._state = {}
         self._needFullRebuild = False
-        self.__locatedOnEmblem = False
+        self.__locatedOnEmbelem = False
         self.itemIsPicked = False
         self._vehicleCustomizationAnchorsUpdater = None
-
-    def _populate(self):
-        super(CamoSelectorMainView, self)._populate()
-        self.soundManager.playInstantSound(SOUNDS.ENTER)
-        self.__viewLifecycleWatcher.start(self.app.containerManager, [_C11nWindowsLifecycleHandler()])
-        self._isDeferredRenderer = self.settingsCore.getSetting(GRAPHICS.RENDER_PIPELINE) == 0
-        self.lobbyContext.addHeaderNavigationConfirmator(self.__confirmHeaderNavigation)
-        self.lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingChanged
-        self.service.onCarouselFilter += self.__onCarouselFilter
-        self.service.onRemoveItems += self.removeItems
-        self.service.onOutfitChanged += self.__onOutfitChanged
-        g_eventBus.addListener(CameraRelatedEvents.IDLE_CAMERA, self.__onNotifyHangarCameraIdleStateChanged)
-        g_hangarSpace.onSpaceCreate += self.__onSpaceCreateHandler
-        g_hangarSpace.onSpaceDestroy += self.__onSpaceDestroyHandler
-        g_hangarSpace.onSpaceRefresh += self.__onSpaceRefreshHandler
-        self.service.onRegionHighlighted += self.__onRegionHighlighted
-        self.itemsCache.onSyncCompleted += self.__onCacheReSync
-        self.__carveUpOutfits()
-        self._carouselDP = CustomizationCarouselDataProvider(g_currentVehicle, self._carouseItemWrapper, self)
-        self._carouselDP.setFlashObject(self.as_getDataProviderS())
-        self._carouselDP.setEnvironment(self.app)
-        self.__setHeaderInitData()
-        self.__setFooterInitData()
-        self.__setBuyingPanelData()
-        self.__setSeasonData()
-        self._vehicleCustomizationAnchorsUpdater = _VehicleCustomizationAnchorsUpdater(self.service)
-        self._vehicleCustomizationAnchorsUpdater.startUpdater(self.settingsCore.interfaceScale.get())
-        self.refreshOutfit()
-        self.settingsCore.interfaceScale.onScaleExactlyChanged += self.__onInterfaceScaleChanged
-        self.settingsCore.onSettingsChanged += self.__onSettingsChanged
-        self.__updateCameraParallaxFlag()
-        self.service.startHighlighter(chooseMode(
-            GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT, g_currentVehicle.item))
-
-    def _dispose(self):
-        if g_appLoader.getSpaceID() != _SPACE_ID.LOGIN:
-            self.__releaseItemSound()
-            self.soundManager.playInstantSound(SOUNDS.EXIT)
-        self.settingsCore.onSettingsChanged -= self.__onSettingsChanged
-        self.settingsCore.interfaceScale.onScaleExactlyChanged -= self.__onInterfaceScaleChanged
-        self._vehicleCustomizationAnchorsUpdater.stopUpdater()
-        self._vehicleCustomizationAnchorsUpdater = None
-        if self.__locatedOnEmblem and g_hangarSpace.spaceInited:
-            space = g_hangarSpace.space
-            space.clearSelectedEmblemInfo()
-            space.locateCameraToPreview()
-        self.__viewLifecycleWatcher.stop()
-        self.service.stopHighlighter()
-        self.lobbyContext.deleteHeaderNavigationConfirmator(self.__confirmHeaderNavigation)
-        self.lobbyContext.getServerSettings().onServerSettingsChange -= self.__onServerSettingChanged
-        self.service.onCarouselFilter -= self.__onCarouselFilter
-        self.service.onRemoveItems -= self.removeItems
-        self.service.onOutfitChanged -= self.__onOutfitChanged
-        g_eventBus.removeListener(CameraRelatedEvents.IDLE_CAMERA, self.__onNotifyHangarCameraIdleStateChanged)
-        g_hangarSpace.onSpaceCreate -= self.__onSpaceCreateHandler
-        g_hangarSpace.onSpaceDestroy -= self.__onSpaceDestroyHandler
-        g_hangarSpace.onSpaceRefresh -= self.__onSpaceRefreshHandler
-        self.service.onRegionHighlighted -= self.__onRegionHighlighted
-        self.itemsCache.onSyncCompleted -= self.__onCacheReSync
-        if g_currentVehicle.item:
-            g_tankActiveCamouflage[g_currentVehicle.item.intCD] = self._currentSeason
-            g_currentVehicle.refreshModel()
-        super(CamoSelectorMainView, self)._dispose()
-
-    def __setHeaderInitData(self):
-        vehicle = g_currentVehicle.item
-        self.as_setHeaderDataS({'tankTier': str(int2roman(vehicle.level)),
-                                'tankName': vehicle.shortUserName,
-                                'tankType': '{}_elite'.format(vehicle.type) if vehicle.isElite else vehicle.type,
-                                'isElite': vehicle.isElite,
-                                'closeBtnTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_HEADERCLOSEBTN,
-                                'historicVO': self.__getHistoricIndicatorData()})
-
-    def __setFooterInitData(self):
-        self.as_setBottomPanelInitDataS(
-            {'tabData': {
-                'tabData': self.__getItemTabsData(),
-                'selectedTab': self._tabIndex},
-                'tabsAvailableRegions': C11nTabs.AVAILABLE_REGIONS,
-                'defaultStyleLabel': VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL,
-                'carouselInitData': self.__getCarouselInitData(),
-                'switcherInitData': self.__getSwitcherInitData()})
-        self.as_setCarouselFiltersInitDataS(
-            {'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER,
-             'mainBtn': {'value': RES_ICONS.MAPS_ICONS_BUTTONS_FILTER,
-                         'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_MAINBTN},
-             'hotFilters': [{'value': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON,
-                             'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_STORAGEBTN,
-                             'selected': self._carouselDP.getOwnedFilter()},
-                            {'value': RES_ICONS.MAPS_ICONS_BUTTONS_EQUIPPED_ICON,
-                             'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_EQUIPPEDBTN,
-                             'selected': self._carouselDP.getAppliedFilter()}]})
-
-    def __getSwitcherInitData(self):
-        return {'leftLabel': g_config.i18n['UI_flash_switcher_%s' % C11nMode.NAMES[self._mode]],
-                'rightLabel': g_config.i18n['UI_flash_switcher_%s' % C11nMode.NAMES[not self._mode]],
-                'leftEvent': 'installStyle%s' % ('s' if self._mode else ''),
-                'rightEvent': 'installStyle%s' % ('s' if not self._mode else ''),
-                'isLeft': True}
-
-    def __setBuyingPanelData(self, *_):
-        purchaseItems = self.getPurchaseItems()
-        cartInfo = getTotalPurchaseInfo(purchaseItems)
-        totalPriceVO = getItemPricesVO(cartInfo.totalPrice)
-        cleanSettings = self._cleanSettings(self._currentSettings, checkSeasons=False)
-        keys = []
-        if cartInfo.numTotal:
-            keys.append('install')
-        if cartInfo.totalPrice != ITEM_PRICE_EMPTY:
-            self.as_showBuyingPanelS()
-        else:
-            self.as_hideBuyingPanelS()
-        if any(cleanSettings.itervalues()) or not keys:
-            keys.append('apply')
-        label = g_config.i18n['UI_flash_commit_' + '_and_'.join(keys)]
-        isApplyEnabled = bool(cartInfo.numTotal) or any(cleanSettings.itervalues())
-        shortage = self.itemsCache.items.stats.money.getShortage(cartInfo.totalPrice.price)
-        self.as_setBottomPanelHeaderS({'buyBtnEnabled': isApplyEnabled,
-                                       'buyBtnLabel': label,
-                                       'enoughMoney': getItemPricesVO(ItemPrice(shortage, shortage))[0],
-                                       'pricePanel': totalPriceVO[0]})
-
-    def __setSeasonData(self):
-        seasonRenderersList = []
-        for season in SEASONS_ORDER:
-            seasonName = SEASON_TYPE_TO_NAME.get(season)
-            seasonRenderersList.append({'seasonName': VEHICLE_CUSTOMIZATION.getSeasonName(seasonName),
-                                        'seasonIconSmall': RES_ICONS.getSeasonIcon(seasonName)})
-
-        self.as_setSeasonPanelDataS({'seasonRenderersList': seasonRenderersList})
-
-    def getPurchaseItems(self):
-        return getCustomPurchaseItems(self.getOutfitsInfo())
 
     def showBuyWindow(self):
         self.__releaseItemSound()
@@ -324,11 +192,21 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def showGroupFromTab(self, tabIndex):
         self.soundManager.playInstantSound(SOUNDS.TAB_SWITCH)
         self._tabIndex = tabIndex
-        if self._mode == C11nMode.INSTALL:
-            self.service.startHighlighter(chooseMode(
-                GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT, g_currentVehicle.item))
-        self.__setAnchorsInitData(self._tabIndex, True)
+        doRegions = self._tabIndex in C11nTabs.REGIONS
+        self.service.stopHighlighter()
+        if self._mode == C11nMode.INSTALL and doRegions:
+            self.service.startHighlighter(chooseMode(tabToItem(self._tabIndex), g_currentVehicle.item))
+        self.__setAnchorsInitData(self._tabIndex, doRegions)
+        if self.__locatedOnEmbelem and g_hangarSpace.spaceInited:
+            space = g_hangarSpace.space
+            space.clearSelectedEmblemInfo()
+            space.locateCameraToPreview()
         self.__updateAnchorPositions()
+        if self._tabIndex == C11nTabs.EFFECT:
+            slotIdVO = CustomizationSlotIdVO(Area.MISC, GUI_ITEM_TYPE.MODIFICATION, 0)._asdict()
+        else:
+            slotIdVO = None
+        self.as_updateSelectedRegionsS(slotIdVO)
         self.refreshCarousel(rebuild=True)
         if self._mode == C11nMode.SETUP:
             self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
@@ -398,19 +276,18 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                 for season in newSeasons:
                     self._settingSeason |= getattr(SeasonType, season.upper())
         self.refreshOutfit()
-        self.__setAnchorsInitData(self._tabIndex, True, True)
+        self.__setAnchorsInitData(self._tabIndex, self._tabIndex in C11nTabs.REGIONS, True)
         self.__setBuyingPanelData()
         self.__setHeaderInitData()
         self.refreshCarousel(rebuild=self._carouselDP.getAppliedFilter() or self._carouselDP.getOwnedFilter())
 
     def switchToCustom(self, updateUI=True):
-        self.service.startHighlighter(chooseMode(
-            GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT, g_currentVehicle.item))
+        self.service.startHighlighter(chooseMode(tabToItem(self._tabIndex), g_currentVehicle.item))
         self.switchMode(C11nMode.INSTALL)
 
     def switchToStyle(self):
-        if self._tabIndex in C11nTabs.PAINTS:
-            self._tabIndex = C11nTabs.SHOP
+        if self._tabIndex in C11nTabs.PAINT:
+            self._tabIndex = C11nTabs.CAMO_SHOP
         self.switchMode(C11nMode.SETUP)
         self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
         self.service.stopHighlighter()
@@ -472,7 +349,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.refreshOutfit()
         self.__setHeaderInitData()
         self.__setBuyingPanelData()
-        self.__setAnchorsInitData(self._tabIndex, True, True)
+        self.__setAnchorsInitData(self._tabIndex, self._tabIndex in C11nTabs.REGIONS, True)
         self.as_refreshAnchorPropertySheetS()
         self.refreshCarousel(rebuild=self._carouselDP.getAppliedFilter() or self._carouselDP.getOwnedFilter())
 
@@ -480,7 +357,14 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.service.onPropertySheetShow(areaId, slotId, regionId)
 
     def onLobbyClick(self):
-        pass
+        if self._tabIndex in (C11nTabs.EMBLEM, C11nTabs.INSCRIPTION):
+            self.as_hideAnchorPropertySheetS()
+            if self.__locatedOnEmbelem and g_hangarSpace.spaceInited:
+                space = g_hangarSpace.space
+                space.clearSelectedEmblemInfo()
+                space.locateCameraToPreview()
+                self.__updateAnchorPositions()
+                self.__locatedOnEmbelem = False
 
     def setEnableMultiselectRegions(self, isEnabled):
         pass
@@ -489,7 +373,21 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__updateAnchorPositions()
 
     def onSelectAnchor(self, areaID, regionID):
-        assert False
+        if g_hangarSpace.spaceInited:
+            self.soundManager.playInstantSound(SOUNDS.CHOOSE)
+            if self._tabIndex == C11nTabs.EMBLEM:
+                emblemType = 'player'
+                zoom = 0.06
+            else:
+                emblemType = 'inscription'
+                zoom = 0.1
+            self.__updateAnchorPositions()
+            self.__locatedOnEmbelem = g_hangarSpace.space.locateCameraOnEmblem(areaID < 2, emblemType, regionID, zoom)
+            self.as_cameraAutoRotateChangedS(True)
+            BigWorld.callback(5, self.__cameraRotationFinished)
+
+    def __cameraRotationFinished(self):
+        self.as_cameraAutoRotateChangedS(False)
 
     def getOutfitsInfo(self):
         outfitsInfo = {}
@@ -497,6 +395,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             outfitsInfo[season] = OutfitInfo(self._originalOutfits[season], self._modifiedOutfits[season])
 
         return outfitsInfo
+
+    def getPurchaseItems(self):
+        return getCustomPurchaseItems(self.getOutfitsInfo())
 
     def getItemInventoryCount(self, item):
         return getItemInventoryCount(item, self.getOutfitsInfo())
@@ -561,7 +462,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         if any(self._currentSettings.itervalues()):
             from ..processors import collectCamouflageData
             collectCamouflageData()
-        self.itemsCache.onSyncCompleted -= self.__onCacheReSync
+        self.itemsCache.onSyncCompleted -= self.__onCacheResync
         boughtOutfits = {season: self.service.getCustomOutfit(season) for season in SeasonType.COMMON_SEASONS}
         cart = getTotalPurchaseInfo(purchaseItems)
         nationName, vehicleName = g_currentVehicle.item.descriptor.name.split(':')
@@ -591,6 +492,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                     g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
                         seasonName, {}).setdefault('paint', {}).setdefault(TankPartIndexes.getName(pItem.areaID), {})[
                         str(pItem.regionID)] = (pItem.item.id if not pItem.isDismantling else None)
+            elif pItem.slot in (GUI_ITEM_TYPE.EMBLEM, GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.MODIFICATION):
+                pass
         for nationName in g_config.outfitCache.keys():
             for vehicleName in g_config.outfitCache[nationName].keys():
                 for season in g_config.outfitCache[nationName][vehicleName].keys():
@@ -619,8 +522,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         else:
             SystemMessages.pushI18nMessage(MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS,
                                            type=SM_TYPE.Information)
-        self.__onCacheReSync()
-        self.itemsCache.onSyncCompleted += self.__onCacheReSync
+        self.__onCacheResync()
+        self.itemsCache.onSyncCompleted += self.__onCacheResync
 
     # noinspection PyUnusedLocal
     @process('sellItem')
@@ -631,6 +534,71 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         if self._vehicleCustomizationAnchorsUpdater is not None:
             self._vehicleCustomizationAnchorsUpdater.setAnchors(anchors, True)
 
+    def _populate(self):
+        super(CamoSelectorMainView, self)._populate()
+        self.soundManager.playInstantSound(SOUNDS.ENTER)
+        self.__viewLifecycleWatcher.start(self.app.containerManager, [_C11nWindowsLifecycleHandler()])
+        self._isDeferredRenderer = self.settingsCore.getSetting(GRAPHICS.RENDER_PIPELINE) == 0
+        g_clientUpdateManager.addMoneyCallback(self.__setBuyingPanelData)
+        self.lobbyContext.addHeaderNavigationConfirmator(self.__confirmHeaderNavigation)
+        self.lobbyContext.getServerSettings().onServerSettingsChange += self.__onServerSettingChanged
+        self.service.onCarouselFilter += self.__onCarouselFilter
+        self.service.onRemoveItems += self.removeItems
+        self.service.onOutfitChanged += self.__onOutfitChanged
+        g_eventBus.addListener(CameraRelatedEvents.IDLE_CAMERA, self.__onNotifyHangarCameraIdleStateChanged)
+        g_hangarSpace.onSpaceCreate += self.__onSpaceCreateHandler
+        g_hangarSpace.onSpaceDestroy += self.__onSpaceDestroyHandler
+        g_hangarSpace.onSpaceRefresh += self.__onSpaceRefreshHandler
+        self.service.onRegionHighlighted += self.__onRegionHighlighted
+        self.itemsCache.onSyncCompleted += self.__onCacheResync
+        self.__carveUpOutfits()
+        self._carouselDP = CustomizationCarouselDataProvider(g_currentVehicle, self._carouseItemWrapper, self)
+        self._carouselDP.setFlashObject(self.as_getDataProviderS())
+        self._carouselDP.setEnvironment(self.app)
+        self.__setHeaderInitData()
+        self.__setFooterInitData()
+        self.__setBuyingPanelData()
+        self.__setSeasonData()
+        self._vehicleCustomizationAnchorsUpdater = _VehicleCustomizationAnchorsUpdater(self.service)
+        self._vehicleCustomizationAnchorsUpdater.startUpdater(self.settingsCore.interfaceScale.get())
+        self.refreshOutfit()
+        self.settingsCore.interfaceScale.onScaleExactlyChanged += self.__onInterfaceScaleChanged
+        self.settingsCore.onSettingsChanged += self.__onSettingsChanged
+        self.__updateCameraParalaxFlag()
+        self.service.startHighlighter(chooseMode(
+            GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT, g_currentVehicle.item))
+
+    def _dispose(self):
+        if g_appLoader.getSpaceID() != _SPACE_ID.LOGIN:
+            self.__releaseItemSound()
+            self.soundManager.playInstantSound(SOUNDS.EXIT)
+        self.settingsCore.onSettingsChanged -= self.__onSettingsChanged
+        self.settingsCore.interfaceScale.onScaleExactlyChanged -= self.__onInterfaceScaleChanged
+        self._vehicleCustomizationAnchorsUpdater.stopUpdater()
+        self._vehicleCustomizationAnchorsUpdater = None
+        if self.__locatedOnEmbelem and g_hangarSpace.spaceInited:
+            space = g_hangarSpace.space
+            space.clearSelectedEmblemInfo()
+            space.locateCameraToPreview()
+        self.__viewLifecycleWatcher.stop()
+        self.service.stopHighlighter()
+        g_clientUpdateManager.removeObjectCallbacks(self)
+        self.lobbyContext.deleteHeaderNavigationConfirmator(self.__confirmHeaderNavigation)
+        self.lobbyContext.getServerSettings().onServerSettingsChange -= self.__onServerSettingChanged
+        self.service.onCarouselFilter -= self.__onCarouselFilter
+        self.service.onRemoveItems -= self.removeItems
+        self.service.onOutfitChanged -= self.__onOutfitChanged
+        g_eventBus.removeListener(CameraRelatedEvents.IDLE_CAMERA, self.__onNotifyHangarCameraIdleStateChanged)
+        g_hangarSpace.onSpaceCreate -= self.__onSpaceCreateHandler
+        g_hangarSpace.onSpaceDestroy -= self.__onSpaceDestroyHandler
+        g_hangarSpace.onSpaceRefresh -= self.__onSpaceRefreshHandler
+        self.service.onRegionHighlighted -= self.__onRegionHighlighted
+        self.itemsCache.onSyncCompleted -= self.__onCacheResync
+        if g_currentVehicle.item:
+            g_tankActiveCamouflage[g_currentVehicle.item.intCD] = self._currentSeason
+            g_currentVehicle.refreshModel()
+        super(CamoSelectorMainView, self)._dispose()
+
     def _itemCtxMenuSelected(self, ctxMenuID, itemIntCD):
         item = self.itemsCache.items.getItemByCD(itemIntCD)
         if ctxMenuID == CustomizationOptions.REMOVE_FROM_TANK:
@@ -639,8 +607,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def _getUpdatedAnchorPositions(self):
         anchorVOs = []
         anchorPosData = []
+        cType = tabToItem(self._tabIndex)
         outfit = self.service.getEmptyOutfit()
-        cType = GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT
         for container in outfit.containers():
             for slot in (x for x in container.slots() if x.getType() == cType):
                 for regionId, region in enumerate(slot.getRegions()):
@@ -665,8 +633,13 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
     def _carouseItemWrapper(self, itemCD):
         item = self.itemsCache.items.getItemByCD(itemCD)
         itemInventoryCount = self.getItemInventoryCount(item)
+        if item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION:
+            showUnsupportedAlert = not self._isDeferredRenderer
+        else:
+            showUnsupportedAlert = False
         isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
-        return buildCustomizationItemDataVO(item, itemInventoryCount, isCurrentlyApplied=isCurrentlyApplied, plainView=True)
+        return buildCustomizationItemDataVO(item, itemInventoryCount, showUnsupportedAlert=showUnsupportedAlert,
+                                            isCurrentlyApplied=isCurrentlyApplied, plainView=True)
 
     def __carveUpOutfits(self):
         from ..processors import applyCamoCache, applyPaintCache
@@ -695,6 +668,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         if hovered:
             self.soundManager.playInstantSound(SOUNDS.HOVER)
             return
+        if self._tabIndex == C11nTabs.EFFECT:
+            tankPartID = Area.MISC
+            typeID = GUI_ITEM_TYPE.MODIFICATION
         if tankPartID != -1 and regionID != -1:
             slotId = CustomizationSlotIdVO(tankPartID if self._mode == C11nMode.INSTALL else 1, typeID,
                                            regionID)._asdict()
@@ -735,7 +711,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.refreshOutfit()
         self.__setBuyingPanelData()
 
-    def __onCacheReSync(self, *_):
+    def __onCacheResync(self, *_):
         if not g_currentVehicle.isPresent():
             self.__onConfirmCloseWindow(proceed=True)
             return
@@ -744,9 +720,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__restoreState()
         self.__setHeaderInitData()
         self.__setBuyingPanelData()
+        self.as_refreshAnchorPropertySheetS()
         self.refreshCarousel(rebuild=self._needFullRebuild)
         self.refreshOutfit()
-        self.as_refreshAnchorPropertySheetS()
         self._needFullRebuild = False
 
     def __preserveState(self):
@@ -761,6 +737,37 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_UNAVAILABLE, type=SystemMessages.SM_TYPE.Warning)
             self.__onConfirmCloseWindow(proceed=True)
 
+    def __setBuyingPanelData(self, *_):
+        purchaseItems = self.getPurchaseItems()
+        cartInfo = getTotalPurchaseInfo(purchaseItems)
+        totalPriceVO = getItemPricesVO(cartInfo.totalPrice)
+        cleanSettings = self._cleanSettings(self._currentSettings, checkSeasons=False)
+        keys = []
+        if cartInfo.numTotal:
+            keys.append('install')
+        if cartInfo.totalPrice != ITEM_PRICE_EMPTY:
+            self.as_showBuyingPanelS()
+        else:
+            self.as_hideBuyingPanelS()
+        if any(cleanSettings.itervalues()) or not keys:
+            keys.append('apply')
+        label = g_config.i18n['UI_flash_commit_' + '_and_'.join(keys)]
+        isApplyEnabled = bool(cartInfo.numTotal) or any(cleanSettings.itervalues())
+        shortage = self.itemsCache.items.stats.money.getShortage(cartInfo.totalPrice.price)
+        self.as_setBottomPanelHeaderS({'buyBtnEnabled': isApplyEnabled,
+                                       'buyBtnLabel': label,
+                                       'enoughMoney': getItemPricesVO(ItemPrice(shortage, shortage))[0],
+                                       'pricePanel': totalPriceVO[0]})
+
+    def __setSeasonData(self):
+        seasonRenderersList = []
+        for season in SEASONS_ORDER:
+            seasonName = SEASON_TYPE_TO_NAME.get(season)
+            seasonRenderersList.append({'seasonName': VEHICLE_CUSTOMIZATION.getSeasonName(seasonName),
+                                        'seasonIconSmall': RES_ICONS.getSeasonIcon(seasonName)})
+
+        self.as_setSeasonPanelDataS({'seasonRenderersList': seasonRenderersList})
+
     # noinspection PyUnusedLocal
     def __setAnchorsInitData(self, tabIndex, doRegions, update=False):
 
@@ -769,13 +776,12 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             return struct.unpack('I', s)[0]
 
         anchorVOs = []
-        cType = GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT
+        cType = tabToItem(self._tabIndex)
         for container in self._currentOutfit.containers():
             for slot in (x for x in container.slots() if x.getType() == cType):
                 for regionId, region in enumerate(slot.getRegions()):
                     slotId = CustomizationSlotIdVO(container.getAreaID(), slot.getType(), regionId)
-                    popoverAlias = CUSTOMIZATION_ALIASES.CUSTOMIZATION_CAMO_POPOVER if self._tabIndex in C11nTabs.CAMO else \
-                        CUSTOMIZATION_ALIASES.CUSTOMIZATION_PAINT_POPOVER
+                    popoverAlias = CUSTOMIZATION_POPOVER_ALIASES[slot.getType()]
                     item = slot.getItem(regionId)
                     itemIntCD = item.intCD if item is not None else 0
                     uid = customizationSlotIdToUid(slotId)
@@ -787,9 +793,45 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         else:
             self.as_setAnchorInitS(CustomizationAnchorInitVO(anchorVOs, doRegions)._asdict())
 
+    def __setHeaderInitData(self):
+        vehicle = g_currentVehicle.item
+        self.as_setHeaderDataS({'tankTier': str(int2roman(vehicle.level)),
+                                'tankName': vehicle.shortUserName,
+                                'tankType': '{}_elite'.format(vehicle.type) if vehicle.isElite else vehicle.type,
+                                'isElite': vehicle.isElite,
+                                'closeBtnTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_HEADERCLOSEBTN,
+                                'historicVO': self.__getHistoricIndicatorData()})
+
+    def __setFooterInitData(self):
+        self.as_setBottomPanelInitDataS(
+            {'tabData': {
+                'tabData': self.__getItemTabsData(),
+                'selectedTab': self._tabIndex},
+                'tabsAvailableRegions': C11nTabs.AVAILABLE_REGIONS,
+                'defaultStyleLabel': VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL,
+                'carouselInitData': self.__getCarouselInitData(),
+                'switcherInitData': self.__getSwitcherInitData()})
+        self.as_setCarouselFiltersInitDataS(
+            {'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER,
+             'mainBtn': {'value': RES_ICONS.MAPS_ICONS_BUTTONS_FILTER,
+                         'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_MAINBTN},
+             'hotFilters': [{'value': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON,
+                             'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_STORAGEBTN,
+                             'selected': self._carouselDP.getOwnedFilter()},
+                            {'value': RES_ICONS.MAPS_ICONS_BUTTONS_EQUIPPED_ICON,
+                             'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_EQUIPPEDBTN,
+                             'selected': self._carouselDP.getAppliedFilter()}]})
+
     def onSelectHotFilter(self, index, value):
         (self._carouselDP.setOwnedFilter, self._carouselDP.setAppliedFilter)[index](value)
         self.refreshCarousel(rebuild=True)
+
+    def __getSwitcherInitData(self):
+        return {'leftLabel': g_config.i18n['UI_flash_switcher_%s' % C11nMode.NAMES[self._mode]],
+                'rightLabel': g_config.i18n['UI_flash_switcher_%s' % C11nMode.NAMES[not self._mode]],
+                'leftEvent': 'installStyle%s' % ('s' if self._mode else ''),
+                'rightEvent': 'installStyle%s' % ('s' if not self._mode else ''),
+                'isLeft': True}
 
     def __getHistoricIndicatorData(self):
         isDefault = all((outfit.isEmpty() for outfit in self._modifiedOutfits.itervalues()))
@@ -808,8 +850,12 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                                              text_styles.main(VEHICLE_CUSTOMIZATION.CAROUSEL_MESSAGE_DESCRIPTION))}
 
     def __getAnchorPositionData(self, slotId, region):
-        anchorPos = self.service.getPointForRegionLeaderLine(region)
-        anchorNorm = anchorPos
+        if self._tabIndex in C11nTabs.REGIONS:
+            anchorPos = self.service.getPointForRegionLeaderLine(region)
+            anchorNorm = anchorPos
+        else:
+            anchorPos = self.service.getPointForAnchorLeaderLine(slotId.areaId, slotId.slotId, slotId.regionId)
+            anchorNorm = self.service.getNormalForAnchorLeaderLine(slotId.areaId, slotId.slotId, slotId.regionId)
         return None if anchorPos is None or anchorNorm is None else AnchorPositionData(
             cameras.get2DAngleFromCamera(anchorNorm), cameras.projectPoint(anchorPos), slotId)
 
@@ -825,12 +871,25 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
 
     def __getVisibleTabs(self):
         visibleTabs = []
+        anchorsData = g_currentVehicle.hangarSpace.getSlotPositions()
         for tabIdx in C11nTabs.VISIBLE:
-            if self._mode == C11nMode.SETUP and tabIdx in C11nTabs.PAINTS:
+            if self._mode == C11nMode.SETUP and tabIdx in C11nTabs.PAINT + (
+                    C11nTabs.INSCRIPTION, C11nTabs.EMBLEM, C11nTabs.EFFECT):
                 continue
+            itemTypeID = tabToItem(tabIdx)
             data = self._carouselDP.getSeasonAndTabData(tabIdx, self._currentSeason)
             if not data.itemCount:
                 continue
+            if itemTypeID in (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.EMBLEM):
+                for areaData in anchorsData.itervalues():
+                    if areaData.get(itemTypeID):
+                        hasSlots = True
+                        break
+                else:
+                    hasSlots = False
+
+                if not hasSlots:
+                    continue
             visibleTabs.append(tabIdx)
 
         return visibleTabs
@@ -857,11 +916,11 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
 
     def __onSettingsChanged(self, diff):
         if GAME.HANGAR_CAM_PARALLAX_ENABLED in diff:
-            self.__updateCameraParallaxFlag()
+            self.__updateCameraParalaxFlag()
 
-    def __updateCameraParallaxFlag(self):
-        parallaxEnabled = bool(self.settingsCore.getSetting(GAME.HANGAR_CAM_PARALLAX_ENABLED))
-        self.as_setParallaxFlagS(parallaxEnabled)
+    def __updateCameraParalaxFlag(self):
+        paralaxEnabled = bool(self.settingsCore.getSetting(GAME.HANGAR_CAM_PARALLAX_ENABLED))
+        self.as_setParallaxFlagS(paralaxEnabled)
 
     def __onInterfaceScaleChanged(self, scale):
         if self._vehicleCustomizationAnchorsUpdater is not None:
