@@ -11,10 +11,10 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.app_loader import g_appLoader
 from gui.shared.formatters import text_styles
-from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
+from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES
 from helpers import i18n
 from helpers.i18n import makeString as _ms
-from .shared import C11nMode, RandMode, TeamMode, C11nTabs
+from .shared import C11nMode, RandMode, TeamMode, tabToItem
 
 
 @overrideMethod(AnchorProperties, '_extractDataFromElement')
@@ -26,8 +26,7 @@ def _extractDataFromElement(base, self):
         self._name = text_styles.highTitle(self._item.userName)
         self._desc = self._AnchorProperties__generateDescription()
     else:
-        itemTName = GUI_ITEM_TYPE_NAMES[
-            GUI_ITEM_TYPE.CAMOUFLAGE if self._c11nView.getCurrentTab() in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT]
+        itemTName = GUI_ITEM_TYPE_NAMES[tabToItem(self._c11nView.getCurrentTab())]
         self._name = text_styles.highTitle(_ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYTEXT,
                                                elementType=_ms(ITEM_TYPES.customization(itemTName))))
         self._desc = text_styles.neutral(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_EMPTYSLOT_HINT)

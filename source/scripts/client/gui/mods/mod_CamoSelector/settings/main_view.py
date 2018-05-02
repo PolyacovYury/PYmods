@@ -114,7 +114,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.refreshOutfit()
         self.refreshCarousel(rebuild=True)
         self.as_refreshAnchorPropertySheetS()
-        self.__setAnchorsInitData(self._tabIndex, True, True)
+        self.__setAnchorsInitData(self._tabIndex, self._tabIndex in C11nTabs.REGIONS, True)
 
     def changeCamoTeamMode(self, idx):
         self._ally = bool(idx & TeamMode.ALLY)
@@ -286,7 +286,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.switchMode(C11nMode.INSTALL)
 
     def switchToStyle(self):
-        if self._tabIndex in C11nTabs.PAINT:
+        if self._tabIndex not in C11nTabs.CAMO:
             self._tabIndex = C11nTabs.CAMO_SHOP
         self.switchMode(C11nMode.SETUP)
         self.__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
@@ -349,8 +349,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.refreshOutfit()
         self.__setHeaderInitData()
         self.__setBuyingPanelData()
-        self.__setAnchorsInitData(self._tabIndex, self._tabIndex in C11nTabs.REGIONS, True)
         self.as_refreshAnchorPropertySheetS()
+        self.__setAnchorsInitData(self._tabIndex, self._tabIndex in C11nTabs.REGIONS, True)
         self.refreshCarousel(rebuild=self._carouselDP.getAppliedFilter() or self._carouselDP.getOwnedFilter())
 
     def updatePropertySheetButtons(self, areaId, slotId, regionId):
@@ -532,7 +532,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
 
     def onAnchorsShown(self, anchors):
         if self._vehicleCustomizationAnchorsUpdater is not None:
-            self._vehicleCustomizationAnchorsUpdater.setAnchors(anchors, True)
+            self._vehicleCustomizationAnchorsUpdater.setAnchors(anchors, self._tabIndex in C11nTabs.REGIONS)
 
     def _populate(self):
         super(CamoSelectorMainView, self)._populate()
@@ -720,9 +720,9 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.__restoreState()
         self.__setHeaderInitData()
         self.__setBuyingPanelData()
-        self.as_refreshAnchorPropertySheetS()
         self.refreshCarousel(rebuild=self._needFullRebuild)
         self.refreshOutfit()
+        self.as_refreshAnchorPropertySheetS()
         self._needFullRebuild = False
 
     def __preserveState(self):

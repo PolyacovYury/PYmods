@@ -12,7 +12,7 @@ from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
 from . import g_config
-from .shared import C11nTabs, isCamoInternational, tabToItem, ITEM_TO_TABS
+from .shared import C11nTabs, isCamoInternational, ITEM_TO_TABS
 
 
 def getItemSeason(item):
