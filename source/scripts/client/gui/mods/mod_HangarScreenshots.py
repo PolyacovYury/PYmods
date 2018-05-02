@@ -9,7 +9,7 @@ from gui import InputHandler, SystemMessages
 from gui.ClientHangarSpace import hangarCFG
 from gui.Scaleform.framework import ViewTypes
 from gui.app_loader.loader import g_appLoader
-from gui.hangar_camera_manager import HangarCameraManager
+from gui.hangar_cameras.hangar_camera_manager import HangarCameraManager
 from gui.shared.utils.HangarSpace import g_hangarSpace
 
 

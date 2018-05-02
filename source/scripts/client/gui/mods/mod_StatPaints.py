@@ -1,9 +1,9 @@
 import BigWorld
-import PYmodsCore
 import json
 import threading
 import urllib2
 from ClientArena import ClientArena
+from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod
 from functools import partial
 from gui.Scaleform.battle_entry import BattleEntry
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -18,7 +18,7 @@ except ImportError:
     pass
 
 
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.dossiers = {}
         self.pendingIDs = set()
@@ -135,37 +135,37 @@ def userRegion(databaseID):
 
 
 g_config = ConfigInterface()
-statistic_mod = PYmodsCore.Analytics(g_config.ID, g_config.version, 'UA-76792179-15')
+analytics = Analytics(g_config.ID, g_config.version, 'UA-76792179-15')
 
 
-@PYmodsCore.overrideMethod(ClientArena, '_ClientArena__onVehicleListUpdate')
+@overrideMethod(ClientArena, '_ClientArena__onVehicleListUpdate')
 def new__onVehicleListUpdate(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
     g_config.loadStats()
 
 
-@PYmodsCore.overrideMethod(BattleEntry, 'beforeDelete')
+@overrideMethod(BattleEntry, 'beforeDelete')
 def new_BattleEntry_beforeDelete(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
     g_config.resetStats()
 
 
-@PYmodsCore.overrideMethod(CompoundAppearance, '_CompoundAppearance__prepareOutfit')
-def new_prepareOutfit(base, self, *args, **kwargs):
-    base(self, *args, **kwargs)
+@overrideMethod(CompoundAppearance, '_CompoundAppearance__applyVehicleOutfit')
+def new_applyVehicleOutfit(base, self, *a, **kw):
     outfit = self._CompoundAppearance__outfit
-    vehicle = self._CompoundAppearance__vehicle
+    vID = self._CompoundAppearance__vID
+    vDesc = self._CompoundAppearance__typeDesc
+    if not vDesc:
+        return base(self, *a, **kw)
     fashions = self._CompoundAppearance__fashions
-    if not vehicle:
-        return outfit
     paintItems = {}
     paints = g_cache.customization20().paints
     for paintID in g_config.data['scale'].itervalues():
         paintItem = Paint(paints[paintID].compactDescr)
-        if not paintItem.descriptor.matchVehicleType(vehicle.typeDescriptor.type):
+        if not paintItem.descriptor.matchVehicleType(vDesc.type):
             return outfit
         paintItems[paintID] = paintItem
-    accountID = str(BigWorld.player().arena.vehicles[vehicle.id]['accountDBID'])
+    accountID = str(BigWorld.player().arena.vehicles[vID]['accountDBID'])
     if accountID not in g_config.dossiers:
         if accountID not in g_config.pendingIDs:
             g_config.thread([accountID])
@@ -196,3 +196,4 @@ def new_prepareOutfit(base, self, *args, **kwargs):
                     continue
                 fashion.removeCamouflage()
     self._CompoundAppearance__outfit = outfit
+    base(self, *a, **kw)

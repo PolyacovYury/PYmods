@@ -120,7 +120,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
             if loginView and loginView._rememberUser:
                 password = '*' * loginView.loginManager.getPreference('password_length')
                 login = loginView.loginManager.getPreference('login')
-                loginView.onLogin(login, password, loginView._servers.selectedServer['data'], not '@' in login)
+                loginView.onLogin(login, password, loginView._servers.selectedServer['data'], '@' not in login)
 
 
 g_entitiesFactories.addSettings(
