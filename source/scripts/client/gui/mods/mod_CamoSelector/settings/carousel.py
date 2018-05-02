@@ -233,7 +233,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         self._customizationBookmarks = []
         lastGroupName = None
         for idx, item in enumerate(sorted(allItems.itervalues(), key=comparisonKey)):
-            groupName = getGroupName(item.groupUserName)
+            groupName = getGroupName(item)
             if item.intCD == self._selectIntCD:
                 self._selectedIdx = len(self._customizationItems)
                 self._selectIntCD = None
