@@ -12,7 +12,7 @@ from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
 from . import g_config
-from .shared import C11nTabs, isCamoInternational
+from .shared import C11nTabs, isCamoInternational, tabToItem, ITEM_TO_TABS
 
 
 def getItemSeason(item):
@@ -192,15 +192,19 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
     def _getAllItems(self, requirement):
         paints = g_cache.customization20().paints.values()
         camouflages = g_cache.customization20().camouflages.values()
+        decals = g_cache.customization20().decals.values()
+        effects = g_cache.customization20().modifications.values()
         return {item.intCD: item for item in
-                (self.itemsCache.items.getItemByCD(item.compactDescr) for item in paints + camouflages) if requirement(item)}
+                (self.itemsCache.items.getItemByCD(item.compactDescr) for item in paints + camouflages + decals + effects) if
+                requirement(item)}
 
     def isItemSuitableForTab(self, item, tabIndex):
         if item is None:
             return False
         ct = C11nTabs
-        if tabIndex not in ct.PAINT and tabIndex not in ct.CAMO:
-            return True
+        if tabIndex not in ct.PAINT + ct.CAMO:
+            return item.itemTypeID in (GUI_ITEM_TYPE.EMBLEM, GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.MODIFICATION) and \
+                   tabIndex in ITEM_TO_TABS[item.itemTypeID]
         vehicle = self._currentVehicle.item
         if tabIndex in ct.PAINT:
             return item.itemTypeID == GUI_ITEM_TYPE.PAINT and item.mayInstall(vehicle) and (tabIndex == ct.PAINT_SHOP) == \
