@@ -2,6 +2,7 @@ import BigWorld
 import PYmodsCore
 import traceback
 from CurrentVehicle import _RegularPreviewAppearance, g_currentPreviewVehicle
+from HeroTank import HeroTank
 from gui import SystemMessages
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from helpers import dependency
@@ -64,6 +65,8 @@ def vDesc_process(vehicleID, vDesc, mode):
         isAlly = vehInfoVO.team == BigWorld.player().team
     elif mode == 'hangar':
         currentMode = g_config.currentMode
+        if currentMode == 'remod' and isinstance(BigWorld.entity(vehicleID), HeroTank):
+            currentMode = 'player'
         isPlayerVehicle = currentMode == 'player'
         playerName = None
         isAlly = currentMode == 'ally'
