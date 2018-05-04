@@ -5,7 +5,6 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from helpers.i18n import makeString as _ms
@@ -13,7 +12,7 @@ from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
 from . import g_config
-from .shared import C11nTabs, isCamoInternational, ITEM_TO_TABS
+from .shared import C11nTabs, isCamoGlobal, ITEM_TO_TABS
 
 
 def comparisonKey(item):
@@ -204,22 +203,20 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
                 requirement(item)}
 
     def isItemSuitableForTab(self, item, tabIndex):
-        if item is None:
+        if item is None or tabIndex not in ITEM_TO_TABS[item.itemTypeID]:
             return False
         ct = C11nTabs
-        if tabIndex not in ct.PAINT + ct.CAMO:
-            return item.itemTypeID in (GUI_ITEM_TYPE.EMBLEM, GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.MODIFICATION) and \
-                   tabIndex in ITEM_TO_TABS[item.itemTypeID]
+        if tabIndex in (ct.EMBLEM, ct.INSCRIPTION):
+            return True
         vehicle = self._currentVehicle.item
-        if tabIndex in ct.PAINT:
-            return item.itemTypeID == GUI_ITEM_TYPE.PAINT and item.mayInstall(vehicle) and (tabIndex == ct.PAINT_SHOP) == \
-                   (item.priceGroup != 'custom')
-        isInter = isCamoInternational(item.descriptor)
-        return (item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE) and not (
-                (tabIndex == ct.CAMO_SHOP and (item.isHidden or item.priceGroup == 'custom')) or
-                (tabIndex == ct.CAMO_HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'custom')) or
-                (tabIndex == ct.CAMO_GLOBAL and not isInter) or
-                (tabIndex == ct.CAMO_CUSTOM and item.priceGroup != 'custom'))
+        if tabIndex in (ct.PAINT, ct.EFFECT):
+            return item.mayInstall(vehicle)
+        isGlobal = isCamoGlobal(item.descriptor)
+        return not (
+            (tabIndex == ct.CAMO_SHOP and (item.isHidden or item.priceGroup == 'custom')) or
+            (tabIndex == ct.CAMO_HIDDEN and (not item.isHidden or isGlobal or item.priceGroup == 'custom')) or
+            (tabIndex == ct.CAMO_GLOBAL and not isGlobal) or
+            (tabIndex == ct.CAMO_CUSTOM and item.priceGroup != 'custom'))
 
     def _buildCustomizationItems(self):
         season = self._seasonID
