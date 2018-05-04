@@ -304,7 +304,7 @@ def processMember(memberFileName, skinName):
     if '.model' in memberFileName:
         oldModel = ResMgr.openSection(memberFileName)
         newModelPath = skinDir + memberFileName
-        curModel = ResMgr.openSection(newModelPath, True)
+        curModel = ResMgr.openSection(ResMgr.resolveToAbsolutePath(newModelPath), True)
         curModel.copy(oldModel)
         models = [curModel]
         if 'Chassis' in memberFileName:
