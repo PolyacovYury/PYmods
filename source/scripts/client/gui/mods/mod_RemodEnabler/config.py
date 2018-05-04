@@ -624,12 +624,12 @@ class RemodEnablerUI(AbstractWindowView):
     def py_onShowRemod(remodIdx):
         g_config.currentMode = 'remod'
         g_config.OM.selected['Remod'] = sorted(g_config.OM.models)[remodIdx]
-        BigWorld.callback(0, PYmodsCore.refreshCurrentVehicle)
+        PYmodsCore.refreshCurrentVehicle()
 
     def py_onModelRestore(self):
         g_config.currentMode = self.modeBackup
         g_config.OM.selected['Remod'] = self.remodBackup
-        BigWorld.callback(0, PYmodsCore.refreshCurrentVehicle)
+        PYmodsCore.refreshCurrentVehicle()
 
     @staticmethod
     def py_getCurrentVehicleName():
