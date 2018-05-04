@@ -1,10 +1,12 @@
 import nations
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationBookmarkVO, \
-    CustomizationSeasonAndTypeFilterData, comparisonKey
+    CustomizationSeasonAndTypeFilterData
+from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.customization.shared import C11N_ITEM_TYPE_MAP
+from gui.shared.gui_items import GUI_ITEM_TYPE_INDICES
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from helpers.i18n import makeString as _ms
@@ -12,7 +14,11 @@ from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
 from . import g_config
-from .shared import C11nTabs, isCamoInternational
+from .shared import C11nTabs, isCamoGlobal, ITEM_TO_TABS
+
+
+def comparisonKey(item):
+    return TYPES_ORDER.index(item.itemTypeID), getGroupName(item), item.id
 
 
 def getItemSeason(item):
@@ -57,7 +63,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
                 self._allSeasonAndTabFilterData[tabIndex][season] = CustomizationSeasonAndTypeFilterData()
 
         for item in sorted(allItems.itervalues(), key=comparisonKey):
-            groupName = item.groupUserName
+            groupName = getGroupName(item)
             for tabIndex in C11nTabs.ALL:
                 if self.isItemSuitableForTab(item, tabIndex):
                     for seasonType in SeasonType.COMMON_SEASONS:
@@ -190,25 +196,25 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         super(CustomizationCarouselDataProvider, self)._dispose()
 
     def _getAllItems(self, requirement):
-        paints = g_cache.customization20().paints.values()
-        camouflages = g_cache.customization20().camouflages.values()
-        return {item.intCD: item for item in
-                (self.itemsCache.items.getItemByCD(item.compactDescr) for item in paints + camouflages) if requirement(item)}
+        return {item.intCD: item for item in (self.itemsCache.items.getItemByCD(item.compactDescr) for item in sum(
+            (g_cache.customization20().itemTypes[C11N_ITEM_TYPE_MAP[GUI_ITEM_TYPE_INDICES[itemTypeName]]].values() for
+             itemTypeName in ('paint', 'camouflage', 'decal', 'modification')), [])) if requirement(item)}
 
     def isItemSuitableForTab(self, item, tabIndex):
-        if item is None:
+        if item is None or tabIndex not in ITEM_TO_TABS[item.itemTypeID]:
             return False
         ct = C11nTabs
+        if tabIndex in (ct.EMBLEM, ct.INSCRIPTION):
+            return True
         vehicle = self._currentVehicle.item
-        if tabIndex in ct.PAINTS:
-            return item.itemTypeID == GUI_ITEM_TYPE.PAINT and item.mayInstall(vehicle) and (tabIndex == ct.PAINT) == \
-                   (item.priceGroup != 'custom')
-        isInter = isCamoInternational(item.descriptor)
-        return (item.itemTypeID != GUI_ITEM_TYPE.PAINT) and not (
-                (tabIndex == ct.SHOP and (item.isHidden or item.priceGroup == 'custom')) or
-                (tabIndex == ct.HIDDEN and (not item.isHidden or isInter or item.priceGroup == 'custom')) or
-                (tabIndex == ct.INTERNATIONAL and not isInter) or
-                (tabIndex == ct.CUSTOM and item.priceGroup != 'custom'))
+        if tabIndex in (ct.PAINT, ct.EFFECT):
+            return item.mayInstall(vehicle)
+        isGlobal = isCamoGlobal(item.descriptor)
+        return not (
+            (tabIndex == ct.CAMO_SHOP and (item.isHidden or item.priceGroup == 'custom')) or
+            (tabIndex == ct.CAMO_HIDDEN and (not item.isHidden or isGlobal or item.priceGroup == 'custom')) or
+            (tabIndex == ct.CAMO_GLOBAL and not isGlobal) or
+            (tabIndex == ct.CAMO_CUSTOM and item.priceGroup != 'custom'))
 
     def _buildCustomizationItems(self):
         season = self._seasonID
@@ -231,27 +237,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         self._customizationBookmarks = []
         lastGroupName = None
         for idx, item in enumerate(sorted(allItems.itervalues(), key=comparisonKey)):
-            groupName = item.groupUserName
-            nationIDs = []
-            if item.descriptor.filter:
-                for filterNode in item.descriptor.filter.include:
-                    if filterNode.nations:
-                        nationIDs += filterNode.nations
-            if len(nationIDs) == 1:
-                nationUserName = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
-            elif len(nationIDs) > 1:
-                nationUserName = g_config.i18n['UI_flashCol_camoGroup_multinational']
-            else:
-                nationUserName = g_config.i18n['UI_flashCol_camoGroup_special']
-            if not groupName:
-                groupName = g_config.i18n['UI_flashCol_camoGroup_special']
-            else:  # HangarPainter support
-                nationUserName = nationUserName.replace('</font>', '')
-                if ' ' in nationUserName.replace('<font ', ''):
-                    nationUserName = nationUserName.rsplit(' ', 1)[0]
-                if '>' in groupName:
-                    groupName = groupName.split('>', 1)[1]
-                groupName = ' / '.join((nationUserName, groupName))
+            groupName = getGroupName(item)
             if item.intCD == self._selectIntCD:
                 self._selectedIdx = len(self._customizationItems)
                 self._selectIntCD = None
@@ -260,3 +246,28 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
                 self._customizationBookmarks.append(CustomizationBookmarkVO(groupName, idx).asDict())
             self._customizationItems.append(item.intCD)
             self._itemSizeData.append(item.isWide())
+
+
+def getGroupName(item):
+    groupName = item.groupUserName
+    nationIDs = []
+    if item.descriptor.filter:
+        for filterNode in item.descriptor.filter.include:
+            if filterNode.nations:
+                nationIDs += filterNode.nations
+    if len(nationIDs) == 1:
+        nationUserName = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
+    elif len(nationIDs) > 1:
+        nationUserName = g_config.i18n['UI_flashCol_camoGroup_multinational']
+    else:
+        nationUserName = g_config.i18n['UI_flashCol_camoGroup_special']
+    if not groupName:
+        groupName = g_config.i18n['UI_flashCol_camoGroup_special']
+    else:  # HangarPainter support
+        nationUserName = nationUserName.replace('</font>', '')
+        if ' ' in nationUserName.replace('<font ', ''):
+            nationUserName = nationUserName.rsplit(' ', 1)[0]
+        if '>' in groupName:
+            groupName = groupName.split('>', 1)[1]
+        groupName = ' / '.join((nationUserName, groupName))
+    return groupName

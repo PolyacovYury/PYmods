@@ -109,8 +109,8 @@ def apply(vDesc):
         vDesc.chassis.AODecals[0].setElement(3, 1, AODecalsOffset.y)
     for partName in TankPartNames.ALL:
         part = getattr(vDesc, partName)
-        models = part.models
-        part.models = ModelStatesPaths(data[partName]['undamaged'], models.destroyed, models.exploded)
+        models = part.modelsSets['default']
+        part.modelsSets['default'] = ModelStatesPaths(data[partName]['undamaged'], models.destroyed, models.exploded)
     if data['gun']['effects']:
         newGunEffects = g_cache._gunEffects.get(data['gun']['effects'])
         if newGunEffects:

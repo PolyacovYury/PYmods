@@ -1,6 +1,6 @@
 import BigWorld
 import os
-from items.components import shared_components
+from items.components.shared_components import ModelStatesPaths
 from items.vehicles import CompositeVehicleDescriptor
 from vehicle_systems.tankStructure import TankPartNames
 from .. import g_config
@@ -17,7 +17,7 @@ def apply(vDesc):
                     'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
                 if os.path.isfile(BigWorld.curCV + '/' + modelPath):
                     part = getattr(descr, partName)
-                    models = part.models
-                    part.models = shared_components.ModelStatesPaths(modelPath, models.destroyed, models.exploded)
+                    models = part.modelsSets['default']
+                    part.modelsSets['default'] = ModelStatesPaths(modelPath, models.destroyed, models.exploded)
                 else:
                     print 'RemodEnabler: skin model not found:', modelPath

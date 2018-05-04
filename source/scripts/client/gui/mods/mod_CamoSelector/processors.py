@@ -6,12 +6,13 @@ from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PYmodsCore import overrideMethod
 from gui import g_tankActiveCamouflage
+from gui.customization.shared import C11N_ITEM_TYPE_MAP
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework import ViewTypes
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
-from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES
 from gui.shared.gui_items.customization.c11n_items import Camouflage, Paint
 from gui.shared.gui_items.customization.outfit import Outfit, Area
 from helpers import dependency
@@ -68,44 +69,52 @@ def applyCamoCache(outfit, vehName, seasonCache):
     return applied, cleaned
 
 
-def applyPaintCache(outfit, vehName, seasonCache):
+def applyPlayerCache(outfit, vehName, seasonCache):
     itemsCache = dependency.instance(IItemsCache)
-    paints = items.vehicles.g_cache.customization20().paints
-    applied = False
-    cleaned = False
-    for areaName in seasonCache.keys():
-        try:
-            areaId = TankPartNames.getIdx(areaName)
-        except Exception as e:
-            print '%s: exception while reading camouflages cache for %s in %s: %s' % (
-                g_config.ID, vehName, areaName, e.message)
+    for itemTypeName in seasonCache.keys():
+        if itemTypeName not in ('paint', 'modification', 'emblem', 'inscription'):
+            if itemTypeName != 'camo':
+                print '%s: invalid item type in outfit cache for %s: %s' % (g_config.ID, vehName, itemTypeName)
+                del seasonCache[itemTypeName]
             continue
-        slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.PAINT)
-        for regionIdx in seasonCache[areaName].keys():
-            paintID = seasonCache[areaName][regionIdx]
-            if not paintID:
-                try:
-                    slot.remove(int(regionIdx))
-                except KeyError:  # a paint is being deleted while not applied at all. possible change after last cache update
-                    del seasonCache[areaName][regionIdx]  # so we remove an obsolete key. no removing of non-existing stuff
-                continue
-            if paintID not in paints:
-                print '%s: wrong paint ID for %s, idx %s: %s' % (g_config.ID, areaName, regionIdx, paintID)
-                del seasonCache[areaName][regionIdx]
-                continue
-            intCD = paints[paintID].compactDescr
-            if itemsCache.items.isSynced():
-                item = itemsCache.items.getItemByCD(intCD)
+        itemDB = items.vehicles.g_cache.customization20().itemTypes[C11N_ITEM_TYPE_MAP[GUI_ITEM_TYPE_INDICES[itemTypeName]]]
+        for areaName in seasonCache[itemTypeName].keys():
+            if itemTypeName == 'modification':
+                if areaName != 'misc':
+                    print '%s: wrong area name for %s modification: %s' % (g_config.ID, vehName, areaName)
+                    del seasonCache[itemTypeName][areaName]
+                    continue
+                else:
+                    areaId = Area.MISC
             else:
-                item = Paint(intCD)
-            slot.set(item, int(regionIdx))
-            applied = True
-        if not seasonCache[areaName]:
-            del seasonCache[areaName]
-    if not seasonCache:
-        cleaned = True
+                try:
+                    areaId = TankPartNames.getIdx(areaName)
+                except Exception as e:
+                    print '%s: exception while reading outfit cache for %s in %s: %s' % (
+                        g_config.ID, vehName, areaName, e.message)
+                    continue
+            slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE_INDICES[itemTypeName])
+            for regionIdx in seasonCache[itemTypeName][areaName].keys():
+                itemID = seasonCache[itemTypeName][areaName][regionIdx]
+                if not itemID:
+                    try:
+                        slot.remove(int(regionIdx))
+                    except KeyError:  # a paint is being deleted while not applied at all. possible change after last cache
+                        del seasonCache[itemTypeName][areaName][regionIdx]  # so we remove an obsolete key
+                    continue
+                if itemID not in itemDB:
+                    print '%s: wrong item ID for %s, idx %s: %s' % (g_config.ID, areaName, regionIdx, itemID)
+                    del seasonCache[itemTypeName][areaName][regionIdx]
+                    continue
+                intCD = itemDB[itemID].compactDescr
+                if itemsCache.items.isSynced():
+                    item = itemsCache.items.getItemByCD(intCD)
+                else:
+                    item = itemsCache.items.itemsFactory.createCustomization(intCD)
+                slot.set(item, int(regionIdx))
+            if not seasonCache[itemTypeName][areaName]:
+                del seasonCache[itemTypeName][areaName]
     outfit.invalidate()
-    return applied, cleaned
 
 
 def collectCamouflageData():
@@ -252,9 +261,7 @@ def new_assembleModel(base, self, *a, **kw):
                 outfit = self.itemsFactory.createOutfit()
             seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
             vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
-            __, cleaned = applyPaintCache(outfit, vehicleName, vehCache.get(seasonName, {}).get('paint', {}))
-            if cleaned:
-                vehCache.get(seasonName, {}).pop('paint', None)
+            applyPlayerCache(outfit, vehicleName, vehCache.get(seasonName, {}))
             applied, cleaned = applyCamoCache(outfit, vehicleName, vehCache.get(seasonName, {}).get('camo', {}))
             if cleaned:
                 vehCache.get(seasonName, {}).pop('camo', None)
@@ -287,9 +294,7 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
         cleaned = False
         if self._CompoundAppearance__vID == BigWorld.player().playerVehicleID:
             vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
-            __, cleaned = applyPaintCache(result, vehicleName, vehCache.get(seasonName, {}).get('paint', {}))
-            if cleaned:
-                vehCache.get(seasonName, {}).pop('paint', None)
+            applyPlayerCache(result, vehicleName, vehCache.get(seasonName, {}))
             applied, cleaned = applyCamoCache(result, vehicleName, vehCache.get(seasonName, {}).get('camo', {}))
             if cleaned:
                 vehCache.get(seasonName, {}).pop('camo', None)
