@@ -567,8 +567,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.settingsCore.interfaceScale.onScaleExactlyChanged += self.__onInterfaceScaleChanged
         self.settingsCore.onSettingsChanged += self.__onSettingsChanged
         self.__updateCameraParalaxFlag()
-        self.service.startHighlighter(chooseMode(
-            GUI_ITEM_TYPE.CAMOUFLAGE if self._tabIndex in C11nTabs.CAMO else GUI_ITEM_TYPE.PAINT, g_currentVehicle.item))
+        self.service.startHighlighter(chooseMode(tabToItem(self._tabIndex), g_currentVehicle.item))
 
     def _dispose(self):
         if g_appLoader.getSpaceID() != _SPACE_ID.LOGIN:

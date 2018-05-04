@@ -16,7 +16,7 @@ from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES
 from gui.shared.gui_items.customization.c11n_items import Camouflage, Paint
 from gui.shared.gui_items.customization.outfit import Outfit, Area
 from helpers import dependency
-from items.components.c11n_constants import SeasonType, CustomizationType
+from items.components.c11n_constants import SeasonType
 from skeletons.gui.shared import IItemsCache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
@@ -110,7 +110,7 @@ def applyPlayerCache(outfit, vehName, seasonCache):
                 if itemsCache.items.isSynced():
                     item = itemsCache.items.getItemByCD(intCD)
                 else:
-                    item = Paint(intCD)
+                    item = itemsCache.items.itemsFactory.createCustomization(intCD)
                 slot.set(item, int(regionIdx))
             if not seasonCache[itemTypeName][areaName]:
                 del seasonCache[itemTypeName][areaName]
