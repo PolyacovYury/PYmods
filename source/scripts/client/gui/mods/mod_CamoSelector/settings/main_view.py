@@ -875,8 +875,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         visibleTabs = []
         anchorsData = g_currentVehicle.hangarSpace.getSlotPositions()
         for tabIdx in C11nTabs.VISIBLE:
-            if self._mode == C11nMode.SETUP and tabIdx in C11nTabs.PAINT + (
-                    C11nTabs.INSCRIPTION, C11nTabs.EMBLEM, C11nTabs.EFFECT):
+            if self._mode == C11nMode.SETUP and tabIdx not in C11nTabs.CAMO:
                 continue
             itemTypeID = tabToItem(tabIdx)
             data = self._carouselDP.getSeasonAndTabData(tabIdx, self._currentSeason)
