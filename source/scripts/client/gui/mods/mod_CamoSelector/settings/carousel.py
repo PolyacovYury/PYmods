@@ -1,6 +1,7 @@
 import nations
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationBookmarkVO, \
-    CustomizationSeasonAndTypeFilterData, comparisonKey
+    CustomizationSeasonAndTypeFilterData
+from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
@@ -13,6 +14,10 @@ from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
 from . import g_config
 from .shared import C11nTabs, isCamoInternational, ITEM_TO_TABS
+
+
+def comparisonKey(item):
+    return TYPES_ORDER.index(item.itemTypeID), getGroupName(item), item.id
 
 
 def getItemSeason(item):
