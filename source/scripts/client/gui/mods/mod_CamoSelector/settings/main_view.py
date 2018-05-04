@@ -35,7 +35,7 @@ from gui.customization.shared import chooseMode
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.shared import EVENT_BUS_SCOPE, events, g_eventBus
 from gui.shared.formatters import formatPrice, getItemPricesVO, icons, text_styles
-from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY, ItemPrice
 from gui.shared.utils import toUpper
@@ -483,24 +483,26 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                         [pItem.item.id, component.palette, component.patternSize] if not pItem.isDismantling else [])
                 g_config.hangarCamoCache.get(nationName, {}).get(vehicleName, {}).get(seasonName, {}).pop(
                     TankPartIndexes.getName(pItem.areaID), {})
-            elif pItem.slot == GUI_ITEM_TYPE.PAINT:
+            else:
+                typeName = GUI_ITEM_TYPE_NAMES[pItem.slot]
                 bItem = boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getItem(pItem.regionID)
                 if pItem.isDismantling and not bItem or not pItem.isDismantling and pItem.item == bItem:
-                    vehConfig.get(seasonName, {}).get('paint', {}).get(TankPartIndexes.getName(pItem.areaID), {}).pop(str(
-                        pItem.regionID), None)
+                    vehConfig.get(seasonName, {}).get(typeName, {}).get(
+                        TankPartIndexes.getName(pItem.areaID) if pItem.areaID < 4 else 'misc',
+                        {}).pop(str(pItem.regionID), None)
                 else:
                     g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
-                        seasonName, {}).setdefault('paint', {}).setdefault(TankPartIndexes.getName(pItem.areaID), {})[
+                        seasonName, {}).setdefault(typeName, {}).setdefault(
+                        TankPartIndexes.getName(pItem.areaID) if pItem.areaID < 4 else 'misc', {})[
                         str(pItem.regionID)] = (pItem.item.id if not pItem.isDismantling else None)
-            elif pItem.slot in (GUI_ITEM_TYPE.EMBLEM, GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.MODIFICATION):
-                pass
         for nationName in g_config.outfitCache.keys():
             for vehicleName in g_config.outfitCache[nationName].keys():
                 for season in g_config.outfitCache[nationName][vehicleName].keys():
                     for itemType in g_config.outfitCache[nationName][vehicleName][season].keys():
-                        if itemType == 'camo' and g_currentVehicle.item.turret.isGunCarriage:
-                            g_config.outfitCache[nationName][vehicleName][season][itemType].pop('turret', None)
-                        elif itemType == 'paint':
+                        if itemType == 'camo':
+                            if g_currentVehicle.item.turret.isGunCarriage:
+                                g_config.outfitCache[nationName][vehicleName][season][itemType].pop('turret', None)
+                        else:
                             for areaName in g_config.outfitCache[nationName][vehicleName][season][itemType].keys():
                                 if not g_config.outfitCache[nationName][vehicleName][season][itemType][areaName]:
                                     del g_config.outfitCache[nationName][vehicleName][season][itemType][areaName]
@@ -642,7 +644,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                                             isCurrentlyApplied=isCurrentlyApplied, plainView=True)
 
     def __carveUpOutfits(self):
-        from ..processors import applyCamoCache, applyPaintCache
+        from ..processors import applyCamoCache, applyPlayerCache
         self._setupOutfit = self.service.getEmptyOutfit()
         descriptor = g_currentVehicle.item.descriptor
         nationName, vehName = descriptor.name.split(':')
@@ -651,7 +653,7 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
             seasonName = SEASON_TYPE_TO_NAME[season]
             seasonCache = g_config.outfitCache.get(nationName, {}).get(vehName, {}).get(seasonName, {})
             applyCamoCache(outfit, vehName, seasonCache.get('camo', {}))
-            applyPaintCache(outfit, vehName, seasonCache.get('paint', {}))
+            applyPlayerCache(outfit, vehName, seasonCache)
             self._originalOutfits[season] = outfit.copy()
             applyCamoCache(outfit, vehName, g_config.hangarCamoCache.get(nationName, {}).get(vehName, {}).get(seasonName, {}))
             self._modifiedOutfits[season] = outfit.copy()

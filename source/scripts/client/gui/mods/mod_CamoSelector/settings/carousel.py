@@ -5,6 +5,8 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER
 from gui.Scaleform.framework.entities.DAAPIDataProvider import SortableDAAPIDataProvider
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui.customization.shared import C11N_ITEM_TYPE_MAP
+from gui.shared.gui_items import GUI_ITEM_TYPE_INDICES
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from helpers.i18n import makeString as _ms
@@ -194,13 +196,9 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         super(CustomizationCarouselDataProvider, self)._dispose()
 
     def _getAllItems(self, requirement):
-        paints = g_cache.customization20().paints.values()
-        camouflages = g_cache.customization20().camouflages.values()
-        decals = g_cache.customization20().decals.values()
-        effects = g_cache.customization20().modifications.values()
-        return {item.intCD: item for item in
-                (self.itemsCache.items.getItemByCD(item.compactDescr) for item in paints + camouflages + decals + effects) if
-                requirement(item)}
+        return {item.intCD: item for item in (self.itemsCache.items.getItemByCD(item.compactDescr) for item in sum(
+            (g_cache.customization20().itemTypes[C11N_ITEM_TYPE_MAP[GUI_ITEM_TYPE_INDICES[itemTypeName]]].values() for
+             itemTypeName in ('paint', 'camouflage', 'decal', 'modification')), [])) if requirement(item)}
 
     def isItemSuitableForTab(self, item, tabIndex):
         if item is None or tabIndex not in ITEM_TO_TABS[item.itemTypeID]:
