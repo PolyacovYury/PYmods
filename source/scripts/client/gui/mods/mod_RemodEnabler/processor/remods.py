@@ -14,51 +14,51 @@ TrackParams = namedtuple('TrackParams', ('thickness', 'maxAmplitude', 'maxOffset
 
 
 def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
-    g_config.OMDesc = None
-    g_config.OSDesc = dict.fromkeys(g_config.OSDesc, None)
-    if not g_config.OM.enabled:
+    modelDesc = None
+    if not g_config.modelsData['enabled']:
         return
-    curTankType = 'Player' if isPlayerVehicle else 'Ally' if isAlly else 'Enemy'
-    selected = g_config.OM.selected
+    curTankType = 'player' if isPlayerVehicle else 'ally' if isAlly else 'enemy'
+    selected = g_config.modelsData['selected']
     if currentMode != 'remod':
-        snameList = sorted(g_config.OM.models.keys()) + ['']
+        snameList = sorted(g_config.modelsData['models'].keys()) + ['']
         if selected[curTankType].get(xmlName) not in snameList:
             snameIdx = 0
         else:
             snameIdx = snameList.index(selected[curTankType][xmlName])
         for Idx in xrange(snameIdx, len(snameList)):
-            curPRecord = g_config.OM.models.get(snameList[Idx])
+            curPRecord = g_config.modelsData['models'].get(snameList[Idx])
             if snameList[Idx] and xmlName not in curPRecord.whitelists[curTankType]:
                 continue
             else:
                 if xmlName in selected[curTankType]:
                     selected[curTankType][xmlName] = getattr(curPRecord, 'name', '')
-                g_config.OMDesc = curPRecord
+                modelDesc = curPRecord
                 break
 
         # noinspection PyUnboundLocalVariable
-        if g_config.OMDesc is None and snameList[Idx] and xmlName in selected[curTankType]:
+        if modelDesc is None and snameList[Idx] and xmlName in selected[curTankType]:
             del selected[curTankType][xmlName]
         PYmodsCore.loadJson(
             g_config.ID, 'remodsCache', selected, g_config.configPath, True, quiet=not g_config.data['isDebug'])
     else:
-        snameList = sorted(g_config.OM.models.keys())
-        if selected['Remod'] not in snameList:
+        snameList = sorted(g_config.modelsData['models'].keys())
+        if selected['remod'] not in snameList:
             snameIdx = 0
         else:
-            snameIdx = snameList.index(selected['Remod'])
+            snameIdx = snameList.index(selected['remod'])
         sname = snameList[snameIdx]
-        g_config.OMDesc = g_config.OM.models[sname]
-        selected['Remod'] = sname
+        modelDesc = g_config.modelsData['models'][sname]
+        selected['remod'] = sname
         PYmodsCore.loadJson(g_config.ID, 'remodsCache', selected, g_config.configPath, True,
                             quiet=not g_config.data['isDebug'])
+    return modelDesc
 
 
-def apply(vDesc):
+def apply(vDesc, modelDesc):
     for key in ('splineDesc', 'trackParams'):
         if getattr(vDesc.chassis, key) is None:
             setattr(vDesc.chassis, key, {})
-    data = g_config.OMDesc.data
+    data = modelDesc.data
     for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
         obj = eval(data['chassis'][key])
         newObj = None
@@ -84,11 +84,11 @@ def apply(vDesc):
                 nodes = []
                 for d in obj['groups']:
                     if not hasattr(d, '_fields'):
-                        d = GroundNodeGroup(*(d[0], d[4], d[5], d[1], d[2], d[3]))
+                        d = GroundNodeGroup(d[0], d[4], d[5], d[1], d[2], d[3])
                     groups.append(d)
                 for d in obj['nodes']:
                     if not hasattr(d, '_fields'):
-                        d = GroundNode(*(d[1], d[0], d[2], d[3]))
+                        d = GroundNode(d[1], d[0], d[2], d[3])
                     nodes.append(d)
                 newObj = NodesAndGroups(nodes=tuple(nodes), groups=tuple(groups))
             elif key == 'trackNodes':
@@ -110,7 +110,8 @@ def apply(vDesc):
     for partName in TankPartNames.ALL:
         part = getattr(vDesc, partName)
         models = part.modelsSets['default']
-        part.modelsSets['default'] = ModelStatesPaths(data[partName]['undamaged'], models.destroyed, models.exploded)
+        part.models = part.modelsSets['default'] = ModelStatesPaths(
+            data[partName]['undamaged'], models.destroyed, models.exploded)
     if data['gun']['effects']:
         newGunEffects = g_cache._gunEffects.get(data['gun']['effects'])
         if newGunEffects:
