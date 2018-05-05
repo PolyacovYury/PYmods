@@ -5,6 +5,7 @@ from Account import Account
 from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PYmodsCore import overrideMethod
+from Vehicle import Vehicle
 from gui import g_tankActiveCamouflage
 from gui.customization.shared import C11N_ITEM_TYPE_MAP
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
@@ -283,7 +284,7 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
     vID = self._CompoundAppearance__vID
     vDesc = self._CompoundAppearance__typeDesc
     if not vDesc:
-        return result
+        return base(self, *a, **kw)
     if g_config.data['enabled'] and vDesc.name not in g_config.disable and not (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
         if not g_config.data['useBought']:
