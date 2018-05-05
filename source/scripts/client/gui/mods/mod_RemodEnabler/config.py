@@ -728,7 +728,7 @@ def lobbyKeyControl(event):
         refreshCurrentVehicle()
     if g_config.modelsData['enabled'] and checkKeys(g_config.data['SwitchRemodHotkey']):
         if g_config.currentMode != 'remod':
-            curTankType = g_config.currentMode.capitalize()
+            curTankType = g_config.currentMode
             snameList = sorted(g_config.modelsData['models'].keys()) + ['']
             selected = g_config.modelsData['selected'][curTankType]
             vehName = RemodEnablerUI.py_getCurrentVehicleName()

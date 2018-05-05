@@ -110,7 +110,8 @@ def apply(vDesc, modelDesc):
     for partName in TankPartNames.ALL:
         part = getattr(vDesc, partName)
         models = part.modelsSets['default']
-        part.modelsSets['default'] = ModelStatesPaths(data[partName]['undamaged'], models.destroyed, models.exploded)
+        part.models = part.modelsSets['default'] = ModelStatesPaths(
+            data[partName]['undamaged'], models.destroyed, models.exploded)
     if data['gun']['effects']:
         newGunEffects = g_cache._gunEffects.get(data['gun']['effects'])
         if newGunEffects:
