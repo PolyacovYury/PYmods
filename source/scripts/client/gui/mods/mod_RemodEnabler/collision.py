@@ -43,14 +43,15 @@ def new_setupModel(base, self, buildIdx):
         vDesc = self._HangarVehicleAppearance__vDesc
         compoundModel = vEntity.model
         self.collisionLoaded = True
-        self.modifiedModelsDesc = dict([(partName, {'model': None, 'matrix': None}) for partName in TankPartNames.ALL])
+        self.modifiedModelsDesc = {}
         failList = []
-        for partName in self.modifiedModelsDesc.keys():
+        for partName in TankPartNames.ALL:
             modelName = ''
             try:
                 modelName = getattr(vDesc, partName).hitTester.bspModelName
-                self.modifiedModelsDesc[partName]['model'] = model = BigWorld.Model(modelName)
+                model = BigWorld.Model(modelName)
                 model.visible = False
+                self.modifiedModelsDesc[partName] = {'model': model, 'matrix': None}
             except StandardError:
                 self.collisionLoaded = False
                 failList.append(modelName if modelName else partName)
@@ -92,6 +93,7 @@ def new_setupModel(base, self, buildIdx):
         addCollisionGUI(self)
     if g_config.collisionEnabled:
         for moduleName in TankPartNames.ALL:
+            # noinspection PyUnboundLocalVariable
             if compoundModel.node(moduleName) is not None:
                 scaleMat = Math.Matrix()
                 scaleMat.setScale((0.001, 0.001, 0.001))
