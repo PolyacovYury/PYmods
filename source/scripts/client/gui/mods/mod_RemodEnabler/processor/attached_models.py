@@ -155,11 +155,23 @@ def new_destroyGUI(base, self):
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, 'refresh')
 def new_refresh(base, self, *args):
-    destroy_all()
+    detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
     base(self, *args)
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, 'recreate')
 def new_recreate(base, self, *args):
-    destroy_all()
+    detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
+    base(self, *args)
+
+
+@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'remove')
+def new_remove(base, self, *args):
+    detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
+    base(self, *args)
+
+
+@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'destroy')
+def new_destroy(base, self, *args):
+    detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
     base(self, *args)

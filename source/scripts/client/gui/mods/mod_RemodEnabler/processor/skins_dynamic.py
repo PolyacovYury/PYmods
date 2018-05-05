@@ -60,15 +60,3 @@ def new_targetBlur(base, self, prevEntity):
                 attached_models.detach(vehicleID, modID='skins_dynamic')
         except StandardError:
             traceback.print_exc()
-
-
-@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'refresh')
-def new_refresh(base, self, *args):
-    destroy(self._HangarVehicleAppearance__vEntity.id)
-    base(self, *args)
-
-
-@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'recreate')
-def new_recreate(base, self, *args):
-    destroy(self._HangarVehicleAppearance__vEntity.id)
-    base(self, *args)
