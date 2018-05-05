@@ -163,13 +163,13 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
     for paintID in g_config.data['scale'].itervalues():
         paintItem = Paint(paints[paintID].compactDescr)
         if not paintItem.descriptor.matchVehicleType(vDesc.type):
-            return outfit
+            return base(self, *a, **kw)
         paintItems[paintID] = paintItem
     accountID = str(BigWorld.player().arena.vehicles[vID]['accountDBID'])
     if accountID not in g_config.dossiers:
         if accountID not in g_config.pendingIDs:
             g_config.thread([accountID])
-        return outfit
+        return base(self, *a, **kw)
     paintID = None
     rating = g_config.dossiers[accountID]['wgr']
     for value in sorted(int(x) for x in g_config.data['scale']):
