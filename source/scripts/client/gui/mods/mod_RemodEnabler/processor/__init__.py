@@ -70,6 +70,9 @@ def vDesc_process(vehicleID, vDesc, mode):
         for partName in TankPartNames.ALL + ('engine',):
             try:
                 setattr(descr, partName, getattr(descr, partName).copy())
+                part = getattr(descr, partName)
+                if getattr(part, 'modelsSets', None) is not None:
+                    part.modelsSets = part.modelsSets.copy()
             except StandardError:
                 traceback.print_exc()
                 print partName
