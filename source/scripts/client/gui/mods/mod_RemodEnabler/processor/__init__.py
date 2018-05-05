@@ -33,9 +33,9 @@ def debugOutput(xmlName, vehName, playerName, modelDesc, staticDesc, dynamicDesc
     if modelDesc is not None:
         info.append('modelDesc: %s' % modelDesc.name)
     if staticDesc is not None:
-        info.append('static skinDesc: %s' % staticDesc.name)
+        info.append('static skinDesc: %s' % staticDesc['name'])
     if dynamicDesc is not None:
-        info.append('dynamic skinDesc: %s' % dynamicDesc.name)
+        info.append('dynamic skinDesc: %s' % dynamicDesc['name'])
     if info:
         print header + ' processed:', ', '.join(info)
 
@@ -82,18 +82,18 @@ def vDesc_process(vehicleID, vDesc, mode):
             if vehNation == vehDefNation:
                 dynamicDesc = skins_find(vehName, isPlayerVehicle, isAlly, currentMode, 'dynamic')
                 if dynamicDesc is not None:
-                    skins_dynamic.create(vehicleID, vDesc, dynamicDesc.name, mode == 'hangar' and (
+                    skins_dynamic.create(vehicleID, vDesc, dynamicDesc['name'], mode == 'hangar' and (
                             g_config.dynamicSkinEnabled and not g_config.collisionComparisonEnabled))
                     if g_config.dynamicSkinEnabled and collisionNotVisible:
-                        message = g_config.i18n['UI_install_skin_dynamic'] + dynamicDesc.name.join(('<b>', '</b>.'))
+                        message = g_config.i18n['UI_install_skin_dynamic'] + dynamicDesc['name'].join(('<b>', '</b>.'))
                 staticDesc = skins_find(vehName, isPlayerVehicle, isAlly, currentMode, 'static')
                 if staticDesc is not None:
-                    skins_static.apply(vDesc, staticDesc.name)
+                    skins_static.apply(vDesc, staticDesc['name'])
             elif g_config.data['isDebug']:
                     print 'RemodEnabler: unknown vehicle nation for %s: %s' % (vehName, vehNation)
             if g_config.data['isDebug'] and (dynamicDesc is None or not g_config.dynamicSkinEnabled) and collisionNotVisible:
                 if staticDesc is not None:
-                    message = g_config.i18n['UI_install_skin'] + staticDesc.name.join(('<b>', '</b>.'))
+                    message = g_config.i18n['UI_install_skin'] + staticDesc['name'].join(('<b>', '</b>.'))
                 else:
                     message = g_config.i18n['UI_install_default']
     else:
