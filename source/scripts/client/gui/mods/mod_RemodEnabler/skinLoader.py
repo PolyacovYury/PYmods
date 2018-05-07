@@ -303,13 +303,13 @@ def processMember(memberFileName, skinName):
     skinsSign = 'vehicles/skins/'
     if '.model' in memberFileName:
         oldModel = ResMgr.openSection(memberFileName)
-        newModelPath = skinDir + memberFileName
+        newModelPath = './' + skinDir + memberFileName
         curModel = ResMgr.openSection(ResMgr.resolveToAbsolutePath(newModelPath), True)
         curModel.copy(oldModel)
         models = [curModel]
         if 'Chassis' in memberFileName:
             dynModelPath = newModelPath.replace('Chassis', 'Chassis_dynamic')
-            dynModel = ResMgr.openSection(dynModelPath, True)
+            dynModel = ResMgr.openSection(ResMgr.resolveToAbsolutePath(dynModelPath), True)
             dynModel.copy(oldModel)
             models.append(dynModel)
         for idx, modelSect in enumerate(models):
@@ -328,13 +328,13 @@ def processMember(memberFileName, skinName):
             modelSect.save()
     elif '.visual' in memberFileName:
         oldVisual = ResMgr.openSection(memberFileName)
-        newVisualPath = skinDir + memberFileName
-        curVisual = ResMgr.openSection(newVisualPath, True)
+        newVisualPath = './' + skinDir + memberFileName
+        curVisual = ResMgr.openSection(ResMgr.resolveToAbsolutePath(newVisualPath), True)
         curVisual.copy(oldVisual)
         visuals = [curVisual]
         if 'Chassis' in memberFileName:
             dynVisualPath = newVisualPath.replace('Chassis', 'Chassis_dynamic')
-            dynVisual = ResMgr.openSection(dynVisualPath, True)
+            dynVisual = ResMgr.openSection(ResMgr.resolveToAbsolutePath(dynVisualPath), True)
             dynVisual.copy(oldVisual)
             visuals.append(dynVisual)
         for idx, visualSect in enumerate(visuals):
