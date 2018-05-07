@@ -32,12 +32,11 @@ from . import g_config
 def skinsPresenceCheck():
     dirSect = ResMgr.openSection('vehicles/skins/textures/')
     if dirSect is not None and dirSect.keys():
-        g_config.skinsFound = True
+        g_config.skinsData['found'] = True
 
 
 texReplaced = False
 skinsChecked = False
-g_config.skinsFound = False
 skinsPresenceCheck()
 clientIsNew = True
 skinsModelsMissing = True
@@ -142,7 +141,7 @@ def skinCRC32All(callback):
     skinsPath = 'vehicles/skins/textures/'
     dirSect = ResMgr.openSection(skinsPath)
     if dirSect is not None and dirSect.keys():
-        g_config.skinsFound = True
+        g_config.skinsData['found'] = True
         print 'RemodEnabler: listing %s for CRC32' % skinsPath
         g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
         CRC32 = 0
@@ -239,14 +238,14 @@ def modelsCheck(callback):
             print 'RemodEnabler: skins models dir is empty'
     else:
         print 'RemodEnabler: skins models dir not found'
-    needToReReadSkinsModels = g_config.skinsFound and (clientIsNew or skinsModelsMissing or texReplaced)
-    if g_config.skinsFound and clientIsNew:
+    needToReReadSkinsModels = g_config.skinsData['found'] and (clientIsNew or skinsModelsMissing or texReplaced)
+    if g_config.skinsData['found'] and clientIsNew:
         if os.path.isdir(modelsDir):
             yield rmtree(modelsDir)
         g_config.skinsCache['version'] = getClientVersion()
-    if g_config.skinsFound and not os.path.isdir(modelsDir):
+    if g_config.skinsData['found'] and not os.path.isdir(modelsDir):
         os.makedirs(modelsDir)
-    elif not g_config.skinsFound and os.path.isdir(modelsDir):
+    elif not g_config.skinsData['found'] and os.path.isdir(modelsDir):
         print 'RemodEnabler: no skins found, deleting %s' % modelsDir
         yield rmtree(modelsDir)
     elif texReplaced and os.path.isdir(modelsDir):
@@ -274,10 +273,11 @@ def modelsProcess(callback):
                 vehPkg.namelist())
             allFilesCnt = len(fileNamesList)
             for fileNum, memberFileName in enumerate(fileNamesList):
-                if not needToReReadSkinsModels:
-                    continue
                 for skinName in skinVehNamesLDict.get(os.path.normpath(memberFileName).split('\\')[2].lower(), []):
-                    processMember(memberFileName, skinName)
+                    try:
+                        processMember(memberFileName, skinName)
+                    except ValueError as e:
+                        print '%s: %s' % (g_config.ID, e)
                     filesCnt += 1
                     if not filesCnt % 25:
                         yield doFuncCall()
@@ -369,7 +369,7 @@ def processMember(memberFileName, skinName):
 @process
 def skinLoader(loginView):
     global skinsChecked
-    if g_config.data['enabled'] and g_config.skinsFound and not skinsChecked:
+    if g_config.data['enabled'] and g_config.skinsData['found'] and not skinsChecked:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
             lobbyApp.loadView(ViewLoadParams('RemodEnablerLoading'))
@@ -394,7 +394,7 @@ def new_Login_populate(base, self):
     base(self)
     g_config.isInHangar = False
     if g_config.data['enabled']:
-        if g_config.skinsFound and not skinsChecked:
+        if g_config.skinsData['found'] and not skinsChecked:
             self.as_setDefaultValuesS('', '', self._rememberUser, GUI_SETTINGS.rememberPassVisible,
                                       GUI_SETTINGS.igrCredentialsReset, not GUI_SETTINGS.isEmpty('recoveryPswdURL'))
         BigWorld.callback(3.0, partial(skinLoader, self))

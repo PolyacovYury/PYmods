@@ -77,7 +77,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.skinsCache = {'CRC32': '', 'version': ''}
         self.modelsData = {'enabled': True, 'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}, 'remod': ''}}
         self.skinsData = {
-            'enabled': True, 'found': True, 'models': {'static': {}, 'dynamic': {}},
+            'enabled': True, 'found': False, 'models': {'static': {}, 'dynamic': {}},
             'priorities': {skinType: {'player': [], 'ally': [], 'enemy': []} for skinType in ('static', 'dynamic')}}
         self.loadingProxy = None
         self.isModAdded = False
