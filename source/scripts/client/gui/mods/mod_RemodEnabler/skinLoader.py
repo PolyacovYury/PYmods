@@ -114,7 +114,20 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
     def onWindowClose(self):
         g_config.loadingProxy = None
         self.destroy()
-        if self.doLogin:
+        if needToReReadSkinsModels:
+            from gui import DialogsInterface
+            from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta, ConfirmDialogButtons, DIALOG_BUTTON_ID
+
+            class RestartButtons(ConfirmDialogButtons):
+                def getLabels(self):
+                    return [{'id': DIALOG_BUTTON_ID.SUBMIT, 'label': self._submit, 'focused': True},
+                            {'id': DIALOG_BUTTON_ID.CLOSE, 'label': self._close, 'focused': False}]
+
+            DialogsInterface.showDialog(SimpleDialogMeta(
+                g_config.i18n['UI_restart_header'], g_config.i18n['UI_restart_text'],
+                RestartButtons(g_config.i18n['UI_restart_button_restart'], g_config.i18n['UI_restart_button_shutdown']),
+                None), lambda restart: (BigWorld.savePreferences(), (BigWorld.restartGame() if restart else BigWorld.quit())))
+        elif self.doLogin:
             loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
             if loginView and loginView._rememberUser:
                 password = '*' * loginView.loginManager.getPreference('password_length')

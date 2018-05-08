@@ -163,6 +163,13 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_loading_skinPack_clean': 'Cleaning %s:',
             'UI_loading_skins': 'Checking skins...',
             'UI_loading_skins_clean': 'Cleaning skin models...',
+            'UI_restart_header': 'RemodEnabler: restart',
+            'UI_restart_text': (
+                'Skin models have been re-unpacked. Client restart required to accept changes.\n'
+                'Client proper behaviour <b>NOT GUARANTEED</b> until next client start. This will <b>not</b>'
+                'be required later. Do you want to restart the game now?'),
+            'UI_restart_button_restart': 'Restart',
+            'UI_restart_button_shutdown': 'Shutdown',
             'UI_setting_isDebug_text': 'Enable extended log printing',
             'UI_setting_isDebug_tooltip': 'If enabled, your python.log will be harassed with mod\'s debug information.',
             'UI_setting_remod_text': 'Enable all remods preview mode',
