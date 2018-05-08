@@ -32,12 +32,11 @@ from . import g_config
 def skinsPresenceCheck():
     dirSect = ResMgr.openSection('vehicles/skins/textures/')
     if dirSect is not None and dirSect.keys():
-        g_config.skinsFound = True
+        g_config.skinsData['found'] = True
 
 
 texReplaced = False
 skinsChecked = False
-g_config.skinsFound = False
 skinsPresenceCheck()
 clientIsNew = True
 skinsModelsMissing = True
@@ -115,7 +114,20 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
     def onWindowClose(self):
         g_config.loadingProxy = None
         self.destroy()
-        if self.doLogin:
+        if needToReReadSkinsModels:
+            from gui import DialogsInterface
+            from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta, ConfirmDialogButtons, DIALOG_BUTTON_ID
+
+            class RestartButtons(ConfirmDialogButtons):
+                def getLabels(self):
+                    return [{'id': DIALOG_BUTTON_ID.SUBMIT, 'label': self._submit, 'focused': True},
+                            {'id': DIALOG_BUTTON_ID.CLOSE, 'label': self._close, 'focused': False}]
+
+            DialogsInterface.showDialog(SimpleDialogMeta(
+                g_config.i18n['UI_restart_header'], g_config.i18n['UI_restart_text'],
+                RestartButtons(g_config.i18n['UI_restart_button_restart'], g_config.i18n['UI_restart_button_shutdown']),
+                None), lambda restart: (BigWorld.savePreferences(), (BigWorld.restartGame() if restart else BigWorld.quit())))
+        elif self.doLogin:
             loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
             if loginView and loginView._rememberUser:
                 password = '*' * loginView.loginManager.getPreference('password_length')
@@ -142,7 +154,7 @@ def skinCRC32All(callback):
     skinsPath = 'vehicles/skins/textures/'
     dirSect = ResMgr.openSection(skinsPath)
     if dirSect is not None and dirSect.keys():
-        g_config.skinsFound = True
+        g_config.skinsData['found'] = True
         print 'RemodEnabler: listing %s for CRC32' % skinsPath
         g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
         CRC32 = 0
@@ -239,14 +251,14 @@ def modelsCheck(callback):
             print 'RemodEnabler: skins models dir is empty'
     else:
         print 'RemodEnabler: skins models dir not found'
-    needToReReadSkinsModels = g_config.skinsFound and (clientIsNew or skinsModelsMissing or texReplaced)
-    if g_config.skinsFound and clientIsNew:
+    needToReReadSkinsModels = g_config.skinsData['found'] and (clientIsNew or skinsModelsMissing or texReplaced)
+    if g_config.skinsData['found'] and clientIsNew:
         if os.path.isdir(modelsDir):
             yield rmtree(modelsDir)
         g_config.skinsCache['version'] = getClientVersion()
-    if g_config.skinsFound and not os.path.isdir(modelsDir):
+    if g_config.skinsData['found'] and not os.path.isdir(modelsDir):
         os.makedirs(modelsDir)
-    elif not g_config.skinsFound and os.path.isdir(modelsDir):
+    elif not g_config.skinsData['found'] and os.path.isdir(modelsDir):
         print 'RemodEnabler: no skins found, deleting %s' % modelsDir
         yield rmtree(modelsDir)
     elif texReplaced and os.path.isdir(modelsDir):
@@ -274,10 +286,11 @@ def modelsProcess(callback):
                 vehPkg.namelist())
             allFilesCnt = len(fileNamesList)
             for fileNum, memberFileName in enumerate(fileNamesList):
-                if not needToReReadSkinsModels:
-                    continue
                 for skinName in skinVehNamesLDict.get(os.path.normpath(memberFileName).split('\\')[2].lower(), []):
-                    processMember(memberFileName, skinName)
+                    try:
+                        processMember(memberFileName, skinName)
+                    except ValueError as e:
+                        print '%s: %s' % (g_config.ID, e)
                     filesCnt += 1
                     if not filesCnt % 25:
                         yield doFuncCall()
@@ -303,13 +316,13 @@ def processMember(memberFileName, skinName):
     skinsSign = 'vehicles/skins/'
     if '.model' in memberFileName:
         oldModel = ResMgr.openSection(memberFileName)
-        newModelPath = skinDir + memberFileName
+        newModelPath = './' + skinDir + memberFileName
         curModel = ResMgr.openSection(ResMgr.resolveToAbsolutePath(newModelPath), True)
         curModel.copy(oldModel)
         models = [curModel]
         if 'Chassis' in memberFileName:
             dynModelPath = newModelPath.replace('Chassis', 'Chassis_dynamic')
-            dynModel = ResMgr.openSection(dynModelPath, True)
+            dynModel = ResMgr.openSection(ResMgr.resolveToAbsolutePath(dynModelPath), True)
             dynModel.copy(oldModel)
             models.append(dynModel)
         for idx, modelSect in enumerate(models):
@@ -328,13 +341,13 @@ def processMember(memberFileName, skinName):
             modelSect.save()
     elif '.visual' in memberFileName:
         oldVisual = ResMgr.openSection(memberFileName)
-        newVisualPath = skinDir + memberFileName
-        curVisual = ResMgr.openSection(newVisualPath, True)
+        newVisualPath = './' + skinDir + memberFileName
+        curVisual = ResMgr.openSection(ResMgr.resolveToAbsolutePath(newVisualPath), True)
         curVisual.copy(oldVisual)
         visuals = [curVisual]
         if 'Chassis' in memberFileName:
             dynVisualPath = newVisualPath.replace('Chassis', 'Chassis_dynamic')
-            dynVisual = ResMgr.openSection(dynVisualPath, True)
+            dynVisual = ResMgr.openSection(ResMgr.resolveToAbsolutePath(dynVisualPath), True)
             dynVisual.copy(oldVisual)
             visuals.append(dynVisual)
         for idx, visualSect in enumerate(visuals):
@@ -369,7 +382,7 @@ def processMember(memberFileName, skinName):
 @process
 def skinLoader(loginView):
     global skinsChecked
-    if g_config.data['enabled'] and g_config.skinsFound and not skinsChecked:
+    if g_config.data['enabled'] and g_config.skinsData['found'] and not skinsChecked:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
             lobbyApp.loadView(ViewLoadParams('RemodEnablerLoading'))
@@ -394,7 +407,7 @@ def new_Login_populate(base, self):
     base(self)
     g_config.isInHangar = False
     if g_config.data['enabled']:
-        if g_config.skinsFound and not skinsChecked:
+        if g_config.skinsData['found'] and not skinsChecked:
             self.as_setDefaultValuesS('', '', self._rememberUser, GUI_SETTINGS.rememberPassVisible,
                                       GUI_SETTINGS.igrCredentialsReset, not GUI_SETTINGS.isEmpty('recoveryPswdURL'))
         BigWorld.callback(3.0, partial(skinLoader, self))
