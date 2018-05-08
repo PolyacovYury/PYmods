@@ -34,8 +34,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_removeNicknames_text': 'Remove nicknames',
             'UI_setting_removeNicknames_tooltip':
                 'Nicknames in battle chat, fading messages and other places are cut off. Modes:\n'
-                '<b>None</b>: nicknames are not cut off.'
-                '<b>Smart</b>: nicknames for friends, squad mates and non-random allies are preserved.'
+                '<b>None</b>: nicknames are not cut off.\n'
+                '<b>Smart</b>: nicknames for friends, squad mates and non-random allies are preserved.\n'
                 '<b>All</b>: all nicknames are cut off.',
             'UI_setting_removeNicknames_none': 'None',
             'UI_setting_removeNicknames_smart': 'Smart',
