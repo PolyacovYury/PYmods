@@ -24,6 +24,16 @@ def create(vehicleID, mod, mode, models, visible=False):
             for modelPath, _ in models:
                 resList.append(modelPath)
         else:
+            for modelPath in vehEntry[mod]['models'].keys():
+                if not any(modelPath == info[0] for info in models):
+                    modelDict = vehEntry[mod]['models'][modelPath]
+                    model = modelDict['model']
+                    if model is not None:
+                        model.visible = visible
+                        if 'motor' in modelDict:
+                            model.delMotor(modelDict['motor'])
+                            BigWorld.delModel(model)
+                    del vehEntry[mod]['models'][modelPath]
             for modelPath, nodeName in models:
                 if modelPath not in vehEntry[mod]['models']:
                     vehEntry[mod]['models'][modelPath] = {'model': None, 'nodeName': nodeName}
