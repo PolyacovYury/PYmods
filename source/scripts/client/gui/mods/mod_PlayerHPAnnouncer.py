@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import PYmodsCore
+import WWISE
 import SoundGroups
+from bootcamp.Bootcamp import Bootcamp
 from Avatar import PlayerAvatar
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 
@@ -56,7 +58,7 @@ def new_updateHealth(base, self, healthStr, progress):
         if not progress:
             break
         if progress <= percentage < _config.currentPercent:
-            SoundGroups.g_instance.loadSoundBank('bootcamp_gui.bnk')
+            WWISE.loadSoundPool(Bootcamp.BOOTCAMP_SOUND_BANKS, 14, 'Bootcamp')
             SoundGroups.g_instance.playSound2D(_config.data['%spercent' % percentage])
             break
     _config.currentPercent = progress

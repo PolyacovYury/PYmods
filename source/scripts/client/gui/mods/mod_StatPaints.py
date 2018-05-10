@@ -12,11 +12,6 @@ from items.vehicles import g_cache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 
-try:
-    import gui.mods.mod_camoselector  # camouflage removal should work even with CamoSelector, so it has to be imported first
-except ImportError:
-    pass
-
 
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):

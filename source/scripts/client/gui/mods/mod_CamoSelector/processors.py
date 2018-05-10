@@ -5,7 +5,6 @@ from Account import Account
 from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PYmodsCore import overrideMethod
-from Vehicle import Vehicle
 from gui import g_tankActiveCamouflage
 from gui.customization.shared import C11N_ITEM_TYPE_MAP
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
@@ -23,6 +22,11 @@ from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from .settings import g_config
 from .settings.shared import RandMode, TeamMode
+
+try:
+    import gui.mods.mod_statpaints  # camouflage removal should work even with CamoSelector, so it has to be imported first
+except ImportError:
+    pass
 
 
 def applyCamoCache(outfit, vehName, seasonCache):
