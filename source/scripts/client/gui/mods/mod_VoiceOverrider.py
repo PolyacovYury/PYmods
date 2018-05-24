@@ -17,11 +17,11 @@ class ConfigInterface(PYmodsConfigInterface):
         self.__previewSound = None
         self.__previewNations = []
         self.modes = [
-            'default_male', 'default_female', 'national_male', 'national_female', 'valkyire_male', 'valkyire_female',
+            'default_male', 'default_female', 'national_male', 'national_female', 'valkyrie_male', 'valkyrie_female',
             'sabaton', 'buffon']
         self.params = [
-            {}, {'female': True}, {'national': True}, {'national': True, 'female': True}, {'param': 'valkyire2'},
-            {'param': 'valkyire1'}, {'param': 'sabaton'}, {'param': 'buffon'}]
+            {}, {'female': True}, {'national': True}, {'national': True, 'female': True}, {'param': 'valkyrie2'},
+            {'param': 'valkyrie1'}, {'param': 'sabaton'}, {'param': 'buffon'}]
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -35,8 +35,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_mode_default_female': 'Default: female',
             'UI_setting_mode_national_male': 'National: male',
             'UI_setting_mode_national_female': 'National: female',
-            'UI_setting_mode_valkyire_male': 'Valkyire Chronicles: male',
-            'UI_setting_mode_valkyire_female': 'Valkyire Chronicles: female',
+            'UI_setting_mode_valkyrie_male': 'Valkyrie Chronicles: male',
+            'UI_setting_mode_valkyrie_female': 'Valkyrie Chronicles: female',
             'UI_setting_mode_sabaton': 'Sabaton',
             'UI_setting_mode_buffon': 'Buffon'}
         super(ConfigInterface, self).init()
