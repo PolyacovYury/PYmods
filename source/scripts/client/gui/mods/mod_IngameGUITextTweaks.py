@@ -99,7 +99,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if mask in result and (
                 config.data['removeNicknames'] == 2 or config.data['removeNicknames'] and not (
                 isAlly(vID) and (BigWorld.player().arena.guiType not in (ARENA_GUI_TYPE.EPIC_RANDOM, ARENA_GUI_TYPE.RANDOM))
-                or battleCtx.isSquadMan(vID) or battleCtx.getPlayerName(vID) in self.friends)):
+                or battleCtx.isSquadMan(vID) or (self.friends is not None and battleCtx.getPlayerName(vID) in self.friends))):
             result = result.split(mask, 1)[1]
             if '(' in mask:
                 result = result.rsplit(')', 1)[0]
