@@ -7,7 +7,6 @@ from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics
 from Vehicle import Vehicle
 from debug_utils import LOG_ERROR
 from gui.app_loader import g_appLoader
-from gui.shared.utils import functions
 
 
 class ConfigInterface(PYmodsConfigInterface):

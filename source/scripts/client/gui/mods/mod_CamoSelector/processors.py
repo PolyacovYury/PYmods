@@ -13,7 +13,7 @@ from gui.Scaleform.framework import ViewTypes
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES
-from gui.shared.gui_items.customization.c11n_items import Camouflage, Paint
+from gui.shared.gui_items.customization.c11n_items import Camouflage
 from gui.shared.gui_items.customization.outfit import Outfit, Area
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
