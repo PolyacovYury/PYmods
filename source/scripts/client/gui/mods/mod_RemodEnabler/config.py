@@ -13,11 +13,12 @@ from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_e
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.app_loader import g_appLoader
-from gui.shared.utils.HangarSpace import g_hangarSpace
+from helpers import dependency
 from items.components import component_constants
 from items.components.chassis_components import SplineConfig
 from items.components.shared_components import EmblemSlot
 from items.vehicles import g_cache
+from skeletons.gui.shared.utils import IHangarSpace
 from vehicle_systems.tankStructure import TankPartNames
 from . import __date__, __modID__
 
@@ -68,6 +69,8 @@ class ModelDescriptor(object):
 
 
 class ConfigInterface(PYmodsConfigInterface):
+    hangarSpace = dependency.descriptor(IHangarSpace)
+
     def __init__(self):
         self.possibleModes = ['player', 'ally', 'enemy', 'remod']
         self.defaultSkinConfig = {'static': {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True},
@@ -137,7 +140,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_whiteList_addBtn': 'Add',
             'UI_flash_whiteList_header_text': 'Whitelists for:',
             'UI_flash_whiteList_header_tooltip': 'Open to view all items, select an item to delete.\n\n'
-                                              'List is scrollable if longer than 10 items.',
+                                                 'List is scrollable if longer than 10 items.',
             'UI_flash_whiteDropdown_default': 'Expand',
             'UI_flash_useFor_header_text': 'Use this item for:',
             'UI_flash_useFor_enable_text': 'Enabled',
@@ -343,7 +346,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 for tankType in ('player', 'ally', 'enemy'):
                     for xmlName in selectedData[tankType].keys():
                         if (selectedData[tankType][xmlName] and selectedData[tankType][
-                                xmlName] not in self.modelsData['models']):
+                            xmlName] not in self.modelsData['models']):
                             selectedData[tankType][xmlName] = None
                         if xmlName not in remodTanks[tankType]:
                             del selectedData[tankType][xmlName]
@@ -400,7 +403,7 @@ class ConfigInterface(PYmodsConfigInterface):
                             tracksDirPath = vehDirPath + 'tracks/'
                             tracksDirSect = ResMgr.openSection(tracksDirPath)
                             if not any(texName.endswith('.dds') for texName in (
-                                    ([] if vehDirSect is None else remDups(vehDirSect.keys())) + 
+                                    ([] if vehDirSect is None else remDups(vehDirSect.keys())) +
                                     ([] if tracksDirSect is None else remDups(tracksDirSect.keys())))):
                                 if self.data['isDebug']:
                                     print '%s: %s folder from %s pack is empty' % (self.ID, vehicleName, sname)
@@ -528,7 +531,7 @@ class RemodEnablerUI(AbstractWindowView):
                 data['authorMessage'] = ''
                 for team in ('player', 'ally', 'enemy'):
                     data[team + 'Whitelist'] = [vehName] if vehName else []
-                vDesc = g_hangarSpace.space.getVehicleEntity().appearance._HangarVehicleAppearance__vDesc
+                vDesc = g_config.hangarSpace.space.getVehicleEntity().appearance._HangarVehicleAppearance__vDesc
                 for key in TankPartNames.ALL + ('engine',):
                     data[key] = OrderedDict()
                 for key in TankPartNames.ALL:
@@ -595,7 +598,7 @@ class RemodEnablerUI(AbstractWindowView):
                 traceback.print_exc()
         else:
             self.py_sendMessage('', 'Add', 'notSupported')
-        modelDesc = getattr(g_hangarSpace.space.getVehicleEntity().appearance, 'modelDesc', None)
+        modelDesc = getattr(g_config.hangarSpace.space.getVehicleEntity().appearance, 'modelDesc', None)
         if modelDesc is not None:
             return {'isRemod': True, 'name': modelDesc.name, 'message': modelDesc.authorMessage, 'vehicleName': vehName,
                     'whitelists': [
@@ -618,7 +621,7 @@ class RemodEnablerUI(AbstractWindowView):
 
     @staticmethod
     def py_getCurrentVehicleName():
-        vDesc = g_hangarSpace.space.getVehicleEntity().appearance._HangarVehicleAppearance__vDesc
+        vDesc = g_config.hangarSpace.space.getVehicleEntity().appearance._HangarVehicleAppearance__vDesc
         return vDesc.name.split(':')[1].lower()
 
     def py_onRequestVehicleDelete(self, teamIdx):

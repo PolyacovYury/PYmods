@@ -10,7 +10,8 @@ from gui.ClientHangarSpace import hangarCFG
 from gui.Scaleform.framework import ViewTypes
 from gui.app_loader.loader import g_appLoader
 from gui.hangar_cameras.hangar_camera_manager import HangarCameraManager
-from gui.shared.utils.HangarSpace import g_hangarSpace
+from helpers import dependency
+from skeletons.gui.shared.utils import IHangarSpace
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -83,7 +84,7 @@ def new_updateCameraByMouseMove(base, *args):
 
 def setCameraLocation(settings):
     cfg = hangarCFG()
-    g_hangarSpace.space.setCameraLocation(
+    dependency.instance(IHangarSpace).space.setCameraLocation(
         cfg['%scam_start_target_pos' % settings['target_pos']], Math.Vector3(*settings['pivot_pos']) if isinstance(
             settings['pivot_pos'], list) else cfg['%scam_pivot_pos' % settings['pivot_pos']],
         math.radians(settings['angles'][0]), math.radians(settings['angles'][1]), settings['dist'],
