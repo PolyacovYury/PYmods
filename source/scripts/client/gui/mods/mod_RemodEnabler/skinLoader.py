@@ -22,7 +22,7 @@ from gui.Scaleform.daapi.view.login.LoginView import LoginView
 from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import ViewKey
-from gui.Scaleform.framework.managers.loaders import ViewLoadParams
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.app_loader.loader import g_appLoader
 from helpers import getClientVersion
 from zipfile import ZipFile
@@ -129,7 +129,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
                 None), lambda restart: (BigWorld.savePreferences(), (BigWorld.restartGame() if restart else BigWorld.quit())))
         elif self.doLogin:
             loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
-            if loginView and loginView._rememberUser:
+            if loginView and loginView.loginManager.getPreference('remember_user'):
                 password = '*' * loginView.loginManager.getPreference('password_length')
                 login = loginView.loginManager.getPreference('login')
                 loginView.onLogin(login, password, loginView._servers.selectedServer['data'], '@' not in login)
@@ -137,7 +137,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
 
 g_entitiesFactories.addSettings(
     GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
-                        '', None, ScopeTemplates.DEFAULT_SCOPE))
+                        '', None, ScopeTemplates.DEFAULT_SCOPE, canClose=False))
 
 
 def CRC32_from_file(filename, localPath):
@@ -385,7 +385,7 @@ def skinLoader(loginView):
     if g_config.data['enabled'] and g_config.skinsData['found'] and not skinsChecked:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
-            lobbyApp.loadView(ViewLoadParams('RemodEnablerLoading'))
+            lobbyApp.loadView(SFViewLoadParams('RemodEnablerLoading'))
         else:
             return
         jobStartTime = time.time()
@@ -399,7 +399,7 @@ def skinLoader(loginView):
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, g_config.loadingProxy.onWindowClose)
         skinsChecked = True
-        loginView._setData()
+        loginView.update()
 
 
 @PYmodsCore.overrideMethod(LoginView, '_populate')
@@ -408,8 +408,11 @@ def new_Login_populate(base, self):
     g_config.isInHangar = False
     if g_config.data['enabled']:
         if g_config.skinsData['found'] and not skinsChecked:
-            self.as_setDefaultValuesS('', '', self._rememberUser, GUI_SETTINGS.rememberPassVisible,
-                                      GUI_SETTINGS.igrCredentialsReset, not GUI_SETTINGS.isEmpty('recoveryPswdURL'))
+            self.as_setDefaultValuesS({
+                'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
+                'memberMeVisible': self._loginMode.rememberPassVisible,
+                'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
+                'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
         BigWorld.callback(3.0, partial(skinLoader, self))
 
 

@@ -11,7 +11,7 @@ from collections import OrderedDict
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
-from gui.Scaleform.framework.managers.loaders import ViewLoadParams
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.app_loader import g_appLoader
 from helpers import dependency
 from items.components import component_constants
@@ -450,7 +450,7 @@ class ConfigInterface(PYmodsConfigInterface):
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=True, lobby=True,
             callback=lambda: self.loadingProxy is not None or g_appLoader.getDefLobbyApp().loadView(
-                ViewLoadParams('RemodEnablerUI')))
+                SFViewLoadParams('RemodEnablerUI')))
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
         except AttributeError:
