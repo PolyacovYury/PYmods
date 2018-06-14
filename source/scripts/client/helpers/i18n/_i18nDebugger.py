@@ -29,6 +29,7 @@ if debuggerCfg is not None:
         LOG_NOTE('i18nDebugger disabled.')
 else:
     LOG_ERROR('scripts/client/helpers/i18n/i18nDebugger.xml not found')
+i18nHooks = ('i18n_hook_makeString',)
 
 
 def checkTexts(key, text):
@@ -40,10 +41,6 @@ def checkTexts(key, text):
         if textToFind in text:
             print 'i18n: text detected: %s in %s, key: %s' % (textToFind, text, key)
             traceback.print_stack()
-
-
-def __dir__():
-    return ['i18n_hook_makeString']
 
 
 def old_makeString(*_, **kwargs):

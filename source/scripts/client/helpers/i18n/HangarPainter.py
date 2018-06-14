@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 import BigWorld
-import PYmodsCore
 import json
 import re
 import traceback
 import urllib2
+from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, doOverrideMethod
 from debug_utils import LOG_ERROR
 from functools import partial
 
 
-def __dir__():
-    return ['i18n_hook_makeString']
-
-
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.backupData = {}
         self.blacklists = {}
@@ -73,7 +69,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
     def readCurrentSettings(self, quiet=True):
         super(self.__class__, self).readCurrentSettings(quiet)
-        self.blacklists = PYmodsCore.loadJson(self.ID, 'blacklist', self.blacklists, self.configPath)
+        self.blacklists = loadJson(self.ID, 'blacklist', self.blacklists, self.configPath)
 
     @staticmethod
     def onRestartConfirmed(*_):
@@ -97,8 +93,8 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def load(self):
         try:
             webConf_url = 'https://gist.githubusercontent.com/PolyacovYury/220e5da411d78e598687b23ab130e922/raw/'
-            webConf = PYmodsCore.config.json_reader.JSONLoader.byte_ify(json.loads(urllib2.urlopen(webConf_url).read()))
-            PYmodsCore.loadJson(self.ID, 'blacklist', webConf, self.configPath, True)
+            webConf = config.json_reader.JSONLoader.byte_ify(json.loads(urllib2.urlopen(webConf_url).read()))
+            loadJson(self.ID, 'blacklist', webConf, self.configPath, True)
         except urllib2.URLError as e:
             if hasattr(e, 'reason'):
                 print '%s: blacklists config download failed: ' % self.ID, e.reason
@@ -111,6 +107,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
 
 _config = ConfigInterface()
+i18nHooks = ('i18n_hook_makeString',)
 
 
 def old_makeString(*_, **kwargs):
@@ -200,20 +197,25 @@ def new_I18nDialog_init(base, self, *args, **kwargs):
                 self._messageCtx[key] = TAG_RE.sub('', self._messageCtx[key])
 
 
+def new_setFightButtonS(base, self, label):
+    from helpers import i18n
+    base(self, i18n.makeString(label))
+
+
 def delayedHooks():
-    # noinspection PyGlobalUndefined
-    global new_as_tankmenResponseS, new_tankmanSkill_getValue, new_I18nDialog_init, new_tankmanAttr_getValue
+    from gui.Scaleform.daapi.view.dialogs import I18nDialogMeta
     from gui.Scaleform.daapi.view.lobby.hangar.Crew import Crew
+    from gui.Scaleform.daapi.view.meta.LobbyHeaderMeta import LobbyHeaderMeta
     from gui.shared.tooltips.tankman import TankmanSkillListField, ToolTipAttrField, TankmanRoleLevelField, \
         TankmanCurrentVehicleAttrField
-    from gui.Scaleform.daapi.view.dialogs import I18nDialogMeta
-    PYmodsCore.overrideMethod(Crew, 'as_tankmenResponseS')(new_as_tankmenResponseS)
-    PYmodsCore.overrideMethod(TankmanSkillListField, '_getValue')(new_tankmanSkill_getValue)
-    PYmodsCore.overrideMethod(ToolTipAttrField, '_getValue')(new_tankmanAttr_getValue)
-    PYmodsCore.overrideMethod(TankmanRoleLevelField, '_getValue')(new_tankmanAttr_getValue)
-    PYmodsCore.overrideMethod(TankmanCurrentVehicleAttrField, '_getValue')(new_tankmanAttr_getValue)
-    PYmodsCore.overrideMethod(I18nDialogMeta, '__init__')(new_I18nDialog_init)
+    doOverrideMethod(Crew, 'as_tankmenResponseS', new_as_tankmenResponseS)
+    doOverrideMethod(TankmanSkillListField, '_getValue', new_tankmanSkill_getValue)
+    doOverrideMethod(ToolTipAttrField, '_getValue', new_tankmanAttr_getValue)
+    doOverrideMethod(TankmanRoleLevelField, '_getValue', new_tankmanAttr_getValue)
+    doOverrideMethod(TankmanCurrentVehicleAttrField, '_getValue', new_tankmanAttr_getValue)
+    doOverrideMethod(I18nDialogMeta, '__init__', new_I18nDialog_init)
+    doOverrideMethod(LobbyHeaderMeta, 'as_setFightButtonS', new_setFightButtonS)
 
 
 BigWorld.callback(0, delayedHooks)
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-6')
+statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-6')
