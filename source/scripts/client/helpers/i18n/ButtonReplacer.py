@@ -87,7 +87,7 @@ class ConfigInterface(PYmodsConfigInterface):
                             text = text.split(';')
                         textList.extend(x.rstrip() for x in text if x.rstrip())
             if not quiet:
-                print '%s: loaded configs: %s' % (self.ID, ', '.join(x + '.json' for x in self.confMeta))
+                print '%s: loaded configs: %s' % (self.ID, ', '.join(self.confMeta))
 
         elif not quiet:
             print '%s: config directory not found: %s' % (self.ID, configPath)
