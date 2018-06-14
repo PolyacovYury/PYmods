@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 import BigWorld
-import PYmodsCore
 import glob
 import os
 import re
 import traceback
+from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart, Analytics, doOverrideMethod
 from debug_utils import LOG_ERROR, LOG_WARNING
 from functools import partial
 
 
-def __dir__():
-    return ['i18n_hook_makeString']
-
-
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.textStack = {}
         self.wasReplaced = {}
@@ -25,7 +21,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '2.1.3 (%(file_compile_date)s)'
+        self.version = '2.2.0 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'reReadAtEnd': True}
         self.i18n = {
@@ -41,9 +37,9 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
-        metaList = map(lambda x: '\n'.join((self.confMeta[x][textType].rstrip() for textType in ('name', 'desc'))),
-                       sorted(self.configsList, key=str.lower))
-        metaStr = ('\n'.join(metaList)) if metaList else self.i18n['UI_setting_meta_no_configs']
+        metaList = ['\n'.join(self.confMeta[x][textType].rstrip() for textType in ('name', 'desc'))
+                    for x in sorted(self.configsList, key=str.lower)]
+        metaStr = '\n'.join(metaList) if metaList else self.i18n['UI_setting_meta_no_configs']
         capLabel = self.tb.createLabel('meta')
         capLabel['text'] = self.tb.getLabel('caps').format(totalCfg=len(self.configsList), keys=len(self.sectDict))
         capLabel['tooltip'] %= {'meta': metaStr}
@@ -63,51 +59,48 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             if not quiet:
                 print '%s: loading configs from %s:' % (self.ID, configPath)
             for conp in glob.iglob(configPath + '*.json'):
-                if not quiet:
-                    print '%s: loading %s' % (self.ID, os.path.basename(conp))
-                confdict = PYmodsCore.loadJson(
-                    self.ID, os.path.basename(conp).split('.')[0], self.data, os.path.dirname(conp) + '/')
-                if os.path.basename(conp) not in self.configsList:
-                    self.configsList.append(os.path.basename(conp))
-                self.confMeta[os.path.basename(conp)] = metaDict = {'name': '<b>%s</b>' % os.path.basename(conp),
-                                                                    'desc': self.i18n['UI_setting_NDA'],
-                                                                    'has': False}
+                fileName = os.path.basename(conp)
+                confdict = loadJson(self.ID, fileName.split('.')[0], {}, os.path.dirname(conp) + '/')
+                if fileName not in self.configsList:
+                    self.configsList.append(fileName)
+                self.confMeta[fileName] = metaDict = {
+                    'name': '<b>%s</b>' % fileName, 'desc': self.i18n['UI_setting_NDA'], 'has': False}
                 if 'meta' in confdict:
                     metaDict['name'] = confdict['meta'].get('name', metaDict['name'])
                     metaDict['desc'] = confdict['meta'].get('desc', metaDict['desc'])
                     metaDict['has'] = True
-                for key in confdict.keys():
-                    if key != 'meta' and key not in self.data:
-                        self.sectDict.setdefault(key, {})
-                        self.sectDict[key]['mode'] = confdict[key]['mode']
-                        if confdict[key].get('bindToKey') is not None:
-                            self.sectDict[key]['bindToKey'] = confdict[key]['bindToKey']
-                        textList = self.sectDict[key].setdefault('textList', [])
-                        if self.sectDict[key]['mode'] == 'single':
-                            if isinstance(confdict[key]['text'], str):
-                                textList.append(confdict[key]['text'].rstrip())
-                            elif isinstance(confdict[key]['text'], list):
-                                textList.append(
-                                    ''.join(filter(None, confdict[key]['text'])).rstrip())
-                        else:
-                            if isinstance(confdict[key]['text'], str):
-                                textList.extend(filter(
-                                    None, map(lambda txtStr: txtStr.rstrip(), confdict[key]['text'].split(';'))))
-                            elif isinstance(confdict[key]['text'], list):
-                                textList.extend(filter(
-                                    None, map(lambda txtStr: txtStr.rstrip(), confdict[key]['text'])))
+                for key, conf in confdict.iteritems():
+                    if key == 'meta':
+                        continue
+                    section = self.sectDict.setdefault(key, {})
+                    section['mode'] = conf['mode']
+                    if 'bindToKey' in conf:
+                        section['bindToKey'] = conf['bindToKey']
+                    textList = section.setdefault('textList', [])
+                    text = conf['text']
+                    if section['mode'] == 'single':
+                        if isinstance(text, list):
+                            text = ''.join(x for x in text if x)
+                        textList.append(text.rstrip())
+                    else:
+                        if isinstance(text, str):
+                            text = text.split(';')
+                        textList.extend(x.rstrip() for x in text if x.rstrip())
+            if not quiet:
+                print '%s: loaded configs: %s' % (self.ID, ', '.join(x + '.json' for x in self.confMeta))
 
         elif not quiet:
             print '%s: config directory not found: %s' % (self.ID, configPath)
 
         for key in self.sectDict:
-            self.sectDict[key]['textList'] = PYmodsCore.remDups(self.sectDict[key]['textList'])
+            self.sectDict[key]['textList'] = remDups(self.sectDict[key]['textList'])
 
     def registerSettings(self):
         BigWorld.callback(0, partial(BigWorld.callback, 0, super(ConfigInterface, self).registerSettings))
 
 
 _config = ConfigInterface()
+i18nHooks = ('i18n_hook_makeString',)
 
 
 def old_makeString(*_, **kwargs):
@@ -118,21 +111,21 @@ def old_makeString(*_, **kwargs):
 def i18n_hook_makeString(key, *args, **kwargs):
     if _config.data['enabled'] and key in _config.sectDict:
         if key not in _config.wasReplaced or not _config.wasReplaced[key]:
-            if _config.sectDict[key]['mode'] == 'single':
-                _config.textStack[key], _config.textId[key] = (_config.sectDict[key]['textList'][0], 0) if len(
-                    _config.sectDict[key]['textList']) else ('', -1)
-            elif _config.sectDict[key]['mode'] == 'random':
-                _config.textStack[key], _config.textId[key] = PYmodsCore.pickRandomPart(
-                    _config.sectDict[key]['textList'], _config.textId.get(key, -1))
-            elif _config.sectDict[key]['mode'] == 'circle':
-                _config.textStack[key], _config.textId[key] = PYmodsCore.pickRandomPart(
-                    _config.sectDict[key]['textList'], _config.textId.get(key, -1), True)
-            elif _config.sectDict[key]['mode'] == 'bindToKey':
-                _config.textStack[key] = _config.sectDict[key]['textList'][
-                    min(_config.textId.get(_config.sectDict[key].get('bindToKey', key), 0),
-                        len(_config.sectDict[key]['textList']) - 1)] if len(_config.sectDict[key]['textList']) else ''
-            if _config.sectDict[key]['mode'] in ('single', 'random', 'circle', 'bindToKey'):
-                _config.wasReplaced[key] = True
+            mode = _config.sectDict[key]['mode']
+            textList = _config.sectDict[key]['textList']
+            if not textList:
+                print '%s: empty text list for key %s' % (_config.ID, key)
+            else:
+                if mode == 'single':
+                    _config.textStack[key], _config.textId[key] = textList[0], 0
+                elif mode in ('circle', 'random'):
+                    _config.textStack[key], _config.textId[key] = pickRandomPart(
+                        textList, _config.textId.get(key, -1), mode == 'circle')
+                elif mode == 'bindToKey':
+                    _config.textStack[key] = textList[
+                        min(_config.textId.get(_config.sectDict[key].get('bindToKey', key), 0), len(textList) - 1)]
+                if mode in ('single', 'random', 'circle', 'bindToKey'):
+                    _config.wasReplaced[key] = True
         text = _config.textStack.get(key)
         if text is not None:
             try:
@@ -159,14 +152,14 @@ def i18n_hook_makeString(key, *args, **kwargs):
     return old_makeString(key, *args, **kwargs)
 
 
-def new_destroyGUI(self):
-    old_destroyGUI(self)
+def new_destroyGUI(base, self):
+    base(self)
     if _config.data['enabled'] and _config.data['reReadAtEnd']:
         _config.wasReplaced = dict.fromkeys(_config.wasReplaced.keys(), False)
 
 
-def new_construct(self):
-    block = old_construct(self)
+def new_construct(base, self):
+    block = base(self)
     from gui.Scaleform.locale.RES_ICONS import RES_ICONS
     from gui.shared.formatters import text_styles, icons
     from gui.shared.items_parameters import formatters as params_formatters, bonus_helper
@@ -185,24 +178,26 @@ def new_construct(self):
     return block
 
 
-def new_setModuleInfoS(self, moduleInfo):
+def new_setModuleInfoS(base, self, moduleInfo):
     moduleInfo['description'] = re.sub(r'<[^>]*>', '', moduleInfo['description'])
-    old_setModuleInfoS(self, moduleInfo)
+    base(self, moduleInfo)
 
 
-# noinspection PyGlobalUndefined
+def new_setFightButtonS(base, self, label):
+    from helpers import i18n
+    base(self, i18n.makeString(label))
+
+
 def ButtonReplacer_hooks():
-    global old_destroyGUI, old_setModuleInfoS, old_construct
     from Avatar import PlayerAvatar
+    from gui.Scaleform.daapi.view.meta.LobbyHeaderMeta import LobbyHeaderMeta
     from gui.Scaleform.daapi.view.meta.ModuleInfoMeta import ModuleInfoMeta
     from gui.shared.tooltips.module import EffectsBlockConstructor
-    old_destroyGUI = PlayerAvatar._PlayerAvatar__destroyGUI
-    PlayerAvatar._PlayerAvatar__destroyGUI = new_destroyGUI
-    old_setModuleInfoS = ModuleInfoMeta.as_setModuleInfoS
-    ModuleInfoMeta.as_setModuleInfoS = new_setModuleInfoS
-    old_construct = EffectsBlockConstructor.construct
-    EffectsBlockConstructor.construct = new_construct
+    doOverrideMethod(PlayerAvatar, '_PlayerAvatar__destroyGUI', new_destroyGUI)
+    doOverrideMethod(ModuleInfoMeta, 'as_setModuleInfoS', new_setModuleInfoS)
+    doOverrideMethod(EffectsBlockConstructor, 'construct', new_construct)
+    doOverrideMethod(LobbyHeaderMeta, 'as_setFightButtonS', new_setFightButtonS)
 
 
 BigWorld.callback(0.0, ButtonReplacer_hooks)
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-1', _config.confMeta)
+statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-1', _config.confMeta)
