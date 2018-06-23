@@ -1,3 +1,5 @@
+from functools import partial
+
 import BigWorld
 import ResMgr
 import traceback
@@ -55,33 +57,18 @@ def i18n_hook_makeString(key, *args, **kwargs):
     return text
 
 
-def new_I18nString_value(self):
-    checkTexts('', self._I18nString__value)
-    return self._I18nString__value
-
-
-def new_I18nComponent_userString(self):
-    checkTexts('', self._I18nComponent__userString)
-    return self._I18nComponent__userString
-
-
-def new_I18nComponent_shortString(self):
-    result = self._I18nComponent__shortString or self._I18nComponent__userString
+def new_I18n_attr(base, self):
+    result = base.fget(self)
     checkTexts('', result)
     return result
 
 
-def new_I18nComponent_description(self):
-    checkTexts('', self._I18nComponent__description)
-    return self._I18nComponent__description
-
-
 def debugHooks():
     from items.components.shared_components import I18nString, I18nComponent
-    setattr(I18nString, 'value', property(new_I18nString_value))
-    setattr(I18nComponent, 'userString', property(new_I18nComponent_userString))
-    setattr(I18nComponent, 'shortString', property(new_I18nComponent_shortString))
-    setattr(I18nComponent, 'description', property(new_I18nComponent_description))
+    setattr(I18nString, 'value', property(partial(new_I18n_attr, I18nString.value)))
+    setattr(I18nComponent, 'userString', property(partial(new_I18n_attr, I18nComponent.userString)))
+    setattr(I18nComponent, 'shortString', property(partial(new_I18n_attr, I18nComponent.shortString)))
+    setattr(I18nComponent, 'description', property(partial(new_I18n_attr, I18nComponent.description)))
 
 
 BigWorld.callback(0, debugHooks)
