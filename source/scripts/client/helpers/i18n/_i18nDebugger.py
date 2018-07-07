@@ -35,20 +35,20 @@ i18nHooks = ('i18n_hook_makeString',)
 
 
 def checkTexts(key, text):
-    for keyToFind in keysToFind:
-        if keyToFind in key:
-            print 'i18n: key detected: %s in %s, text: %s' % (keyToFind, key, text)
-            traceback.print_stack()
-    for textToFind in textsToFind:
-        if textToFind in text:
-            print 'i18n: text detected: %s in %s, key: %s' % (textToFind, text, key)
-            traceback.print_stack()
+    if key is not None:
+        for keyToFind in keysToFind:
+            if keyToFind in key:
+                print 'i18n: key detected: %s in %s, text: %s' % (keyToFind, key, text)
+                traceback.print_stack()
+    if text is not None:
+        for textToFind in textsToFind:
+            if textToFind in text:
+                print 'i18n: text detected: %s in %s, key: %s' % (textToFind, text, key)
+                traceback.print_stack()
 
 
-def old_makeString(*_, **kwargs):
-    _ = kwargs
+def old_makeString(*_, **__):
     LOG_ERROR('i18n hook failed')
-    return ''
 
 
 def i18n_hook_makeString(key, *args, **kwargs):
