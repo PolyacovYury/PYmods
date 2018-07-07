@@ -103,8 +103,7 @@ _config = ConfigInterface()
 i18nHooks = ('i18n_hook_makeString',)
 
 
-def old_makeString(*_, **kwargs):
-    _ = kwargs
+def old_makeString(*_, **__):
     LOG_ERROR('i18n hook failed')
 
 
