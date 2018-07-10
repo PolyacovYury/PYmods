@@ -3,6 +3,7 @@ import os
 from items.components.shared_components import ModelStatesPaths
 from items.vehicles import CompositeVehicleDescriptor
 from vehicle_systems.tankStructure import TankPartNames
+from .. import g_config
 
 
 def apply(vDesc, sname):
@@ -15,4 +16,4 @@ def apply(vDesc, sname):
                 models = part.modelsSets['default']
                 part.modelsSets['default'] = ModelStatesPaths(path, models.destroyed, models.exploded)
             else:
-                print 'RemodEnabler: skin model not found:', path
+                print g_config.ID + ': skin model not found:', path

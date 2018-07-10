@@ -94,10 +94,10 @@ def _getData(base, self):
     if self._item:
         for idx in RandMode.NAMES:
             swatchScales.append({'paletteIcon': '', 'selected': self._c11nView.getRandMode() == idx,
-                                 'label': g_config.i18n['UI_flash_randMode_%s' % RandMode.NAMES[idx]], 'value': idx})
+                                 'label': g_config.i18n['UI_flash_randMode_' + RandMode.NAMES[idx]], 'value': idx})
         for idx in TeamMode.NAMES:
             swatchColors.append({'paletteIcon': '', 'selected': self._c11nView.getTeamMode() == idx,
-                                 'label': g_config.i18n['UI_flash_teamMode_%s' % TeamMode.NAMES[idx]], 'value': idx})
+                                 'label': g_config.i18n['UI_flash_teamMode_' + TeamMode.NAMES[idx]], 'value': idx})
     itemData = self._getItemData()
     if itemData is None:
         itemData = {'intCD': 0,

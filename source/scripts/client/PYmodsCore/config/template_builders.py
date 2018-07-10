@@ -108,7 +108,7 @@ class DummyBlockTemplateBuilder(DummyTemplateBuilder):
         self.dummy = DummyTemplateBuilder(i18n)
 
     def createLabel(self, blockID, varName, ctx='setting'):
-        return self.dummy.createLabel('_'.join((blockID, varName)), ctx)
+        return self.dummy.createLabel(blockID + '_' + varName, ctx)
 
     def createControl(self, blockID, varName, value, contType='CheckBox', width=200, empty=False, button=None):
         result = self.createLabel(blockID, varName) if not empty else {}

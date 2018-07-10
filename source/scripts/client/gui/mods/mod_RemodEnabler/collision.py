@@ -56,8 +56,7 @@ def new_setupModel(base, self, buildIdx):
                 self.collisionLoaded = False
                 failList.append(modelName if modelName else partName)
         if failList:
-            print 'RemodEnabler: collision load failed: models not found'
-            print failList
+            print g_config.ID + ': collision load failed: models not found', failList
         if not self.collisionLoaded:
             return
         # Getting offset matrices
@@ -68,7 +67,7 @@ def new_setupModel(base, self, buildIdx):
             hullMP, fullChassisMP)
         for idx, turretPosition in enumerate(vDesc.hull.turretPositions):
             if idx:
-                print 'RemodEnabler: WARNING: multiple turrets are present!', vDesc.name
+                print g_config.ID + ': WARNING: multiple turrets are present!', vDesc.name
                 break
             turretOffset = mathUtils.createTranslationMatrix(vDesc.hull.turretPositions[idx])
             gunOffset = mathUtils.createTranslationMatrix(vDesc.turret.gunPosition)
@@ -99,7 +98,7 @@ def new_setupModel(base, self, buildIdx):
                 scaleMat.setScale((0.001, 0.001, 0.001))
                 compoundModel.node(moduleName, scaleMat)
             else:
-                print 'RemodEnabler: model rescale for %s failed' % moduleName
+                print g_config.ID + ': model rescale for', moduleName, 'failed'
 
 
 class GUIBox(object):

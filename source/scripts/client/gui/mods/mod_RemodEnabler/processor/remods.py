@@ -145,7 +145,7 @@ def apply(vDesc, modelDesc):
 
             assert not cntClan and not cntPlayer and not cntInscription
         except StandardError:
-            print 'RemodEnabler: provided emblem slots corrupted. Stock slots restored'
+            print g_config.ID + ': provided emblem slots corrupted. Stock slots restored'
             if g_config.data['isDebug']:
                 print 'cntPlayer =', cntPlayer
                 print 'cntInscription =', cntInscription

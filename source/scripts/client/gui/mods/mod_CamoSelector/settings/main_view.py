@@ -145,8 +145,8 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
                 if 'season' in camoSetting:
                     if checkSeasons and itemsKey == 'remap' and not self.itemsCache.items.getItemByCD(
                             camouflages[camoID].compactDescr).isHidden:
-                        print '%s: in-shop camouflage season changing is disabled (id: %s, season setting was %s)' % (
-                            g_config.ID, camoID, camoSetting['season'] or 'empty')
+                        print g_config.ID + ': in-shop camouflage season changing is disabled (id:',\
+                            camoID + ', season setting was', (camoSetting['season'] or 'empty') + ')'
                         del camoSetting['season']
                         if 'season' in origSetting:
                             del origSetting['season']
@@ -828,10 +828,10 @@ class CamoSelectorMainView(CustomizationMainViewMeta):
         self.refreshCarousel(rebuild=True)
 
     def __getSwitcherInitData(self):
-        return {'leftLabel': g_config.i18n['UI_flash_switcher_%s' % C11nMode.NAMES[self._mode]],
-                'rightLabel': g_config.i18n['UI_flash_switcher_%s' % C11nMode.NAMES[not self._mode]],
-                'leftEvent': 'installStyle%s' % ('s' if self._mode else ''),
-                'rightEvent': 'installStyle%s' % ('s' if not self._mode else ''),
+        return {'leftLabel': g_config.i18n['UI_flash_switcher_' + C11nMode.NAMES[self._mode]],
+                'rightLabel': g_config.i18n['UI_flash_switcher_' + C11nMode.NAMES[not self._mode]],
+                'leftEvent': 'installStyle' + ('s' if self._mode else ''),
+                'rightEvent': 'installStyle' + ('s' if not self._mode else ''),
                 'isLeft': True}
 
     def __getHistoricIndicatorData(self):

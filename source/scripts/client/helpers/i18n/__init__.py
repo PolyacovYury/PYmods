@@ -26,7 +26,7 @@ def loadMods():
     for fileName in filesList:
         print '* Executing: ' + fileName
         try:
-            curMod = importlib.import_module('.'.join((__package__, fileName)))
+            curMod = importlib.import_module('%s.%s' % (__package__, fileName))
             for attr in curMod.i18nHooks:
                 oldAttr = attr.replace('i18n_hook_', '')
                 if 'i18n_hook_' in attr:

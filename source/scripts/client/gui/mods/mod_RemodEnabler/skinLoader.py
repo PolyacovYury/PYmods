@@ -64,13 +64,13 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
         self.as_showAutoLoginBtnS(False)
 
     def updateCancelLabel(self):
-        self.as_setCancelLabelS(g_config.i18n['UI_loading_autoLogin%s' % ('_cancel' if self.doLogin else '')])
+        self.as_setCancelLabelS(g_config.i18n['UI_loading_autoLogin' + ('_cancel' if self.doLogin else '')])
 
     def updateTitle(self, title):
         self.as_setTitleS(title)
 
     def updateMessage(self):
-        self.as_setMessageS(''.join(line.join(("<p align='left'>", "</p>")) for line in self.lines))
+        self.as_setMessageS(''.join("<p align='left'>%s</p>" % line for line in self.lines))
 
     def addLine(self, line):
         if len(self.lines) == 8:
@@ -79,7 +79,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
         self.updateMessage()
 
     def onComplete(self):
-        self.lines[-1] += g_config.i18n['UI_loading_done'].join(("<font color='#00FF00'>", '</font>'))
+        self.lines[-1] += "<font color='#00FF00'>%s</font>" % g_config.i18n['UI_loading_done']
         self.updateMessage()
         SoundGroups.g_instance.playSound2D(MINIMAP_ATTENTION_SOUND_ID)
 
@@ -155,7 +155,7 @@ def skinCRC32All(callback):
     dirSect = ResMgr.openSection(skinsPath)
     if dirSect is not None and dirSect.keys():
         g_config.skinsData['found'] = True
-        print 'RemodEnabler: listing %s for CRC32' % skinsPath
+        print g_config.ID + ': listing', skinsPath, 'for CRC32'
         g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
         CRC32 = 0
         resultList = []
@@ -186,21 +186,21 @@ def skinCRC32All(callback):
                         g_config.loadingProxy.updatePercentage(completionPercentage)
             g_config.loadingProxy.onBarComplete()
             if skinCRC32 in resultList:
-                print 'RemodEnabler: detected duplicate skins pack:', skin.replace(os.sep, '/')
+                print g_config.ID + ': detected duplicate skins pack:', skin.replace(os.sep, '/')
                 continue
             CRC32 ^= skinCRC32
             resultList.append(skinCRC32)
         if CRC32cache is not None and str(CRC32) == CRC32cache:
-            print 'RemodEnabler: skins textures were not changed'
+            print g_config.ID + ': skins textures were not changed'
         else:
             if CRC32cache is None:
-                print 'RemodEnabler: skins textures were reinstalled (or you deleted the CRC32 cache)'
+                print g_config.ID + ': skins textures were reinstalled (or you deleted the CRC32 cache)'
             else:
-                print 'RemodEnabler: skins textures were changed'
+                print g_config.ID + ': skins textures were changed'
             g_config.skinsCache['CRC32'] = str(CRC32)
             texReplaced = True
     else:
-        print 'RemodEnabler: skins folder is empty'
+        print g_config.ID + ': skins folder is empty'
     BigWorld.callback(0.0, partial(callback, True))
 
 
@@ -227,7 +227,7 @@ def rmtree(rootPath, callback):
                     g_config.loadingProxy.updatePercentage(completionPercentage)
         g_config.loadingProxy.onBarComplete()
         shutil.rmtree(os.path.join(rootPath, skinPack))
-    shutil.rmtree(os.path.join(rootPath))
+    shutil.rmtree(rootPath)
     BigWorld.callback(1.0, partial(callback, True))
 
 
@@ -240,17 +240,17 @@ def modelsCheck(callback):
         if getClientVersion() == lastVersion:
             clientIsNew = False
         else:
-            print 'RemodEnabler: skins client version changed'
+            print g_config.ID + ': skins client version changed'
     else:
-        print 'RemodEnabler: skins client version cache not found'
+        print g_config.ID + ': skins client version cache not found'
 
     if os.path.isdir(modelsDir):
         if len(glob.glob(modelsDir + '*')):
             skinsModelsMissing = False
         else:
-            print 'RemodEnabler: skins models dir is empty'
+            print g_config.ID + ': skins models dir is empty'
     else:
-        print 'RemodEnabler: skins models dir not found'
+        print g_config.ID + ': skins models dir not found'
     needToReReadSkinsModels = g_config.skinsData['found'] and (clientIsNew or skinsModelsMissing or texReplaced)
     if g_config.skinsData['found'] and clientIsNew:
         if os.path.isdir(modelsDir):
@@ -259,7 +259,7 @@ def modelsCheck(callback):
     if g_config.skinsData['found'] and not os.path.isdir(modelsDir):
         os.makedirs(modelsDir)
     elif not g_config.skinsData['found'] and os.path.isdir(modelsDir):
-        print 'RemodEnabler: no skins found, deleting %s' % modelsDir
+        print g_config.ID + ': no skins found, deleting', modelsDir
         yield rmtree(modelsDir)
     elif texReplaced and os.path.isdir(modelsDir):
         yield rmtree(modelsDir)
@@ -275,7 +275,7 @@ def modelsProcess(callback):
         g_config.loadingProxy.updateTitle(g_config.i18n['UI_loading_header_models_unpack'])
         SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
         modelFileFormats = ('.model', '.visual', '.visual_processed')
-        print 'RemodEnabler: unpacking vehicle packages'
+        print g_config.ID + ': unpacking vehicle packages'
         for vehPkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
             completionPercentage = 0
             filesCnt = 0
@@ -290,7 +290,7 @@ def modelsProcess(callback):
                     try:
                         processMember(memberFileName, skinName)
                     except ValueError as e:
-                        print '%s: %s' % (g_config.ID, e)
+                        print g_config.ID + ':', e
                     filesCnt += 1
                     if not filesCnt % 25:
                         yield doFuncCall()
@@ -311,7 +311,7 @@ def doFuncCall(callback):
 
 # noinspection PyPep8,PyPep8
 def processMember(memberFileName, skinName):
-    skinDir = modelsDir.replace('%s/' % BigWorld.curCV, '') + skinName + '/'
+    skinDir = modelsDir.replace(BigWorld.curCV + '/', '') + skinName + '/'
     texDir = skinDir.replace('models', 'textures')
     skinsSign = 'vehicles/skins/'
     if '.model' in memberFileName:
@@ -395,7 +395,7 @@ def skinLoader(loginView):
             yield modelsProcess()
         except AdispException:
             traceback.print_exc()
-        print 'RemodEnabler: total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
+        print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, g_config.loadingProxy.onWindowClose)
         skinsChecked = True

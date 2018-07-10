@@ -38,12 +38,12 @@ def checkTexts(key, text):
     if key is not None:
         for keyToFind in keysToFind:
             if keyToFind in key:
-                print 'i18n: key detected: %s in %s, text: %s' % (keyToFind, key, text)
+                print 'i18n: key detected:', keyToFind, 'in', key + ', text:', text
                 traceback.print_stack()
     if text is not None:
         for textToFind in textsToFind:
             if textToFind in text:
-                print 'i18n: text detected: %s in %s, key: %s' % (textToFind, text, key)
+                print 'i18n: text detected:', textToFind, 'in', text + ', key:', key
                 traceback.print_stack()
 
 

@@ -41,7 +41,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '2.1.2 (%(file_compile_date)s)'
-        self.author = '%s (orig by locastan/tehHedger/TRJ_VoRoN)' % self.author
+        self.author += ' (orig by locastan/tehHedger/TRJ_VoRoN)'
         self.defaultKeys = {'mapMenu_key': [Keys.KEY_LALT], 'mapMenu_Key': ['KEY_LALT']}
         self.data = {'enabled': True,
                      'mapMenu_key': self.defaultKeys['mapMenu_key'],
@@ -87,7 +87,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             try:
                 confDict = PYmodsCore.loadJson(self.ID, confName, {}, os.path.dirname(confPath) + '/')
             except StandardError:
-                print 'RadialMenu: config %s is invalid.' % os.path.basename(confPath)
+                print self.ID + ': config', os.path.basename(confPath), 'is invalid.'
                 traceback.print_exc()
                 continue
             self.configsMeta[confName] = confDict.get('meta', confName)
@@ -174,7 +174,7 @@ class SafeFormatter(string.Formatter):
             try:
                 return kwargs[key]
             except KeyError:
-                return key.join(('{', '}'))
+                return '{%s}' % key
         else:
             super(self.__class__, self).get_value(key, args, kwargs)
 

@@ -160,7 +160,7 @@ class _Config(object):
 
     def load(self):
         self.readCurrentSettings()
-        print '%s v.%s %s: initialized.' % (self.ID, self.version, self.author)
+        print self.ID, 'v.' + self.version, self.author + ': initialized.'
 
 
 def checkKeys(keys):
@@ -297,7 +297,7 @@ class SafeFormatter(string.Formatter):
             try:
                 return kwargs[key]
             except KeyError:
-                return key.join(('{', '}'))
+                return '{%s}' % key
         else:
             super(self.__class__, self).get_value(key, args, kwargs)
 

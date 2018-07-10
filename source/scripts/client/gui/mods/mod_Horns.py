@@ -64,7 +64,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                             chatCB]}
 
     def onButtonPress(self, container, linkage, vName, value):
-        if container != 'PYmodsGUI' or linkage != self.ID or vName != 'event':
+        if container != self.modSettingsID or linkage != self.ID or vName != 'event':
             return
         self.data[vName] = int(value)
         SoundLoop(False)

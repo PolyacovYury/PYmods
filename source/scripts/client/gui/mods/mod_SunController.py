@@ -18,7 +18,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '2.2.2 (%(file_compile_date)s)'
-        self.author = '%s (orig by Lp()rtii/Dellux) (thx to LSD_MAX/Delysid :P)' % self.author
+        self.author += ' (orig by Lp()rtii/Dellux) (thx to LSD_MAX/Delysid :P)'
         self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
         self.data = {'enabled': True,
                      'time': 0,
@@ -72,7 +72,7 @@ if _config.data['enableMessage']:
         try:
             # noinspection PyUnresolvedReferences
             from gui.vxSettingsApi import vxSettingsApi
-            isRegistered = vxSettingsApi.isRegistered('PYmodsGUI')
+            isRegistered = vxSettingsApi.isRegistered(_config.modSettingsID)
         except ImportError:
             isRegistered = False
         try:

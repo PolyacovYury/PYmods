@@ -80,17 +80,17 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
         metaList = []
         for fileName in sorted(self.configsDict.keys()):
-            attaches = tuple(self.i18n['UI_setting_%s' % key] if self.configsDict[fileName][key] else ''
+            attaches = tuple(self.i18n['UI_setting_' + key] if self.configsDict[fileName][key] else ''
                              for key in ('attachToPlayer', 'attachToAlly', 'attachToEnemy'))
             if all(attaches):
                 tooltipAttachTo = ''
             else:
                 tooltipAttachTo = self.i18n['UI_setting_attachTo'] + self.i18n['UI_setting_meta_AND'].join(
                     filter(None, attaches)) + '\n'
-            metaList.append('\n'.join((self.configsDict[fileName]['meta']['name'],
-                                       self.configsDict[fileName]['meta']['desc'].format(
-                                           attachTo=tooltipAttachTo).rstrip())).rstrip())
-        metaStr = ('\n'.join(metaList)) if self.configsDict else self.i18n['UI_setting_meta_no_configs']
+            metaList.append('\n'.join((
+                self.configsDict[fileName]['meta']['name'], self.configsDict[fileName]['meta']['desc'].format(
+                    attachTo=tooltipAttachTo).rstrip())).rstrip())
+        metaStr = ('\n'.join(metaList)) if metaList else self.i18n['UI_setting_meta_no_configs']
         capLabel = self.tb.createLabel('meta')
         capLabel['text'] = self.tb.getLabel('caps').format(totalCfg=len(self.configsDict), totalSrc=sources, models=models)
         capLabel['tooltip'] %= {'meta': metaStr}
@@ -112,11 +112,11 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def readConfDict(self, quiet, confdict, confPath, sourceModel=None, upperName=''):
         for confKey, configDict in confdict.items():
             if upperName:
-                confKey = '.'.join((upperName, confKey))
+                confKey = upperName + '.' + confKey
             if confKey in ('enable', 'meta', 'attachToPlayer', 'attachToAlly', 'attachToEnemy'):
                 continue
             if any(confKey in curConfigsDict for curConfigsDict in self.configsDict.values()):
-                print 'LampLights: %s: overlap detected: %s already exists.' % (confPath, confKey)
+                print _config.ID + ':', confPath + ': overlap detected:', confKey, 'already exists.'
                 continue
             model = None
             if 'model' in configDict['type']:
@@ -139,7 +139,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                     continue
             if not configDict['visible']:
                 if not quiet:
-                    print '%s: %s disabled in config.' % (self.ID, confKey)
+                    print self.ID + ':', confKey, 'disabled in config.'
                 continue
             self.configsDict[os.path.basename(confPath).split('.')[0]][confKey] = confDict = {}
             for key in ('type', 'place', 'mode', 'preRotate', 'postRotate', 'vect'):
@@ -149,8 +149,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 confDict[key] = self.configsDict[os.path.basename(confPath).split('.')[0]][key]
 
             if confDict['mode'] not in self.modes:
-                print 'LampLights: unknown mode at %s detected: %s. This light will be off.' % (
-                    confKey, confDict['mode'])
+                print self.ID + ': unknown mode in', confKey, 'detected:', confDict['mode'] + '. This light will be off.'
             else:
                 self.modes[confDict['mode']].append(confKey)
             if 'model' not in confDict['type']:
@@ -165,7 +164,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                     self.readConfDict(quiet, configDict['subLights'], confPath, sourceModel=model,
                                       upperName=confKey)
             if self.data['Debug'] and not quiet:
-                print '%s: %s loaded.' % (self.ID, confKey)
+                print self.ID + ':', confKey, 'loaded.'
 
     def readCurrentSettings(self, quiet=True):
         self.configsDict.clear()
@@ -186,27 +185,27 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         if self.data['enabled']:
             configPath = self.configPath + 'configs/'
             if not os.path.exists(configPath):
-                LOG_ERROR('LampLights config folder not found:', configPath)
+                LOG_ERROR('%s config folder not found: %s' % (self.ID, configPath))
                 os.makedirs(configPath)
             for confPath in glob.iglob(configPath + '*.json'):
+                confName = os.path.basename(confPath)
                 try:
-                    confdict = PYmodsCore.loadJson(self.ID, os.path.basename(confPath).split('.')[0],
-                                                   self.configsDict.get(os.path.basename(confPath).split('.')[0], {}),
-                                                   os.path.dirname(confPath) + '/')
+                    confdict = PYmodsCore.loadJson(
+                        self.ID, confName.split('.')[0], self.configsDict.get(confName.split('.')[0], {}),
+                        os.path.dirname(confPath) + '/')
                 except StandardError:
-                    print 'LampLights: config %s is invalid.' % os.path.basename(confPath)
+                    print self.ID + ': config', confName, 'is invalid.'
                     traceback.print_exc()
                     continue
-                if not confdict['enable'] or not any((x for x in (confdict.get(y, True) for y in
-                                                                  ('attachToPlayer', 'attachToAlly',
-                                                                   'attachToEnemy')))):
+                if not confdict['enable'] or not any(
+                        x for x in (confdict.get(y, True) for y in ('attachToPlayer','attachToAlly', 'attachToEnemy'))):
                     if not quiet:
-                        print 'LampLights: config %s is disabled.' % os.path.basename(confPath)
+                        print self.ID + ': config', confName, 'is disabled.'
                     continue
                 if self.data['Debug']:
-                    print 'LampLights: loading %s:' % os.path.basename(confPath)
-                self.configsDict[os.path.basename(confPath).split('.')[0]] = configsDict = {}
-                configsDict['meta'] = metaDict = {'name': '<b>%s</b>' % os.path.basename(confPath),
+                    print self.ID + ': loading', confName + ':'
+                self.configsDict[confName.split('.')[0]] = configsDict = {}
+                configsDict['meta'] = metaDict = {'name': '<b>%s</b>' % confName,
                                                   'desc': self.i18n['UI_setting_meta_NDA']}
                 metaDict['name'] = confdict.get('meta', {}).get(self.lang, {}).get('name', metaDict['name'])
                 metaDict['desc'] = confdict.get('meta', {}).get(self.lang, {}).get('desc', metaDict['desc'])
@@ -261,7 +260,7 @@ if _config.data['enableMessage']:
         try:
             # noinspection PyUnresolvedReferences
             from gui.vxSettingsApi import vxSettingsApi
-            isRegistered = vxSettingsApi.isRegistered('PYmodsGUI')
+            isRegistered = vxSettingsApi.isRegistered(_config.modSettingsID)
         except ImportError:
             isRegistered = False
         if isLogin and not isRegistered:
@@ -443,7 +442,7 @@ def lightsCreate(vehicleID, callPlace=''):
                     transMat = nodeWatcher(sourcesDict[TankPartNames.CHASSIS], node.replace('Up', ''))
                 isChassis = True
             if transMat is None:
-                print 'LampLights: restore Matrix not found for node %s in %s' % (node, vDesc.hull.models.undamaged)
+                print _config.ID + ': restore Matrix not found for node', node, 'in', vDesc.hull.models.undamaged
                 print callPlace
             else:
                 restoreMat.setTranslate(transMat.translation)
@@ -546,12 +545,12 @@ def lightsCreate(vehicleID, callPlace=''):
                                         upperName not in curTree[depth] for depth, upperName in
                                         enumerate(nameTree)):
                             continue
-                        namesList.append('.'.join((curKey, name.split('.')[-1])))
+                        namesList.append(curKey + '.' + name.split('.')[-1])
                     if not namesList:
                         namesList = [name]
                     for fullName in namesList:
                         for node in nodeL:
-                            curName = ':'.join((fullName, node))
+                            curName = fullName + ':' + node
                             if 'model' not in confDict['type']:
                                 if confDict['type'] == 'spotLight':
                                     LightSource = BigWorld.PySpotLight()
@@ -582,8 +581,7 @@ def lightsCreate(vehicleID, callPlace=''):
                             else:
                                 if curName not in fakeDict:
                                     fakeDict[curName] = BigWorld.Model('objects/fake_model.model')
-                                    lightDBDict[vehicleID]['.'.join(curName.split('.')[:-1])].node(node).attach(
-                                        fakeDict[curName])
+                                    lightDBDict[vehicleID][curName.rsplit('.', 1)[0]].node(node).attach(fakeDict[curName])
                                 fakeNode = fakeDict[curName].node('', computeTransform(confDict))
                             if 'model' not in confDict['type']:
                                 LightSource.source = fakeNode

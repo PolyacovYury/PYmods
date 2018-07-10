@@ -57,7 +57,7 @@ class ConfigInterface(PYmodsConfigInterface):
         configPath = self.configPath + 'configs/'
         if os.path.isdir(configPath):
             if not quiet:
-                print '%s: loading configs from %s:' % (self.ID, configPath)
+                print self.ID + ': loading configs from', configPath + ':'
             for conp in glob.iglob(configPath + '*.json'):
                 fileName = os.path.basename(conp)
                 confdict = loadJson(self.ID, fileName.split('.')[0], {}, os.path.dirname(conp) + '/')

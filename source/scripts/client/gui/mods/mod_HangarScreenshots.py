@@ -85,8 +85,8 @@ def new_updateCameraByMouseMove(base, *args):
 def setCameraLocation(settings):
     cfg = hangarCFG()
     dependency.instance(IHangarSpace).space.setCameraLocation(
-        cfg['%scam_start_target_pos' % settings['target_pos']], Math.Vector3(*settings['pivot_pos']) if isinstance(
-            settings['pivot_pos'], list) else cfg['%scam_pivot_pos' % settings['pivot_pos']],
+        cfg[settings['target_pos'] + 'cam_start_target_pos'], Math.Vector3(*settings['pivot_pos']) if isinstance(
+            settings['pivot_pos'], list) else cfg[settings['pivot_pos'] + 'cam_pivot_pos'],
         math.radians(settings['angles'][0]), math.radians(settings['angles'][1]), settings['dist'],
         None, True)
 
@@ -118,7 +118,7 @@ def inj_hkKeyEvent(event):
             config.data['UIVisible'] = True
             toggleHangarUI(True)
     except StandardError:
-        print '%s: ERROR at inj_hkKeyEvent' % config.ID
+        print config.ID + ': ERROR at inj_hkKeyEvent'
         traceback.print_exc()
 
 

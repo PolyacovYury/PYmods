@@ -60,7 +60,7 @@ class ConfigInterface(DummyConfigInterface):
 
     def load(self):
         super(ConfigInterface, self).load()
-        print '%s: initialised.' % (self.message())
+        print self.message() + ': initialised.'
 
 
 class ConfBlockInterface(DummyConfBlockInterface):
@@ -123,7 +123,7 @@ class ConfBlockInterface(DummyConfBlockInterface):
 
     def load(self):
         super(ConfBlockInterface, self).load()
-        print '%s: initialised.' % (self.message())
+        print self.message() + ': initialised.'
 
 
 class SettingContainer(DummySettingContainer):

@@ -14,7 +14,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.backupData = {}
         self.blacklists = {}
         self.needRestart = False
-        super(self.__class__, self).__init__()
+        super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
