@@ -195,15 +195,9 @@ def new_I18nDialog_init(base, self, *args, **kwargs):
                 self._messageCtx[key] = TAG_RE.sub('', self._messageCtx[key])
 
 
-def new_setFightButtonS(base, self, label):
-    from helpers import i18n
-    base(self, i18n.makeString(label))
-
-
 def delayedHooks():
     from gui.Scaleform.daapi.view.dialogs import I18nDialogMeta
     from gui.Scaleform.daapi.view.lobby.hangar.Crew import Crew
-    from gui.Scaleform.daapi.view.meta.LobbyHeaderMeta import LobbyHeaderMeta
     from gui.shared.tooltips.tankman import TankmanSkillListField, ToolTipAttrField, TankmanRoleLevelField, \
         TankmanCurrentVehicleAttrField
     doOverrideMethod(Crew, 'as_tankmenResponseS', new_as_tankmenResponseS)
@@ -212,7 +206,6 @@ def delayedHooks():
     doOverrideMethod(TankmanRoleLevelField, '_getValue', new_tankmanAttr_getValue)
     doOverrideMethod(TankmanCurrentVehicleAttrField, '_getValue', new_tankmanAttr_getValue)
     doOverrideMethod(I18nDialogMeta, '__init__', new_I18nDialog_init)
-    doOverrideMethod(LobbyHeaderMeta, 'as_setFightButtonS', new_setFightButtonS)
 
 
 BigWorld.callback(0, delayedHooks)
