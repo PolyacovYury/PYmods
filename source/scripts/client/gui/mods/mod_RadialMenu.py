@@ -218,7 +218,7 @@ class CustomMenuCommand:
             self.variantList.extend(variants)
 
         PYmodsCore.config.utils.processHotKeys(confDict, ('hotkey',), 'read')
-        self.hotKeys = confDict['hotkey']
+        self.hotKeys = confDict.get('hotkey', [])
 
     def __repr__(self):
         return '<CMC %s (%s)>' % (self.title, self.icon)
