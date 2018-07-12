@@ -269,5 +269,5 @@ def getGroupName(item):
             nationUserName = nationUserName.rsplit(' ', 1)[0]
         if '>' in groupName:
             groupName = groupName.split('>', 1)[1]
-        groupName = ' / '.join((nationUserName, groupName))
+        groupName = nationUserName + ' / ' + groupName
     return groupName

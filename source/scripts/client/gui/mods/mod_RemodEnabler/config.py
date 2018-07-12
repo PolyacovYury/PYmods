@@ -39,8 +39,8 @@ def readEmblemSlots(confList):
     slots = []
     for confDict in confList:
         if confDict['type'] not in component_constants.ALLOWED_EMBLEM_SLOTS:
-            print '%s: not supported emblem slot type: %s, expected: %s' % (
-                g_config.ID, confDict['type'], ' '.join(component_constants.ALLOWED_EMBLEM_SLOTS))
+            print g_config.ID + ': not supported emblem slot type:', confDict['type'] + ', expected:', ' '.join(
+                component_constants.ALLOWED_EMBLEM_SLOTS)
         descr = EmblemSlot(Math.Vector3(tuple(confDict['rayStart'])), Math.Vector3(tuple(confDict['rayEnd'])),
                            Math.Vector3(tuple(confDict['rayUp'])), confDict['size'],
                            confDict.get('hideIfDamaged', False), confDict['type'], confDict.get('isMirrored', False),
@@ -94,24 +94,16 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = __modID__
         self.version = '3.0.0 (%s)' % __date__
-        self.author = '%s (thx to atacms)' % self.author
-        self.defaultKeys = {'DynamicSkinHotKey': ['KEY_F1', ['KEY_LCONTROL', 'KEY_RCONTROL']],
-                            'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
-                            'ChangeViewHotKey': ['KEY_F2', ['KEY_LCONTROL', 'KEY_RCONTROL']],
+        self.author += ' (thx to atacms)'
+        self.defaultKeys = {'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
-                            'SwitchRemodHotKey': ['KEY_F3', ['KEY_LCONTROL', 'KEY_RCONTROL']],
                             'SwitchRemodHotkey': [Keys.KEY_F3, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
-                            'CollisionHotKey': ['KEY_F4', ['KEY_LCONTROL', 'KEY_RCONTROL']],
                             'CollisionHotkey': [Keys.KEY_F4, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
         self.data = {'enabled': True,
                      'isDebug': True,
-                     'DynamicSkinHotKey': self.defaultKeys['DynamicSkinHotKey'],
                      'DynamicSkinHotkey': self.defaultKeys['DynamicSkinHotkey'],
-                     'ChangeViewHotKey': self.defaultKeys['ChangeViewHotKey'],
                      'ChangeViewHotkey': self.defaultKeys['ChangeViewHotkey'],
-                     'CollisionHotKey': self.defaultKeys['CollisionHotKey'],
                      'CollisionHotkey': self.defaultKeys['CollisionHotkey'],
-                     'SwitchRemodHotKey': self.defaultKeys['SwitchRemodHotKey'],
                      'SwitchRemodHotkey': self.defaultKeys['SwitchRemodHotkey'],
                      'remod': True}
         self.i18n = {
@@ -252,12 +244,12 @@ class ConfigInterface(PYmodsConfigInterface):
                 sname = os.path.basename(configPath).split('.')[0]
                 confDict = loadJson(self.ID, sname, {}, os.path.dirname(configPath) + '/', encrypted=True)
                 if not confDict:
-                    print '%s: error while reading %s.' % (self.ID, os.path.basename(configPath))
+                    print self.ID + ': error while reading', os.path.basename(configPath) + '.'
                     continue
                 settingsDict = self.settings['remods'].setdefault(sname, {})
                 snameList.add(sname)
                 if not settingsDict.setdefault('enabled', self.defaultRemodConfig['enabled']):
-                    print '%s: %s disabled, moving on' % (self.ID, sname)
+                    print self.ID + ':', sname, 'disabled, moving on'
                     if sname in self.modelsData['models']:
                         del self.modelsData['models'][sname]
                     continue
@@ -266,24 +258,24 @@ class ConfigInterface(PYmodsConfigInterface):
                 pRecord.authorMessage = confDict.get('authorMessage', '')
                 for tankType in ('player', 'ally', 'enemy'):
                     selected = selectedData[tankType]
-                    swapKey = 'swap%s' % tankType.capitalize()
-                    WLKey = '%sWhitelist' % tankType
+                    swapKey = 'swap' + tankType.capitalize()
+                    WLKey = tankType + 'Whitelist'
                     whiteStr = settingsDict.setdefault(WLKey, confDict.get(WLKey, ''))
                     templist = [x.strip() for x in whiteStr.split(',') if x]
                     whitelist = pRecord.whitelists[tankType]
                     whitelist.update(templist)
                     if not whitelist:
                         if self.data['isDebug']:
-                            print '%s: empty whitelist for %s. Not applied to %s tanks.' % (self.ID, sname, tankType)
+                            print self.ID + ': empty whitelist for', sname + '. Not applied to', tankType, 'tanks.'
                     else:
                         if self.data['isDebug']:
-                            print '%s: whitelist for %s: %s' % (self.ID, tankType, list(whitelist))
+                            print self.ID + ': whitelist for', tankType + ':', list(whitelist)
                         for xmlName in selected:
                             if sname == selected[xmlName] and xmlName not in whitelist:
                                 selected[xmlName] = None
                     if not settingsDict.setdefault(swapKey, confDict.get(swapKey, self.defaultRemodConfig[swapKey])):
                         if self.data['isDebug']:
-                            print '%s: %s swapping in %s disabled.' % (self.ID, tankType, sname)
+                            print self.ID + ':', tankType, 'swapping in', sname, 'disabled.'
                         whitelist.clear()
                         for xmlName in selected:
                             if sname == selected[xmlName]:
@@ -305,7 +297,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         if 'tiling' in confSubDict['camouflage']:
                             data['camouflage']['tiling'] = tuple(confDict['camouflage']['tiling'])
                     elif key == 'common' and self.data['isDebug']:
-                        print '%s: default camomask not found for %s' % (self.ID, sname)
+                        print self.ID + ': default camomask not found for', sname
                     if 'emblemSlots' in data:
                         data['emblemSlots'] = readEmblemSlots(confSubDict.get('emblemSlots', []))
                     if 'exhaust' in data:
@@ -320,7 +312,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         if subKey in data and subKey in confSubDict:
                             data[subKey] = confSubDict[subKey]
                 if self.data['isDebug']:
-                    print '%s: config for %s loaded.' % (self.ID, sname)
+                    print self.ID + ': config for', sname, 'loaded.'
 
             for sname in self.modelsData['models'].keys():
                 if sname not in snameList:
@@ -332,7 +324,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
             if not self.modelsData['models']:
                 if not quiet:
-                    print '%s: no configs found, model module standing down.' % self.ID
+                    print self.ID + ': no configs found, model module standing down.'
                 self.modelsData['enabled'] = False
                 loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True, quiet=quiet)
             else:
@@ -355,7 +347,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True, quiet=quiet)
         else:
             if not quiet:
-                print '%s: no remods found, model module standing down.' % self.ID
+                print self.ID + ': no remods found, model module standing down.'
             self.modelsData['enabled'] = False
             loadJson(self.ID, 'remodsCache', self.modelsData['selected'], self.configPath, True, quiet=quiet)
         self.skinsData['enabled'] = ResMgr.openSection('vehicles/skins/') is not None and ResMgr.isDir('vehicles/skins/')
@@ -367,25 +359,25 @@ class ConfigInterface(PYmodsConfigInterface):
                 for key in self.skinsData['priorities'][skinType].keys():
                     if not key.islower():
                         self.skinsData['priorities'][skinType][key.lower()] = self.skinsData['priorities'][skinType].pop(key)
-                skinsSettings = self.settings['skins%s' % skinTypeSuff]
+                skinsSettings = self.settings['skins' + skinTypeSuff]
                 disabledSkins = []
                 if self.data['isDebug']:
-                    print '%s: loading configs for %s skins' % (self.ID, skinType)
+                    print self.ID + ': loading configs for', skinType, 'skins'
                 skinDirSect = ResMgr.openSection(skinDir)
                 for sname in [] if skinDirSect is None else remDups(skinDirSect.keys()):
                     confDict = skinsSettings.setdefault(sname, self.defaultSkinConfig[skinType])
                     if not confDict.get('enabled', True):
-                        print '%s: %s disabled, moving on' % (self.ID, sname)
+                        print self.ID + ':', sname, 'disabled, moving on'
                         disabledSkins.append(sname)
                         continue
                     self.skinsData['models'][skinType][sname] = pRecord = {'name': '', 'whitelist': set()}
                     pRecord['name'] = sname
                     priorities = self.skinsData['priorities'][skinType]
                     for tankType in priorities:
-                        key = 'swap%s' % tankType.capitalize()
+                        key = 'swap' + tankType.capitalize()
                         if not confDict.setdefault(key, self.defaultSkinConfig[skinType][key]):
                             if self.data['isDebug']:
-                                print '%s: %s swapping in %s disabled.' % (self.ID, tankType, sname)
+                                print self.ID + ':', tankType, 'swapping in', sname, 'disabled.'
                             if sname in priorities[tankType]:
                                 priorities[tankType].remove(sname)
                             continue
@@ -406,19 +398,19 @@ class ConfigInterface(PYmodsConfigInterface):
                                     ([] if vehDirSect is None else remDups(vehDirSect.keys())) +
                                     ([] if tracksDirSect is None else remDups(tracksDirSect.keys())))):
                                 if self.data['isDebug']:
-                                    print '%s: %s folder from %s pack is empty' % (self.ID, vehicleName, sname)
+                                    print self.ID + ':', vehicleName, 'folder from', sname, 'pack is empty.'
                             else:
                                 pRecord['whitelist'].add(vehicleName)
 
                     if self.data['isDebug']:
-                        print '%s: config for %s loaded.' % (self.ID, sname)
+                        print self.ID + ': config for', sname, 'loaded.'
                 snameList = self.skinsData['models'][skinType].keys() + disabledSkins
                 for sname in skinsSettings.keys():
                     if sname not in snameList:
                         del skinsSettings[sname]
             if not any(self.skinsData['models'].values()):
                 if not quiet:
-                    print '%s: no skins configs found, skins module standing down.' % self.ID
+                    print self.ID + ': no skins configs found, skins module standing down.'
                 self.skinsData['enabled'] = False
                 for skinType in self.skinsData['priorities']:
                     for key in self.skinsData['priorities'][skinType]:
@@ -431,7 +423,7 @@ class ConfigInterface(PYmodsConfigInterface):
                                 self.skinsData['priorities'][skinType][key].remove(sname)
         else:
             if not quiet:
-                print '%s: no skins found, skins module standing down.' % self.ID
+                print self.ID + ': no skins found, skins module standing down.'
             for skinType in self.skinsData['priorities']:
                 for key in self.skinsData['priorities'][skinType]:
                     self.skinsData['priorities'][skinType][key] = []
@@ -482,8 +474,8 @@ class RemodEnablerUI(AbstractWindowView):
             'skinsPriorityBtn': g_config.i18n['UI_flash_skinPriorityBtn'],
             'create': {'name': g_config.tb.createLabel('remodCreate_name', 'flash'),
                        'message': g_config.tb.createLabel('remodCreate_message', 'flash')},
-            'skinTypes': [g_config.i18n['UI_flash_skinType_%s' % skinType] for skinType in ('static', 'dynamic')],
-            'teams': [g_config.i18n['UI_flash_team_%s' % team] for team in ('player', 'ally', 'enemy')],
+            'skinTypes': [g_config.i18n['UI_flash_skinType_' + skinType] for skinType in ('static', 'dynamic')],
+            'teams': [g_config.i18n['UI_flash_team_' + team] for team in ('player', 'ally', 'enemy')],
             'remodNames': [],
             'skinNames': [[], []],
             'whiteList': {'addBtn': g_config.i18n['UI_flash_whiteList_addBtn'],
@@ -510,16 +502,16 @@ class RemodEnablerUI(AbstractWindowView):
             texts['remodNames'].append(sname)
             # noinspection PyTypeChecker
             settings['remods'].append({
-                'useFor': {key: modelsSettings['swap%s' % key.capitalize()] for key in ('player', 'ally', 'enemy')},
-                'whitelists': [[x for x in str(modelsSettings['%sWhitelist' % team]).split(',') if x]
+                'useFor': {key: modelsSettings['swap' + key.capitalize()] for key in ('player', 'ally', 'enemy')},
+                'whitelists': [[x for x in str(modelsSettings[team + 'Whitelist']).split(',') if x]
                                for team in ('player', 'ally', 'enemy')]})
         for idx, skinType in enumerate(('', '_dynamic')):
-            skins = g_config.settings['skins%s' % skinType]
+            skins = g_config.settings['skins' + skinType]
             for sname in sorted(g_config.skinsData['models']['static' if not skinType else 'dynamic']):
                 sDesc = skins[sname]
                 texts['skinNames'][idx].append(sname)
                 settings['skins'][idx].append(
-                    {'useFor': {k: sDesc['swap%s' % k.capitalize()] for k in ('player', 'ally', 'enemy')}})
+                    {'useFor': {k: sDesc['swap' + k.capitalize()] for k in ('player', 'ally', 'enemy')}})
         self.flashObject.as_updateData(texts, settings)
 
     def py_getRemodData(self):
@@ -639,15 +631,15 @@ class RemodEnablerUI(AbstractWindowView):
         for idx, setObj in enumerate(settings.remods):
             modelsSettings = g_config.settings['remods'][remodNames[idx]]
             for key in ('player', 'ally', 'enemy'):
-                modelsSettings['swap%s' % key.capitalize()] = getattr(setObj.useFor, key)
+                modelsSettings['swap' + key.capitalize()] = getattr(setObj.useFor, key)
             for teamIdx, team in enumerate(('player', 'ally', 'enemy')):
-                modelsSettings['%sWhitelist' % team] = ','.join(setObj.whitelists[teamIdx])
+                modelsSettings[team + 'Whitelist'] = ','.join(setObj.whitelists[teamIdx])
         for idx, settingsArray in enumerate(settings.skins):
             for nameIdx, setObj in enumerate(settingsArray):
                 for key in ('player', 'ally', 'enemy'):
-                    g_config.settings['skins%s' % ('', '_dynamic')[idx]][
+                    g_config.settings['skins' + ('', '_dynamic')[idx]][
                         sorted(g_config.skinsData['models'][('static', 'dynamic')[idx]])[nameIdx]][
-                        'swap%s' % key.capitalize()] = getattr(setObj.useFor, key)
+                        'swap' + key.capitalize()] = getattr(setObj.useFor, key)
         for idx, prioritiesArray in enumerate(settings.priorities):
             for teamIdx, team in enumerate(('player', 'ally', 'enemy')):
                 g_config.skinsData['priorities'][('static', 'dynamic')[idx]][team] = prioritiesArray[teamIdx]
@@ -680,8 +672,8 @@ class RemodEnablerUI(AbstractWindowView):
     @staticmethod
     def py_sendMessage(xmlName, action, status):
         SystemMessages.pushMessage(
-            'temp_SM' + g_config.i18n['UI_flash_vehicle%s_%s' % (action, status)] + xmlName.join(
-                ('<b>', '</b>.')), SystemMessages.SM_TYPE.CustomizationForGold)
+            'temp_SM%s<b>%s</b>.' % (g_config.i18n['UI_flash_vehicle%s_%s' % (action, status)], xmlName),
+            SystemMessages.SM_TYPE.CustomizationForGold)
 
     def onWindowClose(self):
         self.py_onModelRestore()
@@ -703,29 +695,29 @@ def lobbyKeyControl(event):
             if g_config.data.get(g_config.currentMode, True):
                 break
         if g_config.data['isDebug']:
-            print 'RemodEnabler: Changing display mode to %s' % g_config.currentMode
+            print g_config.ID + ': changing display mode to', g_config.currentMode
         SystemMessages.pushMessage(
-            'temp_SM' + g_config.i18n['UI_mode'] + g_config.i18n['UI_mode_' + g_config.currentMode].join(('<b>', '</b>.')),
+            'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentMode]),
             SystemMessages.SM_TYPE.Warning)
         refreshCurrentVehicle()
     if checkKeys(g_config.data['CollisionHotkey']):
         if g_config.collisionComparisonEnabled:
             g_config.collisionComparisonEnabled = False
             if g_config.data['isDebug']:
-                print 'RemodEnabler: Disabling collision displaying'
+                print g_config.ID + ': disabling collision displaying'
             SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_disableCollisionComparison'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
         elif g_config.collisionEnabled:
             g_config.collisionEnabled = False
             g_config.collisionComparisonEnabled = True
             if g_config.data['isDebug']:
-                print 'RemodEnabler: Enabling collision display comparison mode'
+                print g_config.ID + ': enabling collision display comparison mode'
             SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_enableCollisionComparison'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
         else:
             g_config.collisionEnabled = True
             if g_config.data['isDebug']:
-                print 'RemodEnabler: Enabling collision display'
+                print g_config.ID + ': enabling collision display'
             SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_enableCollision'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
         refreshCurrentVehicle()
@@ -778,7 +770,7 @@ def inj_hkKeyEvent(event):
         if LobbyApp and g_config.data['enabled']:
             lobbyKeyControl(event)
     except StandardError:
-        print 'RemodEnabler: ERROR at inj_hkKeyEvent'
+        print g_config.ID + ': ERROR at inj_hkKeyEvent'
         traceback.print_exc()
 
 

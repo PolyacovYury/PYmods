@@ -23,12 +23,11 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '2.4.1 (%(file_compile_date)s)'
-        self.defaultKeys = {'hotkey': [Keys.KEY_G], 'hotKey': ['KEY_G']}
+        self.defaultKeys = {'hotkey': [Keys.KEY_G],}
         self.data = {'enabled': True,
                      'event': 4,
                      'chatEnable': True,
-                     'hotkey': self.defaultKeys['hotkey'],
-                     'hotKey': self.defaultKeys['hotKey']}
+                     'hotkey': self.defaultKeys['hotkey']}
         self.i18n = {
             'UI_description': 'Horns',
             'UI_setting_event_text': 'Number of horn sound',
@@ -64,7 +63,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                             chatCB]}
 
     def onButtonPress(self, container, linkage, vName, value):
-        if container != 'PYmodsGUI' or linkage != self.ID or vName != 'event':
+        if container != self.modSettingsID or linkage != self.ID or vName != 'event':
             return
         self.data[vName] = int(value)
         SoundLoop(False)

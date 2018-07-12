@@ -71,7 +71,7 @@ def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
     for vehName, subsection in section.items():
         if vehName != 'all':
             if ':' not in vehName:
-                vehName = ':'.join((nations.NAMES[defNationID], vehName))
+                vehName = nations.NAMES[defNationID] + ':' + vehName
             try:
                 nationID, vehID = iv.g_list.getIDsByName(vehName)
             except Exception:
@@ -85,7 +85,7 @@ def new_vehicleValues(_, xmlCtx, section, sectionName, defNationID):
 
 
 def __readCamoFolder(groupName, cache, itemCls, folder, storage):
-    itemsFileName = os.path.join(folder, 'settings.xml')
+    itemsFileName = folder + '/settings.xml'
     dataSection = ResMgr.openSection(itemsFileName)
     try:
         _readItems(groupName, cache, itemCls, (None, 'settings.xml'), dataSection, storage)

@@ -32,7 +32,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = __modID__
         self.version = '2.1.0 (%s)' % __date__
-        self.author = '%s (thx to tratatank, Blither!)' % self.author
+        self.author += ' (thx to tratatank, Blither!)'
         self.data = {'enabled': True, 'doRandom': True, 'useBought': True, 'hangarCamoKind': 0,
                      'fullAlpha': False, 'disableWithDefault': False, 'fillEmptySlots': True, 'uniformOutfit': False}
         self.i18n = {
@@ -118,7 +118,7 @@ class ConfigInterface(PYmodsConfigInterface):
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [self.tb.createOptions('hangarCamoKind', [self.i18n['UI_setting_hangarCamo_%s' % x] for x in
+                'column1': [self.tb.createOptions('hangarCamoKind', [self.i18n['UI_setting_hangarCamo_' + x] for x in
                                                                      ('winter', 'summer', 'desert', 'random')]),
                             self.tb.createControl('doRandom'),
                             self.tb.createControl('disableWithDefault')],
@@ -151,14 +151,14 @@ class ConfigInterface(PYmodsConfigInterface):
         self.configFolders.clear()
         self.camouflages = {'remap': {}, 'custom': {}}
         self.outfitCache = loadJson(self.ID, 'outfitCache', self.outfitCache, self.configPath)
-        if os.path.isfile('%s%s.json' % (self.configPath, 'camouflagesCache')):
+        if os.path.isfile(self.configPath + 'camouflagesCache.json'):
             camouflagesCache = loadJson(self.ID, 'camouflagesCache', {}, self.configPath)
             for nat in camouflagesCache:
                 for vehName in camouflagesCache[nat]:
                     for season in camouflagesCache[nat][vehName]:
                         self.outfitCache.setdefault(nat, {}).setdefault(vehName, {}).setdefault(season, {})['camo'] = \
                             camouflagesCache[nat][vehName][season]
-            os.remove('%s%s.json' % (self.configPath, 'camouflagesCache'))
+            os.remove(self.configPath + 'camouflagesCache.json')
             loadJson(self.ID, 'outfitCache', self.outfitCache, self.configPath, True)
         try:
             camoDirPath = '../' + self.configPath + 'camouflages'
@@ -181,7 +181,7 @@ class ConfigInterface(PYmodsConfigInterface):
                             if season in SEASONS_CONSTANTS.SEASONS:
                                 seasonType |= getattr(SeasonType, season.upper())
                             else:
-                                print '%s: unknown season name for camouflage %s: %s' % (self.ID, key, season)
+                                print self.ID + ': unknown season name for camouflage', key + ':', season
                                 conf['season'] = conf['season'].replace(season, '')
                         while ',,' in conf['season']:
                             conf['season'] = conf['season'].replace(',,', ',')
@@ -219,14 +219,14 @@ class ConfigInterface(PYmodsConfigInterface):
                     camoName = int(camoName)
                 except ValueError:
                     if camoName not in camoIndices:
-                        print '%s: unknown camouflage for remapping: %s' % (self.ID, camoName)
+                        print self.ID + ': unknown camouflage for remapping:', camoName
                     else:
                         for camoID in camoIndices[camoName]:
                             conf[camoID] = conf[camoName].copy()
                     del conf[camoName]
                     continue
                 if camoName not in camoNames:
-                    print '%s: unknown camouflage for remapping: %s' % (self.ID, camoName)
+                    print self.ID + ': unknown camouflage for remapping:', camoName
                     del conf[str(camoName)]
                 else:
                     conf[camoName] = conf.pop(str(camoName))
@@ -246,15 +246,15 @@ class ConfigInterface(PYmodsConfigInterface):
                         if season in SEASONS_CONSTANTS.SEASONS:
                             seasonType |= getattr(SeasonType, season.upper())
                         else:
-                            print '%s: unknown season name for camouflage %s: %s' % (self.ID, camoID, season)
+                            print self.ID + ': unknown season name for camouflage', camoID + ':', season
                             camoConf['season'] = camoConf['season'].replace(season, '')
                     while ',,' in camoConf['season']:
                         camoConf['season'] = camoConf['season'].replace(',,', ',')
                     if seasonType == camouflage.season:
                         del camoConf['season']
                 for team in ('Ally', 'Enemy'):
-                    if camoConf.get('useFor%s' % team):
-                        del camoConf['useFor%s' % team]
+                    if camoConf.get('useFor' + team):
+                        del camoConf['useFor' + team]
                 if not camoConf:
                     del conf[camoID]
             self.camouflages['remap'] = conf

@@ -48,7 +48,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '2.4.2 (%(file_compile_date)s)'
-        self.author = '%s (orig by locastan)' % self.author
+        self.author += ' (orig by locastan)'
         # noinspection SpellCheckingInspection
         self.data = {'enabled': True, 'battleTimer': True, 'firstOption': 4, 'allKill': 2,
                      'checkMedals': 4, 'disStand': True, 'textLength': 3, 'textColour': 0, 'colourBlind': False,
@@ -170,7 +170,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 self.data['textStyle']['colour'], textFormat)
             textExamples.append(text)
         colourDropdown = self.tb.createOptions(
-            'textColour', map(lambda x: '<font color="%s">%s</font>' % (x[1], self.i18n[x[0]]), self.colours.iteritems()))
+            'textColour', ('<font color="%s">%s</font>' % (x[1], self.i18n[x[0]]) for x in self.colours.iteritems()))
         colourDropdown['tooltip'] = colourDropdown['tooltip'].replace('{/BODY}', '\n'.join(textExamples) + '{/BODY}')
         firstKey = 'UI_setting_firstOption_'
         firstList = ('first', 'player', 'ally', 'enemy', 'all')
@@ -185,7 +185,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                             colourDropdown,
                             self.tb.createControl('colourBlind'),
                             self.tb.createControl('textLock'),
-                            self.tb.createSlider('delay', 0, 5, 0.1, '{{value}} %s' % self.i18n['UI_setting_delay_seconds']),
+                            self.tb.createSlider('delay', 0, 5, 0.1, '{{value}} ' + self.i18n['UI_setting_delay_seconds']),
                             self.tb.createControl('logging')],
                 'column2': [self.tb.createOptions('firstOption', map(lambda x: self.i18n[firstKey + x], firstList)),
                             self.tb.createOptions('checkMedals', map(lambda x: self.i18n[medalsKey + x], medalsList)),
@@ -217,8 +217,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 name = names[role].decode('utf-8').split('[')[0]
                 names[role] = (name[:13] + (name[13:] and '..')).encode('utf-8')
                 if names[role]:
-                    names[role] = names[role].join(
-                        ("<font color='%s'>" % self.colours['UI_color_wg_%s' % colors[role]], '</font>'))
+                    names[role] = "<font color='%s'>%s</font>" % (self.colours['UI_color_wg_' + colors[role]], names[role])
             result = Template(newText).safe_substitute(**names)
         except AssertionError:
             result = 'Welcome back!'
@@ -266,7 +265,7 @@ class _Flash(object):
         if bgSect is not None:
             backgroundPath = bgConf['image']
         else:
-            LOG_ERROR('Battle text background file not found', backPath)
+            LOG_ERROR('Battle text background file not found: ' + backPath)
             backgroundPath = '../maps/bg.png'
         self.texts = []
         posConfig = _config.data['textPosition']
@@ -296,7 +295,7 @@ class _Flash(object):
         if self.isTextAdding:
             BigWorld.callback(0.1, partial(self.addText, text))
             return
-        LOG_NOTE('adding text:', text)
+        LOG_NOTE('adding text: ' + text)
         styleConf = _config.data['textStyle']
         text = '<font size="%s" face="%s" color="%s"><p align="center">%s</p></font>' % (
             styleConf['size'], styleConf['font'], styleConf['colour'], text)
@@ -400,7 +399,7 @@ class SoundManager(object):
             return
         if PlayerAvatar.sounds[eventName].isPlaying:
             PlayerAvatar.sounds[eventName].stop()
-        LOG_NOTE('%s playing' % eventName)
+        LOG_NOTE(eventName + ' playing')
         PlayerAvatar.sounds[eventName].play()
         self.isPlayingSound = True
         BigWorld.callback(0.6, self.onSoundPlayed)
@@ -415,7 +414,7 @@ soundMgr = SoundManager()
 
 def LOG_NOTE(msg, *args):
     if _config.data['logging']:
-        print 'UT_announcer: ' + msg + ', '.join(('%s' % arg for arg in args)).join((' (', ')')) if args else ''
+        print _config.ID + ':', msg, (('(%s)' % ', '.join('%s' % arg for arg in args)) if args else '')
 
 
 def killCheck(frags):
@@ -482,7 +481,7 @@ def checkSquadKills(targetID, attackerID, reason):
         squadFrags = cStats[BigWorld.player().playerVehicleID]['frags'] + cStats[arena.UT['squadMan'][0]]['frags']
         if arena.UT['squadMan'][1]:
             squadFrags += cStats[arena.UT['squadMan'][1]]['frags']
-        LOG_NOTE('Squad frags:', squadFrags)
+        LOG_NOTE('Squad frags: ' + squadFrags)
         if squadFrags >= 12:
             LOG_NOTE('Squad frags >= 12')
             if not arena.UT['Crucial']:
@@ -574,7 +573,7 @@ def firstCheck(targetID, attackerID, reason, squadChecked, killerID):
     if targetID in arena.UT['squadMan']:
         squadManIdx = arena.UT['squadMan'].index(targetID)
         arena.UT['killer'][squadManIdx] = attackerID
-        LOG_NOTE('SquadMan %s died. Killer ID:' % (squadManIdx + 1), attackerID)
+        LOG_NOTE('SquadMan %s died. Killer ID: %s' % (squadManIdx + 1, attackerID))
         arena.UT['BiAFail'] = True
         if arena.UT['BiA']:
             callTextInit(_config.i18n['UI_message_denied'], targetID, attackerID, None)
@@ -601,7 +600,7 @@ def firstCheck(targetID, attackerID, reason, squadChecked, killerID):
     if attacker['isPlayer'] and reason == 2:
         isKamikaze = attacker['vehicle']['vehicleType'].type.level < target['vehicle']['vehicleType'].type.level
         callTextInit(_config.i18n['UI_message_%s' % ('kamikaze' if isKamikaze else 'ramKill')], targetID, attackerID, None)
-        LOG_NOTE('%s detected!' % ('Kamikaze' if isKamikaze else 'Ram kill'), targetID, attackerID)
+        LOG_NOTE(('Kamikaze' if isKamikaze else 'Ram kill') + ' detected!', targetID, attackerID)
         killCheck(30 if isKamikaze else 20)
     cStats = arena._ClientArena__statistics
     origFrags = frags = cStats.get(attackerID)['frags']

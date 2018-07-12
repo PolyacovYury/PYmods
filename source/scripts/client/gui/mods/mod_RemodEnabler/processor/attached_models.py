@@ -68,9 +68,8 @@ def onLoad(vehicleID, mod, models, visible, resourceRefs):
         else:
             failList.append(modelPath)
     if failList:
-        print 'RemodEnabler: %s models load failed: models not found:' % mod
         dyn['loaded'] = False
-        print failList
+        print g_config.ID + ':', mod, 'models load failed: models not found:', failList
     if dyn['entered']:
         attach(vehicleID, mod, visible)
 

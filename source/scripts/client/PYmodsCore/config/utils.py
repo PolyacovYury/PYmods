@@ -20,38 +20,20 @@ def smart_update(dict1, dict2):
     return changed
 
 
-def readHotKeys(data):
-    for key in data:
-        for keyType in ('key', 'button'):
-            if keyType not in key:
-                continue
-            data[key] = []
-            for keySet in data.get(key.replace(keyType, keyType.capitalize()), []):
-                if isinstance(keySet, list):
-                    data[key].append([])
-                    for hotKey in keySet:
-                        hotKeyName = hotKey if 'KEY_' in hotKey else 'KEY_' + hotKey
-                        data[key][-1].append(getattr(Keys, hotKeyName))
-                else:
-                    hotKeyName = keySet if 'KEY_' in keySet else 'KEY_' + keySet
-                    data[key].append(getattr(Keys, hotKeyName))
-
-
-def writeHotKeys(data):
-    for key in data:
-        for keyType in ('key', 'button'):
-            if keyType.capitalize() not in key:
-                continue
-            data[key] = []
-            for keySet in data[key.replace(keyType.capitalize(), keyType)]:
-                if isinstance(keySet, list):
-                    data[key].append([])
-                    for hotKey in keySet:
-                        hotKeyName = BigWorld.keyToString(hotKey)
-                        data[key][-1].append(hotKeyName if 'KEY_' in hotKeyName else 'KEY_' + hotKeyName)
-                else:
-                    hotKeyName = BigWorld.keyToString(keySet)
-                    data[key].append(hotKeyName if 'KEY_' in hotKeyName else 'KEY_' + hotKeyName)
+def processHotKeys(data, keys, mode):
+    add = lambda key: key if 'KEY_' in key else 'KEY_' + key
+    if mode == 'read':
+        process = lambda key: getattr(Keys, add(key))
+    elif mode == 'write':
+        process = lambda key: add(BigWorld.keyToString(key))
+    else:
+        assert False, 'unknown hotkey conversion mode'
+    make = lambda keySet: [make(key) if isinstance(key, list) else process(key) for key in keySet]
+    for dataKey in keys:  # configs have 'Key', code checks for 'key'. >_<
+        newKey = dataKey.replace('key', 'Key')
+        if (newKey if mode == 'read' else dataKey) not in data:
+            continue
+        data[(dataKey if mode == 'read' else newKey)] = make(data.pop((newKey if mode == 'read' else dataKey)))
 
 
 def registerSettings(config, mode='full'):

@@ -6,12 +6,12 @@ from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PYmodsCore import overrideMethod
 from gui import g_tankActiveCamouflage
-from gui.customization.shared import C11N_ITEM_TYPE_MAP
-from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework import ViewTypes
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
+from gui.customization.shared import C11N_ITEM_TYPE_MAP
+from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES
 from gui.shared.gui_items.customization.c11n_items import Camouflage
 from gui.shared.gui_items.customization.outfit import Outfit, Area
@@ -38,8 +38,7 @@ def applyCamoCache(outfit, vehName, seasonCache):
         try:
             areaId = TankPartNames.getIdx(areaName)
         except Exception as e:
-            print '%s: exception while reading camouflages cache for %s in %s: %s' % (
-                g_config.ID, vehName, areaName, e.message)
+            print g_config.ID + ': exception while reading camouflages cache for', vehName, 'in', areaName + ':', e.message
             continue
         slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
         if not seasonCache[areaName]:
@@ -47,7 +46,7 @@ def applyCamoCache(outfit, vehName, seasonCache):
             continue
         camoID, paletteIdx, scale = seasonCache[areaName]
         if camoID not in camouflages:
-            print '%s: wrong camouflage ID for %s: %s' % (g_config.ID, areaName, camoID)
+            print '%s: wrong camouflage ID for %s:' % (g_config.ID, areaName), camoID
             del seasonCache[areaName]
             continue
         intCD = camouflages[camoID].compactDescr
@@ -56,13 +55,13 @@ def applyCamoCache(outfit, vehName, seasonCache):
         else:
             item = Camouflage(intCD)
         if paletteIdx > len(item.palettes):
-            print '%s: wrong palette idx for %s camouflage: %s (available: %s)' % (
-                g_config.ID, areaName, paletteIdx, range(len(item.palettes)))
+            print g_config.ID + ': wrong palette idx for', areaName, 'camouflage:', paletteIdx, '(available: %s)' % range(
+                len(item.palettes))
             del seasonCache[areaName]
             continue
         if scale > len(item.scales):
-            print '%s: wrong scale for %s camouflage: %s (available: %s)' % (
-                g_config.ID, areaName, scale, range(len(item.scales)))
+            print g_config.ID + ': wrong scale for', areaName, 'camouflage:', scale, '(available: %s)' % range(
+                len(item.scales))
         slot.set(item)
         component = slot.getComponent()
         component.palette = paletteIdx
@@ -79,14 +78,14 @@ def applyPlayerCache(outfit, vehName, seasonCache):
     for itemTypeName in seasonCache.keys():
         if itemTypeName not in ('paint', 'modification', 'emblem', 'inscription'):
             if itemTypeName != 'camo':
-                print '%s: invalid item type in outfit cache for %s: %s' % (g_config.ID, vehName, itemTypeName)
+                print '%s: invalid item type in outfit cache for %s:' % (g_config.ID, vehName), itemTypeName
                 del seasonCache[itemTypeName]
             continue
         itemDB = items.vehicles.g_cache.customization20().itemTypes[C11N_ITEM_TYPE_MAP[GUI_ITEM_TYPE_INDICES[itemTypeName]]]
         for areaName in seasonCache[itemTypeName].keys():
             if itemTypeName == 'modification':
                 if areaName != 'misc':
-                    print '%s: wrong area name for %s modification: %s' % (g_config.ID, vehName, areaName)
+                    print g_config.ID + ': wrong area name for', vehName, 'modification:' % (g_config.ID, vehName), areaName
                     del seasonCache[itemTypeName][areaName]
                     continue
                 else:
@@ -95,8 +94,7 @@ def applyPlayerCache(outfit, vehName, seasonCache):
                 try:
                     areaId = TankPartNames.getIdx(areaName)
                 except Exception as e:
-                    print '%s: exception while reading outfit cache for %s in %s: %s' % (
-                        g_config.ID, vehName, areaName, e.message)
+                    print g_config.ID + ': exception while reading outfit cache for', vehName, 'in', areaName + ':', e.message
                     continue
             slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE_INDICES[itemTypeName])
             for regionIdx in seasonCache[itemTypeName][areaName].keys():
@@ -108,7 +106,7 @@ def applyPlayerCache(outfit, vehName, seasonCache):
                         del seasonCache[itemTypeName][areaName][regionIdx]  # so we remove an obsolete key
                     continue
                 if itemID not in itemDB:
-                    print '%s: wrong item ID for %s, idx %s: %s' % (g_config.ID, areaName, regionIdx, itemID)
+                    print '%s: wrong item ID for %s, idx %s:' % (g_config.ID, areaName, regionIdx), itemID
                     del seasonCache[itemTypeName][areaName][regionIdx]
                     continue
                 intCD = itemDB[itemID].compactDescr

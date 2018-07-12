@@ -38,29 +38,29 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def readCurrentSettings(self, quiet=True):
         configPath = self.configPath + 'configs/'
         if not os.path.exists(configPath):
-            LOG_ERROR('%s config folder not found:' % self.ID, configPath)
+            LOG_ERROR('config folder not found: ' + configPath)
             os.makedirs(configPath)
         for confPath in glob.iglob(configPath + '*.json'):
             confName = os.path.basename(confPath).split('.')[0]
             try:
                 confdict = PYmodsCore.loadJson(self.ID, confName, {}, os.path.dirname(confPath) + '/')
             except StandardError:
-                print '%s: config %s is invalid.' % (self.ID, os.path.basename(confPath))
+                print self.ID + ': config', os.path.basename(confPath), 'is invalid.'
                 traceback.print_exc()
                 continue
             if not quiet:
-                print '%s: loading %s.json' % (self.ID, confName)
+                print self.ID + ': loading', confName + '.json'
             self.confList.add(confName)
             for itemType, itemsDict in confdict.iteritems():
                 if itemType not in self.data:
                     if not quiet:
-                        print '%s: invalid item type in %s: %s' % (self.ID, confName, itemType)
+                        print self.ID + ': invalid item type in', confName + ':', itemType
                     continue
                 itemsData = self.data[itemType]
                 if itemType in ('engines', 'guns'):
                     for nationName, nationData in itemsDict.iteritems():
                         if nationName.split(':')[0] not in nations.NAMES:
-                            print '%s: unknown nation in %s data: %s' % (self.ID, itemType, nationName)
+                            print self.ID + ': unknown nation in', itemType, 'data:', nationName
                             continue
                         itemsData.setdefault(nationName, {}).update(nationData)
                 if itemType in ('gun_reload_effects', 'shot_effects', 'sound_notifications'):
@@ -74,7 +74,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         self.readCurrentSettings(False)
         if any(self.data[key] for key in ('engines', 'gun_reload_effects', 'shot_effects', 'guns')):
             items.vehicles.init(True, None)
-        print '%s: initialised.' % (self.message())
+        print self.message() + ': initialised.'
 
 
 @PYmodsCore.overrideMethod(items.vehicles, '_readEngine')
@@ -144,7 +144,7 @@ def new_readEffectGroups(base, xmlPath, withSubgroups=False):
         if ResMgr.isFile(newXmlPath):
             res.update(base(newXmlPath, withSubgroups))
         elif _config.data['guns']:
-            print '%s: gun effects config not found' % _config.ID
+            print _config.ID + ': gun effects config not found'
     return res
 
 

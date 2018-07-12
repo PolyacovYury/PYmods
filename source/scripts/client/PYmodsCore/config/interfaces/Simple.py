@@ -1,5 +1,5 @@
 from ..template_builders import TemplateBuilder, BlockTemplateBuilder
-from ..utils import smart_update, readHotKeys, writeHotKeys
+from ..utils import smart_update, processHotKeys
 from .Dummy import DummyConfigInterface, DummyConfBlockInterface, DummySettingContainer
 
 
@@ -34,13 +34,15 @@ class ConfigInterface(DummyConfigInterface):
         raise NotImplementedError
 
     def readCurrentSettings(self, quiet=True):
+        processHotKeys(self.data, self.defaultKeys, 'write')
         smart_update(self.data, self.loadJsonData())
-        readHotKeys(self.data)
+        processHotKeys(self.data, self.defaultKeys, 'read')
 
     def onApplySettings(self, settings):
         smart_update(self.data, settings)
-        writeHotKeys(self.data)
+        processHotKeys(self.data, self.defaultKeys, 'write')
         self.writeJsonData()
+        processHotKeys(self.data, self.defaultKeys, 'read')
         self.updateMod()
 
     @property
@@ -60,7 +62,7 @@ class ConfigInterface(DummyConfigInterface):
 
     def load(self):
         super(ConfigInterface, self).load()
-        print '%s: initialised.' % (self.message())
+        print self.message() + ': initialised.'
 
 
 class ConfBlockInterface(DummyConfBlockInterface):
@@ -95,15 +97,19 @@ class ConfBlockInterface(DummyConfBlockInterface):
         raise NotImplementedError('Template for block %s is not created' % blockID)
 
     def readCurrentSettings(self, quiet=True):
+        for blockID in self.data:
+            processHotKeys(self.data[blockID], self.defaultKeys, 'write')
         data = self.loadJsonData(quiet=quiet)
-        for blockID in data:
-            smart_update(self.data[blockID], data[blockID])
-            readHotKeys(self.data[blockID])
+        for blockID in self.data:
+            if blockID in data:
+                smart_update(self.data[blockID], data[blockID])
+            processHotKeys(self.data[blockID], self.defaultKeys, 'read')
 
     def onApplySettings(self, blockID, settings):
         smart_update(self.data[blockID], settings)
-        writeHotKeys(self.data[blockID])
+        processHotKeys(self.data[blockID], self.defaultKeys, 'write')
         self.writeJsonData()
+        processHotKeys(self.data[blockID], self.defaultKeys, 'read')
         self.updateMod(blockID)
 
     @property
@@ -123,7 +129,7 @@ class ConfBlockInterface(DummyConfBlockInterface):
 
     def load(self):
         super(ConfBlockInterface, self).load()
-        print '%s: initialised.' % (self.message())
+        print self.message() + ': initialised.'
 
 
 class SettingContainer(DummySettingContainer):
