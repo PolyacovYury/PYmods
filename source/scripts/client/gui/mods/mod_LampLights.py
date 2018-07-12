@@ -34,11 +34,10 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '2.2.3.1 (%(file_compile_date)s)'
-        self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
+        self.defaultKeys = {'hotkey': [Keys.KEY_F12]}
         self.data = {'enabled': True,
                      'enableAtStartup': True,
                      'hotkey': self.defaultKeys['hotkey'],
-                     'hotKey': self.defaultKeys['hotKey'],
                      'enableMessage': True,
                      'Debug': False,
                      'DebugModel': False,

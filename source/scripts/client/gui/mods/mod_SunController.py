@@ -19,12 +19,11 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         self.ID = '%(mod_ID)s'
         self.version = '2.2.2 (%(file_compile_date)s)'
         self.author += ' (orig by Lp()rtii/Dellux) (thx to LSD_MAX/Delysid :P)'
-        self.defaultKeys = {'hotkey': [Keys.KEY_F12], 'hotKey': ['KEY_F12']}
+        self.defaultKeys = {'hotkey': [Keys.KEY_F12]}
         self.data = {'enabled': True,
                      'time': 0,
                      'enableAtStartup': True,
                      'hotkey': self.defaultKeys['hotkey'],
-                     'hotKey': self.defaultKeys['hotKey'],
                      'enableMessage': True}
         self.i18n = {
             'UI_description': 'Sun Controller',

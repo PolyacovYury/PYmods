@@ -23,14 +23,11 @@ class ConfigInterface(PYmodsConfigInterface):
         self.ID = '%(mod_ID)s'
         self.version = '1.1.1 (%(file_compile_date)s)'
         self.author += ' (thx to Chirimen, alphasave1)'
-        self.defaultKeys = {'togglekey': [Keys.KEY_F11], 'toggleKey': ['KEY_F11'],
-                            'camkey': [Keys.KEY_F12], 'camKey': ['KEY_F12'], }
+        self.defaultKeys = {'togglekey': [Keys.KEY_F11], 'camkey': [Keys.KEY_F12],}
         self.data = {'enabled': True,
                      'UIVisible': True,
                      'togglekey': self.defaultKeys['togglekey'],
-                     'toggleKey': self.defaultKeys['toggleKey'],
                      'camkey': self.defaultKeys['camkey'],
-                     'camKey': self.defaultKeys['camKey'],
                      'lockCamera': True,
                      'addUnlockMode': True,
                      'currentCamPos': 0}

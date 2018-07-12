@@ -42,10 +42,9 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         self.ID = '%(mod_ID)s'
         self.version = '2.1.2 (%(file_compile_date)s)'
         self.author += ' (orig by locastan/tehHedger/TRJ_VoRoN)'
-        self.defaultKeys = {'mapMenu_key': [Keys.KEY_LALT], 'mapMenu_Key': ['KEY_LALT']}
+        self.defaultKeys = {'mapMenu_key': [Keys.KEY_LALT]}
         self.data = {'enabled': True,
                      'mapMenu_key': self.defaultKeys['mapMenu_key'],
-                     'mapMenu_Key': self.defaultKeys['mapMenu_Key'],
                      'selectedConfig': 12,
                      'chatDelay': 550,
                      'hotDelay': 350}
@@ -218,8 +217,7 @@ class CustomMenuCommand:
         if variants is not None:
             self.variantList.extend(variants)
 
-        confDict['hotkey'] = []
-        PYmodsCore.config.utils.readHotKeys(confDict)
+        PYmodsCore.config.utils.processHotKeys(confDict, ('hotkey',), 'read')
         self.hotKeys = confDict['hotkey']
 
     def __repr__(self):

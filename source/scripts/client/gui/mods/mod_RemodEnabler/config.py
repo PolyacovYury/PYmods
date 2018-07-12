@@ -49,7 +49,7 @@ def readEmblemSlots(confList):
 
     return slots
 
-
+g
 class ModelDescriptor(object):
     def __init__(self):
         self.name = ''
@@ -95,23 +95,15 @@ class ConfigInterface(PYmodsConfigInterface):
         self.ID = __modID__
         self.version = '3.0.0 (%s)' % __date__
         self.author += ' (thx to atacms)'
-        self.defaultKeys = {'DynamicSkinHotKey': ['KEY_F1', ['KEY_LCONTROL', 'KEY_RCONTROL']],
-                            'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
-                            'ChangeViewHotKey': ['KEY_F2', ['KEY_LCONTROL', 'KEY_RCONTROL']],
+        self.defaultKeys = {'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
-                            'SwitchRemodHotKey': ['KEY_F3', ['KEY_LCONTROL', 'KEY_RCONTROL']],
                             'SwitchRemodHotkey': [Keys.KEY_F3, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
-                            'CollisionHotKey': ['KEY_F4', ['KEY_LCONTROL', 'KEY_RCONTROL']],
                             'CollisionHotkey': [Keys.KEY_F4, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
         self.data = {'enabled': True,
                      'isDebug': True,
-                     'DynamicSkinHotKey': self.defaultKeys['DynamicSkinHotKey'],
                      'DynamicSkinHotkey': self.defaultKeys['DynamicSkinHotkey'],
-                     'ChangeViewHotKey': self.defaultKeys['ChangeViewHotKey'],
                      'ChangeViewHotkey': self.defaultKeys['ChangeViewHotkey'],
-                     'CollisionHotKey': self.defaultKeys['CollisionHotKey'],
                      'CollisionHotkey': self.defaultKeys['CollisionHotkey'],
-                     'SwitchRemodHotKey': self.defaultKeys['SwitchRemodHotKey'],
                      'SwitchRemodHotkey': self.defaultKeys['SwitchRemodHotkey'],
                      'remod': True}
         self.i18n = {

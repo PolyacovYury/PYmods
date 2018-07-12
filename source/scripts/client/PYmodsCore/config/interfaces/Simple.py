@@ -1,5 +1,5 @@
 from ..template_builders import TemplateBuilder, BlockTemplateBuilder
-from ..utils import smart_update, readHotKeys, writeHotKeys
+from ..utils import smart_update, processHotKeys
 from .Dummy import DummyConfigInterface, DummyConfBlockInterface, DummySettingContainer
 
 
@@ -35,12 +35,13 @@ class ConfigInterface(DummyConfigInterface):
 
     def readCurrentSettings(self, quiet=True):
         smart_update(self.data, self.loadJsonData())
-        readHotKeys(self.data)
+        processHotKeys(self.data, self.defaultKeys, 'read')
 
     def onApplySettings(self, settings):
         smart_update(self.data, settings)
-        writeHotKeys(self.data)
+        processHotKeys(self.data, self.defaultKeys, 'write')
         self.writeJsonData()
+        processHotKeys(self.data, self.defaultKeys, 'read')
         self.updateMod()
 
     @property
@@ -98,12 +99,13 @@ class ConfBlockInterface(DummyConfBlockInterface):
         data = self.loadJsonData(quiet=quiet)
         for blockID in data:
             smart_update(self.data[blockID], data[blockID])
-            readHotKeys(self.data[blockID])
+            processHotKeys(self.data[blockID], self.defaultKeys, 'read')
 
     def onApplySettings(self, blockID, settings):
         smart_update(self.data[blockID], settings)
-        writeHotKeys(self.data[blockID])
+        processHotKeys(self.data[blockID], self.defaultKeys, 'write')
         self.writeJsonData()
+        processHotKeys(self.data[blockID], self.defaultKeys, 'read')
         self.updateMod(blockID)
 
     @property

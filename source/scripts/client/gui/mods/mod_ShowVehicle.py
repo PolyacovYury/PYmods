@@ -13,10 +13,10 @@ class ConfigInterface(PYmodsConfigInterface):
         self.ID = '%(mod_ID)s'
         self.version = '1.0.0 (%(file_compile_date)s)'
         self.author += ' (formerly by l3VGV, supported by KL1SK)'
-        self.defaultKeys = {'hotkey': [Keys.KEY_F11], 'hotKey': ['KEY_F11']}
+        self.defaultKeys = {'hotkey': [Keys.KEY_F11]}
         self.data = {'enabled': True, 'isEnabled': True, 'changeZoom': True, 'zoomValue': 0.8,
                      'blacklist': 'germany:Karl,ussr:R00_T_50_2,usa:A00_T110E5,france:F00_AMX_50Foch_155',
-                     'hotkey': self.defaultKeys['hotkey'], 'hotKey': self.defaultKeys['hotKey']}
+                     'hotkey': self.defaultKeys['hotkey']}
         self.i18n = {
             'name': 'Show vehicle in sniper mode',
             'UI_setting_isEnabled_text': 'Active at battle start',
