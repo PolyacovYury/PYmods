@@ -49,7 +49,7 @@ def readEmblemSlots(confList):
 
     return slots
 
-g
+
 class ModelDescriptor(object):
     def __init__(self):
         self.name = ''
