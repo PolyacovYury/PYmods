@@ -187,9 +187,9 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                             self.tb.createControl('textLock'),
                             self.tb.createSlider('delay', 0, 5, 0.1, '{{value}} ' + self.i18n['UI_setting_delay_seconds']),
                             self.tb.createControl('logging')],
-                'column2': [self.tb.createOptions('firstOption', map(lambda x: self.i18n[firstKey + x], firstList)),
-                            self.tb.createOptions('checkMedals', map(lambda x: self.i18n[medalsKey + x], medalsList)),
-                            self.tb.createOptions('allKill', map(lambda x: self.i18n[allKey + x], allList)),
+                'column2': [self.tb.createOptions('firstOption', [self.i18n[firstKey + x] for x in firstList]),
+                            self.tb.createOptions('checkMedals', [self.i18n[medalsKey + x] for x in medalsList]),
+                            self.tb.createOptions('allKill', [self.i18n[allKey + x] for x in allList]),
                             self.tb.createControl('battleTimer'),
                             self.tb.createControl('disStand')]}
 
@@ -481,7 +481,7 @@ def checkSquadKills(targetID, attackerID, reason):
         squadFrags = cStats[BigWorld.player().playerVehicleID]['frags'] + cStats[arena.UT['squadMan'][0]]['frags']
         if arena.UT['squadMan'][1]:
             squadFrags += cStats[arena.UT['squadMan'][1]]['frags']
-        LOG_NOTE('Squad frags: ' + squadFrags)
+        LOG_NOTE('Squad frags:', squadFrags)
         if squadFrags >= 12:
             LOG_NOTE('Squad frags >= 12')
             if not arena.UT['Crucial']:
