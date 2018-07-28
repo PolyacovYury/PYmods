@@ -13,8 +13,8 @@ from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from skeletons.gui.shared import IItemsCache
-from . import g_config
-from .shared import C11nTabs, isCamoGlobal, ITEM_TO_TABS
+from .. import g_config
+from .shared import C11nTabs, ITEM_TO_TABS
 
 
 def comparisonKey(item):
@@ -209,7 +209,7 @@ class CustomizationCarouselDataProvider(SortableDAAPIDataProvider):
         vehicle = self._currentVehicle.item
         if tabIndex in (ct.PAINT, ct.EFFECT):
             return item.mayInstall(vehicle)
-        isGlobal = isCamoGlobal(item.descriptor)
+        isGlobal = g_config.isCamoGlobal(item.descriptor)
         return not (
             (tabIndex == ct.CAMO_SHOP and (item.isHidden or item.priceGroup == 'custom')) or
             (tabIndex == ct.CAMO_HIDDEN and (not item.isHidden or isGlobal or item.priceGroup == 'custom')) or

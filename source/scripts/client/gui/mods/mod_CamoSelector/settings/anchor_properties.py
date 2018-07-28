@@ -88,7 +88,7 @@ def _getData(base, self):
         for swatch in result['swatchColors']:
             swatch['label'] = ''
         return result
-    from . import g_config
+    from .. import g_config
     swatchColors = []
     swatchScales = []
     if self._item:
@@ -111,6 +111,6 @@ def new_gettext(base, self, key, *args, **kwargs):
     if key == VEHICLE_CUSTOMIZATION.CUSTOMIZATION_POPOVER_CAMO_COLOR.split(':', 1)[1]:
         view = g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.LOBBY_SUB).getView()
         if not isinstance(view, MainView) and view.getMode() == C11nMode.SETUP:
-            from . import g_config
+            from .. import g_config
             return g_config.i18n['UI_flashCol_teamMode_label']
     return base(self, key, *args, **kwargs)

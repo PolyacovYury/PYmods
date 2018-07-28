@@ -7,7 +7,7 @@ from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.shared.formatters import getItemPricesVO
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from items.components.c11n_constants import SeasonType
-from . import g_config
+from .. import g_config
 from .shared import C11nMode
 
 

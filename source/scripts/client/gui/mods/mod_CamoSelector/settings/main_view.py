@@ -50,7 +50,7 @@ from skeletons.gui.customization import ICustomizationService
 from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from vehicle_systems.tankStructure import TankPartIndexes
-from . import g_config
+from .. import g_config
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
 from .shared import C11nMode, C11nTabs, RandMode, TeamMode, tabToItem
 
