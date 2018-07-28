@@ -8,7 +8,6 @@ from PYmodsCore import overrideMethod
 from gui import g_tankActiveCamouflage
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework import ViewTypes
-from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
 from gui.customization.shared import C11N_ITEM_TYPE_MAP
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
@@ -21,7 +20,6 @@ from skeletons.gui.shared import IItemsCache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from . import g_config
-from .settings.shared import RandMode, TeamMode
 
 try:
     import gui.mods.mod_statpaints  # camouflage removal should work even with CamoSelector, so it has to be imported first
@@ -120,41 +118,9 @@ def applyPlayerCache(outfit, vehName, seasonCache):
     outfit.invalidate()
 
 
-def collectCamouflageData():
-    camouflages = items.vehicles.g_cache.customization20().camouflages
-    g_config.camoForSeason = {}
-    for season in SEASONS_CONSTANTS.SEASONS:
-        g_config.camoForSeason[season] = {'random': [], 'ally': [], 'enemy': []}
-    for camoID, camouflage in camouflages.iteritems():
-        itemName, itemKey = (camouflage.userKey, 'custom') if camouflage.priceGroup == 'custom' else (
-            camoID, 'remap')
-        itemSeason = camouflage.season
-        itemMode = RandMode.RANDOM
-        itemTeam = TeamMode.BOTH
-        if itemName in g_config.camouflages[itemKey]:
-            camoCfg = g_config.camouflages[itemKey][itemName]
-            itemMode = camoCfg.get('random_mode', itemMode)
-            itemTeam = 0 | (camoCfg.get('useForAlly', True) and TeamMode.ALLY) | (
-                    camoCfg.get('useForEnemy', True) and TeamMode.ENEMY)
-            if 'season' in camoCfg:
-                itemSeason = SeasonType.UNDEFINED
-                for season in SEASONS_CONSTANTS.SEASONS:
-                    if season in camoCfg['season']:
-                        itemSeason |= getattr(SeasonType, season.upper())
-        for season in SeasonType.COMMON_SEASONS:
-            camoForSeason = g_config.camoForSeason[SEASON_TYPE_TO_NAME[season]]
-            if itemSeason & season:
-                if itemMode == RandMode.RANDOM:
-                    camoForSeason['random'].append(camoID)
-                elif itemMode == RandMode.TEAM:
-                    for team in (TeamMode.ALLY, TeamMode.ENEMY):
-                        if itemTeam & team:
-                            camoForSeason[TeamMode.NAMES[team]].append(camoID)
-
-
 def processRandomCamouflages(outfit, seasonName, seasonCache, vID=None, isGunCarriage=True):
     if not g_config.camoForSeason:
-        collectCamouflageData()
+        g_config.collectCamouflageData()
     if vID is not None:
         isAlly = BigWorld.player().guiSessionProvider.getArenaDP().getVehicleInfo(vID).team == BigWorld.player().team
         teamMode = 'ally' if isAlly else 'enemy'
@@ -315,12 +281,12 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
 def new_onBecomePlayer(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
     g_config.arenaCamoCache.clear()
-    collectCamouflageData()
+    g_config.collectCamouflageData()
 
 
 @overrideMethod(Account, 'onBecomePlayer')
 def new_onBecomePlayer(base, self):
     base(self)
     g_config.hangarCamoCache.clear()
-    collectCamouflageData()
+    g_config.collectCamouflageData()
     g_config.teamCamo = dict.fromkeys(('ally', 'enemy'))

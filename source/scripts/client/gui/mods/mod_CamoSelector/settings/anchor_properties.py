@@ -14,7 +14,8 @@ from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES
 from helpers import i18n
 from helpers.i18n import makeString as _ms
-from .shared import C11nMode, RandMode, TeamMode, tabToItem
+from ..constants import RandMode, TeamMode
+from .shared import C11nMode, tabToItem
 
 
 @overrideMethod(AnchorProperties, '_extractDataFromElement')

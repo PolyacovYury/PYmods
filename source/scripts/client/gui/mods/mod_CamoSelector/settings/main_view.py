@@ -51,8 +51,9 @@ from skeletons.gui.lobby_context import ILobbyContext
 from skeletons.gui.shared import IItemsCache
 from vehicle_systems.tankStructure import TankPartIndexes
 from .. import g_config
+from ..constants import RandMode, TeamMode
 from .carousel import CustomizationCarouselDataProvider, comparisonKey
-from .shared import C11nMode, C11nTabs, RandMode, TeamMode, tabToItem
+from .shared import C11nMode, C11nTabs, tabToItem
 
 
 class CamoSelectorMainView(CustomizationMainViewMeta):

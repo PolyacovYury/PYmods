@@ -7,11 +7,13 @@ import os
 import traceback
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups, Analytics
+from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
 from items.components.c11n_constants import SeasonType
 from . import __date__, __modID__
+from .constants import RandMode, TeamMode
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -276,6 +278,37 @@ class ConfigInterface(PYmodsConfigInterface):
             except AttributeError:
                 BigWorld.g_modsListApi.addMod(**kwargs)
             self.isModAdded = True
+
+    def collectCamouflageData(self):
+        camouflages = items.vehicles.g_cache.customization20().camouflages
+        self.camoForSeason = {}
+        for season in SEASONS_CONSTANTS.SEASONS:
+            self.camoForSeason[season] = {'random': [], 'ally': [], 'enemy': []}
+        for camoID, camouflage in camouflages.iteritems():
+            itemName, itemKey = (camouflage.userKey, 'custom') if camouflage.priceGroup == 'custom' else (
+                camoID, 'remap')
+            itemSeason = camouflage.season
+            itemMode = RandMode.RANDOM
+            itemTeam = TeamMode.BOTH
+            if itemName in self.camouflages[itemKey]:
+                camoCfg = self.camouflages[itemKey][itemName]
+                itemMode = camoCfg.get('random_mode', itemMode)
+                itemTeam = 0 | (camoCfg.get('useForAlly', True) and TeamMode.ALLY) | (
+                        camoCfg.get('useForEnemy', True) and TeamMode.ENEMY)
+                if 'season' in camoCfg:
+                    itemSeason = SeasonType.UNDEFINED
+                    for season in SEASONS_CONSTANTS.SEASONS:
+                        if season in camoCfg['season']:
+                            itemSeason |= getattr(SeasonType, season.upper())
+            for season in SeasonType.COMMON_SEASONS:
+                camoForSeason = self.camoForSeason[SEASON_TYPE_TO_NAME[season]]
+                if itemSeason & season:
+                    if itemMode == RandMode.RANDOM:
+                        camoForSeason['random'].append(camoID)
+                    elif itemMode == RandMode.TEAM:
+                        for team in (TeamMode.ALLY, TeamMode.ENEMY):
+                            if itemTeam & team:
+                                camoForSeason[TeamMode.NAMES[team]].append(camoID)
 
     def isCamoGlobal(self, camo):
         return getCamoTextureName(camo) in self.interCamo

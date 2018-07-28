@@ -1,33 +1,5 @@
-import os
-from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from shared_utils import CONST_CONTAINER
-
-
-class RandMode(CONST_CONTAINER):
-    OFF, TEAM, RANDOM = range(3)
-    NAMES = {OFF: 'off', RANDOM: 'random', TEAM: 'team'}
-    INDICES = {v: k for k, v in NAMES.iteritems()}
-
-
-class TeamMode(CONST_CONTAINER):
-    ALLY, ENEMY, BOTH = range(1, 4)
-    NAMES = {ALLY: 'ally', ENEMY: 'enemy', BOTH: 'both'}
-    INDICES = {v: k for k, v in NAMES.iteritems()}
-
-
-def getCurrentDesc():
-    if g_currentPreviewVehicle.isPresent():
-        vDesc = g_currentPreviewVehicle.item.descriptor
-    elif g_currentVehicle.isPresent():
-        vDesc = g_currentVehicle.item.descriptor
-    else:
-        raise AttributeError('g_currentVehicle.item.descriptor not found')
-    return vDesc
-
-
-def getCurrentNationID():
-    return getCurrentDesc().type.customizationNationID
 
 
 class C11nMode(CONST_CONTAINER):
