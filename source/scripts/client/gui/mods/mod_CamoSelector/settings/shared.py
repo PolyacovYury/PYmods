@@ -30,32 +30,22 @@ def getCurrentNationID():
     return getCurrentDesc().type.customizationNationID
 
 
-def getCamoTextureName(camo):
-    return os.path.splitext(os.path.basename(camo.texture))[0]
-
-
-def isCamoGlobal(camo):
-    from . import g_config
-    return getCamoTextureName(camo) in g_config.interCamo
-
-
 class C11nMode(CONST_CONTAINER):
     INSTALL, SETUP = range(2)
     NAMES = {INSTALL: 'install', SETUP: 'setup'}
 
 
 class C11nTabs(CONST_CONTAINER):
-    PAINT, CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM, EMBLEM, INSCRIPTION, EFFECT = range(8)
+    STYLE, PAINT, CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM, EMBLEM, INSCRIPTION, EFFECT = ALL = range(9)
     AVAILABLE_REGIONS = (PAINT, CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM, EMBLEM, INSCRIPTION)
-    ALL = (PAINT, CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM, EMBLEM, INSCRIPTION, EFFECT)
     VISIBLE = ALL  # legacy, maybe not all tabs will be visible, idk
     CAMO = (CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM)
-    REGIONS = CAMO + (EFFECT, PAINT)
+    REGIONS = CAMO + (STYLE, EFFECT, PAINT)
 
 
 ITEM_TO_TABS = {GUI_ITEM_TYPE.PAINT: (C11nTabs.PAINT,), GUI_ITEM_TYPE.CAMOUFLAGE: C11nTabs.CAMO,
                 GUI_ITEM_TYPE.EMBLEM: (C11nTabs.EMBLEM,), GUI_ITEM_TYPE.INSCRIPTION: (C11nTabs.INSCRIPTION,),
-                GUI_ITEM_TYPE.MODIFICATION: (C11nTabs.EFFECT,)}
+                GUI_ITEM_TYPE.MODIFICATION: (C11nTabs.EFFECT,), GUI_ITEM_TYPE.STYLE: (C11nTabs.STYLE,)}
 
 
 def tabToItem(tabIndex):

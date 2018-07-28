@@ -11,8 +11,8 @@ from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
 from items.components.c11n_constants import SeasonType
-from .shared import RandMode, getCamoTextureName
-from .. import __date__, __modID__
+from .settings.shared import RandMode, getCamoTextureName
+from . import __date__, __modID__
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -277,6 +277,13 @@ class ConfigInterface(PYmodsConfigInterface):
             except AttributeError:
                 BigWorld.g_modsListApi.addMod(**kwargs)
             self.isModAdded = True
+
+    def isCamoGlobal(self, camo):
+        return getCamoTextureName(camo) in self.interCamo
+
+
+def getCamoTextureName(camo):
+    return os.path.splitext(os.path.basename(camo.texture))[0]
 
 
 g_config = ConfigInterface()

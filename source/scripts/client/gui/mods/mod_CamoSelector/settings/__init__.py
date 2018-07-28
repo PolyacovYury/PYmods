@@ -1,4 +1,3 @@
-from config import g_config
 import anchor_properties
 import cm_handler
 import season_buttons_component
