@@ -11,7 +11,6 @@ from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
 from items.components.c11n_constants import SeasonType
-from .settings.shared import RandMode
 from . import __date__, __modID__
 
 
@@ -234,7 +233,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 if camoID not in conf:
                     continue
                 camoConf = conf[camoID]
-                if camoConf.get('random_mode') == RandMode.RANDOM:
+                if camoConf.get('random_mode') == 2:  # RandMode.RANDOM
                     del camoConf['random_mode']
                 if 'kinds' in camoConf:
                     camoConf['season'] = camoConf['kinds']

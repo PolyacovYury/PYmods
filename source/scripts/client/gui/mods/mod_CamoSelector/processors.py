@@ -20,7 +20,7 @@ from items.components.c11n_constants import SeasonType
 from skeletons.gui.shared import IItemsCache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
-from .settings import g_config
+from . import g_config
 from .settings.shared import RandMode, TeamMode
 
 try:

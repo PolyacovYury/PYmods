@@ -9,7 +9,7 @@ from items import makeIntCompactDescrByID as makeCD
 from items.components import shared_components
 from items.components.c11n_constants import SeasonType
 from items.readers.c11n_readers import CamouflageXmlReader, PaintXmlReader
-from .settings import g_config
+from . import g_config
 
 
 class LegacyCamouflageReader(CamouflageXmlReader):
