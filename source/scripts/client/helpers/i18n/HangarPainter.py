@@ -82,7 +82,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if colourChanged:
             reasons.append(self.i18n['UI_restart_reason_colourChanged'])
         if toggled:
-            reasons.append(self.i18n['UI_restart_reason_mod%s' % ('Enabled' if self.data['enabled'] else 'Disabled')])
+            reasons.append(self.i18n['UI_restart_reason_mod' + ('Enabled' if self.data['enabled'] else 'Disabled')])
         dialogText = self.i18n['UI_restart_text'].format(reason='; '.join(reasons))
         from gui import DialogsInterface
         from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta, InfoDialogButtons
@@ -97,9 +97,9 @@ class ConfigInterface(PYmodsConfigInterface):
             loadJson(self.ID, 'blacklist', webConf, self.configPath, True)
         except urllib2.URLError as e:
             if hasattr(e, 'reason'):
-                print '%s: blacklists config download failed: ' % self.ID, e.reason
+                print self.ID + ': blacklists config download failed:', e.reason
             elif hasattr(e, 'code'):
-                print '%s: GitHub internal error: ' % self.ID, e.code
+                print self.ID + ': GitHub internal error:', e.code
         super(self.__class__, self).load()
 
     def registerSettings(self):
@@ -149,7 +149,7 @@ def i18n_hook_makeString(key, *args, **kwargs):
             else:
                 return old_makeString(key, *args, **kwargs)
         except StandardError:
-            print '%s: error at %s' % (_config.ID, key)
+            print _config.ID + ': error at', key
             traceback.print_exc()
             return old_makeString(key, *args, **kwargs)
     else:
