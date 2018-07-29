@@ -12,6 +12,7 @@ from ReloadEffect import _BarrelReloadDesc
 from debug_utils import LOG_ERROR
 from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc
 from items.components import sound_components
+from items.vehicles import g_cache
 from material_kinds import EFFECT_MATERIALS
 
 
@@ -35,6 +36,9 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def createTemplate(self):
         pass
 
+    def registerSettings(self):
+        pass
+
     def readCurrentSettings(self, quiet=True):
         configPath = self.configPath + 'configs/'
         if not os.path.exists(configPath):
@@ -48,8 +52,6 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 print self.ID + ': config', os.path.basename(confPath), 'is invalid.'
                 traceback.print_exc()
                 continue
-            if not quiet:
-                print self.ID + ': loading', confName + '.json'
             self.confList.add(confName)
             for itemType, itemsDict in confdict.iteritems():
                 if itemType not in self.data:
@@ -66,114 +68,89 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 if itemType in ('gun_reload_effects', 'shot_effects', 'sound_notifications'):
                     for itemName in itemsDict:
                         itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
-
-    def load(self):
-        pass
-
-    def onInitComplete(self):
-        self.readCurrentSettings(False)
-        if any(self.data[key] for key in ('engines', 'gun_reload_effects', 'shot_effects', 'guns')):
-            items.vehicles.init(True, None)
-        print self.message() + ': initialised.'
-
-
-@PYmodsCore.overrideMethod(items.vehicles, '_readEngine')
-def new_readEngine(base, xmlCtx, section, item, *args):
-    base(xmlCtx, section, item, *args)
-    nationID, _ = item.id
-    sounds = item.sounds
-    itemData = _config.data['engines'].get(nations.NAMES[nationID], {}).get(item.name, {})
-    item.sounds = sound_components.WWTripleSoundConfig(sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
-                                                       itemData.get('wwsoundNPC', sounds.wwsoundNPC))
-
-
-@PYmodsCore.overrideMethod(items.vehicles, '_readReloadEffectGroups')
-def new_readReloadEffects(base, xmlPath):
-    res = base(xmlPath)
-    effectsData = _config.data['gun_reload_effects']
-    for sname in res:
-        if sname not in effectsData:
-            continue
-        effData = effectsData[sname]
-        descr = res[sname]
-        descr.duration = float(effData.get('duration', descr.duration * 1000.0)) / 1000.0
-        descr.soundEvent = effData.get('sound', descr.soundEvent)
-        if effData['type'] == 'BarrelReload' and isinstance(descr, _BarrelReloadDesc):
-            descr.lastShellAlert = effData.get('lastShellAlert', descr.lastShellAlert)
-            descr.shellDuration = effData.get('shellDuration', descr.shellDuration * 1000.0) / 1000.0
-            descr.startLong = effData.get('startLong', descr.startLong)
-            descr.startLoop = effData.get('startLoop', descr.startLoop)
-            descr.stopLoop = effData.get('stopLoop', descr.stopLoop)
-            descr.loopShell = effData.get('loopShell', descr.loopShell)
-            descr.loopShellLast = effData.get('loopShellLast', descr.loopShellLast)
-            descr.ammoLow = effData.get('ammoLow', descr.ammoLow)
-            descr.caliber = effData.get('caliber', descr.caliber)
-            descr.shellDt = effData.get('loopShellDt', descr.shellDt)
-            descr.shellDtLast = effData.get('loopShellLastDt', descr.shellDtLast)
-    return res
-
-
-@PYmodsCore.overrideMethod(items.vehicles, '_readShotEffects')
-def new_readShotEffects(base, xmlCtx, section):
-    res = base(xmlCtx, section)
-    effectsData = _config.data['shot_effects']
-    sname = xmlCtx[1]
-    if sname in effectsData:
-        effData = effectsData[sname]
-        for effType in (x for x in ('projectile',) if x in effData):
-            typeData = effData[effType]
-            for effectDesc in res[effType][2]._EffectsList__effectDescList:
-                if isinstance(effectDesc, _TracerSoundEffectDesc):
-                    effectDesc._soundName = tuple((typeData.get(key, effectDesc._soundName[idx]),) for idx, key in
-                                                  enumerate(('wwsoundPC', 'wwsoundNPC')))
-        for effType in (x for x in (tuple(x + 'Hit' for x in EFFECT_MATERIALS) + (
-                'armorBasicRicochet', 'armorRicochet', 'armorResisted', 'armorHit', 'armorCriticalHit')) if x in effData):
-            typeData = effData[effType]
-            for effectDesc in res[effType].effectsList._EffectsList__effectDescList:
-                if isinstance(effectDesc, _SoundEffectDesc):
-                    effectDesc._impactNames = tuple(typeData.get(key, effectDesc._impactNames[idx]) for idx, key in
-                                                    enumerate(('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC')))
-    return res
-
-
-@PYmodsCore.overrideMethod(items.vehicles, '_readEffectGroups')
-def new_readEffectGroups(base, xmlPath, withSubgroups=False):
-    res = base(xmlPath, withSubgroups)
-    if 'gun_effects' in xmlPath:
-        newXmlPath = '../' + _config.configPath + 'configs/gun_effects.xml'
+        print self.ID + ': loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
+        for nationID, engines_data in enumerate(g_cache._Cache__engines):
+            nationData = self.data['engines'].get(nations.NAMES[nationID])
+            if not nationData:
+                continue
+            for item in engines_data.itervalues():
+                itemData = nationData.get(item.name)
+                if not itemData:
+                    continue
+                sounds = item.sounds
+                item.sounds = sound_components.WWTripleSoundConfig(
+                    sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
+                    itemData.get('wwsoundNPC', sounds.wwsoundNPC))
+        for nationID, guns_data in enumerate(g_cache._Cache__guns):
+            for item in guns_data.itervalues():
+                item.effects = items.vehicles.g_cache._gunEffects.get(
+                    self.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', ''), item.effects)
+        for sname, descr in g_cache._Cache__gunReloadEffects.iteritems():
+            effData = self.data['gun_reload_effects'].get(sname)
+            if effData is None:
+                continue
+            descr.duration = float(effData.get('duration', descr.duration * 1000.0)) / 1000.0
+            descr.soundEvent = effData.get('sound', descr.soundEvent)
+            if effData['type'] == 'BarrelReload' and isinstance(descr, _BarrelReloadDesc):
+                descr.lastShellAlert = effData.get('lastShellAlert', descr.lastShellAlert)
+                descr.shellDuration = effData.get('shellDuration', descr.shellDuration * 1000.0) / 1000.0
+                descr.startLong = effData.get('startLong', descr.startLong)
+                descr.startLoop = effData.get('startLoop', descr.startLoop)
+                descr.stopLoop = effData.get('stopLoop', descr.stopLoop)
+                descr.loopShell = effData.get('loopShell', descr.loopShell)
+                descr.loopShellLast = effData.get('loopShellLast', descr.loopShellLast)
+                descr.ammoLow = effData.get('ammoLow', descr.ammoLow)
+                descr.caliber = effData.get('caliber', descr.caliber)
+                descr.shellDt = effData.get('loopShellDt', descr.shellDt)
+                descr.shellDtLast = effData.get('loopShellLastDt', descr.shellDtLast)
+        for sname, index in g_cache._Cache__shotEffectsIndexes.iteritems():
+            effData = self.data['shot_effects'].get(sname)
+            if effData is None:
+                continue
+            res = g_cache._Cache__shotEffects[index]
+            for effType in (x for x in ('projectile',) if x in effData):
+                typeData = effData[effType]
+                for effectDesc in res[effType][2]._EffectsList__effectDescList:
+                    if isinstance(effectDesc, _TracerSoundEffectDesc):
+                        effectDesc._soundName = tuple((typeData.get(key, effectDesc._soundName[idx]),) for idx, key in
+                                                      enumerate(('wwsoundPC', 'wwsoundNPC')))
+            for effType in (x for x in (tuple(x + 'Hit' for x in EFFECT_MATERIALS) + (
+                    'armorBasicRicochet', 'armorRicochet', 'armorResisted', 'armorHit', 'armorCriticalHit')) if x in effData):
+                typeData = effData[effType]
+                for effectDesc in res[effType].effectsList._EffectsList__effectDescList:
+                    if isinstance(effectDesc, _SoundEffectDesc):
+                        effectDesc._impactNames = tuple(typeData.get(key, effectDesc._impactNames[idx]) for idx, key in
+                                                        enumerate(('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC')))
+        newXmlPath = '../' + self.configPath + 'configs/gun_effects.xml'
         if ResMgr.isFile(newXmlPath):
-            res.update(base(newXmlPath, withSubgroups))
-        elif _config.data['guns']:
-            print _config.ID + ': gun effects config not found'
-    return res
+            g_cache._Cache__gunEffects.update(items.vehicles._readEffectGroups(newXmlPath))
+        elif self.data['guns']:
+            print self.ID + ': gun effects config not found'
+        for vehicleType in g_cache._Cache__vehicles.itervalues():
+            self.inject_vehicleType(vehicleType)
 
-
-@PYmodsCore.overrideMethod(items.vehicles, '_readGun')
-def new_readGun(base, xmlCtx, section, item, unlocksDescrs=None, _=None):
-    base(xmlCtx, section, item, unlocksDescrs, _)
-    nationID, itemID = item.id
-    item.effects = items.vehicles.g_cache._gunEffects.get(
-        _config.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', ''), item.effects)
+    def inject_vehicleType(self, vehicleType):
+        for item in vehicleType.engines:
+            nationID, itemID = item.id
+            sounds = item.sounds
+            itemData = self.data['engines'].get(nations.NAMES[nationID], {}).get(item.name, {})
+            item.sounds = sound_components.WWTripleSoundConfig(sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
+                                                               itemData.get('wwsoundNPC', sounds.wwsoundNPC))
+        for turrets in vehicleType.turrets:
+            for turret in turrets:
+                for item in turret.guns:
+                    nationID, itemID = item.id
+                    item.effects = items.vehicles.g_cache._gunEffects.get(
+                        self.data['guns'].get(vehicleType.name, {}).get(item.name, {}).get(
+                            'effects',
+                            self.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', '')),
+                        item.effects)
 
 
 @PYmodsCore.overrideMethod(items.vehicles.VehicleType, '__init__')
-def new_vehicleType_init(base, self, nationID, *args, **kwargs):
-    base(self, nationID, *args, **kwargs)
-    for item in self.engines:
-        nationID, itemID = item.id
-        sounds = item.sounds
-        itemData = _config.data['engines'].get(nations.NAMES[nationID], {}).get(item.name, {})
-        item.sounds = sound_components.WWTripleSoundConfig(sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
-                                                           itemData.get('wwsoundNPC', sounds.wwsoundNPC))
-    for turrets in self.turrets:
-        for turret in turrets:
-            for item in turret.guns:
-                nationID, itemID = item.id
-                item.effects = items.vehicles.g_cache._gunEffects.get(
-                    _config.data['guns'].get(self.name, {}).get(item.name, {}).get(
-                        'effects',
-                        _config.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', '')),
-                    item.effects)
+def new_vehicleType_init(base, self, *args, **kwargs):
+    base(self, *args, **kwargs)
+    _config.inject_vehicleType(self)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__initGUI')
@@ -203,5 +180,4 @@ def updateVehicleGunReloadTime(base, self, vehicleID, timeLeft, baseTime):
 
 
 _config = ConfigInterface()
-_config.onInitComplete()
 statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-13', _config.confList)
