@@ -87,10 +87,10 @@ class ConfigInterface(PYmodsConfigInterface):
                             text = text.split(';')
                         textList.extend(x.rstrip() for x in text if x.rstrip())
             if not quiet:
-                print '%s: loaded configs: %s' % (self.ID, ', '.join(self.confMeta))
+                print self.ID + ': loaded configs:', ', '.join(self.confMeta)
 
         elif not quiet:
-            print '%s: config directory not found: %s' % (self.ID, configPath)
+            print self.ID + ': config directory not found:', configPath
 
         for key in self.sectDict:
             self.sectDict[key]['textList'] = remDups(self.sectDict[key]['textList'])
@@ -113,7 +113,7 @@ def i18n_hook_makeString(key, *args, **kwargs):
             mode = _config.sectDict[key]['mode']
             textList = _config.sectDict[key]['textList']
             if not textList:
-                print '%s: empty text list for key %s' % (_config.ID, key)
+                print _config.ID + ': empty text list for key', key
             else:
                 if mode == 'single':
                     _config.textStack[key], _config.textId[key] = textList[0], 0
