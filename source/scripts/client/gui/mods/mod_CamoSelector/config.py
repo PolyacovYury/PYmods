@@ -7,6 +7,7 @@ import os
 import traceback
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups, Analytics
+from gui import InputHandler
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
@@ -66,6 +67,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_tabs_7_label': 'Effects',
             'UI_flashCol_tabs_7_text': 'Effects',
             'UI_flashCol_tabs_7_tooltip': 'Also known as paint scrambles.',
+            'UI_flash_switcher_buy': 'BUY',
             'UI_flash_switcher_setup': 'SETUP',
             'UI_flash_switcher_install': 'INSTALL',
             'UI_flash_commit_apply': 'Apply',
