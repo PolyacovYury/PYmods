@@ -23,12 +23,12 @@ def onActionBtnClick(base, self, actionType, applyToAll):
 
 
 @overrideMethod(CustomizationPropertiesSheet, 'setCamouflageColor')
-def setCamouflageColor(self, paletteIdx):
+def setCamouflageColor(_, self, paletteIdx):
     self.ctx.changeCamouflageColor(self._areaID, self._regionID, paletteIdx)
 
 
 @overrideMethod(CustomizationPropertiesSheet, 'setCamouflageScale')
-def setCamouflageScale(self, scale, scaleIndex):
+def setCamouflageScale(_, self, scale, scaleIndex):
     self.ctx.changeCamouflageScale(self._areaID, self._regionID, scale, scaleIndex)
 
 

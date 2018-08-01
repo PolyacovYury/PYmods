@@ -36,7 +36,7 @@ CustomizationContext.changeEnemy = lambda self, apply: (
 
 
 @overrideMethod(CustomizationContext, 'modifiedStyle', decorator=property)
-def modifiedStyle(self):
+def modifiedStyle(_, self):
     return self._modifiedStyle if self._mode == CSMode.BUY else self._modifiedCSStyle
 
 
@@ -404,7 +404,7 @@ def sellItem(_, self, intCD, count):
 
 
 @overrideMethod(CustomizationContext, 'init')
-def init(self):
+def init(_, self):
     self.service.onOutfitChanged += self._CustomizationContext__onOutfitChanged
     self.itemsCache.onSyncCompleted += self._CustomizationContext__onCacheResync
     self.carveUpOutfits()
