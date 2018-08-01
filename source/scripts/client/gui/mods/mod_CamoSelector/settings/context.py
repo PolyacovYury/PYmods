@@ -23,10 +23,10 @@ from .. import g_config
 from ..constants import RandMode
 
 CustomizationContext.tabsData = property(lambda self: C11nTabs if self._mode == CSMode.BUY else CSTabs)
-CustomizationContext.originalOutfits = property(lambda self: self._originalOutfits if self._mode == CSMode.BUY else
-self._originalCSOutfits)
-CustomizationContext.modifiedOutfits = property(lambda self: self._modifiedOutfits if self._mode == CSMode.BUY else
-self._modifiedCSOutfits)
+CustomizationContext.originalOutfits = property(
+    lambda self: self._originalOutfits if self._mode == CSMode.BUY else self._originalCSOutfits)
+CustomizationContext.modifiedOutfits = property(
+    lambda self: self._modifiedOutfits if self._mode == CSMode.BUY else self._modifiedCSOutfits)
 CustomizationContext.getSeasonIndices = lambda self: [
     SEASON_TYPE_TO_IDX[x] for x in SeasonType.COMMON_SEASONS if x & self._settingSeason]
 CustomizationContext.changeAlly = lambda self, apply: (
@@ -327,8 +327,7 @@ def applyItems(base, self, purchaseItems):
             loadJson(g_config.ID, 'settings', {key: g_config.camouflages['custom'][key] for key in configFolder},
                      g_config.configPath + 'camouflages/' + confFolderName + '/', True, False)
     if any(self._currentSettings.itervalues()):
-        from ..processors import collectCamouflageData
-        collectCamouflageData()
+        g_config.collectCamouflageData()
     self.itemsCache.onSyncCompleted -= self._CustomizationContext__onCacheResync
     boughtOutfits = {season: self.service.getCustomOutfit(season) for season in SeasonType.COMMON_SEASONS}
     nationName, vehicleName = g_currentVehicle.item.descriptor.name.split(':')

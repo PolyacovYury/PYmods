@@ -3,7 +3,7 @@ from PYmodsCore import overrideMethod, overrideStaticMethod, checkKeys
 from gui import InputHandler
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
-from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, TABS_ITEM_MAPPING
+from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_MAPPING
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -11,7 +11,7 @@ from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES
 from gui.shared.utils.functions import makeTooltip
 from helpers import i18n
-from .shared import CSTabs, CSMode, tabToItem
+from .shared import CSMode, tabToItem
 from .. import g_config
 
 CBP.ctx = property(lambda self: self._CustomizationBottomPanel__ctx)

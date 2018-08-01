@@ -185,7 +185,7 @@ def getItemTabsData(_, self):
              'id': tabIdx})
         pluses.append(showPlus)
 
-    return (data, pluses)
+    return data, pluses
 
 
 @overrideMethod(MainView, '_MainView__clearItem')

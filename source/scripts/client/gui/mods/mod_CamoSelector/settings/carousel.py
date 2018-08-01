@@ -78,7 +78,6 @@ def isItemSuitableForTab(item, tabIndex):
         (tabIndex == CSTabs.CAMO_CUSTOM and item.priceGroup != 'custom'))
 
 
-
 @overrideMethod(CustomizationCarouselDataProvider, '__init__')
 def init(base, self, *a, **kw):
     base(self, *a, **kw)
