@@ -28,7 +28,7 @@ def new_onTabChanged(_, self, tabIndex):
     if self.ctx.mode == CSMode.BUY:
         if tabIndex in C11nTabs.REGIONS:
             self.service.startHighlighter(chooseMode(TABS_ITEM_MAPPING[tabIndex], g_currentVehicle.item))
-    elif self.ctx.mode == CSMode.INSTALL:
+    elif self.ctx.mode == CSMode.SETUP:
         self.service.startHighlighter(HighlightingMode.WHOLE_VEHICLE)
     elif tabIndex in CSTabs.REGIONS:
         self.service.startHighlighter(chooseMode(tabToItem(tabIndex), g_currentVehicle.item))

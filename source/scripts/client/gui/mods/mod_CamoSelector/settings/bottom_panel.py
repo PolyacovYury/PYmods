@@ -41,7 +41,7 @@ def __getSwitcherInitData(_, mode):
             'rightLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[(mode + 1) % len(CSMode.NAMES)]],
             'leftEvent': 'installStyle',
             'rightEvent': 'installStyles',
-            'isLeft': False}
+            'isLeft': True}
 
 
 @overrideMethod(CBP, '_CustomizationBottomPanel__getItemTabsData')
