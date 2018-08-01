@@ -22,3 +22,8 @@ ITEM_TO_TABS = {GUI_ITEM_TYPE.PAINT: (CSTabs.PAINT,), GUI_ITEM_TYPE.CAMOUFLAGE: 
 
 def tabToItem(tabIndex):
     return next(itemType for itemType in ITEM_TO_TABS if tabIndex in ITEM_TO_TABS[itemType])
+
+
+class ACTION_ALIASES:
+    CHANGE_ALLY = 11
+    CHANGE_ENEMY = 12
