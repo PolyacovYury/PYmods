@@ -156,7 +156,7 @@ def __setAnchorsInitData(_, self, update=False):
     else:
         for areaId in Area.ALL:
             regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, cType)
-            slot = self.__ctx.currentOutfit.getContainer(areaId).slotFor(cType)
+            slot = self.ctx.currentOutfit.getContainer(areaId).slotFor(cType)
             for regionsIndex in regionsIndexes:
                 slotId = CustomizationSlotIdVO(areaId, cType, regionsIndex)
                 item = slot.getItem(regionsIndex)
@@ -178,7 +178,7 @@ def getItemTabsData(_, self):
     for tabIdx in self.ctx.visibleTabs:
         itemTypeID = TABS_ITEM_MAPPING[tabIdx]
         typeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
-        showPlus = not self.__ctx.checkSlotsFilling(itemTypeID, self.__ctx.currentSeason)
+        showPlus = not self.ctx.checkSlotsFilling(itemTypeID, self.ctx.currentSeason)
         data.append(
             {'label': i18n.makeString(ITEM_TYPES.customizationPlural(typeName)),
              'tooltip': makeTooltip(ITEM_TYPES.customizationPlural(typeName), TOOLTIPS.customizationItemTab(typeName)),
