@@ -1,1 +1,1 @@
-from . import main_view, bottom_panel
+from . import bottom_panel, carousel, cm_handlers, context, main_view, properties_sheet, shared
