@@ -424,7 +424,7 @@ def init(_, self):
 
 
 @overrideMethod(CustomizationContext, '_CustomizationContext__carveUpOutfits')
-def __carveUpOutfits(self):
+def __carveUpOutfits(_, self):
     for season in SeasonType.COMMON_SEASONS:
         outfit = self.service.getCustomOutfit(season)
         self._modifiedOutfits[season] = outfit.copy()
