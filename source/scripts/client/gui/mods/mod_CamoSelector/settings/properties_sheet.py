@@ -36,7 +36,11 @@ def setCamouflageScale(self, scale, scaleIndex):
 def __makeRenderersVOs(base, self):
     if self.ctx.mode != CSMode.SETUP:
         return base(self)
-    return [makeModeRendererVO(self), makeAllyRendererVO(self), makeEnemyRendererVO(self), makeSeasonRendererVO(self)]
+    renderers = [makeModeRendererVO(self)]
+    if self.ctx.getRandMode() == RandMode.TEAM:
+        renderers.extend((makeAllyRendererVO(self), makeEnemyRendererVO(self)))
+    renderers.append(makeSeasonRendererVO(self))
+    return renderers
 
 
 def makeModeRendererVO(self):

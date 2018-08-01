@@ -7,14 +7,13 @@ import os
 import traceback
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups, Analytics
-from gui import InputHandler
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
 from items.components.c11n_constants import SeasonType
 from . import __date__, __modID__
-from .constants import RandMode, TeamMode
+from .constants import RandMode
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -42,31 +41,34 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_header': 'Camouflages setup',
             'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
                                         '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),
-            'UI_flash_tabs_0_label': 'Paint',
-            'UI_flashCol_tabs_0_text': 'Paint',
-            'UI_flashCol_tabs_0_tooltip': 'Not camouflages at all. Paints. :)',
-            'UI_flash_tabs_1_label': 'Shop',
-            'UI_flashCol_tabs_1_text': 'Shop',
-            'UI_flashCol_tabs_1_tooltip': 'Those which can be bought normally.',
-            'UI_flash_tabs_2_label': 'Hidden',
-            'UI_flashCol_tabs_2_text': 'Hidden',
-            'UI_flashCol_tabs_2_tooltip': 'Those which are inaccessible under usual circumstances.',
-            'UI_flash_tabs_3_label': 'Global',
-            'UI_flashCol_tabs_3_text': 'Global map',
-            'UI_flashCol_tabs_3_tooltip':
+            'UI_flash_tabs_0_label': 'Styles',
+            'UI_flashCol_tabs_0_text': 'Styles',
+            'UI_flashCol_tabs_0_tooltip': "If only you'd know how much time it took me to make this work...",
+            'UI_flash_tabs_1_label': 'Paint',
+            'UI_flashCol_tabs_1_text': 'Paint',
+            'UI_flashCol_tabs_1_tooltip': 'Not camouflages at all. Paints. :)',
+            'UI_flash_tabs_2_label': 'Shop',
+            'UI_flashCol_tabs_2_text': 'Shop',
+            'UI_flashCol_tabs_2_tooltip': 'Those which can be bought normally.',
+            'UI_flash_tabs_3_label': 'Hidden',
+            'UI_flashCol_tabs_3_text': 'Hidden',
+            'UI_flashCol_tabs_3_tooltip': 'Those which are inaccessible under usual circumstances.',
+            'UI_flash_tabs_4_label': 'Global',
+            'UI_flashCol_tabs_4_text': 'Global map',
+            'UI_flashCol_tabs_4_tooltip':
                 'Those which are awarded for global map achievements, thus available for all nations.',
-            'UI_flash_tabs_4_label': 'Custom',
-            'UI_flashCol_tabs_4_text': 'Custom',
-            'UI_flashCol_tabs_4_tooltip': 'Those which were added via config files.',
-            'UI_flash_tabs_5_label': 'Emblems',
-            'UI_flashCol_tabs_5_text': 'Emblems',
-            'UI_flashCol_tabs_5_tooltip': 'Those small pictures that are added on your machine in place of nation flags.',
-            'UI_flash_tabs_6_label': 'Inscriptions',
-            'UI_flashCol_tabs_6_text': 'Inscriptions',
-            'UI_flashCol_tabs_6_tooltip': 'Looks like chat is not enough.',
-            'UI_flash_tabs_7_label': 'Effects',
-            'UI_flashCol_tabs_7_text': 'Effects',
-            'UI_flashCol_tabs_7_tooltip': 'Also known as paint scrambles.',
+            'UI_flash_tabs_5_label': 'Custom',
+            'UI_flashCol_tabs_5_text': 'Custom',
+            'UI_flashCol_tabs_5_tooltip': 'Those which were added via config files.',
+            'UI_flash_tabs_6_label': 'Emblems',
+            'UI_flashCol_tabs_6_text': 'Emblems',
+            'UI_flashCol_tabs_6_tooltip': 'Those small pictures that are added on your machine in place of nation flags.',
+            'UI_flash_tabs_7_label': 'Inscriptions',
+            'UI_flashCol_tabs_7_text': 'Inscriptions',
+            'UI_flashCol_tabs_7_tooltip': 'Looks like chat is not enough.',
+            'UI_flash_tabs_8_label': 'Effects',
+            'UI_flashCol_tabs_8_text': 'Effects',
+            'UI_flashCol_tabs_8_tooltip': 'Also known as paint scrambles.',
             'UI_flash_switcher_buy': 'BUY',
             'UI_flash_switcher_setup': 'SETUP',
             'UI_flash_switcher_install': 'INSTALL',
@@ -77,10 +79,15 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_randMode_off': 'Disable',
             'UI_flash_randMode_random': 'Random',
             'UI_flash_randMode_team': 'Team',
-            'UI_flashCol_teamMode_label': 'Use for team',
-            'UI_flash_teamMode_ally': 'Ally',
-            'UI_flash_teamMode_enemy': 'Enemy',
-            'UI_flash_teamMode_both': 'All',
+            'UI_flashCol_teamMode_enemy_apply_label': 'Use for team: enemy',
+            'UI_flashCol_teamMode_enemy_apply_btn': 'Apply',
+            'UI_flashCol_teamMode_enemy_applied_label': 'Used for team: enemy',
+            'UI_flashCol_teamMode_enemy_applied_btn': 'Remove',
+            'UI_flashCol_teamMode_ally_apply_label': 'Use for team: ally',
+            'UI_flashCol_teamMode_ally_apply_btn': 'Apply',
+            'UI_flashCol_teamMode_ally_applied_label': 'Used for team: ally',
+            'UI_flashCol_teamMode_ally_applied_btn': 'Remove',
+            'UI_flashCol_teamMode_remove_btn': 'Remove from vehicle',
             'UI_flashCol_camoGroup_multinational': 'Multinational',
             'UI_flashCol_camoGroup_special': 'Special',
             'UI_flashCol_camoGroup_custom': 'Custom',
@@ -291,12 +298,13 @@ class ConfigInterface(PYmodsConfigInterface):
                 camoID, 'remap')
             itemSeason = camouflage.season
             itemMode = RandMode.RANDOM
-            itemTeam = TeamMode.BOTH
+            isAlly = True
+            isEnemy = True
             if itemName in self.camouflages[itemKey]:
                 camoCfg = self.camouflages[itemKey][itemName]
                 itemMode = camoCfg.get('random_mode', itemMode)
-                itemTeam = 0 | (camoCfg.get('useForAlly', True) and TeamMode.ALLY) | (
-                        camoCfg.get('useForEnemy', True) and TeamMode.ENEMY)
+                isAlly = camoCfg.get('useForAlly', True)
+                isEnemy = camoCfg.get('useForEnemy', True)
                 if 'season' in camoCfg:
                     itemSeason = SeasonType.UNDEFINED
                     for season in SEASONS_CONSTANTS.SEASONS:
@@ -308,9 +316,10 @@ class ConfigInterface(PYmodsConfigInterface):
                     if itemMode == RandMode.RANDOM:
                         camoForSeason['random'].append(camoID)
                     elif itemMode == RandMode.TEAM:
-                        for team in (TeamMode.ALLY, TeamMode.ENEMY):
-                            if itemTeam & team:
-                                camoForSeason[TeamMode.NAMES[team]].append(camoID)
+                        if isAlly:
+                            camoForSeason['ally'].append(camoID)
+                        if isEnemy:
+                            camoForSeason['enemy'].append(camoID)
 
     def isCamoGlobal(self, camo):
         return getCamoTextureName(camo) in self.interCamo
