@@ -113,7 +113,7 @@ def _buildCustomizationItems(base, self):
         return base(self)
     season = self._seasonID
     requirement = createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(
-        lambda i: self.isItemSuitableForTab(i, self._tabIndex))
+        lambda i: isItemSuitableForTab(i, self._tabIndex))
     seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][season]
     allItemsGroup = len(seasonAndTabData.allGroups) - 1
     if seasonAndTabData.selectedGroupIndex != allItemsGroup:
