@@ -63,7 +63,7 @@ def __getSwitcherInitData(_, mode):
             'isLeft': isLeft}
 
 
-@overrideMethod(CBP, '_CustomizationBottomPanel')
+@overrideMethod(CBP, '_CustomizationBottomPanel__getItemTabsData')
 def __getItemTabsData(_, self):
     data = []
     pluses = []
