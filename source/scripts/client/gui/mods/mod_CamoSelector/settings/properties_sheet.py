@@ -7,7 +7,7 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.shared.formatters import text_styles
 from .shared import ACTION_ALIASES, CSMode
 from .. import g_config
-from ..constants import RandMode, TeamMode
+from ..constants import RandMode
 
 CustomizationPropertiesSheet.ctx = property(lambda self: self._CustomizationPropertiesSheet__ctx)
 
@@ -55,14 +55,14 @@ def makeModeRendererVO(self):
 
 
 def makeAllyRendererVO(self):
-    if not self.ctx.getTeamMode() & TeamMode.ALLY:
+    if not self.ctx.useForAlly:
         titleText = g_config.i18n['UI_flashCol_teamMode_ally_apply_label']
         actionBtnLabel = g_config.i18n['UI_flashCol_teamMode_ally_apply_btn']
         actionBtnIconSrc = ''
     else:
         titleText = g_config.i18n['UI_flashCol_teamMode_ally_applied_label']
         actionBtnLabel = g_config.i18n[
-            'UI_flashCol_teamMode' + ('_ally_applied_btn' if self.ctx.getTeamMode() & TeamMode.ENEMY else '_remove_btn')]
+            'UI_flashCol_teamMode' + ('_ally_applied_btn' if self.ctx.useForEnemy else '_remove_btn')]
         actionBtnIconSrc = RES_ICONS.MAPS_ICONS_LIBRARY_ASSET_1
     return {'titleText': text_styles.standard(titleText),
             'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_TANK,
@@ -74,14 +74,14 @@ def makeAllyRendererVO(self):
 
 
 def makeEnemyRendererVO(self):
-    if not self.ctx.getTeamMode() & TeamMode.ENEMY:
+    if not self.ctx.useForEnemy:
         titleText = g_config.i18n['UI_flashCol_teamMode_enemy_apply_label']
         actionBtnLabel = g_config.i18n['UI_flashCol_teamMode_enemy_apply_btn']
         actionBtnIconSrc = ''
     else:
         titleText = g_config.i18n['UI_flashCol_teamMode_enemy_applied_label']
         actionBtnLabel = g_config.i18n[
-            'UI_flashCol_teamMode' + ('_enemy_applied_btn' if self.ctx.getTeamMode() & TeamMode.ALLY else '_remove_btn')]
+            'UI_flashCol_teamMode' + ('_enemy_applied_btn' if self.ctx.useForAlly else '_remove_btn')]
         actionBtnIconSrc = RES_ICONS.MAPS_ICONS_LIBRARY_ASSET_1
     return {'titleText': text_styles.standard(titleText),
             'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_TANK,
@@ -95,7 +95,7 @@ def makeEnemyRendererVO(self):
 def makeSeasonRendererVO(self):
     btnBlockVO = []
     for idx in SEASONS_CONSTANTS.INDICES:
-        btnBlockVO.append({'paletteIcon': '', 'selected': idx in self.ctx.getSeasonIndices,
+        btnBlockVO.append({'paletteIcon': '', 'selected': idx in self.ctx.getSeasonIndices(),
                            'label': CAMOUFLAGES_KIND_TEXTS[idx], 'value': idx})
 
     return {'titleText': text_styles.standard(g_config.i18n['UI_flashCol_season_label']),

@@ -11,7 +11,7 @@ from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.customization.shared import chooseMode, getAppliedRegionsForCurrentHangarVehicle
+from gui.customization.shared import chooseMode, getAppliedRegionsForCurrentHangarVehicle, HighlightingMode
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from gui.shared.utils.functions import makeTooltip
@@ -28,6 +28,8 @@ def new_onTabChanged(_, self, tabIndex):
     if self.ctx.mode == CSMode.BUY:
         if tabIndex in C11nTabs.REGIONS:
             self.service.startHighlighter(chooseMode(TABS_ITEM_MAPPING[tabIndex], g_currentVehicle.item))
+    elif self.ctx.mode == CSMode.INSTALL:
+        self.service.startHighlighter(HighlightingMode.WHOLE_VEHICLE)
     elif tabIndex in CSTabs.REGIONS:
         self.service.startHighlighter(chooseMode(tabToItem(tabIndex), g_currentVehicle.item))
     self._MainView__setAnchorsInitData()
@@ -36,20 +38,12 @@ def new_onTabChanged(_, self, tabIndex):
         space.clearSelectedEmblemInfo()
         space.locateCameraToCustomizationPreview()
     self._MainView__updateAnchorPositions()
-    if self.ctx.mode == CSMode.BUY:
-        if tabIndex == C11nTabs.STYLE:
-            slotIdVO = CustomizationSlotIdVO(0, GUI_ITEM_TYPE.STYLE, 0)._asdict()
-        elif tabIndex == C11nTabs.EFFECT:
-            slotIdVO = CustomizationSlotIdVO(Area.MISC, GUI_ITEM_TYPE.MODIFICATION, 0)._asdict()
-        else:
-            slotIdVO = None
+    if tabIndex == self.ctx.tabsData.STYLE:
+        slotIdVO = CustomizationSlotIdVO(0, GUI_ITEM_TYPE.STYLE, 0)._asdict()
+    elif tabIndex == self.ctx.tabsData.EFFECT:
+        slotIdVO = CustomizationSlotIdVO(Area.MISC, GUI_ITEM_TYPE.MODIFICATION, 0)._asdict()
     else:
-        if tabIndex == CSTabs.STYLE:
-            slotIdVO = CustomizationSlotIdVO(0, GUI_ITEM_TYPE.STYLE, 0)._asdict()
-        elif tabIndex == CSTabs.EFFECT:
-            slotIdVO = CustomizationSlotIdVO(Area.MISC, GUI_ITEM_TYPE.MODIFICATION, 0)._asdict()
-        else:
-            slotIdVO = None
+        slotIdVO = None
     self.as_updateSelectedRegionsS(slotIdVO)
     self.as_enableDNDS(tabIndex not in (
             self.ctx.mode == CSMode.BUY and DRAG_AND_DROP_INACTIVE_TABS or (CSTabs.STYLE, CSTabs.EFFECT)))
@@ -58,16 +52,14 @@ def new_onTabChanged(_, self, tabIndex):
 
 @overrideMethod(MainView, 'onLobbyClick')
 def onLobbyClick(_, self):
-    if self.ctx.currentTab in (
-            self.ctx.mode == CSMode.BUY and (C11nTabs.EMBLEM, C11nTabs.INSCRIPTION) or (CSTabs.EMBLEM, CSTabs.INSCRIPTION)):
+    if self.ctx.currentTab in (self.ctx.tabsData.EMBLEM, self.ctx.tabsData.INSCRIPTION):
         self._MainView__clearItem()
 
 
 @overrideMethod(MainView, 'onAnchorsShown')
 def onAnchorsShown(_, self, anchors):
     if self._vehicleCustomizationAnchorsUpdater is not None:
-        self._vehicleCustomizationAnchorsUpdater.setAnchors(anchors, self.ctx.currentTab in (
-                self.ctx.mode == CSMode.BUY and C11nTabs.REGIONS or CSTabs.REGIONS))
+        self._vehicleCustomizationAnchorsUpdater.setAnchors(anchors, self.ctx.currentTab in self.ctx.tabsData.REGIONS)
 
 
 @overrideMethod(MainView, '_getUpdatedAnchorsData')
@@ -98,7 +90,7 @@ def __onRegionHighlighted(_, self, slotType, areaId, regionIdx, selected, hovere
     if hovered:
         self.soundManager.playInstantSound(SOUNDS.HOVER)
         return
-    if self.ctx.currentTab == (C11nTabs if self.ctx.mode == CSMode.BUY else CSTabs).EFFECT:
+    if self.ctx.currentTab == self.ctx.tabsData.EFFECT:
         areaId = Area.MISC
         slotType = GUI_ITEM_TYPE.MODIFICATION
     if areaId != -1 and regionIdx != -1:
@@ -118,8 +110,7 @@ def __onRegionHighlighted(_, self, slotType, areaId, regionIdx, selected, hovere
 @overrideMethod(MainView, '_MainView__onCaruselItemSelected')
 def __onCaruselItemSelected(_, self, index, intCD):
     tabIndex = self.ctx.currentTab
-    tabsData = C11nTabs if self.ctx.mode == CSMode.BUY else CSTabs
-    if tabIndex in (tabsData.STYLE, tabsData.EFFECT):
+    if tabIndex in (self.ctx.tabsData.STYLE, self.ctx.tabsData.EFFECT):
         slotType, areaId, regionIdx = self.ctx.selectedRegion
         self._MainView__onRegionHighlighted(slotType, areaId, regionIdx, True, False)
     if not self._MainView__propertiesSheet.isVisible and not self.itemIsPicked:
@@ -136,7 +127,7 @@ def __setSeasonData(_, self, forceAnim=False):
         if self.ctx.mode in (CSMode.BUY, CSMode.INSTALL):
             isFilled = self.ctx.checkSlotsFillingForSeason(season) or self.ctx.modifiedStyle is not None
         else:
-            isFilled = self.ctx.checkSettingsForSeason(season)
+            isFilled = True
         filledSeasonSlots += int(isFilled)
         seasonRenderersList.append(
             {'nameText': VEHICLE_CUSTOMIZATION.getSeasonName(seasonName),
@@ -173,7 +164,7 @@ def __setAnchorsInitData(_, self, update=False):
                 uid = customizationSlotIdToUid(slotId)
                 anchorVOs.append(CustomizationSlotUpdateVO(slotId._asdict(), itemIntCD, uid)._asdict())
 
-    doRegions = tabIndex in (C11nTabs if self.ctx.mode == CSMode.BUY else CSTabs).REGIONS
+    doRegions = tabIndex in self.ctx.tabsData.REGIONS
     if update:
         self.as_updateAnchorDataS(CustomizationAnchorInitVO(anchorVOs, doRegions)._asdict())
     else:
@@ -200,8 +191,7 @@ def getItemTabsData(_, self):
 @overrideMethod(MainView, '_MainView__clearItem')
 def __clearItem(_, self):
     self._MainView__hidePropertiesSheet()
-    tabsData = C11nTabs if self.ctx.mode == CSMode.BUY else CSTabs
-    if self.ctx.currentTab in (tabsData.EMBLEM, tabsData.INSCRIPTION):
+    if self.ctx.currentTab in (self.ctx.tabsData.EMBLEM, self.ctx.tabsData.INSCRIPTION):
         self._MainView__resetCameraFocus()
     slotType, _, _ = self.ctx.selectedRegion
     self.ctx.regionSelected(slotType, -1, -1)

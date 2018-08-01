@@ -37,7 +37,7 @@ def _dispose(base, self):
 @overrideMethod(CBP, '_CustomizationBottomPanel__setFooterInitData')
 def __setFooterInitData(_, self):
     self.as_setBottomPanelInitDataS({
-        'tabsAvailableRegions': (C11nTabs if self.ctx.mode == CSMode.BUY else CSTabs).AVAILABLE_REGIONS,
+        'tabsAvailableRegions': self.ctx.tabsData.AVAILABLE_REGIONS,
         'defaultStyleLabel': VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL,
         'carouselInitData': self._CustomizationBottomPanel__getCarouselInitData(),
         'switcherInitData': self._CustomizationBottomPanel__getSwitcherInitData(self.ctx.mode),
@@ -84,5 +84,5 @@ def __getItemTabsData(_, self):
 def __onModeChanged(_, self, mode):
     self._CustomizationBottomPanel__updateTabs(self.ctx.currentTab)
     self._carouselDP.selectItem(
-        self.ctx.modifiedStyle if self.ctx.currentTab == (C11nTabs if mode == CSMode.BUY else CSTabs).STYLE else None)
+        self.ctx.modifiedStyle if self.ctx.currentTab == self.ctx.tabsData.STYLE else None)
     self._CustomizationBottomPanel__setBottomPanelBillData()

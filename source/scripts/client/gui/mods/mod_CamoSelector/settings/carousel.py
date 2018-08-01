@@ -1,4 +1,5 @@
 import nations
+from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationCarouselDataProvider, \
     CustomizationSeasonAndTypeFilterData, CustomizationBookmarkVO
@@ -13,7 +14,7 @@ from .. import g_config
 from .shared import CSMode, CSTabs, ITEM_TO_TABS, tabToItem
 
 
-def comparisonKey(item):
+def CSComparisonKey(item):
     return TYPES_ORDER.index(item.itemTypeID), getGroupName(item), item.id
 
 
@@ -56,17 +57,17 @@ def getItemSeason(item):
     return itemSeason
 
 
-def _createBaseRequirements(season=None):
+def createBaseRequirements(season=None):
     season = season or SeasonType.ALL
     return REQ_CRITERIA.CUSTOM(lambda item: getItemSeason(item) & season)
 
 
-def isItemSuitableForTab(self, item, tabIndex):
+def isItemSuitableForTab(item, tabIndex):
     if item is None or tabIndex not in ITEM_TO_TABS[item.itemTypeID]:
         return False
     if tabIndex in (CSTabs.EMBLEM, CSTabs.INSCRIPTION):
         return True
-    vehicle = self._currentVehicle.item
+    vehicle = g_currentVehicle.item
     if tabIndex in (CSTabs.PAINT, CSTabs.EFFECT):
         return item.mayInstall(vehicle)
     isGlobal = g_config.isCamoGlobal(item.descriptor)
@@ -84,15 +85,15 @@ def init(base, self, *a, **kw):
     if self._proxy.mode == CSMode.BUY:
         return
     self._allSeasonAndTabFilterData = {}
-    allItems = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, _createBaseRequirements())
+    allItems = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, createBaseRequirements())
     for tabIndex in CSTabs.ALL:
         self._allSeasonAndTabFilterData[tabIndex] = {}
         for season in SeasonType.COMMON_SEASONS:
             self._allSeasonAndTabFilterData[tabIndex][season] = CustomizationSeasonAndTypeFilterData()
 
-        for item in sorted(allItems.itervalues(), key=comparisonKey):
+        for item in sorted(allItems.itervalues(), key=CSComparisonKey):
             groupName = getGroupName(item)
-            if isItemSuitableForTab(self, item, tabIndex):
+            if isItemSuitableForTab(item, tabIndex):
                 for seasonType in SeasonType.COMMON_SEASONS:
                     if getItemSeason(item) & seasonType:
                         seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
@@ -111,7 +112,7 @@ def _buildCustomizationItems(base, self):
     if self._proxy.mode == CSMode.BUY:
         return base(self)
     season = self._seasonID
-    requirement = _createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(
+    requirement = createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(
         lambda i: self.isItemSuitableForTab(i, self._tabIndex))
     seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][season]
     allItemsGroup = len(seasonAndTabData.allGroups) - 1
@@ -129,7 +130,7 @@ def _buildCustomizationItems(base, self):
     self._customizationItems = []
     self._customizationBookmarks = []
     lastGroupName = None
-    for idx, item in enumerate(sorted(allItems.itervalues(), key=comparisonKey)):
+    for idx, item in enumerate(sorted(allItems.itervalues(), key=CSComparisonKey)):
         groupName = getGroupName(item)
         if item.intCD == self._selectIntCD:
             self._selectedIdx = len(self._customizationItems)
