@@ -565,4 +565,4 @@ def __updateVisibleTabsList(_, self):
                         continue
                 visibleTabs[seasonType].add(tabIndex)
 
-    self._CustomizationContext___visibleTabs = visibleTabs
+    self._CustomizationContext__visibleTabs = visibleTabs
