@@ -1,11 +1,16 @@
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization import CAMOUFLAGES_KIND_TEXTS
 from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import CustomizationPropertiesSheet
+from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_MAPPING
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui.customization.shared import getCustomizationTankPartName
 from gui.shared.formatters import text_styles
-from .shared import ACTION_ALIASES, CSMode
+from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
+from helpers import i18n
+from .shared import ACTION_ALIASES, CSMode, tabToItem
 from .. import g_config
 from ..constants import RandMode
 
@@ -30,6 +35,68 @@ def setCamouflageColor(_, self, paletteIdx):
 @overrideMethod(CustomizationPropertiesSheet, 'setCamouflageScale')
 def setCamouflageScale(_, self, scale, scaleIndex):
     self.ctx.changeCamouflageScale(self._areaID, self._regionID, scale, scaleIndex)
+
+
+@overrideMethod(CustomizationPropertiesSheet, '_CustomizationPropertiesSheet__getTitleDescrTexts')
+def __getTitleDescrTexts(_, self, currentElement):
+    if self._slotID == GUI_ITEM_TYPE.STYLE:
+        if not currentElement:
+            titleText = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ELEMENTTYPE_ALL
+        else:
+            titleText = currentElement.userName
+    elif self._slotID == GUI_ITEM_TYPE.MODIFICATION:
+        titleText = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ELEMENTTYPE_ALL
+    elif self._slotID == GUI_ITEM_TYPE.INSCRIPTION:
+        titleText = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ELEMENTTYPE_INSCRIPTION
+    elif self._slotID == GUI_ITEM_TYPE.EMBLEM:
+        titleText = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ELEMENTTYPE_EMBLEM
+    else:
+        titleText = VEHICLE_CUSTOMIZATION.getSheetVehPartName(getCustomizationTankPartName(self._areaID, self._regionID))
+    if not currentElement:
+        itemTypeID = (
+            TABS_ITEM_MAPPING.get(self.ctx.currentTab) if self.ctx.mode == CSMode.BUY else tabToItem(self.ctx.currentTab))
+        itemTypeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
+        descrText = text_styles.neutral(VEHICLE_CUSTOMIZATION.getSheetEmptyDescription(itemTypeName))
+    elif self._slotID == GUI_ITEM_TYPE.STYLE:
+        descrText = text_styles.main(currentElement.userType)
+    elif self._slotID == GUI_ITEM_TYPE.CAMOUFLAGE:
+        descrText = text_styles.main(currentElement.userName)
+    else:
+        descrText = text_styles.main(
+            i18n.makeString(VEHICLE_CUSTOMIZATION.PROPERTYSHEET_DESCRIPTION, itemType=currentElement.userType,
+                            itemName=currentElement.userName))
+    return text_styles.highTitle(titleText), descrText
+
+
+@overrideMethod(CustomizationPropertiesSheet, '_CustomizationPropertiesSheet__makeRemoveRendererVO')
+def __makeRemoveRendererVO(_, self, separatorVisible=True):
+    iconSrc = RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_CROSS
+    if self._slotID == GUI_ITEM_TYPE.STYLE:
+        titleText = ''
+        iconSrc = ''
+        actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_REMOVESTYLE
+    else:
+        itemTypeID = (
+            TABS_ITEM_MAPPING.get(self.ctx.currentTab) if self.ctx.mode == CSMode.BUY else tabToItem(self.ctx.currentTab))
+        itemTypeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
+        titleText = VEHICLE_CUSTOMIZATION.getSheetRemoveText(itemTypeName)
+        if self._slotID == GUI_ITEM_TYPE.MODIFICATION:
+            actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_REMOVE_TANK
+        elif self._slotID == GUI_ITEM_TYPE.EMBLEM:
+            actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_REMOVE_EMBLEM
+        elif self._slotID == GUI_ITEM_TYPE.INSCRIPTION:
+            actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_REMOVE_INSCRIPTION
+        else:
+            actionBtnLabel = VEHICLE_CUSTOMIZATION.getSheetBtnRemoveText(
+                getCustomizationTankPartName(self._areaID, self._regionID))
+    return {'titleText': text_styles.standard(titleText),
+            'iconSrc': iconSrc,
+            'actionBtnLabel': actionBtnLabel,
+            'actionBtnIconSrc': RES_ICONS.MAPS_ICONS_LIBRARY_ASSET_1,
+            'isAppliedToAll': False,
+            'separatorVisible': separatorVisible,
+            'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
+            'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_REMOVE_ONE}
 
 
 @overrideMethod(CustomizationPropertiesSheet, '_CustomizationPropertiesSheet__makeRenderersVOs')
