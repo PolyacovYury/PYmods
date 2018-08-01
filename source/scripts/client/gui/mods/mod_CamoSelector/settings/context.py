@@ -193,8 +193,8 @@ def switchToStyle(_, self):
 def changeMode(self, wasLeft):
     self._lastTab[self._mode] = self._tabIndex
     self._mode = ((self._mode + 1) if wasLeft else (self._mode - 1 + len(CSMode.NAMES))) % len(CSMode.NAMES)
-    self._CustomizationContext__updateVisibleTabsList()
     self._tabIndex = self._lastTab[self._mode]
+    self._CustomizationContext__updateVisibleTabsList()
     if self._tabIndex not in self.visibleTabs:
         self._tabIndex = first(self.visibleTabs, -1)
     self.refreshOutfit()
@@ -408,16 +408,6 @@ def init(_, self):
     self.itemsCache.onSyncCompleted += self._CustomizationContext__onCacheResync
     self.carveUpOutfits()
     self._CustomizationContext__updateVisibleTabsList()
-    if self._originalStyle:
-        self._mode = CSMode.BUY
-        self._tabIndex = C11nTabs.STYLE
-    else:
-        self._mode = CSMode.INSTALL
-        self._tabIndex = CSTabs.CAMO_SHOP
-        if not self._originalOutfits[self._currentSeason].isInstalled() and not self.isOutfitsEmpty(
-                self._modifiedOutfits) and not self._modifiedStyle:
-            self._mode = CSMode.BUY
-            self._tabIndex = C11nTabs.STYLE
     self._originalMode = self._mode
     self.refreshOutfit()
 

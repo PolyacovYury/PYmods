@@ -15,25 +15,8 @@ from .shared import CSMode, tabToItem
 from .. import g_config
 
 CBP.ctx = property(lambda self: self._CustomizationBottomPanel__ctx)
-CBP.handleKey = lambda self, event: self._CustomizationBottomPanel__setFooterInitData() if event.key in (
-    Keys.KEY_LSHIFT, Keys.KEY_RSHIFT) else None
 
 
-@overrideMethod(CBP, '_populate')
-def _populate(base, self):
-    base(self)
-    InputHandler.g_instance.onKeyDown += self.handleKey
-    InputHandler.g_instance.onKeyUp += self.handleKey
-
-
-@overrideMethod(CBP, '_dispose')
-def _dispose(base, self):
-    InputHandler.g_instance.onKeyDown -= self.handleKey
-    InputHandler.g_instance.onKeyUp -= self.handleKey
-    base(self)
-
-
-# @overrideMethod(CBP, '_CustomizationBottomPanel')
 @overrideMethod(CBP, '_CustomizationBottomPanel__setFooterInitData')
 def __setFooterInitData(_, self):
     self.as_setBottomPanelInitDataS({
@@ -54,13 +37,11 @@ def __setFooterInitData(_, self):
 
 @overrideStaticMethod(CBP, '_CustomizationBottomPanel__getSwitcherInitData')
 def __getSwitcherInitData(_, mode):
-    isLeft = not checkKeys([[Keys.KEY_LSHIFT, Keys.KEY_RSHIFT]])
-    otherMode = ((mode + 1) if isLeft else (mode - 1 + len(CSMode.NAMES))) % len(CSMode.NAMES)
-    return {'leftLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[mode if isLeft else otherMode]],
-            'rightLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[otherMode if isLeft else mode]],
+    return {'leftLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[mode]],
+            'rightLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[(mode + 1) % len(CSMode.NAMES)]],
             'leftEvent': 'installStyle',
             'rightEvent': 'installStyles',
-            'isLeft': isLeft}
+            'isLeft': False}
 
 
 @overrideMethod(CBP, '_CustomizationBottomPanel__getItemTabsData')
@@ -82,6 +63,7 @@ def __getItemTabsData(_, self):
 
 @overrideMethod(CBP, '_CustomizationBottomPanel__onModeChanged')
 def __onModeChanged(_, self, mode):
+    self._CustomizationBottomPanel__setFooterInitData()
     self._CustomizationBottomPanel__updateTabs(self.ctx.currentTab)
     self._carouselDP.selectItem(
         self.ctx.modifiedStyle if self.ctx.currentTab == self.ctx.tabsData.STYLE else None)
