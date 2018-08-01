@@ -192,7 +192,7 @@ def switchToStyle(_, self):
 
 def changeMode(self, wasLeft):
     self._lastTab[self._mode] = self._tabIndex
-    self._mode = (self._mode + 1 if wasLeft else self._mode - 1 + len(CSMode.NAMES)) % len(CSMode.NAMES)
+    self._mode = ((self._mode + 1) if wasLeft else (self._mode - 1 + len(CSMode.NAMES))) % len(CSMode.NAMES)
     self._CustomizationContext__updateVisibleTabsList()
     self._tabIndex = self._lastTab[self._mode]
     if self._tabIndex not in self.visibleTabs:

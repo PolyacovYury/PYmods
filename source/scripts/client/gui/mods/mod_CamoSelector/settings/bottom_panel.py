@@ -55,7 +55,7 @@ def __setFooterInitData(_, self):
 @overrideStaticMethod(CBP, '_CustomizationBottomPanel__getSwitcherInitData')
 def __getSwitcherInitData(_, mode):
     isLeft = not checkKeys([[Keys.KEY_LSHIFT, Keys.KEY_RSHIFT]])
-    otherMode = (mode + 1 if isLeft else mode - 1 + len(CSMode.NAMES)) % len(CSMode.NAMES)
+    otherMode = ((mode + 1) if isLeft else (mode - 1 + len(CSMode.NAMES))) % len(CSMode.NAMES)
     return {'leftLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[mode if isLeft else otherMode]],
             'rightLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[otherMode if isLeft else mode]],
             'leftEvent': 'installStyle',
