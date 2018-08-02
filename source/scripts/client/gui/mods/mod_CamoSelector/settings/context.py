@@ -32,6 +32,7 @@ CustomizationContext.changeAlly = lambda self, apply: (
     setattr(self, 'useForAlly', apply), _updateCurrentSettings(self), self.onCacheResync())
 CustomizationContext.changeEnemy = lambda self, apply: (
     setattr(self, 'useForEnemy', apply), _updateCurrentSettings(self), self.onCacheResync())
+CustomizationContext.getRandMode = lambda self: self._randMode
 
 
 @overrideMethod(CustomizationContext, 'modifiedStyle', decorator=property)
