@@ -130,7 +130,7 @@ def installItem(_, self, intCD, areaId, slotType, regionId, seasonIdx, component
 
 
 @overrideMethod(CustomizationContext, 'removeItemFromRegion')
-def removeItemFromRegion(self, season, areaId, slotType, regionId):
+def removeItemFromRegion(_, self, season, areaId, slotType, regionId):
     outfit = self.modifiedOutfits[season]
     slot = outfit.getContainer(areaId).slotFor(slotType)
     if slot.capacity() > regionId:
@@ -140,7 +140,7 @@ def removeItemFromRegion(self, season, areaId, slotType, regionId):
 
 
 @overrideMethod(CustomizationContext, 'removeStyle')
-def removeStyle(self, intCD):
+def removeStyle(_, self, intCD):
     if self._mode == CSMode.BUY:
         if self._modifiedStyle and self._modifiedStyle.intCD == intCD:
             self._modifiedStyle = None
@@ -152,7 +152,7 @@ def removeStyle(self, intCD):
 
 
 @overrideMethod(CustomizationContext, 'removeItems')
-def removeItems(self, onlyCurrent, *intCDs):
+def removeItems(_, self, onlyCurrent, *intCDs):
     def intCdFilter(item):
         return item.intCD in intCDs
 
@@ -285,7 +285,7 @@ def isItemInOutfit(_, self, item):
 
 
 @overrideMethod(CustomizationContext, 'getNotModifiedItems')
-def getNotModifiedItems(self, season):
+def getNotModifiedItems(_, self, season):
     df = self.modifiedOutfits[season].diff(self.originalOutfits[season])
     notModifiedItems = df.diff(self.originalOutfits[self.currentSeason])
     return notModifiedItems
