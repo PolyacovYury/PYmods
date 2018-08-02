@@ -49,7 +49,7 @@ def _init(base, self):
     self._modifiedCSOutfits = {}
     self._originalCSStyle = None
     self._modifiedCSStyle = None
-    self._settingsOutfit = None
+    self._setupOutfit = None
     self._currentSettings = {}
     self._settingSeason = None
     self._randMode = None
@@ -60,7 +60,7 @@ def _init(base, self):
 @overrideMethod(CustomizationContext, 'refreshOutfit')
 def refreshOutfit(_, self):
     if self._mode == CSMode.SETUP:
-        self._currentOutfit = self._settingsOutfit
+        self._currentOutfit = self._setupOutfit
     elif self._tabIndex == self.tabsData.STYLE:
         if self.modifiedStyle:
             self._currentOutfit = self.modifiedStyle.getOutfit(self._currentSeason)
