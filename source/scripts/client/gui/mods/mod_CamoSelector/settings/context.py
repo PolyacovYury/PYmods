@@ -87,7 +87,7 @@ def tabChanged(_, self, tabIndex):
 
 @overrideMethod(CustomizationContext, 'regionSelected')
 def regionSelected(_, self, slotType, areaId, regionIdx):
-    if self._mode == CSMode.SETUP or self._tabIndex in (self.tabsData.EFFECT, self.tabsData.STYLE):
+    if self._mode != CSMode.SETUP or self._tabIndex in (self.tabsData.EFFECT, self.tabsData.STYLE):
         return
     self._selectedRegion = CustomizationRegion(slotType=slotType, areaId=areaId, regionIdx=regionIdx)
     self.onCustomizationRegionSelected(self._selectedRegion.slotType, self._selectedRegion.areaId,

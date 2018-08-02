@@ -114,7 +114,9 @@ def __onCaruselItemSelected(_, self, index, intCD):
     if tabIndex in (self.ctx.tabsData.STYLE, self.ctx.tabsData.EFFECT):
         slotType, areaId, regionIdx = self.ctx.selectedRegion
         self._MainView__onRegionHighlighted(slotType, areaId, regionIdx, True, False)
-    if not self._MainView__propertiesSheet.isVisible and not self.itemIsPicked:
+    if self.ctx.mode == CSMode.SETUP:
+        self._MainView__onRegionHighlighted(GUI_ITEM_TYPE.CAMOUFLAGE, 1, 0, True, False)
+    elif not self._MainView__propertiesSheet.isVisible and not self.itemIsPicked:
         self.soundManager.playInstantSound(SOUNDS.PICK)
         self.itemIsPicked = True
 
