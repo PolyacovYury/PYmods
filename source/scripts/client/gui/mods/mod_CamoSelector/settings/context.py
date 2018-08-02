@@ -17,7 +17,7 @@ from items.components.c11n_constants import SeasonType
 from shared_utils import nextTick, first, findFirst
 from vehicle_systems.tankStructure import TankPartIndexes
 from .carousel import CSComparisonKey, createBaseRequirements, isItemSuitableForTab, getItemSeason
-from .shared import CSMode, CSTabs
+from .shared import CSMode, CSTabs, tabToItem
 from .. import g_config
 from ..constants import RandMode
 
@@ -87,8 +87,10 @@ def tabChanged(_, self, tabIndex):
 
 @overrideMethod(CustomizationContext, 'regionSelected')
 def regionSelected(_, self, slotType, areaId, regionIdx):
-    if self._mode != CSMode.SETUP or self._tabIndex in (self.tabsData.EFFECT, self.tabsData.STYLE):
+    if self._tabIndex in (self.tabsData.EFFECT, self.tabsData.STYLE):
         return
+    if self._mode == CSMode.SETUP:
+        slotType = tabToItem(self._tabIndex, self._mode)
     self._selectedRegion = CustomizationRegion(slotType=slotType, areaId=areaId, regionIdx=regionIdx)
     self.onCustomizationRegionSelected(self._selectedRegion.slotType, self._selectedRegion.areaId,
                                        self._selectedRegion.regionIdx)
