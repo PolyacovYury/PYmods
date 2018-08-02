@@ -74,7 +74,7 @@ def isItemSuitableForTab(item, tabIndex):
     if tabIndex in (CSTabs.EMBLEM, CSTabs.INSCRIPTION):
         return True
     vehicle = g_currentVehicle.item
-    if tabIndex in (CSTabs.PAINT, CSTabs.EFFECT):
+    if tabIndex in (CSTabs.STYLE, CSTabs.PAINT, CSTabs.EFFECT):
         return item.mayInstall(vehicle)
     isGlobal = g_config.isCamoGlobal(item.descriptor)
     return not (
@@ -102,9 +102,11 @@ def buildFilterData(self):
     for item in sorted(allItems.itervalues(), key=comparisonKey if self._proxy.mode == CSMode.BUY else CSComparisonKey):
         groupName = item.groupUserName if self._proxy.mode == CSMode.BUY else getGroupName(item)
         if self._proxy.mode == CSMode.BUY:
-            tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)
+            tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID, -1)
         else:
             tabIndex = findFirst(partial(isItemSuitableForTab, item), CSTabs.ALL, -1)
+        if tabIndex == -1:
+            continue
         for seasonType in SeasonType.COMMON_SEASONS:
             if (item.season if self._proxy.mode == CSMode.BUY else getItemSeason(item)) & seasonType:
                 seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
