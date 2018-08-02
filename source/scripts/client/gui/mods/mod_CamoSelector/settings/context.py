@@ -29,9 +29,9 @@ CustomizationContext.modifiedOutfits = property(
 CustomizationContext.getSeasonIndices = lambda self: [
     SEASON_TYPE_TO_IDX[x] for x in SeasonType.COMMON_SEASONS if x & self._settingSeason]
 CustomizationContext.changeAlly = lambda self, apply: (
-    setattr(self, 'useForAlly', apply), _updateCurrentSettings(self), self.onCacheResync())
+    setattr(self, 'useFor_ally', apply), _updateCurrentSettings(self), self.onCacheResync())
 CustomizationContext.changeEnemy = lambda self, apply: (
-    setattr(self, 'useForEnemy', apply), _updateCurrentSettings(self), self.onCacheResync())
+    setattr(self, 'useFor_enemy', apply), _updateCurrentSettings(self), self.onCacheResync())
 CustomizationContext.getRandMode = lambda self: self._randMode
 
 
@@ -54,8 +54,8 @@ def _init(base, self):
     self._currentSettings = {'custom': {}, 'remap': {}}
     self._settingSeason = None
     self._randMode = None
-    self.useForAlly = False
-    self.useForEnemy = False
+    self.useFor_ally = False
+    self.useFor_enemy = False
 
 
 @overrideMethod(CustomizationContext, 'refreshOutfit')
@@ -125,8 +125,8 @@ def installItem(_, self, intCD, areaId, slotType, regionId, seasonIdx, component
         itemSettings, _, itemSeasons, itemOrigSettings = getItemSettings(self, item)
         self._settingSeason = itemSeasons
         self._randMode = itemSettings.get('random_mode', itemOrigSettings.get('random_mode', RandMode.RANDOM))
-        self.useForAlly = itemSettings.get('useForAlly', itemOrigSettings.get('useForAlly', True))
-        self.useForEnemy = itemSettings.get('useForEnemy', itemOrigSettings.get('useForEnemy', True))
+        self.useFor_ally = itemSettings.get('useForAlly', itemOrigSettings.get('useForAlly', True))
+        self.useFor_enemy = itemSettings.get('useForEnemy', itemOrigSettings.get('useForEnemy', True))
 
     self.refreshOutfit()
     self.onCustomizationItemInstalled()
@@ -250,8 +250,8 @@ def _updateCurrentSettings(self):
     item = self.currentOutfit.getContainer(1).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(0)
     itemName, itemKey = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
     settings = self._currentSettings[itemKey].setdefault(itemName, {})
-    settings['useForAlly'] = self.useForAlly
-    settings['useForEnemy'] = self.useForEnemy
+    settings['useForAlly'] = self.useFor_ally
+    settings['useForEnemy'] = self.useFor_enemy
     settings['random_mode'] = self._randMode
 
 

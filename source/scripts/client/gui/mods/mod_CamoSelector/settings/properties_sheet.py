@@ -109,10 +109,10 @@ def __makeRemoveRendererVO(_, self, separatorVisible=True):
 def __makeRenderersVOs(base, self):
     if self.ctx.mode != CSMode.SETUP:
         return base(self)
-    renderers = makeSeasonRendererVOs(self)
+    renderers = [makeModeRendererVO(self)]
     if self.ctx.getRandMode() == RandMode.TEAM:
-        renderers.extend((makeAllyRendererVO(self), makeEnemyRendererVO(self)))
-    renderers.append(makeModeRendererVO(self))
+        renderers.extend(makeTeamRendererVOs(self))
+    renderers.extend(makeSeasonRendererVOs(self))
     return renderers
 
 
@@ -131,46 +131,48 @@ def makeModeRendererVO(self):
             'btnsGroupName': CUSTOMIZATION_ALIASES.SCALE_BTNS_GROUP}
 
 
-def makeAllyRendererVO(self):
-    if not self.ctx.useForAlly:
-        titleText = g_config.i18n['UI_flashCol_teamMode_ally_apply_label']
-        actionBtnLabel = g_config.i18n['UI_flashCol_teamMode_ally_apply_btn']
-        actionBtnIconSrc = ''
-    else:
-        titleText = g_config.i18n['UI_flashCol_teamMode_ally_applied_label']
-        actionBtnLabel = g_config.i18n[
-            'UI_flashCol_teamMode' + ('_ally_applied_btn' if self.ctx.useForEnemy else '_remove_btn')]
-        actionBtnIconSrc = RES_ICONS.MAPS_ICONS_LIBRARY_ASSET_1
-    return {'titleText': text_styles.standard(titleText),
+def makeTeamRendererVOs(self):
+    result = []
+    for team in ('ally', 'enemy'):
+        if not getattr(self.ctx, 'useFor_' + team):
+            titleText = g_config.i18n['UI_flashCol_teamMode_%s_apply_label' % team]
+            actionBtnLabel = g_config.i18n['UI_flash_teamMode_%s_apply_btn' % team]
+            actionBtnIconSrc = ''
+        else:
+            titleText = g_config.i18n['UI_flashCol_teamMode_%s_applied_label' % team]
+            actionBtnLabel = g_config.i18n['UI_flash_teamMode' + (
+                ('_%s_applied_btn' % team) if getattr(self.ctx, 'useFor_' + (
+                    'enemy' if team == 'ally' else 'ally')) else '_remove_btn')]
+            actionBtnIconSrc = RES_ICONS.MAPS_ICONS_LIBRARY_ASSET_1
+        result.append({
+            'titleText': text_styles.standard(titleText),
             'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_TANK,
             'actionBtnLabel': actionBtnLabel,
             'actionBtnIconSrc': actionBtnIconSrc,
             'isAppliedToAll': False,
             'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-            'actionType': ACTION_ALIASES.CHANGE_ALLY}
-
-
-def makeEnemyRendererVO(self):
-    if not self.ctx.useForEnemy:
-        titleText = g_config.i18n['UI_flashCol_teamMode_enemy_apply_label']
-        actionBtnLabel = g_config.i18n['UI_flashCol_teamMode_enemy_apply_btn']
-        actionBtnIconSrc = ''
-    else:
-        titleText = g_config.i18n['UI_flashCol_teamMode_enemy_applied_label']
-        actionBtnLabel = g_config.i18n[
-            'UI_flashCol_teamMode' + ('_enemy_applied_btn' if self.ctx.useForAlly else '_remove_btn')]
-        actionBtnIconSrc = RES_ICONS.MAPS_ICONS_LIBRARY_ASSET_1
-    return {'titleText': text_styles.standard(titleText),
-            'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_TANK,
-            'actionBtnLabel': actionBtnLabel,
-            'actionBtnIconSrc': actionBtnIconSrc,
-            'isAppliedToAll': False,
-            'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-            'actionType': ACTION_ALIASES.CHANGE_ENEMY}
+            'actionType': getattr(ACTION_ALIASES, 'CHANGE_' + team.upper())})
+    return result
 
 
 def makeSeasonRendererVOs(self):
-    return [{'actionBtnLabel': CAMOUFLAGES_KIND_TEXTS[idx], 'actionType': 8 + idx,
-             'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_CHECKBOX_RENDERER_UI,
-             'isSelected': idx in self.ctx.getSeasonIndices()}
-            for idx in SEASONS_CONSTANTS.INDICES]
+    result = []
+    for idx in SEASONS_CONSTANTS.INDICES:
+        season = SEASONS_CONSTANTS.SEASONS[idx]
+        if idx not in self.ctx.getSeasonIndices():
+            titleText = g_config.i18n['UI_flashCol_season_%s_apply_label' % season]
+            actionBtnLabel = g_config.i18n['UI_flash_season_%s_apply_btn' % season]
+            actionBtnIconSrc = ''
+        else:
+            titleText = g_config.i18n['UI_flashCol_season_%s_applied_label' % season]
+            actionBtnLabel = g_config.i18n['UI_flash_season_%s_applied_btn' % season]
+            actionBtnIconSrc = RES_ICONS.MAPS_ICONS_LIBRARY_ASSET_1
+        result.append({
+            'titleText': text_styles.standard(titleText),
+            'iconSrc': getattr(RES_ICONS, 'MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_%s_SEASON_ICON' % season.upper()),
+            'actionBtnLabel': actionBtnLabel,
+            'actionBtnIconSrc': actionBtnIconSrc,
+            'isAppliedToAll': False,
+            'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
+            'actionType': getattr(ACTION_ALIASES, 'CHANGE_' + season.upper())})
+    return result

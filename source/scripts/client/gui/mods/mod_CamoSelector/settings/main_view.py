@@ -102,6 +102,7 @@ def __onRegionHighlighted(_, self, slotType, areaId, regionIdx, selected, hovere
     self.ctx.regionSelected(slotType, areaId, regionIdx)
     if self.ctx.isRegionSelected():
         self.as_onRegionHighlightedS(region)
+        slotType, areaId, regionIdx = self.ctx.selectedRegion
         self._MainView__showPropertiesSheet(areaId, slotType, regionIdx)
     else:
         self._MainView__clearItem()
