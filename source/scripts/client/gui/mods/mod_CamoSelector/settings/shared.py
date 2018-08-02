@@ -28,5 +28,8 @@ def tabToItem(tabIndex, mode):
 
 
 class ACTION_ALIASES:
+    CHANGE_SUMMER = 8
+    CHANGE_WINTER = 9
+    CHANGE_DESERT = 10
     CHANGE_ALLY = 11
     CHANGE_ENEMY = 12

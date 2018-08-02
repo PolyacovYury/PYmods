@@ -22,6 +22,8 @@ def onActionBtnClick(base, self, actionType, applyToAll):
         self.ctx.changeAlly(applyToAll)
     elif actionType == ACTION_ALIASES.CHANGE_ENEMY:
         self.ctx.changeEnemy(applyToAll)
+    elif (actionType - 8) in SEASONS_CONSTANTS.INDICES:
+        self.ctx.toggleSeason(actionType - 8)
     else:
         base(self, actionType, applyToAll)
 
@@ -31,9 +33,10 @@ def setCamouflageColor(_, self, paletteIdx):
     self.ctx.changeCamouflageColor(self._areaID, self._regionID, paletteIdx)
 
 
+# noinspection PyUnusedLocal
 @overrideMethod(CustomizationPropertiesSheet, 'setCamouflageScale')
 def setCamouflageScale(_, self, scale, scaleIndex):
-    self.ctx.changeCamouflageScale(self._areaID, self._regionID, scale, scaleIndex)
+    self.ctx.changeCamouflageScale(self._areaID, self._regionID, scale)
 
 
 @overrideMethod(CustomizationPropertiesSheet, '_CustomizationPropertiesSheet__updateItemAppliedToAllFlag')
@@ -109,7 +112,7 @@ def __makeRenderersVOs(base, self):
     renderers = [makeModeRendererVO(self)]
     if self.ctx.getRandMode() == RandMode.TEAM:
         renderers.extend((makeAllyRendererVO(self), makeEnemyRendererVO(self)))
-    renderers.append(makeSeasonRendererVO(self))
+    renderers.extend(makeSeasonRendererVOs(self))
     return renderers
 
 
@@ -166,16 +169,8 @@ def makeEnemyRendererVO(self):
             'actionType': ACTION_ALIASES.CHANGE_ENEMY}
 
 
-def makeSeasonRendererVO(self):
-    btnBlockVO = []
-    for idx in SEASONS_CONSTANTS.INDICES:
-        btnBlockVO.append({'paletteIcon': '', 'selected': idx in self.ctx.getSeasonIndices(),
-                           'label': CAMOUFLAGES_KIND_TEXTS[idx], 'value': idx})
-
-    return {'titleText': text_styles.standard(g_config.i18n['UI_flashCol_season_label']),
-            'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_COLORS,
-            'isAppliedToAll': False,
-            'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_COLOR_CHANGE,
-            'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SCALE_COLOR_RENDERER_UI,
-            'btnsBlockVO': btnBlockVO,
-            'btnsGroupName': CUSTOMIZATION_ALIASES.SCALE_BTNS_GROUP}
+def makeSeasonRendererVOs(self):
+    return [{'actionBtnLabel': CAMOUFLAGES_KIND_TEXTS[idx], 'actionType': 8 + idx,
+             'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_CHECKBOX_RENDERER_UI,
+             'isSelected': idx in self.ctx.getSeasonIndices()}
+            for idx in SEASONS_CONSTANTS.INDICES]

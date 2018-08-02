@@ -92,6 +92,7 @@ def regionSelected(_, self, slotType, areaId, regionIdx):
         return
     if self._mode == CSMode.SETUP:
         slotType = tabToItem(self._tabIndex, self._mode)
+        areaId = Area.HULL
     self._selectedRegion = CustomizationRegion(slotType=slotType, areaId=areaId, regionIdx=regionIdx)
     self.onCustomizationRegionSelected(self._selectedRegion.slotType, self._selectedRegion.areaId,
                                        self._selectedRegion.regionIdx)
@@ -202,36 +203,30 @@ def cancelChanges(_, self):
     self.onChangesCanceled()
 
 
-@overrideMethod(CustomizationContext, 'changeCamouflageColor')
-def changeCamouflageColor(_, self, areaId, regionIdx, paletteIdx):
-    if self._mode != CSMode.SETUP:
-        component = self.currentOutfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getComponent(regionIdx)
-        if component.palette != paletteIdx:
-            component.palette = paletteIdx
-            self.refreshOutfit()
-            self.onCustomizationCamouflageColorChanged(areaId, regionIdx, paletteIdx)
-    else:
-        self._randMode = paletteIdx
-        _updateCurrentSettings(self)
-        self.onCacheResync()
-
-
 @overrideMethod(CustomizationContext, 'changeCamouflageScale')
-def changeCamouflageScale(_, self, areaId, regionIdx, scale, scaleIndex):
+def changeCamouflageScale(_, self, areaId, regionIdx, scale):
     if self._mode != CSMode.SETUP:
         component = self.currentOutfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getComponent(regionIdx)
         if component.patternSize != scale:
             component.patternSize = scale
             self.refreshOutfit()
             self.onCustomizationCamouflageScaleChanged(areaId, regionIdx, scale)
-    else:
-        item = self.currentOutfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(regionIdx)
-        itemSettings, itemSeasonsStr, _, _ = getItemSettings(self, item)
-        self._settingSeason |= SEASON_IDX_TO_TYPE[scaleIndex]
-        newSeasons = set(x for x in SEASONS_CONSTANTS.SEASONS if x in itemSeasonsStr)
-        newSeasons.add(SEASON_TYPE_TO_NAME[SEASON_IDX_TO_TYPE[scaleIndex]])
-        itemSettings['season'] = ','.join(x for x in SEASONS_CONSTANTS.SEASONS if x in newSeasons)
+    elif self._randMode != scale:
+        self._randMode = scale
+        _updateCurrentSettings(self)
         self.onCacheResync()
+
+
+def toggleSeason(self, seasonIdx):
+    item = self.currentOutfit.getContainer(1).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(0)
+    itemSettings, itemSeasonsStr, _, _ = getItemSettings(self, item)
+    self._settingSeason |= SEASON_IDX_TO_TYPE[seasonIdx]
+    newSeasons = set(x for x in SEASONS_CONSTANTS.SEASONS if x in itemSeasonsStr)
+    newSeasons.add(SEASON_TYPE_TO_NAME[SEASON_IDX_TO_TYPE[seasonIdx]])
+    itemSettings['season'] = ','.join(x for x in SEASONS_CONSTANTS.SEASONS if x in newSeasons)
+
+
+CustomizationContext.toggleSeason = toggleSeason
 
 
 def getItemSettings(self, item):
@@ -255,8 +250,8 @@ def _updateCurrentSettings(self):
     item = self.currentOutfit.getContainer(1).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(0)
     itemName, itemKey = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
     settings = self._currentSettings[itemKey].setdefault(itemName, {})
-    settings['useForAlly'] = self._useForAlly
-    settings['useForEnemy'] = self._useForEnemy
+    settings['useForAlly'] = self.useForAlly
+    settings['useForEnemy'] = self.useForEnemy
     settings['random_mode'] = self._randMode
 
 
@@ -372,7 +367,7 @@ def applyItems(base, self, purchaseItems):
         if not g_config.outfitCache[nationName]:
             del g_config.outfitCache[nationName]
     loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-    self._CustomizationContext__onCacheResync()
+    self._CustomizationContext__onCacheResync()  # TODO: whip up style saving (and applying, for that measure)
     self.itemsCache.onSyncCompleted += self._CustomizationContext__onCacheResync
 
 

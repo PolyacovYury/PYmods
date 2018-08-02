@@ -79,7 +79,6 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_randMode_off': 'Disable',
             'UI_flash_randMode_random': 'Random',
             'UI_flash_randMode_team': 'Team',
-            'UI_flashCol_season_label': 'Season',
             'UI_flashCol_teamMode_enemy_apply_label': 'Use for team: enemy',
             'UI_flashCol_teamMode_enemy_apply_btn': 'Apply',
             'UI_flashCol_teamMode_enemy_applied_label': 'Used for team: enemy',
