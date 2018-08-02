@@ -50,7 +50,7 @@ def _init(base, self):
     self._originalCSStyle = None
     self._modifiedCSStyle = None
     self._setupOutfit = None
-    self._currentSettings = {}
+    self._currentSettings = {'custom': {}, 'remap': {}}
     self._settingSeason = None
     self._randMode = None
     self.useForAlly = False
@@ -194,7 +194,7 @@ def cancelChanges(_, self):
     if self._tabIndex == self.tabsData.STYLE:
         self._CustomizationContext__cancelModifiedStyle()
     elif self._mode == CSMode.SETUP:
-        self._currentSettings.clear()
+        self._currentSettings = {'custom': {}, 'remap': {}}
     else:
         self._CustomizationContext__cancelModifiedOufits()
     self.refreshOutfit()
