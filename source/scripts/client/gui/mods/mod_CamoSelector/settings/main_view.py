@@ -170,6 +170,8 @@ def __setAnchorsInitData(_, self, update=False):
 
 @overrideMethod(MainView, 'getItemTabsData')
 def getItemTabsData(_, self):
+    traceback.print_stack()
+    print '---'
     data = []
     pluses = []
     for tabIdx in self.ctx.visibleTabs:

@@ -1,3 +1,4 @@
+import traceback
 from PYmodsCore import overrideMethod, overrideStaticMethod
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
@@ -40,6 +41,8 @@ def __getSwitcherInitData(_, mode):
 
 @overrideMethod(CBP, '_CustomizationBottomPanel__getItemTabsData')
 def __getItemTabsData(_, self):
+    traceback.print_stack()
+    print '---'
     data = []
     pluses = []
     for tabIdx in self.ctx.visibleTabs:

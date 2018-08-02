@@ -1,3 +1,4 @@
+import traceback
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
 from collections import defaultdict
@@ -534,6 +535,8 @@ def __restoreState(_, self):
 
 @overrideMethod(CustomizationContext, '_CustomizationContext__updateVisibleTabsList')
 def __updateVisibleTabsList(_, self):
+    traceback.print_stack()
+    print '---'
     visibleTabs = defaultdict(set)
     anchorsData = g_currentVehicle.hangarSpace.getSlotPositions()
     if self._mode == CSMode.BUY:
