@@ -1,8 +1,7 @@
-from functools import partial
-
 import nations
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
+from functools import partial
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationCarouselDataProvider, \
     CustomizationSeasonAndTypeFilterData, CustomizationBookmarkVO, comparisonKey
 from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER, TYPE_TO_TAB_IDX
@@ -61,8 +60,11 @@ def getItemSeason(item):
     return itemSeason
 
 
-def createBaseRequirements(season=None):
+def createBaseRequirements(ctx, season=None):
     season = season or SeasonType.ALL
+    if ctx.mode == CSMode.BUY:
+        return createCustomizationBaseRequestCriteria(
+            g_currentVehicle.item, ctx.eventsCache.randomQuestsProgress, ctx.getAppliedItems(), season)
     return REQ_CRITERIA.CUSTOM(lambda item: getItemSeason(item) & season)
 
 
@@ -90,9 +92,7 @@ def init(base, self, *a, **kw):
 
 def buildFilterData(self):
     self._allSeasonAndTabFilterData = {}
-    requirement = createCustomizationBaseRequestCriteria(
-        self._currentVehicle.item, self.eventsCache.randomQuestsProgress, self._proxy.getAppliedItems()
-    ) if self._proxy.mode == CSMode.BUY else createBaseRequirements()
+    requirement = createBaseRequirements(self._proxy)
     allItems = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, requirement)
     for tabIndex in self._proxy.tabsData.ALL:
         self._allSeasonAndTabFilterData[tabIndex] = {}
@@ -120,36 +120,41 @@ def buildFilterData(self):
 
 
 @overrideMethod(CustomizationCarouselDataProvider, '_buildCustomizationItems')
-def _buildCustomizationItems(base, self):
+def _buildCustomizationItems(_, self):
     buildFilterData(self)
-    if self._proxy.mode == CSMode.BUY:
-        return base(self)
     season = self._seasonID
-    requirement = createBaseRequirements(season) | REQ_CRITERIA.CUSTOM(
-        lambda i: isItemSuitableForTab(i, self._tabIndex))
+    isBuy = self._proxy.mode == CSMode.BUY
+    requirement = createBaseRequirements(self._proxy, season) | REQ_CRITERIA.CUSTOM(
+        partial(isItemSuitableForTab, tabIndex=self._tabIndex))
     seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][season]
     allItemsGroup = len(seasonAndTabData.allGroups) - 1
     if seasonAndTabData.selectedGroupIndex != allItemsGroup:
         selectedGroup = seasonAndTabData.allGroups[seasonAndTabData.selectedGroupIndex]
         requirement |= REQ_CRITERIA.CUSTOMIZATION.ONLY_IN_GROUP(selectedGroup)
     if self._historicOnlyItems:
-        requirement |= REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
+        criteria = REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
+        if self._mode == CSMode.BUY:
+            criteria = ~criteria
+        requirement |= criteria
     if self._onlyOwnedAndFreeItems:
         requirement |= REQ_CRITERIA.CUSTOM(lambda x: self._proxy.getItemInventoryCount(x) > 0)
     if self._onlyAppliedItems:
         appliedItems = self._proxy.getAppliedItems(isOriginal=False)
         requirement |= REQ_CRITERIA.CUSTOM(lambda x: x.intCD in appliedItems)
-    allItems = self.itemsCache.items.getItems(tabToItem(self._tabIndex), requirement)
+    allItems = self.itemsCache.items.getItems(tabToItem(self._tabIndex, self._proxy.mode), requirement)
     self._customizationItems = []
     self._customizationBookmarks = []
-    lastGroupName = None
+    lastGroup = None
     for idx, item in enumerate(sorted(allItems.itervalues(), key=CSComparisonKey)):
         groupName = getGroupName(item)
+        groupID = item.groupID
+        group = groupID if isBuy else groupName
         if item.intCD == self._selectIntCD:
             self._selectedIdx = len(self._customizationItems)
             self._selectIntCD = None
-        if groupName != lastGroupName:
-            lastGroupName = groupName
-            self._customizationBookmarks.append(CustomizationBookmarkVO(groupName, idx).asDict())
+        if group != lastGroup:
+            lastGroup = group
+            self._customizationBookmarks.append(
+                CustomizationBookmarkVO((item.groupUserName if isBuy else groupName), idx).asDict())
         self._customizationItems.append(item.intCD)
         self._itemSizeData.append(item.isWide())

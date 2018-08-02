@@ -1,3 +1,4 @@
+from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_MAPPING
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from shared_utils import CONST_CONTAINER
 
@@ -20,7 +21,9 @@ ITEM_TO_TABS = {GUI_ITEM_TYPE.PAINT: (CSTabs.PAINT,), GUI_ITEM_TYPE.CAMOUFLAGE: 
                 GUI_ITEM_TYPE.MODIFICATION: (CSTabs.EFFECT,), GUI_ITEM_TYPE.STYLE: (CSTabs.STYLE,)}
 
 
-def tabToItem(tabIndex):
+def tabToItem(tabIndex, mode):
+    if mode == CSMode.BUY:
+        return TABS_ITEM_MAPPING.get(tabIndex)
     return next(itemType for itemType in ITEM_TO_TABS if tabIndex in ITEM_TO_TABS[itemType])
 
 

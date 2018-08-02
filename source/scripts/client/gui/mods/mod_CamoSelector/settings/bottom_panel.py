@@ -1,7 +1,6 @@
 from PYmodsCore import overrideMethod, overrideStaticMethod
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
-from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_MAPPING
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -47,7 +46,7 @@ def __getItemTabsData(_, self):
     data = []
     pluses = []
     for tabIdx in self.ctx.visibleTabs:
-        itemTypeID = (TABS_ITEM_MAPPING[tabIdx] if self.ctx.mode == CSMode.BUY else tabToItem(tabIdx))
+        itemTypeID = tabToItem(tabIdx, self.ctx.mode)
         typeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
         showPlus = not self.ctx.checkSlotsFilling(itemTypeID, self.ctx.currentSeason)
         data.append({'label': i18n.makeString(ITEM_TYPES.customizationPlural(typeName)),
@@ -63,6 +62,7 @@ def __getItemTabsData(_, self):
     return data, pluses
 
 
+# noinspection PyUnusedLocal
 @overrideMethod(CBP, '_CustomizationBottomPanel__onModeChanged')
 def __onModeChanged(_, self, mode):
     self._CustomizationBottomPanel__setFooterInitData()

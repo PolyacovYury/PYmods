@@ -9,7 +9,6 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.customization.context import CustomizationContext, CustomizationRegion, CaruselItemData
-from gui.customization.shared import createCustomizationBaseRequestCriteria
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from gui.shared.gui_items.processors.common import OutfitApplier, StyleApplier, CustomizationsSeller
@@ -60,24 +59,15 @@ def _init(base, self):
 
 @overrideMethod(CustomizationContext, 'refreshOutfit')
 def refreshOutfit(_, self):
-    if self._mode == CSMode.BUY:
-        if self._tabIndex == C11nTabs.STYLE:
-            if self._modifiedStyle:
-                self._currentOutfit = self._modifiedStyle.getOutfit(self._currentSeason)
-            else:
-                self._currentOutfit = self.service.getEmptyOutfit()
-        else:
-            self._currentOutfit = self._modifiedOutfits[self._currentSeason]
-    elif self._mode == CSMode.INSTALL:
-        if self._tabIndex == CSTabs.STYLE:
-            if self._modifiedCSStyle:
-                self._currentOutfit = self._modifiedCSStyle.getOutfit(self._currentSeason)
-            else:
-                self._currentOutfit = self.service.getEmptyOutfit()
-        else:
-            self._currentOutfit = self._modifiedCSOutfits[self._currentSeason]
-    else:  # self._mode == CSMode.SETUP
+    if self._mode == CSMode.SETUP:
         self._currentOutfit = self._settingsOutfit
+    elif self._tabIndex == self.tabsData.STYLE:
+        if self.modifiedStyle:
+            self._currentOutfit = self.modifiedStyle.getOutfit(self._currentSeason)
+        else:
+            self._currentOutfit = self.service.getEmptyOutfit()
+    else:
+        self._currentOutfit = self.modifiedOutfits[self._currentSeason]
     self.service.tryOnOutfit(self._currentOutfit)
     g_tankActiveCamouflage[g_currentVehicle.item.intCD] = self._currentSeason
 
@@ -113,20 +103,15 @@ def installItem(_, self, intCD, areaId, slotType, regionId, seasonIdx, component
         SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_PROHIBITED, type=SystemMessages.SM_TYPE.Warning,
                                        itemName=item.userName)
         return False
-    if self._mode == CSMode.BUY:
+    if self._mode != CSMode.SETUP:
         if slotType == GUI_ITEM_TYPE.STYLE:
-            self._modifiedStyle = item
+            if self._mode == CSMode.BUY:
+                self._modifiedStyle = item
+            else:
+                self._modifiedCSStyle = item
         else:
             season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
-            outfit = self._modifiedOutfits[season]
-            outfit.getContainer(areaId).slotFor(slotType).set(item, idx=regionId, component=component)
-            outfit.invalidate()
-    elif self._mode == CSMode.INSTALL:
-        if slotType == GUI_ITEM_TYPE.STYLE:
-            self._modifiedCSStyle = item
-        else:
-            season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
-            outfit = self._modifiedCSOutfits[season]
+            outfit = self.modifiedOutfits[season]
             outfit.getContainer(areaId).slotFor(slotType).set(item, idx=regionId, component=component)
             outfit.invalidate()
     else:
@@ -146,7 +131,7 @@ def installItem(_, self, intCD, areaId, slotType, regionId, seasonIdx, component
 
 @overrideMethod(CustomizationContext, 'removeItemFromRegion')
 def removeItemFromRegion(self, season, areaId, slotType, regionId):
-    outfit = (self._modifiedOutfits if self._mode == CSMode.BUY else self._modifiedCSOutfits)[season]
+    outfit = self.modifiedOutfits[season]
     slot = outfit.getContainer(areaId).slotFor(slotType)
     if slot.capacity() > regionId:
         slot.remove(idx=regionId)
@@ -279,12 +264,9 @@ def getModifiedOutfit(_, self, season):
 
 @overrideMethod(CustomizationContext, 'getAppliedItems')
 def getAppliedItems(_, self, isOriginal=True):
-    if self._mode == CSMode.BUY:
-        outfits = self._originalOutfits if isOriginal else self._modifiedOutfits
-        style = self._originalStyle if isOriginal else self._modifiedStyle
-    elif self._mode == CSMode.INSTALL:
-        outfits = self._originalCSOutfits if isOriginal else self._modifiedCSOutfits
-        style = self._originalCSStyle if isOriginal else self._modifiedCSStyle
+    if self._mode != CSMode.SETUP:
+        outfits = self.originalOutfits if isOriginal else self.modifiedOutfits
+        style = self.originalStyle if isOriginal else self.modifiedStyle
     else:
         return set(i.intCD for i in self.currentOutfit.items())
     seasons = SeasonType.COMMON_SEASONS if isOriginal else (self._currentSeason,)
@@ -440,7 +422,7 @@ def __carveUpOutfits(_, self):
         self._originalCSOutfits[season] = outfit.copy()
         applyCamoCache(outfit, vehName, g_config.hangarCamoCache.get(nationName, {}).get(vehName, {}).get(seasonName, {}))
         self._modifiedCSOutfits[season] = outfit.copy()
-
+    # TODO: add CamoSelector style getter
     style = self.service.getCurrentStyle()
     if self.service.isCurrentStyleInstalled():
         self._originalStyle = style
@@ -451,15 +433,12 @@ def __carveUpOutfits(_, self):
             self._modifiedStyle = None
         else:
             self._modifiedStyle = style
-    if self._mode == CSMode.BUY:
-        if style:
-            self._currentOutfit = style.getOutfit(self._currentSeason)
-        else:
-            self._currentOutfit = self._modifiedOutfits[self._currentSeason]
-    elif self._mode == CSMode.INSTALL:
-        self._currentOutfit = self._modifiedCSOutfits[self._currentSeason]
-    else:
+    if self._mode == CSMode.SETUP:
         self._currentOutfit = self._setupOutfit
+    elif self._tabIndex == self.tabsData.STYLE:
+        self._currentOutfit = self.modifiedStyle.getOutfit(self._currentSeason)
+    else:
+        self._currentOutfit = self.modifiedOutfits[self._currentSeason]
 
 
 @overrideMethod(CustomizationContext, '_CustomizationContext__cancelModifiedOufits')
@@ -536,12 +515,7 @@ def __restoreState(_, self):
 def __updateVisibleTabsList(_, self):
     visibleTabs = defaultdict(set)
     anchorsData = g_currentVehicle.hangarSpace.getSlotPositions()
-    if self._mode == CSMode.BUY:
-        requirement = createCustomizationBaseRequestCriteria(g_currentVehicle.item, self.eventsCache.randomQuestsProgress,
-                                                             self.getAppliedItems())
-        items = self.service.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, criteria=requirement)
-    else:
-        items = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, createBaseRequirements())
+    items = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, createBaseRequirements(self))
     for item in sorted(items.itervalues(), key=(comparisonKey if self._mode == CSMode.BUY else CSComparisonKey)):
         if self._mode == CSMode.BUY:
             tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)

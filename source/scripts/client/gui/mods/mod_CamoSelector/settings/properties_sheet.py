@@ -1,7 +1,6 @@
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization import CAMOUFLAGES_KIND_TEXTS
 from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import CustomizationPropertiesSheet
-from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_MAPPING
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -53,8 +52,7 @@ def __getTitleDescrTexts(_, self, currentElement):
     else:
         titleText = VEHICLE_CUSTOMIZATION.getSheetVehPartName(getCustomizationTankPartName(self._areaID, self._regionID))
     if not currentElement:
-        itemTypeID = (
-            TABS_ITEM_MAPPING.get(self.ctx.currentTab) if self.ctx.mode == CSMode.BUY else tabToItem(self.ctx.currentTab))
+        itemTypeID = tabToItem(self.ctx.currentTab, self.ctx.mode)
         itemTypeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
         descrText = text_styles.neutral(VEHICLE_CUSTOMIZATION.getSheetEmptyDescription(itemTypeName))
     elif self._slotID == GUI_ITEM_TYPE.STYLE:
@@ -76,8 +74,7 @@ def __makeRemoveRendererVO(_, self, separatorVisible=True):
         iconSrc = ''
         actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_REMOVESTYLE
     else:
-        itemTypeID = (
-            TABS_ITEM_MAPPING.get(self.ctx.currentTab) if self.ctx.mode == CSMode.BUY else tabToItem(self.ctx.currentTab))
+        itemTypeID = tabToItem(self.ctx.currentTab, self.ctx.mode)
         itemTypeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
         titleText = VEHICLE_CUSTOMIZATION.getSheetRemoveText(itemTypeName)
         if self._slotID == GUI_ITEM_TYPE.MODIFICATION:

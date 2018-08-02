@@ -31,7 +31,7 @@ def new_onTabChanged(_, self, tabIndex):
     elif self.ctx.mode == CSMode.SETUP:
         self.service.startHighlighter(HighlightingMode.WHOLE_VEHICLE)
     elif tabIndex in CSTabs.REGIONS:
-        self.service.startHighlighter(chooseMode(tabToItem(tabIndex), g_currentVehicle.item))
+        self.service.startHighlighter(chooseMode(tabToItem(tabIndex, self.ctx.mode), g_currentVehicle.item))
     self._MainView__setAnchorsInitData()
     if self._MainView__locatedOnEmbelem and self.hangarSpace.spaceInited:
         space = self.hangarSpace.space
@@ -65,7 +65,7 @@ def onAnchorsShown(_, self, anchors):
 @overrideMethod(MainView, '_getUpdatedAnchorsData')
 def _getUpdatedAnchorsData(_, self):
     tabIndex = self.ctx.currentTab
-    cType = TABS_ITEM_MAPPING[tabIndex] if self.ctx.mode == CSMode.BUY else tabToItem(tabIndex)
+    cType = tabToItem(tabIndex, self.ctx.mode)
     slotIds = []
     if cType == GUI_ITEM_TYPE.STYLE:
         slotId = CustomizationSlotIdVO(0, GUI_ITEM_TYPE.STYLE, 0)
@@ -107,6 +107,7 @@ def __onRegionHighlighted(_, self, slotType, areaId, regionIdx, selected, hovere
         self._MainView__clearItem()
 
 
+# noinspection PyUnusedLocal
 @overrideMethod(MainView, '_MainView__onCaruselItemSelected')
 def __onCaruselItemSelected(_, self, index, intCD):
     tabIndex = self.ctx.currentTab
@@ -148,7 +149,7 @@ def __setAnchorsInitData(_, self, update=False):
 
     tabIndex = self.ctx.currentTab
     anchorVOs = []
-    cType = TABS_ITEM_MAPPING[tabIndex] if self.ctx.mode == CSMode.BUY else tabToItem(tabIndex)
+    cType = tabToItem(tabIndex, self.ctx.mode)
     if cType == GUI_ITEM_TYPE.STYLE:
         slotId = CustomizationSlotIdVO(0, cType, 0)
         uid = customizationSlotIdToUid(slotId)
@@ -176,7 +177,7 @@ def getItemTabsData(_, self):
     data = []
     pluses = []
     for tabIdx in self.ctx.visibleTabs:
-        itemTypeID = (TABS_ITEM_MAPPING[tabIdx] if self.ctx.mode == CSMode.BUY else tabToItem(tabIdx))
+        itemTypeID = tabToItem(tabIdx, self.ctx.mode)
         typeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
         showPlus = not self.ctx.checkSlotsFilling(itemTypeID, self.ctx.currentSeason)
         data.append(({'label': i18n.makeString(ITEM_TYPES.customizationPlural(typeName)),
