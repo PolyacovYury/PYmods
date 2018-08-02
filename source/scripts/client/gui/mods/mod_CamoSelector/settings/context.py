@@ -549,7 +549,8 @@ def __updateVisibleTabsList(_, self):
             tabIndex = findFirst(partial(isItemSuitableForTab, item), CSTabs.ALL, -1)
         if tabIndex not in self.tabsData.VISIBLE or (
                 self._mode == CSMode.BUY and tabIndex == C11nTabs.CAMOUFLAGE and
-                g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage):
+                g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage) or (
+                self._mode == CSMode.SETUP and tabIndex not in CSTabs.CAMO):
             continue
         for seasonType in SeasonType.COMMON_SEASONS:
             if (item.season if self._mode == CSMode.BUY else getItemSeason(item)) & seasonType:
