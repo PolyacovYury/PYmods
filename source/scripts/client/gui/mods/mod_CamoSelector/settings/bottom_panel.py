@@ -6,7 +6,7 @@ from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES
+from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from gui.shared.utils.functions import makeTooltip
 from helpers import i18n
 from .shared import CSMode, tabToItem
@@ -51,8 +51,8 @@ def __getItemTabsData(_, self):
         typeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
         showPlus = not self.ctx.checkSlotsFilling(itemTypeID, self.ctx.currentSeason)
         data.append({'label': i18n.makeString(ITEM_TYPES.customizationPlural(typeName)),
-                     'tooltip': makeTooltip(ITEM_TYPES.customizationPlural(typeName),
-                                            TOOLTIPS.customizationItemTab(typeName)),
+                     'tooltip': makeTooltip(ITEM_TYPES.customizationPlural(typeName), TOOLTIPS.customizationItemTab(
+                         typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else ''),
                      'id': tabIdx} if self.ctx.mode == CSMode.BUY else
                     {'label': g_config.i18n['UI_flash_tabs_%s_label' % tabIdx],
                      'tooltip': makeTooltip(g_config.i18n['UI_flashCol_tabs_%s_text' % tabIdx],

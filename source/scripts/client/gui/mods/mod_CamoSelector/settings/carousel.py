@@ -1,17 +1,21 @@
+from functools import partial
+
 import nations
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationCarouselDataProvider, \
-    CustomizationSeasonAndTypeFilterData, CustomizationBookmarkVO
-from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER
+    CustomizationSeasonAndTypeFilterData, CustomizationBookmarkVO, comparisonKey
+from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER, TYPE_TO_TAB_IDX
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui.customization.shared import createCustomizationBaseRequestCriteria
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import i18n
 from items.components.c11n_constants import SeasonType
-from .. import g_config
+from shared_utils import findFirst
 from .shared import CSMode, CSTabs, ITEM_TO_TABS, tabToItem
+from .. import g_config
 
 
 def CSComparisonKey(item):
@@ -81,25 +85,34 @@ def isItemSuitableForTab(item, tabIndex):
 @overrideMethod(CustomizationCarouselDataProvider, '__init__')
 def init(base, self, *a, **kw):
     base(self, *a, **kw)
-    if self._proxy.mode == CSMode.BUY:
-        return
+    buildFilterData(self)
+
+
+def buildFilterData(self):
     self._allSeasonAndTabFilterData = {}
-    allItems = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, createBaseRequirements())
-    for tabIndex in CSTabs.ALL:
+    requirement = createCustomizationBaseRequestCriteria(
+        self._currentVehicle.item, self.eventsCache.randomQuestsProgress, self._proxy.getAppliedItems()
+    ) if self._proxy.mode == CSMode.BUY else createBaseRequirements()
+    allItems = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, requirement)
+    for tabIndex in self._proxy.tabsData.ALL:
         self._allSeasonAndTabFilterData[tabIndex] = {}
         for season in SeasonType.COMMON_SEASONS:
             self._allSeasonAndTabFilterData[tabIndex][season] = CustomizationSeasonAndTypeFilterData()
 
-        for item in sorted(allItems.itervalues(), key=CSComparisonKey):
-            groupName = getGroupName(item)
-            if isItemSuitableForTab(item, tabIndex):
-                for seasonType in SeasonType.COMMON_SEASONS:
-                    if getItemSeason(item) & seasonType:
-                        seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
-                        if groupName and groupName not in seasonAndTabData.allGroups:
-                            seasonAndTabData.allGroups.append(groupName)
-                        seasonAndTabData.itemCount += 1
+    for item in sorted(allItems.itervalues(), key=comparisonKey if self._proxy.mode == CSMode.BUY else CSComparisonKey):
+        groupName = item.groupUserName if self._proxy.mode == CSMode.BUY else getGroupName(item)
+        if self._mode == CSMode.BUY:
+            tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)
+        else:
+            tabIndex = findFirst(partial(isItemSuitableForTab, item), CSTabs.ALL, -1)
+        for seasonType in SeasonType.COMMON_SEASONS:
+            if (item.season if self._proxy.mode == CSMode.BUY else getItemSeason(item)) & seasonType:
+                seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
+                if groupName and groupName not in seasonAndTabData.allGroups:
+                    seasonAndTabData.allGroups.append(groupName)
+                seasonAndTabData.itemCount += 1
 
+    for tabIndex in self._proxy.tabsData.ALL:
         for seasonType in SeasonType.COMMON_SEASONS:
             seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
             seasonAndTabData.allGroups.append(i18n.makeString(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_FILTER_ALLGROUPS))
@@ -108,6 +121,7 @@ def init(base, self, *a, **kw):
 
 @overrideMethod(CustomizationCarouselDataProvider, '_buildCustomizationItems')
 def _buildCustomizationItems(base, self):
+    buildFilterData(self)
     if self._proxy.mode == CSMode.BUY:
         return base(self)
     season = self._seasonID
