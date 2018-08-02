@@ -101,7 +101,7 @@ def buildFilterData(self):
 
     for item in sorted(allItems.itervalues(), key=comparisonKey if self._proxy.mode == CSMode.BUY else CSComparisonKey):
         groupName = item.groupUserName if self._proxy.mode == CSMode.BUY else getGroupName(item)
-        if self._mode == CSMode.BUY:
+        if self._proxy.mode == CSMode.BUY:
             tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)
         else:
             tabIndex = findFirst(partial(isItemSuitableForTab, item), CSTabs.ALL, -1)
@@ -133,7 +133,7 @@ def _buildCustomizationItems(_, self):
         requirement |= REQ_CRITERIA.CUSTOMIZATION.ONLY_IN_GROUP(selectedGroup)
     if self._historicOnlyItems:
         criteria = REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
-        if self._mode == CSMode.BUY:
+        if self._proxy.mode == CSMode.BUY:
             criteria = ~criteria
         requirement |= criteria
     if self._onlyOwnedAndFreeItems:
