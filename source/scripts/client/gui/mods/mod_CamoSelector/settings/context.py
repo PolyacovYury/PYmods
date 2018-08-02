@@ -1,4 +1,3 @@
-import traceback
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
 from collections import defaultdict
@@ -182,8 +181,8 @@ def removeItems(self, onlyCurrent, *intCDs):
 
 
 @overrideMethod(CustomizationContext, 'switchToCustom')
-def switchToCustom(_, self):
-    changeMode(self, False)
+def switchToCustom(_, __):
+    pass  # changeMode(self, False)
 
 
 @overrideMethod(CustomizationContext, 'switchToStyle')
@@ -535,8 +534,6 @@ def __restoreState(_, self):
 
 @overrideMethod(CustomizationContext, '_CustomizationContext__updateVisibleTabsList')
 def __updateVisibleTabsList(_, self):
-    traceback.print_stack()
-    print '---'
     visibleTabs = defaultdict(set)
     anchorsData = g_currentVehicle.hangarSpace.getSlotPositions()
     if self._mode == CSMode.BUY:
@@ -550,7 +547,7 @@ def __updateVisibleTabsList(_, self):
             tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)
         else:
             tabIndex = findFirst(partial(isItemSuitableForTab, item), CSTabs.ALL, -1)
-        if tabIndex not in self.tabsData.VISIBLE or (
+        if tabIndex not in self.tabsData.ALL or (
                 self._mode == CSMode.BUY and tabIndex == C11nTabs.CAMOUFLAGE and
                 g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage) or (
                 self._mode == CSMode.SETUP and tabIndex not in CSTabs.CAMO):

@@ -6,12 +6,15 @@ from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView, Cus
 from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_MAPPING, DRAG_AND_DROP_INACTIVE_TABS, \
     C11nTabs, SEASONS_ORDER, SEASON_TYPE_TO_NAME
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
+from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.shared import chooseMode, getAppliedRegionsForCurrentHangarVehicle, HighlightingMode
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from gui.shared.utils.functions import makeTooltip
+from helpers import i18n
 from .shared import CSMode, CSTabs, tabToItem
 from .. import g_config
 
@@ -170,18 +173,20 @@ def __setAnchorsInitData(_, self, update=False):
 
 @overrideMethod(MainView, 'getItemTabsData')
 def getItemTabsData(_, self):
-    traceback.print_stack()
-    print '---'
     data = []
     pluses = []
     for tabIdx in self.ctx.visibleTabs:
         itemTypeID = (TABS_ITEM_MAPPING[tabIdx] if self.ctx.mode == CSMode.BUY else tabToItem(tabIdx))
+        typeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
         showPlus = not self.ctx.checkSlotsFilling(itemTypeID, self.ctx.currentSeason)
-        data.append(
-            {'label': g_config.i18n['UI_flash_tabs_%s_label' % tabIdx],
-             'tooltip': makeTooltip(g_config.i18n['UI_flashCol_tabs_%s_text' % tabIdx],
-                                    g_config.i18n['UI_flashCol_tabs_%s_tooltip' % tabIdx]),
-             'id': tabIdx})
+        data.append(({'label': i18n.makeString(ITEM_TYPES.customizationPlural(typeName)),
+                      'tooltip': makeTooltip(ITEM_TYPES.customizationPlural(typeName),
+                                             TOOLTIPS.customizationItemTab(typeName)),
+                      'id': tabIdx} if self.ctx.mode == CSMode.BUY else
+                     {'label': g_config.i18n['UI_flash_tabs_%s_label' % tabIdx],
+                      'tooltip': makeTooltip(g_config.i18n['UI_flashCol_tabs_%s_text' % tabIdx],
+                                             g_config.i18n['UI_flashCol_tabs_%s_tooltip' % tabIdx]),
+                      'id': tabIdx}))
         pluses.append(showPlus)
 
     return data, pluses

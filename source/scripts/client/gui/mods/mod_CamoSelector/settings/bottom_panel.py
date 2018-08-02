@@ -1,11 +1,14 @@
-import traceback
 from PYmodsCore import overrideMethod, overrideStaticMethod
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_MAPPING
+from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES
 from gui.shared.utils.functions import makeTooltip
+from helpers import i18n
 from .shared import CSMode, tabToItem
 from .. import g_config
 
@@ -41,14 +44,17 @@ def __getSwitcherInitData(_, mode):
 
 @overrideMethod(CBP, '_CustomizationBottomPanel__getItemTabsData')
 def __getItemTabsData(_, self):
-    traceback.print_stack()
-    print '---'
     data = []
     pluses = []
     for tabIdx in self.ctx.visibleTabs:
         itemTypeID = (TABS_ITEM_MAPPING[tabIdx] if self.ctx.mode == CSMode.BUY else tabToItem(tabIdx))
+        typeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
         showPlus = not self.ctx.checkSlotsFilling(itemTypeID, self.ctx.currentSeason)
-        data.append({'label': g_config.i18n['UI_flash_tabs_%s_label' % tabIdx],
+        data.append({'label': i18n.makeString(ITEM_TYPES.customizationPlural(typeName)),
+                     'tooltip': makeTooltip(ITEM_TYPES.customizationPlural(typeName),
+                                            TOOLTIPS.customizationItemTab(typeName)),
+                     'id': tabIdx} if self.ctx.mode == CSMode.BUY else
+                    {'label': g_config.i18n['UI_flash_tabs_%s_label' % tabIdx],
                      'tooltip': makeTooltip(g_config.i18n['UI_flashCol_tabs_%s_text' % tabIdx],
                                             g_config.i18n['UI_flashCol_tabs_%s_tooltip' % tabIdx]),
                      'id': tabIdx})
