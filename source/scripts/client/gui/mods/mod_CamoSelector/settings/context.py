@@ -5,7 +5,7 @@ from functools import partial
 from gui import g_tankActiveCamouflage, SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import comparisonKey
 from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_IDX, SEASON_IDX_TO_TYPE, \
-    SEASON_TYPE_TO_NAME, getOutfitWithoutItems, TYPE_TO_TAB_IDX
+    SEASON_TYPE_TO_NAME, getOutfitWithoutItems, TYPE_TO_TAB_IDX, getItemInventoryCount, getStyleInventoryCount
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.customization.context import CustomizationContext, CustomizationRegion, CaruselItemData
@@ -257,6 +257,13 @@ def _updateCurrentSettings(self):
     settings['useForAlly'] = self._useForAlly
     settings['useForEnemy'] = self._useForEnemy
     settings['random_mode'] = self._randMode
+
+
+@overrideMethod(CustomizationContext, 'getItemInventoryCount')
+def _getItemInventoryCount(_, self, item):
+    return getItemInventoryCount(
+        item, self.getOutfitsInfo()) if item.itemTypeID != GUI_ITEM_TYPE.STYLE else getStyleInventoryCount(
+        item, self.getStyleInfo())
 
 
 @overrideMethod(CustomizationContext, 'getModifiedOutfit')
