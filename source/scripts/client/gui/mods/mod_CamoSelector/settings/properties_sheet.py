@@ -109,10 +109,10 @@ def __makeRemoveRendererVO(_, self, separatorVisible=True):
 def __makeRenderersVOs(base, self):
     if self.ctx.mode != CSMode.SETUP:
         return base(self)
-    renderers = [makeModeRendererVO(self)]
+    renderers = makeSeasonRendererVOs(self)
     if self.ctx.getRandMode() == RandMode.TEAM:
         renderers.extend((makeAllyRendererVO(self), makeEnemyRendererVO(self)))
-    renderers.extend(makeSeasonRendererVOs(self))
+    renderers.append(makeModeRendererVO(self))
     return renderers
 
 
