@@ -36,6 +36,12 @@ def setCamouflageScale(_, self, scale, scaleIndex):
     self.ctx.changeCamouflageScale(self._areaID, self._regionID, scale, scaleIndex)
 
 
+@overrideMethod(CustomizationPropertiesSheet, '_CustomizationPropertiesSheet__updateItemAppliedToAllFlag')
+def __updateItemAppliedToAllFlag(base, self):
+    if self.ctx.mode != CSMode.SETUP:
+        base(self)
+
+
 @overrideMethod(CustomizationPropertiesSheet, '_CustomizationPropertiesSheet__getTitleDescrTexts')
 def __getTitleDescrTexts(_, self, currentElement):
     if self._slotID == GUI_ITEM_TYPE.STYLE:
