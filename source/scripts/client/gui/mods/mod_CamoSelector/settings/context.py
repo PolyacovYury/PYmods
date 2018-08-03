@@ -16,7 +16,8 @@ from gui.shared.utils.decorators import process
 from items.components.c11n_constants import SeasonType
 from shared_utils import nextTick, first, findFirst
 from vehicle_systems.tankStructure import TankPartIndexes
-from .shared import CSMode, CSTabs, tabToItem, CSComparisonKey, createBaseRequirements, isItemSuitableForTab, getItemSeason
+from .shared import CSMode, CSTabs, tabToItem, CSComparisonKey, createBaseRequirements, isItemSuitableForTab, getItemSeason, \
+    getItems
 from .. import g_config
 from ..constants import RandMode
 
@@ -520,7 +521,7 @@ def __restoreState(_, self):
 def __updateVisibleTabsList(_, self):
     visibleTabs = defaultdict(set)
     anchorsData = g_currentVehicle.hangarSpace.getSlotPositions()
-    items = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, createBaseRequirements(self))
+    items = getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, self, createBaseRequirements(self))
     for item in sorted(items.itervalues(), key=(comparisonKey if self._mode == CSMode.BUY else CSComparisonKey)):
         if self._mode == CSMode.BUY:
             tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)

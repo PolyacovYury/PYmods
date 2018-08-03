@@ -2,13 +2,14 @@ import nations
 from CurrentVehicle import g_currentVehicle
 from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_MAPPING, TYPES_ORDER
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
-from gui.customization.shared import createCustomizationBaseRequestCriteria
+from gui.customization.shared import createCustomizationBaseRequestCriteria, C11N_ITEM_TYPE_MAP
+from gui.shared.gui_items import GUI_ITEM_TYPE, ItemsCollection
 from gui.shared.utils.requesters import REQ_CRITERIA
-from items.components.c11n_constants import SeasonType
-from .. import g_config
-from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import i18n
+from items.components.c11n_constants import SeasonType
+from items.vehicles import g_cache
 from shared_utils import CONST_CONTAINER
+from .. import g_config
 
 
 class CSMode(CONST_CONTAINER):
@@ -41,6 +42,23 @@ class ACTION_ALIASES:
     CHANGE_DESERT = 10
     CHANGE_ALLY = 11
     CHANGE_ENEMY = 12
+
+
+def getItems(itemTypeID, ctx, criteria):
+    if not isinstance(itemTypeID, tuple):
+        itemTypeID = (itemTypeID,)
+    if ctx.mode == CSMode.BUY:
+        return ctx.itemsCache.items.getItems(itemTypeID, criteria)
+    else:
+        result = ItemsCollection()
+        itemGetter = ctx.itemsCache.items.getItemByCD
+        itemTypes = g_cache.customization20().itemTypes
+        for typeID in itemTypeID:
+            for item in itemTypes[C11N_ITEM_TYPE_MAP[typeID]].itervalues():
+                guiItem = itemGetter(item.compactDescr)
+                if criteria(guiItem):
+                    result[guiItem.intCD] = guiItem
+        return result
 
 
 def CSComparisonKey(item):
@@ -104,8 +122,7 @@ def isItemSuitableForTab(item, tabIndex):
         return item.mayInstall(vehicle)
     isGlobal = g_config.isCamoGlobal(item.descriptor)
     return not (
-        (tabIndex == CSTabs.CAMO_SHOP and (item.isHidden or item.priceGroup == 'custom')) or
-        (tabIndex == CSTabs.CAMO_HIDDEN and (not item.isHidden or isGlobal or item.priceGroup == 'custom')) or
-        (tabIndex == CSTabs.CAMO_GLOBAL and not isGlobal) or
-        (tabIndex == CSTabs.CAMO_CUSTOM and item.priceGroup != 'custom'))
-
+            (tabIndex == CSTabs.CAMO_SHOP and (item.isHidden or item.priceGroup == 'custom')) or
+            (tabIndex == CSTabs.CAMO_HIDDEN and (not item.isHidden or isGlobal or item.priceGroup == 'custom')) or
+            (tabIndex == CSTabs.CAMO_GLOBAL and not isGlobal) or
+            (tabIndex == CSTabs.CAMO_CUSTOM and item.priceGroup != 'custom'))

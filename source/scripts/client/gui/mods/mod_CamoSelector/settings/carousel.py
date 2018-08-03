@@ -10,7 +10,7 @@ from helpers import i18n
 from items.components.c11n_constants import SeasonType
 from shared_utils import findFirst
 from .shared import CSMode, CSTabs, tabToItem, createBaseRequirements, isItemSuitableForTab, getGroupName, CSComparisonKey, \
-    getItemSeason
+    getItemSeason, getItems
 
 
 @overrideMethod(CustomizationCarouselDataProvider, '__init__')
@@ -22,7 +22,7 @@ def init(base, self, *a, **kw):
 def buildFilterData(self):
     self._allSeasonAndTabFilterData = {}
     requirement = createBaseRequirements(self._proxy)
-    allItems = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, requirement)
+    allItems = getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, self._proxy, requirement)
     for tabIndex in self._proxy.tabsData.ALL:
         self._allSeasonAndTabFilterData[tabIndex] = {}
         for season in SeasonType.COMMON_SEASONS:
@@ -72,7 +72,7 @@ def _buildCustomizationItems(_, self):
     if self._onlyAppliedItems:
         appliedItems = self._proxy.getAppliedItems(isOriginal=False)
         requirement |= REQ_CRITERIA.CUSTOM(lambda x: x.intCD in appliedItems)
-    allItems = self.itemsCache.items.getItems(tabToItem(self._tabIndex, self._proxy.mode), requirement)
+    allItems = getItems(tabToItem(self._tabIndex, self._proxy.mode), self._proxy, requirement)
     self._customizationItems = []
     self._customizationBookmarks = []
     lastGroup = None
