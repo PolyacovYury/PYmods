@@ -1,5 +1,4 @@
 from PYmodsCore import overrideMethod
-from gui.Scaleform.daapi.view.lobby.customization import CAMOUFLAGES_KIND_TEXTS
 from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import CustomizationPropertiesSheet
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS

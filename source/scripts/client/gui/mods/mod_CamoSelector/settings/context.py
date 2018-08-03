@@ -16,8 +16,7 @@ from gui.shared.utils.decorators import process
 from items.components.c11n_constants import SeasonType
 from shared_utils import nextTick, first, findFirst
 from vehicle_systems.tankStructure import TankPartIndexes
-from .carousel import CSComparisonKey, createBaseRequirements, isItemSuitableForTab, getItemSeason
-from .shared import CSMode, CSTabs, tabToItem
+from .shared import CSMode, CSTabs, tabToItem, CSComparisonKey, createBaseRequirements, isItemSuitableForTab, getItemSeason
 from .. import g_config
 from ..constants import RandMode
 
@@ -73,6 +72,7 @@ def refreshOutfit(_, self):
     g_tankActiveCamouflage[g_currentVehicle.item.intCD] = self._currentSeason
 
 
+# noinspection PyArgumentList
 @overrideMethod(CustomizationContext, 'tabChanged')
 def tabChanged(_, self, tabIndex):
     self._tabIndex = tabIndex
