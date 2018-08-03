@@ -40,7 +40,10 @@ def applyCamoCache(outfit, vehName, seasonCache):
             continue
         slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
         if not seasonCache[areaName]:
-            slot.remove(0)
+            try:
+                slot.remove(0)
+            except KeyError:
+                pass
             continue
         camoID, paletteIdx, scale = seasonCache[areaName]
         if camoID not in camouflages:
