@@ -160,7 +160,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if 'fullAlpha' in settings and settings['fullAlpha'] != self.data['fullAlpha']:
             items.vehicles.g_cache._Cache__customization20 = None
             items.vehicles.g_cache.customization20()
-        if 'enabled' in settings and settings['enabled'] != self.data['enabled']:
+        if 'enabled' in settings and settings['enabled'] != self.data['enabled'] and not settings['enabled']:
             from .settings import backups
             for alias in backups.keys():
                 settings = g_entitiesFactories.getSettings(alias)
