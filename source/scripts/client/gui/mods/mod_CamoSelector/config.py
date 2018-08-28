@@ -8,6 +8,7 @@ import traceback
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups, Analytics
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
+from gui.Scaleform.framework import g_entitiesFactories
 from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
@@ -140,8 +141,8 @@ class ConfigInterface(PYmodsConfigInterface):
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
-                'column1': [self.tb.createOptions('hangarCamoKind', [self.i18n['UI_setting_hangarCamo_' + x] for x in
-                                                                     ('winter', 'summer', 'desert', 'random')]),
+                'column1': [self.tb.createOptions('hangarCamoKind', [
+                                self.i18n['UI_setting_hangarCamo_' + x] for x in ('winter', 'summer', 'desert', 'random')]),
                             self.tb.createControl('doRandom'),
                             self.tb.createControl('disableWithDefault')],
                 'column2': [self.tb.createControl('fillEmptySlots'),
@@ -159,6 +160,15 @@ class ConfigInterface(PYmodsConfigInterface):
         if 'fullAlpha' in settings and settings['fullAlpha'] != self.data['fullAlpha']:
             items.vehicles.g_cache._Cache__customization20 = None
             items.vehicles.g_cache.customization20()
+        if 'enabled' in settings and settings['enabled'] != self.data['enabled']:
+            from .settings import backups
+            for alias in backups.keys():
+                settings = g_entitiesFactories.getSettings(alias)
+                if settings is None:
+                    del backups[alias]
+                    continue
+                g_entitiesFactories.removeSettings(alias)
+                g_entitiesFactories.addSettings(backups.pop(alias))
         super(self.__class__, self).onApplySettings(settings)
         self.hangarCamoCache.clear()
         if self.isModAdded:

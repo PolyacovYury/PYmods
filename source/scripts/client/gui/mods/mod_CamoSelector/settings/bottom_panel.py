@@ -110,6 +110,3 @@ class CustomizationBottomPanel(CBP):
         self._carouselDP.selectItem(self.__ctx.modifiedStyle if self.__ctx.currentTab == self.__ctx.tabsData.STYLE else None)
         self.__setBottomPanelBillData()
 
-
-backup = g_entitiesFactories.getSettings(VIEW_ALIAS.CUSTOMIZATION_BOTTOM_PANEL)
-g_entitiesFactories.addSettings(backup.replaceSettings(clazz=CustomizationBottomPanel))
