@@ -69,6 +69,8 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                     for itemName in itemsDict:
                         itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
         print self.ID + ': loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
+        import bwpydevd
+        bwpydevd.startPyDevD('pycharm', suspend=True)
         for nationID, engines_data in enumerate(g_cache._Cache__engines):
             nationData = self.data['engines'].get(nations.NAMES[nationID])
             if not nationData:
