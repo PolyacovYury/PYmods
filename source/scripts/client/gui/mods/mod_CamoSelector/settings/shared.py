@@ -108,7 +108,7 @@ def createBaseRequirements(ctx, season=None):
     season = season or SeasonType.ALL
     if ctx.mode == CSMode.BUY:
         return createCustomizationBaseRequestCriteria(
-            g_currentVehicle.item, ctx.eventsCache.randomQuestsProgress, ctx.getAppliedItems(), season)
+            g_currentVehicle.item, ctx.eventsCache.questsProgress, ctx.getAppliedItems(), season)
     return REQ_CRITERIA.CUSTOM(lambda item: getItemSeason(item) & season)
 
 
