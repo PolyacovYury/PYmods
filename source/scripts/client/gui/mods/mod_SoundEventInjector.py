@@ -135,18 +135,20 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         for item in vehicleType.engines:
             nationID, itemID = item.id
             sounds = item.sounds
-            itemData = self.data['engines'].get(nations.NAMES[nationID], {}).get(item.name, {})
-            item.sounds = sound_components.WWTripleSoundConfig(sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
-                                                               itemData.get('wwsoundNPC', sounds.wwsoundNPC))
+            itemData = self.data['engines'].get(nations.NAMES[nationID], {}).get(item.name)
+            if itemData:
+                item.sounds = sound_components.WWTripleSoundConfig(sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
+                                                                   itemData.get('wwsoundNPC', sounds.wwsoundNPC))
         for turrets in vehicleType.turrets:
             for turret in turrets:
                 for item in turret.guns:
                     nationID, itemID = item.id
-                    item.effects = items.vehicles.g_cache._gunEffects.get(
-                        self.data['guns'].get(vehicleType.name, {}).get(item.name, {}).get(
-                            'effects',
-                            self.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', '')),
-                        item.effects)
+                    if vehicleType.name in self.data['guns']:
+                        itemData = self.data['guns'].get(vehicleType.name, {}).get(item.name)
+                    else:
+                        itemData = self.data['guns'].get(nations.NAMES[nationID], {}).get(item.name)
+                    if itemData and 'effects' in itemData:
+                        item.effects = items.vehicles.g_cache._gunEffects.get(itemData['effects'], item.effects)
 
 
 @PYmodsCore.overrideMethod(items.vehicles.VehicleType, '__init__')
