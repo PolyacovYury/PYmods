@@ -14,5 +14,5 @@ def addSettings(base, self, settings):
     alias = settings.alias
     if g_config.data['enabled'] and alias in views:
         backups[alias] = settings
-        settings = settings.replaceSettings(clazz=views[alias])
+        settings = settings.replaceSettings({'clazz': views[alias]})
     return base(self, settings)
