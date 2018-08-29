@@ -71,23 +71,28 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         print self.ID + ': loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
         import bwpydevd
         bwpydevd.startPyDevD('pycharm', suspend=True)
-        for nationID, engines_data in enumerate(g_cache._Cache__engines):
-            nationData = self.data['engines'].get(nations.NAMES[nationID])
-            if not nationData:
-                continue
-            for item in engines_data.itervalues():
-                itemData = nationData.get(item.name)
-                if not itemData:
+        newXmlPath = '../' + self.configPath + 'configs/gun_effects.xml'
+        if ResMgr.isFile(newXmlPath):
+            g_cache._gunEffects.update(items.vehicles._readEffectGroups(newXmlPath))
+        elif self.data['guns']:
+            print self.ID + ': gun effects config not found'
+        for item_type, items_storage in (('engines', g_cache._Cache__engines), ('guns', g_cache._Cache__guns)):
+            for nationID, nation_items in enumerate(items_storage):
+                nationData = self.data[item_type].get(nations.NAMES[nationID])
+                if not nationData:
                     continue
-                sounds = item.sounds
-                item.sounds = sound_components.WWTripleSoundConfig(
-                    sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
-                    itemData.get('wwsoundNPC', sounds.wwsoundNPC))
-        for nationID, guns_data in enumerate(g_cache._Cache__guns):
-            for item in guns_data.itervalues():
-                item.effects = items.vehicles.g_cache._gunEffects.get(
-                    self.data['guns'].get(nations.NAMES[nationID], {}).get(item.name, {}).get('effects', ''), item.effects)
-        for sname, descr in g_cache._Cache__gunReloadEffects.iteritems():
+                for item in nation_items.itervalues():
+                    itemData = nationData.get(item.name)
+                    if not itemData:
+                        continue
+                    if item_type == 'engines':
+                        sounds = item.sounds
+                        item.sounds = sound_components.WWTripleSoundConfig(
+                            sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
+                            itemData.get('wwsoundNPC', sounds.wwsoundNPC))
+                    elif item_type == 'guns' and 'effects' in itemData:
+                        item.effects = items.vehicles.g_cache._gunEffects.get(itemData['effects'], item.effects)
+        for sname, descr in g_cache._gunReloadEffects.iteritems():
             effData = self.data['gun_reload_effects'].get(sname)
             if effData is None:
                 continue
@@ -105,11 +110,11 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                 descr.caliber = effData.get('caliber', descr.caliber)
                 descr.shellDt = effData.get('loopShellDt', descr.shellDt)
                 descr.shellDtLast = effData.get('loopShellLastDt', descr.shellDtLast)
-        for sname, index in g_cache._Cache__shotEffectsIndexes.iteritems():
+        for sname, index in g_cache.shotEffectsIndexes.iteritems():
             effData = self.data['shot_effects'].get(sname)
             if effData is None:
                 continue
-            res = g_cache._Cache__shotEffects[index]
+            res = g_cache.shotEffects[index]
             for effType in (x for x in ('projectile',) if x in effData):
                 typeData = effData[effType]
                 for effectDesc in res[effType][2]._EffectsList__effectDescList:
@@ -123,11 +128,6 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                     if isinstance(effectDesc, _SoundEffectDesc):
                         effectDesc._impactNames = tuple(typeData.get(key, effectDesc._impactNames[idx]) for idx, key in
                                                         enumerate(('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC')))
-        newXmlPath = '../' + self.configPath + 'configs/gun_effects.xml'
-        if ResMgr.isFile(newXmlPath):
-            g_cache._Cache__gunEffects.update(items.vehicles._readEffectGroups(newXmlPath))
-        elif self.data['guns']:
-            print self.ID + ': gun effects config not found'
         for vehicleType in g_cache._Cache__vehicles.itervalues():
             self.inject_vehicleType(vehicleType)
 
