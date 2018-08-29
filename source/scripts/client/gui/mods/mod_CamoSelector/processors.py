@@ -216,20 +216,26 @@ def new_assembleModel(base, self, *a, **kw):
                 vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
             nationName, vehicleName = vDesc.name.split(':')
             intCD = vDesc.type.compactDescr
-            if g_config.data['hangarCamoKind'] < 3:
-                idx = g_config.data['hangarCamoKind']
-                season = SeasonType.fromArenaKind(idx)
-                outfit = vehicle.getOutfit(season).copy() if vehicle else self.itemsFactory.createOutfit()
-                g_tankActiveCamouflage[intCD] = season
+            if g_config.data['useBought']:
+                if g_config.data['hangarCamoKind'] < 3:
+                    idx = g_config.data['hangarCamoKind']
+                    season = SeasonType.fromArenaKind(idx)
+                    outfit = None
+                    if vehicle:
+                        outfit = vehicle.getOutfit(season)
+                    if not outfit:
+                        outfit = self.itemsFactory.createOutfit()
+                    outfit = outfit.copy()
+                    g_tankActiveCamouflage[intCD] = season
+                else:
+                    outfit = self._getActiveOutfit().copy()
+                    if g_tankActiveCamouflage.get(intCD, SeasonType.EVENT) == SeasonType.EVENT:
+                        active = []
+                        for season in SeasonType.SEASONS:
+                            if vehicle and vehicle.hasOutfitWithItems(season):
+                                active.append(season)
+                        g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
             else:
-                outfit = self._getActiveOutfit().copy()
-                if g_tankActiveCamouflage.get(intCD, SeasonType.EVENT) == SeasonType.EVENT:
-                    active = []
-                    for season in SeasonType.SEASONS:
-                        if vehicle and vehicle.hasOutfitWithItems(season):
-                            active.append(season)
-                    g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
-            if not g_config.data['useBought']:
                 outfit = self.itemsFactory.createOutfit()
             seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
             vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
