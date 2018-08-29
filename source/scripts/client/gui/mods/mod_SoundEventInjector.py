@@ -69,8 +69,6 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                     for itemName in itemsDict:
                         itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
         print self.ID + ': loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
-        import bwpydevd
-        bwpydevd.startPyDevD('pycharm', suspend=True)
         newXmlPath = '../' + self.configPath + 'configs/gun_effects.xml'
         if ResMgr.isFile(newXmlPath):
             g_cache._gunEffects.update(items.vehicles._readEffectGroups(newXmlPath))
