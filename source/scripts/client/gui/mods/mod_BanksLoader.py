@@ -6,6 +6,7 @@ import glob
 import os
 import traceback
 import zipfile
+from Avatar import PlayerAvatar
 from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.Scaleform.daapi.view.dialogs.SimpleDialog import SimpleDialog
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
@@ -370,5 +371,7 @@ def new_Lobby_populate(base, self):
     _config.onRequestRestart()
 
 
-def onAvatarBecomePlayer():
+@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
+def new_startGUI(base, *a, **kw):
+    base(*a, **kw)
     _config.onRequestRestart()
