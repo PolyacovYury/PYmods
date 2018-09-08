@@ -557,9 +557,9 @@ def firstCheck(targetID, attackerID, reason, squadChecked, killerID):
                 else:
                     arena.firstBloods['ally'] = True
             if attacker['isPlayer'] and not arena.firstBloods['player']:
-                arena.firstBloods['player'] = arena.firstBloods['ally'] = True
-                if not arena.firstBloods['notFirst']:
+                if not arena.firstBloods['ally']:
                     callTextInit(_config.i18n['UI_message_firstBlood'], targetID, attackerID, None)
+                arena.firstBloods['player'] = arena.firstBloods['ally'] = True
                 soundMgr.addToQueue('firstBlood')
         arena.firstBloods['notFirst'] = True
     if killerID is not None:
