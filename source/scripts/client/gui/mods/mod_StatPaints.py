@@ -1,6 +1,8 @@
+__appID__ = '216060d4797ff99153c400922baeed6f'
 import BigWorld
 import json
 import threading
+import traceback
 import urllib2
 from ClientArena import ClientArena
 from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod
@@ -15,14 +17,15 @@ from vehicle_systems.tankStructure import TankPartNames
 
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
-        self.dossiers = {}
-        self.pendingIDs = set()
-        self.threadArray = []
+        self.dossier = {}
+        self.pending = set()
+        self.attempts = {}
+        self.failed = set()
         super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.0.0 (%(file_compile_date)s)'
+        self.version = '1.0.1 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'ignorePresentPaints': False,
                      'removeCamouflages': True,
@@ -68,27 +71,35 @@ class ConfigInterface(PYmodsConfigInterface):
     def loadPlayerStats(self, databaseIDs):
         regions = {}
         for databaseID in databaseIDs:
-            if databaseID not in self.pendingIDs and databaseID not in self.dossiers:
-                self.pendingIDs.add(databaseID)
+            if databaseID not in self.pending and databaseID not in self.dossier and databaseID not in self.failed:
+                if databaseID not in self.attempts:
+                    self.attempts[databaseID] = 0
+                self.attempts[databaseID] += 1
+                if self.attempts[databaseID] > 100:
+                    print self.ID + ': could not load info for databaseID', databaseID
+                    self.failed.add(databaseID)
+                    del self.attempts[databaseID]
+                    continue
+                self.pending.add(databaseID)
                 regions.setdefault(userRegion(int(databaseID)), []).append(databaseID)
         results = []
         for region in regions:
             try:
                 results.append(json.loads(urllib2.urlopen((
                     'https://api.worldoftanks.{'
-                    'region}/wot/account/info/?application_id=demo&fields=global_rating&account_id={id}').format(
-                    region=region, id=','.join(regions[region]))).read()).get('data', None))
+                    'region}/wot/account/info/?application_id={aid}&fields=global_rating&account_id={id}').format(
+                    region=region, id=','.join(regions[region]), aid=__appID__)).read()).get('data', None))
             except IOError:
                 for databaseID in regions[region]:
-                    self.pendingIDs.discard(databaseID)
+                    self.pending.discard(databaseID)
         for result in results:
             if result:
                 for databaseID in result:
                     dossier = result[databaseID]
-                    self.dossiers[databaseID] = {'wgr': dossier['global_rating']}
-                    self.pendingIDs.discard(databaseID)
+                    self.dossier[databaseID] = {'wgr': dossier['global_rating']}
+                    self.pending.discard(databaseID)
         for databaseID in databaseIDs:
-            self.pendingIDs.discard(databaseID)
+            self.pending.discard(databaseID)
         BigWorld.callback(0, partial(self.updatePaints, databaseIDs))
 
     def updatePaints(self, databaseIDs):
@@ -103,10 +114,13 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def thread(self, databaseIDs):
         try:
-            self.threadArray.append(threading.Thread(target=self.loadPlayerStats, args=(databaseIDs,)))
-            self.threadArray[-1].start()
+            databaseIDs = [x for x in databaseIDs if x not in self.pending and x not in self.failed]
+            if databaseIDs:
+                thread = threading.Thread(target=self.loadPlayerStats, args=(databaseIDs,))
+                thread.setDaemon(True)
+                thread.start()
         except StandardError:
-            pass
+            traceback.print_exc()
 
     def loadStats(self):
         arena = BigWorld.player().arena
@@ -114,9 +128,9 @@ class ConfigInterface(PYmodsConfigInterface):
             self.thread([str(pl['accountDBID']) for pl in arena.vehicles.values()])
 
     def resetStats(self):
-        self.threadArray[:] = []
-        self.dossiers.clear()
-        self.pendingIDs.clear()
+        self.attempts.clear()
+        self.dossier.clear()
+        self.pending.clear()
 
 
 def userRegion(databaseID):
@@ -161,12 +175,12 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
             return base(self, *a, **kw)
         paintItems[paintID] = paintItem
     accountID = str(BigWorld.player().arena.vehicles[vID]['accountDBID'])
-    if accountID not in g_config.dossiers:
-        if accountID not in g_config.pendingIDs:
+    if accountID not in g_config.dossier:
+        if accountID not in g_config.pending:
             g_config.thread([accountID])
         return base(self, *a, **kw)
     paintID = None
-    rating = g_config.dossiers[accountID]['wgr']
+    rating = g_config.dossier[accountID]['wgr']
     for value in sorted(int(x) for x in g_config.data['scale']):
         if rating < value:
             paintID = g_config.data['scale'][str(value)]
