@@ -28,16 +28,17 @@ def buildFilterData(self):
         for season in SeasonType.COMMON_SEASONS:
             self._allSeasonAndTabFilterData[tabIndex][season] = CustomizationSeasonAndTypeFilterData()
 
-    for item in sorted(allItems.itervalues(), key=comparisonKey if self._proxy.mode == CSMode.BUY else CSComparisonKey):
-        groupName = item.groupUserName if self._proxy.mode == CSMode.BUY else getGroupName(item)
-        if self._proxy.mode == CSMode.BUY:
+    isBuy = self._proxy.mode == CSMode.BUY
+    for item in sorted(allItems.itervalues(), key=comparisonKey if isBuy else CSComparisonKey):
+        groupName = item.groupUserName if isBuy else getGroupName(item)
+        if isBuy:
             tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID, -1)
         else:
             tabIndex = findFirst(partial(isItemSuitableForTab, item), CSTabs.ALL, -1)
         if tabIndex == -1:
             continue
         for seasonType in SeasonType.COMMON_SEASONS:
-            if (item.season if self._proxy.mode == CSMode.BUY else getItemSeason(item)) & seasonType:
+            if (item.season if isBuy else getItemSeason(item)) & seasonType:
                 seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
                 if groupName and groupName not in seasonAndTabData.allGroups:
                     seasonAndTabData.allGroups.append(groupName)
@@ -64,7 +65,7 @@ def _buildCustomizationItems(_, self):
         requirement |= REQ_CRITERIA.CUSTOMIZATION.ONLY_IN_GROUP(selectedGroup)
     if self._historicOnlyItems:
         criteria = REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
-        if self._proxy.mode == CSMode.BUY:
+        if isBuy:
             criteria = ~criteria
         requirement |= criteria
     if self._onlyOwnedAndFreeItems:

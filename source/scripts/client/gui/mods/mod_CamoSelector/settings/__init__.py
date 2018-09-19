@@ -5,7 +5,9 @@ from .. import g_config
 from . import bottom_panel, carousel, cm_handlers, context, main_view, properties_sheet, shared
 
 
-views = {VIEW_ALIAS.CUSTOMIZATION_BOTTOM_PANEL: bottom_panel.CustomizationBottomPanel}
+views = {VIEW_ALIAS.CUSTOMIZATION_BOTTOM_PANEL: bottom_panel.CustomizationBottomPanel,
+         VIEW_ALIAS.LOBBY_CUSTOMIZATION: main_view.MainView,
+         VIEW_ALIAS.CUSTOMIZATION_PROPERTIES_SHEET: properties_sheet.CustomizationPropertiesSheet}
 backups = {}
 
 
