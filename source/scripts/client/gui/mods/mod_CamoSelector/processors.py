@@ -85,7 +85,7 @@ def applyPlayerCache(outfit, vehName, seasonCache):
         for areaName in seasonCache[itemTypeName].keys():
             if itemTypeName == 'modification':
                 if areaName != 'misc':
-                    print g_config.ID + ': wrong area name for', vehName, 'modification:' % (g_config.ID, vehName), areaName
+                    print g_config.ID + ': wrong area name for', vehName, 'modification:', areaName
                     del seasonCache[itemTypeName][areaName]
                     continue
                 else:

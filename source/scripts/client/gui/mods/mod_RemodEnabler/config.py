@@ -335,13 +335,12 @@ class ConfigInterface(PYmodsConfigInterface):
                             remodTanks[tankType].add(xmlName)
                             if xmlName not in selectedData[tankType]:
                                 selectedData[tankType][xmlName] = None
-                for tankType in ('player', 'ally', 'enemy'):
-                    for xmlName in selectedData[tankType].keys():
-                        if (selectedData[tankType][xmlName] and selectedData[tankType][
-                            xmlName] not in self.modelsData['models']):
-                            selectedData[tankType][xmlName] = None
-                        if xmlName not in remodTanks[tankType]:
-                            del selectedData[tankType][xmlName]
+                for team in ('player', 'ally', 'enemy'):
+                    for xmlName in selectedData[team].keys():
+                        if selectedData[team][xmlName] and selectedData[team][xmlName] not in self.modelsData['models']:
+                            selectedData[team][xmlName] = None
+                        if xmlName not in remodTanks[team]:
+                            del selectedData[team][xmlName]
                 if selectedData['remod'] and selectedData['remod'] not in self.modelsData['models']:
                     selectedData['remod'] = ''
                 loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True, quiet=quiet)

@@ -132,11 +132,11 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
     def inject_vehicleType(self, vehicleType):
         for item in vehicleType.engines:
             nationID, itemID = item.id
-            sounds = item.sounds
+            sound = item.sounds
             itemData = self.data['engines'].get(nations.NAMES[nationID], {}).get(item.name)
             if itemData:
-                item.sounds = sound_components.WWTripleSoundConfig(sounds.wwsound, itemData.get('wwsoundPC', sounds.wwsoundPC),
-                                                                   itemData.get('wwsoundNPC', sounds.wwsoundNPC))
+                item.sounds = sound_components.WWTripleSoundConfig(sound.wwsound, itemData.get('wwsoundPC', sound.wwsoundPC),
+                                                                   itemData.get('wwsoundNPC', sound.wwsoundNPC))
         for turrets in vehicleType.turrets:
             for turret in turrets:
                 for item in turret.guns:
