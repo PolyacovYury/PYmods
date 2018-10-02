@@ -197,7 +197,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                     traceback.print_exc()
                     continue
                 if not confdict['enable'] or not any(
-                        x for x in (confdict.get(y, True) for y in ('attachToPlayer','attachToAlly', 'attachToEnemy'))):
+                        x for x in (confdict.get(y, True) for y in ('attachToPlayer', 'attachToAlly', 'attachToEnemy'))):
                     if not quiet:
                         print self.ID + ': config', confName, 'is disabled.'
                     continue

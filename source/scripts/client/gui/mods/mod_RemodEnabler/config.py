@@ -6,7 +6,7 @@ import ResMgr
 import glob
 import os
 import traceback
-from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups
+from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, showI18nDialog
 from collections import OrderedDict
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
@@ -335,13 +335,12 @@ class ConfigInterface(PYmodsConfigInterface):
                             remodTanks[tankType].add(xmlName)
                             if xmlName not in selectedData[tankType]:
                                 selectedData[tankType][xmlName] = None
-                for tankType in ('player', 'ally', 'enemy'):
-                    for xmlName in selectedData[tankType].keys():
-                        if (selectedData[tankType][xmlName] and selectedData[tankType][
-                            xmlName] not in self.modelsData['models']):
-                            selectedData[tankType][xmlName] = None
-                        if xmlName not in remodTanks[tankType]:
-                            del selectedData[tankType][xmlName]
+                for team in ('player', 'ally', 'enemy'):
+                    for xmlName in selectedData[team].keys():
+                        if selectedData[team][xmlName] and selectedData[team][xmlName] not in self.modelsData['models']:
+                            selectedData[team][xmlName] = None
+                        if xmlName not in remodTanks[team]:
+                            del selectedData[team][xmlName]
                 if selectedData['remod'] and selectedData['remod'] not in self.modelsData['models']:
                     selectedData['remod'] = ''
                 loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True, quiet=quiet)
@@ -617,13 +616,9 @@ class RemodEnablerUI(AbstractWindowView):
         return vDesc.name.split(':')[1].lower()
 
     def py_onRequestVehicleDelete(self, teamIdx):
-        from gui import DialogsInterface
-        from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta, I18nConfirmDialogButtons
-
-        DialogsInterface.showDialog(SimpleDialogMeta(g_config.i18n['UI_flash_WLVehDelete_header'],
-                                                     g_config.i18n['UI_flash_WLVehDelete_text'],
-                                                     I18nConfirmDialogButtons('common/confirm'), None),
-                                    lambda proceed: self.flashObject.as_onVehicleDeleteConfirmed(proceed, teamIdx))
+        showI18nDialog(
+            g_config.i18n['UI_flash_WLVehDelete_header'], g_config.i18n['UI_flash_WLVehDelete_text'], 'common/confirm',
+            lambda proceed: self.flashObject.as_onVehicleDeleteConfirmed(proceed, teamIdx))
 
     @staticmethod
     def py_onSaveSettings(settings):
