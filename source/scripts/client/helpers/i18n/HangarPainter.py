@@ -4,7 +4,7 @@ import json
 import re
 import traceback
 import urllib2
-from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, doOverrideMethod
+from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, doOverrideMethod, showInfoDialog
 from debug_utils import LOG_ERROR
 from functools import partial
 
@@ -84,11 +84,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if toggled:
             reasons.append(self.i18n['UI_restart_reason_mod' + ('Enabled' if self.data['enabled'] else 'Disabled')])
         dialogText = self.i18n['UI_restart_text'].format(reason='; '.join(reasons))
-        from gui import DialogsInterface
-        from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta, InfoDialogButtons
-        DialogsInterface.showDialog(SimpleDialogMeta(self.i18n['UI_restart_header'], dialogText,
-                                                     InfoDialogButtons(self.i18n['UI_restart']), None),
-                                    self.onRestartConfirmed)
+        showInfoDialog(self.i18n['UI_restart_header'], dialogText, self.i18n['UI_restart'], self.onRestartConfirmed)
 
     def load(self):
         try:

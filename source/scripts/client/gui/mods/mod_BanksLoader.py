@@ -1,33 +1,19 @@
 # -*- coding: utf-8 -*-
 import BigWorld
-import PYmodsCore
 import ResMgr
 import glob
 import os
 import traceback
 import zipfile
 from Avatar import PlayerAvatar
+from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, overrideMethod, showSimpleDialog
 from debug_utils import LOG_ERROR, LOG_NOTE
-from gui.Scaleform.daapi.view.dialogs.SimpleDialog import SimpleDialog
+from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
 
 
-class RestartButtons(object):
-    def __init__(self, restart, shutdown, close):
-        self._restart = restart
-        self._shutdown = shutdown
-        self._close = close
-
-    def getLabels(self):
-        return [
-            {'id': 'submit', 'label': self._restart, 'focused': True},
-            {'id': 'shutdown', 'label': self._shutdown, 'focused': False},
-            {'id': 'close', 'label': self._close, 'focused': False}
-        ]
-
-
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.editedBanks = {'create': [], 'delete': [], 'memory': [], 'move': [], 'remap': set(), 'wotmod': []}
         self.was_declined = False
@@ -68,7 +54,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         pass
 
     def onRestartConfirmed(self, buttonID):
-        if buttonID == 'submit':
+        if buttonID == DIALOG_BUTTON_ID.SUBMIT:
             print self.ID + ': client restart confirmed.'
             BigWorld.savePreferences()
             BigWorld.restartGame()
@@ -88,18 +74,14 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         print self.ID + ': requesting client restart...'
         reasons = []
         if self.data['debug']:
-            for key in self.editedBanks:
-                if self.editedBanks[key]:
-                    reasons.append(self.i18n['UI_restart_' + key] + ', '.join('<b>%s</b>' % x for x in self.editedBanks[key]))
+            reasons = [
+                self.i18n['UI_restart_' + key] + ', '.join('<b>%s</b>' % x for x in remDups(self.editedBanks[key]))
+                for key in self.editedBanks if self.editedBanks[key]]
         reasonStr = self.i18n['UI_restart_reason'].format(';\n'.join(reasons)) if reasons else ''
         dialogText = self.i18n['UI_restart_text'].format(reason=reasonStr)
-        from gui import DialogsInterface
-        from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta
-        DialogsInterface.showDialog(SimpleDialogMeta(self.i18n['UI_restart_header'], dialogText,
-                                                     RestartButtons(self.i18n['UI_restart_button_restart'],
-                                                                    self.i18n['UI_restart_button_shutdown'],
-                                                                    self.i18n['UI_restart_button_close']), None),
-                                    self.onRestartConfirmed)
+        showSimpleDialog(
+            self.i18n['UI_restart_header'], dialogText,
+            [self.i18n['UI_restart_button_%s' % key] for key in ('restart', 'shutdown', 'close')], self.onRestartConfirmed)
 
     @staticmethod
     def suppress_old_mod():
@@ -276,7 +258,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             print self.ID + ': clearing audio_mods section for bank', bankName
             self.editedBanks['delete'].append(bankName)
             audio_mods_new['loadBanks'].deleteSection(bankSect)
-        self.editedBanks['delete'] = PYmodsCore.remDups(self.editedBanks['delete'])
+        self.editedBanks['delete'] = remDups(self.editedBanks['delete'])
         bankFiles['orig'] = set(map(str.lower, bankFiles['orig']))
         for bankName in sorted(bankFiles['mods']):
             if bankName not in bankFiles['orig'] and bankName not in moddedExist and bankName not in bankFiles['ignore']:
@@ -347,31 +329,22 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
 
 _config = ConfigInterface()
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-9')
+statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-9')
 
 
-@PYmodsCore.overrideMethod(SimpleDialog, '_SimpleDialog__callHandler')
-def new_callHandler(base, self, buttonID):
-    if len(self._SimpleDialog__buttons) == 3:
-        self._SimpleDialog__handler(buttonID)
-        self._SimpleDialog__isProcessed = True
-    else:
-        base(self, buttonID)
-
-
-@PYmodsCore.overrideMethod(LoginView, '_populate')
+@overrideMethod(LoginView, '_populate')
 def new_Login_populate(base, self):
     base(self)
     _config.onRequestRestart()
 
 
-@PYmodsCore.overrideMethod(LobbyView, '_populate')
+@overrideMethod(LobbyView, '_populate')
 def new_Lobby_populate(base, self):
     base(self)
     _config.onRequestRestart()
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
+@overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
 def new_startGUI(base, *a, **kw):
     base(*a, **kw)
     _config.onRequestRestart()
