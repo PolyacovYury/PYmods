@@ -1,3 +1,4 @@
+from gui import InputHandler
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.shared import getTotalPurchaseInfo
@@ -17,6 +18,26 @@ from .. import g_config
 
 
 class CustomizationBottomPanel(CBP):
+    def _populate(self):
+        self.__isShiftDown = False
+        super(CustomizationBottomPanel, self)._populate()
+        InputHandler.g_instance.onKeyDown += self.__handleKeyEvent
+        InputHandler.g_instance.onKeyUp += self.__handleKeyEvent
+
+    def _dispose(self):
+        InputHandler.g_instance.onKeyDown -= self.__handleKeyEvent
+        InputHandler.g_instance.onKeyUp -= self.__handleKeyEvent
+        super(CustomizationBottomPanel, self)._dispose()
+
+    def __handleKeyEvent(self, event):
+        import Keys
+        if event.key in [Keys.KEY_LSHIFT, Keys.KEY_RSHIFT]:
+            if self.__isShiftDown != event.isKeyDown():
+                self.__isShiftDown = event.isKeyDown()
+                self.__ctx.isSwitcherIgnored = True
+                self.__setFooterInitData()
+                self.__ctx.isSwitcherIgnored = False
+
     def __setFooterInitData(self):
         self.as_setBottomPanelInitDataS({
             'tabsAvailableRegions': self.__ctx.tabsData.AVAILABLE_REGIONS,
@@ -33,13 +54,15 @@ class CustomizationBottomPanel(CBP):
                                           'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_EQUIPPEDBTN,
                                           'selected': self._carouselDP.getAppliedFilter()}]}})
 
-    @staticmethod
-    def __getSwitcherInitData(mode):
-        return {'leftLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[mode]],
-                'rightLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[(mode + 1) % len(CSMode.NAMES)]],
+    def __getSwitcherInitData(self, mode):
+        isShift = self.__isShiftDown
+        leftMode = mode if not isShift else (mode - 1) % len(CSMode.NAMES)
+        rightMode = (leftMode + 1) % len(CSMode.NAMES)
+        return {'leftLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[leftMode]],
+                'rightLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[rightMode]],
                 'leftEvent': 'installStyle',
                 'rightEvent': 'installStyles',
-                'isLeft': True}
+                'isLeft': not isShift}
 
     def __setBottomPanelBillData(self, *_):
         purchaseItems = self.__ctx.getPurchaseItems()

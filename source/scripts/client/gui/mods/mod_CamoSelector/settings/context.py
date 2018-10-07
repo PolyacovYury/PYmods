@@ -73,6 +73,7 @@ class CustomizationContext(WGCtx):
         self._randMode = None
         self.useFor_ally = False
         self.useFor_enemy = False
+        self.isSwitcherIgnored = False
 
     def refreshOutfit(self):
         if self._mode == CSMode.SETUP:
@@ -173,14 +174,18 @@ class CustomizationContext(WGCtx):
         self.onCustomizationItemsRemoved()
 
     def switchToCustom(self):
-        pass  # changeMode(self, False)
+        if self.isSwitcherIgnored:
+            return
+        self.changeMode(False)
 
     def switchToStyle(self):
+        if self.isSwitcherIgnored:
+            return
         self.changeMode(True)
 
     def changeMode(self, wasLeft):
         self._lastTab[self._mode] = self._tabIndex
-        self._mode = ((self._mode + 1) if wasLeft else (self._mode - 1 + len(CSMode.NAMES))) % len(CSMode.NAMES)
+        self._mode = ((self._mode + 1) if wasLeft else (self._mode - 1)) % len(CSMode.NAMES)
         self._tabIndex = self._lastTab[self._mode]
         self.__updateVisibleTabsList()
         if self._tabIndex not in self.visibleTabs:
