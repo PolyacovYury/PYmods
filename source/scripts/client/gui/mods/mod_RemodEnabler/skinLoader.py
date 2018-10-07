@@ -10,7 +10,7 @@ import os
 import shutil
 import traceback
 import weakref
-from PYmodsCore import showSimpleDialog, remDups, loadJson, overrideMethod
+from PYmodsCore import showConfirmDialog, remDups, loadJson, overrideMethod
 from adisp import AdispException, async, process
 from functools import partial
 from gui import GUI_SETTINGS
@@ -115,7 +115,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
         g_config.loadingProxy = None
         self.destroy()
         if needToReReadSkinsModels:
-            showSimpleDialog(
+            showConfirmDialog(
                 g_config.i18n['UI_restart_header'], g_config.i18n['UI_restart_text'],
                 (g_config.i18n['UI_restart_button_restart'], g_config.i18n['UI_restart_button_shutdown']),
                 lambda restart: (BigWorld.savePreferences(), (BigWorld.restartGame() if restart else BigWorld.quit())))
