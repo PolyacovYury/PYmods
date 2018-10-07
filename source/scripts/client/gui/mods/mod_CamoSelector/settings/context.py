@@ -174,16 +174,16 @@ class CustomizationContext(WGCtx):
         self.onCustomizationItemsRemoved()
 
     def switchToCustom(self):
-        if self.isSwitcherIgnored:
-            return
         self.changeMode(False)
 
     def switchToStyle(self):
-        if self.isSwitcherIgnored:
-            return
         self.changeMode(True)
 
     def changeMode(self, wasLeft):
+        if self.isSwitcherIgnored:
+            self.isSwitcherIgnored = False
+            return
+        self.isSwitcherIgnored = True  # the switcher just jumps backwards immediately. -_-
         self._lastTab[self._mode] = self._tabIndex
         self._mode = ((self._mode + 1) if wasLeft else (self._mode - 1)) % len(CSMode.NAMES)
         self._tabIndex = self._lastTab[self._mode]

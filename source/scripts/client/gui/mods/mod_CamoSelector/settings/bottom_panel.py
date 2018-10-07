@@ -36,7 +36,6 @@ class CustomizationBottomPanel(CBP):
                 self.__isShiftDown = event.isKeyDown()
                 self.__ctx.isSwitcherIgnored = True
                 self.__setFooterInitData()
-                self.__ctx.isSwitcherIgnored = False
 
     def __setFooterInitData(self):
         self.as_setBottomPanelInitDataS({
