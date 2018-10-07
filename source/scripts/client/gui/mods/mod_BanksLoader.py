@@ -6,7 +6,7 @@ import os
 import traceback
 import zipfile
 from Avatar import PlayerAvatar
-from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, overrideMethod, showSimpleDialog
+from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, overrideMethod, showConfirmDialog
 from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
@@ -79,7 +79,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 for key in self.editedBanks if self.editedBanks[key]]
         reasonStr = self.i18n['UI_restart_reason'].format(';\n'.join(reasons)) if reasons else ''
         dialogText = self.i18n['UI_restart_text'].format(reason=reasonStr)
-        showSimpleDialog(
+        showConfirmDialog(
             self.i18n['UI_restart_header'], dialogText,
             [self.i18n['UI_restart_button_%s' % key] for key in ('restart', 'shutdown', 'close')], self.onRestartConfirmed)
 
