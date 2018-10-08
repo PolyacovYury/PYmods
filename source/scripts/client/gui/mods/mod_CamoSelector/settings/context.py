@@ -409,6 +409,8 @@ class CustomizationContext(WGCtx):
         self.itemsCache.onSyncCompleted += self.__onCacheResync
         self.carveUpOutfits()
         self.__updateVisibleTabsList()
+        if self._tabIndex not in self.visibleTabs:
+            self._tabIndex = first(self.visibleTabs, -1)
         self._originalMode = self._mode
         self.refreshOutfit()
 
