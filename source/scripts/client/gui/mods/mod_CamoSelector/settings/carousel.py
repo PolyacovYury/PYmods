@@ -56,8 +56,9 @@ def _buildCustomizationItems(_, self):
     buildFilterData(self)
     season = self._seasonID
     isBuy = self._proxy.mode == CSMode.BUY
-    requirement = createBaseRequirements(self._proxy, season) | REQ_CRITERIA.CUSTOM(
-        partial(isItemSuitableForTab, tabIndex=self._tabIndex))
+    requirement = createBaseRequirements(self._proxy, season)
+    if not isBuy:
+        requirement |= REQ_CRITERIA.CUSTOM(partial(isItemSuitableForTab, tabIndex=self._tabIndex))
     seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][season]
     allItemsGroup = len(seasonAndTabData.allGroups) - 1
     if seasonAndTabData.selectedGroupIndex != allItemsGroup:
