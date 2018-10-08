@@ -73,6 +73,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_switcher_buy': 'PURCHASE',
             'UI_flash_switcher_setup': 'SETUP',
             'UI_flash_switcher_install': 'INSTALL',
+            'UI_flash_switcher_tabsInvisible': 'Tabs are invisible while Shift key is pressed. #BlameWG',
             'UI_flash_commit_apply': 'Apply',
             'UI_flash_commit_install': 'Install',
             'UI_flash_commit_install_and_apply': 'Install and apply',

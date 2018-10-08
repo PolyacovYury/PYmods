@@ -40,7 +40,7 @@ class CustomizationBottomPanel(CBP):
     def __setFooterInitData(self):
         self.as_setBottomPanelInitDataS({
             'tabsAvailableRegions': self.__ctx.tabsData.AVAILABLE_REGIONS,
-            'defaultStyleLabel': VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL,
+            'defaultStyleLabel': g_config.i18n['UI_flash_switcher_tabsInvisible'],
             'carouselInitData': self.__getCarouselInitData(),
             'switcherInitData': self.__getSwitcherInitData(self.__ctx.mode),
             'filtersVO': {'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER,
