@@ -523,18 +523,19 @@ class CustomizationContext(WGCtx):
         visibleTabs = defaultdict(set)
         anchorsData = g_currentVehicle.hangarSpace.getSlotPositions()
         items = getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, self, createBaseRequirements(self))
-        for item in sorted(items.itervalues(), key=(comparisonKey if self._mode == CSMode.BUY else CSComparisonKey)):
-            if self._mode == CSMode.BUY:
+        isBuy = self._mode == CSMode.BUY
+        for item in sorted(items.itervalues(), key=(comparisonKey if isBuy else CSComparisonKey)):
+            if isBuy:
                 tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)
             else:
                 tabIndex = findFirst(partial(isItemSuitableForTab, item), CSTabs.ALL, -1)
             if tabIndex not in self.tabsData.ALL or (
-                    self._mode == CSMode.BUY and tabIndex == C11nTabs.CAMOUFLAGE and
+                    isBuy and tabIndex == C11nTabs.CAMOUFLAGE and
                     g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage) or (
                     self._mode == CSMode.SETUP and tabIndex not in CSTabs.CAMO):
                 continue
             for seasonType in SeasonType.COMMON_SEASONS:
-                if (item.season if self._mode == CSMode.BUY else getItemSeason(item)) & seasonType:
+                if (item.season if isBuy else getItemSeason(item)) & seasonType:
                     if item.itemTypeID in (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.EMBLEM):
                         for areaData in anchorsData.itervalues():
                             if areaData.get(item.itemTypeID):

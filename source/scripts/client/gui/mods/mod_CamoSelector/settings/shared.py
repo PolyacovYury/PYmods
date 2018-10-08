@@ -119,10 +119,23 @@ def isItemSuitableForTab(item, tabIndex):
         return True
     vehicle = g_currentVehicle.item
     if tabIndex in (CSTabs.STYLE, CSTabs.PAINT, CSTabs.EFFECT):
-        return item.mayInstall(vehicle)
+        return mayInstall(item, vehicle)
     isGlobal = g_config.isCamoGlobal(item.descriptor)
     return not (
             (tabIndex == CSTabs.CAMO_SHOP and (item.isHidden or item.priceGroup == 'custom')) or
             (tabIndex == CSTabs.CAMO_HIDDEN and (not item.isHidden or isGlobal or item.priceGroup == 'custom')) or
             (tabIndex == CSTabs.CAMO_GLOBAL and not isGlobal) or
             (tabIndex == CSTabs.CAMO_CUSTOM and item.priceGroup != 'custom'))
+
+
+def mayInstall(self, vehicle):
+    return True if not self.descriptor.filter else matchVehicleType(self.descriptor.filter, vehicle.descriptor.type)
+
+
+def matchVehicleType(self, vehicleType):
+    include = not self.include or any((matchVehicleLevel(f, vehicleType) for f in self.include))
+    return include and not (self.exclude and any((matchVehicleLevel(f, vehicleType) for f in self.exclude)))
+
+
+def matchVehicleLevel(self, vehicleType):
+    return not self.levels or vehicleType.level in self.levels
