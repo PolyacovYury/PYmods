@@ -54,7 +54,8 @@ class CustomizationPropertiesSheet(CPS):
             itemTypeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
             descrText = text_styles.neutral(VEHICLE_CUSTOMIZATION.getSheetEmptyDescription(itemTypeName))
         elif self._slotID == GUI_ITEM_TYPE.STYLE:
-            descrText = text_styles.main(currentElement.userType)
+            descrText = text_styles.main(  # because, apparently, there is a huge derp in WG team #TODO: remove on 1.2
+                currentElement.userType if currentElement.groupID else VEHICLE_CUSTOMIZATION.CAROUSEL_SWATCH_STYLE_SPECIAL)
         elif self._slotID == GUI_ITEM_TYPE.CAMOUFLAGE:
             descrText = text_styles.main(currentElement.userName)
         else:
