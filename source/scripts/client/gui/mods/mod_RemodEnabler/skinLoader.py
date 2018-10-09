@@ -3,7 +3,6 @@ import datetime
 import time
 
 import BigWorld
-import PYmodsCore
 import ResMgr
 import SoundGroups
 import glob
@@ -11,6 +10,7 @@ import os
 import shutil
 import traceback
 import weakref
+from PYmodsCore import showConfirmDialog, remDups, loadJson, overrideMethod
 from adisp import AdispException, async, process
 from functools import partial
 from gui import GUI_SETTINGS
@@ -115,18 +115,10 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
         g_config.loadingProxy = None
         self.destroy()
         if needToReReadSkinsModels:
-            from gui import DialogsInterface
-            from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta, ConfirmDialogButtons, DIALOG_BUTTON_ID
-
-            class RestartButtons(ConfirmDialogButtons):
-                def getLabels(self):
-                    return [{'id': DIALOG_BUTTON_ID.SUBMIT, 'label': self._submit, 'focused': True},
-                            {'id': DIALOG_BUTTON_ID.CLOSE, 'label': self._close, 'focused': False}]
-
-            DialogsInterface.showDialog(SimpleDialogMeta(
+            showConfirmDialog(
                 g_config.i18n['UI_restart_header'], g_config.i18n['UI_restart_text'],
-                RestartButtons(g_config.i18n['UI_restart_button_restart'], g_config.i18n['UI_restart_button_shutdown']),
-                None), lambda restart: (BigWorld.savePreferences(), (BigWorld.restartGame() if restart else BigWorld.quit())))
+                (g_config.i18n['UI_restart_button_restart'], g_config.i18n['UI_restart_button_shutdown']),
+                lambda restart: (BigWorld.savePreferences(), (BigWorld.restartGame() if restart else BigWorld.quit())))
         elif self.doLogin:
             loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
             if loginView and loginView.loginManager.getPreference('remember_user'):
@@ -159,22 +151,22 @@ def skinCRC32All(callback):
         g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
         CRC32 = 0
         resultList = []
-        for skin in PYmodsCore.remDups(dirSect.keys()):
+        for skin in remDups(dirSect.keys()):
             completionPercentage = 0
             g_config.loadingProxy.addBar(g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
             skinCRC32 = 0
             skinSect = ResMgr.openSection(skinsPath + skin + '/vehicles/')
-            nationsList = [] if skinSect is None else PYmodsCore.remDups(skinSect.keys())
+            nationsList = [] if skinSect is None else remDups(skinSect.keys())
             natLen = len(nationsList)
             for num, nation in enumerate(nationsList):
                 nationSect = ResMgr.openSection(skinsPath + skin + '/vehicles/' + nation)
-                vehiclesList = [] if nationSect is None else PYmodsCore.remDups(nationSect.keys())
+                vehiclesList = [] if nationSect is None else remDups(nationSect.keys())
                 vehLen = len(vehiclesList)
                 for vehNum, vehicleName in enumerate(vehiclesList):
                     skinVehNamesLDict.setdefault(vehicleName.lower(), []).append(skin)
                     vehicleSect = ResMgr.openSection(skinsPath + skin + '/vehicles/' + nation + '/' + vehicleName)
                     for texture in [] if vehicleSect is None else (
-                            texName for texName in PYmodsCore.remDups(vehicleSect.keys()) if texName.endswith('.dds')):
+                            texName for texName in remDups(vehicleSect.keys()) if texName.endswith('.dds')):
                         localPath = 'vehicles/' + nation + '/' + vehicleName + '/' + texture
                         texPath = skinsPath + skin + '/' + localPath
                         textureCRC32 = CRC32_from_file(texPath, localPath)
@@ -264,7 +256,7 @@ def modelsCheck(callback):
     elif texReplaced and os.path.isdir(modelsDir):
         yield rmtree(modelsDir)
         os.makedirs(modelsDir)
-    PYmodsCore.loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
+    loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
     BigWorld.callback(0.0, partial(callback, True))
 
 
@@ -402,7 +394,7 @@ def skinLoader(loginView):
         loginView.update()
 
 
-@PYmodsCore.overrideMethod(LoginView, '_populate')
+@overrideMethod(LoginView, '_populate')
 def new_Login_populate(base, self):
     base(self)
     g_config.isInHangar = False
@@ -416,7 +408,7 @@ def new_Login_populate(base, self):
         BigWorld.callback(3.0, partial(skinLoader, self))
 
 
-@PYmodsCore.overrideMethod(LobbyView, '_populate')
+@overrideMethod(LobbyView, '_populate')
 def new_Lobby_populate(base, self):
     base(self)
     g_config.isInHangar = True

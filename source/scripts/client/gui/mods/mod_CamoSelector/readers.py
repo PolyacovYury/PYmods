@@ -3,7 +3,6 @@ import items._xml as ix
 import items.components.c11n_components as cc
 import items.vehicles as iv
 import nations
-import os
 import traceback
 from PYmodsCore import overrideMethod
 from items import makeIntCompactDescrByID as makeCD

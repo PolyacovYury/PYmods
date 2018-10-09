@@ -12,7 +12,7 @@ from . import overrideMethod
 
 MAX_CHAT_MESSAGE_LENGTH = 220
 __all__ = ['pickRandomPart', 'sendMessage', 'sendChatMessage', 'remDups', 'checkKeys', 'refreshCurrentVehicle', 'Analytics',
-           'Sound']
+           'Sound', 'showConfirmDialog', 'showI18nDialog', 'showInfoDialog']
 
 
 def pickRandomPart(variantList, lastRandId, doNext=False):
@@ -98,13 +98,73 @@ def new_handleAction(base, self, model, typeID, entityID, actionName):
         base(self, model, typeID, entityID, actionName)
 
 
+def new_callHandler(base, self, buttonID):
+    if len(self._SimpleDialog__buttons) == 3:
+        self._SimpleDialog__handler(buttonID)
+        self._SimpleDialog__isProcessed = True
+    else:
+        base(self, buttonID)
+
+
+class DialogButtons(object):
+    def __init__(self):
+        self.confirm = None
+        self.restart = None
+
+
+_dialogButtons = DialogButtons()
+
+
+def showSimpleDialog(header, text, meta, callback):
+    from gui import DialogsInterface
+    from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta
+    DialogsInterface.showDialog(SimpleDialogMeta(header, text, meta, None), callback)
+
+
+def showConfirmDialog(header, text, buttons, cb):
+    showSimpleDialog(header, text, (_dialogButtons.confirm if len(buttons) == 2 else _dialogButtons.restart)(*buttons), cb)
+
+
+def showI18nDialog(header, text, key, callback):
+    from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogButtons
+    showSimpleDialog(header, text, I18nConfirmDialogButtons(key), callback)
+
+
+def showInfoDialog(header, text, button, callback):
+    from gui.Scaleform.daapi.view.dialogs import InfoDialogButtons
+    showSimpleDialog(header, text, InfoDialogButtons(button), callback)
+
+
 # noinspection PyGlobalUndefined
 def PMC_hooks():
-    global new_addItem, new_handleAction
+    global new_addItem, new_handleAction, new_callHandler
     from notification.actions_handlers import NotificationsActionsHandlers
     from notification.NotificationsCollection import NotificationsCollection
+    from gui.Scaleform.daapi.view.dialogs.SimpleDialog import SimpleDialog
     new_addItem = overrideMethod(NotificationsCollection, 'addItem')(new_addItem)
     new_handleAction = overrideMethod(NotificationsActionsHandlers, 'handleAction')(new_handleAction)
+    new_callHandler = overrideMethod(SimpleDialog, '_SimpleDialog__callHandler')(new_callHandler)
+
+    from gui.Scaleform.daapi.view.dialogs import ConfirmDialogButtons
+    from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
+
+    class ConfirmButtons(ConfirmDialogButtons):
+        def getLabels(self):
+            return ({'id': DIALOG_BUTTON_ID.SUBMIT, 'label': self._submit, 'focused': True},
+                    {'id': DIALOG_BUTTON_ID.CLOSE, 'label': self._close, 'focused': False})
+
+    class RestartButtons(ConfirmButtons):
+        def __init__(self, submit, shutdown, close):
+            self._shutdown = shutdown
+            super(RestartButtons, self).__init__(submit, close)
+
+        def getLabels(self):
+            return ({'id': DIALOG_BUTTON_ID.SUBMIT, 'label': self._submit, 'focused': True},
+                    {'id': 'shutdown', 'label': self._shutdown, 'focused': False},
+                    {'id': DIALOG_BUTTON_ID.CLOSE, 'label': self._close, 'focused': False})
+
+    _dialogButtons.confirm = ConfirmButtons
+    _dialogButtons.restart = RestartButtons
 
 
 BigWorld.callback(0.0, PMC_hooks)
