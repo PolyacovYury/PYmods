@@ -69,7 +69,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def onRequestRestart(self):
         if self.was_declined:
             return
-        if not any(self.editedBanks.values()):
+        if not any(self.editedBanks.itervalues()):
             return
         print self.ID + ': requesting client restart...'
         reasons = []
@@ -100,35 +100,34 @@ class ConfigInterface(PYmodsConfigInterface):
         for filePath in ('%s/%s' % (x[0], y) for x in os.walk(BigWorld.curCV.replace('res_', '')) for y in x[2]):
             if not filePath.endswith('.wotmod') or os.path.basename(filePath) == '_aaa_BanksLoader_audioMods.wotmod':
                 continue
-            zip_orig = zipfile.ZipFile(filePath)
-            fileNames = zip_orig.namelist()
-            if audio_mods_xml in fileNames:
-                self.editedBanks['wotmod'].append(os.path.basename(filePath))
-                bankFiles = [x for x in fileNames if x.startswith('res/' + mediaPath) and x.endswith('.bnk')]
-                new_filePath = filePath[:-7] + '_BanksLoader_ing' + '.wotmod'
-                zip_new = zipfile.ZipFile(new_filePath, 'w')
-                for fileInfo in zip_orig.infolist():
-                    fileName = fileInfo.filename
-                    if fileName != audio_mods_xml:
-                        zip_new.writestr(fileInfo, zip_orig.read(fileName))
-                    elif bankFiles:
-                        fileInfo.filename = bankFiles[0].replace('.bnk', '.xml')
-                        zip_new.writestr(fileInfo, zip_orig.read(fileName))
-                zip_new.close()
-                zip_orig.close()
+            new_filePath = filePath[:-7] + '_BanksLoader_ing' + '.wotmod'
+            cleaned = False
+            with zipfile.ZipFile(filePath) as zip_orig:
+                fileNames = zip_orig.namelist()
+                if audio_mods_xml in fileNames:
+                    cleaned = True
+                    self.editedBanks['wotmod'].append(os.path.basename(filePath))
+                    bankFiles = [x for x in fileNames if x.startswith('res/' + mediaPath) and x.endswith('.bnk')]
+                    with zipfile.ZipFile(new_filePath, 'w') as zip_new:
+                        for fileInfo in zip_orig.infolist():
+                            fileName = fileInfo.filename
+                            if fileName != audio_mods_xml:
+                                zip_new.writestr(fileInfo, zip_orig.read(fileName))
+                            elif bankFiles:
+                                fileInfo.filename = bankFiles[0].replace('.bnk', '.xml')
+                                zip_new.writestr(fileInfo, zip_orig.read(fileName))
+            if cleaned:
                 print self.ID + ': config cleaned from package', os.path.basename(filePath)
                 if os.path.isfile(filePath):
                     try:
                         stat = os.stat(filePath)
                         os.remove(filePath)
+                        if os.path.isfile(new_filePath):
+                            os.rename(new_filePath, filePath)
+                        if os.path.isfile(filePath):
+                            os.utime(filePath, (stat.st_atime, stat.st_mtime))
                     except StandardError:
                         traceback.print_exc()
-                if os.path.isfile(new_filePath):
-                    os.rename(new_filePath, filePath)
-                if os.path.isfile(filePath):
-                    os.utime(filePath, (stat.st_atime, stat.st_mtime))
-            else:
-                zip_orig.close()
 
     def checkConfigs(self):
         orig_engine = ResMgr.openSection('engine_config.xml')
@@ -143,7 +142,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.check_wotmods(mediaPath)
         if self.editedBanks['wotmod']:
             return
-        bankFiles = {'mods': set(), 'pkg': set(),
+        bankFiles = {'mods': set(), 'pkg': set(), 'ignore': set(),
                      'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')
                              if (path.endswith('.bnk') or path.endswith('.pck'))}}
         for pkgPath in glob.iglob('./res/packages/audioww*.pkg'):
@@ -153,30 +152,6 @@ class ConfigInterface(PYmodsConfigInterface):
         bankFiles['mods'] = set(x for x in ResMgr.openSection(mediaPath).keys()
                                 if (x.endswith('.bnk') or x.endswith('.pck')) and x not in bankFiles['orig'])
         bankFiles['all'] = bankFiles['orig'] | bankFiles['mods']
-        active_profile_name = soundMgr['WWISE_active_profile'].asString
-        active_profile = soundMgr[active_profile_name]
-        poolKeys = {'memoryManager': ('defaultPool', 'lowEnginePool', 'preparedPool', 'streamingPool', 'IOPoolSize'),
-                    'soundRender': ('max_voices',)}
-        for poolKey, poolValuesList in poolKeys.iteritems():
-            for poolValue in poolValuesList:
-                if active_profile[poolKey][poolValue].asInt != int(self.data[poolValue]):
-                    self.editedBanks['memory'].append(poolValue)
-                    active_profile[poolKey].writeInt(poolValue, self.data[poolValue])
-                    print self.ID + ': changing value for memory setting:', poolValue
-        moddedExist = []
-        for name, section in active_profile.items():
-            if 'soundbanks' not in name:
-                continue
-            for sectName, project in section.items():
-                if sectName != 'project':
-                    continue
-                bankName = project['name'].asString
-                if bankName not in bankFiles['all']:
-                    print '%s: clearing engine_config section for bank' % self.ID, bankName
-                    self.editedBanks['delete'].append(bankName)
-                    section.deleteSection(project)
-                elif bankName not in moddedExist:
-                    moddedExist.append(bankName)
         audio_mods = ResMgr.openSection(mediaPath + '/audio_mods.xml')
         audio_mods_new = ResMgr.openSection(mediaPath + '/audio_mods_edited.xml', True)
         if audio_mods is None:
@@ -184,7 +159,6 @@ class ConfigInterface(PYmodsConfigInterface):
         else:
             audio_mods_new.copy(audio_mods)
             ResMgr.purge(mediaPath + '/audio_mods.xml')
-        bankFiles['ignore'] = set()
         modsKeys = ('events', 'switches', 'RTPCs', 'states')
         confList = [x for x in ResMgr.openSection(mediaPath).keys()
                     if x.endswith('.xml') and x.replace('.xml', '.bnk') in bankFiles['mods'] | bankFiles['orig']]
@@ -200,7 +174,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 if sectName != key_to_sub[key] or not confSect.has_key('name') or not confSect.has_key('mod'):
                     conf.deleteSection(confSect)
                     self.editedBanks['remap'].add(key)
-                    print '%s: cleaned wrong section for setting' % self.ID, key
+                    print self.ID + ': cleaned wrong section for setting', key
                     continue
                 result = {'name': confSect['name'].asString, 'mod': confSect['mod'].asString}
                 if key in subList:
@@ -209,7 +183,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         if confSubName != 'state' or not confSubSect.has_key('name') or not confSubSect.has_key('mod'):
                             confSect.deleteSection(confSubSect)
                             self.editedBanks['remap'].add(key)
-                            print '%s: cleaned wrong section for setting' % self.ID, key
+                            print self.ID + ': cleaned wrong section for setting', key
                             continue
                         stateList.append({'name': confSubSect['name'].asString, 'mod': confSubSect['mod'].asString})
                     result[subList[key]] = stateList
@@ -222,7 +196,7 @@ class ConfigInterface(PYmodsConfigInterface):
             bankData = bankConfData[bankName] = {}
             if confSect is None:
                 bankFiles['ignore'].add(bankName)
-                print '%s: error while reading' % self.ID, confPath
+                print self.ID + ': error while reading', confPath
                 continue
             for key in modsKeys:
                 if confSect.has_key(key):
@@ -260,15 +234,41 @@ class ConfigInterface(PYmodsConfigInterface):
             audio_mods_new['loadBanks'].deleteSection(bankSect)
         self.editedBanks['delete'] = remDups(self.editedBanks['delete'])
         bankFiles['orig'] = set(map(str.lower, bankFiles['orig']))
-        for bankName in sorted(bankFiles['mods']):
-            if bankName not in bankFiles['orig'] and bankName not in moddedExist and bankName not in bankFiles['ignore']:
-                print self.ID + ': creating sections for bank', bankName
-                if bankName in self.editedBanks['delete']:
-                    self.editedBanks['delete'].remove(bankName)
-                    self.editedBanks['move'].append(bankName)
-                else:
-                    self.editedBanks['create'].append(bankName)
-                active_profile.createSection('SFX_soundbanks_loadonce/project').writeString('name', bankName)
+        poolKeys = {'memoryManager': ('defaultPool', 'lowEnginePool', 'preparedPool', 'streamingPool', 'IOPoolSize'),
+                    'soundRender': ('max_voices',)}
+        for profile_name in ('WWISE_active_profile', 'WWISE_emergency_profile'):
+            moddedExist = set()
+            profile_type = profile_name.split('_')[1]
+            profile = soundMgr[soundMgr[profile_name].asString]
+            for poolKey, poolValuesList in poolKeys.iteritems():
+                for poolValue in poolValuesList:
+                    value = profile[poolKey][poolValue]
+                    if value is not None and value.asInt != int(self.data[poolValue]):
+                        self.editedBanks['memory'].append(poolValue)
+                        profile[poolKey].writeInt(poolValue, self.data[poolValue])
+                        print self.ID + ': changing value for', profile_type, 'memory setting:', poolValue
+            for name, section in profile.items():
+                if 'soundbanks' not in name:
+                    continue
+                for sectName, project in section.items():
+                    if sectName != 'project':
+                        continue
+                    bankName = project['name'].asString
+                    if bankName not in bankFiles['all']:
+                        print self.ID + ': clearing engine_config', profile_type, 'section for bank', bankName
+                        self.editedBanks['delete'].append(bankName)
+                        section.deleteSection(project)
+                    elif bankName not in moddedExist:
+                        moddedExist.add(bankName)
+            for bankName in sorted(bankFiles['mods']):
+                if bankName not in bankFiles['orig'] and bankName not in moddedExist and bankName not in bankFiles['ignore']:
+                    print self.ID + ': creating', profile_type, 'sections for bank', bankName
+                    if bankName in self.editedBanks['delete']:
+                        self.editedBanks['delete'].remove(bankName)
+                        self.editedBanks['move'].append(bankName)
+                    else:
+                        self.editedBanks['create'].append(bankName)
+                    profile.createSection('SFX_soundbanks_loadonce/project').writeString('name', bankName)
         for key in modsKeys:
             if confData_old[key] != confData[key]:
                 self.editedBanks['remap'].add(key)
