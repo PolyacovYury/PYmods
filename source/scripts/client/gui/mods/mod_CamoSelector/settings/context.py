@@ -571,7 +571,7 @@ class CustomizationContext(WGCtx):
 
     def updateVisibleTabsList(self, visibleTabs):
         for seasonType in SeasonType.COMMON_SEASONS:
-            self.__visibleTabs[seasonType] = visibleTabs[seasonType]
+            self.__visibleTabs[seasonType] = sorted(visibleTabs[seasonType])
         tabIndex = first(self.visibleTabs, -1)
         self._lastTab[self._mode] = tabIndex
         self.tabChanged(tabIndex)
