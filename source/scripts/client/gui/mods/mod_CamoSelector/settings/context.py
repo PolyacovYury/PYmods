@@ -5,11 +5,13 @@ from gui import g_tankActiveCamouflage, SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_IDX, SEASON_IDX_TO_TYPE, \
     SEASON_TYPE_TO_NAME, getOutfitWithoutItems, getItemInventoryCount, getStyleInventoryCount, OutfitInfo, \
     SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems
+from gui.Scaleform.daapi.view.lobby.customization.vehicle_anchors_updater import VehicleAnchorsUpdater
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.customization import CustomizationService
 from gui.customization.context import CustomizationContext as WGCtx, CaruselItemData
 from gui.customization.shared import C11nId, getAppliedRegionsForCurrentHangarVehicle, appliedToFromSlotsIds
+from gui.hangar_cameras.c11n_hangar_camera_manager import C11nHangarCameraManager
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from gui.shared.gui_items.processors.common import OutfitApplier, StyleApplier, CustomizationsSeller
@@ -17,6 +19,7 @@ from gui.shared.utils.decorators import process
 from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from shared_utils import nextTick, first
+from soft_exception import SoftException
 from vehicle_systems.tankStructure import TankPartIndexes
 from .shared import CSMode, CSTabs, tabToItem
 from .. import g_config
@@ -436,6 +439,31 @@ class CustomizationContext(WGCtx):
         yield CustomizationsSeller(g_currentVehicle.item, item, count).request()
         nextTick(self.refreshOutfit)()
         nextTick(partial(self.onCustomizationItemSold, item=item, count=count))()
+
+    def init(self):
+        if not g_currentVehicle.isPresent():
+            raise SoftException('There is not vehicle in hangar for customization.')
+        self._autoRentEnabled = g_currentVehicle.item.isAutoRentStyle
+        self._vehicleAnchorsUpdater = VehicleAnchorsUpdater(self.service, self)
+        self._vehicleAnchorsUpdater.startUpdater(self.settingsCore.interfaceScale.get())
+        if self.hangarSpace.spaceInited:
+            self._c11CameraManager = C11nHangarCameraManager(self.hangarSpace.space.getCameraManager())
+            self._c11CameraManager.init()
+        self.settingsCore.interfaceScale.onScaleExactlyChanged += self.__onInterfaceScaleChanged
+        self.service.onOutfitChanged += self.__onOutfitChanged
+        self.itemsCache.onSyncCompleted += self.__onCacheResync
+        self.carveUpOutfits()
+        currVehSeasonType = g_tankActiveCamouflage.get(g_currentVehicle.item.intCD, SeasonType.SUMMER)
+        self._currentSeason = currVehSeasonType
+        if self._originalStyle:
+            self._tabIndex = self.tabsData.STYLE
+        else:
+            self._tabIndex = self.tabsData.PAINT
+            notInst = all([ not self.originalOutfits[season].isInstalled() for season in SeasonType.COMMON_SEASONS ])
+            if notInst and not self.isOutfitsEmpty(self.modifiedOutfits) and not self.modifiedStyle:
+                self._tabIndex = self.tabsData.STYLE
+        self._originalMode = self._mode
+        self.refreshOutfit()
 
     def isOutfitsModified(self):  # TODO: fix this damn fuckery
         if self._mode == self._originalMode:
