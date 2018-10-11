@@ -234,9 +234,11 @@ class ConfigInterface(PYmodsConfigInterface):
         for camoName, indices in camoIndices.iteritems():
             nationsList = []
             for ID in indices:
-                for filterNode in camouflages[ID].filter.include:
-                    if filterNode.nations:
-                        nationsList += filterNode.nations
+                camo_filter = camouflages[ID].filter
+                if camo_filter is not None:
+                    for filterNode in camo_filter.include:
+                        if filterNode.nations:
+                            nationsList += filterNode.nations
             if set(nationsList) >= set(idx for idx, name in enumerate(nations.NAMES) if name != 'italy'):
                 self.interCamo.append(camoName)
         settings = loadJson(self.ID, 'settings', {}, self.configPath)
