@@ -18,8 +18,9 @@ class CSMode(CONST_CONTAINER):
 
 
 class CSTabs(CONST_CONTAINER):
-    STYLE, PAINT, CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM, EMBLEM, INSCRIPTION, EFFECT = ALL = range(9)
-    AVAILABLE_REGIONS = (PAINT, CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM, EMBLEM, INSCRIPTION)
+    STYLE, PAINT, CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM, EMBLEM, INSCRIPTION, PROJECTION_DECAL, EFFECT = ALL = \
+        range(10)
+    AVAILABLE_REGIONS = (PAINT, CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM, EMBLEM, INSCRIPTION, PROJECTION_DECAL)
     VISIBLE = ALL  # legacy, maybe not all tabs will be visible, idk
     CAMO = (CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM)
     REGIONS = CAMO + (STYLE, EFFECT, PAINT)
@@ -27,11 +28,12 @@ class CSTabs(CONST_CONTAINER):
 
 ITEM_TO_TABS = {GUI_ITEM_TYPE.PAINT: (CSTabs.PAINT,), GUI_ITEM_TYPE.CAMOUFLAGE: CSTabs.CAMO,
                 GUI_ITEM_TYPE.EMBLEM: (CSTabs.EMBLEM,), GUI_ITEM_TYPE.INSCRIPTION: (CSTabs.INSCRIPTION,),
-                GUI_ITEM_TYPE.MODIFICATION: (CSTabs.EFFECT,), GUI_ITEM_TYPE.STYLE: (CSTabs.STYLE,)}
+                GUI_ITEM_TYPE.MODIFICATION: (CSTabs.EFFECT,), GUI_ITEM_TYPE.STYLE: (CSTabs.STYLE,),
+                GUI_ITEM_TYPE.PROJECTION_DECAL: (CSTabs.PROJECTION_DECAL,)}
 
 
-def tabToItem(tabIndex, mode):
-    if mode == CSMode.BUY:
+def tabToItem(tabIndex, isBuy):
+    if isBuy:
         return TABS_ITEM_MAPPING.get(tabIndex)
     return next(itemType for itemType in ITEM_TO_TABS if tabIndex in ITEM_TO_TABS[itemType])
 
@@ -47,7 +49,7 @@ class ACTION_ALIASES:
 def getItems(itemTypeID, ctx, criteria):
     if not isinstance(itemTypeID, tuple):
         itemTypeID = (itemTypeID,)
-    if ctx.mode == CSMode.BUY:
+    if ctx.isBuy:
         return ctx.itemsCache.items.getItems(itemTypeID, criteria)
     else:
         result = ItemsCollection()
@@ -106,7 +108,7 @@ def getItemSeason(item):
 
 def createBaseRequirements(ctx, season=None):
     season = season or SeasonType.ALL
-    if ctx.mode == CSMode.BUY:
+    if ctx.isBuy:
         return createCustomizationBaseRequestCriteria(
             g_currentVehicle.item, ctx.eventsCache.questsProgress, ctx.getAppliedItems(), season)
     return REQ_CRITERIA.CUSTOM(lambda item: getItemSeason(item) & season)

@@ -1,4 +1,5 @@
 from PYmodsCore import overrideMethod
+from collections import defaultdict
 from functools import partial
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationCarouselDataProvider, \
     CustomizationSeasonAndTypeFilterData, CustomizationBookmarkVO, comparisonKey
@@ -21,6 +22,9 @@ def init(base, self, *a, **kw):
 
 def buildFilterData(self):
     self._allSeasonAndTabFilterData = {}
+    visibleTabs = defaultdict(set)
+    c11nContext = self.service.getCtx()
+    anchorsData = c11nContext.hangarSpace.getSlotPositions()
     requirement = createBaseRequirements(self._proxy)
     allItems = getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, self._proxy, requirement)
     for tabIndex in self._proxy.tabsData.ALL:
@@ -28,7 +32,7 @@ def buildFilterData(self):
         for season in SeasonType.COMMON_SEASONS:
             self._allSeasonAndTabFilterData[tabIndex][season] = CustomizationSeasonAndTypeFilterData()
 
-    isBuy = self._proxy.mode == CSMode.BUY
+    isBuy = self._proxy.isBuy
     for item in sorted(allItems.itervalues(), key=comparisonKey if isBuy else CSComparisonKey):
         groupName = item.groupUserName if isBuy else getGroupName(item)
         if isBuy:
@@ -43,7 +47,19 @@ def buildFilterData(self):
                 if groupName and groupName not in seasonAndTabData.allGroups:
                     seasonAndTabData.allGroups.append(groupName)
                 seasonAndTabData.itemCount += 1
+                if item.itemTypeID in (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.EMBLEM):
+                    for areaData in anchorsData.itervalues():
+                        if areaData.get(item.itemTypeID):
+                            hasSlots = True
+                            break
+                    else:
+                        hasSlots = False
 
+                    if not hasSlots:
+                        continue
+                visibleTabs[seasonType].add(tabIndex)
+
+    c11nContext.updateVisibleTabsList(visibleTabs)
     for tabIndex in self._proxy.tabsData.ALL:
         for seasonType in SeasonType.COMMON_SEASONS:
             seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
@@ -55,7 +71,7 @@ def buildFilterData(self):
 def _buildCustomizationItems(_, self):
     buildFilterData(self)
     season = self._seasonID
-    isBuy = self._proxy.mode == CSMode.BUY
+    isBuy = self._proxy.isBuy
     requirement = createBaseRequirements(self._proxy, season)
     if not isBuy:
         requirement |= REQ_CRITERIA.CUSTOM(partial(isItemSuitableForTab, tabIndex=self._tabIndex))
@@ -74,11 +90,11 @@ def _buildCustomizationItems(_, self):
     if self._onlyAppliedItems:
         appliedItems = self._proxy.getAppliedItems(isOriginal=False)
         requirement |= REQ_CRITERIA.CUSTOM(lambda x: x.intCD in appliedItems)
-    allItems = getItems(tabToItem(self._tabIndex, self._proxy.mode), self._proxy, requirement)
+    allItems = getItems(tabToItem(self._tabIndex, self._proxy.isBuy), self._proxy, requirement)
     self._customizationItems = []
     self._customizationBookmarks = []
     lastGroup = None
-    for idx, item in enumerate(sorted(allItems.itervalues(), key=CSComparisonKey)):
+    for idx, item in enumerate(sorted(allItems.itervalues(), key=comparisonKey if isBuy else CSComparisonKey)):
         groupName = getGroupName(item)
         groupID = item.groupID
         group = groupID if isBuy else groupName

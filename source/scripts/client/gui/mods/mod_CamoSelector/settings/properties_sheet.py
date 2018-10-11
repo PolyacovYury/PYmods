@@ -13,84 +13,41 @@ from ..constants import RandMode
 
 
 class CustomizationPropertiesSheet(CPS):
-    def onActionBtnClick(self, actionType, applyToAll):
+    def onActionBtnClick(self, actionType, actionData):
         if actionType == ACTION_ALIASES.CHANGE_ALLY:
-            self.__ctx.changeAlly(applyToAll)
+            self.__ctx.changeAlly(actionData)
         elif actionType == ACTION_ALIASES.CHANGE_ENEMY:
-            self.__ctx.changeEnemy(applyToAll)
+            self.__ctx.changeEnemy(actionData)
         elif (actionType - 8) in SEASONS_CONSTANTS.INDICES:
             self.__ctx.toggleSeason(actionType - 8)
         else:
-            super(CustomizationPropertiesSheet, self).onActionBtnClick(actionType, applyToAll)
+            super(CustomizationPropertiesSheet, self).onActionBtnClick(actionType, actionData)
 
-    def setCamouflageColor(self, paletteIdx):
-        self.__ctx.changeCamouflageColor(self._areaID, self._regionID, paletteIdx)
+    def __applyToOtherAreas(self, installItem):
+        if self.__ctx.currentTab not in (self.__ctx.tabsData.PAINT, self.__ctx.tabsData.CAMOUFLAGE):
+            return
+        currentSeason = self.__ctx.currentSeason
+        if installItem:
+            self.__ctx.installItemToAllTankAreas(currentSeason, self._slotID, self._currentSlotData)
+        else:
+            self.__ctx.removeItemFromAllTankAreas(currentSeason, self._slotID)
+        self.__update()
 
-    # noinspection PyUnusedLocal
-    def setCamouflageScale(self, scale, scaleIndex):
-        self.__ctx.changeCamouflageScale(self._areaID, self._regionID, scale)
+    def __applyToOtherSeasons(self, installItem):
+        if self.__ctx.currentTab not in (
+                self.__ctx.tabsData.EFFECT, self.__ctx.tabsData.EMBLEM, self.__ctx.tabsData.INSCRIPTION,
+                self.__ctx.tabsData.PROJECTION_DECAL):
+            return
+        if installItem:
+            self.__ctx.installItemForAllSeasons(self._areaID, self._slotID, self._regionID, self._currentSlotData)
+        else:
+            self.__ctx.removeItemForAllSeasons(self._areaID, self._slotID, self._regionID)
+        self.__update()
 
     def __updateItemAppliedToAllFlag(self):
         if self.__ctx.mode != CSMode.SETUP:
             # noinspection PyUnresolvedReferences
             super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__updateItemAppliedToAllFlag()
-
-    def __getTitleDescrTexts(self, currentElement):
-        if self._slotID == GUI_ITEM_TYPE.STYLE:
-            if not currentElement:
-                titleText = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ELEMENTTYPE_ALL
-            else:
-                titleText = currentElement.userName
-        elif self._slotID == GUI_ITEM_TYPE.MODIFICATION:
-            titleText = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ELEMENTTYPE_ALL
-        elif self._slotID == GUI_ITEM_TYPE.INSCRIPTION:
-            titleText = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ELEMENTTYPE_INSCRIPTION
-        elif self._slotID == GUI_ITEM_TYPE.EMBLEM:
-            titleText = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ELEMENTTYPE_EMBLEM
-        else:
-            titleText = VEHICLE_CUSTOMIZATION.getSheetVehPartName(getCustomizationTankPartName(self._areaID, self._regionID))
-        if not currentElement:
-            itemTypeID = tabToItem(self.__ctx.currentTab, self.__ctx.mode)
-            itemTypeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
-            descrText = text_styles.neutral(VEHICLE_CUSTOMIZATION.getSheetEmptyDescription(itemTypeName))
-        elif self._slotID == GUI_ITEM_TYPE.STYLE:
-            descrText = text_styles.main(  # because, apparently, there is a huge derp in WG team #TODO: remove on 1.2
-                currentElement.userType if currentElement.groupID else VEHICLE_CUSTOMIZATION.CAROUSEL_SWATCH_STYLE_SPECIAL)
-        elif self._slotID == GUI_ITEM_TYPE.CAMOUFLAGE:
-            descrText = text_styles.main(currentElement.userName)
-        else:
-            descrText = text_styles.main(
-                i18n.makeString(VEHICLE_CUSTOMIZATION.PROPERTYSHEET_DESCRIPTION, itemType=currentElement.userType,
-                                itemName=currentElement.userName))
-        return text_styles.highTitle(titleText), descrText
-
-    def __makeRemoveRendererVO(self, separatorVisible=True):
-        iconSrc = RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_CROSS
-        if self._slotID == GUI_ITEM_TYPE.STYLE:
-            titleText = ''
-            iconSrc = ''
-            actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_REMOVESTYLE
-        else:
-            itemTypeID = tabToItem(self.__ctx.currentTab, self.__ctx.mode)
-            itemTypeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
-            titleText = VEHICLE_CUSTOMIZATION.getSheetRemoveText(itemTypeName)
-            if self._slotID == GUI_ITEM_TYPE.MODIFICATION:
-                actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_REMOVE_TANK
-            elif self._slotID == GUI_ITEM_TYPE.EMBLEM:
-                actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_REMOVE_EMBLEM
-            elif self._slotID == GUI_ITEM_TYPE.INSCRIPTION:
-                actionBtnLabel = VEHICLE_CUSTOMIZATION.PROPERTYSHEET_ACTIONBTN_REMOVE_INSCRIPTION
-            else:
-                actionBtnLabel = VEHICLE_CUSTOMIZATION.getSheetBtnRemoveText(
-                    getCustomizationTankPartName(self._areaID, self._regionID))
-        return {'titleText': text_styles.standard(titleText),
-                'iconSrc': iconSrc,
-                'actionBtnLabel': actionBtnLabel,
-                'actionBtnIconSrc': RES_ICONS.MAPS_ICONS_LIBRARY_ASSET_1,
-                'isAppliedToAll': False,
-                'separatorVisible': separatorVisible,
-                'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-                'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_REMOVE_ONE}
 
     def __makeRenderersVOs(self):
         if self.__ctx.mode != CSMode.SETUP:
