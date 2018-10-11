@@ -211,11 +211,11 @@ class CustomizationContext(WGCtx):
         self.isSwitcherIgnored = True  # the switcher just jumps backwards immediately. -_-
         self._lastTab[self._mode] = self._tabIndex
         self._mode = ((self._mode + 1) if wasLeft else (self._mode - 1)) % len(CSMode.NAMES)
-        self._tabIndex = self._lastTab[self._mode]
-        if self._tabIndex not in self.visibleTabs:
-            self._tabIndex = first(self.visibleTabs, -1)
+        tabIndex = self._lastTab[self._mode]
+        if tabIndex not in self.visibleTabs:
+            tabIndex = first(self.visibleTabs, -1)
         self.refreshOutfit()
-        self.tabChanged(self._tabIndex)
+        self.tabChanged(tabIndex)
         self.onCustomizationModeChanged(self._mode)
 
     def cancelChanges(self):

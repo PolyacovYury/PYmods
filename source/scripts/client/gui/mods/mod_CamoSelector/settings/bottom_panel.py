@@ -122,6 +122,7 @@ class CustomizationBottomPanel(CBP):
         return data, pluses
 
     def __onModeChanged(self, mode):
+        self.__ctx.isSwitcherIgnored = True
         self.__setFooterInitData()
         self.__updateTabs(self.__ctx.currentTab)
         self._carouselDP.selectItem(self.__ctx.modifiedStyle if self.__ctx.currentTab == self.__ctx.tabsData.STYLE else None)
