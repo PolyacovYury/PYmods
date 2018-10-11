@@ -241,20 +241,21 @@ class MainView(WGMainView):
             self.__propertiesSheet.hide()
 
     def getItemTabsData(self):
-        data = []
-        pluses = []
-        for tabIdx in self.__ctx.visibleTabs:
-            itemTypeID = tabToItem(tabIdx, self.__ctx.isBuy)
-            typeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
-            showPlus = not self.__checkSlotsFilling(itemTypeID, self._currentSeason)
-            data.append(({'label': i18n.makeString(ITEM_TYPES.customizationPlural(typeName)),
-                          'tooltip': makeTooltip(ITEM_TYPES.customizationPlural(typeName),
-                                                 TOOLTIPS.customizationItemTab(typeName)),
-                          'id': tabIdx} if self.__ctx.isBuy else
-                         {'label': g_config.i18n['UI_flash_tabs_%s_label' % tabIdx],
-                          'tooltip': makeTooltip(g_config.i18n['UI_flashCol_tabs_%s_text' % tabIdx],
-                                                 g_config.i18n['UI_flashCol_tabs_%s_tooltip' % tabIdx]),
-                          'id': tabIdx}))
-            pluses.append(showPlus)
-
-        return data, pluses
+        assert False
+        # data = []
+        # pluses = []
+        # for tabIdx in self.__ctx.visibleTabs:
+        #     itemTypeID = tabToItem(tabIdx, self.__ctx.isBuy)
+        #     typeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
+        #     showPlus = not self.__checkSlotsFilling(itemTypeID, self._currentSeason)
+        #     data.append(({'label': i18n.makeString(ITEM_TYPES.customizationPlural(typeName)),
+        #                   'tooltip': makeTooltip(ITEM_TYPES.customizationPlural(typeName),
+        #                                          TOOLTIPS.customizationItemTab(typeName)),
+        #                   'id': tabIdx} if self.__ctx.isBuy else
+        #                  {'label': g_config.i18n['UI_flash_tabs_%s_label' % tabIdx],
+        #                   'tooltip': makeTooltip(g_config.i18n['UI_flashCol_tabs_%s_text' % tabIdx],
+        #                                          g_config.i18n['UI_flashCol_tabs_%s_tooltip' % tabIdx]),
+        #                   'id': tabIdx}))
+        #     pluses.append(showPlus)
+        #
+        # return data, pluses
