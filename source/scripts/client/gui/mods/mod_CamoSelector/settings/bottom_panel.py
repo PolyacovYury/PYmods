@@ -108,12 +108,14 @@ class CustomizationBottomPanel(CBP):
             typeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
             showPlus = not self.__ctx.checkSlotsFilling(itemTypeID, self.__ctx.currentSeason)
             tabData = {'id': tabIdx,
-                       'icon': RES_ICONS.getCustomizationIcon(typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else ''}
+                       'icon': RES_ICONS.getCustomizationIcon(typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else
+                       RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_TANK_HOVER}
             if self.__ctx.isBuy:
                 tabData.update({'label': _ms(ITEM_TYPES.customizationPlural(typeName)),
                                 'tooltip': makeTooltip(
                                     ITEM_TYPES.customizationPlural(typeName),
-                                    TOOLTIPS.customizationItemTab(typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else '')})
+                                    TOOLTIPS.customizationItemTab(typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else
+                                    g_config.i18n['UI_flashCol_tabs_0_tooltip'])})
             else:
                 tabData.update({'label': g_config.i18n['UI_flash_tabs_%s_label' % tabIdx],
                                 'tooltip': makeTooltip(g_config.i18n['UI_flashCol_tabs_%s_text' % tabIdx],

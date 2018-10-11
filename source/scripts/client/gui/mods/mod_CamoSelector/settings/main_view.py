@@ -6,19 +6,15 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_MAPPIN
     DND_INACTIVE_TABS, C11nTabs, SEASONS_ORDER, SEASON_TYPE_TO_NAME
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES
-from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.shared import chooseMode, getAppliedRegionsForCurrentHangarVehicle, HighlightingMode, \
     appliedToFromSlotsIds, QUANTITY_LIMITED_CUSTOMIZATION_TYPES, C11nId
-from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.customization.outfit import Area
 from gui.shared.utils.functions import makeTooltip
-from helpers import i18n
 from items.components.c11n_constants import ApplyArea
 from .shared import CSMode, CSTabs, tabToItem
-from .. import g_config
 
 
 class MainView(WGMainView):

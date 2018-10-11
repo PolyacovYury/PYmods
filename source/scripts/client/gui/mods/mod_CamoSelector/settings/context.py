@@ -455,7 +455,7 @@ class CustomizationContext(WGCtx):
             self._tabIndex = self.tabsData.STYLE
         else:
             self._tabIndex = self.tabsData.PAINT
-            notInst = all([ not self.originalOutfits[season].isInstalled() for season in SeasonType.COMMON_SEASONS ])
+            notInst = all([not self.originalOutfits[season].isInstalled() for season in SeasonType.COMMON_SEASONS])
             if notInst and not self.isOutfitsEmpty(self.modifiedOutfits) and not self.modifiedStyle:
                 self._tabIndex = self.tabsData.STYLE
         self._originalMode = self._mode
