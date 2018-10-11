@@ -214,12 +214,8 @@ class CustomizationContext(WGCtx):
         self.isSwitcherIgnored = True  # the switcher just jumps backwards immediately. -_-
         self._lastTab[self._mode] = self._tabIndex
         self._mode = ((self._mode + 1) if wasLeft else (self._mode - 1)) % len(CSMode.NAMES)
-        tabIndex = self._lastTab[self._mode]
-        if tabIndex not in self.visibleTabs:
-            tabIndex = first(self.visibleTabs, -1)
-        self.refreshOutfit()
         self.onCustomizationModeChanged(self._mode)
-        self.tabChanged(tabIndex)
+        self.refreshOutfit()
 
     def cancelChanges(self):
         if self._tabIndex == self.tabsData.STYLE:
@@ -600,9 +596,11 @@ class CustomizationContext(WGCtx):
     def updateVisibleTabsList(self, visibleTabs):
         for seasonType in SeasonType.COMMON_SEASONS:
             self.__visibleTabs[seasonType] = sorted(visibleTabs[seasonType])
-        tabIndex = first(self.visibleTabs, -1)
+        tabIndex = self._lastTab[self._mode]
+        if tabIndex not in self.visibleTabs:
+            tabIndex = first(self.visibleTabs, -1)
         self._lastTab[self._mode] = tabIndex
-        self.tabChanged(tabIndex)
+        nextTick(self.tabChanged)(tabIndex)
 
     def __isItemInstalledInOutfitSlot(self, slotId, itemIntCD):
         if slotId.slotType == GUI_ITEM_TYPE.STYLE:
