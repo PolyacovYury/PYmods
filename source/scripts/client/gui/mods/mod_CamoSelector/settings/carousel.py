@@ -69,7 +69,7 @@ def buildFilterData(self):
 
 @overrideMethod(CustomizationCarouselDataProvider, '_buildCustomizationItems')
 def _buildCustomizationItems(_, self):
-    buildFilterData(self)
+    # buildFilterData(self)
     season = self._seasonID
     isBuy = self._proxy.isBuy
     requirement = createBaseRequirements(self._proxy, season)
