@@ -11,7 +11,7 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.shared import chooseMode, getAppliedRegionsForCurrentHangarVehicle, HighlightingMode, \
-    appliedToFromSlotsIds, QUANTITY_LIMITED_CUSTOMIZATION_TYPES
+    appliedToFromSlotsIds, QUANTITY_LIMITED_CUSTOMIZATION_TYPES, C11nId
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from gui.shared.utils.functions import makeTooltip
@@ -48,7 +48,8 @@ class MainView(WGMainView):
         self.__hidePropertiesSheet()
 
     def onLobbyClick(self):
-        if self.__ctx.currentTab in (self.__ctx.tabsData.EMBLEM, self.__ctx.tabsData.INSCRIPTION, self.__ctx.tabsData.PROJECTION_DECAL):
+        if self.__ctx.currentTab in (
+                self.__ctx.tabsData.EMBLEM, self.__ctx.tabsData.INSCRIPTION, self.__ctx.tabsData.PROJECTION_DECAL):
             self.__hidePropertiesSheet()
             self.__clearItem()
         if not self.__ctx.isCaruselItemSelected():
@@ -181,14 +182,18 @@ class MainView(WGMainView):
         if cType == GUI_ITEM_TYPE.STYLE:
             anchorId = CustomizationSlotIdVO(Area.MISC, GUI_ITEM_TYPE.STYLE, 0)
             uid = customizationSlotIdToUid(anchorId)
-            anchorVOs.append(CustomizationSlotUpdateVO(anchorId._asdict(), self.__ctx.modifiedStyle.intCD if self.__ctx.modifiedStyle is not None else 0, uid, None)._asdict())
+            anchorVOs.append(CustomizationSlotUpdateVO(
+                anchorId._asdict(), self.__ctx.modifiedStyle.intCD if self.__ctx.modifiedStyle is not None else 0, uid, None
+            )._asdict())
         else:
             potentialPlaceTooltip = None
             if cType in QUANTITY_LIMITED_CUSTOMIZATION_TYPES:
                 outfit = self.__ctx.getModifiedOutfit(self.__ctx.currentSeason)
                 if self.__ctx.isC11nItemsQuantityLimitReached(outfit, cType):
                     maxItemsReached = True
-                    potentialPlaceTooltip = makeTooltip(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_TOOLTIP_POTENTIALPROJDECALPLACE_TITLE, VEHICLE_CUSTOMIZATION.CUSTOMIZATION_TOOLTIP_POTENTIALPROJDECALPLACE_TEXT)
+                    potentialPlaceTooltip = makeTooltip(
+                        VEHICLE_CUSTOMIZATION.CUSTOMIZATION_TOOLTIP_POTENTIALPROJDECALPLACE_TITLE,
+                        VEHICLE_CUSTOMIZATION.CUSTOMIZATION_TOOLTIP_POTENTIALPROJDECALPLACE_TEXT)
             for areaId in Area.ALL:
                 regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, cType)
                 slot = self.__ctx.currentOutfit.getContainer(areaId).slotFor(cType)

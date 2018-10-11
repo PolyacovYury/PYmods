@@ -10,7 +10,7 @@ from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import i18n
 from items.components.c11n_constants import SeasonType
 from shared_utils import findFirst
-from .shared import CSMode, CSTabs, tabToItem, createBaseRequirements, isItemSuitableForTab, getGroupName, CSComparisonKey, \
+from .shared import CSTabs, tabToItem, createBaseRequirements, isItemSuitableForTab, getGroupName, CSComparisonKey, \
     getItemSeason, getItems
 
 

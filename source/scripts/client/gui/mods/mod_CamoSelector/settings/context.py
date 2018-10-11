@@ -1,12 +1,9 @@
-from collections import defaultdict
-from functools import partial
-
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
+from functools import partial
 from gui import g_tankActiveCamouflage, SystemMessages
-from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import comparisonKey
 from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_IDX, SEASON_IDX_TO_TYPE, \
-    SEASON_TYPE_TO_NAME, getOutfitWithoutItems, TYPE_TO_TAB_IDX, getItemInventoryCount, getStyleInventoryCount, OutfitInfo, \
+    SEASON_TYPE_TO_NAME, getOutfitWithoutItems, getItemInventoryCount, getStyleInventoryCount, OutfitInfo, \
     SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
@@ -19,10 +16,9 @@ from gui.shared.gui_items.processors.common import OutfitApplier, StyleApplier, 
 from gui.shared.utils.decorators import process
 from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
-from shared_utils import nextTick, first, findFirst
+from shared_utils import nextTick, first
 from vehicle_systems.tankStructure import TankPartIndexes
-from .shared import CSMode, CSTabs, tabToItem, CSComparisonKey, createBaseRequirements, isItemSuitableForTab, getItemSeason, \
-    getItems
+from .shared import CSMode, CSTabs, tabToItem
 from .. import g_config
 from ..constants import RandMode
 
@@ -138,7 +134,7 @@ class CustomizationContext(WGCtx):
             return False
         item = self.service.getItemByCD(intCD)
         inventoryCount = self.getItemInventoryCount(item)
-        if self.isBuy and  item.isHidden and not inventoryCount:
+        if self.isBuy and item.isHidden and not inventoryCount:
             SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_PROHIBITED, type=SystemMessages.SM_TYPE.Warning,
                                            itemName=item.userName)
             return False
@@ -151,8 +147,8 @@ class CustomizationContext(WGCtx):
             else:
                 season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
                 outfit = self.modifiedOutfits[season]
-                outfit.getContainer((slotId.areaId).slotFor(slotId.slotType).set(
-                    item, idx=slotId.regionIdx, component=component))
+                outfit.getContainer(slotId.areaId).slotFor(slotId.slotType).set(
+                    item, idx=slotId.regionIdx, component=component)
                 outfit.invalidate()
         else:
             outfit = self._setupOutfit
@@ -216,7 +212,6 @@ class CustomizationContext(WGCtx):
         self._lastTab[self._mode] = self._tabIndex
         self._mode = ((self._mode + 1) if wasLeft else (self._mode - 1)) % len(CSMode.NAMES)
         self._tabIndex = self._lastTab[self._mode]
-        self.__updateVisibleTabsList()
         if self._tabIndex not in self.visibleTabs:
             self._tabIndex = first(self.visibleTabs, -1)
         self.refreshOutfit()
@@ -442,14 +437,7 @@ class CustomizationContext(WGCtx):
         nextTick(self.refreshOutfit)()
         nextTick(partial(self.onCustomizationItemSold, item=item, count=count))()
 
-    def init(self):
-        super(CustomizationContext, self).init()
-        self.__updateVisibleTabsList()
-        if self._tabIndex not in self.visibleTabs:
-            self._tabIndex = first(self.visibleTabs, -1)
-
-    def isOutfitsModified(self):
-        #TODO: fix this damn fuckery
+    def isOutfitsModified(self):  # TODO: fix this damn fuckery
         if self._mode == self._originalMode:
             if self.isBuy:
                 currentStyle = self.service.getCurrentStyle()
@@ -488,9 +476,9 @@ class CustomizationContext(WGCtx):
             slotId = self.getSlotIdByAnchorId(anchorId)
             if slotId is not None:
                 outfit = self.modifiedOutfits[self._currentSeason]
-                multySlot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
-                if multySlot is not None:
-                    item = multySlot.getItem(slotId.regionIdx)
+                multiSlot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
+                if multiSlot is not None:
+                    item = multiSlot.getItem(slotId.regionIdx)
                     return item is not None
             return False
 
@@ -593,12 +581,13 @@ class CustomizationContext(WGCtx):
             return self.modifiedStyle.intCD == itemIntCD
         else:
             outfit = self.modifiedOutfits[self._currentSeason]
-            multySlot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
-            if multySlot is not None:
-                item = multySlot.getItem(slotId.regionIdx)
+            multiSlot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
+            if multiSlot is not None:
+                item = multiSlot.getItem(slotId.regionIdx)
                 if item is not None:
                     return item.intCD == itemIntCD
             return False
+
 
 @overrideMethod(CustomizationService, 'getCtx')
 def new_getCtx(base, self):
