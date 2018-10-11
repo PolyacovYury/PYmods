@@ -215,8 +215,8 @@ class CustomizationContext(WGCtx):
         if tabIndex not in self.visibleTabs:
             tabIndex = first(self.visibleTabs, -1)
         self.refreshOutfit()
-        self.tabChanged(tabIndex)
         self.onCustomizationModeChanged(self._mode)
+        self.tabChanged(tabIndex)
 
     def cancelChanges(self):
         if self._tabIndex == self.tabsData.STYLE:

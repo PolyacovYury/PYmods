@@ -12,6 +12,7 @@ from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.money import Money
 from gui.shared.utils.functions import makeTooltip
 from helpers.i18n import makeString as _ms
+from .carousel import buildFilterData
 from .shared import CSMode, tabToItem
 from .. import g_config
 
@@ -33,10 +34,10 @@ class CustomizationBottomPanel(CBP):
         if event.key in [Keys.KEY_LSHIFT, Keys.KEY_RSHIFT]:
             if self.__isShiftDown != event.isKeyDown():
                 self.__isShiftDown = event.isKeyDown()
-                self.__ctx.isSwitcherIgnored = True
                 self.__setFooterInitData()
 
     def __setFooterInitData(self):
+        self.__ctx.isSwitcherIgnored = True
         self.as_setBottomPanelInitDataS({
             'tabsAvailableRegions': self.__ctx.tabsData.AVAILABLE_REGIONS,
             'defaultStyleLabel': g_config.i18n['UI_flash_switcher_tabsInvisible'],
@@ -122,8 +123,9 @@ class CustomizationBottomPanel(CBP):
         return data, pluses
 
     def __onModeChanged(self, mode):
-        self.__ctx.isSwitcherIgnored = True
         self.__setFooterInitData()
+        buildFilterData(self._carouselDP)
+        self.__refreshCarousel(force=True)
         self.__updateTabs(self.__ctx.currentTab)
         self._carouselDP.selectItem(self.__ctx.modifiedStyle if self.__ctx.currentTab == self.__ctx.tabsData.STYLE else None)
         self.__setBottomPanelBillData()
