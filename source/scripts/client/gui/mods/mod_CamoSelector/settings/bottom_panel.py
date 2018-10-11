@@ -125,7 +125,7 @@ class CustomizationBottomPanel(CBP):
     def __onModeChanged(self, mode):
         self.__setFooterInitData()
         buildFilterData(self._carouselDP)
-        self.__updateTabs(self.__ctx.currentTab)
         self.__refreshCarousel(force=True)
+        self.__updateTabs(self.__ctx.currentTab)
         self._carouselDP.selectItem(self.__ctx.modifiedStyle if self.__ctx.currentTab == self.__ctx.tabsData.STYLE else None)
         self.__setBottomPanelBillData()
