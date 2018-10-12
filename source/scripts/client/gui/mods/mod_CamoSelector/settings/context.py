@@ -500,8 +500,7 @@ class CustomizationContext(WGCtx):
         else:
             slotId = self.getSlotIdByAnchorId(anchorId)
             if slotId is not None:
-                outfit = self.modifiedOutfits[self._currentSeason]
-                multiSlot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
+                multiSlot = self._currentOutfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
                 if multiSlot is not None:
                     item = multiSlot.getItem(slotId.regionIdx)
                     return item is not None
