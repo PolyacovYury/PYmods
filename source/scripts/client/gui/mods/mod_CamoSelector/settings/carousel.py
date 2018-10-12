@@ -53,7 +53,7 @@ def buildFilterData(self):
         if tabIndex not in self.tabsData.ALL or (
                 isBuy and tabIndex == self._proxy.tabsData.CAMOUFLAGE and
                 g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage) or (
-                self._proxy._mode == CSMode.SETUP and tabIndex not in CSTabs.CAMO):
+                self._proxy.mode == CSMode.SETUP and tabIndex not in CSTabs.CAMO):
             continue
         for seasonType in SeasonType.COMMON_SEASONS:
             if (item.season if isBuy else getItemSeason(item)) & seasonType:

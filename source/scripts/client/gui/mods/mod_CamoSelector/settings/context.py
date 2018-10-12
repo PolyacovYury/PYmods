@@ -134,6 +134,7 @@ class CustomizationContext(WGCtx):
 
     def installItem(self, intCD, slotId, seasonIdx, component=None):
         if slotId is None:
+            print intCD, slotId, seasonIdx, component
             return False
         item = self.service.getItemByCD(intCD)
         inventoryCount = self.getItemInventoryCount(item)

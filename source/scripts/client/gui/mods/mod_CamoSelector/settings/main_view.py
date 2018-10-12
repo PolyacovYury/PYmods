@@ -117,12 +117,10 @@ class MainView(WGMainView):
     # noinspection PyUnusedLocal
     def __onCaruselItemSelected(self, index, intCD):
         tabIndex = self.__ctx.currentTab
-        if tabIndex in (self.__ctx.tabsData.STYLE, self.__ctx.tabsData.EFFECT):
+        if tabIndex in (self.__ctx.tabsData.STYLE, self.__ctx.tabsData.EFFECT) or self.__ctx.mode == CSMode.SETUP:
             self.service.selectRegions(ApplyArea.ALL)
             areaId, slotType, regionIdx = self.__ctx.selectedAnchor
             self.onSelectAnchor(areaId, slotType, regionIdx)
-        if self.__ctx.mode == CSMode.SETUP:
-            self.onSelectAnchor(1, GUI_ITEM_TYPE.CAMOUFLAGE, 0)
         if not self.__propertiesSheet.isVisible and not self.itemIsPicked:
             self.soundManager.playInstantSound(SOUNDS.PICK)
             self.itemIsPicked = True
