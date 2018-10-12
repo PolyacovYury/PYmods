@@ -50,7 +50,7 @@ def buildFilterData(self):
             tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID, -1)
         else:
             tabIndex = findFirst(partial(isItemSuitableForTab, item), CSTabs.ALL, -1)
-        if tabIndex not in self.tabsData.ALL or (
+        if tabIndex not in self._proxy.tabsData.ALL or (
                 isBuy and tabIndex == self._proxy.tabsData.CAMOUFLAGE and
                 g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage) or (
                 self._proxy.mode == CSMode.SETUP and tabIndex not in CSTabs.CAMO):
