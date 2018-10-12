@@ -63,11 +63,10 @@ class CustomizationPropertiesSheet(CPS):
 
         return {'titleText': text_styles.standard(g_config.i18n['UI_flashCol_randMode_label']),
                 'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_SCALE,
-                'isAppliedToAll': False,
+                'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_SCALE_HOVER,
                 'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_SCALE_CHANGE,
                 'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SCALE_COLOR_RENDERER_UI,
-                'btnsBlockVO': btnBlockVO,
-                'btnsGroupName': CUSTOMIZATION_ALIASES.SCALE_BTNS_GROUP}
+                'btnsBlockVO': btnBlockVO}
 
     def makeTeamRendererVOs(self):
         result = []
