@@ -601,6 +601,7 @@ class CustomizationContext(WGCtx):
         if tabIndex not in self.visibleTabs:
             tabIndex = first(self.visibleTabs, -1)
         self._lastTab[self._mode] = tabIndex
+        self._tabIndex = tabIndex
         nextTick(self.tabChanged)(tabIndex)
 
     def __isItemInstalledInOutfitSlot(self, slotId, itemIntCD):

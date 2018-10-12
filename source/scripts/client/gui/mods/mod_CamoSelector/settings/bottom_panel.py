@@ -124,10 +124,6 @@ class CustomizationBottomPanel(CBP):
             pluses.append(showPlus)
         return data, pluses
 
-    def __onTabChanged(self, tabIndex):
-        self.__refreshCarousel(force=True)
-        self.__updateTabs(tabIndex)
-
     def __onModeChanged(self, mode):
         self.__setFooterInitData()
         buildFilterData(self._carouselDP)
