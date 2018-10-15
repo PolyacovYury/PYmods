@@ -151,10 +151,11 @@ def apply(vDesc, modelDesc):
                 print 'cntInscription =', cntInscription
     for partName in ('hull', 'turret'):
         part = getattr(vDesc, partName)
+        slots = list(part.emblemSlots)
         if not data[partName]['emblemSlots']:
-            for i in range(len(part.emblemSlots)):
-                part.emblemSlots[i] = part.emblemSlots[i]._replace(size=0.001)
-        part.emblemSlots = tuple(part.emblemSlots)
+            for i in range(len(slots)):
+                slots[i] = slots[i]._replace(size=0.001)
+        part.emblemSlots = tuple(slots)
 
     exclMask = data['common']['camouflage']['exclusionMask']
     vDesc.type.camouflage = Camouflage(
