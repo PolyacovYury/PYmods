@@ -155,19 +155,27 @@ def skinCRC32All(callback):
             completionPercentage = 0
             g_config.loadingProxy.addBar(g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
             skinCRC32 = 0
-            skinSect = ResMgr.openSection(skinsPath + skin + '/vehicles/')
+            skinSect = dirSect[skin]['vehicles']
             nationsList = [] if skinSect is None else remDups(skinSect.keys())
             natLen = len(nationsList)
             for num, nation in enumerate(nationsList):
-                nationSect = ResMgr.openSection(skinsPath + skin + '/vehicles/' + nation)
+                nationSect = skinSect[nation]
                 vehiclesList = [] if nationSect is None else remDups(nationSect.keys())
                 vehLen = len(vehiclesList)
                 for vehNum, vehicleName in enumerate(vehiclesList):
                     skinVehNamesLDict.setdefault(vehicleName.lower(), []).append(skin)
-                    vehicleSect = ResMgr.openSection(skinsPath + skin + '/vehicles/' + nation + '/' + vehicleName)
-                    for texture in [] if vehicleSect is None else (
-                            texName for texName in remDups(vehicleSect.keys()) if texName.endswith('.dds')):
-                        localPath = 'vehicles/' + nation + '/' + vehicleName + '/' + texture
+                    texPrefix = 'vehicles/' + nation + '/' + vehicleName + '/'
+                    vehicleSect = nationSect[vehicleName]
+                    textures = []
+                    if vehicleSect is not None:
+                        textures = [texPrefix + texName
+                                    for texName in remDups(vehicleSect.keys()) if texName.endswith('.dds')]
+                        skinsSect = vehicleSect['_skins']
+                        if skinsSect is not None:
+                            for skinName in skinsSect.keys():
+                                textures.extend(texPrefix + '_skins/' + skinName + '/' + texName for texName in
+                                                remDups(skinsSect[skinName].keys()) if texName.endswith('.dds'))
+                    for localPath in textures:
                         texPath = skinsPath + skin + '/' + localPath
                         textureCRC32 = CRC32_from_file(texPath, localPath)
                         skinCRC32 ^= textureCRC32
@@ -191,6 +199,7 @@ def skinCRC32All(callback):
                 print g_config.ID + ': skins textures were changed'
             g_config.skinsCache['CRC32'] = str(CRC32)
             texReplaced = True
+        ResMgr.purge(skinsPath)
     else:
         print g_config.ID + ': skins folder is empty'
     BigWorld.callback(0.0, partial(callback, True))
@@ -273,9 +282,8 @@ def modelsProcess(callback):
             filesCnt = 0
             g_config.loadingProxy.addBar(g_config.i18n['UI_loading_package'] % os.path.basename(vehPkgPath))
             vehPkg = ZipFile(vehPkgPath)
-            fileNamesList = filter(
-                lambda x: x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats,
-                vehPkg.namelist())
+            fileNamesList = [x for x in vehPkg.namelist() if
+                             x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats]
             allFilesCnt = len(fileNamesList)
             for fileNum, memberFileName in enumerate(fileNamesList):
                 for skinName in skinVehNamesLDict.get(os.path.normpath(memberFileName).split('\\')[2].lower(), []):
