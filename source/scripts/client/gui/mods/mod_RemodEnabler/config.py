@@ -47,7 +47,7 @@ def readEmblemSlots(confList):
                            confDict.get('isUVProportional', True), confDict.get('emblemId', None))
         slots.append(descr)
 
-    return slots
+    return tuple(slots)
 
 
 class ModelDescriptor(object):
