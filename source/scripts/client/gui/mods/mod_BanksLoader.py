@@ -95,12 +95,57 @@ class ConfigInterface(PYmodsConfigInterface):
         if os.path.isfile(oldModName):
             os.rename(oldModName, oldModName + '1')
 
+    def check_order(self, order, filePath, new_filePath):
+        modsRoot = BigWorld.curCV.replace('res_', '') + '/'
+        filePath = filePath.replace(modsRoot, '')
+        new_filePath = new_filePath.replace(modsRoot, '')
+        if filePath not in order:
+            if new_filePath in order:
+                order.insert(order.index(new_filePath), filePath)
+            else:
+                order.append(filePath)
+                order.append(new_filePath)
+            return True
+        elif new_filePath not in order:
+            order.insert(order.index(filePath) + 1, new_filePath)
+            return True
+        return False
+
     def check_wotmods(self, mediaPath):
+        modsRoot = BigWorld.curCV.replace('res_', '') + '/'
+        load_order_xml = '.' + modsRoot + 'load_order.xml'
+        BLMarker = '_BanksLoaded'
+        order_changed = False
+        BL_present = False
+        was_BLaM = False
+        order = []
+        orderSect = ResMgr.openSection(load_order_xml)
+        if orderSect is None:
+            orderSect = ResMgr.openSection(load_order_xml, True)
+            collection = orderSect.createSection('Collection')
+        else:
+            collection = orderSect['Collection']
+        BLaM = '_aaa_BanksLoader_audioMods.wotmod'
+        for pkgSect in collection.values():
+            pkgPath = pkgSect.asString
+            if not os.path.isfile(modsRoot + pkgPath):
+                collection.deleteSection(pkgSect)
+                order_changed = True
+            elif pkgPath == BLaM:
+                was_BLaM = True
+            else:
+                if BLMarker in pkgPath:
+                    BL_present = True
+                order.append(pkgSect.asString)
         audio_mods_xml = 'res/%s/audio_mods.xml' % mediaPath
-        for filePath in ('%s/%s' % (x[0], y) for x in os.walk(BigWorld.curCV.replace('res_', '')) for y in x[2]):
-            if not filePath.endswith('.wotmod') or os.path.basename(filePath) == '_aaa_BanksLoader_audioMods.wotmod':
+        for filePath in (os.path.join(x[0], y).replace(os.sep, '/') for x in os.walk(modsRoot) for y in x[2]):
+            if not filePath.endswith('.wotmod') or os.path.basename(filePath) == BLaM or BLMarker in filePath:
                 continue
-            new_filePath = filePath[:-7] + '_BanksLoader_ing' + '.wotmod'
+            new_filePath = BLMarker.join(os.path.splitext(filePath))
+            if os.path.isfile(new_filePath) and os.stat(filePath).st_mtime == os.stat(new_filePath).st_mtime:
+                order_changed |= self.check_order(order, filePath, new_filePath)
+                BL_present = True
+                continue
             cleaned = False
             with zipfile.ZipFile(filePath) as zip_orig:
                 fileNames = zip_orig.namelist()
@@ -108,26 +153,32 @@ class ConfigInterface(PYmodsConfigInterface):
                     cleaned = True
                     self.editedBanks['wotmod'].append(os.path.basename(filePath))
                     bankFiles = [x for x in fileNames if x.startswith('res/' + mediaPath) and x.endswith('.bnk')]
-                    with zipfile.ZipFile(new_filePath, 'w') as zip_new:
-                        for fileInfo in zip_orig.infolist():
-                            fileName = fileInfo.filename
-                            if fileName != audio_mods_xml:
-                                zip_new.writestr(fileInfo, zip_orig.read(fileName))
-                            elif bankFiles:
-                                fileInfo.filename = bankFiles[0].replace('.bnk', '.xml')
-                                zip_new.writestr(fileInfo, zip_orig.read(fileName))
+                    if bankFiles:
+                        with zipfile.ZipFile(new_filePath, 'w') as zip_new:
+                            for fileInfo in zip_orig.infolist():
+                                fileName = fileInfo.filename
+                                if fileName == audio_mods_xml:
+                                    fileInfo.filename = bankFiles[0].replace('.bnk', '.xml')
+                                    zip_new.writestr(fileInfo, zip_orig.read(fileName))
             if cleaned:
-                print self.ID + ': config cleaned from package', os.path.basename(filePath)
-                if os.path.isfile(filePath):
+                print self.ID + ': config renamed for package', os.path.basename(filePath)
+                order_changed |= self.check_order(order, filePath, new_filePath)
+                BL_present = True
+                if os.path.isfile(new_filePath):
                     try:
                         stat = os.stat(filePath)
-                        os.remove(filePath)
-                        if os.path.isfile(new_filePath):
-                            os.rename(new_filePath, filePath)
-                        if os.path.isfile(filePath):
-                            os.utime(filePath, (stat.st_atime, stat.st_mtime))
+                        os.utime(new_filePath, (stat.st_atime, stat.st_mtime))
                     except StandardError:
                         traceback.print_exc()
+        if BL_present:
+            order.append(BLaM)
+        order_changed |= was_BLaM != BL_present
+        if order_changed:
+            orderSect.deleteSection(collection)
+            collection = orderSect.createSection('Collection')
+            collection.writeStrings('pkg', order)
+            orderSect.save()
+        ResMgr.purge(load_order_xml, True)
 
     def checkConfigs(self):
         orig_engine = ResMgr.openSection('engine_config.xml')
