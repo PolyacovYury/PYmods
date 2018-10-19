@@ -95,22 +95,6 @@ class ConfigInterface(PYmodsConfigInterface):
         if os.path.isfile(oldModName):
             os.rename(oldModName, oldModName + '1')
 
-    def check_order(self, order, filePath, new_filePath):
-        modsRoot = BigWorld.curCV.replace('res_', '') + '/'
-        filePath = filePath.replace(modsRoot, '')
-        new_filePath = new_filePath.replace(modsRoot, '')
-        if filePath not in order:
-            if new_filePath in order:
-                order.insert(order.index(new_filePath), filePath)
-            else:
-                order.append(filePath)
-                order.append(new_filePath)
-            return True
-        elif new_filePath not in order:
-            order.insert(order.index(filePath) + 1, new_filePath)
-            return True
-        return False
-
     def check_wotmods(self, mediaPath):
         modsRoot = BigWorld.curCV.replace('res_', '') + '/'
         load_order_xml = '.' + modsRoot + 'load_order.xml'
@@ -134,16 +118,15 @@ class ConfigInterface(PYmodsConfigInterface):
             elif pkgPath == BLaM:
                 was_BLaM = True
             else:
-                if BLMarker in pkgPath:
-                    BL_present = True
                 order.append(pkgSect.asString)
         audio_mods_xml = 'res/%s/audio_mods.xml' % mediaPath
         for filePath in (os.path.join(x[0], y).replace(os.sep, '/') for x in os.walk(modsRoot) for y in x[2]):
             if not filePath.endswith('.wotmod') or os.path.basename(filePath) == BLaM or BLMarker in filePath:
                 continue
             new_filePath = BLMarker.join(os.path.splitext(filePath))
+            _filePath = filePath.replace(modsRoot, '')
             if os.path.isfile(new_filePath) and os.stat(filePath).st_mtime == os.stat(new_filePath).st_mtime:
-                order_changed |= self.check_order(order, filePath, new_filePath)
+                order_changed |= _filePath not in order and not order.append(_filePath)
                 BL_present = True
                 continue
             cleaned = False
@@ -162,7 +145,7 @@ class ConfigInterface(PYmodsConfigInterface):
                                     zip_new.writestr(fileInfo, zip_orig.read(fileName))
             if cleaned:
                 print self.ID + ': config renamed for package', os.path.basename(filePath)
-                order_changed |= self.check_order(order, filePath, new_filePath)
+                order_changed |= _filePath not in order and not order.append(_filePath)
                 BL_present = True
                 if os.path.isfile(new_filePath):
                     try:
