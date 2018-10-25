@@ -66,7 +66,6 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_vehicleDelete_success': 'Vehicle deleted from whitelist: ',
             'UI_flash_vehicleAdd_success': 'Vehicle added to whitelist: ',
             'UI_flash_vehicleAdd_dupe': 'Vehicle already in whitelist: ',
-            'UI_flash_backBtn': 'Back',
             'UI_flash_saveBtn': 'Save',
             'UI_loading_autoLogin': 'Log in afterwards',
             'UI_loading_autoLogin_cancel': 'Cancel auto login',
@@ -249,7 +248,6 @@ class SkinnerUI(AbstractWindowView):
                        'ally': g_config.tb.createLabel('useFor_ally', 'flash'),
                        'enemy': g_config.tb.createLabel('useFor_enemy', 'flash'),
                        'player': g_config.tb.createLabel('useFor_player', 'flash')},
-            'backBtn': g_config.i18n['UI_flash_backBtn'],
             'saveBtn': g_config.i18n['UI_flash_saveBtn']
         }
         settings = {

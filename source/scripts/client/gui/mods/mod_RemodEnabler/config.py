@@ -127,6 +127,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_vehicleAdd_success': 'Vehicle added to whitelist: ',
             'UI_flash_vehicleAdd_dupe': 'Vehicle already in whitelist: ',
             'UI_flash_vehicleAdd_notSupported': 'Vehicle is not supported by RemodEnabler.',
+            'UI_flash_backBtn': 'Back',
             'UI_flash_saveBtn': 'Save',
             'UI_setting_isDebug_text': 'Enable extended log printing',
             'UI_setting_isDebug_tooltip': 'If enabled, your python.log will be harassed with mod\'s debug information.',
@@ -343,6 +344,7 @@ class RemodEnablerUI(AbstractWindowView):
                        'ally': g_config.tb.createLabel('useFor_ally', 'flash'),
                        'enemy': g_config.tb.createLabel('useFor_enemy', 'flash'),
                        'player': g_config.tb.createLabel('useFor_player', 'flash')},
+            'backBtn': g_config.i18n['UI_flash_backBtn'],
             'saveBtn': g_config.i18n['UI_flash_saveBtn']
         }
         settings = {
