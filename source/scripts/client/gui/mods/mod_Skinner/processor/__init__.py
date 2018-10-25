@@ -29,6 +29,7 @@ def skins_find(curVehName, isPlayerVehicle, isAlly, skinType):
 def debugOutput(xmlName, vehName, playerName, staticDesc, dynamicDesc):
     if not g_config.data['isDebug']:
         return
+    traceback.print_stack()
     info = []
     header = g_config.ID + ': %s (%s)' % (xmlName, vehName)
     if playerName is not None:

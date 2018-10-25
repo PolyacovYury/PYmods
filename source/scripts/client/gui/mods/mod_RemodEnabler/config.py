@@ -72,8 +72,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def __init__(self):
         self.possibleModes = ['player', 'ally', 'enemy']
-        self.defaultSkinConfig = {'static': {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True},
-                                  'dynamic': {'enabled': True, 'swapPlayer': False, 'swapAlly': True, 'swapEnemy': True}}
         self.defaultRemodConfig = {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True}
         self.settings = {'remods': {}}
         self.modelsData = {'enabled': True, 'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}, 'remod': ''}}
@@ -88,13 +86,11 @@ class ConfigInterface(PYmodsConfigInterface):
         self.ID = __modID__
         self.version = '3.0.0 (%s)' % __date__
         self.author += ' (thx to atacms)'
-        self.defaultKeys = {'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
-                            'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
+        self.defaultKeys = {'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'SwitchRemodHotkey': [Keys.KEY_F3, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'CollisionHotkey': [Keys.KEY_F4, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
         self.data = {'enabled': True,
                      'isDebug': True,
-                     'DynamicSkinHotkey': self.defaultKeys['DynamicSkinHotkey'],
                      'ChangeViewHotkey': self.defaultKeys['ChangeViewHotkey'],
                      'CollisionHotkey': self.defaultKeys['CollisionHotkey'],
                      'SwitchRemodHotkey': self.defaultKeys['SwitchRemodHotkey']}
@@ -104,7 +100,6 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_header_tooltip': "Extended setup for RemodEnabler by "
                                        "<font color='#DD7700'><b>Polyacov_Yury</b></font>",
             'UI_flash_remodSetupBtn': 'Remods setup',
-            'UI_flash_remodWLBtn': 'Remod whitelists',
             'UI_flash_remodCreateBtn': 'Create remod',
             'UI_flash_remodCreate_name_text': 'Remod name',
             'UI_flash_remodCreate_name_tooltip': 'Remod unique ID and config file name.',
@@ -123,7 +118,6 @@ class ConfigInterface(PYmodsConfigInterface):
                                                  'List is scrollable if longer than 10 items.',
             'UI_flash_whiteDropdown_default': 'Expand',
             'UI_flash_useFor_header_text': 'Use this item for:',
-            'UI_flash_useFor_enable_text': 'Enabled',
             'UI_flash_useFor_player_text': 'Player',
             'UI_flash_useFor_ally_text': 'Allies',
             'UI_flash_useFor_enemy_text': 'Enemies',
@@ -133,7 +127,6 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_vehicleAdd_success': 'Vehicle added to whitelist: ',
             'UI_flash_vehicleAdd_dupe': 'Vehicle already in whitelist: ',
             'UI_flash_vehicleAdd_notSupported': 'Vehicle is not supported by RemodEnabler.',
-            'UI_flash_backBtn': 'Back',
             'UI_flash_saveBtn': 'Save',
             'UI_setting_isDebug_text': 'Enable extended log printing',
             'UI_setting_isDebug_tooltip': 'If enabled, your python.log will be harassed with mod\'s debug information.',
@@ -312,8 +305,8 @@ class ConfigInterface(PYmodsConfigInterface):
                          ScopeTemplates.GLOBAL_SCOPE, False))
         kwargs = dict(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
-            icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=True, lobby=True,
-            callback=lambda:
+            icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'] and self.modelsData['enabled'],
+            login=True, lobby=True, callback=lambda:
                 g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
                 or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI')))
         try:
@@ -336,30 +329,20 @@ class RemodEnablerUI(AbstractWindowView):
             'header': {
                 'main': g_config.i18n['UI_flash_header'],
                 'remodSetup': g_config.i18n['UI_flash_remodSetupBtn'],
-                'remodWL': g_config.i18n['UI_flash_remodWLBtn'],
-                'remodCreate': g_config.i18n['UI_flash_remodCreateBtn'],
-                'skinSetup': 'UI_flash_skinSetupBtn',
-                'priorities': 'UI_flash_skinPriorityBtn'},
+                'remodCreate': g_config.i18n['UI_flash_remodCreateBtn']},
             'remodSetupBtn': g_config.i18n['UI_flash_remodSetupBtn'],
-            'remodWLBtn': g_config.i18n['UI_flash_remodWLBtn'],
             'remodCreateBtn': g_config.i18n['UI_flash_remodCreateBtn'],
-            'skinsSetupBtn': 'UI_flash_skinSetupBtn',
-            'skinsPriorityBtn': 'UI_flash_skinPriorityBtn',
             'create': {'name': g_config.tb.createLabel('remodCreate_name', 'flash'),
                        'message': g_config.tb.createLabel('remodCreate_message', 'flash')},
-            'skinTypes': ['UI_flash_skinType_' + skinType for skinType in ('static', 'dynamic')],
             'teams': [g_config.i18n['UI_flash_team_' + team] for team in ('player', 'ally', 'enemy')],
             'remodNames': [],
-            'skinNames': [[], []],
             'whiteList': {'addBtn': g_config.i18n['UI_flash_whiteList_addBtn'],
                           'label': g_config.tb.createLabel('whiteList_header', 'flash'),
                           'defStr': g_config.i18n['UI_flash_whiteDropdown_default']},
             'useFor': {'header': g_config.tb.createLabel('useFor_header', 'flash'),
                        'ally': g_config.tb.createLabel('useFor_ally', 'flash'),
                        'enemy': g_config.tb.createLabel('useFor_enemy', 'flash'),
-                       'player': g_config.tb.createLabel('useFor_player', 'flash'),
-                       'enable': g_config.tb.createLabel('useFor_enable', 'flash')},
-            'backBtn': g_config.i18n['UI_flash_backBtn'],
+                       'player': g_config.tb.createLabel('useFor_player', 'flash')},
             'saveBtn': g_config.i18n['UI_flash_saveBtn']
         }
         settings = {

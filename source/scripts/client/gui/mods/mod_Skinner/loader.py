@@ -405,7 +405,6 @@ def skinLoader(loginView):
 @overrideMethod(LoginView, '_populate')
 def new_Login_populate(base, self):
     base(self)
-    g_config.isInHangar = False
     if g_config.data['enabled']:
         if g_config.skinsData['found'] and not skinsChecked:
             self.as_setDefaultValuesS({
@@ -414,9 +413,3 @@ def new_Login_populate(base, self):
                 'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
                 'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
         BigWorld.callback(3.0, partial(skinLoader, self))
-
-
-@overrideMethod(LobbyView, '_populate')
-def new_Lobby_populate(base, self):
-    base(self)
-    g_config.isInHangar = True

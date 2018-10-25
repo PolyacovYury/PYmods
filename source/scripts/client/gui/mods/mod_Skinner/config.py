@@ -36,7 +36,6 @@ class ConfigInterface(PYmodsConfigInterface):
         self.collisionEnabled = False
         self.collisionComparisonEnabled = False
         self.dynamicSkinEnabled = False
-        self.isInHangar = False
         self.currentMode = self.possibleModes[0]
         super(ConfigInterface, self).__init__()
 
@@ -54,20 +53,16 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_header': 'Skins setup',
             'UI_flash_header_tooltip': "Setup for Skinner by "
                                        "<font color='#DD7700'><b>Polyacov_Yury</b></font>",
-            'UI_flash_skinSetupBtn': 'Skins setup',
-            'UI_flash_skinPriorityBtn': 'Skin priorities',
+            'UI_flash_skinSetup': 'Skin setup',
+            'UI_flash_skinPriority': 'Skin priorities',
+            'UI_flash_skinSetupBtn': 'Setup',
+            'UI_flash_skinPriorityBtn': 'Priorities',
             'UI_flash_skinType_static': 'Static',
             'UI_flash_skinType_dynamic': 'Dynamic',
             'UI_flash_team_player': 'Player',
             'UI_flash_team_ally': 'Ally',
             'UI_flash_team_enemy': 'Enemy',
-            'UI_flash_whiteList_addBtn': 'Add',
-            'UI_flash_whiteList_header_text': 'Whitelists for:',
-            'UI_flash_whiteList_header_tooltip': 'Open to view all items, select an item to delete.\n\n'
-                                                 'List is scrollable if longer than 10 items.',
-            'UI_flash_whiteDropdown_default': 'Expand',
             'UI_flash_useFor_header_text': 'Use this item for:',
-            'UI_flash_useFor_enable_text': 'Enabled',
             'UI_flash_useFor_player_text': 'Player',
             'UI_flash_useFor_ally_text': 'Allies',
             'UI_flash_useFor_enemy_text': 'Enemies',
@@ -232,7 +227,7 @@ class ConfigInterface(PYmodsConfigInterface):
                          ScopeTemplates.GLOBAL_SCOPE, False))
         kwargs = dict(
             id='SkinnerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
-            icon='gui/flash/Skinner.png', enabled=self.data['enabled'], login=True, lobby=True,
+            icon='gui/flash/Skinner.png', enabled=self.data['enabled'] and self.skinsData['enabled'], login=True, lobby=True,
             callback=lambda:
                 g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
                 or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI')))
@@ -248,9 +243,8 @@ class SkinnerUI(AbstractWindowView):
         g_config.readCurrentSettings(not g_config.data['isDebug'])
         texts = {
             'header': {
-                'main': g_config.i18n['UI_flash_header'],
-                'skinSetup': 'UI_flash_skinSetupBtn',
-                'priorities': 'UI_flash_skinPriorityBtn'},
+                'skinSetup': g_config.i18n['UI_flash_skinSetup'],
+                'priorities': g_config.i18n['UI_flash_skinPriority']},
             'skinsSetupBtn': g_config.i18n['UI_flash_skinSetupBtn'],
             'skinsPriorityBtn': g_config.i18n['UI_flash_skinPriorityBtn'],
             'skinTypes': [g_config.i18n['UI_flash_skinType_' + skinType] for skinType in ('static', 'dynamic')],
@@ -259,16 +253,14 @@ class SkinnerUI(AbstractWindowView):
             'useFor': {'header': g_config.tb.createLabel('useFor_header', 'flash'),
                        'ally': g_config.tb.createLabel('useFor_ally', 'flash'),
                        'enemy': g_config.tb.createLabel('useFor_enemy', 'flash'),
-                       'player': g_config.tb.createLabel('useFor_player', 'flash'),
-                       'enable': g_config.tb.createLabel('useFor_enable', 'flash')},
+                       'player': g_config.tb.createLabel('useFor_player', 'flash')},
             'backBtn': g_config.i18n['UI_flash_backBtn'],
             'saveBtn': g_config.i18n['UI_flash_saveBtn']
         }
         settings = {
             'skins': [[], []],
             'priorities': [[g_config.skinsData['priorities'][sType][team] for team in ('player', 'ally', 'enemy')] for
-                           sType in ('static', 'dynamic')],
-            'isInHangar': g_config.isInHangar
+                           sType in ('static', 'dynamic')]
         }
         for idx, skinType in enumerate(('', '_dynamic')):
             skins = g_config.settings['skins' + skinType]
@@ -323,7 +315,7 @@ def lobbyKeyControl(event):
         if re_config is None:
             newModeNum = (g_config.possibleModes.index(g_config.currentMode) + 1) % len(g_config.possibleModes)
             g_config.currentMode = g_config.possibleModes[newModeNum]
-        else:
+        elif re_config.currentMode != 'remod':
             g_config.currentMode = re_config.currentMode
         if g_config.data['isDebug']:
             print g_config.ID + ': changing display mode to', g_config.currentMode
