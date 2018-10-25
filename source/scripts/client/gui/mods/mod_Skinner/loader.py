@@ -45,7 +45,7 @@ modelsDir = BigWorld.curCV + '/vehicles/skins/models/'
 skinVehNamesLDict = {}
 
 
-class RemodEnablerLoading(LoginQueueWindowMeta):
+class SkinnerLoading(LoginQueueWindowMeta):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.lines = []
@@ -128,7 +128,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
 
 
 g_entitiesFactories.addSettings(
-    GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
+    GroupedViewSettings('SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
                         '', None, ScopeTemplates.DEFAULT_SCOPE, canClose=False))
 
 
@@ -385,7 +385,7 @@ def skinLoader(loginView):
     if g_config.data['enabled'] and g_config.skinsData['found'] and not skinsChecked:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
-            lobbyApp.loadView(SFViewLoadParams('RemodEnablerLoading'))
+            lobbyApp.loadView(SFViewLoadParams('SkinnerLoading'))
         else:
             return
         jobStartTime = time.time()
