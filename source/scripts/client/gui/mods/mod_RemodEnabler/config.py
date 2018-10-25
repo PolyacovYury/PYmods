@@ -5,9 +5,11 @@ import Math
 import glob
 import os
 import traceback
-from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, showI18nDialog
+from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, showI18nDialog, overrideMethod
 from collections import OrderedDict
 from gui import InputHandler, SystemMessages
+from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
+from gui.Scaleform.daapi.view.login.LoginView import LoginView
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
@@ -588,3 +590,15 @@ def inj_hkKeyEvent(event):
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 g_config = ConfigInterface()
+
+
+@overrideMethod(LoginView, '_populate')
+def new_Login_populate(base, self):
+    base(self)
+    g_config.isInHangar = False
+
+
+@overrideMethod(LobbyView, '_populate')
+def new_Lobby_populate(base, self):
+    base(self)
+    g_config.isInHangar = True
