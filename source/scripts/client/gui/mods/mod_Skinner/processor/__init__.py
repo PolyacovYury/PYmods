@@ -9,11 +9,6 @@ from vehicle_systems.tankStructure import TankPartNames
 from . import skins_dynamic, skins_static
 from .. import g_config
 
-try:
-    from gui.mods.mod_remodenabler import g_config as re_config
-except ImportError:
-    re_config = None
-
 
 def skins_find(curVehName, isPlayerVehicle, isAlly, skinType):
     if not g_config.skinsData['enabled']:
@@ -74,6 +69,10 @@ def vDesc_process(vehicleID, vDesc, mode):
             except StandardError:
                 traceback.print_exc()
                 print partName
+    try:
+        from gui.mods.mod_remodenabler import g_config as re_config
+    except ImportError:
+        re_config = None
     message = None
     collisionNotVisible = re_config is None or not (re_config.collisionEnabled or re_config.collisionComparisonEnabled)
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]

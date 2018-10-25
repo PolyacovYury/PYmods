@@ -13,11 +13,6 @@ from helpers import dependency
 from skeletons.gui.shared.utils import IHangarSpace
 from . import __date__, __modID__
 
-try:
-    from gui.mods.mod_remodenabler import g_config as re_config
-except ImportError:
-    re_config = None
-
 
 class ConfigInterface(PYmodsConfigInterface):
     hangarSpace = dependency.descriptor(IHangarSpace)
@@ -312,6 +307,10 @@ def lobbyKeyControl(event):
     if not event.isKeyDown() or g_config.isMSAWindowOpen or not g_config.skinsData['enabled']:
         return
     if checkKeys(g_config.data['ChangeViewHotkey']):
+        try:
+            from gui.mods.mod_remodenabler import g_config as re_config
+        except ImportError:
+            re_config = None
         if re_config is None:
             newModeNum = (g_config.possibleModes.index(g_config.currentMode) + 1) % len(g_config.possibleModes)
             g_config.currentMode = g_config.possibleModes[newModeNum]
