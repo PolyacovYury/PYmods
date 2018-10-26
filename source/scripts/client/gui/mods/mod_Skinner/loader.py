@@ -45,7 +45,7 @@ modelsDir = BigWorld.curCV + '/vehicles/skins/models/'
 skinVehNamesLDict = {}
 
 
-class RemodEnablerLoading(LoginQueueWindowMeta):
+class SkinnerLoading(LoginQueueWindowMeta):
     def __init__(self):
         super(self.__class__, self).__init__()
         self.lines = []
@@ -128,7 +128,7 @@ class RemodEnablerLoading(LoginQueueWindowMeta):
 
 
 g_entitiesFactories.addSettings(
-    GroupedViewSettings('RemodEnablerLoading', RemodEnablerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
+    GroupedViewSettings('SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
                         '', None, ScopeTemplates.DEFAULT_SCOPE, canClose=False))
 
 
@@ -376,6 +376,7 @@ def processMember(memberFileName, skinName):
                         curSSect['material'].writeString('fx', 'shaders/std_effects/lightonly_alpha.fx')
 
             visualSect.writeString('primitivesName', os.path.splitext(memberFileName)[0])
+            visualSect.writeBool('customBsp', True)
             visualSect.save()
 
 
@@ -385,7 +386,7 @@ def skinLoader(loginView):
     if g_config.data['enabled'] and g_config.skinsData['found'] and not skinsChecked:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
-            lobbyApp.loadView(SFViewLoadParams('RemodEnablerLoading'))
+            lobbyApp.loadView(SFViewLoadParams('SkinnerLoading'))
         else:
             return
         jobStartTime = time.time()
@@ -405,7 +406,6 @@ def skinLoader(loginView):
 @overrideMethod(LoginView, '_populate')
 def new_Login_populate(base, self):
     base(self)
-    g_config.isInHangar = False
     if g_config.data['enabled']:
         if g_config.skinsData['found'] and not skinsChecked:
             self.as_setDefaultValuesS({
@@ -414,9 +414,3 @@ def new_Login_populate(base, self):
                 'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
                 'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
         BigWorld.callback(3.0, partial(skinLoader, self))
-
-
-@overrideMethod(LobbyView, '_populate')
-def new_Lobby_populate(base, self):
-    base(self)
-    g_config.isInHangar = True

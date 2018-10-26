@@ -8,36 +8,20 @@ from items.vehicles import CompositeVehicleDescriptor
 from vehicle_systems import appearance_cache
 from vehicle_systems.tankStructure import TankPartNames
 from .. import g_config
-from . import remods, skins_dynamic, skins_static
+from . import remods
 
 
-def skins_find(curVehName, isPlayerVehicle, isAlly, currentMode, skinType):
-    if not g_config.skinsData['enabled']:
-        return
-    curTankType = 'player' if isPlayerVehicle else 'ally' if isAlly else 'enemy'
-    if currentMode != 'remod':
-        for curSName in g_config.skinsData['priorities'][skinType][curTankType]:
-            curPRecord = g_config.skinsData['models'][skinType][curSName]
-            if curVehName not in curPRecord['whitelist'] and curVehName.lower() not in curPRecord['whitelist']:
-                continue
-            return curPRecord
-
-
-def debugOutput(xmlName, vehName, playerName, modelDesc, staticDesc, dynamicDesc):
+def debugOutput(xmlName, vehName, playerName, modelDesc):
     if not g_config.data['isDebug']:
         return
-    info = []
+    info = ''
     header = g_config.ID + ': %s (%s)' % (xmlName, vehName)
     if playerName is not None:
         header += ', player: ' + playerName
     if modelDesc is not None:
-        info.append('modelDesc: ' + modelDesc.name)
-    if staticDesc is not None:
-        info.append('static skinDesc: ' + staticDesc['name'])
-    if dynamicDesc is not None:
-        info.append('dynamic skinDesc: ' + dynamicDesc['name'])
+        info = 'modelDesc: ' + modelDesc.name
     if info:
-        print header + ' processed:', ', '.join(info)
+        print header + ' processed:', info
 
 
 def vDesc_process(vehicleID, vDesc, mode):
@@ -59,8 +43,6 @@ def vDesc_process(vehicleID, vDesc, mode):
         return
     xmlName = vDesc.name.split(':')[1].lower()
     modelDesc = remods.find(xmlName, isPlayerVehicle, isAlly, currentMode)
-    staticDesc = None
-    dynamicDesc = None
     vDesc.installComponent(vDesc.chassis.compactDescr)
     vDesc.installComponent(vDesc.gun.compactDescr)
     if len(vDesc.type.hulls) == 1:
@@ -77,29 +59,9 @@ def vDesc_process(vehicleID, vDesc, mode):
                 traceback.print_exc()
                 print partName
     message = None
-    collisionNotVisible = not g_config.collisionEnabled and not g_config.collisionComparisonEnabled
+    collisionNotVisible = not (g_config.collisionEnabled or g_config.collisionComparisonEnabled)
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
-    vehDefNation = vDesc.chassis.hitTester.bspModelName.split('/')[1]
-    if modelDesc is None:
-        if g_config.skinsData['found']:
-            if vehNation == vehDefNation:
-                dynamicDesc = skins_find(vehName, isPlayerVehicle, isAlly, currentMode, 'dynamic')
-                if dynamicDesc is not None:
-                    skins_dynamic.create(vehicleID, vDesc, dynamicDesc['name'], mode == 'hangar' and (
-                            g_config.dynamicSkinEnabled and not g_config.collisionComparisonEnabled))
-                    if g_config.dynamicSkinEnabled and collisionNotVisible:
-                        message = g_config.i18n['UI_install_skin_dynamic'] + '<b>' + dynamicDesc['name'] + '</b>.'
-                staticDesc = skins_find(vehName, isPlayerVehicle, isAlly, currentMode, 'static')
-                if staticDesc is not None:
-                    skins_static.apply(vDesc, staticDesc['name'])
-            elif g_config.data['isDebug']:
-                    print g_config.ID + ': unknown vehicle nation for', vehName + ':', vehNation
-            if g_config.data['isDebug'] and (dynamicDesc is None or not g_config.dynamicSkinEnabled) and collisionNotVisible:
-                if staticDesc is not None:
-                    message = g_config.i18n['UI_install_skin'] + '<b>' + staticDesc['name'] + '</b>.'
-                else:
-                    message = g_config.i18n['UI_install_default']
-    else:
+    if modelDesc is not None:
         for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
                 vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
             remods.apply(descr, modelDesc)
@@ -107,7 +69,8 @@ def vDesc_process(vehicleID, vDesc, mode):
             message = g_config.i18n['UI_install_remod'] + '<b>' + modelDesc.name + '</b>.\n' + modelDesc.authorMessage
     if message is not None and mode == 'hangar':
         SystemMessages.pushMessage('temp_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
-    debugOutput(xmlName, vehName, playerName, modelDesc, staticDesc, dynamicDesc)
+    debugOutput(xmlName, vehName, playerName, modelDesc)
+    vDesc.modelDesc = modelDesc
     return modelDesc
 
 
