@@ -18,3 +18,4 @@ def apply(vDesc, sname):
                     part.modelsSets[setName] = ModelStatesPaths(path, models.destroyed, models.exploded)
                 else:
                     print g_config.ID + ': skin model not found:', path
+            part.models = part.modelsSets['default']
