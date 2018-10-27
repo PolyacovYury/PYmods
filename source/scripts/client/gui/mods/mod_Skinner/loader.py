@@ -17,7 +17,6 @@ from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
 from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewTypes, g_entitiesFactories
@@ -275,7 +274,7 @@ def modelsProcess(callback):
     if needToReReadSkinsModels:
         g_config.loadingProxy.updateTitle(g_config.i18n['UI_loading_header_models_unpack'])
         SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
-        modelFileFormats = ('.model', '.visual', '.visual_processed')
+        modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
         print g_config.ID + ': unpacking vehicle packages'
         for vehPkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
             completionPercentage = 0
@@ -309,23 +308,27 @@ def doFuncCall(callback):
     BigWorld.callback(0.0, partial(callback, None))
 
 
-# noinspection PyPep8,PyPep8
 def processMember(memberFileName, skinName):
     skinDir = modelsDir.replace(BigWorld.curCV + '/', '') + skinName + '/'
     texDir = skinDir.replace('models', 'textures')
     skinsSign = 'vehicles/skins/'
+    newPath = ResMgr.resolveToAbsolutePath('./' + skinDir + memberFileName)
+    oldSection = ResMgr.openSection(memberFileName)
+    if '.vt' in memberFileName:
+        if not os.path.isdir(os.path.dirname(newPath)):  # because .vts are not always first and makedirs is dumb
+            os.makedirs(os.path.dirname(newPath))  # because .vts are sometimes first and dirs need to be there
+        with open(newPath, 'wb') as newFile:
+            newFile.write(oldSection.asBinary)
+        return
+    newSection = ResMgr.openSection(newPath, True)
+    newSection.copy(oldSection)
+    sections = [newSection]
+    if 'Chassis' in memberFileName:
+        dynSection = ResMgr.openSection(newPath.replace('Chassis', 'Chassis_dynamic'), True)
+        dynSection.copy(oldSection)
+        sections.append(dynSection)
     if '.model' in memberFileName:
-        oldModel = ResMgr.openSection(memberFileName)
-        newModelPath = './' + skinDir + memberFileName
-        curModel = ResMgr.openSection(ResMgr.resolveToAbsolutePath(newModelPath), True)
-        curModel.copy(oldModel)
-        models = [curModel]
-        if 'Chassis' in memberFileName:
-            dynModelPath = newModelPath.replace('Chassis', 'Chassis_dynamic')
-            dynModel = ResMgr.openSection(ResMgr.resolveToAbsolutePath(dynModelPath), True)
-            dynModel.copy(oldModel)
-            models.append(dynModel)
-        for idx, modelSect in enumerate(models):
+        for idx, modelSect in enumerate(sections):
             if modelSect is None:
                 print skinDir + memberFileName
             if modelSect.has_key('parent') and skinsSign not in modelSect['parent'].asString:
@@ -334,24 +337,14 @@ def processMember(memberFileName, skinName):
                     curParent = curParent.replace('Chassis', 'Chassis_dynamic')
                 modelSect.writeString('parent', curParent.replace('\\', '/'))
             if skinsSign not in modelSect['nodefullVisual'].asString:
-                curVisual = skinDir + modelSect['nodefullVisual'].asString
+                curVisualPath = skinDir + modelSect['nodefullVisual'].asString
                 if idx:
-                    curVisual = curVisual.replace('Chassis', 'Chassis_dynamic')
-                modelSect.writeString('nodefullVisual', curVisual.replace('\\', '/'))
+                    curVisualPath = curVisualPath.replace('Chassis', 'Chassis_dynamic')
+                modelSect.writeString('nodefullVisual', curVisualPath.replace('\\', '/'))
             modelSect.save()
     elif '.visual' in memberFileName:
-        oldVisual = ResMgr.openSection(memberFileName)
-        newVisualPath = './' + skinDir + memberFileName
-        curVisual = ResMgr.openSection(ResMgr.resolveToAbsolutePath(newVisualPath), True)
-        curVisual.copy(oldVisual)
-        visuals = [curVisual]
-        if 'Chassis' in memberFileName:
-            dynVisualPath = newVisualPath.replace('Chassis', 'Chassis_dynamic')
-            dynVisual = ResMgr.openSection(ResMgr.resolveToAbsolutePath(dynVisualPath), True)
-            dynVisual.copy(oldVisual)
-            visuals.append(dynVisual)
-        for idx, visualSect in enumerate(visuals):
-            for (curName, curSect), oldSect in zip(visualSect.items(), oldVisual.values()):
+        for idx, visualSect in enumerate(sections):
+            for (curName, curSect), oldSect in zip(visualSect.items(), oldSection.values()):
                 if curName != 'renderSet':
                     continue
                 for (curSubName, curSSect), oldSSect in zip(curSect['geometry'].items(), oldSect['geometry'].values()):
