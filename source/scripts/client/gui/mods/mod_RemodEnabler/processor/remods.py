@@ -111,6 +111,7 @@ def apply(vDesc, modelDesc):
         part = getattr(vDesc, partName)
         models = part.modelsSets['default']
         part.modelsSets['default'] = ModelStatesPaths(data[partName]['undamaged'], models.destroyed, models.exploded)
+        part.models = part.modelsSets['default']
     if data['gun']['effects']:
         newGunEffects = g_cache._gunEffects.get(data['gun']['effects'])
         if newGunEffects:
