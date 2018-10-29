@@ -11,8 +11,11 @@ def apply(vDesc, sname):
         for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
                 vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
             part = getattr(descr, partName)
-            for setName in part.modelsSets:
-                models = part.modelsSets[setName]
+            for setName, models in part.modelsSets.items():
+                if setName != 'default':
+                    if g_config.data['isDebug']:
+                        print g_config.ID + ': non-default modelsSet skipped:', setName
+                    continue
                 path = models.undamaged.replace('vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
                 if os.path.isfile(BigWorld.curCV + '/' + path):
                     part.modelsSets[setName] = ModelStatesPaths(path, models.destroyed, models.exploded)
