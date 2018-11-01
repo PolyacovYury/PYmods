@@ -77,12 +77,13 @@ class ConfigInterface(PYmodsConfigInterface):
         self.teams = ('player', 'ally', 'enemy')
         self.defaultRemodConfig = {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True}
         self.settings = {'remods': {}}
-        self.modelsData = {'enabled': True, 'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}, 'remod': ''}}
+        self.modelsData = {'enabled': True, 'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}}}
         self.isModAdded = False
         self.collisionEnabled = False
         self.collisionComparisonEnabled = False
         self.isInHangar = False
         self.currentTeam = self.teams[0]
+        self.previewRemod = None
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -211,10 +212,11 @@ class ConfigInterface(PYmodsConfigInterface):
                 self.migrateSettings(remodData, remodData)
         loadJson(self.ID, 'settings', settings, self.configPath, True)
         self.modelsData['selected'] = loadJson(self.ID, 'remodsCache', self.modelsData['selected'], configPath_backup)
+        self.modelsData['selected'].pop('remod', '')
         for team, teamData in self.modelsData['selected'].items():
             for xmlName in teamData:
                 if teamData[xmlName] is None:  # a vehicle wasn't ever encountered, but now code pre-determines the remods
-                    teamData[xmlName] = self.findModelDesc(xmlName, team == 'player', team == 'ally')  # no need to save here
+                    self.findModelDesc(xmlName, team == 'player', team == 'ally')  # no need to save here
 
         configsPath = configPath_backup + 'remods/*.json'
         for configPath in glob.iglob(configsPath):
@@ -348,8 +350,6 @@ class ConfigInterface(PYmodsConfigInterface):
                             selectedData[team][xmlName] = None
                         if xmlName not in remodTanks[team]:
                             del selectedData[team][xmlName]
-                if selectedData['remod'] and selectedData['remod'] not in self.modelsData['models']:
-                    selectedData['remod'] = ''
                 loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True, quiet=quiet)
         else:
             if not quiet:
@@ -362,44 +362,25 @@ class ConfigInterface(PYmodsConfigInterface):
         self.migrateConfigs()
         super(ConfigInterface, self).load()
 
-    def findModelDesc(self, xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
+    def findModelDesc(self, xmlName, isPlayerVehicle, isAlly, notForPreview=True):
         modelDesc = None
         if not self.modelsData['enabled']:
-            return
+            return modelDesc
         curTankType = 'player' if isPlayerVehicle else 'ally' if isAlly else 'enemy'
         selected = self.modelsData['selected']
-        if currentMode != 'remod':
-            snameList = sorted(self.modelsData['models'].keys()) + ['']
-            if selected[curTankType].get(xmlName) not in snameList:
-                snameIdx = 0
+        if not self.previewRemod or notForPreview:
+            if xmlName not in selected[curTankType]:
+                return modelDesc
+            snameList = sorted(self.modelsData['models']) + ['']
+            if selected[curTankType][xmlName] in snameList:
+                sname = selected[curTankType][xmlName]
+                modelDesc = self.modelsData['models'][sname]
             else:
-                snameIdx = snameList.index(selected[curTankType][xmlName])
-            for Idx in xrange(snameIdx, len(snameList)):
-                curPRecord = self.modelsData['models'].get(snameList[Idx])
-                if snameList[Idx] and xmlName not in curPRecord.whitelists[curTankType]:
-                    continue
-                else:
-                    if xmlName in selected[curTankType]:
-                        selected[curTankType][xmlName] = getattr(curPRecord, 'name', '')
-                    modelDesc = curPRecord
-                    break
-
-            # noinspection PyUnboundLocalVariable
-            if modelDesc is None and snameList[Idx] and xmlName in selected[curTankType]:
-                del selected[curTankType][xmlName]
-            loadJson(
-                self.ID, 'remodsCache', selected, self.configPath, True, quiet=not self.data['isDebug'])
+                sname = ''
+            selected[curTankType][xmlName] = sname
+            loadJson(self.ID, 'remodsCache', selected, self.configPath, True, quiet=not self.data['isDebug'])
         else:
-            snameList = sorted(self.modelsData['models'].keys())
-            if selected['remod'] not in snameList:
-                snameIdx = 0
-            else:
-                snameIdx = snameList.index(selected['remod'])
-            sname = snameList[snameIdx]
-            modelDesc = self.modelsData['models'][sname]
-            selected['remod'] = sname
-            loadJson(self.ID, 'remodsCache', selected, self.configPath, True,
-                     quiet=not self.data['isDebug'])
+            modelDesc = self.modelsData['models'][self.previewRemod]
         return modelDesc
 
     def registerSettings(self):
@@ -427,7 +408,6 @@ class RemodEnablerUI(AbstractWindowView):
     def _populate(self):
         super(self.__class__, self)._populate()
         self.modeBackup = g_config.currentTeam
-        self.remodBackup = g_config.modelsData['selected']['remod']
         self.newRemodData = OrderedDict()
 
     def py_onRequestSettings(self):
@@ -556,13 +536,12 @@ class RemodEnablerUI(AbstractWindowView):
 
     @staticmethod
     def py_onShowRemod(remodIdx):
-        g_config.currentTeam = 'remod'
-        g_config.modelsData['selected']['remod'] = sorted(g_config.modelsData['models'])[remodIdx]
+        g_config.previewRemod = sorted(g_config.modelsData['models'])[remodIdx]
         refreshCurrentVehicle()
 
     def py_onModelRestore(self):
         g_config.currentTeam = self.modeBackup
-        g_config.modelsData['selected']['remod'] = self.remodBackup
+        g_config.previewRemod = None
         refreshCurrentVehicle()
 
     @staticmethod
@@ -630,15 +609,34 @@ class RemodEnablerUI(AbstractWindowView):
 def lobbyKeyControl(event):
     if not event.isKeyDown() or g_config.isMSAWindowOpen:
         return
-    if g_config.modelsData['enabled'] and g_config.currentTeam != 'remod' and checkKeys(g_config.data['ChangeViewHotkey']):
-        newModeNum = (g_config.teams.index(g_config.currentTeam) + 1) % len(g_config.teams)
-        g_config.currentTeam = g_config.teams[newModeNum]
-        if g_config.data['isDebug']:
-            print g_config.ID + ': changing display mode to', g_config.currentTeam
-        SystemMessages.pushMessage(
-            'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentTeam]),
-            SystemMessages.SM_TYPE.Warning)
-        refreshCurrentVehicle()
+    if g_config.modelsData['enabled'] and not g_config.previewRemod:
+        if checkKeys(g_config.data['ChangeViewHotkey']):
+            newModeNum = (g_config.teams.index(g_config.currentTeam) + 1) % len(g_config.teams)
+            g_config.currentTeam = g_config.teams[newModeNum]
+            if g_config.data['isDebug']:
+                print g_config.ID + ': changing display mode to', g_config.currentTeam
+            SystemMessages.pushMessage(
+                'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentTeam]),
+                SystemMessages.SM_TYPE.Warning)
+            refreshCurrentVehicle()
+        if checkKeys(g_config.data['SwitchRemodHotkey']):
+            curTankType = g_config.currentTeam
+            snameList = sorted(g_config.modelsData['models'].keys()) + ['']
+            selected = g_config.modelsData['selected'][curTankType]
+            vehName = RemodEnablerUI.py_getCurrentVehicleName()
+            if selected.get(vehName) not in snameList:
+                snameIdx = 0
+            else:
+                snameIdx = (snameList.index(selected[vehName]) + 1) % len(snameList)
+            for Idx in xrange(snameIdx, len(snameList)):
+                curPRecord = g_config.modelsData['models'].get(snameList[Idx])
+                if snameList[Idx] and vehName not in curPRecord.whitelists[curTankType]:
+                    continue
+                selected[vehName] = getattr(curPRecord, 'name', '')
+                loadJson(g_config.ID, 'remodsCache', g_config.modelsData['selected'], g_config.configPath, True,
+                         quiet=not g_config.data['isDebug'])
+                break
+            refreshCurrentVehicle()
     if checkKeys(g_config.data['CollisionHotkey']):
         if g_config.collisionComparisonEnabled:
             g_config.collisionComparisonEnabled = False
@@ -659,28 +657,6 @@ def lobbyKeyControl(event):
                 print g_config.ID + ': enabling collision display'
             SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_enableCollision'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
-        refreshCurrentVehicle()
-    if g_config.modelsData['enabled'] and checkKeys(g_config.data['SwitchRemodHotkey']):
-        if g_config.currentTeam != 'remod':
-            curTankType = g_config.currentTeam
-            snameList = sorted(g_config.modelsData['models'].keys()) + ['']
-            selected = g_config.modelsData['selected'][curTankType]
-            vehName = RemodEnablerUI.py_getCurrentVehicleName()
-            if selected.get(vehName) not in snameList:
-                snameIdx = 0
-            else:
-                snameIdx = snameList.index(selected[vehName]) + 1
-                if snameIdx == len(snameList):
-                    snameIdx = 0
-            for Idx in xrange(snameIdx, len(snameList)):
-                curPRecord = g_config.modelsData['models'].get(snameList[Idx])
-                if snameList[Idx] and vehName not in curPRecord.whitelists[curTankType]:
-                    continue
-                if vehName in selected:
-                    selected[vehName] = getattr(curPRecord, 'name', '')
-                loadJson(g_config.ID, 'remodsCache', g_config.modelsData['selected'], g_config.configPath, True,
-                         quiet=not g_config.data['isDebug'])
-                break
         refreshCurrentVehicle()
 
 

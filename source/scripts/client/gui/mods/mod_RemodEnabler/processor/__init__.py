@@ -26,23 +26,19 @@ def debugOutput(xmlName, vehName, playerName, modelDesc):
 
 def vDesc_process(vehicleID, vDesc, mode):
     if mode == 'battle':
-        currentMode = mode
         player = BigWorld.player()
         isPlayerVehicle = vehicleID == player.playerVehicleID
         vehInfoVO = player.guiSessionProvider.getArenaDP().getVehicleInfo(vehicleID)
         playerName = vehInfoVO.player.name
         isAlly = vehInfoVO.team == player.team
     elif mode == 'hangar':
-        currentMode = g_config.currentMode
-        if currentMode == 'remod' and isinstance(BigWorld.entity(vehicleID), HeroTank):
-            currentMode = 'player'
-        isPlayerVehicle = currentMode == 'player'
+        isPlayerVehicle = g_config.currentTeam == 'player'
         playerName = None
-        isAlly = currentMode == 'ally'
+        isAlly = g_config.currentTeam == 'ally'
     else:
         return
     xmlName = vDesc.name.split(':')[1].lower()
-    modelDesc = g_config.findModelDesc(xmlName, isPlayerVehicle, isAlly, currentMode)
+    modelDesc = g_config.findModelDesc(xmlName, isPlayerVehicle, isAlly, isinstance(BigWorld.entity(vehicleID), HeroTank))
     vDesc.installComponent(vDesc.chassis.compactDescr)
     vDesc.installComponent(vDesc.gun.compactDescr)
     if len(vDesc.type.hulls) == 1:
