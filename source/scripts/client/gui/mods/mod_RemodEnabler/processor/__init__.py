@@ -7,8 +7,8 @@ from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from items.vehicles import CompositeVehicleDescriptor
 from vehicle_systems import appearance_cache
 from vehicle_systems.tankStructure import TankPartNames
-from .. import g_config
 from . import remods
+from .. import g_config
 
 
 def debugOutput(xmlName, vehName, playerName, modelDesc):
@@ -42,7 +42,7 @@ def vDesc_process(vehicleID, vDesc, mode):
     else:
         return
     xmlName = vDesc.name.split(':')[1].lower()
-    modelDesc = remods.find(xmlName, isPlayerVehicle, isAlly, currentMode)
+    modelDesc = g_config.findModelDesc(xmlName, isPlayerVehicle, isAlly, currentMode)
     vDesc.installComponent(vDesc.chassis.compactDescr)
     vDesc.installComponent(vDesc.gun.compactDescr)
     if len(vDesc.type.hulls) == 1:

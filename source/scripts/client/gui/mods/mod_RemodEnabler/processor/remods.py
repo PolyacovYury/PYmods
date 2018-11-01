@@ -1,4 +1,3 @@
-import PYmodsCore
 import copy
 from collections import namedtuple
 from items.components.chassis_components import *
@@ -11,47 +10,6 @@ from .. import g_config
 
 TrackMaterials = namedtuple('TrackMaterials', ('lodDist', 'leftMaterial', 'rightMaterial', 'textureScale'))
 TrackParams = namedtuple('TrackParams', ('thickness', 'maxAmplitude', 'maxOffset', 'gravity'))
-
-
-def find(xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
-    modelDesc = None
-    if not g_config.modelsData['enabled']:
-        return
-    curTankType = 'player' if isPlayerVehicle else 'ally' if isAlly else 'enemy'
-    selected = g_config.modelsData['selected']
-    if currentMode != 'remod':
-        snameList = sorted(g_config.modelsData['models'].keys()) + ['']
-        if selected[curTankType].get(xmlName) not in snameList:
-            snameIdx = 0
-        else:
-            snameIdx = snameList.index(selected[curTankType][xmlName])
-        for Idx in xrange(snameIdx, len(snameList)):
-            curPRecord = g_config.modelsData['models'].get(snameList[Idx])
-            if snameList[Idx] and xmlName not in curPRecord.whitelists[curTankType]:
-                continue
-            else:
-                if xmlName in selected[curTankType]:
-                    selected[curTankType][xmlName] = getattr(curPRecord, 'name', '')
-                modelDesc = curPRecord
-                break
-
-        # noinspection PyUnboundLocalVariable
-        if modelDesc is None and snameList[Idx] and xmlName in selected[curTankType]:
-            del selected[curTankType][xmlName]
-        PYmodsCore.loadJson(
-            g_config.ID, 'remodsCache', selected, g_config.configPath, True, quiet=not g_config.data['isDebug'])
-    else:
-        snameList = sorted(g_config.modelsData['models'].keys())
-        if selected['remod'] not in snameList:
-            snameIdx = 0
-        else:
-            snameIdx = snameList.index(selected['remod'])
-        sname = snameList[snameIdx]
-        modelDesc = g_config.modelsData['models'][sname]
-        selected['remod'] = sname
-        PYmodsCore.loadJson(g_config.ID, 'remodsCache', selected, g_config.configPath, True,
-                            quiet=not g_config.data['isDebug'])
-    return modelDesc
 
 
 def apply(vDesc, modelDesc):

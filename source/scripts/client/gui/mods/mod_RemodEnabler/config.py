@@ -211,11 +211,10 @@ class ConfigInterface(PYmodsConfigInterface):
                 self.migrateSettings(remodData, remodData)
         loadJson(self.ID, 'settings', settings, self.configPath, True)
         self.modelsData['selected'] = loadJson(self.ID, 'remodsCache', self.modelsData['selected'], configPath_backup)
-        from .processor.remods import find
         for team, teamData in self.modelsData['selected'].items():
             for xmlName in teamData:
                 if teamData[xmlName] is None:  # a vehicle wasn't ever encountered, but now code pre-determines the remods
-                    teamData[xmlName] = find(xmlName, team == 'player', team == 'ally')  # no need to save, find() does it
+                    teamData[xmlName] = self.findModelDesc(xmlName, team == 'player', team == 'ally')  # no need to save here
 
         configsPath = configPath_backup + 'remods/*.json'
         for configPath in glob.iglob(configsPath):
@@ -362,6 +361,46 @@ class ConfigInterface(PYmodsConfigInterface):
     def load(self):
         self.migrateConfigs()
         super(ConfigInterface, self).load()
+
+    def findModelDesc(self, xmlName, isPlayerVehicle, isAlly, currentMode='battle'):
+        modelDesc = None
+        if not self.modelsData['enabled']:
+            return
+        curTankType = 'player' if isPlayerVehicle else 'ally' if isAlly else 'enemy'
+        selected = self.modelsData['selected']
+        if currentMode != 'remod':
+            snameList = sorted(self.modelsData['models'].keys()) + ['']
+            if selected[curTankType].get(xmlName) not in snameList:
+                snameIdx = 0
+            else:
+                snameIdx = snameList.index(selected[curTankType][xmlName])
+            for Idx in xrange(snameIdx, len(snameList)):
+                curPRecord = self.modelsData['models'].get(snameList[Idx])
+                if snameList[Idx] and xmlName not in curPRecord.whitelists[curTankType]:
+                    continue
+                else:
+                    if xmlName in selected[curTankType]:
+                        selected[curTankType][xmlName] = getattr(curPRecord, 'name', '')
+                    modelDesc = curPRecord
+                    break
+
+            # noinspection PyUnboundLocalVariable
+            if modelDesc is None and snameList[Idx] and xmlName in selected[curTankType]:
+                del selected[curTankType][xmlName]
+            loadJson(
+                self.ID, 'remodsCache', selected, self.configPath, True, quiet=not self.data['isDebug'])
+        else:
+            snameList = sorted(self.modelsData['models'].keys())
+            if selected['remod'] not in snameList:
+                snameIdx = 0
+            else:
+                snameIdx = snameList.index(selected['remod'])
+            sname = snameList[snameIdx]
+            modelDesc = self.modelsData['models'][sname]
+            selected['remod'] = sname
+            loadJson(self.ID, 'remodsCache', selected, self.configPath, True,
+                     quiet=not self.data['isDebug'])
+        return modelDesc
 
     def registerSettings(self):
         super(ConfigInterface, self).registerSettings()
