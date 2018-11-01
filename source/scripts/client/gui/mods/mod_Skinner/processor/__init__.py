@@ -14,8 +14,8 @@ def skins_find(curVehName, currentTeam, skinType):
     if not g_config.skinsData['enabled']:
         return
     for curSName in g_config.skinsData['priorities'][skinType][currentTeam]:
-        curPRecord = g_config.skinsData['models'][skinType][curSName]
-        if curVehName not in curPRecord['whitelist'] and curVehName.lower() not in curPRecord['whitelist']:
+        curPRecord = g_config.skinsData['models'][curSName]
+        if curVehName.lower() not in curPRecord[skinType]:
             continue
         return curPRecord
 
