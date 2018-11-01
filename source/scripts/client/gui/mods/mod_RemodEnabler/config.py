@@ -354,23 +354,19 @@ class ConfigInterface(PYmodsConfigInterface):
         self.migrateConfigs()
         super(ConfigInterface, self).load()
 
-    def findModelDesc(self, xmlName, isPlayerVehicle, isAlly, notForPreview=True):
+    def findModelDesc(self, xmlName, currentTeam, notForPreview=True):
         modelDesc = None
         if not self.modelsData['enabled']:
             return modelDesc
-        curTankType = 'player' if isPlayerVehicle else 'ally' if isAlly else 'enemy'
-        selected = self.modelsData['selected']
+        selected = self.modelsData['selected'][currentTeam]
         if not self.previewRemod or notForPreview:
-            if xmlName not in selected[curTankType]:
+            if xmlName not in selected:
                 return modelDesc
-            snameList = sorted(self.modelsData['models']) + ['']
-            if selected[curTankType][xmlName] in snameList:
-                sname = selected[curTankType][xmlName]
-                modelDesc = self.modelsData['models'][sname]
-            else:
-                sname = ''
-            selected[curTankType][xmlName] = sname
-            loadJson(self.ID, 'remodsCache', selected, self.configPath, True, quiet=not self.data['isDebug'])
+            modelDesc = self.modelsData['models'].get(selected[xmlName])
+            if not modelDesc:
+                selected[xmlName] = ''
+                loadJson(self.ID, 'remodsCache', self.modelsData['selected'], self.configPath, True,
+                         quiet=not self.data['isDebug'])
         else:
             modelDesc = self.modelsData['models'][self.previewRemod]
         return modelDesc

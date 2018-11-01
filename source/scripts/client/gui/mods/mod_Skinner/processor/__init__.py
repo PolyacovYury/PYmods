@@ -10,11 +10,10 @@ from . import skins_dynamic, skins_static
 from .. import g_config
 
 
-def skins_find(curVehName, isPlayerVehicle, isAlly, skinType):
+def skins_find(curVehName, currentTeam, skinType):
     if not g_config.skinsData['enabled']:
         return
-    curTankType = 'player' if isPlayerVehicle else 'ally' if isAlly else 'enemy'
-    for curSName in g_config.skinsData['priorities'][skinType][curTankType]:
+    for curSName in g_config.skinsData['priorities'][skinType][currentTeam]:
         curPRecord = g_config.skinsData['models'][skinType][curSName]
         if curVehName not in curPRecord['whitelist'] and curVehName.lower() not in curPRecord['whitelist']:
             continue
@@ -38,17 +37,18 @@ def debugOutput(xmlName, vehName, playerName, staticDesc, dynamicDesc):
 
 
 def vDesc_process(vehicleID, vDesc, mode):
+    currentTeam = 'enemy'
     if mode == 'battle':
         player = BigWorld.player()
-        isPlayerVehicle = vehicleID == player.playerVehicleID
         vehInfoVO = player.guiSessionProvider.getArenaDP().getVehicleInfo(vehicleID)
         playerName = vehInfoVO.player.name
-        isAlly = vehInfoVO.team == player.team
+        if vehicleID == player.playerVehicleID:
+            currentTeam = 'player'
+        elif vehInfoVO.team == player.team:
+            currentTeam = 'ally'
     elif mode == 'hangar':
-        currentMode = g_config.currentMode
-        isPlayerVehicle = currentMode == 'player'
+        currentTeam = g_config.currentTeam
         playerName = None
-        isAlly = currentMode == 'ally'
     else:
         return
     xmlName = vDesc.name.split(':')[1].lower()
@@ -79,13 +79,13 @@ def vDesc_process(vehicleID, vDesc, mode):
     vehDefNation = vDesc.chassis.hitTester.bspModelName.split('/')[1]
     if g_config.skinsData['found']:
         if vehNation == vehDefNation:
-            dynamicDesc = skins_find(vehName, isPlayerVehicle, isAlly, 'dynamic')
+            dynamicDesc = skins_find(vehName, currentTeam, 'dynamic')
             if dynamicDesc is not None:
                 skins_dynamic.create(vehicleID, vDesc, dynamicDesc['name'], mode == 'hangar' and (
-                        g_config.dynamicSkinEnabled and not g_config.collisionComparisonEnabled))
+                        g_config.dynamicSkinEnabled and not re_config.collisionComparisonEnabled))
                 if g_config.dynamicSkinEnabled and collisionNotVisible:
                     message = g_config.i18n['UI_install_skin_dynamic'] + '<b>' + dynamicDesc['name'] + '</b>.'
-            staticDesc = skins_find(vehName, isPlayerVehicle, isAlly, 'static')
+            staticDesc = skins_find(vehName, currentTeam, 'static')
             if staticDesc is not None:
                 skins_static.apply(vDesc, staticDesc['name'])
         elif g_config.data['isDebug']:

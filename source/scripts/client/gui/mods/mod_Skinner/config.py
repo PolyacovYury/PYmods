@@ -31,7 +31,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.collisionEnabled = False
         self.collisionComparisonEnabled = False
         self.dynamicSkinEnabled = False
-        self.currentMode = self.possibleModes[0]
+        self.currentTeam = self.possibleModes[0]
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -305,15 +305,15 @@ def lobbyKeyControl(event):
         except ImportError:
             re_config = None
         if re_config is None:
-            newModeNum = (g_config.possibleModes.index(g_config.currentMode) + 1) % len(g_config.possibleModes)
-            g_config.currentMode = g_config.possibleModes[newModeNum]
-        elif re_config.currentMode != 'remod':
-            g_config.currentMode = re_config.currentMode
+            newModeNum = (g_config.possibleModes.index(g_config.currentTeam) + 1) % len(g_config.possibleModes)
+            g_config.currentTeam = g_config.possibleModes[newModeNum]
+        else:
+            g_config.currentTeam = re_config.currentTeam
         if g_config.data['isDebug']:
-            print g_config.ID + ': changing display mode to', g_config.currentMode
+            print g_config.ID + ': changing display mode to', g_config.currentTeam
         if re_config is None:
             SystemMessages.pushMessage(
-                'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentMode]),
+                'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentTeam]),
                 SystemMessages.SM_TYPE.Warning)
         refreshCurrentVehicle()
     if checkKeys(g_config.data['DynamicSkinHotkey']):
