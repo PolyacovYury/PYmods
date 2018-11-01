@@ -195,7 +195,7 @@ class ConfigInterface(PYmodsConfigInterface):
         whitelist = set()
         for team in sorted(self.teams):
             new_data[team] = new_data.get(team, old_data.pop('swap' + team.capitalize(), True))
-            whitelist.update(old_data.pop(team + 'Whitelist', '').split(','))
+            whitelist.update(x for x in old_data.pop(team + 'Whitelist', '').split(',') if x)
         new_data['whitelist'] = sorted(whitelist | set(new_data.get('whitelist', [])))
 
     def migrateConfigs(self):
