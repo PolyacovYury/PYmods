@@ -139,8 +139,10 @@ class ConfigInterface(PYmodsConfigInterface):
                 for setting in skinConf:
                     if 'swap' not in setting:
                         continue
-                    new_setting = setting[4:].lower
-                    assert new_setting in self.teams
+                    new_setting = setting[4:].lower()
+                    if new_setting not in self.teams:
+                        print new_setting
+                        assert False
                     skinSettings[new_setting] = skinConf[setting]
         loadJson(self.ID, 'settings', self.settings, self.configPath, True)
 
@@ -228,8 +230,8 @@ class ConfigInterface(PYmodsConfigInterface):
             id='SkinnerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/Skinner.png', enabled=self.data['enabled'] and self.skinsData['enabled'], login=True, lobby=True,
             callback=lambda:
-                g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
-                or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI')))
+            g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
+            or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI')))
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
         except AttributeError:
@@ -264,7 +266,7 @@ class SkinnerUI(AbstractWindowView):
             sDesc = g_config.settings[sname]
             texts['skinNames'].append(sname)
             settings['skins'].append([
-                    {'useFor': {k: sDesc[k] for k in ('player', 'ally', 'enemy')}} for _ in ('static', 'dynamic')])
+                {'useFor': {k: sDesc[t][k] for k in ('player', 'ally', 'enemy')}} for t in ('static', 'dynamic')])
         self.flashObject.as_updateData(texts, settings)
 
     @staticmethod
@@ -274,18 +276,17 @@ class SkinnerUI(AbstractWindowView):
 
     @staticmethod
     def py_onSaveSettings(settings):
-        for idx, settingsArray in enumerate(settings.skins):
-            for nameIdx, setObj in enumerate(settingsArray):
+        for nameIdx, settingsArray in enumerate(settings.skins):
+            for idx, setObj in enumerate(settingsArray):
                 for key in ('player', 'ally', 'enemy'):
-                    g_config.settings[
-                        sorted(g_config.skinsData['models'][('static', 'dynamic')[idx]])[nameIdx]][
-                        'swap' + key.capitalize()] = getattr(setObj.useFor, key)
+                    g_config.settings[sorted(g_config.skinsData['models'])[nameIdx]][('static', 'dynamic')[idx]][
+                        key] = getattr(setObj.useFor, key)
+        loadJson(g_config.ID, 'settings', g_config.settings, g_config.configPath, True, quiet=not g_config.data['isDebug'])
         for idx, prioritiesArray in enumerate(settings.priorities):
             for teamIdx, team in enumerate(('player', 'ally', 'enemy')):
                 g_config.skinsData['priorities'][('static', 'dynamic')[idx]][team] = prioritiesArray[teamIdx]
         loadJson(g_config.ID, 'skinsPriority', g_config.skinsData['priorities'], g_config.configPath, True,
                  quiet=not g_config.data['isDebug'])
-        loadJson(g_config.ID, 'settings', g_config.settings, g_config.configPath, True, quiet=not g_config.data['isDebug'])
         g_config.readCurrentSettings(not g_config.data['isDebug'])
         refreshCurrentVehicle()
 
