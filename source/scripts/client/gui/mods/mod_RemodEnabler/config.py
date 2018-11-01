@@ -177,13 +177,11 @@ class ConfigInterface(PYmodsConfigInterface):
             except AttributeError:
                 BigWorld.g_modsListApi.updateMod(**kwargs)
 
-    def readOrdered(self, name, path):
+    def readOrdered(self, new_path):
         import json
-        encrypted = False
-        new_path = '%s%s.json' % (path, name)
         config_new = None
         if os.path.isfile(new_path):
-            data, excluded, success = cls.json_file_read(new_path, encrypted)
+            data, excluded, success = cls.json_file_read(new_path, False)
             if success:
                 try:
                     config_new = cls.byte_ify(json.loads(data, object_pairs_hook=OrderedDict))
@@ -211,17 +209,11 @@ class ConfigInterface(PYmodsConfigInterface):
                         'If game crashed - this is, probably, the reason.')
                 self.migrateSettings(remodData, remodData)
         loadJson(self.ID, 'settings', settings, self.configPath, True)
-        self.modelsData['selected'] = loadJson(self.ID, 'remodsCache', self.modelsData['selected'], configPath_backup)
-        self.modelsData['selected'].pop('remod', '')
-        for team, teamData in self.modelsData['selected'].items():
-            for xmlName in teamData:
-                if teamData[xmlName] is None:  # a vehicle wasn't ever encountered, but now code pre-determines the remods
-                    self.findModelDesc(xmlName, team == 'player', team == 'ally')  # no need to save here
 
         configsPath = configPath_backup + 'remods/*.json'
         for configPath in glob.iglob(configsPath):
             sname = os.path.basename(configPath).split('.')[0]
-            old_conf = self.readOrdered(sname, configsPath)
+            old_conf = self.readOrdered(configPath)
             if not old_conf:
                 print self.ID + ': error while reading', os.path.basename(configPath) + '.'
                 continue
