@@ -1,14 +1,11 @@
 .idea/
-uncompiled/
 release/
 release_hidden/
 *.cmd
 !/source/scripts/compile.cmd
 /source/scripts/others/
 /source/scripts/client_hidden/
-/source/scripts/client/gui/mods/__init__.py
-/source/scripts/client/gui/__init__.py
-/source/scripts/client/helpers/__init__.py
+/BW/
 
 
 # Created by .ignore support plugin (hsz.mobi)

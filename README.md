@@ -3,24 +3,40 @@ Storage for World of Tanks mods.
 source/scripts:  
   gitcompileall.py - my modification to standard compileall which uses git calls to retrieve commit date  
   /client:  
-    PYmodsCore.py - a lil' ol' code dump with prototypes of inter-mod classes  
-    /mods:  
-      __init__.py - stub file for client.mods package  
-      CameraNode.py - obsolete mod loader  
-    /helpers/i18n:  
-      __init__.py - transforms helpers.i18n from a module to package  
-      _i18nDebugger.py - a simple localisation debugger  
-      _translatorsFix.py - script by GPCracker, which fixes placement of .mo files into res_mods folder  
-      ButtonReplacer.py - localisation editor, replacement to editing .mo files  
-      HangarPainter.py - hangar text colorizer  
-    /gui/mods:  
-      mod_BanksLoader.py - automatic installer for .bnk files  
-      mod_CamoSelector.py - custom camouflage installer  
-      mod_Horns.py - plays horn sound and sends a message to chat upon button press  
-      mod_LampLights.py - allows to attach light sources and models onto tanks  
-      mod_RadialMenu.py - custom battle commands menu maker  
-      mod_pro_RadialMenu.py - PROTanki version of the script  
-      mod_RemodEnabler.py - custom models and skins dispatcher  
-      mod_SunController.py - battle arena time of day manager  
-      mod_UT_announcer.py - frag, some medals and battle time sound notifier  
+    /gui/mods:
+      /mod_CamoSelector - custom camouflage installer
+      /mod_RemodEnabler - custom models dispatcher
+      /mod_Skinner - custom skins dispatcher
+      mod_AppreciationBadges.py - adds custom badges to those who install the mod
+      mod_BanksLoader.py - automatic installer for .bnk files
+      mod_CamoSelector.py - mod loader stub file for CamoSelector
+      mod_HangarScreenshots - hides GUI and blocks camera position changing upon button press
+      mod_Horns.py - plays horn sound and sends a message to chat upon button press
+      mod_IngameGUITextTweaks.py - adds a vehicle class icon and strips out nicknames when needed
+      mod_InsigniaOnGun.py - makes gun insignias appear on vehicles that didn't deserve it yet
+      mod_LampLights.py - allows to attach light sources and models onto tanks
+      mod_LogSwapper.py - because placing log for received damage on the top of the screen was a smart move by WG
+      mod_PlayerHPAnnouncer.py - plays a sound when your HP drops below 50, 25 or 10%
+      mod_PlayersPanelHP.py - well, the name is self-explanatory
+      mod_pro_RadialMenu.py - PROTanki version of the RadialMenu
+      mod_PYSupport.py - I deserve some income, don't you think?
+      mod_RadialMenu.py - custom battle commands menu maker
+      mod_RemodEnabler.py - mod loader stub file for RemodEnabler
+      mod_ShowVehicle.py - displays your vehicle's hull and turret in sniper mode
+      mod_Skinner.py - mod loader stub file for Skinner
+      mod_SoundEventInjector.py - an alternative to editing scipts/item_defs/vehicles/ for audio mod makers
+      mod_StatPaints.py - paints vehicles depending on their driver's WGR value
+      mod_SunController.py - battle arena time of day manager
+      mod_UT_announcer.py - frag, some medals and battle time sound notifier
+      mod_VMTFix.py - Vehicle Model Transparency Fix - because transparent elements don't display on player vehicle
+      mod_VoiceOverrider.py - switches some switches in SoundGroups to make different voiceover versions appear
+    /helpers/i18n:
+      __init__.py - transforms helpers.i18n from a module to package and adds a mod loader to it
+      _i18nDebugger.py - a simple localisation debugger
+      ButtonReplacer.py - localisation editor, replacement to editing .mo files
+      HangarPainter.py - hangar text colorizer
+    /mods:
+      __init__.py - stub file for client.mods package
+      CameraNode.py - obsolete mod loader
+    /PYmodsCore - a good ol' code dump with inter-mod classes and functions
 ```
