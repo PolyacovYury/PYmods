@@ -84,5 +84,5 @@ def new_cacheAppearance(base, self, vId, info, *args):
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled']:
-        self.modelDesc = vDesc_process(self._HangarVehicleAppearance__vEntity.id, vDesc, 'hangar')
+        vDesc_process(self._HangarVehicleAppearance__vEntity.id, vDesc, 'hangar')
     base(self, vDesc, vState)

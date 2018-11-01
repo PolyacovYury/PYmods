@@ -6,6 +6,7 @@ import glob
 import os
 import traceback
 from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, showI18nDialog, overrideMethod
+from PYmodsCore.config.json_reader import JSONLoader as cls
 from collections import OrderedDict
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
@@ -73,7 +74,7 @@ class ConfigInterface(PYmodsConfigInterface):
     hangarSpace = dependency.descriptor(IHangarSpace)
 
     def __init__(self):
-        self.possibleModes = ['player', 'ally', 'enemy']
+        self.teams = ('player', 'ally', 'enemy')
         self.defaultRemodConfig = {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True}
         self.settings = {'remods': {}}
         self.modelsData = {'enabled': True, 'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}, 'remod': ''}}
@@ -81,7 +82,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.collisionEnabled = False
         self.collisionComparisonEnabled = False
         self.isInHangar = False
-        self.currentMode = self.possibleModes[0]
+        self.currentTeam = self.teams[0]
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -174,6 +175,66 @@ class ConfigInterface(PYmodsConfigInterface):
                 BigWorld.g_modsListApi.updateModification(**kwargs)
             except AttributeError:
                 BigWorld.g_modsListApi.updateMod(**kwargs)
+
+    def readOrdered(self, name, path):
+        import json
+        encrypted = False
+        new_path = '%s%s.json' % (path, name)
+        config_new = None
+        if os.path.isfile(new_path):
+            data, excluded, success = cls.json_file_read(new_path, encrypted)
+            if success:
+                try:
+                    config_new = cls.byte_ify(json.loads(data, object_pairs_hook=OrderedDict))
+                except StandardError as e:
+                    print new_path
+                    print e
+        return config_new
+
+    def migrateSettings(self, old_data, new_data):
+        whitelist = set()
+        for team in sorted(self.teams):
+            new_data[team] = new_data.get(team, old_data.pop('swap' + team.capitalize(), True))
+            whitelist.update(old_data.pop(team + 'Whitelist', '').split(','))
+        new_data['whitelist'] = sorted(whitelist | set(new_data.get('whitelist', [])))
+
+    def migrateConfigs(self):
+        configPath_backup = self.configPath    # TODO: remove this after code is complete and tested
+        self.configPath = self.configPath.replace(self.ID, self.ID + '_new')
+        settings = loadJson(self.ID, 'settings', self.settings, configPath_backup)
+        if settings and 'remods' in settings:
+            for sname, remodData in settings['remods'].items():
+                if not remodData.pop('enabled', True):
+                    print self.ID + ': WARNING! Disabled remod detected:', sname + (
+                        '. Remod disabling is not supported anymore, delete unneeded remods.'
+                        'If game crashed - this is, probably, the reason.')
+                self.migrateSettings(remodData, remodData)
+        loadJson(self.ID, 'settings', settings, self.configPath, True)
+        self.modelsData['selected'] = loadJson(self.ID, 'remodsCache', self.modelsData['selected'], configPath_backup)
+        from .processor.remods import find
+        for team, teamData in self.modelsData['selected'].items():
+            for xmlName in teamData:
+                if teamData[xmlName] is None:  # a vehicle wasn't ever encountered, but now code pre-determines the remods
+                    teamData[xmlName] = find(xmlName, team == 'player', team == 'ally')  # no need to save, find() does it
+
+        configsPath = configPath_backup + 'remods/*.json'
+        for configPath in glob.iglob(configsPath):
+            sname = os.path.basename(configPath).split('.')[0]
+            old_conf = self.readOrdered(sname, configsPath)
+            if not old_conf:
+                print self.ID + ': error while reading', os.path.basename(configPath) + '.'
+                continue
+            new_conf = OrderedDict()
+            new_conf['authorMessage'] = old_conf['authorMessage']
+            self.migrateSettings(old_conf, new_conf)
+            for key, value in old_conf.items():
+                if key in ('authorMessage', 'engine') or 'Whitelist' in key or 'swap' in key:
+                    continue
+                elif key == 'chassis':
+                    value = OrderedDict((k, v) for k, v in value.iteritems() if 'sound' not in k)
+                new_conf[key] = value
+            loadJson(self.ID, sname, new_conf, self.configPath + 'remods/', True, False, sort_keys=False)
+        self.configPath = configPath_backup  # !!!!!!!!!!!!!
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings()
@@ -298,6 +359,10 @@ class ConfigInterface(PYmodsConfigInterface):
             loadJson(self.ID, 'remodsCache', self.modelsData['selected'], self.configPath, True, quiet=quiet)
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
 
+    def load(self):
+        self.migrateConfigs()
+        super(ConfigInterface, self).load()
+
     def registerSettings(self):
         super(ConfigInterface, self).registerSettings()
         if not hasattr(BigWorld, 'g_modsListApi'):
@@ -309,9 +374,9 @@ class ConfigInterface(PYmodsConfigInterface):
         kwargs = dict(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'] and self.modelsData['enabled'],
-            login=True, lobby=True, callback=lambda:
-                g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
-                or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI')))
+            login=True, lobby=True, callback=lambda: (
+                    g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
+                    or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI'))))
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
         except AttributeError:
@@ -322,7 +387,7 @@ class ConfigInterface(PYmodsConfigInterface):
 class RemodEnablerUI(AbstractWindowView):
     def _populate(self):
         super(self.__class__, self)._populate()
-        self.modeBackup = g_config.currentMode
+        self.modeBackup = g_config.currentTeam
         self.remodBackup = g_config.modelsData['selected']['remod']
         self.newRemodData = OrderedDict()
 
@@ -365,7 +430,7 @@ class RemodEnablerUI(AbstractWindowView):
         self.flashObject.as_updateData(texts, settings)
 
     def py_getRemodData(self):
-        vehName = RemodEnablerUI.py_getCurrentVehicleName()
+        vehName = self.py_getCurrentVehicleName()
         if vehName:
             try:
                 data = self.newRemodData
@@ -373,7 +438,7 @@ class RemodEnablerUI(AbstractWindowView):
                 data['authorMessage'] = ''
                 for team in ('player', 'ally', 'enemy'):
                     data[team + 'Whitelist'] = [vehName] if vehName else []
-                vDesc = g_config.hangarSpace.space.getVehicleEntity().appearance._HangarVehicleAppearance__vDesc
+                vDesc = self.getCurrentVDesc()
                 for key in TankPartNames.ALL + ('engine',):
                     data[key] = OrderedDict()
                 for key in TankPartNames.ALL:
@@ -440,7 +505,7 @@ class RemodEnablerUI(AbstractWindowView):
                 traceback.print_exc()
         else:
             self.py_sendMessage('', 'Add', 'notSupported')
-        modelDesc = getattr(g_config.hangarSpace.space.getVehicleEntity().appearance, 'modelDesc', None)
+        modelDesc = getattr(self.getCurrentVDesc(), 'modelDesc', None)
         if modelDesc is not None:
             return {'isRemod': True, 'name': modelDesc.name, 'message': modelDesc.authorMessage, 'vehicleName': vehName,
                     'whitelists': [
@@ -452,19 +517,22 @@ class RemodEnablerUI(AbstractWindowView):
 
     @staticmethod
     def py_onShowRemod(remodIdx):
-        g_config.currentMode = 'remod'
+        g_config.currentTeam = 'remod'
         g_config.modelsData['selected']['remod'] = sorted(g_config.modelsData['models'])[remodIdx]
         refreshCurrentVehicle()
 
     def py_onModelRestore(self):
-        g_config.currentMode = self.modeBackup
+        g_config.currentTeam = self.modeBackup
         g_config.modelsData['selected']['remod'] = self.remodBackup
         refreshCurrentVehicle()
 
     @staticmethod
+    def getCurrentVDesc():
+        return g_config.hangarSpace.space.getVehicleEntity().appearance._HangarVehicleAppearance__vDesc
+
+    @staticmethod
     def py_getCurrentVehicleName():
-        vDesc = g_config.hangarSpace.space.getVehicleEntity().appearance._HangarVehicleAppearance__vDesc
-        return vDesc.name.split(':')[1].lower()
+        return RemodEnablerUI.getCurrentVDesc().name.split(':')[1].lower()
 
     def py_onRequestVehicleDelete(self, teamIdx):
         showI18nDialog(
@@ -523,13 +591,13 @@ class RemodEnablerUI(AbstractWindowView):
 def lobbyKeyControl(event):
     if not event.isKeyDown() or g_config.isMSAWindowOpen:
         return
-    if g_config.modelsData['enabled'] and g_config.currentMode != 'remod' and checkKeys(g_config.data['ChangeViewHotkey']):
-        newModeNum = (g_config.possibleModes.index(g_config.currentMode) + 1) % len(g_config.possibleModes)
-        g_config.currentMode = g_config.possibleModes[newModeNum]
+    if g_config.modelsData['enabled'] and g_config.currentTeam != 'remod' and checkKeys(g_config.data['ChangeViewHotkey']):
+        newModeNum = (g_config.teams.index(g_config.currentTeam) + 1) % len(g_config.teams)
+        g_config.currentTeam = g_config.teams[newModeNum]
         if g_config.data['isDebug']:
-            print g_config.ID + ': changing display mode to', g_config.currentMode
+            print g_config.ID + ': changing display mode to', g_config.currentTeam
         SystemMessages.pushMessage(
-            'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentMode]),
+            'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentTeam]),
             SystemMessages.SM_TYPE.Warning)
         refreshCurrentVehicle()
     if checkKeys(g_config.data['CollisionHotkey']):
@@ -554,8 +622,8 @@ def lobbyKeyControl(event):
                                        SystemMessages.SM_TYPE.CustomizationForGold)
         refreshCurrentVehicle()
     if g_config.modelsData['enabled'] and checkKeys(g_config.data['SwitchRemodHotkey']):
-        if g_config.currentMode != 'remod':
-            curTankType = g_config.currentMode
+        if g_config.currentTeam != 'remod':
+            curTankType = g_config.currentTeam
             snameList = sorted(g_config.modelsData['models'].keys()) + ['']
             selected = g_config.modelsData['selected'][curTankType]
             vehName = RemodEnablerUI.py_getCurrentVehicleName()
