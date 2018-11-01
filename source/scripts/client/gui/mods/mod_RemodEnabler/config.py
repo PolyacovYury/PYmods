@@ -76,7 +76,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.teams = ('player', 'ally', 'enemy')
         self.defaultRemodConfig = {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True}
-        self.settings = {'remods': {}}
+        self.settings = {}
         self.modelsData = {'enabled': True, 'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}}}
         self.isModAdded = False
         self.collisionEnabled = False
@@ -208,7 +208,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         '. Remod disabling is not supported anymore, delete unneeded remods.'
                         'If game crashed - this is, probably, the reason.')
                 self.migrateSettings(remodData, remodData)
-        loadJson(self.ID, 'settings', settings, self.configPath, True)
+            loadJson(self.ID, 'settings', settings['remods'], self.configPath, True)
 
         configsPath = configPath_backup + 'remods/*.json'
         for configPath in glob.iglob(configsPath):
