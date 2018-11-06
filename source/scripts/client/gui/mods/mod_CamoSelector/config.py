@@ -161,15 +161,15 @@ class ConfigInterface(PYmodsConfigInterface):
         if 'fullAlpha' in settings and settings['fullAlpha'] != self.data['fullAlpha']:
             items.vehicles.g_cache._Cache__customization20 = None
             items.vehicles.g_cache.customization20()
-        if 'enabled' in settings and settings['enabled'] != self.data['enabled'] and not settings['enabled']:
-            from .settings import backups
-            for alias in backups.keys():
-                settings = g_entitiesFactories.getSettings(alias)
-                if settings is None:
-                    del backups[alias]
-                    continue
-                g_entitiesFactories.removeSettings(alias)
-                g_entitiesFactories.addSettings(backups.pop(alias))
+        # if 'enabled' in settings and settings['enabled'] != self.data['enabled'] and not settings['enabled']:
+        #     from .settings import backups
+        #     for alias in backups.keys():
+        #         settings = g_entitiesFactories.getSettings(alias)
+        #         if settings is None:
+        #             del backups[alias]
+        #             continue
+        #         g_entitiesFactories.removeSettings(alias)
+        #         g_entitiesFactories.addSettings(backups.pop(alias))
         super(self.__class__, self).onApplySettings(settings)
         self.hangarCamoCache.clear()
         if self.isModAdded:
