@@ -20,64 +20,43 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
         obj = eval(config[key])
         if isinstance(obj, dict):  # ancient config
             if key == 'traces':
-                newObj = Traces(**obj)
+                obj = Traces(**obj)
             elif key == 'tracks':
-                newObj = TrackMaterials(**obj)
+                obj = TrackMaterials(**obj)
             elif key == 'wheels':
-                groups = []
-                wheels = []
-                for d in obj['groups']:
-                    if not hasattr(d, '_fields'):
-                        d = WheelGroup(*d)
-                    groups.append(d)
-                for d in obj['wheels']:
-                    if not hasattr(d, '_fields'):
-                        d = Wheel(d[0], d[2], d[1], d[3], d[4])
-                    wheels.append(d)
-                newObj = WheelsConfig(lodDist=obj['lodDist'], groups=tuple(groups), wheels=tuple(wheels))
+                obj = WheelsConfig(
+                    lodDist=obj['lodDist'],
+                    groups=tuple(d if hasattr(d, '_fields') else WheelGroup(*d) for d in obj['groups']),
+                    wheels=tuple(d if hasattr(d, '_fields') else Wheel(d[0], d[2], d[1], d[3], d[4]) for d in obj['wheels']))
             elif key == 'groundNodes':
-                groups = []
-                nodes = []
-                for d in obj['groups']:
-                    if not hasattr(d, '_fields'):
-                        d = GroundNodeGroup(d[0], d[4], d[5], d[1], d[2], d[3])
-                    groups.append(d)
-                for d in obj['nodes']:
-                    if not hasattr(d, '_fields'):
-                        d = GroundNode(d[1], d[0], d[2], d[3])
-                    nodes.append(d)
-                newObj = NodesAndGroups(nodes=tuple(nodes), groups=tuple(groups))
+                obj = NodesAndGroups(
+                    nodes=tuple(d if hasattr(d, '_fields') else GroundNode(d[1], d[0], d[2], d[3]) for d in obj['nodes']),
+                    groups=tuple(d if hasattr(d, '_fields') else GroundNodeGroup(d[0], d[4], d[5], d[1], d[2], d[3])
+                                 for d in obj['groups']))
             elif key == 'trackNodes':
-                nodes = []
-                for d in obj['nodes']:
-                    if not hasattr(d, '_fields'):
-                        d = TrackNode(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])
-                    nodes.append(d)
-                newObj = NodesAndGroups(nodes=tuple(nodes), groups=())
+                obj = NodesAndGroups(nodes=tuple(
+                    d if hasattr(d, '_fields') else TrackNode(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])
+                    for d in obj['nodes']), groups=())
             elif key == 'splineDesc':
-                newObj = SplineConfig(**obj)
+                obj = SplineConfig(**obj)
             elif key == 'trackParams':
-                newObj = TrackParams(**obj)
-            else:
-                assert False
-            obj = newObj
-        new_obj = None
+                obj = TrackParams(**obj)
         if not isinstance(obj, dict):  # we assume that we have a namedtuple, if we don't - something malicious, so crash
             if isinstance(obj, SplineConfig):
-                new_obj = OrderedDict((attrName.strip('_'), getattr(obj, attrName.strip('_'))) for attrName in obj.__slots__)
+                obj = OrderedDict((attrName.strip('_'), getattr(obj, attrName.strip('_'))) for attrName in obj.__slots__)
             else:
-                new_obj = OrderedDict(zip(obj._fields, obj))
+                obj = OrderedDict(zip(obj._fields, obj))
             keys = ()
             if key == 'wheels':
                 keys = ('groups', 'wheels')
             elif key in ('groundNodes', 'trackNodes'):
                 keys = ('nodes', 'groups')
             for sub in keys:
-                new_obj[sub] = list(new_obj[sub])
-                for idx, value in enumerate(new_obj[sub]):
-                    new_obj[sub][idx] = value._asdict()
-        if new_obj is not None:
-            new_config[key] = new_obj
+                obj[sub] = list(obj[sub])
+                for idx, value in enumerate(obj[sub]):
+                    obj[sub][idx] = value._asdict()
+        if obj is not None:
+            new_config[key] = obj
     return new_config
 
 
