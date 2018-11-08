@@ -7,8 +7,7 @@ from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from items.vehicles import CompositeVehicleDescriptor
 from vehicle_systems import appearance_cache
 from vehicle_systems.tankStructure import TankPartNames
-from . import remods
-from .. import g_config
+from . import remods, g_config
 
 
 def debugOutput(xmlName, vehName, playerName, modelDesc):

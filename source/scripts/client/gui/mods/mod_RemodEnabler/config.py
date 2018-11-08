@@ -209,7 +209,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 self.migrateSettings(remodData, remodData)
             loadJson(self.ID, 'settings', settings['remods'], configPath, True)
 
-        from .processor.remods import migrate_chassis_config
+        from .remods import migrate_chassis_config
         configsPath = self.configPath + 'remods/*.json'
         for configPath in glob.iglob(configsPath):
             sname = os.path.basename(configPath).split('.')[0]

@@ -171,7 +171,7 @@ def apply(vDesc, modelDesc):
 
             assert not cntClan and not cntPlayer and not cntInscription
         except StandardError:
-            from .. import g_config
+            from . import g_config
             print g_config.ID + ': provided emblem slots corrupted. Stock slots restored'
             if g_config.data['isDebug']:
                 print 'cntPlayer =', cntPlayer
