@@ -198,9 +198,8 @@ class ConfigInterface(PYmodsConfigInterface):
         new_data['whitelist'] = sorted(whitelist | set(new_data.get('whitelist', [])))
 
     def migrateConfigs(self):
-        configPath_backup = self.configPath    # TODO: remove this after code is complete and tested
-        self.configPath = self.configPath.replace(self.ID, self.ID + '_new')
-        settings = loadJson(self.ID, 'settings', self.settings, configPath_backup)
+        configPath = self.configPath.replace(self.ID, self.ID + '_new')  # TODO: remove this after code is complete
+        settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
         if settings and 'remods' in settings:
             for sname, remodData in settings['remods'].items():
                 if not remodData.pop('enabled', True):
@@ -208,9 +207,10 @@ class ConfigInterface(PYmodsConfigInterface):
                         '. Remod disabling is not supported anymore, delete unneeded remods.'
                         'If game crashed - this is, probably, the reason.')
                 self.migrateSettings(remodData, remodData)
-            loadJson(self.ID, 'settings', settings['remods'], self.configPath, True)
+            loadJson(self.ID, 'settings', settings['remods'], configPath, True)
 
-        configsPath = configPath_backup + 'remods/*.json'
+        from .processor.remods import migrate_chassis_config
+        configsPath = self.configPath + 'remods/*.json'
         for configPath in glob.iglob(configsPath):
             sname = os.path.basename(configPath).split('.')[0]
             old_conf = self.readOrdered(configPath)
@@ -221,13 +221,13 @@ class ConfigInterface(PYmodsConfigInterface):
             new_conf['authorMessage'] = old_conf['authorMessage']
             self.migrateSettings(old_conf, new_conf)
             for key, value in old_conf.items():
-                if key in ('authorMessage', 'engine') or 'Whitelist' in key or 'swap' in key:
+                if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key or (
+                        key == 'engine' and isinstance(value, dict)):  # engine is dict in old config and string in nre
                     continue
                 elif key == 'chassis':
-                    value = OrderedDict((k, v) for k, v in value.iteritems() if 'sound' not in k)
+                    value = migrate_chassis_config(value)
                 new_conf[key] = value
-            loadJson(self.ID, sname, new_conf, self.configPath + 'remods/', True, False, sort_keys=False)
-        self.configPath = configPath_backup  # !!!!!!!!!!!!!
+            loadJson(self.ID, sname, new_conf, configPath + 'remods/', True, sort_keys=False)
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings()

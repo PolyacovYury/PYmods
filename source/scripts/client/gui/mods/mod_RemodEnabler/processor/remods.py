@@ -8,15 +8,16 @@ from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
 
 SplineConfig._asdict = lambda self: OrderedDict(
-    (attrName.strip('_'), repr(getattr(self, attrName.strip('_')))) for attrName in self.__slots__)
+    (attrName.strip('_'), getattr(self, attrName.strip('_'))) for attrName in self.__slots__)
 chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams')
 
 
-def convert_chassis_config(config):  # please send data['chassis'] here
+def migrate_chassis_config(config):  # please send data['chassis'] here
     new_config = OrderedDict()
-    for key in chassis_params:
-        if not isinstance(config[key], basestring):
-            new_config[key] = config[key]
+    for key in config:
+        if key not in chassis_params or not isinstance(config[key], basestring):
+            if 'wwsound' not in key:  # sounds are obsolete
+                new_config[key] = config[key]
             continue  # config already converted
         obj = eval(config[key])
         if isinstance(obj, dict):  # ancient config
