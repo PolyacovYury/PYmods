@@ -7,8 +7,6 @@ from items.components.sound_components import WWTripleSoundConfig
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
 
-SplineConfig._asdict = lambda self: OrderedDict(
-    (attrName.strip('_'), getattr(self, attrName.strip('_'))) for attrName in self.__slots__)
 chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams')
 
 
@@ -65,7 +63,10 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
             obj = newObj
         new_obj = None
         if not isinstance(obj, dict):  # we assume that we have a namedtuple, if we don't - something malicious, so crash
-            new_obj = obj._asdict()
+            if isinstance(obj, SplineConfig):
+                new_obj = OrderedDict((attrName.strip('_'), getattr(obj, attrName.strip('_'))) for attrName in obj.__slots__)
+            else:
+                new_obj = OrderedDict(zip(obj._fields, obj))
             keys = ()
             if key == 'wheels':
                 keys = ('groups', 'wheels')
