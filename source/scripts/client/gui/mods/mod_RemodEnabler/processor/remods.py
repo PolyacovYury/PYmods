@@ -1,15 +1,81 @@
 import copy
-from collections import namedtuple
-from items.components.chassis_components import *
-from items.components.chassis_components import SplineConfig, WheelsConfig
+from helpers.xmltodict import OrderedDict
+from items.components.chassis_components import Wheel, WheelGroup, TrackNode, TrackMaterials, GroundNode, GroundNodeGroup, \
+    Traces, SplineConfig, WheelsConfig, TrackParams
 from items.components.shared_components import Camouflage, ModelStatesPaths, NodesAndGroups
 from items.components.sound_components import WWTripleSoundConfig
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
-from .. import g_config
 
-TrackMaterials = namedtuple('TrackMaterials', ('lodDist', 'leftMaterial', 'rightMaterial', 'textureScale'))
-TrackParams = namedtuple('TrackParams', ('thickness', 'maxAmplitude', 'maxOffset', 'gravity'))
+SplineConfig._asdict = lambda self: OrderedDict(
+    (attrName.strip('_'), repr(getattr(self, attrName.strip('_')))) for attrName in self.__slots__)
+chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams')
+
+
+def convert_chassis_config(config):  # please send data['chassis'] here
+    new_config = OrderedDict()
+    for key in chassis_params:
+        if not isinstance(config[key], basestring):
+            new_config[key] = config[key]
+            continue  # config already converted
+        obj = eval(config[key])
+        if isinstance(obj, dict):  # ancient config
+            if key == 'traces':
+                newObj = Traces(**obj)
+            elif key == 'tracks':
+                newObj = TrackMaterials(**obj)
+            elif key == 'wheels':
+                groups = []
+                wheels = []
+                for d in obj['groups']:
+                    if not hasattr(d, '_fields'):
+                        d = WheelGroup(*d)
+                    groups.append(d)
+                for d in obj['wheels']:
+                    if not hasattr(d, '_fields'):
+                        d = Wheel(d[0], d[2], d[1], d[3], d[4])
+                    wheels.append(d)
+                newObj = WheelsConfig(lodDist=obj['lodDist'], groups=tuple(groups), wheels=tuple(wheels))
+            elif key == 'groundNodes':
+                groups = []
+                nodes = []
+                for d in obj['groups']:
+                    if not hasattr(d, '_fields'):
+                        d = GroundNodeGroup(d[0], d[4], d[5], d[1], d[2], d[3])
+                    groups.append(d)
+                for d in obj['nodes']:
+                    if not hasattr(d, '_fields'):
+                        d = GroundNode(d[1], d[0], d[2], d[3])
+                    nodes.append(d)
+                newObj = NodesAndGroups(nodes=tuple(nodes), groups=tuple(groups))
+            elif key == 'trackNodes':
+                nodes = []
+                for d in obj['nodes']:
+                    if not hasattr(d, '_fields'):
+                        d = TrackNode(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])
+                    nodes.append(d)
+                newObj = NodesAndGroups(nodes=tuple(nodes), groups=())
+            elif key == 'splineDesc':
+                newObj = SplineConfig(**obj)
+            elif key == 'trackParams':
+                newObj = TrackParams(**obj)
+            else:
+                assert False
+            obj = newObj
+        new_obj = None
+        if not isinstance(obj, dict):  # we assume that we have a namedtuple, if we don't - something malicious, so crash
+            new_obj = obj._asdict()
+            keys = ()
+            if key == 'wheels':
+                keys = ('groups', 'wheels')
+            elif key in ('groundNodes', 'trackNodes'):
+                keys = ('nodes', 'groups')
+            for sub in keys:
+                for idx, value in enumerate(new_obj[sub]):
+                    new_obj[sub][idx] = value._asdict()
+        if new_obj is not None:
+            new_config[key] = new_obj
+    return new_config
 
 
 def apply(vDesc, modelDesc):
@@ -17,7 +83,7 @@ def apply(vDesc, modelDesc):
         if getattr(vDesc.chassis, key) is None:
             setattr(vDesc.chassis, key, {})
     data = modelDesc.data
-    for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
+    for key in chassis_params:
         obj = eval(data['chassis'][key])
         newObj = None
         if isinstance(obj, dict):
@@ -104,6 +170,7 @@ def apply(vDesc, modelDesc):
 
             assert not cntClan and not cntPlayer and not cntInscription
         except StandardError:
+            from .. import g_config
             print g_config.ID + ': provided emblem slots corrupted. Stock slots restored'
             if g_config.data['isDebug']:
                 print 'cntPlayer =', cntPlayer
