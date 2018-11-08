@@ -49,6 +49,8 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
             elif key == 'trackParams':
                 obj = TrackParams(**obj)
         if not isinstance(obj, dict):  # we assume that we have a namedtuple, if we don't - something malicious, so crash
+            if key == 'traces':
+                obj = obj._replace(size=list(obj.size))
             obj = _asdict(obj)
             keys = ()
             if key == 'wheels':
@@ -59,8 +61,7 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
                 obj[sub] = list(obj[sub])
                 for idx, value in enumerate(obj[sub]):
                     obj[sub][idx] = _asdict(value)
-        if obj is not None:
-            new_config[key] = obj
+        new_config[key] = obj
     return new_config
 
 

@@ -127,6 +127,8 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def migrateConfigs(self):
         settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
+        if settings.keys() != ['skins', 'skins_dynamic']:
+            return  # config already migrated
         new_settings = {}
         for skinTypeName, skinTypeConf in settings.iteritems():
             skinType = skinTypeName.replace('skins', '')
@@ -144,7 +146,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         print new_setting
                         assert False
                     skinSettings[new_setting] = skinConf[setting]
-        loadJson(self.ID, 'settings', self.settings, self.configPath, True)
+        loadJson(self.ID, 'settings', new_settings, self.configPath, True)
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings()
