@@ -33,17 +33,17 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
             elif key == 'wheels':
                 obj = WheelsConfig(
                     lodDist=obj['lodDist'],
-                    groups=tuple(d if hasattr(d, '_fields') else WheelGroup(*d) for d in obj['groups']),
-                    wheels=tuple(d if hasattr(d, '_fields') else Wheel(d[0], d[2], d[1], d[3], d[4]) for d in obj['wheels']))
+                    groups=[d if hasattr(d, '_fields') else WheelGroup(*d) for d in obj['groups']],
+                    wheels=[d if hasattr(d, '_fields') else Wheel(d[0], d[2], d[1], d[3], d[4]) for d in obj['wheels']])
             elif key == 'groundNodes':
                 obj = NodesAndGroups(
-                    nodes=tuple(d if hasattr(d, '_fields') else GroundNode(d[1], d[0], d[2], d[3]) for d in obj['nodes']),
-                    groups=tuple(d if hasattr(d, '_fields') else GroundNodeGroup(d[0], d[4], d[5], d[1], d[2], d[3])
-                                 for d in obj['groups']))
+                    nodes=[d if hasattr(d, '_fields') else GroundNode(d[1], d[0], d[2], d[3]) for d in obj['nodes']],
+                    groups=[d if hasattr(d, '_fields') else GroundNodeGroup(d[0], d[4], d[5], d[1], d[2], d[3])
+                            for d in obj['groups']])
             elif key == 'trackNodes':
-                obj = NodesAndGroups(nodes=tuple(
+                obj = NodesAndGroups(nodes=[
                     d if hasattr(d, '_fields') else TrackNode(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])
-                    for d in obj['nodes']), groups=())
+                    for d in obj['nodes']], groups=[])
             elif key == 'splineDesc':
                 obj = SplineConfig(**obj)
             elif key == 'trackParams':
