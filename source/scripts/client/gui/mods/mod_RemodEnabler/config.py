@@ -198,7 +198,7 @@ class ConfigInterface(PYmodsConfigInterface):
         new_data['whitelist'] = sorted(whitelist | set(new_data.get('whitelist', [])))
 
     def migrateConfigs(self):
-        configPath = self.configPath.replace(self.ID, self.ID + '_new')  # TODO: remove this after code is complete
+        configDir = self.configPath.replace(self.ID, self.ID + '_new')  # TODO: remove this after code is complete
         settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
         if settings and 'remods' in settings:
             for sname, remodData in settings['remods'].items():
@@ -207,7 +207,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         '. Remod disabling is not supported anymore, delete unneeded remods.'
                         'If game crashed - this is, probably, the reason.')
                 self.migrateSettings(remodData, remodData)
-            loadJson(self.ID, 'settings', settings['remods'], configPath, True)
+            loadJson(self.ID, 'settings', settings['remods'], configDir, True)
 
         from .remods import migrate_chassis_config
         configsPath = self.configPath + 'remods/*.json'
@@ -227,7 +227,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 elif key == 'chassis':
                     value = migrate_chassis_config(value)
                 new_conf[key] = value
-            loadJson(self.ID, sname, new_conf, configPath + 'remods/', True, sort_keys=False)
+            loadJson(self.ID, sname, new_conf, configDir + 'remods/', True, sort_keys=False)
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings()
