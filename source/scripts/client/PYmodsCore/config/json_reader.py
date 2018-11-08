@@ -146,7 +146,7 @@ class JSONLoader:
                 if rewrite:
                     updated = read_data != oldConfig
                     read_data = oldConfig
-                    sort_keys = True
+                    sort_keys = not isinstance(oldConfig, OrderedDict)
                 else:
                     updated = smart_update(read_data, oldConfig)
                     sort_keys = False
