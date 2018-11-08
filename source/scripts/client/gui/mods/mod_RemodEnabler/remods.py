@@ -1,5 +1,5 @@
 import copy
-from helpers.xmltodict import OrderedDict
+from collections import OrderedDict
 from items.components.chassis_components import Wheel, WheelGroup, TrackNode, TrackMaterials, GroundNode, GroundNodeGroup, \
     Traces, SplineConfig, WheelsConfig, TrackParams
 from items.components.shared_components import Camouflage, ModelStatesPaths, NodesAndGroups
