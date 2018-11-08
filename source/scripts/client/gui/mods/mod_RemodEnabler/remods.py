@@ -10,6 +10,13 @@ from vehicle_systems.tankStructure import TankPartNames
 chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams')
 
 
+def _asdict(obj):
+    if isinstance(obj, SplineConfig):
+        return OrderedDict((attrName.strip('_'), getattr(obj, attrName.strip('_'))) for attrName in obj.__slots__)
+    else:
+        return OrderedDict(zip(obj._fields, obj))
+
+
 def migrate_chassis_config(config):  # please send data['chassis'] here
     new_config = OrderedDict()
     for key in config:
@@ -42,10 +49,7 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
             elif key == 'trackParams':
                 obj = TrackParams(**obj)
         if not isinstance(obj, dict):  # we assume that we have a namedtuple, if we don't - something malicious, so crash
-            if isinstance(obj, SplineConfig):
-                obj = OrderedDict((attrName.strip('_'), getattr(obj, attrName.strip('_'))) for attrName in obj.__slots__)
-            else:
-                obj = OrderedDict(zip(obj._fields, obj))
+            obj = _asdict(obj)
             keys = ()
             if key == 'wheels':
                 keys = ('groups', 'wheels')
@@ -54,7 +58,7 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
             for sub in keys:
                 obj[sub] = list(obj[sub])
                 for idx, value in enumerate(obj[sub]):
-                    obj[sub][idx] = value._asdict()
+                    obj[sub][idx] = _asdict(value)
         if obj is not None:
             new_config[key] = obj
     return new_config
