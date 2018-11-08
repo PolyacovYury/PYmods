@@ -72,6 +72,7 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
             elif key in ('groundNodes', 'trackNodes'):
                 keys = ('nodes', 'groups')
             for sub in keys:
+                new_obj[sub] = list(new_obj[sub])
                 for idx, value in enumerate(new_obj[sub]):
                     new_obj[sub][idx] = value._asdict()
         if new_obj is not None:
