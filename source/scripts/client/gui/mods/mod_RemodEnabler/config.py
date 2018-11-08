@@ -227,7 +227,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 elif key == 'chassis':
                     value = migrate_chassis_config(value)
                 new_conf[key] = value
-            loadJson(self.ID, sname, new_conf, configDir + 'remods/', True, sort_keys=False)
+            loadJson(self.ID, sname, new_conf, configDir + 'remods/', True, False, sort_keys=False)
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings()
