@@ -397,6 +397,14 @@ class RemodEnablerUI(AbstractWindowView):
         self.modeBackup = g_config.currentTeam
         self.newRemodData = OrderedDict()
 
+    def objToDict(self, obj):
+        if isinstance(obj, list):
+            return [self.objToDict(o) for o in obj]
+        elif hasattr(obj, 'toDict'):
+            return {k: self.objToDict(v) for k, v in obj.toDict().iteritems()}
+        else:
+            return obj
+
     def py_onRequestSettings(self):
         g_config.readCurrentSettings(not g_config.data['isDebug'])
         texts = {
@@ -544,8 +552,8 @@ class RemodEnablerUI(AbstractWindowView):
             g_config.i18n['UI_flash_WLVehDelete_header'], g_config.i18n['UI_flash_WLVehDelete_text'], 'common/confirm',
             lambda proceed: self.flashObject.as_onVehicleDeleteConfirmed(proceed, teamIdx))
 
-    @staticmethod
-    def py_onSaveSettings(settings):
+    def py_onSaveSettings(self, settings):
+        print self.objToDict(settings)
         remodNames = sorted(g_config.modelsData['models'])
         for idx, setObj in enumerate(settings.remods):
             modelsSettings = g_config.settings['remods'][remodNames[idx]]
