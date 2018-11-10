@@ -16,6 +16,9 @@ from . import __date__, __modID__
 
 class ConfigInterface(PYmodsConfigInterface):
     hangarSpace = dependency.descriptor(IHangarSpace)
+    defaultSkinConfig = property(lambda self: {
+        'static': {'player': True, 'ally': True, 'enemy': True},
+        'dynamic': {'player': False, 'ally': True, 'enemy': True}})
 
     def __init__(self):
         self.teams = ('player', 'ally', 'enemy')
@@ -29,11 +32,6 @@ class ConfigInterface(PYmodsConfigInterface):
         self.dynamicSkinEnabled = False
         self.currentTeam = self.teams[0]
         super(ConfigInterface, self).__init__()
-
-    @property
-    def defaultSkinConfig(self):
-        return {'static': {'player': True, 'ally': True, 'enemy': True},
-                'dynamic': {'player': False, 'ally': True, 'enemy': True}}
 
     def init(self):
         self.ID = __modID__
