@@ -37,7 +37,7 @@ def destroy(vehicleID):
 def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     attach(self._HangarVehicleAppearance__vEntity.id,
-           g_config.dynamicSkinEnabled and not g_config.collisionComparisonEnabled)
+           g_config.dynamicSkinEnabled and g_config.collisionMode != 2)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, 'targetFocus')

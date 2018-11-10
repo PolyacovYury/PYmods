@@ -69,12 +69,7 @@ def vDesc_process(vehicleID, vDesc, mode):
             except StandardError:
                 traceback.print_exc()
                 print partName
-    try:
-        from gui.mods.mod_remodenabler import g_config as re_config
-    except ImportError:
-        re_config = None
     message = None
-    collisionNotVisible = re_config is None or not (re_config.collisionEnabled or re_config.collisionComparisonEnabled)
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
     vehDefNation = vDesc.chassis.hitTester.bspModelName.split('/')[1]
     if g_config.skinsData['found']:
@@ -82,15 +77,16 @@ def vDesc_process(vehicleID, vDesc, mode):
             dynamicDesc = skins_find(vehName, currentTeam, 'dynamic')
             if dynamicDesc is not None:
                 skins_dynamic.create(vehicleID, vDesc, dynamicDesc['name'], mode == 'hangar' and (
-                        g_config.dynamicSkinEnabled and not re_config.collisionComparisonEnabled))
-                if g_config.dynamicSkinEnabled and collisionNotVisible:
+                        g_config.dynamicSkinEnabled and g_config.collisionMode != 2))
+                if g_config.dynamicSkinEnabled and not g_config.collisionMode:
                     message = g_config.i18n['UI_install_skin_dynamic'] + '<b>' + dynamicDesc['name'] + '</b>.'
             staticDesc = skins_find(vehName, currentTeam, 'static')
             if staticDesc is not None:
                 skins_static.apply(vDesc, staticDesc['name'])
         elif g_config.data['isDebug']:
             print g_config.ID + ': unknown vehicle nation for', vehName + ':', vehNation
-        if g_config.data['isDebug'] and (dynamicDesc is None or not g_config.dynamicSkinEnabled) and collisionNotVisible:
+        if g_config.data['isDebug'] and (
+                dynamicDesc is None or not g_config.dynamicSkinEnabled) and not g_config.collisionMode:
             if staticDesc is not None:
                 message = g_config.i18n['UI_install_skin'] + '<b>' + staticDesc['name'] + '</b>.'
             else:

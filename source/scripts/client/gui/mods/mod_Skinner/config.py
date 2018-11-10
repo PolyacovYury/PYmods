@@ -26,8 +26,6 @@ class ConfigInterface(PYmodsConfigInterface):
             'priorities': {skinType: {'player': [], 'ally': [], 'enemy': []} for skinType in ('static', 'dynamic')}}
         self.loadingProxy = None
         self.isModAdded = False
-        self.collisionEnabled = False
-        self.collisionComparisonEnabled = False
         self.dynamicSkinEnabled = False
         self.currentTeam = self.teams[0]
         super(ConfigInterface, self).__init__()
@@ -219,6 +217,14 @@ class ConfigInterface(PYmodsConfigInterface):
     def load(self):
         self.migrateConfigs()
         super(ConfigInterface, self).load()
+
+    @property
+    def collisionMode(self):
+        try:
+            from gui.mods.mod_remodenabler import g_config as re_config
+            return re_config.collisionMode
+        except ImportError:
+            return 0
 
     def registerSettings(self):
         super(ConfigInterface, self).registerSettings()

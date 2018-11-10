@@ -79,8 +79,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.settings = {}
         self.modelsData = {'enabled': True, 'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}}}
         self.isModAdded = False
-        self.collisionEnabled = False
-        self.collisionComparisonEnabled = False
+        self.collisionMode = 0
         self.isInHangar = False
         self.currentTeam = self.teams[0]
         self.previewRemod = None
@@ -626,21 +625,19 @@ def lobbyKeyControl(event):
                 break
             refreshCurrentVehicle()
     if checkKeys(g_config.data['CollisionHotkey']):
-        if g_config.collisionComparisonEnabled:
-            g_config.collisionComparisonEnabled = False
+        g_config.collisionMode += 1
+        g_config.collisionMode %= 3
+        if g_config.collisionMode == 0:
             if g_config.data['isDebug']:
                 print g_config.ID + ': disabling collision displaying'
             SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_disableCollisionComparison'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
-        elif g_config.collisionEnabled:
-            g_config.collisionEnabled = False
-            g_config.collisionComparisonEnabled = True
+        elif g_config.collisionMode == 2:
             if g_config.data['isDebug']:
                 print g_config.ID + ': enabling collision display comparison mode'
             SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_enableCollisionComparison'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
         else:
-            g_config.collisionEnabled = True
             if g_config.data['isDebug']:
                 print g_config.ID + ': enabling collision display'
             SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_enableCollision'],

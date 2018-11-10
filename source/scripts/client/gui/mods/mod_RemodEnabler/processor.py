@@ -56,13 +56,12 @@ def vDesc_process(vehicleID, vDesc, mode):
                 traceback.print_exc()
                 print partName
     message = None
-    collisionNotVisible = not (g_config.collisionEnabled or g_config.collisionComparisonEnabled)
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
     if modelDesc is not None:
         for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
                 vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
             remods.apply(descr, modelDesc)
-        if collisionNotVisible:
+        if not g_config.collisionMode:
             message = g_config.i18n['UI_install_remod'] + '<b>' + modelDesc.name + '</b>.\n' + modelDesc.authorMessage
     if message is not None and mode == 'hangar':
         SystemMessages.pushMessage('temp_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
