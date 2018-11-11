@@ -403,7 +403,6 @@ class ConfigInterface(PYmodsConfigInterface):
 class RemodEnablerUI(AbstractWindowView):
     def _populate(self):
         super(self.__class__, self)._populate()
-        self.modeBackup = g_config.currentTeam
         self.newRemodData = OrderedDict()
 
     def objToDict(self, obj):
