@@ -288,9 +288,8 @@ class ConfigInterface(PYmodsConfigInterface):
                 if key == 'chassis':
                     for k in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
                         data[k] = confSubDict[k]
-                for subKey in ('effects', 'reloadEffect', 'soundID'):
-                    if subKey in data and subKey in confSubDict:
-                        data[subKey] = confSubDict[subKey]
+                if 'soundID' in data and 'soundID' in confSubDict:
+                    data['soundID'] = confSubDict['soundID']
             if self.data['isDebug']:
                 print self.ID + ': config for', sName, 'loaded.'
 
@@ -351,6 +350,56 @@ class ConfigInterface(PYmodsConfigInterface):
         except AttributeError:
             BigWorld.g_modsListApi.addMod(**kwargs)
         self.isModAdded = True
+
+    def lobbyKeyControl(self, event):
+        if not event.isKeyDown() or self.isMSAWindowOpen:
+            return
+        if self.modelsData['enabled'] and not self.previewRemod:
+            if checkKeys(self.data['ChangeViewHotkey']):
+                newModeNum = (self.teams.index(self.currentTeam) + 1) % len(self.teams)
+                self.currentTeam = self.teams[newModeNum]
+                if self.data['isDebug']:
+                    print self.ID + ': changing display mode to', self.currentTeam
+                SystemMessages.pushMessage(
+                    'temp_SM%s<b>%s</b>' % (self.i18n['UI_mode'], self.i18n['UI_mode_' + self.currentTeam]),
+                    SystemMessages.SM_TYPE.Warning)
+                refreshCurrentVehicle()
+            if checkKeys(self.data['SwitchRemodHotkey']):
+                curTankType = self.currentTeam
+                snameList = sorted(self.modelsData['models'].keys()) + ['']
+                selected = self.modelsData['selected'][curTankType]
+                vehName = RemodEnablerUI.py_getCurrentVehicleName()
+                snameIdx = (snameList.index(selected[vehName]) + 1) % len(snameList)
+                for Idx in xrange(snameIdx, len(snameList) - 1):
+                    curPRecord = self.modelsData['models'][snameList[Idx]]
+                    if vehName not in curPRecord['whitelist']:
+                        continue
+                    selected[vehName] = curPRecord['name']
+                    break
+                else:
+                    selected[vehName] = ''
+                loadJson(self.ID, 'remodsCache', self.modelsData['selected'], self.configPath, True,
+                         quiet=not self.data['isDebug'])
+                refreshCurrentVehicle()
+        if checkKeys(self.data['CollisionHotkey']):
+            self.collisionMode += 1
+            self.collisionMode %= 3
+            if self.collisionMode == 0:
+                if self.data['isDebug']:
+                    print self.ID + ': disabling collision displaying'
+                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_disableCollisionComparison'],
+                                           SystemMessages.SM_TYPE.CustomizationForGold)
+            elif self.collisionMode == 2:
+                if self.data['isDebug']:
+                    print self.ID + ': enabling collision display comparison mode'
+                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_enableCollisionComparison'],
+                                           SystemMessages.SM_TYPE.CustomizationForGold)
+            else:
+                if self.data['isDebug']:
+                    print self.ID + ': enabling collision display'
+                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_enableCollision'],
+                                           SystemMessages.SM_TYPE.CustomizationForGold)
+            refreshCurrentVehicle()
 
 
 class RemodEnablerUI(AbstractWindowView):
@@ -496,7 +545,6 @@ class RemodEnablerUI(AbstractWindowView):
         refreshCurrentVehicle()
 
     def py_onModelRestore(self):
-        g_config.currentTeam = self.modeBackup
         g_config.previewRemod = None
         refreshCurrentVehicle()
 
@@ -562,60 +610,11 @@ class RemodEnablerUI(AbstractWindowView):
             print arg
 
 
-def lobbyKeyControl(event):
-    if not event.isKeyDown() or g_config.isMSAWindowOpen:
-        return
-    if g_config.modelsData['enabled'] and not g_config.previewRemod:
-        if checkKeys(g_config.data['ChangeViewHotkey']):
-            newModeNum = (g_config.teams.index(g_config.currentTeam) + 1) % len(g_config.teams)
-            g_config.currentTeam = g_config.teams[newModeNum]
-            if g_config.data['isDebug']:
-                print g_config.ID + ': changing display mode to', g_config.currentTeam
-            SystemMessages.pushMessage(
-                'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentTeam]),
-                SystemMessages.SM_TYPE.Warning)
-            refreshCurrentVehicle()
-        if checkKeys(g_config.data['SwitchRemodHotkey']):
-            curTankType = g_config.currentTeam
-            snameList = sorted(g_config.modelsData['models'].keys()) + ['']
-            selected = g_config.modelsData['selected'][curTankType]
-            vehName = RemodEnablerUI.py_getCurrentVehicleName()
-            snameIdx = (snameList.index(selected[vehName]) + 1) % len(snameList)
-            for Idx in xrange(snameIdx, len(snameList)):
-                curPRecord = g_config.modelsData['models'].get(snameList[Idx])
-                if snameList[Idx] and vehName not in curPRecord.whitelists[curTankType]:
-                    continue
-                selected[vehName] = getattr(curPRecord, 'name', '')
-                loadJson(g_config.ID, 'remodsCache', g_config.modelsData['selected'], g_config.configPath, True,
-                         quiet=not g_config.data['isDebug'])
-                break
-            refreshCurrentVehicle()
-    if checkKeys(g_config.data['CollisionHotkey']):
-        g_config.collisionMode += 1
-        g_config.collisionMode %= 3
-        if g_config.collisionMode == 0:
-            if g_config.data['isDebug']:
-                print g_config.ID + ': disabling collision displaying'
-            SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_disableCollisionComparison'],
-                                       SystemMessages.SM_TYPE.CustomizationForGold)
-        elif g_config.collisionMode == 2:
-            if g_config.data['isDebug']:
-                print g_config.ID + ': enabling collision display comparison mode'
-            SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_enableCollisionComparison'],
-                                       SystemMessages.SM_TYPE.CustomizationForGold)
-        else:
-            if g_config.data['isDebug']:
-                print g_config.ID + ': enabling collision display'
-            SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_enableCollision'],
-                                       SystemMessages.SM_TYPE.CustomizationForGold)
-        refreshCurrentVehicle()
-
-
 def inj_hkKeyEvent(event):
     LobbyApp = g_appLoader.getDefLobbyApp()
     try:
         if LobbyApp and g_config.data['enabled']:
-            lobbyKeyControl(event)
+            g_config.lobbyKeyControl(event)
     except StandardError:
         print g_config.ID + ': ERROR at inj_hkKeyEvent'
         traceback.print_exc()

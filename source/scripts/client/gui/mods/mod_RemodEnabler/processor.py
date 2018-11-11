@@ -18,7 +18,7 @@ def debugOutput(xmlName, vehName, playerName, modelDesc):
     if playerName is not None:
         header += ', player: ' + playerName
     if modelDesc is not None:
-        info = 'modelDesc: ' + modelDesc.name
+        info = 'modelDesc: ' + modelDesc['name']
     if info:
         print header + ' processed:', info
 
@@ -62,7 +62,7 @@ def vDesc_process(vehicleID, vDesc, mode):
                 vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
             remods.apply(descr, modelDesc)
         if not g_config.collisionMode:
-            message = g_config.i18n['UI_install_remod'] + '<b>' + modelDesc.name + '</b>.\n' + modelDesc.authorMessage
+            message = g_config.i18n['UI_install_remod'] + '<b>' + modelDesc['name'] + '</b>.\n' + modelDesc['message']
     if message is not None and mode == 'hangar':
         SystemMessages.pushMessage('temp_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
     debugOutput(xmlName, vehName, playerName, modelDesc)
