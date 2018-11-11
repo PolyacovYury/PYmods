@@ -37,7 +37,7 @@ class ConfigInterface(PYmodsConfigInterface):
                      'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
             'turret': {'undamaged': '', 'emblemSlots': [],
                        'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
-            'gun': {'undamaged': '', 'emblemSlots': [], 'effects': '', 'reloadEffect': '',
+            'gun': {'undamaged': '', 'emblemSlots': [], 'soundID': '',
                     'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
             'engine': {'soundID': ''},
             'common': {'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}}})
@@ -192,7 +192,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 print self.ID + ': error while reading', os.path.basename(configPath) + '.'
                 continue
             new_conf = OrderedDict()
-            new_conf['message'] = old_conf['authorMessage']
+            new_conf['message'] = old_conf.get('authorMessage', old_conf.get('message', ''))
             self.migrateSettings(old_conf, new_conf)
             for key, val in old_conf.items():
                 if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key or (
