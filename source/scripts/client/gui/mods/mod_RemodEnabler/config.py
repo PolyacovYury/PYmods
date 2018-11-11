@@ -319,17 +319,15 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).load()
 
     def findModelDesc(self, xmlName, currentTeam, notForPreview=True):
-        modelDesc = None
         if not self.modelsData['models']:
-            return modelDesc
+            return
         selected = self.modelsData['selected'][currentTeam]
         if not self.previewRemod or notForPreview:
-            if xmlName not in selected:
-                return modelDesc
-            modelDesc = self.modelsData['models'][selected[xmlName]]
+            if xmlName not in selected or not selected[xmlName]:
+                return
+            return self.modelsData['models'][selected[xmlName]]
         else:
-            modelDesc = self.modelsData['models'][self.previewRemod]
-        return modelDesc
+            return self.modelsData['models'][self.previewRemod]
 
     def registerSettings(self):
         super(ConfigInterface, self).registerSettings()
