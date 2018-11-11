@@ -181,7 +181,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 selectedData[key.lower()] = selectedData.pop(key)
             if key.lower() == 'remod':
                 del selectedData[key.lower()]
-        loadJson(self.ID, 'remodsCache', selectedData, self.configPath)
+        loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True)
 
         from .remods import migrate_chassis_config
         configsPath = self.configPath + 'remods/*.json'
