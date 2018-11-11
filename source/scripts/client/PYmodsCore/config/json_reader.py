@@ -38,20 +38,18 @@ class JSONObjectEncoder(json.JSONEncoder):
 
 class JSONLoader:
     @classmethod
-    def byte_ify(cls, inputs, ignore_dicts=False):
-        if inputs:  # https://stackoverflow.com/a/33571117
-            if isinstance(inputs, unicode):
-                # noinspection PyArgumentEqualDefault
-                return inputs.encode('utf-8')
-            elif isinstance(inputs, list):
-                return [cls.byte_ify(element, ignore_dicts=True) for element in inputs]
-            elif isinstance(inputs, tuple):
-                return tuple(cls.byte_ify(element, ignore_dicts=True) for element in inputs)
-            elif isinstance(inputs, OrderedDict):  # can't use object_hook and object_pairs_hook at the same time
-                return OrderedDict((cls.byte_ify(key), cls.byte_ify(value)) for key, value in inputs.iteritems())
-            elif isinstance(inputs, dict) and not ignore_dicts:
-                return {cls.byte_ify(key, ignore_dicts=True): cls.byte_ify(value, ignore_dicts=True) for key, value in
-                        inputs.iteritems()}
+    def byte_ify(cls, inputs, ignore_dicts=False):  # https://stackoverflow.com/a/33571117
+        if isinstance(inputs, unicode):
+            return inputs.encode('utf-8')
+        elif isinstance(inputs, list):
+            return [cls.byte_ify(element, ignore_dicts=True) for element in inputs]
+        elif isinstance(inputs, tuple):
+            return tuple(cls.byte_ify(element, ignore_dicts=True) for element in inputs)
+        elif isinstance(inputs, OrderedDict):  # can't use object_hook and object_pairs_hook at the same time
+            return OrderedDict((cls.byte_ify(key), cls.byte_ify(value)) for key, value in inputs.iteritems())
+        elif isinstance(inputs, dict) and not ignore_dicts:
+            return {cls.byte_ify(key, ignore_dicts=True): cls.byte_ify(value, ignore_dicts=True) for key, value in
+                    inputs.iteritems()}
         return inputs
 
     @classmethod
