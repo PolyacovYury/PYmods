@@ -309,7 +309,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 if selectedData[team][xmlName] is None or (
                         selectedData[team][xmlName] and selectedData[team][xmlName] not in self.modelsData['models']):
                     selectedData[team][xmlName] = next(
-                        (sName for sName in self.modelsData['models'] if xmlName in self.settings[sName]['whitelist']
+                        (sName for sName in sorted(self.modelsData['models']) if xmlName in self.settings[sName]['whitelist']
                          and self.settings[sName][team]), None) or ''
         loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True, quiet=quiet)
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
