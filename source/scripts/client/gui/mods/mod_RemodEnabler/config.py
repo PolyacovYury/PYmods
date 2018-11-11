@@ -45,7 +45,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.teams = ('player', 'ally', 'enemy')
         self.settings = {}
-        self.modelsData = {'enabled': True, 'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}}}
+        self.modelsData = {'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}}}
         self.isModAdded = False
         self.collisionMode = 0
         self.isInHangar = False
@@ -138,7 +138,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
         if self.isModAdded:
-            kwargs = dict(id='RemodEnablerUI', enabled=self.data['enabled'])
+            kwargs = dict(id='RemodEnablerUI', enabled=self.data['enabled'] and bool(self.modelsData['models']))
             try:
                 BigWorld.g_modsListApi.updateModification(**kwargs)
             except AttributeError:
@@ -208,7 +208,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings()
-        self.modelsData['enabled'] = False
         self.settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
         self.modelsData['selected'] = selectedData = loadJson(
             self.ID, 'remodsCache', self.modelsData['selected'], self.configPath)
@@ -300,7 +299,6 @@ class ConfigInterface(PYmodsConfigInterface):
         if not self.modelsData['models']:
             if not quiet:
                 print self.ID + ': no configs found, model module standing down.'
-            self.modelsData['enabled'] = False
         for team in self.teams:
             for xmlName in selectedData[team].keys():
                 if xmlName not in remodTanks:
@@ -320,7 +318,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def findModelDesc(self, xmlName, currentTeam, notForPreview=True):
         modelDesc = None
-        if not self.modelsData['enabled']:
+        if not self.modelsData['models']:
             return modelDesc
         selected = self.modelsData['selected'][currentTeam]
         if not self.previewRemod or notForPreview:
@@ -341,7 +339,7 @@ class ConfigInterface(PYmodsConfigInterface):
                          ScopeTemplates.GLOBAL_SCOPE, False))
         kwargs = dict(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
-            icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'] and self.modelsData['enabled'],
+            icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'] and bool(self.modelsData['models']),
             login=True, lobby=True, callback=lambda: (
                     g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
                     or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI'))))
@@ -354,7 +352,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def lobbyKeyControl(self, event):
         if not event.isKeyDown() or self.isMSAWindowOpen:
             return
-        if self.modelsData['enabled'] and not self.previewRemod:
+        if self.modelsData['models'] and not self.previewRemod:
             if checkKeys(self.data['ChangeViewHotkey']):
                 newModeNum = (self.teams.index(self.currentTeam) + 1) % len(self.teams)
                 self.currentTeam = self.teams[newModeNum]
