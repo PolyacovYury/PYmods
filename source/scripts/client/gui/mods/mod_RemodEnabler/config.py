@@ -198,6 +198,8 @@ class ConfigInterface(PYmodsConfigInterface):
                 if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key or (
                         key == 'engine' and isinstance(val, dict)):  # engine is dict in old config and string in nre
                     continue
+                elif key == 'gun':
+                    val = OrderedDict((k, v) for k, v in val.iteritems() if 'ffect' not in k)
                 elif key == 'hull':
                     if 'exhaust' in val and 'nodes' in val['exhaust'] and isinstance(val['exhaust']['nodes'], basestring):
                         val['exhaust']['nodes'] = val['exhaust']['nodes'].split()
