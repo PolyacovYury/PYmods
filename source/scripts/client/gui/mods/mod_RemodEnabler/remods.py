@@ -23,7 +23,7 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
         if key not in chassis_params or not isinstance(config[key], basestring):
             if 'wwsound' not in key:  # sounds are obsolete
                 new_config[key] = config[key]
-            if key == 'AODecals':
+            if key == 'AODecals' and config[key] and isinstance(config[key][0], dict):
                 new_config[key] = [[row for row in decal['transform'].values()] for decal in config[key]]
             continue  # config already converted
         obj = eval(config[key])
