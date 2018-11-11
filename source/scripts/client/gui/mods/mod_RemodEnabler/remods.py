@@ -71,6 +71,7 @@ def apply(vDesc, modelDesc):
     for key in chassis_params:
         obj = modelDesc['chassis'][key]
         if key == 'traces':
+            obj['size'] = tuple(obj['size'])
             obj = Traces(**obj)
         elif key == 'tracks':
             obj = TrackMaterials(**obj)
