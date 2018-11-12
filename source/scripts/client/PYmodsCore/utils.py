@@ -12,7 +12,7 @@ from . import overrideMethod
 
 MAX_CHAT_MESSAGE_LENGTH = 220
 __all__ = ['pickRandomPart', 'sendMessage', 'sendChatMessage', 'remDups', 'checkKeys', 'refreshCurrentVehicle', 'Analytics',
-           'Sound', 'showConfirmDialog', 'showI18nDialog', 'showInfoDialog']
+           'Sound', 'showConfirmDialog', 'showI18nDialog', 'showInfoDialog', 'PYViewTools']
 
 
 def pickRandomPart(variantList, lastRandId, doNext=False):
@@ -316,3 +316,19 @@ class Sound(object):
         if self.__sndTick:
             self.__sndTick.stop()
         self.__isPlaying = False
+
+
+class PYViewTools:
+    @staticmethod
+    def objToDict(obj):
+        if isinstance(obj, list):
+            return [PYViewTools.objToDict(o) for o in obj]
+        elif hasattr(obj, 'toDict'):
+            return {k: PYViewTools.objToDict(v) for k, v in obj.toDict().iteritems()}
+        else:
+            return obj
+
+    @staticmethod
+    def py_printLog(*args):
+        for arg in args:
+            print arg

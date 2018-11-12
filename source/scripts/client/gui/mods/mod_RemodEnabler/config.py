@@ -6,7 +6,7 @@ import glob
 import os
 import traceback
 from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, showI18nDialog, overrideMethod, \
-    remDups
+    remDups, PYViewTools
 from PYmodsCore.config.json_reader import JSONLoader as cls
 from collections import OrderedDict
 from gui import InputHandler, SystemMessages
@@ -400,18 +400,10 @@ class ConfigInterface(PYmodsConfigInterface):
             refreshCurrentVehicle()
 
 
-class RemodEnablerUI(AbstractWindowView):
+class RemodEnablerUI(AbstractWindowView, PYViewTools):
     def _populate(self):
         super(self.__class__, self)._populate()
         self.newRemodData = OrderedDict()
-
-    def objToDict(self, obj):
-        if isinstance(obj, list):
-            return [self.objToDict(o) for o in obj]
-        elif hasattr(obj, 'toDict'):
-            return {k: self.objToDict(v) for k, v in obj.toDict().iteritems()}
-        else:
-            return obj
 
     def py_onRequestSettings(self):
         g_config.readCurrentSettings(not g_config.data['isDebug'])
@@ -600,11 +592,6 @@ class RemodEnablerUI(AbstractWindowView):
     def onWindowClose(self):
         self.py_onModelRestore()
         self.destroy()
-
-    @staticmethod
-    def py_printLog(*args):
-        for arg in args:
-            print arg
 
 
 def inj_hkKeyEvent(event):

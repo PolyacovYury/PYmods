@@ -11,7 +11,7 @@ from .. import g_config
 
 
 def skins_find(curVehName, currentTeam, skinType):
-    if not g_config.skinsData['enabled']:
+    if not g_config.skinsData['models']:
         return
     for curSName in g_config.skinsData['priorities'][skinType][currentTeam]:
         curPRecord = g_config.skinsData['models'][curSName]
@@ -72,7 +72,7 @@ def vDesc_process(vehicleID, vDesc, mode):
     message = None
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
     vehDefNation = vDesc.chassis.hitTester.bspModelName.split('/')[1]
-    if g_config.skinsData['found']:
+    if g_config.skinsData['models']:
         if vehNation == vehDefNation:
             dynamicDesc = skins_find(vehName, currentTeam, 'dynamic')
             if dynamicDesc is not None:

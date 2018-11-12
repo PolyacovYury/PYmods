@@ -28,15 +28,8 @@ from zipfile import ZipFile
 from . import g_config
 
 
-def skinsPresenceCheck():
-    dirSect = ResMgr.openSection('vehicles/skins/textures/')
-    if dirSect is not None and dirSect.keys():
-        g_config.skinsData['found'] = True
-
-
 texReplaced = False
 skinsChecked = False
-skinsPresenceCheck()
 clientIsNew = True
 skinsModelsMissing = True
 needToReReadSkinsModels = False
@@ -144,8 +137,7 @@ def skinCRC32All(callback):
     CRC32cache = g_config.skinsCache['CRC32']
     skinsPath = 'vehicles/skins/textures/'
     dirSect = ResMgr.openSection(skinsPath)
-    if dirSect is not None and dirSect.keys():
-        g_config.skinsData['found'] = True
+    if dirSect is not None and dirSect.keys() and g_config.skinsData['models']:
         print g_config.ID + ': listing', skinsPath, 'for CRC32'
         g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
         CRC32 = 0
@@ -251,14 +243,15 @@ def modelsCheck(callback):
             print g_config.ID + ': skins models dir is empty'
     else:
         print g_config.ID + ': skins models dir not found'
-    needToReReadSkinsModels = g_config.skinsData['found'] and (clientIsNew or skinsModelsMissing or texReplaced)
-    if g_config.skinsData['found'] and clientIsNew:
+    found = bool(g_config.skinsData['models'])
+    needToReReadSkinsModels = found and (clientIsNew or skinsModelsMissing or texReplaced)
+    if found and clientIsNew:
         if os.path.isdir(modelsDir):
             yield rmtree(modelsDir)
         g_config.skinsCache['version'] = getClientVersion()
-    if g_config.skinsData['found'] and not os.path.isdir(modelsDir):
+    if found and not os.path.isdir(modelsDir):
         os.makedirs(modelsDir)
-    elif not g_config.skinsData['found'] and os.path.isdir(modelsDir):
+    elif not found and os.path.isdir(modelsDir):
         print g_config.ID + ': no skins found, deleting', modelsDir
         yield rmtree(modelsDir)
     elif texReplaced and os.path.isdir(modelsDir):
@@ -375,7 +368,7 @@ def processMember(memberFileName, skinName):
 @process
 def skinLoader(loginView):
     global skinsChecked
-    if g_config.data['enabled'] and g_config.skinsData['found'] and not skinsChecked:
+    if g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
             lobbyApp.loadView(SFViewLoadParams('SkinnerLoading'))
@@ -400,7 +393,7 @@ def skinLoader(loginView):
 def new_Login_populate(base, self):
     base(self)
     if g_config.data['enabled']:
-        if g_config.skinsData['found'] and not skinsChecked:
+        if g_config.skinsData['models'] and not skinsChecked:
             self.as_setDefaultValuesS({
                 'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
                 'memberMeVisible': self._loginMode.rememberPassVisible,
