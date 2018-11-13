@@ -325,6 +325,8 @@ class PYViewTools:
             return [PYViewTools.objToDict(o) for o in obj]
         elif hasattr(obj, 'toDict'):
             return {k: PYViewTools.objToDict(v) for k, v in obj.toDict().iteritems()}
+        elif isinstance(obj, dict):  # just in case
+            return {k: PYViewTools.objToDict(v) for k, v in obj.iteritems()}
         else:
             return obj
 

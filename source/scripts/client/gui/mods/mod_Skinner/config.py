@@ -3,7 +3,7 @@ import BigWorld
 import Keys
 import ResMgr
 import traceback
-from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, PYViewTools
+from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, PYViewTools, showI18nDialog
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
@@ -61,6 +61,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_useFor_ally_text': 'Allies',
             'UI_flash_useFor_enemy_text': 'Enemies',
             'UI_flash_saveBtn': 'Save',
+            'UI_flash_unsaved_header': 'Unsaved settings',
+            'UI_flash_unsaved_text': 'Unsaved setting changes detected. Do you want to save them?',
             'UI_loading_autoLogin': 'Log in afterwards',
             'UI_loading_autoLogin_cancel': 'Cancel auto login',
             'UI_loading_done': ' Done!',
@@ -239,6 +241,17 @@ class SkinnerUI(AbstractWindowView, PYViewTools):
         texts = {k[9:]: v for k, v in g_config.i18n.iteritems() if k.startswith('UI_flash_')}
         settings = {'skins': g_config.settings, 'priorities': g_config.skinsData['priorities']}
         self.flashObject.as_updateData(texts, settings)
+
+    def py_checkSettings(self, settings):
+        settings = self.objToDict(settings)
+        if g_config.settings != settings['skins'] or g_config.skinsData['priorities'] != settings['priorities']:
+            showI18nDialog(
+                g_config.i18n['UI_flash_unsaved_header'], g_config.i18n['UI_flash_unsaved_text'], 'common/confirm',
+                lambda confirm: (
+                    (self.py_onSaveSettings(settings) if confirm else None), self.flashObject.as_onSettingsChecked()))
+            return False
+        else:
+            return True
 
     def py_onSaveSettings(self, settings):
         settings = self.objToDict(settings)
