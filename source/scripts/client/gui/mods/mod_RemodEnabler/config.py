@@ -417,6 +417,18 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
         texts = {k[9:]: v for k, v in g_config.i18n.iteritems() if k.startswith('UI_flash_')}
         self.flashObject.as_updateData(texts, g_config.settings, g_config.modelsData['selected'])
 
+    def py_checkSettings(self, settings, cache):
+        settings = self.objToDict(settings)
+        cache = self.objToDict(cache)
+        if g_config.settings != settings or g_config.modelsData['selected'] != cache:
+            showI18nDialog(
+                g_config.i18n['UI_flash_unsaved_header'], g_config.i18n['UI_flash_unsaved_text'], 'common/confirm',
+                lambda confirm: (
+                    (self.py_onSaveSettings(settings, cache) if confirm else None), self.flashObject.as_onSettingsChecked()))
+            return False
+        else:
+            return True
+
     def py_getRemodData(self):
         vehName = self.py_getCurrentVehicleName()
         if vehName:
@@ -530,15 +542,11 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
             g_config.i18n['UI_flash_WLVehDelete_header'], g_config.i18n['UI_flash_WLVehDelete_text'], 'common/confirm',
             partial(self.flashObject.as_onRemodDeleteConfirmed, remodName))
 
-    def py_onSaveSettings(self, settings):
-        remodNames = sorted(g_config.modelsData['models'])
-        for idx, setObj in enumerate(settings.remods):
-            modelsSettings = g_config.settings['remods'][remodNames[idx]]
-            for key in ('player', 'ally', 'enemy'):
-                modelsSettings['swap' + key.capitalize()] = getattr(setObj.useFor, key)
-            for teamIdx, team in enumerate(('player', 'ally', 'enemy')):
-                modelsSettings[team + 'Whitelist'] = ','.join(setObj.whitelists[teamIdx])
-        loadJson(g_config.ID, 'settings', g_config.settings, g_config.configPath, True, quiet=not g_config.data['isDebug'])
+    def py_onSaveSettings(self, settings, cache):
+        g_config.settings = settings = self.objToDict(settings)
+        g_config.modelsData['selected'] = cache = self.objToDict(cache)
+        loadJson(g_config.ID, 'remodsCache', cache, g_config.configPath, True, quiet=not g_config.data['isDebug'])
+        loadJson(g_config.ID, 'settings', settings, g_config.configPath, True, quiet=not g_config.data['isDebug'])
         g_config.readCurrentSettings(not g_config.data['isDebug'])
         refreshCurrentVehicle()
 
