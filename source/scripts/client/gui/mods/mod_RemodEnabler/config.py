@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from functools import partial
+
 import BigWorld
 import Keys
 import Math
@@ -29,9 +31,7 @@ from . import __date__, __modID__
 class ConfigInterface(PYmodsConfigInterface):
     hangarSpace = dependency.descriptor(IHangarSpace)
     modelDescriptor = property(lambda self: {
-            'name': '',
-            'message': '',
-            'whitelist': [],
+            'name': '', 'message': '', 'whitelist': [],
             'chassis': {'undamaged': '', 'AODecals': [], 'hullPosition': [], 'soundID': ''},
             'hull': {'undamaged': '', 'emblemSlots': [], 'exhaust': {'nodes': [], 'pixie': ''},
                      'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
@@ -93,13 +93,14 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_useFor_ally_text': 'Allies',
             'UI_flash_useFor_enemy_text': 'Enemies',
             'UI_flash_WLVehDelete_header': 'Confirmation',
-            'UI_flash_WLVehDelete_text': 'Are you sure you want to delete this vehicle from this whitelist?',
+            'UI_flash_WLVehDelete_text': 'Are you sure you want to disable this remod for this vehicle?',
             'UI_flash_vehicleDelete_success': 'Vehicle deleted from whitelist: ',
             'UI_flash_vehicleAdd_success': 'Vehicle added to whitelist: ',
             'UI_flash_vehicleAdd_dupe': 'Vehicle already in whitelist: ',
             'UI_flash_vehicleAdd_notSupported': 'Vehicle is not supported by RemodEnabler.',
             'UI_flash_backBtn': 'Back',
             'UI_flash_saveBtn': 'Save',
+            'UI_flash_notFound': '(nothing found)',
             'UI_setting_isDebug_text': 'Enable extended log printing',
             'UI_setting_isDebug_tooltip': 'If enabled, your python.log will be harassed with mod\'s debug information.',
             'UI_setting_ChangeViewHotkey_text': 'View mode switch hotkey',
@@ -138,7 +139,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
         if self.isModAdded:
-            kwargs = dict(id='RemodEnablerUI', enabled=self.data['enabled'] and bool(self.modelsData['models']))
+            kwargs = dict(id='RemodEnablerUI', enabled=self.data['enabled'])
             try:
                 BigWorld.g_modsListApi.updateModification(**kwargs)
             except AttributeError:
@@ -339,8 +340,7 @@ class ConfigInterface(PYmodsConfigInterface):
                          ScopeTemplates.GLOBAL_SCOPE, False))
         kwargs = dict(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
-            icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'] and bool(self.modelsData['models']),
-            login=True, lobby=True, callback=lambda: (
+            icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=False, lobby=True, callback=lambda: (
                     g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
                     or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI'))))
         try:
@@ -403,44 +403,19 @@ class ConfigInterface(PYmodsConfigInterface):
 class RemodEnablerUI(AbstractWindowView, PYViewTools):
     def _populate(self):
         super(self.__class__, self)._populate()
+        g_config.hangarSpace.onVehicleChanged += self.onVehicleReloaded
         self.newRemodData = OrderedDict()
+
+    def _dispose(self):
+        g_config.hangarSpace.onVehicleChanged -= self.onVehicleReloaded
+
+    def onVehicleReloaded(self):
+        self.flashObject.as_onVehicleReloaded(self.py_getCurrentVehicleName())
 
     def py_onRequestSettings(self):
         g_config.readCurrentSettings(not g_config.data['isDebug'])
-        texts = {
-            'header': {
-                'main': g_config.i18n['UI_flash_header'],
-                'remodSetup': g_config.i18n['UI_flash_remodSetupBtn'],
-                'remodCreate': g_config.i18n['UI_flash_remodCreateBtn']},
-            'remodSetupBtn': g_config.i18n['UI_flash_remodSetupBtn'],
-            'remodCreateBtn': g_config.i18n['UI_flash_remodCreateBtn'],
-            'create': {'name': g_config.tb.createLabel('remodCreate_name', 'flash'),
-                       'message': g_config.tb.createLabel('remodCreate_message', 'flash')},
-            'teams': [g_config.i18n['UI_flash_team_' + team] for team in ('player', 'ally', 'enemy')],
-            'remodNames': [],
-            'whiteList': {'addBtn': g_config.i18n['UI_flash_whiteList_addBtn'],
-                          'label': g_config.tb.createLabel('whiteList_header', 'flash'),
-                          'defStr': g_config.i18n['UI_flash_whiteDropdown_default']},
-            'useFor': {'header': g_config.tb.createLabel('useFor_header', 'flash'),
-                       'ally': g_config.tb.createLabel('useFor_ally', 'flash'),
-                       'enemy': g_config.tb.createLabel('useFor_enemy', 'flash'),
-                       'player': g_config.tb.createLabel('useFor_player', 'flash')},
-            'backBtn': g_config.i18n['UI_flash_backBtn'],
-            'saveBtn': g_config.i18n['UI_flash_saveBtn']
-        }
-        settings = {
-            'remods': [],
-            'isInHangar': g_config.isInHangar
-        }
-        for sname in sorted(g_config.modelsData['models']):
-            modelsSettings = g_config.settings['remods'][sname]
-            texts['remodNames'].append(sname)
-            # noinspection PyTypeChecker
-            settings['remods'].append({
-                'useFor': {key: modelsSettings['swap' + key.capitalize()] for key in ('player', 'ally', 'enemy')},
-                'whitelists': [[x for x in str(modelsSettings[team + 'Whitelist']).split(',') if x]
-                               for team in ('player', 'ally', 'enemy')]})
-        self.flashObject.as_updateData(texts, settings)
+        texts = {k[9:]: v for k, v in g_config.i18n.iteritems() if k.startswith('UI_flash_')}
+        self.flashObject.as_updateData(texts, g_config.settings, g_config.modelsData['selected'])
 
     def py_getRemodData(self):
         vehName = self.py_getCurrentVehicleName()
@@ -529,8 +504,8 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                     'whitelists': [[vehName] if vehName else [] for _ in ('player', 'ally', 'enemy')]}
 
     @staticmethod
-    def py_onShowRemod(remodIdx):
-        g_config.previewRemod = sorted(g_config.modelsData['models'])[remodIdx]
+    def py_onShowRemod(remodName):
+        g_config.previewRemod = remodName
         refreshCurrentVehicle()
 
     def py_onModelRestore(self):
@@ -550,8 +525,12 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
             g_config.i18n['UI_flash_WLVehDelete_header'], g_config.i18n['UI_flash_WLVehDelete_text'], 'common/confirm',
             lambda proceed: self.flashObject.as_onVehicleDeleteConfirmed(proceed, teamIdx))
 
+    def py_onRequestRemodDelete(self, remodName):
+        showI18nDialog(
+            g_config.i18n['UI_flash_WLVehDelete_header'], g_config.i18n['UI_flash_WLVehDelete_text'], 'common/confirm',
+            partial(self.flashObject.as_onRemodDeleteConfirmed, remodName))
+
     def py_onSaveSettings(self, settings):
-        print self.objToDict(settings)
         remodNames = sorted(g_config.modelsData['models'])
         for idx, setObj in enumerate(settings.remods):
             modelsSettings = g_config.settings['remods'][remodNames[idx]]
