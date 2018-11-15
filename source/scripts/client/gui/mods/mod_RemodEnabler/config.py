@@ -511,7 +511,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                     'temp_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)
                 traceback.print_exc()
         else:
-            self.py_sendMessage('', 'Add', 'notSupported')
+            self.py_sendMessage('', '', 'vehicleAdd', 'notSupported')
         modelDesc = getattr(self.getCurrentVDesc(), 'modelDesc', None)
         if modelDesc is not None:
             return {'isRemod': True, 'name': modelDesc.name, 'message': modelDesc.authorMessage, 'vehicleName': vehName,
