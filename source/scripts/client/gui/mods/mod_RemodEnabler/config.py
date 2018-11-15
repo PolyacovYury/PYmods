@@ -411,7 +411,11 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
         g_config.hangarSpace.onVehicleChanged -= self.onVehicleReloaded
 
     def onVehicleReloaded(self):
-        self.flashObject.as_onVehicleReloaded(self.py_getCurrentVehicleName())
+        vehicleName = self.py_getCurrentVehicleName()
+        if vehicleName is not None:
+            self.flashObject.as_onVehicleReloaded(vehicleName)
+        else:
+            self.flashObject.onWindowCloseS()
 
     def py_onRequestSettings(self):
         g_config.readCurrentSettings(not g_config.data['isDebug'])
@@ -531,17 +535,21 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
 
     @staticmethod
     def py_getCurrentVehicleName():
-        return RemodEnablerUI.getCurrentVDesc().name.split(':')[1].lower()
+        vDesc = RemodEnablerUI.getCurrentVDesc()
+        if vDesc is not None:
+            return RemodEnablerUI.getCurrentVDesc().name.split(':')[1].lower()
+        else:
+            return None
 
     def py_onRequestVehicleDelete(self, teamIdx):
         showI18nDialog(
             g_config.i18n['UI_flash_WLVehDelete_header'], g_config.i18n['UI_flash_WLVehDelete_text'], 'common/confirm',
             lambda proceed: self.flashObject.as_onVehicleDeleteConfirmed(proceed, teamIdx))
 
-    def py_onRequestRemodDelete(self, remodName):
+    def py_onRequestRemodDelete(self, vehicleName, remodName):
         showI18nDialog(
             g_config.i18n['UI_flash_WLVehDelete_header'], g_config.i18n['UI_flash_WLVehDelete_text'], 'common/confirm',
-            partial(self.flashObject.as_onRemodDeleteConfirmed, remodName))
+            partial(self.flashObject.as_onRemodDeleteConfirmed, vehicleName, remodName))
 
     def py_onSaveSettings(self, settings, cache):
         g_config.settings = settings = self.objToDict(settings)
