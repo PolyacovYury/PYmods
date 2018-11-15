@@ -556,7 +556,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
             data = self.newRemodData
             data['message'] = settings.message
             for team in g_config.teams:
-                data['team'] = getattr(settings, team)
+                data[team] = getattr(settings, team)
             data['whitelist'] = settings.whitelist
             loadJson(g_config.ID, str(settings.name), data, g_config.configPath + 'remods/', True, False, sort_keys=False)
             g_config.readCurrentSettings()
