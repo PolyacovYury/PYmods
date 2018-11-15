@@ -200,9 +200,10 @@ class ConfigInterface(PYmodsConfigInterface):
             new_conf['message'] = old_conf.get('authorMessage', old_conf.get('message', ''))
             self.migrateSettings(old_conf, new_conf)
             for key, val in old_conf.items():
-                if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key or (
-                        key == 'engine' and isinstance(val, dict)):  # engine is dict in old config and string in nre
+                if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key:
                     continue
+                elif key == 'engine':
+                    val = OrderedDict((k, v) for k, v in val.iteritems() if 'wwsound' not in k)
                 elif key == 'gun':
                     val = OrderedDict((k, v) for k, v in val.iteritems() if 'ffect' not in k)
                 elif key == 'hull':
