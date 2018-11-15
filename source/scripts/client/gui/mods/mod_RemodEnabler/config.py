@@ -101,6 +101,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_backBtn': 'Back',
             'UI_flash_advancedBtn': 'Advanced',
             'UI_flash_saveBtn': 'Save',
+            'UI_flash_unsaved_header': 'Unsaved settings',
+            'UI_flash_unsaved_text': 'Unsaved setting changes detected. Do you want to save them?',
             'UI_flash_notFound': '(nothing found)',
             'UI_setting_isDebug_text': 'Enable extended log printing',
             'UI_setting_isDebug_tooltip': 'If enabled, your python.log will be harassed with mod\'s debug information.',
