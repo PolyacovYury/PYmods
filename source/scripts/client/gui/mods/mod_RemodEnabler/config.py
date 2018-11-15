@@ -93,9 +93,10 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_WLVehDelete_text': 'Are you sure you want to disable this remod for this vehicle?',
             'UI_flash_vehicleDelete_success': 'Vehicle deleted from whitelist: ',
             'UI_flash_remodAdd_success': 'Remod <b>%s</b> installed on <b>%s</b>.',
-            'UI_flash_vehicleAdd_success': 'Vehicle added to whitelist: ',
-            'UI_flash_vehicleAdd_dupe': 'Vehicle already in whitelist: ',
-            'UI_flash_vehicleAdd_notSupported': 'Vehicle is not supported by RemodEnabler.',
+            'UI_flash_vehicleAdd_success': 'Vehicle added to <b>%s</b> whitelist: <b>%s</b>',
+            'UI_flash_vehicleAdd_dupe': 'Vehicle already in <b>%s</b> whitelist: <b>%s</b>',
+            'UI_flash_vehicleAdd_notSupported':
+                'Vehicle%s can\'t be added to <b>%s</b> whitelist: is not supported by RemodEnabler.',
             'UI_flash_addBtn': 'Add',
             'UI_flash_removeBtn': 'Remove',
             'UI_flash_backBtn': 'Back',
@@ -505,10 +506,11 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
         modelDesc = getattr(self.getCurrentVDesc(), 'modelDesc', None)
         if modelDesc is not None:
             return {'isRemod': True, 'name': modelDesc['name'], 'message': modelDesc['message'], 'vehicleName': vehName,
-                    'whitelist': modelDesc['whitelist']}
+                    'whitelist': modelDesc['whitelist'], 'ally': modelDesc['ally'], 'enemy': modelDesc['enemy'],
+                    'player': modelDesc['player']}
         else:
-            return {'isRemod': False, 'name': '', 'message': '', 'vehicleName': vehName,
-                    'whitelist': [vehName] if vehName else []}
+            return {'isRemod': False, 'name': '', 'message': '', 'vehicleName': vehName, 'ally': False, 'enemy': False,
+                    'player': True, 'whitelist': [vehName] if vehName else []}
 
     @staticmethod
     def py_onShowRemod(remodName):
