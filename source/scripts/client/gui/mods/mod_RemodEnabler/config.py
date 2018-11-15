@@ -440,50 +440,42 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
             try:
                 data = self.newRemodData
                 data.clear()
-                data['authorMessage'] = ''
-                for team in ('player', 'ally', 'enemy'):
-                    data[team + 'Whitelist'] = [vehName] if vehName else []
+                data['message'] = ''
+                for team in g_config.teams:
+                    data[team] = True
+                data['whitelist'] = [vehName] if vehName else []
                 vDesc = self.getCurrentVDesc()
                 for key in TankPartNames.ALL + ('engine',):
                     data[key] = OrderedDict()
                 for key in TankPartNames.ALL:
                     data[key]['undamaged'] = getattr(vDesc, key).models.undamaged
                 chassis = data['chassis']
+                from .remods import _asdict
                 for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
                     obj = getattr(vDesc.chassis, key)
-                    if key != 'splineDesc':
-                        obj = str(obj)
-                        if key == 'tracks':
-                            obj = obj.replace('TrackNode', 'TrackMaterials')
-                        elif key == 'trackParams':
-                            obj = obj.replace('TrackNode', 'TrackParams')
-                    else:
-                        obj = 'SplineConfig(%s)' % (', '.join(
-                            ("%s=%s" % (attrName.strip('_'), repr(getattr(obj, attrName.strip('_')))) for attrName in
-                             SplineConfig.__slots__)))
+                    if key == 'traces':
+                        obj = obj._replace(size=list(obj.size))
+                    obj = _asdict(obj)
+                    keys = ()
+                    if key == 'wheels':
+                        keys = ('groups', 'wheels')
+                    elif key in ('groundNodes', 'trackNodes'):
+                        keys = ('nodes', 'groups')
+                    for sub in keys:
+                        obj[sub] = list(obj[sub])
+                        for idx, value in enumerate(obj[sub]):
+                            obj[sub][idx] = _asdict(value)
                     chassis[key] = obj
                 chassis['hullPosition'] = vDesc.chassis.hullPosition.tuple()
-                chassis['AODecals'] = []
-                for decal in vDesc.chassis.AODecals:
-                    decDict = {'transform': OrderedDict()}
-                    for strIdx in xrange(4):
-                        decDict['transform']['row%s' % strIdx] = []
-                        for colIdx in xrange(3):
-                            decDict['transform']['row%s' % strIdx].append(decal.get(strIdx, colIdx))
-                for partName in ('chassis', 'engine'):
-                    for key in ('wwsound', 'wwsoundPC', 'wwsoundNPC'):
-                        data[partName][key] = getattr(getattr(vDesc, partName).sounds, key)
+                chassis['AODecals'] = [[[decal.get(strIdx, colIdx) for colIdx in xrange(3)] for strIdx in xrange(4)] for decal in vDesc.chassis.AODecals]
+                for partName in ('gun', 'chassis', 'engine'):
+                    data[partName]['soundID'] = getattr(vDesc, partName).name
                 pixieID = ''
                 for key, value in g_cache._customEffects['exhaust'].iteritems():
                     if value == vDesc.hull.customEffects[0]._selectorDesc:
                         pixieID = key
                         break
-                data['hull']['exhaust'] = {'nodes': ' '.join(vDesc.hull.customEffects[0].nodes), 'pixie': pixieID}
-                for ids in (('_gunEffects', 'effects'), ('_gunReloadEffects', 'reloadEffect')):
-                    for key, value in getattr(g_cache, ids[0]).items():
-                        if value == getattr(vDesc.gun, ids[1]):
-                            data['gun'][ids[1]] = key
-                            break
+                data['hull']['exhaust'] = {'nodes': list(vDesc.hull.customEffects[0].nodes), 'pixie': pixieID}
                 exclMask = vDesc.type.camouflage.exclusionMask
                 if exclMask:
                     camouflage = data['camouflage'] = OrderedDict()
@@ -500,7 +492,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                     for slot in part.emblemSlots:
                         slotDict = OrderedDict()
                         for key in ('rayStart', 'rayEnd', 'rayUp'):
-                            slotDict[key] = getattr(slot, key).tuple()
+                            slotDict[key] = list(getattr(slot, key).tuple())
                         for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId'):
                             slotDict[key] = getattr(slot, key)
                         data[partName]['emblemSlots'].append(slotDict)
@@ -512,13 +504,11 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
             self.py_sendMessage('', '', 'vehicleAdd', 'notSupported')
         modelDesc = getattr(self.getCurrentVDesc(), 'modelDesc', None)
         if modelDesc is not None:
-            return {'isRemod': True, 'name': modelDesc.name, 'message': modelDesc.authorMessage, 'vehicleName': vehName,
-                    'whitelists': [
-                        [x for x in str(g_config.settings['remods'][modelDesc.name][team + 'Whitelist']).split(',')
-                         if x] for team in ('player', 'ally', 'enemy')]}
+            return {'isRemod': True, 'name': modelDesc['name'], 'message': modelDesc['message'], 'vehicleName': vehName,
+                    'whitelist': modelDesc['whitelist']}
         else:
             return {'isRemod': False, 'name': '', 'message': '', 'vehicleName': vehName,
-                    'whitelists': [[vehName] if vehName else [] for _ in ('player', 'ally', 'enemy')]}
+                    'whitelist': [vehName] if vehName else []}
 
     @staticmethod
     def py_onShowRemod(remodName):
@@ -562,9 +552,10 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                 return
             from collections import OrderedDict
             data = self.newRemodData
-            data['authorMessage'] = settings.message
-            for teamIdx, team in enumerate(('player', 'ally', 'enemy')):
-                data[team + 'Whitelist'] = ','.join(settings.whitelists[teamIdx])
+            data['message'] = settings.message
+            for team in g_config.teams:
+                data['team'] = getattr(settings, team)
+            data['whitelist'] = settings.whitelist
             loadJson(g_config.ID, str(settings.name), data, g_config.configPath + 'remods/', True, False, sort_keys=False)
             g_config.readCurrentSettings()
             SystemMessages.pushMessage(
