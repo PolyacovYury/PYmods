@@ -416,8 +416,6 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
         vehicleName = self.py_getCurrentVehicleName()
         if vehicleName is not None:
             self.flashObject.as_onVehicleReloaded(vehicleName)
-        else:
-            self.flashObject.onWindowCloseS()
 
     def py_onRequestSettings(self):
         g_config.readCurrentSettings(not g_config.data['isDebug'])
