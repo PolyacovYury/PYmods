@@ -92,6 +92,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_WLVehDelete_header': 'Confirmation',
             'UI_flash_WLVehDelete_text': 'Are you sure you want to disable this remod for this vehicle?',
             'UI_flash_vehicleDelete_success': 'Vehicle deleted from whitelist: ',
+            'UI_flash_remodAdd_success': 'Remod <b>%s</b> installed on <b>%s</b>.',
             'UI_flash_vehicleAdd_success': 'Vehicle added to whitelist: ',
             'UI_flash_vehicleAdd_dupe': 'Vehicle already in whitelist: ',
             'UI_flash_vehicleAdd_notSupported': 'Vehicle is not supported by RemodEnabler.',
@@ -571,9 +572,9 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
             traceback.print_exc()
 
     @staticmethod
-    def py_sendMessage(xmlName, action, status):
+    def py_sendMessage(vehicleName, remodName, action, status):
         SystemMessages.pushMessage(
-            'temp_SM%s<b>%s</b>.' % (g_config.i18n['UI_flash_vehicle%s_%s' % (action, status)], xmlName),
+            'temp_SM' + g_config.i18n['UI_flash_%s_%s' % (action, status)] % (remodName, vehicleName),
             SystemMessages.SM_TYPE.CustomizationForGold)
 
     def onWindowClose(self):
