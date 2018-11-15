@@ -510,8 +510,9 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
         modelDesc = getattr(self.getCurrentVDesc(), 'modelDesc', None)
         if modelDesc is not None:
             return {'isRemod': True, 'name': modelDesc['name'], 'message': modelDesc['message'], 'vehicleName': vehName,
-                    'whitelist': modelDesc['whitelist'], 'ally': self.settings[modelDesc['name']]['ally'],
-                    'enemy': self.settings[modelDesc['name']]['enemy'], 'player': self.settings[modelDesc['name']]['player']}
+                    'whitelist': modelDesc['whitelist'], 'ally': g_config.settings[modelDesc['name']]['ally'],
+                    'enemy': g_config.settings[modelDesc['name']]['enemy'],
+                    'player': g_config.settings[modelDesc['name']]['player']}
         else:
             return {'isRemod': False, 'name': '', 'message': '', 'vehicleName': vehName, 'ally': False, 'enemy': False,
                     'player': True, 'whitelist': [vehName] if vehName else []}
