@@ -217,6 +217,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings()
         self.settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
+        self.modelsData['models'].clear()
         self.modelsData['selected'] = selectedData = loadJson(
             self.ID, 'remodsCache', self.modelsData['selected'], self.configPath)
         configsDir = self.configPath + 'remods/'
@@ -372,6 +373,8 @@ class ConfigInterface(PYmodsConfigInterface):
                 snameList = sorted(self.modelsData['models'].keys()) + ['']
                 selected = self.modelsData['selected'][curTankType]
                 vehName = RemodEnablerUI.py_getCurrentVehicleName()
+                if vehName not in selected:
+                    return
                 snameIdx = (snameList.index(selected[vehName]) + 1) % len(snameList)
                 for Idx in xrange(snameIdx, len(snameList) - 1):
                     curPRecord = self.modelsData['models'][snameList[Idx]]
