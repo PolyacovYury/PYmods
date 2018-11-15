@@ -543,11 +543,6 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
         else:
             return None
 
-    def py_onRequestVehicleDelete(self, teamIdx):
-        showI18nDialog(
-            g_config.i18n['UI_flash_WLVehDelete_header'], g_config.i18n['UI_flash_WLVehDelete_text'], 'common/confirm',
-            lambda proceed: self.flashObject.as_onVehicleDeleteConfirmed(proceed, teamIdx))
-
     def py_onRequestRemodDelete(self, vehicleName, remodName):
         showI18nDialog(
             g_config.i18n['UI_flash_WLVehDelete_header'], g_config.i18n['UI_flash_WLVehDelete_text'], 'common/confirm',
