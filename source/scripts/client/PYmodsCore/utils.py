@@ -247,8 +247,14 @@ class Analytics(object):
 
     def game_fini_hook(self):
         import game
-        old_fini = game.fini
-        game.fini = lambda: (self.end(), old_fini())
+
+        def new_fini(old_fini):
+            try:
+                self.end()
+            finally:
+                old_fini()
+
+        game.fini = partial(new_fini, game.fini)
 
     def analytics_start(self):
         from helpers import getClientLanguage
@@ -266,7 +272,7 @@ class Analytics(object):
             requestsPool.append(dict(template, ec='session', ea='keep'))
         for params in requestsPool:
             self.lastTime = BigWorld.time()
-            urllib2.urlopen(url='http://www.google-analytics.com/collect?', data=urllib.urlencode(params)).read()
+            urllib2.urlopen(url='https://www.google-analytics.com/collect?', data=urllib.urlencode(params)).read()
 
     # noinspection PyUnusedLocal
     def start(self, ctx):
@@ -285,7 +291,7 @@ class Analytics(object):
         if self.analytics_started:
             from helpers import getClientLanguage
             self.lang = str(getClientLanguage()).upper()
-            urllib2.urlopen(url='http://www.google-analytics.com/collect?',
+            urllib2.urlopen(url='https://www.google-analytics.com/collect?',
                             data=urllib.urlencode(dict(self.template(True), sc='end', ec='session', ea='end'))).read()
             self.analytics_started = False
 
