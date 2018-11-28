@@ -162,17 +162,18 @@ def new_construct(base, self):
     from gui.Scaleform.locale.RES_ICONS import RES_ICONS
     from gui.shared.formatters import text_styles, icons
     from gui.shared.items_parameters import formatters as params_formatters, bonus_helper
-    from gui.shared.utils.functions import stripColorTagDescrTags
+    from gui.shared.utils.functions import stripColorTagDescrTags, stripShortDescrTags
     from helpers.i18n import makeString as _ms
     from items import ITEM_TYPES
     if self.module.itemTypeID == ITEM_TYPES.optionalDevice:
         if bonus_helper.isSituationalBonus(self.module.name):
-            effectDesc = text_styles.bonusPreviewText(stripColorTagDescrTags(_ms(self.module.fullDescription)))
+            effectDesc = text_styles.bonusPreviewText(
+                stripShortDescrTags(stripColorTagDescrTags(_ms(self.module.fullDescription))))
             # noinspection PyArgumentEqualDefault
             icon = icons.makeImageTag(RES_ICONS.MAPS_ICONS_TOOLTIP_ASTERISK_OPTIONAL, 16, 16, 0, 4)
             desc = params_formatters.packSituationalIcon(effectDesc, icon)
         else:
-            desc = text_styles.bonusAppliedText(stripColorTagDescrTags(_ms(self.module.fullDescription)))
+            desc = text_styles.bonusAppliedText(stripShortDescrTags(stripColorTagDescrTags(_ms(self.module.fullDescription))))
         block[0]['data']['blocksData'][1]['data']['text'] = desc
     return block
 
