@@ -145,6 +145,7 @@ def pack_dir(dir, maxlevels=10, sdir=None, ddir=None, version_str=None, date=Non
 def pack_file(fullname, sdir=None, ddir=None, version_str=None, date=None, ix=None, ex=None, wc=None, force=0,
               mode=zipfile.ZIP_STORED, quiet=0):
     success = 1
+    printed = False
     if ix is not None:
         if not ix.search(fullname):
             return success
@@ -153,6 +154,7 @@ def pack_file(fullname, sdir=None, ddir=None, version_str=None, date=None, ix=No
             return success
     if not quiet:
         print 'Checking', fullname, '...'
+        printed = True
     try:
         with zipfile.ZipFile(fullname) as zf_orig:
             orig_infos_full = zf_orig.infolist()
@@ -168,8 +170,9 @@ def pack_file(fullname, sdir=None, ddir=None, version_str=None, date=None, ix=No
                         if search:
                             info.date_time = date
                             orig_folder = search.group()
-                            if quiet:
+                            if quiet and not printed:
                                 print 'Checking', fullname, '...'
+                                printed = True
                             print 'Updating versioned folder:', filename
                         info.filename = folder_ix_all.sub('mods/%s/' % version_str, filename)
             replaced = {}
@@ -206,9 +209,9 @@ def pack_file(fullname, sdir=None, ddir=None, version_str=None, date=None, ix=No
                             break
                 if identical:
                     return success
-                elif quiet:
+                elif quiet and not printed:
                     print 'Checking', fullname, '...'
-            elif not orig_folder and quiet:
+            elif not orig_folder and quiet and not printed:
                 print 'Checking', fullname, '...'
             orig_infos_noex = [x for x in orig_infos_full if x not in orig_infos]
             orig_datas_noex = [
