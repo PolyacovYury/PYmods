@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/audioww/valkirya1/voiceover.bnk": "res/res/audioww/valkirya1/voiceover.bnk",
+        "res/audioww/valkirya2/voiceover.bnk": "res/res/audioww/valkirya2/voiceover.bnk"
+    }
+}

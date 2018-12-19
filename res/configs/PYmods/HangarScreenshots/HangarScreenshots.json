@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "toggleKey": ["KEY_F11"],
+    "camKey": ["KEY_F12"],
+    "lockCamera": true,
+    "addUnlockMode": true
+}

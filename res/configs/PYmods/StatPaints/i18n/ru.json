@@ -1,0 +1,13 @@
+﻿{
+    "UI_description": "Стат-Покрасчик",
+    "UI_setting_colorScales_text": "Шкала цветов редактируется через конфиг-файл.",
+    "UI_setting_ignorePresentPaints_text": "Игнорировать купленные краски",
+    "UI_setting_ignorePresentPaints_tooltip": "Включено - машины будут перекрашены в соответствии со статистикой вне зависимости от установленной на нее раскраски или стилей.\nВыключено - если на машину установлена раскраска или стиль - она будет сохранена.",
+    "UI_setting_paint_chassis_text": "Шасси",
+    "UI_setting_paint_gun_text": "Орудия",
+    "UI_setting_paint_hull_text": "Корпуса",
+    "UI_setting_paint_turret_text": "Башни",
+    "UI_setting_parts_text": "Эти части машин будут перекрашены:",
+    "UI_setting_removeCamouflages_text": "Удалять камуфляжи с перекрашиваемых частей",
+    "UI_setting_removeCamouflages_tooltip": "Удалять камуфляжи с частей машин, которые будут перекрашены."
+}

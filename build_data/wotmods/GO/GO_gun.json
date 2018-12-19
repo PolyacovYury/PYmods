@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "meta.xml": "res/meta/GO_gun.xml",
+        "res/audioww/gun_GO.bnk": "res/res/audioww/gun_GO.bnk"
+    }
+}

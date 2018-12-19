@@ -1,0 +1,18 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/HangarPainter/HangarPainter.json": "res/configs/PYmods/HangarPainter/HangarPainter.json",
+        "mods/configs/PYmods/HangarPainter/i18n/en.json": "res/configs/PYmods/HangarPainter/i18n/en.json",
+        "mods/configs/PYmods/HangarPainter/i18n/ru.json": "res/configs/PYmods/HangarPainter/i18n/ru.json",
+        "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",
+        "mods/configs/PYmods/PYmodsGUI/i18n/ru.json": "res/configs/PYmods/PYmodsGUI/i18n/ru.json",
+        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/PYmods/HangarPainter.wotmod": "build/wotmods/PYmods/HangarPainter.wotmod",
+        "mods/{GAME_VERSION}/PYmods/PYSupport.wotmod": "build/wotmods/PYmods/PYSupport.wotmod",
+        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
+        "mods/{GAME_VERSION}/PYmods/i18n_Loader.wotmod": "build/wotmods/PYmods/i18n_Loader.wotmod",
+        "mods/{GAME_VERSION}/{modslistapi}": "res/wotmods/poliroid.modslistapi_1.1.4.wotmod",
+        "mods/{GAME_VERSION}/{vxSettingsApi}": "res/wotmods/polarfox.vxSettingsApi_1.8.7.wotmod"
+    }
+}

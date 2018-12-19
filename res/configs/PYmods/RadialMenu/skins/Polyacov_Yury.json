@@ -1,0 +1,541 @@
+{
+    "TankMenu": {
+        "default": [
+            {"title": "Из кустов",
+                "icon": "Support",
+                "text": "{randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "Печеньки! Печеньки!",
+                    "Высоко сижу, далеко гляжу!",
+                    "Всевидящее око наблюдает за вами",
+                    "Хрен вы меня найдете",
+                    "Иногда смотришь на таблицу игроков с оленеметром, и понимаешь, что все красные - враги",
+                    "Неловкое чувство это когда афэкашный танк получил опыта больше тебя",
+                    "Танкист ошибается дважды. В первый раз выручает аптечка",
+                    "Пацаны, а как в этой игрухе сохранятся? А то третьи сутки играю - спать хочу! Надо засейвиться перед Боссом",
+                    "Такое чувство, что х3 и х5 это не рейты на первую победу, а рейты на количество оленей в твоей команде.",
+                    "Если легкий танк хочет обнимашки, не будьте Вы такой черствой букой - дарите тепло!",
+                    "Играешь 15 на 15, а кажется что у врагов всё равно на 5 танков больше",
+                    "Если долго сидеть на САУ в засаде в ожидании колонны танков то на северной стороне башни вырастет мох...",
+                    "Иногда так и тянет отключить цензуру, чтобы посмотреть, угадал ты слово за звездочками или нет"
+                ]
+            },
+            {"title": "Сбивать захват!",
+                "icon": "Backtobase",
+                "command": "BACKTOBASE",
+                "text": "Нужно срочно сбивать захват!",
+                "chatMode": "Team"
+            },
+            {"title": "Помогите!",
+                "icon": "Helpme",
+                "text": "Нужна помощь в квадрате {ownPos},сам не справлюсь!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {"title": "Перезаряжаюсь",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team",
+                "hotKey": ["KEY_C"]
+            },
+            {"title": "Спасибо!",
+                "icon": "Yes",
+                "text": "Спасибо комрад!",
+                "chatMode": "Team"
+            },
+            {"title": "Ногиб",
+                "icon": "Support",
+                "text": "{randPart}, предлагаю решительно нагнуть!",
+                "chatMode": "Team",
+                "variants": [
+                    "Товарищи",
+                    "Джентельмены",
+                    "Господа"
+                ]
+            }
+        ],
+        "ally": [
+            {"title": "Не спеши",
+                "icon": "Stop",
+                "text": "{name},не спеши, притормози.",
+                "chatMode": "Team"
+            },
+            {"title": "Вперед!",
+                "icon": "Followme",
+                "text": "{name},вперед, погнал, давай!",
+                "chatMode": "Team"
+            },
+            {"title": "Не подпирай",
+                "icon": "Stop",
+                "command": "STOP",
+                "text": "{name},не подпирай, идиот!",
+                "chatMode": "Team"
+            },
+            {"title": "Из прицела!",
+                "icon": "Turnback",
+                "text": "{name},ИЗ ПРИЦЕЛА!",
+                "chatMode": "Team"
+            },
+            {"title": "Спасибо",
+                "icon": "Yes",
+                "text": "{name},спасибо!",
+                "chatMode": "Team"
+            },
+            {"title": "Как танк?",
+                "icon": "Reload",
+                "text": "{name}, как танк {vehicle}?",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {"title": "На Гусле",
+                "icon": "Support",
+                "text": "Танк - {name} ({vehicle}) на гусле, помогите!",
+                "chatMode": "Team"
+            },
+            {"title": "Отдыхай!",
+                "icon": "Yes",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "покойся с миром",
+                    "отдыхай",
+                    "Потраченно",
+                    "в ангаре тебе самое место",
+                    "больше ты никого не убьешь"
+                ]
+            },
+            {"title": "Я тебя съем!",
+                "icon": "Attack",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "сейчас я тебя съем!",
+                    "ням-ням!",
+                    "я тебя загрызу!",
+                    "пришла твоя смерть!"
+                ]
+            },
+            {"title": "Стой смирно!",
+                "icon": "Stop",
+                "text": "{name},да не дергайся ты, стой смирно!",
+                "chatMode": "All"
+            },
+            {"title": "На Гусле",
+                "icon": "Support",
+                "text": "Танк - {name} ({vehicle}) разряжен, помогите!",
+                "chatMode": "Team"
+            },
+            {"title": "Поймал?",
+                "icon": "Followme",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "поймал? Чего молчишь?",
+                    "как тебе плюшка?",
+                    "словил?"
+                ]
+            }
+        ]
+    },
+    "lightTankMenu": {
+        "default": [
+            {"title": "Поддержи!",
+                "icon": "AttackSPG",
+                "command": "HELPME",
+                "text": "Арта, поддержи в квадрате {viewPos},дам засвет",
+                "chatMode": "Team"
+            },
+            {"title": "Сваливаю!",
+                "icon": "Turnback",
+                "text": "Я сваливаю, тут слишком жарко!",
+                "chatMode": "Team"
+            },
+            {"title": "За мной хвост!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите, за мной хвост! Прикройте!",
+                "chatMode": "Team"
+            },
+            {"title": "Злые!",
+                "icon": "No",
+                "text": "Какие вы злые",
+                "chatMode": "All"
+            },
+            {"title": "Ну вас нафиг!",
+                "icon": "Turnback",
+                "text": "Неее, ну вас нафиг!",
+                "chatMode": "All"
+            },
+            {"title": "Ногиб",
+                "icon": "Support",
+                "text": "{randPart}, предлагаю решительно нагнуть!",
+                "chatMode": "Team",
+                "variants": [
+                    "Товарищи",
+                    "Джентельмены",
+                    "Майне геррен",
+                    "Господа"
+                ]
+            }
+        ],
+        "ally": [
+            {"title": "Прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "{vehicle},прикрой!",
+                "chatMode": "Team"
+            },
+            {"title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "text": "{name},не лезь!",
+                "chatMode": "Team"
+            },
+            {"title": "Назад!",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "text": "{name},отойди назад!",
+                "chatMode": "Team"
+            },
+            {"title": "Помогите ему",
+                "icon": "Support",
+                "text": "Помогите {name} ({vehicle}) в квадрате {viewPos}!!!",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            },
+            {"title": "Как танк?",
+                "icon": "Reload",
+                "text": "{name}, как {vehicle}?",
+                "chatMode": "Team"
+            },
+            {"title": "Поддержи!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "{name} ({vehicle}), поддержи!",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {"title": "Убейте!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "Убейте {name} ({vehicle}), он меня загрызет!",
+                "chatMode": "Team"
+            },
+            {"title": "Рвется к арте!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "Убейте {name} ({vehicle}), он рвется к нашей арте!",
+                "chatMode": "Team"
+            },
+            {"title": "Приоритетная цель!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "{name} ({vehicle}) - первая цель, он очень опасен!",
+                "chatMode": "Team"
+            },
+            {"title": "Отдыхай!",
+                "icon": "Yes",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "покойся с миром",
+                    "отдыхай",
+                    "в ангаре тебе самое место",
+                    "больше ты никого не убьешь"
+                ]
+            },
+            {"title": "Я тебя съем!",
+                "icon": "Attack",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "сейчас я тебя съем!",
+                    "ням-ням!",
+                    "я тебя загрызу!",
+                    "пришла твоя смерть!"
+                ]
+            },
+            {"title": "Я тебя вижу",
+                "icon": "Yes",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "а я тебя вижу!",
+                    "привет!",
+                    "улыбнись, тебя снимает скрытая арта!",
+                    "готовь чемоданоприемник!"
+                ]
+            }
+        ]
+    },
+    "SPGMenu": {
+        "default": [
+            {"title": "Свет сюда!",
+                "icon": "Attack",
+                "text": "{randPart} {viewPos}!",
+                "chatMode": "Team",
+                "variants": [
+                    "Дайте свет на",
+                    "Нужно подсветить",
+                    "Подсветите"
+                ],
+                "ping": "{viewPos}"
+            },
+            {"title": "Свелся, помогу!",
+                "icon": "Yes",
+                "text": "Свелся на квадрат {viewPos},помогу!",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            },
+            {"title": "Помогите!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Обратите внимание. Нужна помощь, сам не справлюсь!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team",
+                "hotKey": ["KEY_C"]
+            },
+            {"title": "Свожусь!",
+                "icon": "AttackSPG",
+                "text": "Свожусь на квадрат {viewPos},нужно время для атаки",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            },
+            {"title": "Ногиб",
+                "icon": "Support",
+                "text": "{randPart}, предлагаю решительно нагнуть!",
+                "chatMode": "Team",
+                "variants": [
+                    "Товарищи",
+                    "Джентельмены",
+                    "Майне геррен",
+                    "Господа"
+                ]
+            }
+        ],
+        "ally": [
+            {"title": "Пошел!",
+                "icon": "Followme",
+                "text": "{name} ({vehicle}), вперед, погнал, давай!",
+                "chatMode": "Team"
+            },
+            {"title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "text": "{name} ({vehicle}), не лезь, просто свети, живи.",
+                "chatMode": "Team"
+            },
+            {"title": "Назад!",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "text": "{name} ({vehicle}), отойди назад!",
+                "chatMode": "Team"
+            },
+            {"title": "Помогите ему",
+                "icon": "Support",
+                "text": "Помогите {name} ({vehicle}) в квадрате {viewPos},он сам не справляется!",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            },
+            {"title": "Как танк?",
+                "icon": "Reload",
+                "text": "{name}, как {vehicle}?",
+                "chatMode": "Team"
+            },
+            {"title": "Атакую клинч",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "text": "{name}, {randPart}!",
+                "chatMode": "Team",
+                "variants": [
+                    "СЕЙЧАС ПРИЛЕТИТ ЧЕМОДАН, ОТОЙДИ",
+                    "ОТКАТИСЬ НАЗАД, СТРЕЛЯЮ ПО КЛИНЧУ",
+                    "ОТВАЛИ ОТ НЕГО, ЧЕМОДАН ЛЕТИТ"
+                ]
+            }
+        ],
+        "enemy": [
+            {"title": "Атакую",
+                "icon": "AttackSPG",
+                "command": "ATTACKENEMY",
+                "text": "Чемодан  по {name} ({vehicle}) ушел, ждите доставки",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            },
+            {"title": "Я тебя вижу",
+                "icon": "Yes",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "а я тебя вижу!",
+                    "привет!",
+                    "улыбнись, тебя снимает скрытая арта!",
+                    "готовь чемоданоприемник!"
+                ]
+            },
+            {"title": "Атакую",
+                "icon": "AttackSPG",
+                "command": "ATTACKENEMY",
+                "text": "Стреляю в {name} ({vehicle}), ОТОЙДИТЕ ОТ НЕГО",
+                "chatMode": "Team"
+            },
+            {"title": "Не достаю",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "text": "Не могу достать {name} ({vehicle}), он за укрытием",
+                "chatMode": "Team"
+            },
+            {"title": "Стой смирно!",
+                "icon": "Stop",
+                "text": "{name},да не дергайся ты, стой смирно!",
+                "chatMode": "All"
+            },
+            {"title": "Поймал?",
+                "icon": "Followme",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "поймал? Чего молчишь?",
+                    "как тебе плюшка?",
+                    "как тебе чемодан?",
+                    "словил?"
+                ]
+            }
+        ]
+    },
+    "tankSpecific": {
+        "AMX_12t": "AutoLoaderTanks",
+        "AMX_13_75": "AutoLoaderTanks",
+        "AMX_13_90": "AutoLoaderTanks",
+        "AMX_50_100": "AutoLoaderTanks",
+        "AMX_50_120": "AutoLoaderTanks",
+        "AMX_M4_1945": "AutoLoaderTanks",
+        "Bat_Chatillon155": "AutoLoaderTanks",
+        "Bat_Chatillon25t": "AutoLoaderTanks",
+        "PzI_ausf_C": "AutoLoaderTanks",
+        "T2_lt": "AutoLoaderTanks",
+        "T54E1": "AutoLoaderTanks",
+        "T57_58": "AutoLoaderTanks",
+        "T69": "AutoLoaderTanks",
+        "T71": "AutoLoaderTanks",
+        "AutoLoaderTanks": {
+            "default": [
+                {"title": "Меня засветили!",
+                    "icon": "Helpme",
+                    "text": "Меня засветили!",
+                    "chatMode": "Team",
+                    "ping": "{ownPos}"
+                },
+                {"title": "Сбивать захват!",
+                    "icon": "Backtobase",
+                    "command": "BACKTOBASE",
+                    "text": "Нужно срочно сбивать захват!",
+                    "chatMode": "Team"
+                },
+                {"title": "Помогите!",
+                    "icon": "Helpme",
+                    "text": "Нужна помощь в квадрате {ownPos},сам не справлюсь!",
+                    "chatMode": "Team",
+                    "ping": "{ownPos}"
+                },
+                {"title": "Из кустов",
+                    "icon": "Support",
+                    "text": "{randPart}",
+                    "chatMode": "All",
+                    "variants": [
+                        "Печеньки! Печеньки!",
+                        "Высоко сижу, далеко гляжу!",
+                        "Всевидящее око наблюдает за вами",
+                        "Хрен вы меня найдете",
+                        "Иногда смотришь на таблицу игроков с оленеметром, и понимаешь, что все красные - враги",
+                        "Неловкое чувство это когда афэкашный танк получил опыта больше тебя",
+                        "Танкист ошибается дважды. В первый раз выручает аптечка",
+                        "Пацаны, а как в этой игрухе сохранятся? А то третьи сутки играю - спать хочу! Надо засейвиться перед Боссом",
+                        "Такое чувство, что х3 и х5 это не рейты на первую победу, а рейты на количество оленей в твоей команде.",
+                        "Если легкий танк хочет обнимашки, не будьте Вы такой черствой букой - дарите тепло!",
+                        "Играешь 15 на 15, а кажется что у врагов всё равно на 5 танков больше",
+                        "Если долго сидеть на САУ в засаде в ожидании колонны танков то на северной стороне башни вырастет мох...",
+                        "Иногда так и тянет отключить цензуру, чтобы посмотреть, угадал ты слово за звездочками или нет"
+                    ]
+                },
+                {"title": "Спасибо!",
+                    "icon": "Yes",
+                    "text": "Спасибо комрад!",
+                    "chatMode": "Team"
+                },
+                {"title": "Ногиб",
+                    "icon": "Support",
+                    "text": "{randPart}, предлагаю решительно нагнуть!",
+                    "chatMode": "Team",
+                    "variants": [
+                        "Товарищи",
+                        "Джентельмены",
+                        "Майне геррен",
+                        "Господа"
+                    ]
+                },
+                {"title": "Перезарядка",
+                    "icon": "Reload",
+                    "command": "RELOADINGGUN",
+                    "text": "Ушёл на КД из {ownPos}",
+                    "chatMode": "Team",
+                    "ping": "{ownPos}",
+                    "hotKey": ["KEY_C"]
+                }
+            ]
+        }
+    },
+    "Map_default": {
+        "default": [
+           {"title": "Меня засветили!",
+            "icon": "Helpme",
+            "text": "Меня засветили!",
+            "chatMode": "Team",
+            "ping": "{ownPos}"
+           },
+           {"title": ":) смайлик",
+            "icon": "Yes",
+            "text": ":)",
+            "chatMode": "All"
+           },
+           {"title": "Так то оно да!",
+            "icon": "Attack",
+            "text": "Так то оно да!",
+            "chatMode": "Team"
+           },
+           {"title": "Так точно!",
+            "icon": "Attack",
+            "text": "Так точно, победа!",
+            "chatMode": "All"
+           },
+           {"title": "Подходи по одному!",
+            "icon": "Attack",
+            "text": "Подходи по одному!",
+            "chatMode": "All"
+           },
+           {"title": "я не виноват!",
+            "icon": "Helpme",
+            "text": "Вот тока не надо потом говорить что опять я виноват!",
+            "chatMode": "Team"
+           }
+        ]
+    },
+    "hotkeyOnly": [
+       {"title": "Перезарядка",
+        "icon": "Reload",
+        "command": "RELOADINGGUN",
+        "text": "Ушёл на КД из {ownPos}",
+        "chatMode": "Team",
+        "ping": "{ownPos}",
+        "hotKey": ["KEY_C"]
+       }
+    ]
+}

@@ -1,0 +1,565 @@
+<?xml version="1.0"?>
+<!-- 
+====================================================================================
+Конфигурационный файл WOT-мода "Custom Command Menu" (Настраиваемое меню приказов). |
+Автор конфига: Padrefreeman                                                         |
+Версия: 1.1 (WOT v.0.8.7)                                                           |
+Дата: 27.07.2013г.                                                                  |
+====================================================================================
+
+Горячие клавиши для быстрого вызова команд:
+
+//=======Раздел <TankMenu>=======//
+
+Команды (текст, отправляемый в чат), когда прицел ни на кого не наведен:
+
+KEY_LALT+KEY_E - Правый фланг остался открытым! Прошу перегруппироваться!
+KEY_LALT+KEY_X - Противник на нашей базе! Нужна помощь в сбитии захвата!
+KEY_LALT+KEY_3 - Прорыв нескольких танков противника по правому флангу!
+KEY_LALT+KEY_1 - Прорыв нескольких танков противника по левому флангу!
+KEY_LALT+KEY_2 - Прорыв нескольких танков противника по центру!
+KEY_LALT+KEY_Q - Левый фланг остался открытым! Прошу перегруппироваться!
+KEY_LALT+KEY_C - Перезаряжаюсь. Осталось %(reload)s сек.
+KEY_LALT+KEY_F - Нужна помощь в квадрате %(ownPos)s!
+KEY_LALT+KEY_R - Все, кто рядом, встаем на захват!
+KEY_LALT+KEY_S - Не подпирай меня!
+KEY_LALT+KEY_G - Продвигаюсь вперед. Прошу поддержать маневр.
+KEY_LALT+KEY_5 - Фразы приветствия, выбираемые в случайном порядке.
+KEY_LALT+KEY_6 - Фразы приветствия из "Duke Nukem", выбираемые в случайном порядке.
+
+Команды (текст, отправляемый в чат), когда прицел наведен на танк союзника:
+
+KEY_LALT+KEY_A - o'key.
+KEY_LALT+KEY_B - %(vehicle)s (%(name)s), назад! Не лезь сейчас вперед.
+KEY_LALT+KEY_F - %(vehicle)s (%(name)s), помоги убрать противника.
+KEY_LALT+KEY_G - Продвигаюсь вперед. Прошу поддержать атаку.
+KEY_LALT+KEY_D - Сейчас это не самая лучшая идея.
+KEY_LALT+KEY_S - %(name)s, не подпирай!
+KEY_LALT+KEY_SPACE - %(name)s, уйди из прицела!
+
+Команды (текст, отправляемый в чат), когда прицел наведен на танк противника:
+
+KEY_LALT+KEY_R - Атакую %(vehicle)s (%(name)s). Нужна поддержка.
+KEY_LALT+KEY_X - Противник %(vehicle)s (%(name)s) на нашей базе! Нужна помощь в сбитии захвата!
+KEY_LALT+KEY_C - Перезаряжаюсь. Готовность через %(reload)s сек.
+KEY_LALT+KEY_F - Нужна помощь в уничтожении %(vehicle)s (%(name)s)!
+KEY_LALT+KEY_H - Поддержите огнем по квадрату %(viewPos)s. (с пингом на карте)
+KEY_LALT+KEY_2 - В квадрате %(viewPos)s несколько танков противника! Нужна помощь!
+KEY_LALT+KEY_V - Фразы в адрес соперника, в том числе прощальные слова экипажу уничтоженного танка противника (выбираются в случайном порядке). (1.0.4)
+KEY_LALT+KEY_6 - Смачные фразы в адрес противника из "Duke Nukem" (выбираются в случайном порядке).
+-->
+
+<RadialMenu.xml>
+  <MapMenuKey>KEY_LALT</MapMenuKey>
+  <MenuReloadHotkey>KEY_LCONTROL+KEY_F11</MenuReloadHotkey>
+  <HotkeyCommandDelay>250</HotkeyCommandDelay>
+
+ <!-- Настройка базового меню -->
+<TankMenu>
+		<!-- Команды, когда прицел ни на кого не наведен -->
+		<CommonCommands>
+			<!-- 1 -->
+			<Command>
+				<Title>Правый фланг открыт!</Title>
+				<Icon>Helpme</Icon>
+				<Text>Правый фланг остался открытым! Прошу перегруппироваться!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_E</Hotkey>
+			</Command>
+			
+						
+			<!-- 2 -->
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+			    <Text>Противник на нашей базе! Нужна помощь в сбитии захвата!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_X</Hotkey>
+			</Command>
+			
+			<!-- 3 -->
+			<Command>
+				<Title>Прорыв по правому флангу!</Title>
+				<Icon>Helpme</Icon>
+				<!-- <Command>HELPME</Command> -->
+				<Text>Прорыв нескольких танков противника по правому флангу!</Text>
+				<!-- <Ping>%(viewPos)s</Ping> -->
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_3</Hotkey>
+			</Command>
+			
+			<!-- 4 -->
+			<Command>
+				<Title>Прорыв по левому флангу!</Title>
+				<Icon>Helpme</Icon>
+				<!-- <Command>HELPME</Command> -->
+				<Text>Прорыв нескольких танков противника по левому флангу!</Text>
+				<!-- <Ping>%(viewPos)s</Ping> -->
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_1</Hotkey>
+			</Command>
+						
+			<!-- 5 -->
+			<Command>
+				<Title>Прорыв по центру!</Title>
+				<Icon>Helpme</Icon>
+				<!-- <Command>HELPME</Command> -->
+				<Text>Прорыв нескольких танков противника по центру!</Text>
+				<!-- <Ping>%(viewPos)s</Ping> -->
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_2</Hotkey>
+			</Command>
+			
+			<!-- 6 -->
+			<Command>
+				<Title>Левый фланг открыт!</Title>
+				<Icon>Helpme</Icon>
+				<Text>Левый фланг остался открытым! Прошу перегруппироваться!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_Q</Hotkey>
+			</Command>
+						
+			<!-- = Дополнительные команды (вызов по комбинации клавиш) = -->
+			<!-- 7 -->
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Text>Перезаряжаюсь. Осталось %(reload)s сек.</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_C</Hotkey>
+			</Command>
+			
+			<!-- 8 -->
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<!-- <Command>HELPME</Command> -->
+				<Text>Нужна помощь в квадрате %(ownPos)s!</Text>
+				<Ping>%(ownPos)s</Ping>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_F</Hotkey>
+			</Command>
+			
+			<!-- 9 -->
+			<Command>
+				<Title>На захват!</Title>
+				<Icon>Attack</Icon>
+				<Text>Все, кто рядом, встаем на захват!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_R</Hotkey>
+			</Command>
+			
+			<!-- 10 -->
+			<Command>
+				<Title>Не подпирай!</Title>
+				<Icon>Turnback</Icon>
+				<!-- <Command>TURNBACK</Command> -->
+				<Text>Не подпирай меня!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_S</Hotkey>
+			</Command>
+			
+			<!-- 11 -->
+			<Command>
+				<Title>Продвигаюсь вперед!</Title>
+				<Icon>Followme</Icon>
+				<!-- <Command>FOLLOWME</Command> -->
+				<Text>Продвигаюсь вперед. Прошу поддержать маневр.</Text>
+				<!-- <Ping>%(viewPos)s</Ping> -->
+				<Hotkey>KEY_LALT+KEY_G</Hotkey>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			
+			<!-- 12 -->
+			<Command>
+				<Title>Приветственные слова</Title>
+				<Icon>Support</Icon>
+				<Text>%(randpart)s</Text>
+				<ChatMode>Team</ChatMode>
+				<Variants>
+					<Variant>Мы пришли уточнить, разобраться и покарать.</Variant>
+					<Variant>На эстешке один не катайся ты, ибо танк твой нимб посмертный обретет.</Variant>
+					<Variant>Погасить светляка - твоя первейшая задача. Сделай упреждение и отправь малыша в небытие.</Variant>
+					<Variant>Мертвый противник - наш лучший союзник. Так увеличим число наших союзников до тридцати!</Variant>
+					<Variant>Сегодня враг услышит крит своих модулей. И да пребудет с нами перк нагиба.</Variant>
+					<Variant>Всем по перку неуязвимости, сокомандники. Да будет к нам благосклоннен ВБР.</Variant>
+					<Variant>Воздадим должное врагу нашему, и да упокоятся башни его в пункте приема металлолома.</Variant>
+					<Variant>Как говорил один литературный герой из моего далёкого детства: "Мы принимаем бой".</Variant>
+					<Variant>Не респом единым жив танковод, а между респами.</Variant>
+				</Variants>
+				<Hotkey>KEY_LALT+KEY_5</Hotkey>
+			</Command>
+			
+			<!-- 13 -->
+			<Command>
+				<Title>Приветственные слова (Duke Nukem)</Title>
+				<Icon>Support</Icon>
+				<Text>%(randpart)s</Text>
+				<ChatMode>Team</ChatMode>
+				<Variants>
+					<Variant>Yeah, piece o' cake!</Variant> <!-- Запросто! (как два пальца об...) -->
+					<Variant>Born to be wild!</Variant> <!-- Рождённый диким! -->
+					<Variant>Let's rock!</Variant> <!-- Поехали! -->
+					<Variant>Mmm, payback time!</Variant> <!-- Пришло время расплаты! -->
+					<Variant>Ready for Action!</Variant> <!-- Приготовься к мочилову, вечеринка начинается! -->
+					<Variant>Rockin'!</Variant> <!-- Я вам покажу. -->
+					<Variant>Somebody is gonna frickin' pay for screwing up MY vacation!</Variant> <!-- Кто-то жестоко заплатит за испорченный отпуск! -->
+					<Variant>Damn... I'm looking good!</Variant> <!-- Чёрт возьми... Я хорошо выгляжу! -->
+				</Variants>
+				<Hotkey>KEY_LALT+KEY_6</Hotkey>
+			</Command>
+						
+		</CommonCommands>
+		
+		<!-- Команды, когда прицел наведен на танк союзника -->
+		<TeamCommands>
+			<!-- 1 -->
+			<Command>
+				<Title>O'key.</Title>
+				<Icon>Yes</Icon>
+				<Text>o'key.</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_A</Hotkey>
+			</Command>
+
+			<!-- 2 -->
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Text>%(vehicle)s (%(name)s), назад! Не лезь сейчас вперед.</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_B</Hotkey>
+			</Command>
+			
+			<!-- 3 -->
+			<Command>
+				<Title>Помоги!</Title>
+				<Icon>Helpmeex</Icon>
+				<Text>%(vehicle)s (%(name)s), помоги убрать противника.</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_F</Hotkey>
+			</Command>
+			
+			<!-- 4 -->
+			<Command>
+				<Title>За мной!</Title>
+				<Icon>Followme</Icon>
+				<Text>Продвигаюсь вперед. Прошу поддержать атаку.</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_G</Hotkey>
+			</Command>
+			
+			<!-- 5 -->
+			<Command>
+				<Title>Не лучшая идея.</Title>
+				<Icon>No</Icon>
+				<Text>Сейчас это не самая лучшая идея.</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_D</Hotkey>
+			</Command>
+
+			<!-- 6 -->
+			<Command>
+				<Title>Не подпирай!</Title>
+				<Icon>No</Icon>
+				<Text>%(name)s, не подпирай!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_S</Hotkey>
+			</Command>
+			
+			<!-- = Дополнительные команды (вызов по комбинации клавиш) = -->
+			<!-- 7 -->
+			<Command>
+				<Title>Из прицела!</Title>
+				<Icon>Turnback</Icon>
+				<Text>%(name)s, уйди из прицела!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_SPACE</Hotkey>
+			</Command>
+		</TeamCommands>
+		
+		<!-- Команды, когда прицел наведен на танк противника. Имеет смысл использовать, только если вы не в засвете, иначе вероятность оказаться в ангаре увеличивается -->
+		<EnemyCommands>
+			<!-- 1 -->
+			<Command>
+				<Title>Атакую!</Title>
+				<Icon>Attack</Icon>
+				<!-- <Command>ATTACKENEMY</Command> -->
+				<Text>Атакую %(vehicle)s (%(name)s). Нужна поддержка.</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_R</Hotkey>
+			</Command>
+			
+			<!-- 2 -->
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Text>Противник %(vehicle)s (%(name)s) на нашей базе! Нужна помощь в сбитии захвата!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_X</Hotkey>
+			</Command>
+			
+			<!-- 3 -->
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Text>Перезаряжаюсь. Готовность через %(reload)s сек.</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_C</Hotkey>
+			</Command>
+			
+			<!-- 4 -->
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Text>Нужна помощь в уничтожении %(vehicle)s (%(name)s)!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_F</Hotkey>
+			</Command>
+			
+			<!-- 5 -->
+			<Command>
+				<Title>Поддержите огнём!</Title>
+				<Icon>Support</Icon>
+				<!--<Command>SUPPORTMEWITHFIRE</Command>-->
+				<Text>Поддержите огнем по квадрату %(viewPos)s</Text>
+				<Ping>%(viewPos)s</Ping>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_H</Hotkey>
+			</Command>
+			
+			<!-- 6 -->
+			<Command>
+				<Title>Опасность прорыва!</Title>
+				<Icon>Helpme</Icon>
+				<!--<Command>HELPME</Command> -->
+				<Text>В квадрате %(viewPos)s несколько танков противника! Нужна помощь!</Text>
+				<Ping>%(viewPos)s</Ping>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_2</Hotkey>
+			</Command>
+
+			<!-- = Дополнительные команды (вызов по комбинации клавиш) = -->
+			<!-- 1 Фразы в адрес соперника -->
+			<Command>
+				<Title>Врагу</Title>
+				<Icon>Yes</Icon>
+				<Text>%(randpart)s</Text>
+				<ChatMode>All</ChatMode>
+				<Variants>
+					<Variant>Тебе очень идет белый цвет.</Variant>
+					<Variant>Прощай, малыш.</Variant>
+					<Variant>Ну, вот, а ты боялся.</Variant>
+					<Variant>Я смотрю, тебе башню снесло.</Variant>
+					<Variant>Эка тебя расплющило!</Variant>
+					<Variant>Что-то ты побледнел.</Variant>
+					<Variant>Ну, вот и всё, а ты боялась, только гуселька помялась.</Variant>
+					<Variant>Ну, что, бедолага, опять в ангар?</Variant>
+					<Variant>Какой законченный образ!</Variant>
+					<Variant>Не расстраивайся - со временем привыкнешь.</Variant>
+					<Variant>Привыкай.</Variant>
+					<Variant>Бл*, да ты разваливаешься!</Variant>
+					<Variant></Variant>
+				</Variants>
+				<Hotkey>KEY_LALT+KEY_V</Hotkey>
+			</Command>
+			
+			<!-- 2 Смачные фразы в адрес соперника из "Duke Nukem" -->
+			<Command>
+				<Title>Врагу от Duke Nukem</Title>
+				<Icon>Yes</Icon>
+				<Text>%(randpart)s</Text>
+				<ChatMode>All</ChatMode>
+				<Variants>
+					<Variant>Come get some!</Variant> <!-- Подходи и получи! -->
+					<Variant>I'll rip your head off and shit down your neck.</Variant> <!-- Я оторву тебе голову и насру прямо в горло! -->
+					<Variant>I'm gonna kick your ass, bitch!</Variant> <!-- Я надеру тебе задницу, сука! -->
+					<Variant>Ooh, that's gotta hurt.</Variant> <!-- Ууу, это, должно быть, больно. -->
+					<Variant>I’ve got balls of steel!</Variant> <!-- У меня стальные яйца! -->
+					<Variant>Blow it out your ass.</Variant> <!-- Выбью из тебя дерьмо. -->
+					<Variant>Come on!</Variant> <!-- Давай же! -->
+					<Variant>Damn, I'm good!</Variant> <!-- Я чертовски крут! -->
+					<Variant>Die a sonuvabitch!</Variant> <!-- Сдохни, сукин сын! -->
+					<Variant>Eat shit and die!</Variant> <!-- Подавись дерьмом и сдохни! -->
+					<Variant>Gonna rip 'em a new one!</Variant> <!--  Порву, как тузик грелку -->
+					<Variant>Ha Ha Ha! Wasted!</Variant> <!-- Ха-ха-ха! Промазал! -->
+					<Variant>Hail to the king, baby!</Variant> <!-- Поприветствуй короля, малышка! -->
+					<Variant>Lick My Wet Butt Hole!</Variant> <!-- Полижи мой зад! -->
+					<Variant>Looks like it's time for me to go POSTAL! </Variant> <!-- Посмотрим, какие у вас потроха! -->
+					<Variant>Mmm, payback time!</Variant> <!-- Пришло время расплаты! -->
+					<Variant>Nobody steals our chicks... and lives!</Variant> <!-- Никому не позволено лапать наших тёлок безнаказанно! -->	
+					<Variant>Terminated!</Variant> <!-- Уничтожен! (Готов!) -->
+					<Variant>Who wants some?</Variant> <!-- Ну, кто ещё хочет? -->
+					<Variant>Yippie kay-yay mother fucker!</Variant> <!-- Получил, засранец! -->
+					<Variant>You guys suck!</Variant> <!-- Сосунки, слабаки, пальцем деланные. -->
+					<Variant>You wanna dance?</Variant> <!-- Не хочешь станцевать? -->
+					<Variant>You're an inspiration for birth control!</Variant> <!--  Ты - жертва абборта. -->
+					<Variant>You're gonna die for that!</Variant> <!--  За это ты умрёшь. -->
+					<Variant>See you in hell!</Variant> <!-- Увидимся в аду! -->
+				</Variants>
+				<Hotkey>KEY_LALT+KEY_6</Hotkey>
+			</Command>
+			
+		</EnemyCommands>
+	</TankMenu>
+
+<!-- Настройка меню для Артиллерии -->	
+<SPGMenu>
+		<CommonCommands>
+			<!-- 1 -->
+			<Command>
+				<Title>Свожусь на квадрат.</Title>
+				<Icon>Attack</Icon>
+				<Text>Свожусь на квадрат %(viewPos)s.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			
+			<!-- 2 -->
+			<Command>
+				<Title>Готов к залпу</Title>
+				<Icon>Yes</Icon>
+				<Text>Готов к залпу по квадрату %(viewPos)s.</Text>
+				<Ping>%(viewPos)s</Ping>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			
+			<!-- 3 -->
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Text>Перезаряжаюсь. Готовность через %(reload)s сек.</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_R</Hotkey>
+			</Command>
+
+			<!-- 4 -->
+			<Command>
+				<Title>Требуется свет.</Title>
+				<Icon>Helpme</Icon>
+				<Text>Требуется засвет противника в квадрате %(viewPos)s.</Text>
+				<Ping>%(viewPos)s</Ping>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<!-- 5 -->
+			<Command>
+				<Title>Нужна помощь.</Title>
+				<Icon>Helpme</Icon>
+				<Text>Противник рядом. Прошу помощи.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			
+			<!-- 6 -->
+			<Command>
+				<Title>Меняю позицию.</Title>
+				<Icon>Stop</Icon>
+				<Text>Меняю позицию. Зарядка %(reload)s секунд.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>						
+		</CommonCommands>
+
+		<TeamCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Command>TURNBACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Стой!</Title>
+				<Icon>Stop</Icon>
+				<Command>STOP</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Помоги!</Title>
+				<Icon>Helpmeex</Icon>
+				<Command>HELPMEEX</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>За мной!</Title>
+				<Icon>Followme</Icon>
+				<Command>FOLLOWME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</TeamCommands>
+
+		<EnemyCommands>
+			<!-- 1 -->
+			<Command>
+				<Title>Свожусь на квадрат.</Title>
+				<Icon>Attack</Icon>
+				<Text>Свожусь на квадрат %(viewPos)s.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<!-- 2 -->
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<Text>Перезаряжаюсь. Готовность через %(reload)s секунд.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<!-- 3 -->	
+			<Command>
+				<Title>Цель недоступна!</Title>
+				<Icon>Stop</Icon>
+				<Text>Цель (%(vehicle)s %(name)s) недоступна.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<!-- 4 -->
+			<Command>
+				<Title>Выманить!</Title>
+				<Icon>Yes</Icon>
+				<Text>Требуется выманить %(vehicle)s %(name)s под Арт-обстрел. Перезарядка через %(reload)s сек.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<!-- 5 -->
+			<Command>
+				<Title>Цель слабодоступна!</Title>
+				<Icon>Stop</Icon>
+				<Text>Цель (%(vehicle)s %(name)s) слабодоступна. Вероятность попадания мала.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			
+			<!-- 6 -->
+			<Command>
+				<Title>Меняю позицию.</Title>
+				<Icon>Stop</Icon>
+				<Text>Меняю позицию. Зарядка %(reload)s секунд.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</EnemyCommands>
+	</SPGMenu>
+
+
+  
+</RadialMenu.xml>

@@ -1,0 +1,9 @@
+<headlight.model>
+    <materialNames>
+    </materialNames>
+    <visibilityBox>
+        <min>-19.414 -4.70255 -19.3022</min>
+        <max>0.000757217 0.442687 1.81228</max>
+    </visibilityBox>
+    <nodelessVisual>../mods/configs/PYmods/LampLights/models/HeadLight/HeadLight</nodelessVisual>
+</headlight.model>

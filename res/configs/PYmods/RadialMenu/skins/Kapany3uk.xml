@@ -1,0 +1,674 @@
+<?xml version="1.0"?>
+<!--  RadialMenu v.0.9.xx Конфигурационный файл Kapany3uk edited -->
+<!--  О ФАЙЛЕ
+
+  ВНИМАНИЕ! 
+  Через стандартный Блокнот конфиг не редактировать, он ломается. 
+  Подойдёт Notepad++, Sublime Text 2/3 или другой редактор простого текста.    
+
+  В файле содержится несколько блоков команд:
+    <TankMenu>    - базовая настройка разделов меню;
+    <MapCommands> - команды, загружаемые в зависимости от текущей карты;
+    
+    <SPGMenu>, <AT-SPGMenu>, <lightTankMenu>, <heavyTankMenu>, <mediumTankMenu>
+                  - опциональные разделы, позволяющие использовать раздельные
+                    конфигурации разделов меню при игре на разных типах техники;
+                  
+    <HotkeyOnlyCommands>   - дополнительные команды, вызываемые по горячим клавишам. 
+    <TankSpecificCommands> - команды, специфичные для конкретного танка или 
+      нескольких танков.
+    
+  В разделах TankMenu и относящихся к видам техники предусмотрены следующие 
+  секции:
+    <CommonCommands> - общие команды, когда прицел ни на кого не наведён;
+    <TeamCommands>   - сообщения своим (когда прицел на союзном танке);
+    <EnemyCommands>  - аналогично для противников.
+
+    Первые шесть команд из каждой секции попадают в радиальное меню. Остальные, 
+  если они есть, можно вызывать по назначенным им горячим клавишам.         
+
+    В блоке <MapMenuKey> указан код кнопки, нажатие которой при вызове меню 
+  приведёт к отображению команд, привязанных к текущей карте.
+
+    В блоке <MenuReloadHotkey> можно переопределить комбинацию клавиш, при нажатии
+  которой настройки загружаются из файла заново. Формат аналогичен секции <Hotkey>
+  в описании команд (см. раздел 3), значение по умолчанию - правый Alt + F11.  
+
+    В блоке <HotkeyCommandDelay> можно переопределить задержку до выдачи команды, 
+  вызываемой по хоткеям. Значение задаётся в миллисекундах, значение по умолчанию 
+  250 мс. 
+-->
+<!--  ПРИОРИТЕТ НАСТРОЕК
+
+    При построение меню происходит загрузка команд из разделов 
+  <CommonCommands>, <TeamCommands>, <EnemyCommands>  
+
+    Наивысший приоритет при построении меню имеют настройки из раздела
+  <TankSpecificCommands>, если они определены для текущего танка.
+   
+    Если особых настроек не найдено, то происходит загрузка настроек из раздела, 
+  соответствующего классу техники (SPGMenu, AT-SPGMenu, heavyTankMenu, ...) 
+
+    Если же настройки для соответствующего класса техники отсутствуют, загружаются
+  базовые настройки из раздела <TankMenu>.   
+-->
+<!--  ФОРМАТ КОМАНД
+
+  // Каждая команда определяется следующим образом:
+  <Command>
+
+    // Краткое название, выводимое в меню
+    <Title>КД</Title>
+
+    // Иконка для меню (см. список ниже)
+    <Icon>Reload</Icon>
+
+    // Текст, выводимый в чат (поддерживаются макросы)
+    <Text>Ухожу на КД (%(ownPos)s), осталось %(reload)s сек.</Text>
+
+    // Режим чата, Team или All
+    <ChatMode>Team</ChatMode>
+
+    // Ниже идут опциональные поля
+    
+    // Команда из списка дефолтных, с отображением иконки на миникарте
+    <Command>RELOADINGGUN</Command>
+
+    <Variants>
+      <Variant>Список</Variant>
+      <Variant>из нескольких строк,</Variant>
+      <Variant>одна из которых подставляется в макрос %(randpart)s</Variant>
+      <Variant>Строка выбирается случайно</Variant>
+    </Variants>
+	  
+    //Выключение рандомного выбора фраз из блока <Variants>
+    //При такой записи в команде варианты идут последовательно
+    <NoRandomChoice>1</NoRandomChoice>
+
+    // Список квадратов для "прокликивания"
+    <Ping>B7 D9</Ping>
+
+    // Сочетание клавиш для отдачи команды без вызова радиального меню
+    <Hotkey>KEY_LALT+KEY_R</Hotkey>
+
+    //Задержка до следующей отправки команды, в целых секундах.
+    <Cooldown>4</Cooldown>
+    
+ </Command>
+
+  Допустимые имена иконок:
+  [ 'Attack', 'Yes', 'Helpme', 'Backtobase', 'No', 'Reload',
+    'Followme', 'Turnback', 'Helpmeex', 'Stop', 'Support', 'AttackSPG' ]
+
+  Допустимые имена команд:
+  [ 'ATTACK', 'ATTACKENEMY', 'BACKTOBASE', 'FOLLOWME', 'HELPME', 'HELPMEEX',
+    'NEGATIVE', 'POSITIVE', 'RELOADINGGUN' 'STOP', 'SUPPORTMEWITHFIRE', 'TURNBACK']
+
+  Поддерживаемые в тексте сообщения макросы:
+    %(name)s         - *** имя игрока, на чей танк наведён прицел
+    %(vehicle)s      - *** название типа техники
+    %(clan)s         - *** название клана
+    %(viewPos)s      - квадрат, в который направлена камера
+    %(ownPos)s       - квадрат, в котором находится свой танк
+    %(randpart)s     - случайная строка из списка в тэге <Variants/>
+    %(reload)s       - оставшееся время перезарядки орудия, в секундах
+    %(ammo)s         - число неистраченных снарядов в барабане
+    %(ownVehicle)s   - свой танк.
+ 
+  Поддерживаемые макросы статистики (при установленном XVM):
+    %(winrate)s%%     - *** общий процент побед
+    %(eff)s           - *** РЭ по wot-news
+    %(kbattles)s      - *** число боёв, в тысячах
+    %(avglvl)s        - *** средний уровень танков
+    %(twr)s           - *** TWR
+    %(tankDamage)s    - *** средний дамаг на танке, обычно отдаётся XVM'ом некорректно 
+    %(tankWinrate)s%% - *** процент побед по танку
+  
+  *** при отсутствии цели соответствуют игроку
+
+  Список имён кнопок для горячих клавиш - http://pastebin.com/5GKk9jBX 
+-->
+<!--  НАСТРОЙКА ПОД ОТДЕЛЬНЫЕ ТАНКИ
+
+    В разделе <TankSpecificCommands> можно либо настроить секции, которые будут 
+  загружаться при игре на этом танке, либо указать другой блок из данного раздела, 
+  из которого следует брать команды.
+
+  Пример:
+    При такой настройке, у танков AMX 50 100 и AMX 13 90 будет одинаковая 
+  настройка общего меню, отличающаяся от всех других танков.  
+
+	<TankSpecificCommands>
+
+    <AMX_50_100>
+      <Alias>AMX_13_90</Alias>
+    </AMX_50_100>
+
+    <AMX_13_90>
+      <CommonCommands>...</CommonCommands>
+    </AMX_13_90>
+
+	</TankSpecificCommands>
+
+  
+  Пример:
+    Также, можно объединять конфигурацию для несколько танков в одну группу, и 
+  сослаться на неё в настройках каждого из них.
+  
+	<TankSpecificCommands>
+
+    <AMX_50_100>
+      <Alias>AutoloaderTank</Alias>
+    </AMX_50_100>
+
+    <AMX_13_90>
+      <Alias>AutoloaderTank</Alias>
+    </AMX_13_90>
+
+    <AutoloaderTank>
+      <CommonCommands>...</CommonCommands>
+      <TeamCommands>...</TeamCommands>
+    </AutoloaderTank>
+
+	</TankSpecificCommands>
+
+  ВНИМАНИЕ! Названия чувствительны к регистру.
+-->
+<!--  НАСТРОЙКА ПОД РАЗЛИЧНЫЕ КАРТЫ
+
+    Команды, привязанные к карте, размещаются в разделе <MapCommands>. Они 
+  автоматически загружаются при попадании на конкретную карту. Этот режим меню 
+  вызывается нажатием кнопки меню карты (по дефолту левый альт) + кнопки показа 
+  радиального меню (по дефолту Z).
+
+    В этом разделе размещаются секции с именем, соответствующим игровым названиям 
+  карт. Имя карты пишется с префиксом "Map_", т.е. под Малиновку (02_malinovka) 
+  имя секции "Map_02_malinovka".
+
+  ВНИМАНИЕ! Горячие клавиши для команд в данной секции не обрабатываются. 
+      
+    Также есть секция <Map_Default>, которая грузится при отсутствии конфига под 
+  данную карту.  Её можно рассматривать как дополнение общего раздела меню.
+-->
+<!--  РАСПОЛОЖЕНИЕ
+  =команд= и соответствующие им 'клавиши'
+     в стандартном радиальном меню
+
+   'клавиши'     =команды=     'клавиши'  
+  │         │                 │         │ 
+  │   'F6'  │    =6=   =1=    │  'F5'   │ 
+  │         │                 │         │ 
+  │   'E'   │  =5=       =2=  │  'F4'   │ 
+  │         │                 │         │ 
+  │   'F3'  │    =4=   =3=    │  'C'    │ 
+  │         │                 │         │ 
+-->
+
+<RadialMenu.xml>
+
+  <!-- Клавиша вызова дополнительного меню, привязанного к карте (+Z)  -->
+	<MapMenuKey>KEY_LALT</MapMenuKey>
+
+  <!-- Сочетание клавиш для перезагрузки настроек из файла конфига     -->
+  <MenuReloadHotkey>KEY_RALT+KEY_F11</MenuReloadHotkey>
+
+  <!-- Задержка до выдачи команды, вызываемой по хоткеям, мс           -->
+  <HotkeyCommandDelay>250</HotkeyCommandDelay>
+
+  <!-- Задержка до выдачи команды в чат, мс                            -->
+  <CHAT_DELAY>1200</CHAT_DELAY>
+
+  <!-- Базовая настройка разделов меню                                 -->
+	<TankMenu>
+
+<!-- Когда прицел ни на кого не наведен                                -->
+		<CommonCommands>
+			<Command>   <!--  =1= 'F5'  Так точно!                           -->
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>POSITIVE</Command>
+			</Command>
+			<Command>   <!--  =2= 'F4'  Защищайте базу!                      -->
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>BACKTOBASE</Command>
+			</Command>
+			<Command>   <!--  =3= 'C'   Перезаряжаюсь!                       -->
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>RELOADINGGUN</Command>
+			</Command>
+			<Command>   <!--  =4= 'F3'  Нужна помощь!                        -->
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>HELPME</Command>
+			</Command>
+			<Command>   <!--  =5= ''    Меня засветили!                      -->
+				<Title>Меня засветили!</Title>
+				<Icon>Helpme</Icon>
+				<Text>Меня засветили!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+			<Command>   <!--  =6= 'F6'  Никак нет!                           -->
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>NEGATIVE</Command>
+			</Command>
+		</CommonCommands>
+
+<!-- Когда прицел наведен на союзника                                  -->
+		<TeamCommands>
+			<Command>   <!--  =1= ''    Красавчик!                           -->
+				<Title>Красавчик!</Title>
+				<Icon>Yes</Icon>
+				<Text>:) %(name)s (%(vehicle)s) КРАСАВЧИК! Гроза оленей! :)</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<Command>   <!--  =2= 'F4'  Назад!                               -->
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>TURNBACK</Command>
+			</Command>
+			<Command>   <!--  =3= 'C'   Перезаряжаюсь!                       -->
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>RELOADINGGUN</Command>
+			</Command>
+			<Command>   <!--  =4= 'F3'  Нужна помощь!                        -->
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpmeex</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>HELPMEEX</Command>
+			</Command>
+			<Command>   <!--  =5= ''    Заблудился?!                         -->
+				<Title>Заблудился?!</Title>
+				<Icon>Followme</Icon>
+				<Text>%(name)s (%(vehicle)s) заблудился?! Едь вперед - помоги команде!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<Command>   <!--  =6= ''    Удали игру!                          -->
+				<Title>Удали игру!</Title>
+				<Icon>No</Icon>
+				<Text>%(name)s! Удали игру клоун!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</TeamCommands>
+
+<!-- Когда прицел наведен на противника                                -->
+		<EnemyCommands>
+			<Command>   <!--  =1= 'F5'  Так точно!                           -->
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>POSITIVE</Command>
+			</Command>
+			<Command>   <!--  =2= 'F4'  Защищайте базу!                      -->
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>BACKTOBASE</Command>
+			</Command>
+			<Command>   <!--  =3= 'C'   Перезаряжаюсь!                       -->
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>RELOADINGGUN</Command>
+			</Command>
+			<Command>   <!--  =4= 'F3'  Нужна помощь!                        -->
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>HELPME</Command>
+			</Command>
+			<Command>   <!--  =5= 'E'   Поддержите огнём!                    -->
+				<Title>Поддержите огнём!</Title>
+				<Icon>Support</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>SUPPORTMEWITHFIRE</Command>
+			</Command>
+			<Command>   <!--  =6= 'F6'  Никак нет!                           -->
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>NEGATIVE</Command>
+			</Command>
+		</EnemyCommands>
+
+  </TankMenu>
+
+  <!-- Настройка разделов меню для арты                                -->
+	<SPGMenu>
+
+<!-- Когда прицел ни на кого не наведен                                -->
+		<CommonCommands>
+			<Command>   <!--  =1= ''    Трассерят!                           -->
+				<Title>Трассерят!</Title>
+				<Icon>Support</Icon>
+				<Text>Трассерят! Арта, переезжай!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+			<Command>   <!--  =2= ''    Свет сюда! Свожусь!                 -->
+				<Title>Свет сюда! Свожусь!</Title>
+				<Icon>AttackSPG</Icon>
+				<Text>Свет сюда! Свожусь, помогу!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(viewPos)s</Ping>
+			</Command>
+			<Command>   <!--  =3= 'C'   Перезаряжаюсь!                       -->
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>RELOADINGGUN</Command>
+			</Command>
+			<Command>   <!--  =4= 'F3'  Нужна помощь!                        -->
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>HELPME</Command>
+			</Command>
+			<Command>   <!--  =5= ''    Арта в засвете!                      -->
+				<Title>Арта в засвете!</Title>
+				<Icon>Helpme</Icon>
+				<Text>Арта в засвете!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+			<Command>   <!--  =6= ''    Готовлюсь!                           -->
+				<Title>Готовлюсь!</Title>
+				<Icon>No</Icon>
+				<Text>Занимаю позицию/Cтрелять пока не могу/Cвет сейчас бесполезен</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</CommonCommands>
+
+<!-- Когда прицел наведен на союзника                                  -->
+		<TeamCommands>
+			<Command>   <!--  =1= ''    Красавчик!                           -->
+				<Title>Красавчик!</Title>
+				<Icon>Yes</Icon>
+				<Text>:) %(name)s (%(vehicle)s) КРАСАВЧИК! Гроза оленей! :)</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<Command>   <!--  =2= ''    Атакую клинч                         -->
+				<Title>Атакую клинч</Title>
+				<Icon>Turnback</Icon>
+				<Text>%(name)s, ОТКАТИСЬ ОТ НЕГО - СТРЕЛЯЮ ПО КЛИНЧУ</Text>
+				<ChatMode>Team</ChatMode>
+				<Command>TURNBACK</Command>
+			</Command>
+			<Command>   <!--  =3= 'C'   Перезаряжаюсь!                       -->
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>RELOADINGGUN</Command>
+			</Command>
+			<Command>   <!--  =4= 'F3'  Нужна помощь!                        -->
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpmeex</Icon>
+				<Text>%(name)s (%(vehicle)s), ОБРАТИ ВНИМАНИЕ НА АРТУ – ТРЕБУЕТСЯ ТВОЯ ПОМОЩЬ!</Text>
+				<ChatMode>Team</ChatMode>
+				<Command>HELPMEEX</Command>
+			</Command>
+			<Command>   <!--  =5= ''    Заблудился?!                         -->
+				<Title>Заблудился?!</Title>
+				<Icon>Followme</Icon>
+				<Text>%(name)s (%(vehicle)s) заблудился?! Едь вперед - помоги команде!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(viewPos)s</Ping>
+			</Command>
+			<Command>   <!--  =6= ''    Удали игру!                          -->
+				<Title>Удали игру!</Title>
+				<Icon>No</Icon>
+				<Text>%(name)s! Удали игру клоун!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(viewPos)s</Ping>
+			</Command>
+		</TeamCommands>
+
+<!-- Когда прицел наведен на противника                                -->
+		<EnemyCommands>
+			<Command>   <!--  =1= 'F5'  Стой смирно!                         -->
+				<Title>Стой смирно!</Title>
+				<Icon>Stop</Icon>
+				<Text>%(name)s, да не дергайся ты, стой смирно!</Text>
+				<ChatMode>All</ChatMode>
+			</Command>
+			<Command>   <!--  =2= 'F2'  Стреляю! Возможен сплэш!             -->
+				<Title>Стреляю! Возможен сплэш!</Title>
+				<Icon>AttackSPG</Icon>
+				<Text>Атакую %(name)s (%(vehicle)s), ОТПОЛЗАЙТЕ, МОЖЕТ ЗАДЕТЬ СПЛЭШЕМ!</Text>
+				<ChatMode>Team</ChatMode>
+				<ping>%(viewPos)s</ping>
+			</Command>
+			<Command>   <!--  =3= 'C'   Перезаряжаюсь!                       -->
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>RELOADINGGUN</Command>
+			</Command>
+			<Command>   <!--  =4= 'F3'  Гуслите!                             -->
+				<Title>Гуслите!</Title>
+				<Icon>Attack</Icon>
+				<Text>Гуслите %(name)s (%(vehicle)s), навожусь!</Text>
+				<ChatMode>Team</ChatMode>
+				<ping>%(viewPos)s</ping>
+				<!--<Command>ATTACKENEMY</Command>-->
+			</Command>
+			<Command>   <!--  =5= 'E'   Атакую!                              -->
+				<Title>Атакую!</Title>
+				<Icon>AttackSPG</Icon>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Command>ATTACKENEMY</Command>
+			</Command>
+			<Command>   <!--  =6= 'F6'  Не достаю                            -->
+				<Title>Не достаю</Title>
+				<Icon>No</Icon>
+				<Text>Никак нет! Не могу достать %(name)s (%(vehicle)s), выманивайте!</Text>
+				<ChatMode>Team</ChatMode>
+				<ping>%(viewPos)s</ping>
+			</Command>
+		</EnemyCommands>
+
+  </SPGMenu>
+
+  <!-- Дополнительное настройки меню, привязанные к карте (Alt+Z)      -->
+	<MapCommands>
+  
+    <!-- Дополнительное меню под определенную карту (пример записи)    -->
+  	<Map_01_karelia></Map_01_karelia>
+		<Map_02_malinovka></Map_02_malinovka>
+
+    <!-- Дополнительное меню в отсутствие настроек определенной карты  -->
+		<Map_Default>
+			<Command>   <!--  =1=       Гы-гы! :)                            -->
+				<Title>Гы-гы! :)</Title>
+				<Icon>Yes</Icon>
+				<Text>Гы-гы! :)</Text>
+				<ChatMode>All</ChatMode>
+			</Command>
+			<Command>   <!--  =2=       Ахахах! ЛОЛ!                         -->
+				<Title>Ахахах! ЛОЛ!</Title>
+				<Icon>Yes</Icon>
+				<Text>Ахахах! ЛОЛ!</Text>
+				<ChatMode>All</ChatMode>
+			</Command>
+			<Command>   <!--  =3=       Слезьте с базы                       -->
+				<Title>Слезьте с базы</Title>
+				<Icon>Stop</Icon>
+				<Text>Слезьте с базы, дайте подамажить!</Text>
+				<ChatMode>All</ChatMode>
+			</Command>
+			<Command>   <!--  =4=       Я на гусле! Прикройте!               -->
+				<Title>Я на гусле! Прикройте!</Title>
+				<Icon>Helpme</Icon>
+				<Text>Я на гусле! Прикройте!</Text>
+				<ChatMode>Team</ChatMode>
+				<Command>HELPME</Command>
+			</Command>
+			<Command>   <!--  =5=       Дайте воина!                         -->
+				<Title>Дайте воина!</Title>
+				<Icon>Helpme</Icon>
+				<Text>Дайте ВОИНА!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<Command>   <!--  =6=       Арта не виновата!                    -->
+				<Title>Арта не виновата!</Title>
+				<Icon>No</Icon>
+				<Text>Вот только не надо говорить, что арта во всем виновата!</Text>
+				<ChatMode>All</ChatMode>
+			</Command>
+		</Map_Default>
+
+  </MapCommands>
+
+  <!-- Команды по привязанному к ним сочетанию кнопок                  -->
+  <HotkeyOnlyCommands>
+
+		<Command>   <!--  'F7'      Сорри!                                 -->
+			<Title>Сорри</Title>
+			<Icon>No</Icon>
+			<Text>Сорри!</Text>
+			<ChatMode>Team</ChatMode>
+			<Hotkey>KEY_F7</Hotkey>
+		</Command>
+		<Command>   <!--  'F8'      Спасибо!                               -->
+			<Title>Спасибо!</Title>
+			<Icon>Yes</Icon>
+			<Text>Спасибо!</Text>
+			<ChatMode>Team</ChatMode>
+			<Hotkey>KEY_F8</Hotkey>
+		</Command>
+		<Command>   <!--  'F9'      .!.. (Fuck)                            -->
+			<Title>Fuck!</Title>
+			<Icon>Yes</Icon>
+			<Text>.!..</Text>
+			<ChatMode>All</ChatMode>
+			<Hotkey>KEY_F9</Hotkey>
+		</Command>
+		<Command>   <!--  'F12'     Арта бьёт отсюда!                      -->
+			<Title>Арта бьёт отсюда!</Title>
+			<Icon>Yes</Icon>
+			<Text>Арта бьёт отсюда!</Text>
+			<ChatMode>Team</ChatMode>
+			<Hotkey>KEY_F12</Hotkey>
+		</Command>
+		<Command>   <!--  'Z+1'     Молорик! Красава!                      -->
+			<Title>Молорик! Красава!</Title>
+			<Icon>Yes</Icon>
+			<Text>Молорик! Красава!</Text>
+			<ChatMode>All</ChatMode>
+			<Hotkey>KEY_Z+KEY_1</Hotkey>
+		</Command>
+		<Command>   <!--  'Z+2'     Ахахах! Лол!                           -->
+			<Title>Ахахах! Лол!</Title>
+			<Icon>Yes</Icon>
+			<Text>Ахахах! Лол!</Text>
+			<ChatMode>All</ChatMode>
+			<Hotkey>KEY_Z+KEY_2</Hotkey>
+		</Command>
+		<Command>   <!--  'Z+3'     Слезьте с базы                         -->
+			<Title>Слезьте с базы</Title>
+			<Icon>Stop</Icon>
+			<Text>Слезьте с базы, дайте подамажить!</Text>
+			<ChatMode>All</ChatMode>
+			<Hotkey>KEY_Z+KEY_3</Hotkey>
+		</Command>
+		<Command>   <!--  'Z+4'     Всем спасибо!                          -->
+			<Title>Всем спасибо!</Title>
+			<Icon>Attack</Icon>
+			<Text>Всем спасибо!</Text>
+			<ChatMode>All</ChatMode>
+			<Hotkey>KEY_Z+KEY_4</Hotkey>
+		</Command>
+		<Command>   <!--  'Z+5'     Так точно! All                         -->
+			<Title>Так точно!</Title>
+			<Icon>Attack</Icon>
+			<Text>Так точно!</Text>
+			<ChatMode>All</ChatMode>
+			<Hotkey>KEY_Z+KEY_5</Hotkey>
+		</Command>
+		<Command>   <!--  'Z+6'     Никак нет! All                         -->
+			<Title>Никак нет!</Title>
+			<Icon>Attack</Icon>
+			<Text>Никак нет!</Text>
+			<ChatMode>All</ChatMode>
+			<Hotkey>KEY_Z+KEY_6</Hotkey>
+		</Command>
+		<Command>   <!--  'Z+A'     На захват! Вместе!                     -->
+			<Title>На захват! Вместе!</Title>
+			<Icon>Attack</Icon>
+			<Text>На захват! Вместе!</Text>
+			<ChatMode>Team</ChatMode>
+			<Hotkey>KEY_Z+KEY_A</Hotkey>
+		</Command>
+		<Command>   <!--  'Z+S'     Защищайте базу!                        -->
+			<Title>Защищайте базу! Срочно!</Title>
+			<Icon>Attack</Icon>
+			<Text>Защищайте базу! Срочно!!!</Text>
+			<ChatMode>Team</ChatMode>
+			<Hotkey>KEY_Z+KEY_S</Hotkey>
+		</Command>
+		<Command>   <!--  'Z+X'     Вот же команда оленей!                 -->
+			<Title>Вот же команда оленей!</Title>
+			<Icon>Attack</Icon>
+			<Text>%(randpart)s</Text>
+       <Variants>
+          <Variant>ППЦ! Вот же команда оленей!</Variant>
+          <Variant>ЦУКО! Одна школота в команде!</Variant>
+       </Variants>
+			<ChatMode>All</ChatMode>
+			<Hotkey>KEY_Z+KEY_X</Hotkey>
+		</Command>
+		<Command>   <!--  'Z+V'     ВРЕМЯ!                                 -->
+			<Title>ВРЕМЯ!</Title>
+			<Icon>Attack</Icon>
+			<Text>ВРЕМЯ!</Text>
+			<ChatMode>All</ChatMode>
+			<Hotkey>KEY_Z+KEY_V</Hotkey>
+		</Command>
+		<Command>   <!--  'LALT+5'  Так точно! Team                        -->
+			<Title>Так точно!</Title>
+			<Icon>Attack</Icon>
+			<Text>Так точно!</Text>
+			<ChatMode>Team</ChatMode>
+			<Hotkey>KEY_LALT+KEY_5</Hotkey>
+		</Command>
+		<Command>   <!--  'LALT+6'  Никак нет! Team                        -->
+			<Title>Никак нет!</Title>
+			<Icon>Attack</Icon>
+			<Text>Никак нет!</Text>
+			<ChatMode>Team</ChatMode>
+			<Hotkey>KEY_LALT+KEY_6</Hotkey>
+		</Command>
+    
+	</HotkeyOnlyCommands>
+  
+</RadialMenu.xml>

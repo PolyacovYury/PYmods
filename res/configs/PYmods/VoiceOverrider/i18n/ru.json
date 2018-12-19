@@ -1,0 +1,12 @@
+﻿{
+    "UI_setting_mode_buffon": "Буффон",
+    "UI_setting_mode_default_female": "Стандартный: женский",
+    "UI_setting_mode_default_male": "Стандартный: мужской",
+    "UI_setting_mode_national_female": "Национальный: женский",
+    "UI_setting_mode_national_male": "Национальный: мужской",
+    "UI_setting_mode_sabaton": "Sabaton",
+    "UI_setting_mode_text": "Режим голосового оповещения",
+    "UI_setting_mode_valkyrie_female": "Valkyrie Chronicles: женский",
+    "UI_setting_mode_valkyrie_male": "Valkyrie Chronicles: мужской",
+    "name": "Переопределение режима внутриигрового голосового оповещения"
+}

@@ -1,0 +1,15 @@
+﻿{
+    "UI_activSunMod": "SunController ENABLED",
+    "UI_deactivSunMod": "SunController DISABLED",
+    "UI_description": "Sun Controller",
+    "UI_serviceChannelPopUpAll": "<b>{author}<font color=\"#cc9933\"> turned the Earth!</font></b>",
+    "UI_serviceChannelPopUpAnd": "<b><font color=\"#cc9933\">And turned the Earth!</font></b>",
+    "UI_setting_enableAtStartup_text": "Sun is controlled by default",
+    "UI_setting_enableAtStartup_tooltip": "Sun position will be changed automatically after battle begins.",
+    "UI_setting_enableMessage_text": "Enable service channel message",
+    "UI_setting_enableMessage_tooltip": "This allows the mod to send a notification to service channel in no-GUI mode.",
+    "UI_setting_hotkey_text": "SunController hotkey",
+    "UI_setting_hotkey_tooltip": "Pressing this button in-battle toggles sun control on/off.",
+    "UI_setting_time_text": "Time set by Controller",
+    "UI_setting_time_tooltip": "This time of day will be applied to all battle maps.\n • 0:00 - old behaviour.\n • 24:00 - current local time."
+}

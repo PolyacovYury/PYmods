@@ -1,0 +1,28 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/BanksLoader/BanksLoader.json": "res/configs/PYmods/BanksLoader/BanksLoader.json",
+        "mods/configs/PYmods/BanksLoader/i18n/en.json": "res/configs/PYmods/BanksLoader/i18n/en.json",
+        "mods/configs/PYmods/BanksLoader/i18n/ru.json": "res/configs/PYmods/BanksLoader/i18n/ru.json",
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_engines.json": "res/configs/PYmods/SoundEventInjector/configs/GO_engines.json",
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_guns.json": "res/configs/PYmods/SoundEventInjector/configs/GO_guns.json",
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_hits.json": "res/configs/PYmods/SoundEventInjector/configs/GO_hits.json",
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_reload.json": "res/configs/PYmods/SoundEventInjector/configs/GO_reload.json",
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_surface_hits.json": "res/configs/PYmods/SoundEventInjector/configs/GO_surface_hits.json",
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_tracer.json": "res/configs/PYmods/SoundEventInjector/configs/GO_tracer.json",
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_voice.json": "res/configs/PYmods/SoundEventInjector/configs/GO_voice.json",
+        "mods/configs/PYmods/SoundEventInjector/configs/gun_effects.xml": "res/configs/PYmods/SoundEventInjector/configs/gun_effects.xml",
+        "mods/{GAME_VERSION}/GO/GO_engines.wotmod": "build/wotmods/GO/GO_engines.wotmod",
+        "mods/{GAME_VERSION}/GO/GO_gun.wotmod": "build/wotmods/GO/GO_gun.wotmod",
+        "mods/{GAME_VERSION}/GO/GO_hits.wotmod": "build/wotmods/GO/GO_hits.wotmod",
+        "mods/{GAME_VERSION}/GO/GO_reload.wotmod": "build/wotmods/GO/GO_reload.wotmod",
+        "mods/{GAME_VERSION}/GO/GO_tracer.wotmod": "build/wotmods/GO/GO_tracer.wotmod",
+        "mods/{GAME_VERSION}/GO/GO_voice.wotmod": "build/wotmods/GO/GO_voice.wotmod",
+        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/PYmods/BanksLoader.wotmod": "build/wotmods/PYmods/BanksLoader.wotmod",
+        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
+        "mods/{GAME_VERSION}/PYmods/SoundEventInjector.wotmod": "build/wotmods/PYmods/SoundEventInjector.wotmod",
+        "mods/{GAME_VERSION}/_aaa_BanksLoader_audioMods.wotmod": "build/wotmods/_aaa_BanksLoader_audioMods.wotmod"
+    }
+}

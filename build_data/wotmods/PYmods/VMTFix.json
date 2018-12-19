@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/scripts/client/gui/mods/mod_VMTFix.pyc": "source/scripts/client/gui/mods/mod_VMTFix.pyc"
+    }
+}

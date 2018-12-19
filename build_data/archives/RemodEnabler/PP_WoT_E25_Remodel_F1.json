@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/PP_WoT_E25_Remodel_F1.json": "res/configs/PYmods/RemodEnabler/remods/PP_WoT_E25_Remodel_F1.json",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/PP_WoT_E25_Remodel_F1.wotmod": "build/wotmods/RemodEnabler_remods/PP_WoT_E25_Remodel_F1.wotmod"
+    }
+}

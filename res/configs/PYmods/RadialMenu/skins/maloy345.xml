@@ -1,0 +1,1679 @@
+<?xml version="1.0"?>
+<!-- 
+CustomCommandRose by hedger // WOT id: tehHedger
+Конфигурационный файл мода "Кастомизируемая роза команд". 
+
+ВНИМАНИЕ! Через стандартный Блокнот конфиг лучше не редактировать, ломается. 
+Подойдёт WordPad или другой редактор простого текста.
+
+Конфигурация, повторяющая встроенную в игру.
+Автор: Maloy345
+
+-->
+
+<RadialMenu.xml>
+  <MapMenuKey>KEY_LALT</MapMenuKey>
+	<TankMenu>
+		<CommonCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text>Спасибо за бой!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+			    <Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+		
+
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<Text>Осталось %(reload)s секунд!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_C</Hotkey>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+	
+			</Command>
+			
+			<Command>
+				<Title>Словите свет!</Title>
+				<Icon>No</Icon>
+				<Command></Command>
+				<Text>Словите свет!</Text>
+				<ChatMode>Team</ChatMode>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Статистика!</Title>
+				<Icon>No</Icon>
+				<Text>
+				Статистика %(name)s %(vehicle)s :
+				Победы :%(winrate)s%% 
+				РЭ: %(eff)s
+				Бои: %(kbattles)s
+				</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_U</Hotkey>
+			</Command>
+
+		</CommonCommands>
+
+		<TeamCommands>
+			<Command>
+				<Title>Спасибо!</Title>
+				<Icon>Yes</Icon>
+				<Command></Command>
+				<Text>%(name)s (%(vehicle)s) , спасибо!</Text>
+				<ChatMode>Team</ChatMode>
+						
+			</Command>
+
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Command>TURNBACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+			</Command>
+
+			<Command>
+				<Title>Стой!</Title>
+				<Icon>Stop</Icon>
+				<Command>STOP</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Помоги!</Title>
+				<Icon>Helpmeex</Icon>
+				<Command>HELPMEEX</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Не подпирай!</Title>
+				<Icon>Turnback</Icon>
+				<Command></Command>
+				<Text>%(name)s (%(vehicle)s) , не подпирай!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_V</Hotkey>
+			</Command>
+			
+			<Command>
+				<Title>Извини!</Title>
+				<Icon></Icon>
+				<Command></Command>
+				<Text>%(name)s (%(vehicle)s) , извини!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			
+			
+
+			
+			<Command>
+				<Title>Го!</Title>
+				<Icon>No</Icon>
+				<Text>%(name)s %(vehicle)s,едь. Прийми дамаг я за тобой, прикрою!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_I</Hotkey>
+			</Command>
+			<Command>
+				<Title>Из прицела!</Title>
+				<Icon>No</Icon>
+				<Text>%(name)s %(vehicle)s, из прицела!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_G</Hotkey>
+			</Command>
+		</TeamCommands>
+
+
+		<EnemyCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text>Спасибо за бой!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<Text>Осталось %(reload)s секунд!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_C</Hotkey>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+
+			<Command>
+				<Title>Поддержите огнём!</Title>
+				<Icon>Support</Icon>
+				<Command>SUPPORTMEWITHFIRE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Добейте его!</Title>
+				<Icon>No</Icon>
+				<Command></Command>
+				<Text>%(name)s (%(vehicle)s) , добейте его!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			
+			<Command>
+				<Title>Статистика игрока!</Title>
+				<Icon>No</Icon>
+				<Text>
+				Статистика игрока %(name)s %(vehicle)s :
+				Победы :%(winrate)s%% 
+				РЭ: %(eff)s
+				Бои: %(kbattles)s
+				</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_U</Hotkey>
+			</Command>	
+		</EnemyCommands>
+	</TankMenu>
+
+	<SPGMenu>
+		<CommonCommands>
+			<Command>
+				<Title>Свелся на квадрат!</Title>
+				<Icon>Yes</Icon>
+				<Text>Свелся на квадрат %(viewPos)s, помогу!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(viewPos)s</Ping>
+			</Command>
+
+			<Command>
+				<Title>Подсветите!</Title>
+				<Icon>Backtobase</Icon>
+				<Text>Подсветите пожалуйста квадрат %(viewPos)s, помогу! </Text>
+				<ChatMode>Team</ChatMode>
+                <Ping>%(viewPos)s</Ping>				
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<Text>%(randpart)s </Text>
+				<Variants>
+					<Variant>Готов через %(reload)s секунд.</Variant>
+					<Variant>Заряжусь через %(reload)s секунд.</Variant>
+					<Variant>Буду готов к стрельбе через %(reload)s секунд.</Variant>
+				    <Variant>Осталось %(reload)s секунд.</Variant>
+				</Variants>
+					<ChatMode>Team</ChatMode>
+					<Hotkey>KEY_C</Hotkey>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Словите свет!</Title>
+				<Icon>No</Icon>
+				<Text>Словите свет!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			
+			<Command>
+				<Title>Статистика!</Title>
+				<Icon>No</Icon>
+				<Text>
+				Статистика %(name)s %(vehicle)s :
+				Победы :%(winrate)s%% 
+				РЭ: %(eff)s
+				Бои: %(kbattles)s
+				</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_U</Hotkey>
+			</Command>
+		</CommonCommands>
+
+		<TeamCommands>
+			<Command>
+				<Title>Спасибо!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text>%(name)s (%(vehicle)s) , спасибо! </Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Command>TURNBACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Стой!</Title>
+				<Icon>Stop</Icon>
+				<Command>STOP</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Помоги!</Title>
+				<Icon>Helpmeex</Icon>
+				<Command>HELPMEEX</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>За мной!</Title>
+				<Icon>Followme</Icon>
+				<Command>FOLLOWME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Извини!</Title>
+				<Icon>No</Icon>
+				<Command></Command>
+				<Text>%(name)s (%(vehicle)s) , извини!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			
+			<Command>
+				<Title>Статистика игрока!</Title>
+				<Icon>No</Icon>
+				<Text>
+				Статистика игрока %(name)s %(vehicle)s :
+				Победы :%(winrate)s%% 
+				РЭ: %(eff)s
+				Бои: %(kbattles)s
+				</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_U</Hotkey>
+			</Command>
+		</TeamCommands>
+
+		<EnemyCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text>Спасибо за бой!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<Text>%(randpart)s </Text>
+				<Variants>
+					<Variant>Готов через %(reload)s секунд.</Variant>
+					<Variant>Заряжусь через %(reload)s секунд.</Variant>
+					<Variant>Буду готов к стрельбе через %(reload)s секунд.</Variant>
+				    <Variant>Осталось %(reload)s секунд.</Variant>
+				</Variants>
+					<ChatMode>Team</ChatMode>
+					<Hotkey>KEY_C</Hotkey>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+
+			<Command>
+				<Title>Атакую! Отойдите от него!</Title>
+				<Icon>AttackSPG</Icon>
+				<Command>ATTACKENEMY</Command>
+				<Text>ОТОЙДИТЕ ОТ НЕГО!!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Ща прилетит!</Title>
+				<Icon>AttackSPG</Icon>
+				<Command>ATTACKENEMY</Command>
+				<Text>Через %(reload)s сек в %(vehicle)s прилетит чемодан! Прошу подсвета.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			
+			<Command>
+				<Title>Статистика игрока!</Title>
+				<Icon>No</Icon>
+				<Text>
+				Статистика игрока %(name)s %(vehicle)s :
+				Победы :%(winrate)s%% 
+				РЭ: %(eff)s
+				Бои: %(kbattles)s
+				</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_U</Hotkey>
+			</Command>	
+		</EnemyCommands>
+	</SPGMenu>
+
+	<!-- 
+  <lightTankMenu>
+  </lightTankMenu>
+  -->
+
+	<!-- 
+  <mediumTankMenu>
+  </mediumTankMenu>
+  -->
+
+	<!-- 
+  <heavyTankMenu>
+    <TeamCommands>
+    </TeamCommands>
+    
+    <EnemyCommands>
+    </EnemyCommands>
+    
+    <CommonCommands>
+    </CommonCommands>
+  </heavyTankMenu>
+  -->
+
+	<!-- 
+  <AT-SPGMenu>
+    <TeamCommands>
+    </TeamCommands>
+    
+    <EnemyCommands>
+    </EnemyCommands>
+    
+    <CommonCommands>
+    </CommonCommands>
+  </AT-SPGMenu>
+  -->
+
+	<MapCommands>
+        <Map_01_karelia>
+		<Command>
+				<Title>Помогите с плато!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите с плато!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>B3 C2</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Помогите на центре!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите на центре!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E6 F5</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+	
+			</Command>
+
+			<Command>
+				<Title>Помогите взять гору!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите взять гору!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>G7 H8</Ping>
+				
+
+			</Command>
+		</Map_01_karelia>
+
+		<Map_02_malinovka>
+		<Command>
+				<Title>Не стойте на базе!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Не стойте на базе!</Text>
+				<ChatMode>Team</ChatMode>
+							
+
+			</Command>
+
+			<Command>
+				<Title>Гоу по центру!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Гоу по центру!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>H3 G4</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Светляк сюда!</Title>
+				<Icon>Helpme</Icon>
+				<Text>Светляк, стань в куст здесь, если ты знаешь как. Если нет, лучше не лезь туда!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>F5</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Помогите взять гору!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите взять гору!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>A0 B9</Ping>
+				
+
+			</Command>
+        </Map_02_malinovka>
+
+		<Map_03_campania>
+		</Map_03_campania>
+
+		<Map_04_himmelsdorf>
+		
+		    
+			   <Command>
+				<Title>Помогите удержать банан!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите удержать банан!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>D8 F7 E7</Ping>
+				
+
+			</Command>
+
+			   <Command>
+				<Title>Помогите взять ценр!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите взять ценрт!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E5 F5</Ping>
+				
+
+			</Command>
+			  
+			  <Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Помогите на железке!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите на железке!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E2 F2</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Помогите взять гору!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите взять гору!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E9 F9</Ping>
+				
+
+			</Command>
+
+		
+		
+		</Map_04_himmelsdorf>
+
+		<Map_05_prohorovka>
+		</Map_05_prohorovka>
+
+		<Map_06_ensk>
+		
+			<Command>
+				<Title>Помогите в городе!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите в городе!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E2 F2</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Помогите удержать железку!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите удержать железку!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E6 F6</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+	
+			</Command>
+
+			<Command>
+				<Title>Помогите на зеленке!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите на зеленке!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>F9 E9</Ping>
+				
+
+			</Command>
+
+		
+		</Map_06_ensk>
+
+		<Map_07_lakeville>
+		
+		    <Command>
+				<Title>Помогите в ущелье!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите в ущелье!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E2 F2</Ping>
+				
+
+			</Command>
+			
+			<Command>
+				<Title>Помогите на  центре!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите на центре!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E4 F4</Ping>
+				
+
+			</Command>
+			
+			
+
+			<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+	
+			</Command>
+
+			<Command>
+				<Title>Помогите взять город!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите взять город!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E9 F9</Ping>
+				
+
+			</Command>
+
+		
+		</Map_07_lakeville>
+
+		<Map_08_ruinberg>
+		    <Command>
+				<Title>Помогите в городе!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите в городе!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E3 F3 </Ping>
+				
+
+			</Command>
+			
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+
+			
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+	
+			</Command>
+
+			<Command>
+				<Title>Помогите на зеленке!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите на зеленке!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E0 F0</Ping>
+				
+
+			</Command>
+
+		
+		</Map_08_ruinberg>
+
+		<Map_10_hills>
+		</Map_10_hills>
+
+		<Map_11_murovanka>
+		    <Command>
+				<Title>Помогите на зеленке!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите на зеленке!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E1 D1</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Поддержите огнем на центре!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Поддержите огнем на центре!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E5 F5</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>	
+	
+			</Command>
+
+			<Command>
+				<Title>Помогите в лесу!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите в лесу!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>D9 E9</Ping>
+			</Command>
+		</Map_11_murovanka>
+
+		<Map_13_erlenberg>
+		</Map_13_erlenberg>
+
+		<Map_14_siegfried_line>
+		
+		
+			<Command>
+				<Title>Помогите в городе!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите в городе!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E7 F8 E9</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+			    <Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+		
+
+			</Command>
+
+			<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+	
+			</Command>
+
+			<Command>
+				<Title>Пoмогите на зеленке!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите на зеленке!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>F1 E2 F3</Ping>
+				
+
+			</Command>
+
+		
+		</Map_14_siegfried_line>
+
+		<Map_15_komarin>
+		</Map_15_komarin>
+
+		<Map_17_munchen>
+		</Map_17_munchen>
+
+		<Map_18_cliff>
+		</Map_18_cliff>
+
+		<Map_19_monastery>
+		
+		
+			<Command>
+				<Title>Помогите удержать кишку!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите удержать кишку!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>F7 E7</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Помогите в ухе!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите в ухе!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E2 F1</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+	
+			</Command>
+
+			<Command>
+				<Title>Плмогите занять монастырь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите занять монастырь!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E5 F5</Ping>
+				
+
+			</Command>
+
+		
+		
+		</Map_19_monastery>
+
+		<Map_22_slough>
+		</Map_22_slough>
+
+		<Map_23_westfeld>
+		</Map_23_westfeld>
+
+		<Map_28_desert>
+		</Map_28_desert>
+
+		<Map_29_el_hallouf>
+		
+		
+			<Command>
+				<Title>Помогите взять воду!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите взять воду!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>H7 H8</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Стойте у базы!</Title>
+				<Icon>Helpme</Icon>
+				<Text>Стойте у базы!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+	
+			</Command>
+
+			<Command>
+				<Title>Помогите взять гору!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите взять гору!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>A3 A2</Ping>
+				
+
+			</Command>
+
+		
+		
+		</Map_29_el_hallouf>
+
+		<Map_31_airfield>
+		</Map_31_airfield>
+
+		<Map_33_fjord>
+		
+		</Map_33_fjord>
+
+		<Map_34_Redshire>
+		</Map_34_Redshire>
+
+		<Map_35_steppes>
+		</Map_35_steppes>
+
+		<Map_36_fishing_bay>
+		
+		
+			<Command>
+				<Title>Помогите в городе!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите в городе!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E8 F8</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>Помогите на центре!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите на центре!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E4 F5</Ping>
+		
+
+			</Command>
+
+			<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+	
+			</Command>
+
+			<Command>
+				<Title>Помогите на зеленке!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите на зеленке!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>E1 F1</Ping>
+				
+
+			</Command>
+
+		
+		</Map_36_fishing_bay>
+
+		<Map_37_caucasus>
+		</Map_37_caucasus>
+
+		<Map_38_mannerheim_line>
+		<Command>
+			<Title>Вниз не спускайтесь!</Title>
+			<Icon>Helpme</Icon>
+			<Text>Вниз не спускайтесь!</Text>
+			<ChatMode>Team</ChatMode>
+			<Ping>F9</Ping>
+		</Command>
+		<Command>
+			<Title>Стойте здесь, наверх не лезьте!</Title>
+			<Icon>Helpme</Icon>
+			<Text>Стойте здесь, наверх не лезьте!!</Text>
+			<ChatMode>Team</ChatMode>
+			<Ping>H8</Ping>
+		</Command>
+		<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+			
+			<Command>
+				<Title>Помогите взять гору!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите взять гору!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+			
+			<Command>
+
+			    <Title>Помогите с зеленкой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите с зеленкой!</Text>
+				<ChatMode>Team</ChatMode>
+			
+			</Command>
+		</Map_38_mannerheim_line>
+
+		<Map_39_crimea>
+		</Map_39_crimea>
+
+		<Map_42_north_america>
+		</Map_42_north_america>
+
+		<Map_44_north_america>
+		</Map_44_north_america>
+
+		<Map_45_north_america>
+		</Map_45_north_america>
+
+		<Map_47_canada_a>
+		</Map_47_canada_a>
+
+		<Map_51_asia>
+		</Map_51_asia>
+
+		<!-- Эта секция грузится при отсутствии конфига под данную карту. 
+    Можно рассматривать как дополнение общего раздела меню. 
+    Раскомментировать для использования.-->
+		<!--
+    <Map_Default>
+    
+    </Map_Default>
+    -->
+	<Map_Default>
+		<Command>
+			<Title>Помогите с кишкой!</Title>
+			<Icon>Helpme</Icon>
+			<Command>HELPME</Command>
+			<Text>Помогите с кишкой!</Text>
+			<ChatMode>Team</ChatMode>
+		</Command>
+		<Command>
+			<Title>Помогите железку!</Title>
+			<Icon>Helpme</Icon>
+			<Command>HELPME</Command>
+			<Text>Помогите железку!</Text>
+			<ChatMode>Team</ChatMode>
+		</Command>
+		<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+				
+
+			</Command>
+			
+			<Command>
+				<Title>Помогите взять гору!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите взять гору!</Text>
+				<ChatMode>Team</ChatMode>
+				
+				
+
+			</Command>
+			
+			<Command>
+
+			    <Title>Помогите с зеленкой!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text>Помогите с зеленкой!</Text>
+				<ChatMode>Team</ChatMode>
+			
+			</Command>
+	</Map_Default>
+</MapCommands>
+  
+  <!-- Эти команды можно вызвать только по привязанному к ним сочетанию кнопок-->
+   <HotkeyOnlyCommands>
+	        
+			
+			<Command>
+				<Title>Молодца!</Title>
+				<Icon>Yes</Icon>
+				<Command></Command>
+				<Text>%(name)s (%(vehicle)s) , молодца!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_NUMPAD6</Hotkey>
+						
+			</Command>
+			
+  
+  </HotkeyOnlyCommands>
+  
+  <TankSpecificCommands>
+    <AMX_50_100>
+      <Alias>AutoloaderTank</Alias>
+    </AMX_50_100>   
+    
+    <AMX_13_90>
+      <Alias>AutoloaderTank</Alias>
+    </AMX_13_90> 
+	
+	<T71>
+      <Alias>AutoloaderTank</Alias>
+    </T71> 
+	
+	<T69>
+      <Alias>AutoloaderTank</Alias>
+    </T69> 
+	
+	<T54E1>
+      <Alias>AutoloaderTank</Alias>
+    </T54E1> 
+	
+	<T57_58>
+      <Alias>AutoloaderTank</Alias>
+    </T57_58> 
+	
+	<F10_AMX_50B>
+      <Alias>AutoloaderTank</Alias>
+    </F10_AMX_50B> 
+	
+	<AMX_50_120>
+      <Alias>AutoloaderTank</Alias>
+    </AMX_50_120>
+	
+	<Bat_Chatillon25t>
+      <Alias>AutoloaderTank</Alias>
+    </Bat_Chatillon25t>
+	
+	<Lorraine40t>
+      <Alias>AutoloaderTank</Alias>
+    </Lorraine40t>
+	
+	<AMX_50Fosh_155>
+      <Alias>AutoloaderTank</Alias>
+    </AMX_50Fosh_155>
+
+    <AutoloaderTank>
+      <CommonCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text>Спасибо за бой!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Оcталось снарядов барабане...</Title>
+				<Icon>Yes</Icon>
+				<Command></Command>
+				<Text> снарядов в барабане %(ammo)s </Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<Text>Осталось %(reload)s секунд!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_C</Hotkey>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+	
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+
+			</Command>
+
+		</CommonCommands>
+
+		<TeamCommands>
+			<Command>
+				<Title>Спасибо!</Title>
+				<Icon>Yes</Icon>
+				<Command></Command>
+				<Text>%(name)s (%(vehicle)s) , спасибо!</Text>
+				<ChatMode>Team</ChatMode>
+						
+			</Command>
+
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Command>TURNBACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+			</Command>
+
+			<Command>
+				<Title>Стой!</Title>
+				<Icon>Stop</Icon>
+				<Command>STOP</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Помоги!</Title>
+				<Icon>Helpmeex</Icon>
+				<Command>HELPMEEX</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Не подпирай!</Title>
+				<Icon>Turnback</Icon>
+				<Command></Command>
+				<Text>%(name)s (%(vehicle)s) , не подпирай!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_V</Hotkey>
+			</Command>
+
+			<Command>
+				<Title>Стой, я заряжаюсь!</Title>
+				<Icon>Stop</Icon>
+				<Command>STOP</Command>
+				<Text>Подожди, я заряжаюсь!  %(reload)s секунд!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+						<Command>
+				<Title>Го!</Title>
+				<Icon>No</Icon>
+				<Text>%(name)s %(vehicle)s,едь. Прийми дамаг я за тобой, прикрою!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_T</Hotkey>
+			</Command>
+			<Command>
+				<Title>Из прицела!</Title>
+				<Icon>No</Icon>
+				<Text>%(name)s %(vehicle)s, уйди из прицела!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_G</Hotkey>
+			</Command>
+		</TeamCommands>
+
+
+		<EnemyCommands>
+			<Command>
+				<Title>Так точно!!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<Text>Осталось %(reload)s секунд!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+
+			<Command>
+				<Title>Поддержите огнём!</Title>
+				<Icon>Support</Icon>
+				<Command>SUPPORTMEWITHFIRE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			
+			<Command>
+				<Title>Статистика игрока!</Title>
+				<Icon>No</Icon>
+				<Text>
+				Статистика игрока %(name)s %(vehicle)s :
+				Победы :%(winrate)s%% 
+				РЭ: %(eff)s
+				Бои: %(kbattles)s
+				</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_U</Hotkey>
+			</Command>	
+		</EnemyCommands>
+    </AutoloaderTank>
+    	
+  </TankSpecificCommands>
+  
+
+</RadialMenu.xml>

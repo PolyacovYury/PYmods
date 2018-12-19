@@ -1,0 +1,138 @@
+﻿{
+//  Задействовать данный конфиг
+    "enable" : true,
+//  К кому присоединить источники, прописанные в данном конфиге
+    "attachToPlayer" : true,
+    "attachToAlly" : false,
+    "attachToEnemy" : false,
+//  Информация о конфиге
+    "meta" : {
+        "en" : {
+            "name" : "<b>Tank flashlights</b>",
+            "desc" : " • Police flashlights\n{attachTo} • Co-author: Algiz"
+        },
+        "ru" : {
+            "name" : "<b>Мигалки для танков</b>",
+            "desc" : " • Полицейские проблесковые маячки\n{attachTo} • Соавтор: Algiz"
+        }
+    },
+    "FlashModel" : {
+//      Отображение данного источника
+        "visible" : true,
+//      Тип источника: omniLight, spotLight, model
+        "type" : "model",
+//      Место расположения: leftFront, rightFront, leftRear, rightRear, wheels_left, wheels_right, turret, hull
+        "place" : "turret",
+//      Режим работы: constant, stop, turn_left, turn_right, back, target
+        "mode" : "constant",
+//      Вращения осей координат в радианах Y X Z:
+//      вращение вектора без смещения координат
+        "preRotate" : [0.0, 0.0, 0.0],
+//      вращение системы координат
+        "postRotate" : [0.0, 0.0, 0.0],
+//      Сдвиги по осям координат (вправо/вверх/вперед)
+        "vect" : [0.0, 0.17, 0.0],
+//      Путь к присоединяемой модели
+        "path" : "../mods/configs/PYmods/LampLights/models/FlashLight/FlashLight.model",
+        "subLights" : {
+            "reflectorLeft" : {
+                "visible" : true,
+                "type" : "model",
+                "place" : "Red_node",
+                "mode" : "constant",
+                "preRotate" : [
+                               [0.0, [0.0, 0.0, 0.0]],
+                               [0.25, [1.5707, 0.0, 0.0]],
+                               [0.5, [3.1415, 0.0, 0.0]],
+                               [0.75, [4.7124, 0.0, 0.0]],
+                               [1.0, [6.2831, 0.0, 0.0]]
+                              ],
+                "postRotate" : [0.0, 0.0, 0.0],
+                "vect" : [0.0, 0.0, 0.0],
+                "path" : "../mods/configs/PYmods/LampLights/models/FlashLight/R_lamp.model",
+                "subLights" : {
+                    "subLightLeft" : {
+                        "visible" : true,
+                        "type" : "spotLight",
+                        "place" : "R_lamp_node",
+                        "mode" : "constant",
+                        "bright" : 1000,
+                        "preRotate" : [0.0, 0.0, 0.0],
+                        "postRotate" : [0.0, 0.0, 0.0],
+                        "vect" : [0.0, 0.0, 0.0],
+                        "innerRadius" : 5,
+                        "outerRadius" : 60,
+                        "ca" : 0.43,
+                        "cs" : true,
+                        "dur" : 1.0,
+                        "colour" : [255, 0, 0, 0]
+                    },
+                    "subLampLeft" : {
+                        "visible" : true,
+                        "type" : "omniLight",
+                        "place" : "R_lamp_node",
+                        "mode" : "constant",
+                        "bright" : 50,
+                        "preRotate" : [0.0, 0.0, 0.0],
+                        "postRotate" : [0.0, 0.0, 0.0],
+                        "vect" : [0, 0, 0.1],
+                        "innerRadius" : 0.1,
+                        "outerRadius" : 0.5,
+                        "cs" : true,
+                        "dur" : 1.0,
+                        "colour" : [255, 0, 0, 0]
+                    }
+                }
+            },
+            "reflectorRight" : {
+                "visible" : true,
+                "type" : "model",
+                "place" : "Blue_node",
+                "mode" : "constant",
+                "preRotate" : [
+                               [0.0, [0.0, 0.0, 0.0]],
+                               [0.25, [-1.5707, 0.0, 0.0]],
+                               [0.5, [-3.1415, 0.0, 0.0]],
+                               [0.75, [-4.7124, 0.0, 0.0]],
+                               [1.0, [-6.2831, 0.0, 0.0]]
+                              ],
+                "postRotate" : [0.0, 0.0, 0.0],
+                "vect" : [0.0, 0.0, 0.0],
+                "path" : "../mods/configs/PYmods/LampLights/models/FlashLight/B_lamp.model",
+                "subLights" : {
+                    "subLightRight" : {
+                        "visible" : true,
+                        "type" : "spotLight",
+                        "place" : "B_lamp_node",
+                        "mode" : "constant",
+                        "bright" : 2500,
+                        "preRotate" : [0.0, 0.0, 0.0],
+                        "postRotate" : [0.0, 0.0, 0.0],
+                        "vect" : [0.0, 0.0, 0.0],
+                        "innerRadius" : 5,
+                        "outerRadius" : 60,
+                        "ca" : 0.43,
+                        "cs" : true,
+                        "dur" : 1.0,
+                        "colour" : [0, 0, 255, 0]
+                    },
+                    "subLampRight" : {
+                        "visible" : true,
+                        "type" : "omniLight",
+                        "place" : "B_lamp_node",
+                        "mode" : "constant",
+                        "bright" : 150,
+                        "preRotate" : [0.0, 0.0, 0.0],
+                        "postRotate" : [0.0, 0.0, 0.0],
+                        "vect" : [0, 0, 0.1],
+                        "innerRadius" : 0.1,
+                        "outerRadius" : 0.5,
+                        "cs" : true,
+                        "dur" : 1.0,
+                        "colour" : [0, 0, 255, 0]
+                    }
+                }
+            }
+        }
+    }
+}

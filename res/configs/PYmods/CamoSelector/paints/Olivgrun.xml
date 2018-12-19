@@ -1,0 +1,21 @@
+<settings>
+    <paint>
+        <vehicleFilter>
+          <include>
+            <tags>	premium	</tags>
+            <levels>	8	</levels>
+          </include>
+          <include>
+            <levels>	10	</levels>
+          </include>
+          <exclude>
+            <vehicles>	china:Ch01_Type59_Gold germany:G119_Panzer58_BF germany:G114_Rheinmetall_Skorpian usa:A13_T34_hvy_BF ussr:R61_Object252_BF	</vehicles>
+          </exclude>
+        </vehicleFilter>
+        <userString>Olivgrun RAL 6003</userString>
+        <texture>	gui/maps/vehicles/repaints/china_base_color.png	</texture>
+        <color>	61 69 45 255	</color>
+        <gloss>	0.5	</gloss>
+        <metallic>	0.23	</metallic>
+    </paint>
+</settings>

@@ -1,0 +1,15 @@
+﻿{
+    "UI_activSunMod": "Контроль солнца ВКЛЮЧЕН",
+    "UI_deactivSunMod": "Контроль солнца ВЫКЛЮЧЕН",
+    "UI_description": "Контроллер солнца",
+    "UI_serviceChannelPopUpAll": "<b>{author}<font color=\"#cc9933\"> крутанул Землю!</font></b>",
+    "UI_serviceChannelPopUpAnd": "<b><font color=\"#cc9933\">И крутанул Землю!</font></b>",
+    "UI_setting_enableAtStartup_text": "Солнце контролируется по умолчанию",
+    "UI_setting_enableAtStartup_tooltip": "После начала боя положение солнца будет изменено автоматически.",
+    "UI_setting_enableMessage_text": "Включить сообщение в сервисном канале",
+    "UI_setting_enableMessage_tooltip": "Эта настройка позволит моду отправлять сообщение о себе в сервисный канал, если GUI не загружен.",
+    "UI_setting_hotkey_text": "Горячая клавиша контроллера",
+    "UI_setting_hotkey_tooltip": "Нажатие этой кнопки в бою переключит состояние солнца.",
+    "UI_setting_time_text": "Время, устанавливаемое Контроллером",
+    "UI_setting_time_tooltip": "На всех картах будет установлено это время дня.\n • 0:00 - поведение \"по-старому\".\n • 24:00 - текущее локальное время."
+}

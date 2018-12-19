@@ -1,0 +1,14 @@
+﻿{
+    "UI_description": "Ангарный Краскопульт",
+    "UI_restart": "Перезапуск",
+    "UI_restart_header": "Запрос перезапуска",
+    "UI_restart_reason_colourChanged": "изменен цвет текста",
+    "UI_restart_reason_modDisabled": "мод был выключен",
+    "UI_restart_reason_modEnabled": "мод был включен",
+    "UI_restart_text": "Ангарный Краскопульт: {reason}. Для применения настроек необходим перезапуск клиента.",
+    "UI_setting_colourCheck_text": "Цвет текстов в ангаре:",
+    "UI_setting_colour_text": "<font color='#%(colour)s'>Текущий цвет: #%(colour)s</font>",
+    "UI_setting_colour_tooltip": "В этот цвет будет покрашен текст в ангаре.\n\n<b>ВНИМАНИЕ!</b> Чтобы эта настройка вступила в силу, потребуется перезапуск игры.",
+    "UI_setting_crewColour_text": "Включить перекраску имен экипажа",
+    "UI_setting_crewColour_tooltip": "Имена и звания танкистов будут раскрашены, но в этом случае они некорректно отображаются в меню пересадки.\n\nЧтобы эта настройка вступила в силу, выберите другой танк."
+}

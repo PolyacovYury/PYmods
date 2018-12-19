@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/camouflages/SWIFT/settings.json": "res/configs/PYmods/CamoSelector/camouflages/SWIFT/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/SWIFT/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/SWIFT/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/SWIFT/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/SWIFT/texture.dds"
+    }
+}

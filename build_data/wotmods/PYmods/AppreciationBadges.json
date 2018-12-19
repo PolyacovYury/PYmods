@@ -1,0 +1,10 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/gui/AppreciationBadges/1005654291_28.png": "res/res/gui/AppreciationBadges/1005654291_28.png",
+        "res/gui/AppreciationBadges/4260379_28.png": "res/res/gui/AppreciationBadges/4260379_28.png",
+        "res/gui/AppreciationBadges/508211276_28.png": "res/res/gui/AppreciationBadges/508211276_28.png",
+        "res/scripts/client/gui/mods/mod_AppreciationBadges.pyc": "source/scripts/client/gui/mods/mod_AppreciationBadges.pyc"
+    }
+}

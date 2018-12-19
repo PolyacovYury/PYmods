@@ -1,0 +1,558 @@
+<?xml version="1.0"?>
+<!-- 
+CustomCommandRose by hedger // WOT id: tehHedger
+Конфигурационный файл мода "Кастомизируемая роза команд". 
+
+ВНИМАНИЕ! Через стандартный Блокнот конфиг лучше не редактировать, ломается. 
+Подойдёт WordPad или другой редактор простого текста.
+
+Конфигурация, повторяющая встроенную в игру.
+Автор: Matveychik89
+
+-->
+
+<RadialMenu.xml>
+  <MapMenuKey>KEY_LALT</MapMenuKey>
+  <MenuReloadHotkey>KEY_LCONTROL+KEY_F11</MenuReloadHotkey>
+  <HotkeyCommandDelay>250</HotkeyCommandDelay>
+  <CHAT_DELAY>550</CHAT_DELAY>
+  <TankMenu>
+		<CommonCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+			    <Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+		
+
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command> <!-- Удалите эту строчку, --> 
+        <!-- чтобы не было дублирования команды. 
+        При этом пропадает анимация перезарядки на мини-карте -->
+
+				<Text>Перезаряжаюсь %(reload)s секунд</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+	
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+
+			</Command>
+
+		</CommonCommands>
+
+		<TeamCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+						
+			</Command>
+
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Command>TURNBACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+				
+			</Command>
+
+			<Command>
+				<Title>Стой!</Title>
+				<Icon>Stop</Icon>
+				<Command>STOP</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Помоги!</Title>
+				<Icon>Helpmeex</Icon>
+				<Command>HELPMEEX</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>За мной!</Title>
+				<Icon>Followme</Icon>
+				<Command>FOLLOWME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</TeamCommands>
+
+
+		<EnemyCommands>
+			<Command>
+				<Title>Так точно!!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Поддержите огнём!</Title>
+				<Icon>Support</Icon>
+				<Command>SUPPORTMEWITHFIRE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</EnemyCommands>
+	</TankMenu>
+
+	<SPGMenu>
+		<CommonCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode> 
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</CommonCommands>
+
+		<TeamCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Command>TURNBACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Стой!</Title>
+				<Icon>Stop</Icon>
+				<Command>STOP</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Помоги!</Title>
+				<Icon>Helpmeex</Icon>
+				<Command>HELPMEEX</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>За мной!</Title>
+				<Icon>Followme</Icon>
+				<Command>FOLLOWME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</TeamCommands>
+
+		<EnemyCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Атакую!</Title>
+				<Icon>AttackSPG</Icon>
+				<Command>ATTACKENEMY</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</EnemyCommands>
+	</SPGMenu>
+
+	<!-- 
+  <lightTankMenu>
+    <TeamCommands>
+    </TeamCommands>
+    
+    <EnemyCommands>
+    </EnemyCommands>
+    
+    <CommonCommands>
+    </CommonCommands>
+  </lightTankMenu>
+  -->
+
+	<!-- 
+  <mediumTankMenu>
+    <TeamCommands>
+    </TeamCommands>
+    
+    <EnemyCommands>
+    </EnemyCommands>
+    
+    <CommonCommands>
+    </CommonCommands>
+  </mediumTankMenu>
+  -->
+
+	<!-- 
+  <heavyTankMenu>
+    <TeamCommands>
+    </TeamCommands>
+    
+    <EnemyCommands>
+    </EnemyCommands>
+    
+    <CommonCommands>
+    </CommonCommands>
+  </heavyTankMenu>
+  -->
+
+	<!-- 
+  <AT-SPGMenu>
+    <TeamCommands>
+    </TeamCommands>
+    
+    <EnemyCommands>
+    </EnemyCommands>
+    
+    <CommonCommands>
+    </CommonCommands>
+  </AT-SPGMenu>
+  -->
+
+	<MapCommands>
+		<Map_01_karelia>
+		</Map_01_karelia>
+
+		<Map_02_malinovka>
+    </Map_02_malinovka>
+
+		<Map_03_campania>
+		</Map_03_campania>
+
+		<Map_04_himmelsdorf>
+		</Map_04_himmelsdorf>
+
+		<Map_05_prohorovka>
+		</Map_05_prohorovka>
+
+		<Map_06_ensk>
+		</Map_06_ensk>
+
+		<Map_07_lakeville>
+		</Map_07_lakeville>
+
+		<Map_08_ruinberg>
+		</Map_08_ruinberg>
+
+		<Map_10_hills>
+		</Map_10_hills>
+
+		<Map_11_murovanka>
+		</Map_11_murovanka>
+
+		<Map_13_erlenberg>
+		</Map_13_erlenberg>
+
+		<Map_14_siegfried_line>
+		</Map_14_siegfried_line>
+
+		<Map_15_komarin>
+		</Map_15_komarin>
+
+		<Map_17_munchen>
+		</Map_17_munchen>
+
+		<Map_18_cliff>
+		</Map_18_cliff>
+
+		<Map_19_monastery>
+		</Map_19_monastery>
+
+		<Map_22_slough>
+		</Map_22_slough>
+
+		<Map_23_westfeld>
+		</Map_23_westfeld>
+
+		<Map_28_desert>
+		</Map_28_desert>
+
+		<Map_29_el_hallouf>
+		</Map_29_el_hallouf>
+
+		<Map_31_airfield>
+		</Map_31_airfield>
+
+		<Map_33_fjord>
+		</Map_33_fjord>
+
+		<Map_34_Redshire>
+		</Map_34_Redshire>
+
+		<Map_35_steppes>
+		</Map_35_steppes>
+
+		<Map_36_fishing_bay>
+		</Map_36_fishing_bay>
+
+		<Map_37_caucasus>
+		</Map_37_caucasus>
+
+		<Map_38_mannerheim_line>
+		</Map_38_mannerheim_line>
+
+		<Map_39_crimea>
+		</Map_39_crimea>
+
+		<Map_42_north_america>
+		</Map_42_north_america>
+
+		<Map_44_north_america>
+		</Map_44_north_america>
+
+		<Map_45_north_america>
+		</Map_45_north_america>
+
+		<Map_47_canada_a>
+		</Map_47_canada_a>
+
+		<Map_51_asia>
+		</Map_51_asia>
+
+		<Map_51_asia>
+		</Map_51_asia>
+
+		<Map_59_asia_great_wall>
+		</Map_59_asia_great_wall>
+
+		<Map_60_asia_miao>
+		</Map_60_asia_miao>
+
+		<Map_63_tundra>
+		</Map_63_tundra>
+
+		<Map_73_asia_korea>
+		</Map_73_asia_korea>
+
+		<Map_85_winter>
+		</Map_85_winter>
+
+		<!-- Эта секция грузится при отсутствии конфига под данную карту. 
+    Можно рассматривать как дополнение общего раздела меню. 
+    Раскомментировать для использования.-->
+    <Map_Default>
+
+<!-- =2= -->
+			<Command>
+				<Title>Быстро, Все на захват!</Title>
+				<Icon>Backtobase</Icon>
+				<Text>Быстро, Все на захват!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_F3</Hotkey>
+
+			</Command>		
+<!-- =1.= -->
+            <Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Text>Спартанцы в квадрате %(viewPos)s, в атаку!</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_F2</Hotkey>
+			</Command>
+			<Command>
+				<Title>Внимание!</Title>
+				<Icon>Support</Icon>
+				<Text>Внимание на квадрат %(viewPos)s.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<Command>
+				<Title>Рашнем</Title>
+				<Icon>Followme</Icon>
+				<Text>Давайте за мной, я принимаяю урон на себя, РАШНЕМ!.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<Command>
+				<Title>Из кустов</Title>
+				<Icon>Helpme</Icon>
+				<Text>Хватит прятаться по кустам, нужна помощь.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<Command>
+				<Title>Засветился!</Title>
+				<Icon>Turnback</Icon>
+				<Text>Я обнаружен!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+	</Map_Default>
+	</MapCommands>
+  
+  <!-- Эти команды можно вызвать только по привязанному к ним сочетанию кнопок-->
+  
+
+</RadialMenu.xml>

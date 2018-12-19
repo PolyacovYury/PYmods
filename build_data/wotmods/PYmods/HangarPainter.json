@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/scripts/client/helpers/i18n/HangarPainter.pyc": "source/scripts/client/helpers/i18n/HangarPainter.pyc"
+    }
+}

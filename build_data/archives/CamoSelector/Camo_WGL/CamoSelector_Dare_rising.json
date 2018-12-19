@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/camouflages/Dare_rising/settings.json": "res/configs/PYmods/CamoSelector/camouflages/Dare_rising/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/Dare_rising/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/Dare_rising/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/Dare_rising/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/Dare_rising/texture.dds"
+    }
+}

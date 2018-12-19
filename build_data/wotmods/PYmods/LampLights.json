@@ -1,0 +1,13 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/Axes/Axes.model": "res/res/Axes/Axes.model",
+        "res/Axes/Axes.primitives": "res/res/Axes/Axes.primitives",
+        "res/Axes/Axes.visual": "res/res/Axes/Axes.visual",
+        "res/Axes/Blue_Z.dds": "res/res/Axes/Blue_Z.dds",
+        "res/Axes/Green_Y.dds": "res/res/Axes/Green_Y.dds",
+        "res/Axes/Red_X.dds": "res/res/Axes/Red_X.dds",
+        "res/scripts/client/gui/mods/mod_LampLights.pyc": "source/scripts/client/gui/mods/mod_LampLights.pyc"
+    }
+}

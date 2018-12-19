@@ -1,0 +1,49 @@
+<settings xmlns:ussr="ussr" xmlns:germany="germany" xmlns:usa="usa" xmlns:china="china" xmlns:france="france" xmlns:uk="uk" xmlns:japan="japan" xmlns:czech="czech" xmlns:sweden="sweden">
+    <inscriptions></inscriptions>
+    <insigniaOnGun></insigniaOnGun>
+    <camouflageGroups>
+        <custom_camo>
+            <userString>	Custom Camo	</userString>
+        </custom_camo>
+    </camouflageGroups>
+    <camouflages>
+        <TeamsCamo01_ally>
+            <texture>	../mods/configs/PYmods/CamoSelector/camouflages/TeamsCamo01/ally.dds	</texture>
+            <priceFactor>	0.0	</priceFactor>
+            <invisibilityFactor>	1.0	</invisibilityFactor>
+            <description>		</description>
+            <id>	5100	</id>
+            <group>	custom_camo	</group>
+            <kind>	summer	</kind>
+            <notInShop>	True	</notInShop>
+            <colors>
+                <c0>217 217 217 255</c0>
+                <c1>45 123 189 255</c1>
+                <c2>0 46 98 255</c2>
+                <c3>255 255 255 0</c3>
+            </colors>
+            <tiling>
+                <all>	5 1 1 1	</all>
+            </tiling>
+        </TeamsCamo01_ally>
+        <TeamsCamo01_enemy>
+            <texture>	../mods/configs/PYmods/CamoSelector/camouflages/TeamsCamo01/enemy.dds	</texture>
+            <priceFactor>	0.0	</priceFactor>
+            <invisibilityFactor>	1.0	</invisibilityFactor>
+            <description>		</description>
+            <id>	5101	</id>
+            <group>	custom_camo	</group>
+            <kind>	summer	</kind>
+            <notInShop>	True	</notInShop>
+            <colors>
+                <c0>245 149 3 255</c0>
+                <c1>254 251 251 255</c1>
+                <c2>232 30 42 255</c2>
+                <c3>0 0 0 15</c3>
+            </colors>
+            <tiling>
+                <all>	1 1 1 1	</all>
+            </tiling>
+        </TeamsCamo01_enemy>
+    </camouflages>
+</settings>

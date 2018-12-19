@@ -1,0 +1,10 @@
+﻿{
+    "UI_setting_iconFormat_text": "Icon format",
+    "UI_setting_iconFormat_tooltip": "Format of vehicle class icon that gets put before vehicle names.\n%(colour)s: \"green\" if vehicle is ally else \"red\".\n%(classTag)s: gets replaced by vehicle class tag. Variants: \"lightTank\", \"mediumTank\", \"heavyTank\", \"SPG\", \"AT-SPG\" (case insensitive).",
+    "UI_setting_removeNicknames_all": "All",
+    "UI_setting_removeNicknames_none": "None",
+    "UI_setting_removeNicknames_smart": "Smart",
+    "UI_setting_removeNicknames_text": "Remove nicknames",
+    "UI_setting_removeNicknames_tooltip": "Nicknames in battle chat, fading messages and other places are cut off. Modes:\n<b>None</b>: nicknames are not cut off.\n<b>Smart</b>: nicknames for friends, squad mates and non-random allies are preserved.\n<b>All</b>: all nicknames are cut off.",
+    "name": "Ingame GUI text tweaks"
+}

@@ -1,0 +1,34 @@
+﻿{
+    "textFields": {
+        "1text": {
+            "align": "center",
+            "leftText": "<font face='$FieldFont' color='#FFFFFF' size='11'>%(curHealth)s/%(maxHealth)s</font>",
+            "leftX": 111,
+            "leftY": 3,
+            "rightText": "<font face='$FieldFont' color='#FFFFFF' size='11'>%(curHealth)s/%(maxHealth)s</font>",
+            "rightX": -115,
+            "rightY": 3
+        },
+        "2img": {
+            "align": "left",
+            "hideIfDead": true,
+            "leftText": "<img src='img://../mods/configs/PYmods/PlayersPanelHP/icons/hp_alive_l.png' width='%(barWidth)d' height='14'>",
+            "leftWidth": 72,
+            "leftX": 75,
+            "leftY": 3,
+            "rightText": "<img src='img://../mods/configs/PYmods/PlayersPanelHP/icons/hp_alive_r.png' width='%(barWidth)d' height='14'>",
+            "rightWidth": 72,
+            "rightX": -151,
+            "rightY": 3
+        },
+        "3bg": {
+            "align": "left",
+            "leftText": "<img src='img://../mods/configs/PYmods/PlayersPanelHP/icons/hp_bg.png' width='70' height='12'>",
+            "leftX": 76,
+            "leftY": 4,
+            "rightText": "<img src='img://../mods/configs/PYmods/PlayersPanelHP/icons/hp_bg.png' width='70' height='12'>",
+            "rightX": -150,
+            "rightY": 4
+        }
+    }
+}

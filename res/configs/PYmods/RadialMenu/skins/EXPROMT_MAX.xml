@@ -1,0 +1,724 @@
+<?xml version="1.0"?>
+<!--
+CustomCommandRose by hedger // WOT id: tehHedger
+Конфигурационный файл мода "Кастомизируемая роза команд".
+
+ВНИМАНИЕ! Через стандартный Блокнот конфиг лучше не редактировать, ломается.
+Подойдёт WordPad или другой редактор простого текста.
+
+Конфигурация, от CEM_TPEHEP & EXPROMT_MAX v 3.0     22.10.2013
+
+-->
+
+<RadialMenu.xml>
+  <MapMenuKey>KEY_LALT</MapMenuKey>
+  <MenuReloadHotkey>KEY_LCONTROL+KEY_F11</MenuReloadHotkey>
+  <HotkeyCommandDelay>250</HotkeyCommandDelay>
+  <TankMenu>
+<!-- =Команды, когда прицел ни на кого не наведен= -->
+        <CommonCommands>
+
+<!-- =5.Тролл-меню= -->
+            <Command>
+                <Title>Тролл-ПРОВОКАТОР</Title>
+                <Icon>Attack</Icon>
+                <Text>%(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_P</Hotkey>                           <!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+                <Variants>
+                    <Variant>Сливаться стадом или по одному предпочитаете?</Variant>
+                    <Variant>Нубы, привет!</Variant>
+                    <Variant>Да прибудет с вами...НУБОСИЛА!!!</Variant>
+                    <Variant>Но пасаран, засранцы!</Variant>
+                    <Variant>Нубы, я вас боюсь!</Variant>
+                    <Variant>Берите меня к себе, а то у вас одни олени!</Variant>
+                </Variants>
+            </Command>
+<!-- =6.Тролл-прикол= -->
+            <Command>
+                <Title>Тролл-ПРИКОЛ</Title>
+                <Icon>Attack</Icon>
+                <Text>%(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_O</Hotkey>      <!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+                <Variants>
+                    <Variant>Трололо, Трололо я водитель НЛО" :)</Variant>
+                    <Variant>Меня не светить, меня это бесит!</Variant>
+                    <Variant>У меня сегодня заряжающий  бухает- сучек всем голду раздает))</Variant>                    
+                    <Variant>Повернитесь к респу передом а ко мне задом, я голду забыл взять. :) :) :)</Variant>
+                    <Variant>Экипаж сегодня пятый перк обмывает, в танке трезвые только я и дизель))</Variant>
+                    <Variant>Нубил, нублю и буду нубов бить и дальше!</Variant>
+                    <Variant>Я ненадолго, на пару фрагов. И пойду с жены звезду снимать! :)</Variant>
+                </Variants>
+            </Command>
+<!-- =1. Тролл-Ответы= -->
+            <Command>
+                <Title>Тролл-ОТВЕТЫ</Title>
+                <Icon>Attack</Icon>
+                <Text>%(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_I</Hotkey> <!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+                <NoRandomChoice>1</NoRandomChoice>
+                <Variants>
+                    <Variant>Нубам слова не давали!</Variant>
+                    <Variant>Малыш, расслабся, не пыхти ))</Variant>
+                    <Variant>В монитор слюной не брызгай, замкнет! А папа новый больше не купит!</Variant>
+                    <Variant>Приходи, я тебе БАРБАРИСКУ за щеку дам ))</Variant>
+                    <Variant>...Сказало днище</Variant>
+                    <Variant>Дуло залепи, НУП !</Variant>
+                    <Variant>Убейся АП стол, нуб!</Variant>
+                    <Variant>Ты заблуждаешься настолько глубоко, что заблуждаешься даже насчёт глубины своего заблуждения.</Variant>
+                    <Variant>Ты думал щас ты каак скажешь, будет много крутых комментариев, все тебя будут хвалить и ты забудешь как тебя в школе обижают?</Variant>
+                    <Variant>Ух ты! А РАК писать клешнёй умеет!</Variant>
+                </Variants>
+            </Command>
+<!-- =2.Перезаряжаюсь= -->
+            <Command>
+                <Title>Перезаряжаюсь!</Title>
+                <Icon>Reload</Icon>
+                <Command>RELOADINGGUN</Command>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_F8</Hotkey><!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+            </Command>
+<!-- =3.Нужна помощь, один не справлюсь!= -->
+            <Command>
+                <Title>Нужна помощь, один не справлюсь!</Title>
+                <Icon>Helpme</Icon>
+                <Text>Нужна помощь, один не справлюсь!</Text>
+                <ChatMode>Team</ChatMode>
+                <Ping>%(viewPos)s</Ping>
+                <Hotkey>KEY_F7</Hotkey> <!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+            </Command>
+<!-- =4.Продавим здесь= -->
+            <Command>
+                <Title>Атака-Продавим здесь</Title>
+                <Icon>Attack</Icon>
+                <Text>Атакуем вместе- продавим здесь!</Text>
+                <ChatMode>Team</ChatMode>
+                <Ping>%(viewPos)s</Ping>
+            </Command>
+<!-- =2.Перезаряжаюсь222= -->
+            <Command>
+                <Title>Перезаряжаюсь!(2)</Title>
+                <Icon>Reload</Icon>
+                
+                <Text>Перезаряжаюсь, осталось %(reload)s сек. Прикройте!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_C</Hotkey><!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+            </Command>
+
+        </CommonCommands>
+
+<!-- =Команды когда прицел наведен на союзника== -->
+        <TeamCommands>
+<!-- =4.Подсвети я прикрою!= -->
+            <Command>
+                <Title>Подсвети, я прикрою!</Title>
+                <Icon>Followme</Icon>
+                <Text>%(name)s Подсвети, я прикрою. Заряжен, сведен- накину ему!</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+<!-- =5.Гуслим Фокусим!= -->
+            <Command>
+                <Title>Гуслим Фокусим вместе!</Title>
+                <Icon>Support</Icon>
+                <Text>%(name)s Гуслим Фокусим вместе!</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+<!-- =6.Отъедь, ты мешаешь!= -->
+            <Command>
+                <Title>Отъедь, ты мешаешь!</Title>
+                <Icon>Stop</Icon>
+                <Text>%(name)s Отъедь, ты мешаешь! Могу зацепить тебя!</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+<!-- =3.Назад, не лезь!= -->
+            <Command>
+                <Title>Назад, не лезь!</Title>
+                <Icon>Stop</Icon>
+                <Text>%(name)s Назад не лезь.</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+            </Command>
+<!-- =2.Вперед, Атакуем вместе!= -->
+            <Command>
+                <Title>Вперед, Атакуем вместе!</Title>
+                <Icon>Followme</Icon>
+                <Text>%(name)s Вперед, Атакуем вместе!</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+<!-- =1.Не подпирай!= -->
+            <Command>
+                <Title>Не подпирай!</Title>
+                <Icon>Stop</Icon>
+                <Text>%(name)s Не подпирай!</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+
+        </TeamCommands>
+
+<!-- =Команды когда прицел наведен на врага= -->
+        <EnemyCommands>
+<!-- =1.Тролл БЕГУЩИМ= -->
+            <Command>
+                <Title>Тролл-БЕГУЩИМ</Title>
+                <Icon>Yes</Icon>
+                <Text>%(name)s %(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_L</Hotkey>
+                <NoRandomChoice>1</NoRandomChoice>
+                <Variants>
+                    <Variant>Не дергайся, я на тебе стату поднимаю. ;)</Variant>
+                    <Variant>Бегать от меня безполезно- пойдешь в ангар уставшим ))</Variant>
+                    <Variant>Двигайся, двигайся- вдруг не попаду! ;)</Variant>
+                    <Variant>Бежишь не как олень, а как лань прямо:)</Variant>
+                    <Variant>Куда спешишь, псих?</Variant>
+                    <Variant>Стой смирно! Уважай труд моего наводчика!</Variant>
+                </Variants>
+            </Command>
+<!-- =Личка-тролл= -->
+            <Command>
+                <Title>Тролл-ЛИЧКА</Title>
+                <Icon>Attack</Icon>
+                <Text>%(name)s %(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_K</Hotkey>      <!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+                <Variants>
+                    <Variant>Олень, это ты в реплеях про нубов снимаешься? ;)</Variant>
+                    <Variant>Ты почему такой трус, ты же НУБ? ;)</Variant>
+                    <Variant>Не вздумай слиться- ты мне для медальки нужен! ;)</Variant>
+                    <Variant>Отверни чуть башню, я тебе подзатыльник влеплю!</Variant>
+                    <Variant>Смотри в мою сторону, когда я с тобой разговариваю!</Variant>
+                    <Variant>Стой смирно, я тебе в люк целюсь!</Variant>
+                    <Variant>У тебя на броне муха. Стой, смирно- я ее сшибу! :)</Variant>
+                    <Variant>Закрой люк, голда залетит !</Variant>
+                    <Variant>Тебе мехвода вынести? ;)</Variant>
+                    <Variant>У тебя гусянки крепкие? А ремкомплект остался?</Variant>
+                    <Variant>Ты че, компас- че дулом так крутишь?</Variant>
+                    <Variant>Не спеши сливаться, дай посмаковать.</Variant>
+                    <Variant>Не дергайся, я на тебе стату поднимаю. ;)</Variant>
+                    <Variant>Не ори, арта тебе не поможет!</Variant>
+                    <Variant>Не ссы, я сам боюсь! ;)</Variant>
+                    <Variant>По стате ты вроде ПАПИК, а по игре- сынишка...ссыкунишка!</Variant>
+                </Variants>
+            </Command>
+<!-- =6. В ангар= -->
+            <Command>
+                <Title>Тролл-МЕРТВЫМ</Title>
+                <Icon>Yes</Icon>
+                <Text>%(name)s %(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_J</Hotkey>
+                <Variants>
+                    <Variant>Можешь начинать писать, какая я су.а</Variant>
+                    <Variant>Иди в ангар и подумай, над своим поведением!</Variant>
+                    <Variant>Спасибо тебе за мою стату!</Variant>
+                    <Variant>Прости братиш, обстоятельства ))</Variant>
+                    <Variant>Ты лучший нуб, которого я грохнул!</Variant>
+                    <Variant>Не иди в ангар, ругай свою арту! :)</Variant>
+                </Variants>
+            </Command>
+<!-- =3.Добейте его!= -->
+            <Command>
+                <Title>Добейте его!</Title>
+                <Icon>Support</Icon>
+                <Text>Добейте %(name)s (%(vehicle)s) !</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+<!-- =2.Загуслил, Поддержите огнём!= -->
+            <Command>
+                <Title>Загуслил его, Поддержите огнём! </Title>
+                <Icon>Support</Icon>
+                <Text>Загуслил (%(vehicle)s) Поддержите огнём!</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+<!-- =1.Атакую сам!= -->
+            <Command>
+                <Title>Убью сам!</Title>
+                <Icon>Attack</Icon>
+                <Text>Фокус на %(name)s (%(vehicle)s) !</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_E</Hotkey>
+            </Command>
+
+        </EnemyCommands>
+
+    </TankMenu>
+
+        <SPGMenu>
+<!-- =АРТА - Когда прицел ни на кого не наведен==АРТА .АРТА .АРТА .АРТА .АРТА .АРТА .АРТА .АРТА .АРТА .АРТА .АРТА .АРТА .АРТА . - Когда прицел ни на кого не наведен==АРТА - Когда прицел ни на кого не наведен==АРТА - Когда прицел ни на кого не наведен==АРТА - Когда прицел ни на кого не наведен= -->
+        <CommonCommands>
+<!-- =5.Тролл-меню= -->
+            <Command>
+                <Title>Тролл-ПРОВОКАТОР</Title>
+                <Icon>Attack</Icon>
+                <Text>%(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_P</Hotkey>      <!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+                <Variants>
+                    <Variant>Печеньки, Печеньки..</Variant>
+                    <Variant>Сливаться стадом или по одному предпочитаете?</Variant>
+                    <Variant>Но пасаран, засранцы!</Variant>
+                    <Variant>Да прибудет с вами...НУБОСИЛА!!!</Variant>
+                    <Variant>Нубы, я вас боюсь!</Variant>                    
+                    <Variant>А у вас маркеры и стата одним цветом :) :) :)</Variant>
+                    <Variant>Берите меня к себе, а то у вас одни олени!</Variant>
+                </Variants>
+            </Command>
+<!-- =6.Тролл-прикол= -->
+            <Command>
+                <Title>Тролл-ПРИКОЛ</Title>
+                <Icon>Attack</Icon>
+                <Text>%(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_O</Hotkey>      <!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+                <Variants>
+                    <Variant>НУБО-СИЛА ОЛЕНЯ ПО ПОЛЮ НОСИЛА, А ВЕДЬ МАМА ПРОСИЛА -НЕ СЛИВАЙСЯ, СЫНА! :)</Variant>
+                    <Variant>Меня не светить, меня это бесит!</Variant>
+                    <Variant> Ща поем и буду многокнопочным! :)</Variant>                    
+                    <Variant>Трололо, Трололо я водитель НЛО" :)</Variant>
+                    <Variant>У меня экипаж пятый перк обмывает, так что трезвые в танке только я и дизель ))</Variant>
+                    <Variant>Повернитесь к респу передом а ко мне задом, я голду забыл взять. :) </Variant>                
+                    <Variant>У меня сегодня заряжающий  бухает! Паршивец, голду всем красным раздает!</Variant>
+                    <Variant>Нубил, нублю и буду нубов бить и дальше!</Variant>
+                    <Variant>Я ненадолго, на пару фрагов. И пойду с жены звезду снимать! :)</Variant>
+                </Variants>
+            </Command>
+<!-- =1. Тролл-Ответы= -->
+            <Command>
+                <Title>Тролл-ОТВЕТЫ</Title>
+                <Icon>Attack</Icon>
+                <Text>%(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_I</Hotkey> <!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+                <NoRandomChoice>1</NoRandomChoice>
+                <Variants>
+                    <Variant>Нубам слова не давали!</Variant>
+                    <Variant>Малыш, расслабся, не пыхти )) </Variant>
+                    <Variant>В монитор слюной не брызгай, замкнет! А папа новый больше не купит!</Variant>
+                    <Variant>Приходи, я тебе БАРБАРИСКУ за щеку дам ))</Variant>
+                    <Variant>...Сказало днище</Variant>
+                    <Variant>Дуло залепи, НУП !</Variant>
+                    <Variant>Убейся АП стол, нуб!</Variant>
+                    <Variant>Ты заблуждаешься настолько глубоко, что заблуждаешься даже насчёт глубины своего заблуждения.</Variant>
+                    <Variant>Ты думал щас ты каак скажешь, будет много крутых комментариев, все тебя будут хвалить и ты забудешь как тебя в школе обижают?</Variant>
+                    <Variant>Ух ты! А РАК писать клешнёй умеет!</Variant>
+                </Variants>
+            </Command>
+<!-- =3.Перезаряжаюсь= -->
+            <Command>
+                <Title>Перезаряжаюсь!</Title>
+                <Icon>Reload</Icon>
+                
+                <Text>Перезаряжаюсь, осталось %(reload)s сек!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_F8</Hotkey><!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+            </Command>
+<!-- =.2Заряжен, свелся светаните= -->
+            <Command>
+                <Title>Свелся- светаните!</Title>
+                <Icon>AttackSPG</Icon>
+                <Text>Заряжен, свелся на квадрат %(viewPos)s, Дайте свет!</Text>
+                <ChatMode>Team</ChatMode>
+                <Ping>%(viewPos)s</Ping>
+            </Command>
+<!-- =3.Прикройте арту= -->
+            <Command>
+                <Title>Прикройте!</Title>
+                <Icon>Helpme</Icon>
+                <Command>HELPME</Command>
+                <Text>Прикройте, а то останетесь без арты!</Text>
+                <Ping>%(ownPos)s</Ping>
+                <ChatMode>Team</ChatMode>
+            </Command>
+        </CommonCommands>
+<!-- =2.Перезаряжаюсь222= -->
+            <Command>
+                <Title>Перезаряжаюсь!</Title>
+                <Icon>Reload</Icon>
+                
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_C</Hotkey><!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+            </Command>
+<!-- =Команды когда прицел наведен на союзника= -->
+        <TeamCommands>
+<!-- =4.Подсвети я прикрою!= -->
+            <Command>
+                <Title>Атакуй, я прикрою!</Title>
+                <Icon>Followme</Icon>
+                <Text>%(name)s Заряжен, свелся. Подсвети, я накину!</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+<!-- =2.Просто подсвети!= -->
+            <Command>
+                <Title>Светани и назад</Title>
+                <Icon>Turnback</Icon>
+                <Text>%(name)s Заряжен, свелся. Светани и назад, сам ему накину!</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+<!-- =5.Поддержи огнем!= -->
+            <Command>
+                <Title>Добей!</Title>
+                <Icon>Support</Icon>
+                <Text>%(name)s Сейчас кину, добей его!</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+<!-- =6.Отъедь, ты мешаешь!= -->
+            <Command>
+                <Title>Отъедь, ты мешаешь!</Title>
+                <Icon>Turnback</Icon>
+                <Command>TURNBACK</Command>
+                <Text>%(name)s Отъедь, ты мешаешь! Могу тебя зацепить! </Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+<!-- =3.Назад, не лезь!= -->
+            <Command>
+                <Title>Не лезь!</Title>
+                <Icon>Turnback</Icon>
+                <Text>%(name)s Назад, не лезь! Там не достану.</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+
+<!-- =1.Трус!= -->
+            <Command>
+                <Title>Прикрой!</Title>
+                <Icon>Helpme</Icon>
+                <Text>%(name)s Ты еще за меня спрячся</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+
+        </TeamCommands>
+
+<!-- =Команды когда прицел наведен на врага= -->
+        <EnemyCommands>
+<!-- =1.Тролл БЕГУЩИМ= -->
+            <Command>
+                <Title>Тролл-БЕГУЩИМ</Title>
+                <Icon>Yes</Icon>
+                <Text>%(name)s %(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_L</Hotkey>
+                <NoRandomChoice>1</NoRandomChoice>
+                <Variants>
+                    <Variant>Стой смирно! Уважай труд моего наводчика!</Variant>
+                    <Variant>Бежишь не как олень, а как лань прямо:)</Variant>
+                    <Variant>Куда спешишь, псих?</Variant>
+                    <Variant>Двигайся, двигайся- вдруг не попаду! ;)</Variant>
+                    <Variant>Не дергайся, я на тебе стату поднимаю. ;)</Variant>
+                </Variants>
+            </Command>
+<!-- =Личка-тролл= -->
+            <Command>
+                <Title>Тролл-ЛИЧКА</Title>
+                <Icon>Yes</Icon>
+                <Text>%(name)s %(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_K</Hotkey>  <!-- =Ставим свою горячую клавишу(использовать только БОЛЬШИЕ буквы и только латинские= -->
+                <NoRandomChoice>1</NoRandomChoice>
+                <Variants>
+                    <Variant>Олень, это ты в реплеях про нубов снимаешься? ;)</Variant>
+                    <Variant>У тебя 2,15 секунды закопаться- фугас в полете! :) :) :)</Variant>
+                    <Variant>Ты почему такой трус, ты же НУБ? :)</Variant>
+                    <Variant>Не вздумай слиться- ты мне для медальки нужен! ;)</Variant>
+                    <Variant>Смотри в мою сторону, когда я с тобой разговариваю!</Variant>
+                    <Variant>Стой смирно, я тебе в люк закину!</Variant>
+                    <Variant>У тебя на броне муха. Стой, смирно- я ее сшибу! :)</Variant>
+                    <Variant>Закрой люк, фугас прилетит !</Variant>
+                    <Variant>Мой пламенный привет в твой чугунный башка</Variant>
+                    <Variant>Тебе мехвода вынести? ;)</Variant>
+                    <Variant>У тебя гусянки крепкие? А ремкомплект остался?</Variant>
+                    <Variant>Ты че, компас- че дулом так крутишь?</Variant>
+                    <Variant>Не спеши сливаться, дай посмаковать. :)</Variant>
+                    <Variant>Не дергайся, я на тебе стату поднимаю. ;)</Variant>
+                    <Variant>Не ори, арта тебе не поможет!</Variant>
+                    <Variant>Отверни чуть башню, я тебе подзатыльник влеплю.</Variant>
+                    <Variant>По стате ты вроде ПАПИК, а по игре- сынишка...ссыкунишка!</Variant>
+                </Variants>
+            </Command>
+<!-- =6. В ангар иди= -->
+            <Command>
+                <Title>Тролл-МЕРТВЫМ</Title>
+                <Icon>Yes</Icon>
+                <Text>%(name)s %(randpart)s</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_J</Hotkey>
+                <NoRandomChoice>1</NoRandomChoice>
+                <Variants>
+                    <Variant>Можешь начинать писать, какая я су.а</Variant>
+                    <Variant>Спасибо тебе за мою стату!</Variant>
+                    <Variant>Иди в ангар и подумай, над своим поведением!</Variant>
+                    <Variant>Ты лучший нуб, которого я грохнул!</Variant>
+                    <Variant>Прости братишь, обстоятельства...)))</Variant>
+                    <Variant>Не иди в ангар, ругай свою арту! :)</Variant>
+                </Variants>
+            </Command>
+<!-- =3.Добейте его!= -->
+            <Command>
+                <Title>Добейте его!</Title>
+                <Icon>Support</Icon>
+                <Text>Добейте %(name)s (%(vehicle)s) !</Text>
+                <ChatMode>Team</ChatMode>
+            </Command>
+<!-- =2.Загуслил, Поддержите огнём!= -->
+            <Command>
+                <Title>Фокусим</Title>
+                <Icon>Support</Icon>
+                <Command>SUPPORTMEWITHFIRE</Command>
+                <Text>Добейте его (%(vehicle)s)! </Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_T</Hotkey>
+            </Command>
+<!-- =4.Убью сам!= -->
+            <Command>
+                <Title>Убью сам!</Title>
+                <Icon>Attack</Icon>
+                <Text>Убью сам, не трогать %(name)s (%(vehicle)s) !</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+            </Command>
+
+        </EnemyCommands>
+    </SPGMenu>
+
+
+    <!--
+  <lightTankMenu>
+    <TeamCommands>
+    </TeamCommands>
+
+    <EnemyCommands>
+    </EnemyCommands>
+
+    <CommonCommands>
+    </CommonCommands>
+  </lightTankMenu>
+  -->
+
+    <!--
+  <mediumTankMenu>
+    <TeamCommands>
+    </TeamCommands>
+
+    <EnemyCommands>
+    </EnemyCommands>
+
+    <CommonCommands>
+    </CommonCommands>
+  </mediumTankMenu>
+  -->
+
+    <!--
+  <heavyTankMenu>
+    <TeamCommands>
+    </TeamCommands>
+
+    <EnemyCommands>
+    </EnemyCommands>
+
+    <CommonCommands>
+    </CommonCommands>
+  </heavyTankMenu>
+  -->
+
+    <!--
+  <AT-SPGMenu>
+    <TeamCommands>
+    </TeamCommands>
+
+    <EnemyCommands>
+    </EnemyCommands>
+
+    <CommonCommands>
+    </CommonCommands>
+  </AT-SPGMenu>
+  -->
+
+    <!--Дополнительное меню команд на LALT+Z.-->
+<MapCommands>
+
+    <Map_Default>
+
+<!-- =4= -->
+            <Command>
+                <Title>Я на гусле, Прикройте!</Title>
+                <Icon>Support</Icon>
+                <Text>Я на гусле, Прикройте!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+                <Ping>%(ownPos)s</Ping>
+
+            </Command>
+<!-- =5= -->
+        <Command>
+            <Title>У них светят в квадрате --</Title>
+            <Icon>Reload</Icon>
+            <Text>У них светят в квадрате %(ownPos)s</Text>
+            <ChatMode>Team</ChatMode>
+            <Hotkey>KEY_</Hotkey>
+
+        </Command>
+<!-- =6= -->
+            <Command>
+                <Title>Стоим, сами приедут</Title>
+                <Icon>Stop</Icon>
+                <Text>Стоим, сами приедут!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+                <Ping>%(ownPos)s</Ping>
+            </Command>
+<!-- =3= -->
+            <Command>
+                <Title>Не лезем, Дефим!</Title>
+                <Icon>Stop</Icon>
+                <Text>Не лезем, Дефим!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+
+            </Command>
+<!-- =2= -->
+            <Command>
+                <Title>Быстро, Все на захват!</Title>
+                <Icon>Backtobase</Icon>
+                <Text>Быстро, Все на захват!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+
+            </Command>
+<!-- =1.= -->
+            <Command>
+                <Title>В атаку!</Title>
+                <Icon>Attack</Icon>
+                <Text>В атаку!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+            </Command>
+    </Map_Default>
+</MapCommands>
+<!-- Эти команды можно вызвать только по привязанному к ним сочетанию кнопок
+ Первые 6 дублируются так как привязка к ромашке номер 2-->
+  <HotkeyOnlyCommands>
+  <!-- =4= -->
+            <Command>
+                <Title>Я на гусле, Прикройте!</Title>
+                <Icon>Support</Icon>
+                <Text>Я на гусле, Прикройте!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+                <Ping>%(ownPos)s</Ping>
+
+            </Command>
+<!-- =5= -->
+        <Command>
+            <Title>У них светят в квадрате --</Title>
+            <Icon>Reload</Icon>
+            <Text>У них светят в квадрате %(ownPos)s</Text>
+            <ChatMode>Team</ChatMode>
+            <Hotkey>KEY_</Hotkey>
+
+        </Command>
+<!-- =6= -->
+            <Command>
+                <Title>Стоим, сами приедут</Title>
+                <Icon>Stop</Icon>
+                <Text>Стоим, сами приедут!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+                <Ping>%(ownPos)s</Ping>
+            </Command>
+<!-- =3= -->
+            <Command>
+                <Title>Не лезем, Дефим!</Title>
+                <Icon>Stop</Icon>
+                <Text>Не лезем, Дефим!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+
+            </Command>
+<!-- =2= -->
+            <Command>
+                <Title>Быстро, Все на захват!</Title>
+                <Icon>Backtobase</Icon>
+                <Text>Быстро, Все на захват!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+
+            </Command>
+<!-- =1.= -->
+            <Command>
+                <Title>В атаку!</Title>
+                <Icon>Attack</Icon>
+                <Text>В атаку!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_</Hotkey>
+            </Command>
+<!-- Команды на горячих клавишах-->
+<!-- =F8= -->
+            <Command>
+                <Title>Перезаряжаюсь!</Title>
+                <Icon>Reload</Icon>
+                <Text>Перезаряжаюсь, осталось %(reload)s сек!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_F8</Hotkey>
+            </Command>
+<!-- =Z+1= -->
+            <Command>
+                <Title>Всем спасибо! Отличный бой!</Title>
+                <Icon>Attack</Icon>
+                <Text>Всем спасибо! Отличный бой!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_Z+KEY_1</Hotkey>
+            </Command>
+<!-- =Z+2= -->
+            <Command>
+                <Title>Блин, прости!</Title>
+                <Icon>Attack</Icon>
+                <Text>Блин, прости!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_Z+KEY_2</Hotkey>
+            </Command>
+<!-- =Z+3= -->
+            <Command>
+                <Title>Снаряды кончились :(</Title>
+                <Icon>Attack</Icon>
+                <Text>Снаряды кончились :(</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_Z+KEY_3</Hotkey>
+            </Command>
+<!-- =Z+4= -->
+            <Command>
+                <Title>Я дно</Title>
+                <Icon>Attack</Icon>
+                <Text>Я дно</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_Z+KEY_4</Hotkey>
+            </Command>
+<!-- =Z+5= -->
+            <Command>
+                <Title>Я на гору</Title>
+                <Icon>Attack</Icon>
+                <Text>Я на гору</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_Z+KEY_5</Hotkey>
+            </Command>
+<!-- =Z+6= -->
+            <Command>
+                <Title>Ну вашу мать А!</Title>
+                <Icon>Attack</Icon>
+                <Text>Ну вашу мать А!</Text>
+                <ChatMode>Team</ChatMode>
+                <Hotkey>KEY_Z+KEY_6</Hotkey>
+            </Command>
+<!-- =Z+7= -->
+            <Command>
+                <Title>У нас команда оленей!</Title>
+                <Icon>Attack</Icon>
+                <Text>У нас команда оленей!</Text>
+                <ChatMode>All</ChatMode>
+                <Hotkey>KEY_Z+KEY_7</Hotkey>
+            </Command>
+
+</HotkeyOnlyCommands>
+
+
+
+</RadialMenu.xml>

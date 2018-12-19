@@ -1,0 +1,14 @@
+﻿{
+    "UI_description": "Hangar Painter",
+    "UI_restart": "Restart",
+    "UI_restart_header": "Restart request",
+    "UI_restart_reason_colourChanged": "text colour was changed",
+    "UI_restart_reason_modDisabled": "mod was disabled",
+    "UI_restart_reason_modEnabled": "mod was enabled",
+    "UI_restart_text": "Hangar Painter: {reason}. Client restart required to accept changes.",
+    "UI_setting_colourCheck_text": "Hangar texts colour:",
+    "UI_setting_colour_text": "<font color='#%(colour)s'>Current colour: #%(colour)s</font>",
+    "UI_setting_colour_tooltip": "This colour will be applied to all hangar texts.\n\n<b>WARNING!</b> Restart is required for this setting to be applied properly.",
+    "UI_setting_crewColour_text": "Enable crew names colouring",
+    "UI_setting_crewColour_tooltip": "Crew names and ranks in the sidebar will be coloured, but it glitches in tankmen replacement view.\n\nYou will need to select another vehicle for changes to take effect."
+}

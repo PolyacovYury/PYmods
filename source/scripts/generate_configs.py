@@ -1,8 +1,10 @@
-import json
 import sys
 
 import codecs
+import glob
+import json
 import os
+import traceback
 import zipfile
 
 
@@ -65,19 +67,51 @@ def gen_dir(path, maxlevels=10, ddir='', sdir=''):
     return success
 
 
-def split_fully(path):  # we assume that zips can't have an empty folder/file name
-    parts = path.split('/')
-    return [part + '/' for part in parts[:-1] if part] + ([parts[-1]] if parts[-1] else [])
-
-
-def fill_subdirs(data, parts):
-    if parts:
-        part = parts[0]
-        subData = data.setdefault(part, {})
-        if part.endswith('/'):
-            fill_subdirs(subData, parts[1:])
-        else:
-            subData.update({'path': '', 'date': 'git', 'mode': 'file'})
+def find_file_path(arc_name, ext, f_path):
+    path = ''
+    f_name_full = os.path.basename(f_path)
+    f_name, f_ext = os.path.splitext(f_name_full)
+    if ext == '.zip':
+        if '{' in f_name_full:
+            api_files = glob.glob('res/wotmods/*%s*' % f_name_full.strip('{}'))
+            if api_files:
+                if len(api_files) == 1:  # WARNING! This means that this script has to be rerun if any of the APIs changes!
+                    path = api_files[0].replace(os.sep, '/')
+                else:
+                    print 'Multiple fnmatches for file', f_path
+        elif f_ext == '.wotmod':
+            prefix, path = f_path.split('mods/{GAME_VERSION}/', 1)
+            path = 'build/wotmods/' + '/'.join((os.path.dirname(path), (prefix or f_name).strip('/') + f_ext)).strip('/')
+        elif 'mods/configs/' in f_path:
+            path = 'res/configs/' + f_path.split('mods/configs/', 1)[1]
+        elif f_ext in ('.png', '.jpg', '.txt'):
+            path = 'res/img/%s/%s' % (arc_name, f_path)
+        if path and os.path.isfile(path):
+            return path
+    elif ext == '.wotmod':
+        if f_name_full == 'meta.xml':
+            path = 'res/meta/%s.xml' % arc_name
+        elif f_ext == '.pyc':
+            path = f_path.replace('res/', 'source/')
+        elif f_ext == '.swf':
+            path = os.path.join('res/flash/', f_name_full).replace(os.sep, '/')
+        elif f_ext == '.bnk':
+            for attempt in ('/' + arc_name + '/', '/'):
+                at_path = 'res/' + attempt.join(os.path.split(f_path))
+                if os.path.isfile(at_path):
+                    path = at_path
+                    break
+        elif f_ext in ('.png', '.model', '.primitives', '.primitives_processed', '.visual', '.visual_processed', '.vt',
+                       '.dds', '.xml', '.track', '.texformat'):
+            path = 'res/' + f_path
+        if path and os.path.isfile(path):
+            return path
+    else:
+        print 'Unknown archive extension:', ext
+    print 'Source file not found for', f_path, 'in', path
+    if path:
+        print glob.glob(path.split()[0] + '*')
+    return ''
 
 
 def gen_file(fp, ddir, sdir):
@@ -86,7 +120,7 @@ def gen_file(fp, ddir, sdir):
     name, ext = os.path.splitext(os.path.basename(fp))
     if ext not in ('.zip', '.wotmod'):
         return success
-    file_data = {'ext': ext, 'files': {}}  # compression will depend on extension
+    file_data = {'enabled': True, 'ext': ext, 'files': {}}  # compression will depend on extension
     conf_name = os.path.join(ddir, os.path.dirname(fp), name + '.json').replace(os.sep, '/').replace(sdir, '')
     try:
         with zipfile.ZipFile(fp) as zf_orig:
@@ -94,17 +128,24 @@ def gen_file(fp, ddir, sdir):
             import re
             folder_ix_all = re.compile('mods/[.\d]*( Common Test)?/')
             for info in orig_infos_full:
-                filename = info.filename
-                if folder_ix_all.search(filename):
-                    filename = folder_ix_all.sub('mods/{GAME_VERSION}/', filename)
-                fill_subdirs(file_data['files'], split_fully(filename))
+                filename = info.filename.decode('cp866').encode('cp1251')
+                if not filename.endswith('/'):
+                    if folder_ix_all.search(filename):
+                        filename = folder_ix_all.sub('mods/{GAME_VERSION}/', filename)
+                    for api_type in ('vxSettingsApi', 'vxBattleFlash', 'modslistapi'):
+                        if api_type in os.path.basename(filename):
+                            filename = '%s/{%s}' % (os.path.dirname(filename), api_type)
+                    path = find_file_path(name, ext, filename)
+                    if path:
+                        file_data['files'].setdefault(filename, path)
         conf_dir = os.path.dirname(conf_name)
         if not os.path.isdir(conf_dir):
             os.makedirs(conf_dir)
         with codecs.open(conf_name, 'w', 'utf-8-sig') as conf:
-            json.dump(file_data, conf, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False, encoding='cp437')
-    except StandardError, err:
-        print err, sys.exc_info()[-1].tb_lineno
+            json.dump(file_data, conf, sort_keys=True, indent=4, separators=(',', ': '), ensure_ascii=False,
+                      encoding='cp1251')
+    except StandardError:
+        print traceback.format_exc()
         print file_data
         success = 0
     return success
