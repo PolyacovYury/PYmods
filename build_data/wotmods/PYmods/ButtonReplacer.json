@@ -2,6 +2,6 @@
     "enabled": true,
     "ext": ".wotmod",
     "files": {
-        "res/scripts/client/helpers/i18n/ButtonReplacer.pyc": "source/scripts/client/helpers/i18n/ButtonReplacer.pyc"
+        "res/scripts/client/helpers/i18n/ButtonReplacer.pyc": "build/scripts/client/helpers/i18n/ButtonReplacer.pyc"
     }
 }

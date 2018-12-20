@@ -2,6 +2,6 @@
     "enabled": true,
     "ext": ".wotmod",
     "files": {
-        "res/scripts/client/gui/mods/mod_HangarScreenshots.pyc": "source/scripts/client/gui/mods/mod_HangarScreenshots.pyc"
+        "res/scripts/client/gui/mods/mod_HangarScreenshots.pyc": "build/scripts/client/gui/mods/mod_HangarScreenshots.pyc"
     }
 }

@@ -3,6 +3,6 @@
     "ext": ".wotmod",
     "files": {
         "res/scripts/client/gui/mods/mod_UT_announcer.png": "res/res/scripts/client/gui/mods/mod_UT_announcer.png",
-        "res/scripts/client/gui/mods/mod_UT_announcer.pyc": "source/scripts/client/gui/mods/mod_UT_announcer.pyc"
+        "res/scripts/client/gui/mods/mod_UT_announcer.pyc": "build/scripts/client/gui/mods/mod_UT_announcer.pyc"
     }
 }

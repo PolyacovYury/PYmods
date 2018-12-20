@@ -2,6 +2,6 @@
     "enabled": true,
     "ext": ".wotmod",
     "files": {
-        "res/scripts/client/helpers/i18n/_i18nDebugger.pyc": "source/scripts/client/helpers/i18n/_i18nDebugger.pyc"
+        "res/scripts/client/helpers/i18n/_i18nDebugger.pyc": "build/scripts/client/helpers/i18n/_i18nDebugger.pyc"
     }
 }

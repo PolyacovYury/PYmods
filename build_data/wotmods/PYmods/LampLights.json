@@ -8,6 +8,6 @@
         "res/Axes/Blue_Z.dds": "res/res/Axes/Blue_Z.dds",
         "res/Axes/Green_Y.dds": "res/res/Axes/Green_Y.dds",
         "res/Axes/Red_X.dds": "res/res/Axes/Red_X.dds",
-        "res/scripts/client/gui/mods/mod_LampLights.pyc": "source/scripts/client/gui/mods/mod_LampLights.pyc"
+        "res/scripts/client/gui/mods/mod_LampLights.pyc": "build/scripts/client/gui/mods/mod_LampLights.pyc"
     }
 }

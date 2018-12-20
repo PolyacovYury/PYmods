@@ -2,6 +2,6 @@
     "enabled": true,
     "ext": ".wotmod",
     "files": {
-        "res/scripts/client/gui/mods/mod_PYSupport.pyc": "source/scripts/client/gui/mods/mod_PYSupport.pyc"
+        "res/scripts/client/gui/mods/mod_PYSupport.pyc": "build/scripts/client/gui/mods/mod_PYSupport.pyc"
     }
 }

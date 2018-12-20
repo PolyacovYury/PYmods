@@ -92,7 +92,7 @@ def find_file_path(arc_name, ext, f_path):
         if f_name_full == 'meta.xml':
             path = 'res/meta/%s.xml' % arc_name
         elif f_ext == '.pyc':
-            path = f_path.replace('res/', 'source/')
+            path = f_path.replace('res/', 'build/')
         elif f_ext == '.swf':
             path = os.path.join('res/flash/', f_name_full).replace(os.sep, '/')
         elif f_ext == '.bnk':

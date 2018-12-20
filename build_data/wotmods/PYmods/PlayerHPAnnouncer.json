@@ -2,6 +2,6 @@
     "enabled": true,
     "ext": ".wotmod",
     "files": {
-        "res/scripts/client/gui/mods/mod_PlayerHPAnnouncer.pyc": "source/scripts/client/gui/mods/mod_PlayerHPAnnouncer.pyc"
+        "res/scripts/client/gui/mods/mod_PlayerHPAnnouncer.pyc": "build/scripts/client/gui/mods/mod_PlayerHPAnnouncer.pyc"
     }
 }

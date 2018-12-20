@@ -2,6 +2,6 @@
     "enabled": true,
     "ext": ".wotmod",
     "files": {
-        "res/scripts/client/gui/mods/mod_ShowVehicle.pyc": "source/scripts/client/gui/mods/mod_ShowVehicle.pyc"
+        "res/scripts/client/gui/mods/mod_ShowVehicle.pyc": "build/scripts/client/gui/mods/mod_ShowVehicle.pyc"
     }
 }

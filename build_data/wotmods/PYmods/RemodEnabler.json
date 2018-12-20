@@ -4,11 +4,11 @@
     "files": {
         "res/gui/flash/RemodEnabler.png": "res/res/gui/flash/RemodEnabler.png",
         "res/gui/flash/RemodEnabler.swf": "res/flash/RemodEnabler.swf",
-        "res/scripts/client/gui/mods/mod_RemodEnabler.pyc": "source/scripts/client/gui/mods/mod_RemodEnabler.pyc",
-        "res/scripts/client/gui/mods/mod_RemodEnabler/__init__.pyc": "source/scripts/client/gui/mods/mod_RemodEnabler/__init__.pyc",
-        "res/scripts/client/gui/mods/mod_RemodEnabler/collision.pyc": "source/scripts/client/gui/mods/mod_RemodEnabler/collision.pyc",
-        "res/scripts/client/gui/mods/mod_RemodEnabler/config.pyc": "source/scripts/client/gui/mods/mod_RemodEnabler/config.pyc",
-        "res/scripts/client/gui/mods/mod_RemodEnabler/processor/__init__.pyc": "source/scripts/client/gui/mods/mod_RemodEnabler/processor/__init__.pyc",
-        "res/scripts/client/gui/mods/mod_RemodEnabler/processor/remods.pyc": "source/scripts/client/gui/mods/mod_RemodEnabler/processor/remods.pyc"
+        "res/scripts/client/gui/mods/mod_RemodEnabler.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/__init__.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/__init__.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/collision.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/collision.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/config.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/config.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/processor/__init__.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/processor/__init__.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/processor/remods.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/processor/remods.pyc"
     }
 }

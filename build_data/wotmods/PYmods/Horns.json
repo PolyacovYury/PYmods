@@ -3,6 +3,6 @@
     "ext": ".wotmod",
     "files": {
         "res/audioww/horns.bnk": "res/res/audioww/horns.bnk",
-        "res/scripts/client/gui/mods/mod_Horns.pyc": "source/scripts/client/gui/mods/mod_Horns.pyc"
+        "res/scripts/client/gui/mods/mod_Horns.pyc": "build/scripts/client/gui/mods/mod_Horns.pyc"
     }
 }
