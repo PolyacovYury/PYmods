@@ -100,7 +100,7 @@ def main():
         for path in subprocess.check_output(['git', 'ls-files', '*.mtimes*']).split('\n'):
             if not path:
                 return
-            data = mode == 'a' and parse_file(path) or {}
+            data = mode == 's' and parse_file(path) or {}
             update_data(subprocess.check_output('git rev-parse --show-prefix'.split()).strip(), os.path.dirname(path) or '.',
                         data, mode == 'a', path.endswith('r'))
             write(path, data)
