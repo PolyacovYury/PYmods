@@ -27,17 +27,15 @@ def compile_dir(path, max_levels=10, d_dir=None, o_dir=None, force=False, quiet=
         d_file = None if d_dir is None else os.path.join(d_dir, name).replace(os.sep, '/')
         o_file = None if o_dir is None else os.path.join(o_dir, name).replace(os.sep, '/')
         if not os.path.isdir(f_name):
-            success &= compile_file(f_name, d_dir, o_dir, force, quiet)
+            success &= compile_file(f_name, d_file, o_file, force, quiet)
         elif max_levels > 0 and name not in (os.curdir, os.pardir) and os.path.isdir(f_name) and not os.path.islink(f_name):
             success &= compile_dir(f_name, max_levels - 1, d_file, o_file, force, quiet)
     return success
 
 
-def compile_file(fullname, d_dir=None, o_dir=None, force=False, quiet=False):
+def compile_file(fullname, d_file=None, o_file=None, force=False, quiet=False):
     success = True
     name = os.path.basename(fullname)
-    d_file = None if d_dir is None else os.path.join(d_dir, name).replace(os.sep, '/')
-    o_file = None if o_dir is None else os.path.join(o_dir, name).replace(os.sep, '/') + (__debug__ and 'c' or 'o')
     head, tail = name[:-3], name[-3:]
     if not os.path.isfile(fullname) or tail != '.py':
         return success
@@ -46,7 +44,7 @@ def compile_file(fullname, d_dir=None, o_dir=None, force=False, quiet=False):
         try:
             m_time = int(timeStr) if timeStr else int(os.stat(fullname).st_mtime)
             expect = struct.pack('<4sl', imp.get_magic(), m_time)
-            c_file = o_file or fullname + (__debug__ and 'c' or 'o')
+            c_file = (o_file or fullname) + (__debug__ and 'c' or 'o')
             with open(c_file, 'rb') as c_handle:
                 actual = c_handle.read(8)
             if expect == actual:
@@ -76,8 +74,9 @@ def main():
         opts, args = getopt.getopt(sys.argv[1:], 'lfqd:o:')
     except getopt.error, msg:
         print msg
-        print '''usage: python compileall.py [-l] [-f] [-q] [-d dest_dir] [-o output_dir] [directory|file ...]
-    arguments: one or more file and directory names to compile
+        print "usage: python %s [-l] [-f] [-q] [-d dest_dir] [-o output_dir] [directory|file ...]" % os.path.basename(
+            sys.argv[0])
+        print '''    arguments: one or more file and directory names to compile
     options:
         -l: don't recurse into subdirectories
         -f: force rebuild even if timestamps are up-to-date
@@ -155,8 +154,7 @@ def do_compile(f_path, d_file=None, o_file=None, raises=False, timeStr=''):
         else:
             sys.stderr.write(py_exc.msg + '\n')
             return False
-    if o_file is None:
-        o_file = f_path + (__debug__ and 'c' or 'o')
+    o_file = (o_file or f_path) + (__debug__ and 'c' or 'o')
     o_dir = os.path.dirname(o_file)
     if not os.path.isdir(o_dir):
         os.makedirs(o_dir)

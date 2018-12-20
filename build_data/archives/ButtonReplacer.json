@@ -3,6 +3,7 @@
     "ext": ".zip",
     "files": {
         "mods/configs/PYmods/ButtonReplacer/ButtonReplacer.json": "res/configs/PYmods/ButtonReplacer/ButtonReplacer.json",
+        "mods/configs/PYmods/ButtonReplacer/configs/": "",
         "mods/configs/PYmods/ButtonReplacer/i18n/en.json": "res/configs/PYmods/ButtonReplacer/i18n/en.json",
         "mods/configs/PYmods/ButtonReplacer/i18n/ru.json": "res/configs/PYmods/ButtonReplacer/i18n/ru.json",
         "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",

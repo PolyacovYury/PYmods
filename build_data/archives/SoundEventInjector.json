@@ -5,6 +5,7 @@
         "mods/configs/PYmods/BanksLoader/BanksLoader.json": "res/configs/PYmods/BanksLoader/BanksLoader.json",
         "mods/configs/PYmods/BanksLoader/i18n/en.json": "res/configs/PYmods/BanksLoader/i18n/en.json",
         "mods/configs/PYmods/BanksLoader/i18n/ru.json": "res/configs/PYmods/BanksLoader/i18n/ru.json",
+        "mods/configs/PYmods/SoundEventInjector/configs/": "",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/BanksLoader.wotmod": "build/wotmods/PYmods/BanksLoader.wotmod",
         "mods/{GAME_VERSION}/PYmods/PYSupport.wotmod": "build/wotmods/PYmods/PYSupport.wotmod",
