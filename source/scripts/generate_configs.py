@@ -1,3 +1,4 @@
+import re
 import sys
 
 import codecs
@@ -6,6 +7,8 @@ import json
 import os
 import traceback
 import zipfile
+
+folder_ix_all = re.compile('mods/[.\d]*( Common Test)?/')
 
 
 def main():
@@ -117,8 +120,6 @@ def gen_file(fp, ddir, sdir):
     conf_name = os.path.join(ddir, os.path.dirname(fp), name + '.json').replace(os.sep, '/').replace(sdir, '')
     try:
         with zipfile.ZipFile(fp) as zf_orig:
-            import re
-            folder_ix_all = re.compile('mods/[.\d]*( Common Test)?/')
             paths = sorted(x.decode('cp866').encode('cp1251') for x in zf_orig.namelist())
             for idx, filename in enumerate(paths):
                 filename = filename
