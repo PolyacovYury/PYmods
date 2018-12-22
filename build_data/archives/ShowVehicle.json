@@ -7,11 +7,11 @@
         "mods/configs/PYmods/ShowVehicle/ShowVehicle.json": "res/configs/PYmods/ShowVehicle/ShowVehicle.json",
         "mods/configs/PYmods/ShowVehicle/i18n/en.json": "res/configs/PYmods/ShowVehicle/i18n/en.json",
         "mods/configs/PYmods/ShowVehicle/i18n/ru.json": "res/configs/PYmods/ShowVehicle/i18n/ru.json",
+        "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
+        "mods/{GAME_VERSION}/*vxSettingsApi*": "res/wotmods/*vxSettingsApi*",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/PYSupport.wotmod": "build/wotmods/PYmods/PYSupport.wotmod",
         "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
-        "mods/{GAME_VERSION}/PYmods/ShowVehicle.wotmod": "build/wotmods/PYmods/ShowVehicle.wotmod",
-        "mods/{GAME_VERSION}/{modslistapi}": "res/wotmods/poliroid.modslistapi_1.1.4.wotmod",
-        "mods/{GAME_VERSION}/{vxSettingsApi}": "res/wotmods/polarfox.vxSettingsApi_1.8.7.wotmod"
+        "mods/{GAME_VERSION}/PYmods/ShowVehicle.wotmod": "build/wotmods/PYmods/ShowVehicle.wotmod"
     }
 }

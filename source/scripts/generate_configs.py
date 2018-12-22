@@ -17,11 +17,11 @@ def main():
         opts, args = getopt.getopt(sys.argv[1:], 'ld:')
     except getopt.error, msg:
         print msg
-        print "usage: python %s [-l] [-d destdir] [directory|file ...]" % os.path.basename(sys.argv[0])
+        print "usage: python %s [-l] [-d d_dir] [directory|file ...]" % os.path.basename(sys.argv[0])
         print '''   arguments: one or more file and directory names to generate json for
     options:
         -l: don't recurse into subdirectories
-        -d destdir: directory to write configs to
+        -d d_dir: directory to write configs to
         directory|file: place to pick archive(s) from'''
         sys.exit(2)
     max_levels = 10
@@ -64,14 +64,17 @@ def gen_dir(path, max_levels=10, d_dir='', s_dir=''):
 
 def find_file_path(arc_name, ext, f_path):
     path = ''
+    out = ''
     f_name_full = os.path.basename(f_path)
     f_name, f_ext = os.path.splitext(f_name_full)
     if ext == '.zip':
-        if '{' in f_name_full:
-            api_files = glob.glob('res/wotmods/*%s*' % f_name_full.strip('{}'))
+        if '*' in f_name_full:
+            card = 'res/wotmods/%s' % f_name_full
+            api_files = glob.glob(card)
             if api_files:
-                if len(api_files) == 1:  # WARNING! This means that this script has to be rerun if any of the APIs changes!
+                if len(api_files) == 1:
                     path = api_files[0].replace(os.sep, '/')
+                    out = card
                 else:
                     print 'Multiple fnmatches for file', f_path
         elif f_ext == '.wotmod':
@@ -82,7 +85,7 @@ def find_file_path(arc_name, ext, f_path):
         elif f_ext in ('.png', '.jpg', '.txt'):
             path = 'res/img/%s/%s' % (arc_name, f_path)
         if path and os.path.isfile(path):
-            return path
+            return out or path
     elif ext == '.wotmod':
         if f_name_full == 'meta.xml':
             path = 'res/meta/%s.xml' % arc_name
@@ -109,7 +112,7 @@ def find_file_path(arc_name, ext, f_path):
     return ''
 
 
-def gen_file(fp, ddir, sdir):
+def gen_file(fp, d_dir, s_dir):
     success = True
     print 'Checking', fp, '...'
     name, ext = os.path.splitext(os.path.basename(fp))
@@ -117,7 +120,7 @@ def gen_file(fp, ddir, sdir):
         print 'Unknown archive extension:', ext
         return False
     file_data = {'enabled': True, 'ext': ext, 'files': {}}  # compression will depend on extension
-    conf_name = os.path.join(ddir, os.path.dirname(fp), name + '.json').replace(os.sep, '/').replace(sdir, '')
+    conf_name = os.path.join(d_dir, os.path.dirname(fp), name + '.json').replace(os.sep, '/').replace(s_dir, '')
     try:
         with zipfile.ZipFile(fp) as zf_orig:
             paths = sorted(x.decode('cp866').encode('cp1251') for x in zf_orig.namelist())
@@ -128,7 +131,7 @@ def gen_file(fp, ddir, sdir):
                         filename = folder_ix_all.sub('mods/{GAME_VERSION}/', filename)
                     for api_type in ('vxSettingsApi', 'vxBattleFlash', 'modslistapi'):
                         if api_type in os.path.basename(filename):
-                            filename = '%s/{%s}' % (os.path.dirname(filename), api_type)
+                            filename = '%s/*%s*' % (os.path.dirname(filename), api_type)
                     path = find_file_path(name, ext, filename)
                     if path:
                         file_data['files'].setdefault(filename, path)

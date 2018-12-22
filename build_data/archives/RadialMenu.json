@@ -28,11 +28,11 @@
         "mods/configs/PYmods/RadialMenu/skins/mooseyaka.json": "res/configs/PYmods/RadialMenu/skins/mooseyaka.json",
         "mods/configs/PYmods/RadialMenu/skins/nagibator_dna.json": "res/configs/PYmods/RadialMenu/skins/nagibator_dna.json",
         "mods/configs/PYmods/RadialMenu/skins/tehHedger.json": "res/configs/PYmods/RadialMenu/skins/tehHedger.json",
+        "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
+        "mods/{GAME_VERSION}/*vxSettingsApi*": "res/wotmods/*vxSettingsApi*",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/PYSupport.wotmod": "build/wotmods/PYmods/PYSupport.wotmod",
         "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
-        "mods/{GAME_VERSION}/PYmods/RadialMenu.wotmod": "build/wotmods/PYmods/RadialMenu.wotmod",
-        "mods/{GAME_VERSION}/{modslistapi}": "res/wotmods/poliroid.modslistapi_1.1.4.wotmod",
-        "mods/{GAME_VERSION}/{vxSettingsApi}": "res/wotmods/polarfox.vxSettingsApi_1.8.7.wotmod"
+        "mods/{GAME_VERSION}/PYmods/RadialMenu.wotmod": "build/wotmods/PYmods/RadialMenu.wotmod"
     }
 }

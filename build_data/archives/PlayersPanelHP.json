@@ -6,10 +6,10 @@
         "mods/configs/PYmods/PlayersPanelHP/icons/hp_alive_l.png": "res/configs/PYmods/PlayersPanelHP/icons/hp_alive_l.png",
         "mods/configs/PYmods/PlayersPanelHP/icons/hp_alive_r.png": "res/configs/PYmods/PlayersPanelHP/icons/hp_alive_r.png",
         "mods/configs/PYmods/PlayersPanelHP/icons/hp_bg.png": "res/configs/PYmods/PlayersPanelHP/icons/hp_bg.png",
+        "mods/{GAME_VERSION}/*vxBattleFlash*": "res/wotmods/*vxBattleFlash*",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/PYSupport.wotmod": "build/wotmods/PYmods/PYSupport.wotmod",
         "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
-        "mods/{GAME_VERSION}/PYmods/PlayersPanelHP.wotmod": "build/wotmods/PYmods/PlayersPanelHP.wotmod",
-        "mods/{GAME_VERSION}/{vxBattleFlash}": "res/wotmods/polarfox.vxBattleFlash_1.7.9.wotmod"
+        "mods/{GAME_VERSION}/PYmods/PlayersPanelHP.wotmod": "build/wotmods/PYmods/PlayersPanelHP.wotmod"
     }
 }
