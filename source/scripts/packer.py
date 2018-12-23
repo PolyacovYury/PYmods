@@ -48,6 +48,9 @@ def pack_file(conf_name, out_path, v_str=None, v_date=None, force=False, quiet=F
         ch_print(conf_name, True)
     with codecs.open(conf_name, 'r', 'utf-8-sig') as fp:
         data = json.load(fp, 'utf-8-sig')
+    if not data['enabled']:
+        ch_print(conf_name, quiet, 'Archive disabled.')
+        return True
     if any('{GAME_VERSION}' in path for path in data['files']) and v_str is None:
         ch_print(conf_name, quiet, 'Encountered an archive which requires game version data, but it was not provided.')
         sys.exit(2)
