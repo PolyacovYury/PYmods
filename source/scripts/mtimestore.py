@@ -63,7 +63,9 @@ def update_data(root, path, data, a, rec):
         if x and '.mtimes' not in x:
             act_path = x if not rem or not x.startswith(rem) else x.split(rem, 1)[1]
             if rec or '/' not in act_path:
-                data[act_path] = int(os.stat(x.encode('cp1251')).st_mtime)
+                x = x.encode('cp1251')
+                if os.path.isfile(x):
+                    data[act_path] = int(os.stat(x).st_mtime)
 
 
 def write(path, data):

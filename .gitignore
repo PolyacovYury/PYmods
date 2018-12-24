@@ -2,6 +2,8 @@
 release/
 res/res/vehicles/
 res/res/audioww/
+res/flash/swc/
+res/flash/**/obj/
 *.tmp
 
 

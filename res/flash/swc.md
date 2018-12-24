@@ -1,0 +1,1 @@
+To bouild the flash files, you need to place WG swc files found in gui.pkg/gui/flash/swc/ into a folder called swc beside this file.
