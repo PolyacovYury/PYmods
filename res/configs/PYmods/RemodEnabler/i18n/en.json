@@ -40,6 +40,7 @@
     "UI_flash_whiteDropdown_default": "Expand",
     "UI_install_default": "<b>RemodEnabler:</b>\nDefault model applied.",
     "UI_install_remod": "<b>RemodEnabler:</b>\nRemod installed: ",
+    "UI_install_wheels_unsupported": "<b>RemodEnabler:</b>\nWARNING: wheeled vehicles are NOT processed. At least until WG moves params processing out of Vehicular, which is an inaccessible part of game engine.",
     "UI_mode": "<b>RemodEnabler:</b>\nCurrent display mode: ",
     "UI_mode_ally": "ally tank preview",
     "UI_mode_enemy": "enemy tank preview",

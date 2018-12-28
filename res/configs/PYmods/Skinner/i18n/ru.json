@@ -14,6 +14,8 @@
     "UI_flash_team_ally": "Союзник",
     "UI_flash_team_enemy": "Противник",
     "UI_flash_team_player": "Игрок",
+    "UI_flash_unsaved_header": "Несохранённые настройки",
+    "UI_flash_unsaved_text": "Обнаружены несохранённые изменения настроек. Хотите ли вы сохранить их?",
     "UI_flash_useFor_ally_text": "Союзников",
     "UI_flash_useFor_enemy_text": "Противников",
     "UI_flash_useFor_header_text": "Устанавливать на:",

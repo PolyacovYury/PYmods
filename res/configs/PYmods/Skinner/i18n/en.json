@@ -14,6 +14,8 @@
     "UI_flash_team_ally": "Ally",
     "UI_flash_team_enemy": "Enemy",
     "UI_flash_team_player": "Player",
+    "UI_flash_unsaved_header": "Unsaved settings",
+    "UI_flash_unsaved_text": "Unsaved setting changes detected. Do you want to save them?",
     "UI_flash_useFor_ally_text": "Allies",
     "UI_flash_useFor_enemy_text": "Enemies",
     "UI_flash_useFor_header_text": "Use this item for:",
