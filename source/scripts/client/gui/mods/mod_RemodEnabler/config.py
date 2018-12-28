@@ -234,7 +234,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     if 'pixie' in confSubDict['exhaust']:
                         data['exhaust']['pixie'] = confSubDict['exhaust']['pixie']
                 if key == 'chassis':
-                    for k in chassis_params:
+                    for k in chassis_params + ('chassisLodDistance',):
                         data[k] = confSubDict[k]
                 if 'soundID' in data and 'soundID' in confSubDict:
                     data['soundID'] = confSubDict['soundID']
