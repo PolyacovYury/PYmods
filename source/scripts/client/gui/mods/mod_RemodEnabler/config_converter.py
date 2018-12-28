@@ -138,6 +138,8 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
                     for idx, value in enumerate(obj[sub]):
                         obj[sub][idx] = OrderedDict(zip(value._fields, value))
             new_config[key] = obj
+        else:
+            new_config[key] = config[key]
         obj = new_config[key]
         newLodDist = new_config.get('chassisLodDistance')
         if key == 'wheels':
