@@ -467,7 +467,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
     def py_getCurrentVehicleName():
         vDesc = RemodEnablerUI.getCurrentVDesc()
         if vDesc is not None:
-            return RemodEnablerUI.getCurrentVDesc().name.split(':')[1].lower()
+            return vDesc.name.split(':')[1].lower()
         else:
             return None
 

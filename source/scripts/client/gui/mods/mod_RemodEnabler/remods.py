@@ -27,15 +27,15 @@ def apply(vDesc, modelDesc):
             obj = NodesAndGroups(nodes=tuple(cc.TrackNode(**d) for d in obj['nodes']), groups=(),
                                  activePostmortem=obj['activePostmortem'], lodSettings=obj['lodSettings'])
         elif key == 'splineDesc':
-            for setName, modelSet in obj['segmentModelSets'].items():
-                obj['segmentModelSets'][setName] = cc.SplineSegmentModelSet(**modelSet)
-            obj = cc.SplineConfig(**obj)
+            obj = cc.SplineConfig(({setName: cc.SplineSegmentModelSet(**modelSet) for setName, modelSet in
+                                    obj['segmentModelSets'].items()} or None),
+                                  **{k: v for k, v in obj if k != 'segmentModelSets'})
         elif key == 'trackParams':
             obj = cc.TrackParams(**obj)
         elif key == 'leveredSuspension':
             if obj is not None:
-                obj['levers'] = [cc.SuspensionLever(**d) for d in obj['levers']]
-                obj = cc.LeveredSuspensionConfig(**obj)
+                obj = cc.LeveredSuspensionConfig(([cc.SuspensionLever(**d) for d in obj['levers']] or None),
+                                                 **{k: v for k, v in obj.items if k != 'levers'})
         setattr(vDesc.chassis, key, obj)
     vDesc.chassis.chassisLodDistance = modelDesc['chassis']['chassisLodDistance']
     vDesc.chassis.physicalTracks = {}
