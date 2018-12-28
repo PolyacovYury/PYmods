@@ -58,11 +58,20 @@ def vDesc_process(vehicleID, vDesc, mode):
     message = None
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
     if modelDesc is not None:
-        for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
-                vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
-            remods.apply(descr, modelDesc)
-        if not g_config.collisionMode:
-            message = g_config.i18n['UI_install_remod'] + '<b>' + modelDesc['name'] + '</b>.\n' + modelDesc['message']
+        if hasattr(vDesc.chassis, 'generalWheelsAnimatorConfig'):
+            print g_config.ID + ':', (
+                'WARNING: wheeled vehicles are NOT processed. At least until WG moves params processing out of Vehicular, '
+                'which is an inaccessible part of game engine.')
+            modelDesc['whitelist'].remove(xmlName)
+            g_config.modelsData['selected'][currentTeam].pop(xmlName, None)
+            SystemMessages.pushMessage(g_config.i18n['UI_install_wheels_unsupported'], SystemMessages.SM_TYPE.Warning)
+            modelDesc = None
+        else:
+            for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
+                    vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
+                remods.apply(descr, modelDesc)
+            if not g_config.collisionMode:
+                message = g_config.i18n['UI_install_remod'] + '<b>' + modelDesc['name'] + '</b>.\n' + modelDesc['message']
     if message is not None and mode == 'hangar':
         SystemMessages.pushMessage('temp_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
     debugOutput(xmlName, vehName, playerName, modelDesc)

@@ -1,70 +1,11 @@
 import Math
 import copy
-from collections import OrderedDict
-from items.components.chassis_components import Wheel, WheelGroup, TrackNode, TrackMaterials, GroundNode, GroundNodeGroup, \
-    Traces, SplineConfig, WheelsConfig, TrackParams
+from items.components import chassis_components as cc
 from items.components.shared_components import Camouflage, ModelStatesPaths, NodesAndGroups
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
 
-chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams')
-
-
-def _asdict(obj):
-    if isinstance(obj, SplineConfig):
-        return OrderedDict((attrName.strip('_'), getattr(obj, attrName.strip('_'))) for attrName in obj.__slots__)
-    else:
-        return OrderedDict(zip(obj._fields, obj))
-
-
-def migrate_chassis_config(config):  # please send data['chassis'] here
-    new_config = OrderedDict()
-    for key in config:
-        if key not in chassis_params or not isinstance(config[key], basestring):
-            if 'wwsound' not in key:  # sounds are obsolete
-                new_config[key] = config[key]
-            if key == 'AODecals' and config[key] and isinstance(config[key][0], dict):
-                new_config[key] = [[row for row in decal['transform'].values()] for decal in config[key]]
-            continue  # config already converted
-        obj = eval(config[key])
-        if isinstance(obj, dict):  # ancient config
-            if key == 'traces':
-                obj = Traces(**obj)
-            elif key == 'tracks':
-                obj = TrackMaterials(**obj)
-            elif key == 'wheels':
-                obj = WheelsConfig(
-                    lodDist=obj['lodDist'],
-                    groups=[d if hasattr(d, '_fields') else WheelGroup(*d) for d in obj['groups']],
-                    wheels=[d if hasattr(d, '_fields') else Wheel(d[0], d[2], d[1], d[3], d[4]) for d in obj['wheels']])
-            elif key == 'groundNodes':
-                obj = NodesAndGroups(
-                    nodes=[d if hasattr(d, '_fields') else GroundNode(d[1], d[0], d[2], d[3]) for d in obj['nodes']],
-                    groups=[d if hasattr(d, '_fields') else GroundNodeGroup(d[0], d[4], d[5], d[1], d[2], d[3])
-                            for d in obj['groups']])
-            elif key == 'trackNodes':
-                obj = NodesAndGroups(nodes=[
-                    d if hasattr(d, '_fields') else TrackNode(d[0], d[1], d[2], d[5], d[6], d[4], d[3], d[7], d[8])
-                    for d in obj['nodes']], groups=[])
-            elif key == 'splineDesc':
-                obj = SplineConfig(**obj)
-            elif key == 'trackParams':
-                obj = TrackParams(**obj)
-        if not isinstance(obj, dict):  # we assume that we have a namedtuple, if we don't - something malicious, so crash
-            if key == 'traces':
-                obj = obj._replace(size=list(obj.size))
-            obj = _asdict(obj)
-            keys = ()
-            if key == 'wheels':
-                keys = ('groups', 'wheels')
-            elif key in ('groundNodes', 'trackNodes'):
-                keys = ('nodes', 'groups')
-            for sub in keys:
-                obj[sub] = list(obj[sub])
-                for idx, value in enumerate(obj[sub]):
-                    obj[sub][idx] = _asdict(value)
-        new_config[key] = obj
-    return new_config
+chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams', 'leveredSuspension')
 
 
 def apply(vDesc, modelDesc):
@@ -72,22 +13,31 @@ def apply(vDesc, modelDesc):
         obj = modelDesc['chassis'][key]
         if key == 'traces':
             obj['size'] = tuple(obj['size'])
-            obj = Traces(**obj)
+            obj = cc.Traces(**obj)
         elif key == 'tracks':
-            obj = TrackMaterials(**obj)
+            obj = cc.TrackMaterials(**obj)
         elif key == 'wheels':
-            obj = WheelsConfig(lodDist=obj['lodDist'], groups=tuple(WheelGroup(**d) for d in obj['groups']),
-                               wheels=tuple(Wheel(**d) for d in obj['wheels']))
+            obj = cc.WheelsConfig(lodDist=obj['lodDist'], groups=tuple(cc.WheelGroup(**d) for d in obj['groups']),
+                                  wheels=tuple(cc.Wheel(**d) for d in obj['wheels']))
         elif key == 'groundNodes':
-            obj = NodesAndGroups(nodes=tuple(GroundNode(**d) for d in obj['nodes']),
-                                 groups=tuple(GroundNodeGroup(**d) for d in obj['groups']))
+            obj = NodesAndGroups(nodes=tuple(cc.GroundNode(**d) for d in obj['nodes']),
+                                 groups=tuple(cc.GroundNodeGroup(**d) for d in obj['groups']),
+                                 activePostmortem=obj['activePostmortem'], lodSettings=obj['lodSettings'])
         elif key == 'trackNodes':
-            obj = NodesAndGroups(nodes=tuple(TrackNode(**d) for d in obj['nodes']), groups=())
+            obj = NodesAndGroups(nodes=tuple(cc.TrackNode(**d) for d in obj['nodes']), groups=(),
+                                 activePostmortem=obj['activePostmortem'], lodSettings=obj['lodSettings'])
         elif key == 'splineDesc':
-            obj = SplineConfig(**obj)
+            for setName, modelSet in obj['segmentModelSets'].items():
+                obj['segmentModelSets'][setName] = cc.SplineSegmentModelSet(**modelSet)
+            obj = cc.SplineConfig(**obj)
         elif key == 'trackParams':
-            obj = TrackParams(**obj)
+            obj = cc.TrackParams(**obj)
+        elif key == 'leveredSuspension':
+            if obj is not None:
+                obj['levers'] = [cc.SuspensionLever(**d) for d in obj['levers']]
+                obj = cc.LeveredSuspensionConfig(**obj)
         setattr(vDesc.chassis, key, obj)
+    vDesc.chassis.physicalTracks = {}
     if modelDesc['chassis']['AODecals']:
         AODecalsOffset = vDesc.chassis.hullPosition - Math.Vector3(*modelDesc['chassis']['hullPosition'])
         vDesc.chassis.AODecals = copy.deepcopy(modelDesc['chassis']['AODecals'])

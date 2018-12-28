@@ -19,6 +19,7 @@ from gui.Scaleform.framework.entities.abstract.AbstractWindowView import Abstrac
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.app_loader import g_appLoader
 from helpers import dependency
+from items.components import c11n_constants
 from items.components.chassis_components import SplineConfig
 from items.components.component_constants import ALLOWED_EMBLEM_SLOTS
 from items.components.shared_components import EmblemSlot
@@ -32,7 +33,7 @@ class ConfigInterface(PYmodsConfigInterface):
     hangarSpace = dependency.descriptor(IHangarSpace)
     modelDescriptor = property(lambda self: {
             'name': '', 'message': '', 'whitelist': [],
-            'chassis': {'undamaged': '', 'AODecals': [], 'hullPosition': [], 'soundID': ''},
+            'chassis': {'undamaged': '', 'emblemSlots': [], 'AODecals': [], 'hullPosition': [], 'soundID': ''},
             'hull': {'undamaged': '', 'emblemSlots': [], 'exhaust': {'nodes': [], 'pixie': ''},
                      'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
             'turret': {'undamaged': '', 'emblemSlots': [],
@@ -122,6 +123,9 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_enableCollision': '<b>RemodEnabler:</b>\nEnabling collision mode.',
             'UI_install_remod': '<b>RemodEnabler:</b>\nRemod installed: ',
             'UI_install_default': '<b>RemodEnabler:</b>\nDefault model applied.',
+            'UI_install_wheels_unsupported':
+                '<b>RemodEnabler:</b>\nWARNING: wheeled vehicles are NOT processed. '
+                'At least until WG moves params processing out of Vehicular, which is an inaccessible part of game engine.',
             'UI_mode': '<b>RemodEnabler:</b>\nCurrent display mode: ',
             'UI_mode_player': 'player tank preview',
             'UI_mode_ally': 'ally tank preview',
@@ -161,58 +165,6 @@ class ConfigInterface(PYmodsConfigInterface):
                     print new_path
                     print e
         return config_new
-
-    def migrateSettings(self, old_data, new_data):
-        whitelist = []
-        for team in self.teams:
-            new_data[team] = new_data.get(team, old_data.pop('swap' + team.capitalize(), True))
-            whitelist.extend(x.strip() for x in old_data.pop(team + 'Whitelist', '').split(',') if x.strip())
-        new_data['whitelist'] = sorted(remDups(whitelist + new_data.get('whitelist', [])))
-
-    def migrateConfigs(self):
-        settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
-        if settings and 'remods' in settings:
-            for sname, remodData in settings['remods'].items():
-                if not remodData.pop('enabled', True):
-                    print self.ID + ': WARNING! Disabled remod detected:', sname + (
-                        '. Remod disabling is not supported anymore, delete unneeded remods.'
-                        'If game crashed - this is, probably, the reason.')
-                self.migrateSettings(remodData, remodData)
-            loadJson(self.ID, 'settings', settings['remods'], self.configPath, True)
-
-        selectedData = loadJson(self.ID, 'remodsCache', self.modelsData['selected'], self.configPath)
-        for key in selectedData.keys():
-            if not key.islower():
-                selectedData[key.lower()] = selectedData.pop(key)
-            if key.lower() == 'remod':
-                del selectedData[key.lower()]
-        loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True)
-
-        from .remods import migrate_chassis_config
-        configsPath = self.configPath + 'remods/*.json'
-        for configPath in glob.iglob(configsPath):
-            sname = os.path.basename(configPath).split('.')[0]
-            old_conf = self.readOrdered(configPath)
-            if not old_conf:
-                print self.ID + ': error while reading', os.path.basename(configPath) + '.'
-                continue
-            new_conf = OrderedDict()
-            new_conf['message'] = old_conf.get('authorMessage', old_conf.get('message', ''))
-            self.migrateSettings(old_conf, new_conf)
-            for key, val in old_conf.items():
-                if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key:
-                    continue
-                elif key == 'engine':
-                    val = OrderedDict((k, v) for k, v in val.iteritems() if 'wwsound' not in k)
-                elif key == 'gun':
-                    val = OrderedDict((k, v) for k, v in val.iteritems() if 'ffect' not in k)
-                elif key == 'hull':
-                    if 'exhaust' in val and 'nodes' in val['exhaust'] and isinstance(val['exhaust']['nodes'], basestring):
-                        val['exhaust']['nodes'] = val['exhaust']['nodes'].split()
-                elif key == 'chassis':
-                    val = migrate_chassis_config(val)
-                new_conf[key] = val
-            loadJson(self.ID, sname, new_conf, self.configPath + 'remods/', True, sort_keys=False)
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings()
@@ -286,7 +238,9 @@ class ConfigInterface(PYmodsConfigInterface):
                             Math.Vector3(tuple(subDict['rayUp'])), subDict['size'],
                             subDict.get('hideIfDamaged', False), subDict['type'],
                             subDict.get('isMirrored', False),
-                            subDict.get('isUVProportional', True), subDict.get('emblemId', None))
+                            subDict.get('isUVProportional', True), subDict.get('emblemId', None),
+                            subDict.get('slotId', c11n_constants.customizationSlotIds[key][subDict['type']][0]),
+                            subDict.get('applyToFabric', True))
                         slots.append(descr)
                 if 'exhaust' in data and 'exhaust' in confSubDict:
                     if 'nodes' in confSubDict['exhaust']:
@@ -322,7 +276,8 @@ class ConfigInterface(PYmodsConfigInterface):
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
 
     def load(self):
-        self.migrateConfigs()
+        from .config_converter import migrateConfigs
+        migrateConfigs(self)
         super(ConfigInterface, self).load()
 
     def findModelDesc(self, xmlName, currentTeam, notForPreview=True):
@@ -455,24 +410,28 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                 for key in TankPartNames.ALL:
                     data[key]['undamaged'] = getattr(vDesc, key).models.undamaged
                 chassis = data['chassis']
-                from .remods import _asdict
-                for key in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
+                from .remods import chassis_params
+                for key in chassis_params:
                     obj = getattr(vDesc.chassis, key)
-                    if key == 'traces':
-                        obj = obj._replace(size=list(obj.size))
-                    obj = _asdict(obj)
-                    keys = ()
-                    if key == 'wheels':
-                        keys = ('groups', 'wheels')
-                    elif key in ('groundNodes', 'trackNodes'):
-                        keys = ('nodes', 'groups')
-                    for sub in keys:
-                        obj[sub] = list(obj[sub])
-                        for idx, value in enumerate(obj[sub]):
-                            obj[sub][idx] = _asdict(value)
+                    if obj is not None:
+                        if key == 'traces':
+                            obj = obj._replace(size=list(obj.size))
+                        obj = _asdict(obj)
+                        keys = ()
+                        if key == 'wheels':
+                            keys = ('groups', 'wheels')
+                        elif key in ('groundNodes', 'trackNodes'):
+                            keys = ('nodes', 'groups')
+                        elif key == 'leveredSuspension':
+                            keys = ('levers',)
+                        for sub in keys:
+                            obj[sub] = list(obj[sub])
+                            for idx, value in enumerate(obj[sub]):
+                                obj[sub][idx] = _asdict(value)
                     chassis[key] = obj
                 chassis['hullPosition'] = vDesc.chassis.hullPosition.tuple()
-                chassis['AODecals'] = [[[decal.get(strIdx, colIdx) for colIdx in xrange(3)] for strIdx in xrange(4)] for decal in vDesc.chassis.AODecals]
+                chassis['AODecals'] = [[[decal.get(strIdx, colIdx) for colIdx in xrange(3)] for strIdx in xrange(4)]
+                                       for decal in vDesc.chassis.AODecals]
                 for partName in ('gun', 'chassis', 'engine'):
                     data[partName]['soundID'] = getattr(vDesc, partName).name
                 pixieID = ''
@@ -488,17 +447,20 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                     camouflage['tiling'] = vDesc.type.camouflage.tiling
                 for partName in TankPartNames.ALL[1:]:
                     part = getattr(vDesc, partName)
-                    data[partName]['emblemSlots'] = []
                     exclMask = part.camouflage.exclusionMask if hasattr(part, 'camouflage') else ''
                     if exclMask:
                         camouflage = data[partName]['camouflage'] = OrderedDict()
                         camouflage['exclusionMask'] = exclMask
                         camouflage['tiling'] = part.camouflage.tiling
+                for partName in TankPartNames.ALL:
+                    part = getattr(vDesc, partName)
+                    data[partName]['emblemSlots'] = []
                     for slot in part.emblemSlots:
                         slotDict = OrderedDict()
                         for key in ('rayStart', 'rayEnd', 'rayUp'):
                             slotDict[key] = list(getattr(slot, key).tuple())
-                        for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId'):
+                        for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId', 'slotId',
+                                    'applyToFabric'):
                             slotDict[key] = getattr(slot, key)
                         data[partName]['emblemSlots'].append(slotDict)
             except StandardError:
@@ -581,6 +543,22 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
     def onWindowClose(self):
         self.py_onModelRestore()
         self.destroy()
+
+
+def _asdict(obj):
+    if isinstance(obj, SplineConfig):
+        result = OrderedDict()
+        result['segmentModelSets'] = OrderedDict((setName, OrderedDict((
+            ('left', obj.segmentModelLeft(setName)),
+            ('right', obj.segmentModelRight(setName)),
+            ('secondLeft', obj.segment2ModelLeft(setName)),
+            ('secondRight', obj.segment2ModelRight(setName))))) for setName in obj._SplineConfig__segmentModelSets)
+        for attrName in obj.__slots__[1:]:
+            attrName = attrName.strip('_')
+            result[attrName] = getattr(obj, attrName)
+        return result
+    else:
+        return OrderedDict(zip(obj._fields, obj))
 
 
 def inj_hkKeyEvent(event):
