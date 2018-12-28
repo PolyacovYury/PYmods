@@ -29,13 +29,13 @@ def apply(vDesc, modelDesc):
         elif key == 'splineDesc':
             obj = cc.SplineConfig(({setName: cc.SplineSegmentModelSet(**modelSet) for setName, modelSet in
                                     obj['segmentModelSets'].items()} or None),
-                                  **{k: v for k, v in obj if k != 'segmentModelSets'})
+                                  **{k: v for k, v in obj.items() if k != 'segmentModelSets'})
         elif key == 'trackParams':
             obj = cc.TrackParams(**obj)
         elif key == 'leveredSuspension':
             if obj is not None:
                 obj = cc.LeveredSuspensionConfig(([cc.SuspensionLever(**d) for d in obj['levers']] or None),
-                                                 **{k: v for k, v in obj.items if k != 'levers'})
+                                                 **{k: v for k, v in obj.items() if k != 'levers'})
         setattr(vDesc.chassis, key, obj)
     vDesc.chassis.chassisLodDistance = modelDesc['chassis']['chassisLodDistance']
     vDesc.chassis.physicalTracks = {}
