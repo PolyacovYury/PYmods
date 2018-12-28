@@ -1,0 +1,21 @@
+{
+    "meta" : {
+        "name" : "<b>Замена кнопок \"В бой!\"</b>",
+        "desc" : " • Небольшая подборка кнопок \"В бой!\" из темы VokaMut'а\n • Автор: <font color='#DD7700'>Polyacov_Yury</font>"
+    },
+    "#menu:headerButtons/battle" : {
+        "mode" : "random",
+        "text" : [
+                  "Аллах бабаХ", "Burzuuum!", "ДОЗА НЕВРОЗА", "Fight!", "FIGHTER", "ФПЯРёД!", "Fuck yeah!", "Го я создал!", "IDDQD", "НаГЕбаТЫ!!!111", "Нагибать!", "Нажми меня!",
+                  "НОГебать!", "S.T.A.L.K.E.R.", "Start attack!", "WAAAGH!!!", "За RATTE!", "За ЯДРО!", "Йа кнопко!"
+                 ]
+    },
+    "#menu:headerButtons/ready" : {
+        "mode" : "bindToKey",
+        "bindToKey" : "#menu:headerButtons/battle",
+        "text" : [
+                  "Взрывать-ждатЬ", "Burzuuum!", "ДОЗА НЕВРОЗА", "Wait!", "WAITER", "ЖДЬёМ!", "FFUUUU!", "Хост иди сюда!", "IDKFA", "ВыЖИдаТЫ!!!111", "Ожидать!", "Нажми меня!",
+                  "ВОЖЖИдать!", "W.A.I.T.E.R.", "Start waiting!", "ROAR!", "Где RATTE?", "Ждём ЯДРО!", "И йа кнопко!"
+                 ]
+    }
+}

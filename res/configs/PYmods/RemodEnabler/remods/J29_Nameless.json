@@ -1,0 +1,80 @@
+﻿{
+    "authorMessage": "Автор: Wargaming",
+    "playerWhitelist": "",
+    "allyWhitelist": "",
+    "enemyWhitelist": "",
+    "chassis": {
+        "undamaged": "vehicles/japan/J29_Nameless/normal/lod0/Chassis.model",
+        "traces": "Traces(lodDist=120.0, bufferPrefs='mediumTank', textureSet='germany_01', centerOffset=1.3145099878311157, size=(0.75, 0.74))",
+        "tracks": "TrackMaterials(lodDist=90.0, leftMaterial='track_mat_L_skinned', rightMaterial='track_mat_R_skinned', textureScale=-1.100000023841858)",
+        "wheels": "WheelsConfig(lodDist=70.0, groups=(WheelGroup(isLeft=False, template='W_R', count=6, startIndex=0, radius=0.48500001430511475), WheelGroup(isLeft=True, template='W_L', count=6, startIndex=0, radius=0.48500001430511475)), wheels=(Wheel(isLeft=False, radius=0.4861089885234833, nodeName='WD_R0', isLeading=True, leadingSyncAngle=25.71430015563965), Wheel(isLeft=False, radius=0.41787999868392944, nodeName='WD_R1', isLeading=True, leadingSyncAngle=25.71430015563965), Wheel(isLeft=True, radius=0.4861089885234833, nodeName='WD_L0', isLeading=True, leadingSyncAngle=25.71430015563965), Wheel(isLeft=True, radius=0.41787999868392944, nodeName='WD_L1', isLeading=True, leadingSyncAngle=25.71430015563965)))",
+        "groundNodes": "NodesAndGroups(nodes=(), groups=(GroundNodeGroup(isLeft=True, minOffset=-0.07999999821186066, maxOffset=0.07999999821186066, template='Track_L', count=6, startIndex=0), GroundNodeGroup(isLeft=False, minOffset=-0.07999999821186066, maxOffset=0.07999999821186066, template='Track_R', count=6, startIndex=0)))",
+        "trackNodes": "NodesAndGroups(nodes=(TrackNode(name='Track_VT_R0', isLeft=False, initialOffset=-0.14499999582767487, leftNodeName=None, rightNodeName='Track_VT_R1', damping=2.0, elasticity=1200.0, forwardElasticityCoeff=2.0, backwardElasticityCoeff=0.75), TrackNode(name='Track_VT_R1', isLeft=False, initialOffset=-0.19200000166893005, leftNodeName='Track_VT_R0', rightNodeName='Track_VT_R2', damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.7999999523162842, backwardElasticityCoeff=0.75), TrackNode(name='Track_VT_R2', isLeft=False, initialOffset=-0.20999999344348907, leftNodeName='Track_VT_R1', rightNodeName='Track_VT_R3', damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.600000023841858, backwardElasticityCoeff=0.75), TrackNode(name='Track_VT_R3', isLeft=False, initialOffset=-0.22499999403953552, leftNodeName='Track_VT_R2', rightNodeName='Track_VT_R4', damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.399999976158142, backwardElasticityCoeff=0.75), TrackNode(name='Track_VT_R4', isLeft=False, initialOffset=-0.1850000023841858, leftNodeName='Track_VT_R3', rightNodeName='Track_VT_R5', damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.2000000476837158, backwardElasticityCoeff=0.75), TrackNode(name='Track_VT_R5', isLeft=False, initialOffset=-0.15199999511241913, leftNodeName='Track_VT_R4', rightNodeName=None, damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.0, backwardElasticityCoeff=0.75), TrackNode(name='Track_VT_L0', isLeft=True, initialOffset=-0.14499999582767487, leftNodeName=None, rightNodeName='Track_VT_L1', damping=2.0, elasticity=1200.0, forwardElasticityCoeff=2.0, backwardElasticityCoeff=0.75), TrackNode(name='Track_VT_L1', isLeft=True, initialOffset=-0.19200000166893005, leftNodeName='Track_VT_L0', rightNodeName='Track_VT_L2', damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.7999999523162842, backwardElasticityCoeff=0.75), TrackNode(name='Track_VT_L2', isLeft=True, initialOffset=-0.20999999344348907, leftNodeName='Track_VT_L1', rightNodeName='Track_VT_L3', damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.600000023841858, backwardElasticityCoeff=0.75), TrackNode(name='Track_VT_L3', isLeft=True, initialOffset=-0.22499999403953552, leftNodeName='Track_VT_L2', rightNodeName='Track_VT_L4', damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.399999976158142, backwardElasticityCoeff=0.75), TrackNode(name='Track_VT_L4', isLeft=True, initialOffset=-0.1850000023841858, leftNodeName='Track_VT_L3', rightNodeName='Track_VT_L5', damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.2000000476837158, backwardElasticityCoeff=0.75), TrackNode(name='Track_VT_L5', isLeft=True, initialOffset=-0.15199999511241913, leftNodeName='Track_VT_L4', rightNodeName=None, damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.0, backwardElasticityCoeff=0.75), TrackNode(name='Track_VD_R0', isLeft=False, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.0, backwardElasticityCoeff=1.0), TrackNode(name='Track_VD_L0', isLeft=True, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.0, backwardElasticityCoeff=1.0), TrackNode(name='Track_VD_L1', isLeft=True, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.0, backwardElasticityCoeff=1.0), TrackNode(name='Track_VD_R1', isLeft=False, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1200.0, forwardElasticityCoeff=1.0, backwardElasticityCoeff=1.0)), groups=())",
+        "splineDesc": "SplineConfig(segmentModelLeft='vehicles/japan/J29_Nameless/track/segment.model', segmentModelRight='vehicles/japan/J29_Nameless/track/segment.model', segmentLength=0.19300000369548798, leftDesc='vehicles/japan/J29_Nameless/track/left.track', rightDesc='vehicles/japan/J29_Nameless/track/right.track', lodDist=50.0, segmentOffset=0.33500000834465027, segment2ModelLeft=None, segment2ModelRight=None, segment2Offset=0.0, atlasUTiles=1, atlasVTiles=1)",
+        "trackParams": "TrackParams(thickness=-0.043299999088048935, maxAmplitude=0.06499999761581421, maxOffset=0.06499999761581421, gravity=-9.800000190734863)",
+        "hullPosition": [0.0, 1.5173499584197998, 0.0],
+        "AODecals": [],
+        "wwsound": "",
+        "wwsoundPC": "treads_type_pc",
+        "wwsoundNPC": "trds_chf_npc"
+    },
+    "hull": {
+        "undamaged": "vehicles/japan/J29_Nameless/normal/lod0/Hull.model",
+        "exhaust": {
+            "pixie": "",
+            "nodes": "HP_Track_Exhaus_1"
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [0.6497250199317932, 0.558443009853363, 2.415179967880249],
+                "rayEnd": [0.6406199932098389, 0.44815200567245483, 2.357530117034912],
+                "rayUp": [-0.04630419984459877, 0.003259239951148629, -0.9989219903945923],
+                "size": 0.3499999940395355,
+                "hideIfDamaged": false,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/japan/J29_Nameless/normal/lod0/Turret_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [-0.7322679758071899, 0.35985198616981506, 1.2270400524139404],
+                "rayEnd": [-0.5601080060005188, 0.28317099809646606, 1.160099983215332],
+                "rayUp": [0.04337039962410927, 0.9916989803314209, 0.12104900181293488],
+                "size": 0.527999997138977,
+                "hideIfDamaged": false,
+                "type": "fixedEmblem",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": 3601
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/japan/J29_Nameless/normal/lod0/Gun_01.model",
+        "effects": "shot_main_mb",
+        "reloadEffect": "reload85_107",
+        "emblemSlots": [
+            {
+                "rayStart": [0.009199989959597588, 0.0020346599631011486, 2.319999933242798],
+                "rayEnd": [-0.04259800165891647, -0.008725790306925774, 2.3602099418640137],
+                "rayUp": [0.11599999666213989, 0.11599999666213989, 5.0],
+                "size": 0.3499999940395355,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "engine": {
+        "wwsound": "",
+        "wwsoundPC": "eng_v55_pc",
+        "wwsoundNPC": "eng_v55_npc"
+    }
+}

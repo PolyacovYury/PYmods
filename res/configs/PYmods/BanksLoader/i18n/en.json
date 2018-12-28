@@ -1,0 +1,15 @@
+﻿{
+    "UI_restart_button_close": "Continue",
+    "UI_restart_button_restart": "Restart",
+    "UI_restart_button_shutdown": "Shutdown",
+    "UI_restart_create": " • sections <b>created</b> for these banks: ",
+    "UI_restart_delete": " • sections <b>deleted</b> for these banks: ",
+    "UI_restart_delete_engine": " • sections <b>cleared</b> for these banks: ",
+    "UI_restart_header": "Banks Loader by PY: restart",
+    "UI_restart_memory": " • values <b>changed</b> for memory settings: ",
+    "UI_restart_move": " • sections <b>moved</b> for these banks: ",
+    "UI_restart_reason": "Exact changes:\n{}.\n",
+    "UI_restart_remap": " • sections <b>changed</b> for these settings: ",
+    "UI_restart_text": "You have installed new audio mods, so the game config was changed. {reason}Client restart required to accept changes.\nSound mods proper behaviour <b>NOT GUARANTEED</b> until next client start. This will <b>not</b> be required later. Do you want to restart the game now?",
+    "UI_restart_wotmod": " • configs <b>removed</b> from these packages: "
+}

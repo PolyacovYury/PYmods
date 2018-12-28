@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "meta.xml": "res/meta/GO_engines.xml",
+        "res/audioww/vehicles_GO.bnk": "res/res/audioww/vehicles_GO.bnk"
+    }
+}

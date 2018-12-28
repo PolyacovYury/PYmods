@@ -1,0 +1,18 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/LampLights/LampLights.json": "res/configs/PYmods/LampLights/LampLights.json",
+        "mods/configs/PYmods/LampLights/configs/modelDebug.json": "res/configs/PYmods/LampLights/configs/modelDebug.json",
+        "mods/configs/PYmods/LampLights/i18n/en.json": "res/configs/PYmods/LampLights/i18n/en.json",
+        "mods/configs/PYmods/LampLights/i18n/ru.json": "res/configs/PYmods/LampLights/i18n/ru.json",
+        "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",
+        "mods/configs/PYmods/PYmodsGUI/i18n/ru.json": "res/configs/PYmods/PYmodsGUI/i18n/ru.json",
+        "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
+        "mods/{GAME_VERSION}/*vxSettingsApi*": "res/wotmods/*vxSettingsApi*",
+        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/PYmods/LampLights.wotmod": "build/wotmods/PYmods/LampLights.wotmod",
+        "mods/{GAME_VERSION}/PYmods/PYSupport.wotmod": "build/wotmods/PYmods/PYSupport.wotmod",
+        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod"
+    }
+}

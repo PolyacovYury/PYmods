@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/audioww/Announcer_Andre_V.bnk": "res/res/audioww/Andre_V_Announcer S.T.A.L.K.E.R/Announcer_Andre_V.bnk"
+    }
+}

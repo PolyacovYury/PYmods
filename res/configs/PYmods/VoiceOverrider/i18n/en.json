@@ -1,0 +1,12 @@
+﻿{
+    "UI_setting_mode_buffon": "Buffon",
+    "UI_setting_mode_default_female": "Default: female",
+    "UI_setting_mode_default_male": "Default: male",
+    "UI_setting_mode_national_female": "National: female",
+    "UI_setting_mode_national_male": "National: male",
+    "UI_setting_mode_sabaton": "Sabaton",
+    "UI_setting_mode_text": "Ingame voice messages mode",
+    "UI_setting_mode_valkyrie_female": "Valkyrie Chronicles: female",
+    "UI_setting_mode_valkyrie_male": "Valkyrie Chronicles: male",
+    "name": "Ingame voice messages mode override"
+}

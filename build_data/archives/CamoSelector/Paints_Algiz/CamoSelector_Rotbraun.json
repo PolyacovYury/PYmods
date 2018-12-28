@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/paints/Rotbraun.xml": "res/configs/PYmods/CamoSelector/paints/Rotbraun.xml"
+    }
+}

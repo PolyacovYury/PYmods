@@ -1,0 +1,44 @@
+<headlight.visual_processed>
+    <node>
+        <identifier>Scene Root</identifier>
+        <transform>
+            <row0>	1.000000 0.000000 0.000000	</row0>
+            <row1>	0.000000 1.000000 0.000000	</row1>
+            <row2>	0.000000 0.000000 1.000000	</row2>
+            <row3>	0.000000 0.000000 0.000000	</row3>
+        </transform>
+    </node>
+    <renderSet>
+        <treatAsWorldSpaceObject>	false	</treatAsWorldSpaceObject>
+        <node>Scene Root</node>
+        <geometry>
+            <vertices>	vertices	</vertices>
+            <stream>uv2</stream>
+            <primitive>indices</primitive>
+            <primitiveGroup>	0	<material>
+                    <identifier>01 - Default</identifier>
+                    <fx>shaders/custom/volumetric_effect.fx</fx>
+                    <collisionFlags>	255	</collisionFlags>
+                    <materialKind>	0	</materialKind>
+                    <property>doubleSided<Bool>	true	</Bool>
+                    </property>
+                    <property>FreshnelColor<Vector4>	1.000000 0.988235 0.917647 1.000000	</Vector4>
+                    </property>
+                    <property>fresnelExp<Float>	1.000000	</Float>
+                    </property>
+                    <property>alphaFreshnelEnable<Bool>	true	</Bool>
+                    </property>
+                    <property>diffuseMap<Texture>../mods/configs/PYmods/LampLights/models/HeadLight/HeadLight.dds</Texture>
+                    </property>
+                    <property>destBlend<Int>	2	</Int>
+                    </property>
+                </material>
+                <groupOrigin>	-5.119214 -1.841680 0.082416	</groupOrigin>
+            </primitiveGroup>
+        </geometry>
+    </renderSet>
+    <boundingBox>
+        <min>	-10.651230 -4.106058 -3.090708	</min>
+        <max>	0.412797 0.422697 3.255540	</max>
+    </boundingBox>
+</headlight.visual_processed>

@@ -1,0 +1,1888 @@
+{
+    "engines": {
+        "china": {
+            "NORINCO_12150L7": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "NORINCO_12150L_59": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "_12150L-3_V-12": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_12150LZ": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "_12150L": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "_12150LG": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "_12150L2": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "_12150L3": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_12150L3G": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_12150L3G2": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_12150L4": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_Type_102S": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_Type_102SG": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_Type_102S1": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_12150LS": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "_12150LSG": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "_12150LT": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "_12150LTG": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "_12150LT2": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "Continental_R-975-C1": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "V-2": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V-2-34": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_V-2-54SC": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "_V-2-54SCP": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "_V-2-54SCG": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "_V-2-54SC_113": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "_V-2IS": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "_Type_102": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_12150L7": {
+                "wwsoundPC": "russian_500_600_10",
+                "wwsoundNPC": "russian_500_600_10"
+            },
+            "_12150L7G": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "_12150L8": {
+                "wwsoundPC": "russian_1000_1100",
+                "wwsoundNPC": "russian_1000_1100"
+            },
+            "_8V135": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "_Type_102S_T": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_12150LS_1": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "Continental_AOSI_895_5_Prem": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "V_54": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "_8V135_IGR": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "_12150LS_IGR": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "_12150L7_IGR": {
+                "wwsoundPC": "russian_500_600_10",
+                "wwsoundNPC": "russian_500_600_10"
+            }
+        },
+        "czech": {
+            "Skoda_V12_16_2_liter": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Skoda_V12_19_8_liter_450": {
+                "wwsoundPC": "french_400_500",
+                "wwsoundNPC": "french_400_500"
+            },
+            "Skoda_V12_19_8_liter_500": {
+                "wwsoundPC": "french_500_600",
+                "wwsoundNPC": "french_500_600"
+            },
+            "V_2_34": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V_2_34M": {
+                "wwsoundPC": "japan_500_600",
+                "wwsoundNPC": "japan_500_600"
+            },
+            "Skoda_V16_diesel_600": {
+                "wwsoundPC": "french_600_700",
+                "wwsoundNPC": "french_600_700"
+            },
+            "Skoda_V16_diesel_660": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "Skoda_16_ADH_140_A": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            },
+            "Skoda_16_ADH_140": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            },
+            "Skoda_16_AH_145": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            },
+            "Skoda_AHK": {
+                "wwsoundPC": "french_900_1000",
+                "wwsoundNPC": "french_900_1000"
+            },
+            "Praga_AXK": {
+                "wwsoundPC": "french_900_1000",
+                "wwsoundNPC": "french_900_1000"
+            }
+        },
+        "france": {
+            "Renault_T12": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Renault_T13": {
+                "wwsoundPC": "french_400_500",
+                "wwsoundNPC": "french_400_500"
+            },
+            "Renault_T14": {
+                "wwsoundPC": "french_400_500",
+                "wwsoundNPC": "french_400_500"
+            },
+            "Renault_T14_Halloween": {
+                "wwsoundPC": "french_400_500",
+                "wwsoundNPC": "french_400_500"
+            },
+            "SOFAM_8Gxb_B": {
+                "wwsoundPC": "french_600_700",
+                "wwsoundNPC": "french_600_700"
+            },
+            "_6F11SRYT": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Detroit_Diesel_6V53T": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Detroit_Diesel_6V53T-S": {
+                "wwsoundPC": "french_400_500",
+                "wwsoundNPC": "french_400_500"
+            },
+            "Hispano-Suiza_HS110": {
+                "wwsoundPC": "french_700_800",
+                "wwsoundNPC": "french_700_800"
+            },
+            "Hispano-Suiza_HS110_A": {
+                "wwsoundPC": "french_700_800",
+                "wwsoundNPC": "french_700_800"
+            },
+            "SOFAM_12GSds_A": {
+                "wwsoundPC": "french_700_800",
+                "wwsoundNPC": "french_700_800"
+            },
+            "SOFAM_12GSds": {
+                "wwsoundPC": "french_600_700",
+                "wwsoundNPC": "french_600_700"
+            },
+            "SOFAM_12_58": {
+                "wwsoundPC": "french_700_800",
+                "wwsoundNPC": "french_700_800"
+            },
+            "Renault_Naeder-FIEUX": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Renault_BDR": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Renault_A": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_230P45": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            },
+            "Maybach_HL_230": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Maybach_HL_230_F": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Maybach_HL_234P45": {
+                "wwsoundPC": "germany_800_900",
+                "wwsoundNPC": "germany_800_900"
+            },
+            "Maybach_HL_234P45A": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "Maybach_HL_295_1250": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "Maybach_HL_234P50": {
+                "wwsoundPC": "germany_900_1000",
+                "wwsoundNPC": "germany_900_1000"
+            },
+            "Maybach_HL_235_850": {
+                "wwsoundPC": "germany_800_900",
+                "wwsoundNPC": "germany_800_900"
+            },
+            "Maybach_HL_295": {
+                "wwsoundPC": "germany_800_900",
+                "wwsoundNPC": "germany_800_900"
+            },
+            "Saurer": {
+                "wwsoundPC": "french_900_1000",
+                "wwsoundNPC": "french_900_1000"
+            },
+            "Saurer_1000": {
+                "wwsoundPC": "french_900_1000",
+                "wwsoundNPC": "french_900_1000"
+            },
+            "Saurer_F155": {
+                "wwsoundPC": "french_900_1000",
+                "wwsoundNPC": "french_900_1000"
+            },
+            "AMX_B_272": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Mathis_210": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Mathis_300": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_295_F": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "Maybach_HL_295_F_fallout": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "Maybach_HL_295_FA": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "Maybach_HL_210_TRM_P30": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_230_TRM_P30": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            },
+            "Maybach_850CV": {
+                "wwsoundPC": "germany_800_900",
+                "wwsoundNPC": "germany_800_900"
+            },
+            "Ford_GAC_R": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Continental_AV-1790-7B": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Cummins_VT8-460": {
+                "wwsoundPC": "french_500_600",
+                "wwsoundNPC": "french_500_600"
+            },
+            "Moteur_moderne_3M_27_1_01": {
+                "wwsoundPC": "french_500_600",
+                "wwsoundNPC": "french_500_600"
+            },
+            "Maybach_HL_295_003_Somua": {
+                "wwsoundPC": "germany_900_1000",
+                "wwsoundNPC": "germany_900_1000"
+            },
+            "Maybach_HL_295_IGR": {
+                "wwsoundPC": "germany_800_900",
+                "wwsoundNPC": "germany_800_900"
+            },
+            "Detroit_Diesel_6V53T-S_IGR": {
+                "wwsoundPC": "french_400_500",
+                "wwsoundNPC": "french_400_500"
+            },
+            "Renault_A_IGR": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Hispano-Suiza_HS110_IGR": {
+                "wwsoundPC": "french_700_800",
+                "wwsoundNPC": "french_700_800"
+            }
+        },
+        "germany": {
+            "Maybach_HL_120_TR": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_120_TR_bootcamp": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_108TR": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_108TR_bootcamp": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_108TR_T": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Engine_PzIV": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_116": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_116_S": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_120_TRM": {
+                "wwsoundPC": "germany_400_500",
+                "wwsoundNPC": "germany_400_500"
+            },
+            "Maybach_HL_120_TRM_L": {
+                "wwsoundPC": "germany_400_500",
+                "wwsoundNPC": "germany_400_500"
+            },
+            "Maybach_HL_120_TRM_A": {
+                "wwsoundPC": "germany_400_500",
+                "wwsoundNPC": "germany_400_500"
+            },
+            "Maybach_HL_120_TRM_C": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Praga_C9": {
+                "wwsoundPC": "germany_400_500",
+                "wwsoundNPC": "germany_400_500"
+            },
+            "Maybach_HL_157P": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Maybach_HL_157P_A": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Maybach_HL_174": {
+                "wwsoundPC": "germany_400_500",
+                "wwsoundNPC": "germany_400_500"
+            },
+            "Maybach_HL_224": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Maybach_HL_210P30": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_210P30_Ausf_A": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_210P30A": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_210P30A_CN": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_230P45": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            },
+            "Maybach_HL_230P45_T": {
+                "wwsoundPC": "Maybach_HL_230P45_T",
+                "wwsoundNPC": "Maybach_HL_230P45_T"
+            },
+            "Maybach_HL_230P30A": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_230P30_2500rpm": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Daimler-Benz_DB-603A2": {
+                "wwsoundPC": "germany_800_900",
+                "wwsoundNPC": "germany_800_900"
+            },
+            "Daimler-Benz_DB-603": {
+                "wwsoundPC": "germany_1200_1500",
+                "wwsoundNPC": "germany_1200_1500"
+            },
+            "Porsche_Typ_220": {
+                "wwsoundPC": "germany_1200_1500",
+                "wwsoundNPC": "germany_1200_1500"
+            },
+            "Maybach_HL_234P45": {
+                "wwsoundPC": "germany_800_900",
+                "wwsoundNPC": "germany_800_900"
+            },
+            "Maybach_HL_234": {
+                "wwsoundPC": "germany_800_900",
+                "wwsoundNPC": "germany_800_900"
+            },
+            "Maybach_HL_234P50": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "Maybach_HL_234P60": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "Maybach_HL_234P60_WT": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "MB507": {
+                "wwsoundPC": "germany_1200_1500",
+                "wwsoundNPC": "germany_1200_1500"
+            },
+            "Maybach_HL90": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Renault": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Porsche_Typ_100": {
+                "wwsoundPC": "germany_400_500",
+                "wwsoundNPC": "germany_400_500"
+            },
+            "Porsche_Typ_100_1": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Porsche_Typ_100_1A": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Porsche_Typ_100_3": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Porsche_Typ_100_3A": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            },
+            "Porsche_Deutz_Typ180_2": {
+                "wwsoundPC": "germany_800_900",
+                "wwsoundNPC": "germany_800_900"
+            },
+            "Porsche_16_Cyl_Y": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "Porsche_16_Cyl_Y1": {
+                "wwsoundPC": "germany_900_1000",
+                "wwsoundNPC": "germany_900_1000"
+            },
+            "Porsche_16_Cyl_Y2": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "Porsche_Typ_205_2": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            },
+            "Engine_VK4502P": {
+                "wwsoundPC": "germany_800_900",
+                "wwsoundNPC": "germany_800_900"
+            },
+            "Development_Engine": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Maybach_HL_174_05": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_210P30_05": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_230P45_05": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_234P30_Ausf_A": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "Maybach_HL_235": {
+                "wwsoundPC": "germany_1000_1200_ct",
+                "wwsoundNPC": "germany_1000_1200_ct"
+            },
+            "Daimler-Benz_MB-809": {
+                "wwsoundPC": "germany_400_500",
+                "wwsoundNPC": "germany_400_500"
+            },
+            "MB517": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "MB517P": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "Maybach_HL66Px2": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "MB-837A": {
+                "wwsoundPC": "germany_630",
+                "wwsoundNPC": "germany_630"
+            },
+            "MB-838_CAM-500": {
+                "wwsoundPC": "germany_830",
+                "wwsoundNPC": "germany_830"
+            },
+            "MB-503": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "MB-837": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "MB-837-Aa": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "MB-837-Aa_A": {
+                "wwsoundPC": "germany_400_500",
+                "wwsoundNPC": "germany_400_500"
+            },
+            "MB-837-Ba-600": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "MB-837-Ea-600": {
+                "wwsoundPC": "germany_900_1000",
+                "wwsoundNPC": "germany_900_1000"
+            },
+            "MB-838_CAM-500_1": {
+                "wwsoundPC": "germany_830",
+                "wwsoundNPC": "germany_830"
+            },
+            "Maybach_HL_210_TRM_P30": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_210_TRM_P30_bootcamp": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_210_TRM_P30L": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_210_TRM_P30_A": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_230_TRM_P30": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_234_TRM_P30": {
+                "wwsoundPC": "germany_900_1000",
+                "wwsoundNPC": "germany_900_1000"
+            },
+            "Engine_Auf_Panther": {
+                "wwsoundPC": "germany_900_1000",
+                "wwsoundNPC": "germany_900_1000"
+            },
+            "Maybach_HL_210_TRM_P45": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_210_TRM_P45A": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Maybach_HL_210_TRM_P45M": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_230_TRM_P45": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            },
+            "Maybach_HL_234_TRM_P45": {
+                "wwsoundPC": "germany_900_1000",
+                "wwsoundNPC": "germany_900_1000"
+            },
+            "Maybach_HL_234_TRM_P45_1": {
+                "wwsoundPC": "germany_900_1000",
+                "wwsoundNPC": "germany_900_1000"
+            },
+            "Maybach_HL_120_TRM_R": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_230_TRM_P30_A": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_120_TRM_x2": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Porsche_Typ_101_1_x2": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Argus_12LD330H": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "Maybach_HL_150": {
+                "wwsoundPC": "germany_400_500",
+                "wwsoundNPC": "germany_400_500"
+            },
+            "Maybach_HL_190": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL100": {
+                "wwsoundPC": "germany_400_500",
+                "wwsoundNPC": "germany_400_500"
+            },
+            "W-55": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "Continental_AOS-895-3": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "MB_881": {
+                "wwsoundPC": "germany_1000_1200",
+                "wwsoundNPC": "germany_1000_1200"
+            },
+            "General_Motors_6V53": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "General_Motors_6V53T": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Maybach_HL_210P30_Ausf_A_IGR": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_230_TRM_P30_IGR": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Maybach_HL_230_TRM_P45_IGR": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            },
+            "Maybach_HL_120_TRM_IGR": {
+                "wwsoundPC": "germany_400_500",
+                "wwsoundNPC": "germany_400_500"
+            },
+            "Maybach_HL_230_TRM_P30_A_IGR": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Porsche_Deutz_Typ180_2_IGR": {
+                "wwsoundPC": "germany_800_900",
+                "wwsoundNPC": "germany_800_900"
+            },
+            "MB507_IGR": {
+                "wwsoundPC": "germany_1200_1500",
+                "wwsoundNPC": ""
+            }
+        },
+        "japan": {
+            "_Type100_V12_Kakyuu": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "_Type4_V12_Kuurei": {
+                "wwsoundPC": "japan_400_500",
+                "wwsoundNPC": "japan_400_500"
+            },
+            "_Type98_V12": {
+                "wwsoundPC": "japan_500_600",
+                "wwsoundNPC": "japan_500_600"
+            },
+            "_Type98_V12_x2_1100": {
+                "wwsoundPC": "japan_1100_1200",
+                "wwsoundNPC": "japan_1100_1200"
+            },
+            "_Type98_V12_x2_1200": {
+                "wwsoundPC": "japan_1100_1200",
+                "wwsoundNPC": "japan_1100_1200"
+            },
+            "_Type98_V12_x2_1200_Kai": {
+                "wwsoundPC": "japan_1100_1200",
+                "wwsoundNPC": "japan_1100_1200"
+            },
+            "_Type4_V12_Kakyuu": {
+                "wwsoundPC": "japan_500_600",
+                "wwsoundNPC": "japan_500_600"
+            },
+            "_Mitsubishi_DL10T": {
+                "wwsoundPC": "japan_500_600",
+                "wwsoundNPC": "japan_500_600"
+            },
+            "_Mitsubishi_DL10TA": {
+                "wwsoundPC": "japan_500_600",
+                "wwsoundNPC": "japan_500_600"
+            },
+            "_Mitsubishi_12HM20WT": {
+                "wwsoundPC": "japan_500_600",
+                "wwsoundNPC": "japan_500_600"
+            },
+            "_Mitsubishi_12HM21WT": {
+                "wwsoundPC": "japan_600_700",
+                "wwsoundNPC": "japan_600_700"
+            },
+            "_Mitsubishi_10ZF21WT": {
+                "wwsoundPC": "japan_700_800",
+                "wwsoundNPC": "japan_700_800"
+            },
+            "Maybach_HL_210_TRM_P45": {
+                "wwsoundPC": "germany_600_700",
+                "wwsoundNPC": "germany_600_700"
+            },
+            "Nameless_Engine": {
+                "wwsoundPC": "japan_500_600",
+                "wwsoundNPC": "japan_500_600"
+            },
+            "Edelweiss_Engine": {
+                "wwsoundPC": "japan_700_800",
+                "wwsoundNPC": "japan_700_800"
+            },
+            "_Mitsubishi_12HM20WT_IGR": {
+                "wwsoundPC": "japan_500_600",
+                "wwsoundNPC": "japan_500_600"
+            },
+            "_Type98_V12_IGR": {
+                "wwsoundPC": "japan_500_600",
+                "wwsoundNPC": "japan_500_600"
+            },
+            "_Mitsubishi_10ZF21WT_IGR": {
+                "wwsoundPC": "japan_700_800",
+                "wwsoundNPC": "japan_700_800"
+            }
+        },
+        "poland": {
+            "Maybach_HL_230P30A": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            }
+        },
+        "sweden": {
+            "_2_st_Scania_Vabis_L_603_1": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Volvo_A8B": {
+                "wwsoundPC": "french_400_500",
+                "wwsoundNPC": "french_400_500"
+            },
+            "_2_st_Scania_Vabis_607": {
+                "wwsoundPC": "french_400_500",
+                "wwsoundNPC": "french_400_500"
+            },
+            "_2_st_Scania_Vabis_607_1": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Volvo_THD_100_B": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Meteor_Mark_IV_Mod_271": {
+                "wwsoundPC": "british_400_500",
+                "wwsoundNPC": "british_400_500"
+            },
+            "DB_605": {
+                "wwsoundPC": "germany_500_600",
+                "wwsoundNPC": "germany_500_600"
+            },
+            "AOS_895": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "SFA_8_cyl_boxer": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "AV_1195": {
+                "wwsoundPC": "french_400_500",
+                "wwsoundNPC": "french_400_500"
+            },
+            "AVS_1195": {
+                "wwsoundPC": "french_500_600",
+                "wwsoundNPC": "french_500_600"
+            },
+            "SFA_F12": {
+                "wwsoundPC": "sweden_700_800",
+                "wwsoundNPC": "sweden_700_800"
+            },
+            "Saab_Scania_DS14": {
+                "wwsoundPC": "french_500_600",
+                "wwsoundNPC": "french_500_600"
+            },
+            "Leyland_L60": {
+                "wwsoundPC": "french_500_600",
+                "wwsoundNPC": "french_500_600"
+            },
+            "Motoraggregat_1S": {
+                "wwsoundPC": "french_500_600",
+                "wwsoundNPC": "french_500_600"
+            },
+            "Motoraggregat_1S_A": {
+                "wwsoundPC": "french_500_600",
+                "wwsoundNPC": "french_500_600"
+            },
+            "Motoraggregat_3": {
+                "wwsoundPC": "french_600_700",
+                "wwsoundNPC": "french_600_700"
+            },
+            "Motoraggregat_9": {
+                "wwsoundPC": "sweden_700_800",
+                "wwsoundNPC": "sweden_700_800"
+            },
+            "Meteor_Mark_IVB": {
+                "wwsoundPC": "british_600_700",
+                "wwsoundNPC": "british_600_700"
+            },
+            "Development_Engine": {
+                "wwsoundPC": "french_500_600",
+                "wwsoundNPC": "french_500_600"
+            }
+        },
+        "uk": {
+            "Rolls_Royse_Meteor_MkV": {
+                "wwsoundPC": "british_600_700",
+                "wwsoundNPC": "british_600_700"
+            },
+            "Rolls_Royse_Meteor": {
+                "wwsoundPC": "british_500_600",
+                "wwsoundNPC": "british_500_600"
+            },
+            "Rolls_Royse_Meteor_A": {
+                "wwsoundPC": "british_500_600",
+                "wwsoundNPC": "british_500_600"
+            },
+            "Rolls_Royse_Meteor_MkIV": {
+                "wwsoundPC": "british_600_700",
+                "wwsoundNPC": "british_600_700"
+            },
+            "Rolls_Royse_Meteor_MkIV_A": {
+                "wwsoundPC": "british_600_700",
+                "wwsoundNPC": "british_600_700"
+            },
+            "Crysler_A57": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "GMC_6046": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Wright_Continental_R-975EC2": {
+                "wwsoundPC": "british_400_500",
+                "wwsoundNPC": "british_400_500"
+            },
+            "Wright_Continental_R-975C1": {
+                "wwsoundPC": "british_400_500",
+                "wwsoundNPC": "british_400_500"
+            },
+            "Nuffield_liberty_MKV": {
+                "wwsoundPC": "british_400_500",
+                "wwsoundNPC": "british_400_500"
+            },
+            "Wright_Continental_R-975C4": {
+                "wwsoundPC": "british_400_500",
+                "wwsoundNPC": "british_400_500"
+            },
+            "Chrysler_A57_multibank": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Rolls_Royse_Meteor_M120": {
+                "wwsoundPC": "british_800_900",
+                "wwsoundNPC": "british_800_900"
+            },
+            "Rolls_Royse_Meteor_MkIVC": {
+                "wwsoundPC": "british_700_800",
+                "wwsoundNPC": "british_700_800"
+            },
+            "Rolls_Royce_Griffon": {
+                "wwsoundPC": "british_900_1040",
+                "wwsoundNPC": "british_900_1040"
+            },
+            "Paxman_Ricardo": {
+                "wwsoundPC": "british_500_600",
+                "wwsoundNPC": "british_500_600"
+            },
+            "Ford_GAA": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Rolls_Royse_Meteor_MkXI": {
+                "wwsoundPC": "british_700_800",
+                "wwsoundNPC": "british_700_800"
+            },
+            "Rolls_Royse_Meteor_Mk12": {
+                "wwsoundPC": "british_800_900",
+                "wwsoundNPC": "british_800_900"
+            },
+            "Rolls_Royce_Meteor_with_twin_turbo_supercharges": {
+                "wwsoundPC": "british_900_1040",
+                "wwsoundNPC": "british_900_1040"
+            },
+            "Rolls_Royce_Meteorite_202B": {
+                "wwsoundPC": "british_500_600",
+                "wwsoundNPC": "british_500_600"
+            },
+            "Rolls_Royce_Meteor_M300": {
+                "wwsoundPC": "british_400_500",
+                "wwsoundNPC": "british_400_500"
+            },
+            "Leyland_L60_No_4": {
+                "wwsoundPC": "british_700_800",
+                "wwsoundNPC": "british_700_800"
+            },
+            "Continental_AOI-1195-5": {
+                "wwsoundPC": "british_500_600",
+                "wwsoundNPC": "british_500_600"
+            },
+            "Rolls_Royse_Meteor_MkIVC_IGR": {
+                "wwsoundPC": "british_700_800",
+                "wwsoundNPC": "british_700_800"
+            },
+            "Rolls_Royse_Meteor_M120_IGR": {
+                "wwsoundPC": "british_800_900",
+                "wwsoundNPC": "british_800_900"
+            },
+            "Rolls_Royse_Meteor_MkIV_IGR": {
+                "wwsoundPC": "british_600_700",
+                "wwsoundNPC": "british_600_700"
+            },
+            "Rolls_Royce_Meteor_M300_IGR": {
+                "wwsoundPC": "british_500_600",
+                "wwsoundNPC": "british_500_600"
+            },
+            "Rolls_Royse_Meteor_MkV_IGR": {
+                "wwsoundPC": "british_600_700",
+                "wwsoundNPC": "british_600_700"
+            },
+            "Rolls_Royce_Griffon_IGR": {
+                "wwsoundPC": "british_900_1040",
+                "wwsoundNPC": "british_900_1040"
+            },
+            "Engine_FV4202": {
+                "wwsoundPC": "british_800_900",
+                "wwsoundNPC": "british_800_900"
+            }
+        },
+        "usa": {
+            "Ford_GAC": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Ford_GAC_1": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Twin_Cadillac_42series": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Twin_Cadillac_42series_bootcamp": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Wright_G200_m_795C9GC1": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Wright_G2X_m_781C9GC1": {
+                "wwsoundPC": "american_800_900_old",
+                "wwsoundNPC": "american_800_900_old"
+            },
+            "Wright_G200_m_781C9GC1": {
+                "wwsoundPC": "american_800_900_old",
+                "wwsoundNPC": "american_800_900_old"
+            },
+            "Wright_G200A": {
+                "wwsoundPC": "american_600_700",
+                "wwsoundNPC": "american_600_700"
+            },
+            "Wright_G200_m_781C9GC5": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Wright_Continental_R-975EC2": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Wright_Continental_R-975EC2L": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Wright_Continental_R-975C1": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Wright_Continental_R-975C1_bootcamp": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Wright_Continental_R-975C1L": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Wright_Continental_R-975C4": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Wright_Continental_R-975C4L": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Wright_Continental_R-975EC2_A": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Ford_GAA": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Ford_GAA_A": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Ford_GAN": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Ford_GAN_A": {
+                "wwsoundPC": "american_600_700",
+                "wwsoundNPC": "american_600_700"
+            },
+            "Ford_GAN_T": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Buick_series_60": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Continental_R-975-C1": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Continental_AV-1790-1": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Continental_AV-1790-1A": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Continental_AV-1790-1M2": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "GMC_Allison_V1710-E32": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Continental_AV-1790-3": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Continental_AV-1790-3A1": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Continental_AV-1790-5": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Continental_AV_1790_5A": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "AOI-1490": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Continental_AV-1790-5B": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Continental_AV-1790-7C": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Continental_AV_1790_5C": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Wright_R-975EC2": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Crysler_A57": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Twin_Cadillac_series_44T4L": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Wright_Continental_R-975C2": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Wright_Continental_R-975C2_bootcamp": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Liberty": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Liberty_bot": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Ford_GAA_1": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Ford_GAA_R": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "GMC_6046": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "General_Motors_6046": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Ford_GAF": {
+                "wwsoundPC": "american_600_700",
+                "wwsoundNPC": "american_600_700"
+            },
+            "Ford_GAF_V8": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Ford_GAFM2": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Ford_GAFM4": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Ford_GAA_2": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Continental_AOS-895-1": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Maybach_HL_230P45": {
+                "wwsoundPC": "germany_700_800",
+                "wwsoundNPC": "germany_700_800"
+            },
+            "Continental_AOI-1195-5": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Continental_AV-1790-7B": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Continental_AVI-1790-8": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Continental_AOS-895-3": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Continental_AOS-895-3A": {
+                "wwsoundPC": "american_600_700",
+                "wwsoundNPC": "american_600_700"
+            },
+            "Continental_AOSI-895-5": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Continental_AOSI-895-5A": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Continental_AOSI-895-5B": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Continental_AOI-628-1": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Continental_AOI-628-1_A": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Continental_AOI-628-2": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Continental_AVDS-1790-2": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Ford_GAF_R1": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Ford_GAC_R": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Chrysler_1200_HP": {
+                "wwsoundPC": "russian_1100_1200",
+                "wwsoundNPC": "russian_1100_1200"
+            },
+            "General_Motors_6V53T": {
+                "wwsoundPC": "american_600_700",
+                "wwsoundNPC": "american_600_700"
+            },
+            "Ford_GAN_T23": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Development_Engine": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Continental_AOI-628-2_IGR": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Continental_AOSI-895-5_IGR": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Continental_AV-1790-3A1_IGR": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Ford_GAA_IGR": {
+                "wwsoundPC": "american_500_600",
+                "wwsoundNPC": "american_500_600"
+            },
+            "Wright_Continental_R-975C4_IGR": {
+                "wwsoundPC": "american_400_500",
+                "wwsoundNPC": "american_400_500"
+            },
+            "Continental_AV-1790-1_IGR": {
+                "wwsoundPC": "american_700_800",
+                "wwsoundNPC": "american_700_800"
+            },
+            "Continental_AV-1790-3_IGR": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            },
+            "Continental_AV-1790-7B_IGR": {
+                "wwsoundPC": "american_800_900",
+                "wwsoundNPC": "american_800_900"
+            }
+        },
+        "ussr": {
+            "V-2": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V-2-34": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V-2-34_bootcamp": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V-2-34A": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V-2-34_B": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V_2_34E": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "M-17F": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "M-17F_Halloween": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "M-17F_R": {
+                "wwsoundPC": "russian_600_700_old",
+                "wwsoundNPC": "russian_600_700_old"
+            },
+            "M-17FA": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "M-17E": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "V-2IS": {
+                "wwsoundPC": "russian_600_700_old",
+                "wwsoundNPC": "russian_600_700_old"
+            },
+            "V-2IS_B": {
+                "wwsoundPC": "russian_600_700_old",
+                "wwsoundNPC": "russian_600_700_old"
+            },
+            "V-2IS_R": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "V_2_10M": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "KZ-V8": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "V-16": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "V-16M": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-16M_Halloween": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "KZ-V16": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-5": {
+                "wwsoundPC": "russian_600_700_old",
+                "wwsoundNPC": "russian_600_700_old"
+            },
+            "V-5_W": {
+                "wwsoundPC": "russian_600_700_old",
+                "wwsoundNPC": "russian_600_700_old"
+            },
+            "V-5F": {
+                "wwsoundPC": "russian_600_700_old",
+                "wwsoundNPC": "russian_600_700_old"
+            },
+            "V-2SN": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "M-17T": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "M-17T_bootcamp": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "M-17L_R": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V-3": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "M-5-400": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "M-5-400_bootcamp": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V-2K": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V-4": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "V-4_bootcamp": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "V-4M": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V-2-34M": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "MT-5-1": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "V-2-44": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "V-2-54": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "V-2-54A": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "V-55U": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "V-55UM": {
+                "wwsoundPC": "russian_900_1000",
+                "wwsoundNPC": "russian_900_1000"
+            },
+            "V-54-6": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "V-11": {
+                "wwsoundPC": "russian_600_700_old",
+                "wwsoundNPC": "russian_600_700_old"
+            },
+            "V-11-IS-3": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "V-11_700": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-12": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-12P": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-12A": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V_12CN": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-12-5": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-12-5A": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-12-6": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-12-6V": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-16FN": {
+                "wwsoundPC": "russian_800_900",
+                "wwsoundNPC": "russian_800_900"
+            },
+            "V-2KT": {
+                "wwsoundPC": "russian_800_900",
+                "wwsoundNPC": "russian_800_900"
+            },
+            "M-5-400F": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "M-5-400F_Bis": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "M-50T": {
+                "wwsoundPC": "russian_1000_1100",
+                "wwsoundNPC": "russian_1000_1100"
+            },
+            "M_50TI": {
+                "wwsoundPC": "russian_1100_1200",
+                "wwsoundNPC": "russian_1100_1200"
+            },
+            "M-50T_fallout": {
+                "wwsoundPC": "russian_1000_1100",
+                "wwsoundNPC": "russian_1000_1100"
+            },
+            "Bedford_Twin-Six": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "V-2-54IS": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-2-212": {
+                "wwsoundPC": "russian_800_900",
+                "wwsoundNPC": "russian_800_900"
+            },
+            "BD-2": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "V-5U": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "TD-30": {
+                "wwsoundPC": "russian_900_1000",
+                "wwsoundNPC": "russian_900_1000"
+            },
+            "M-50TD": {
+                "wwsoundPC": "russian_900_1000",
+                "wwsoundNPC": "russian_900_1000"
+            },
+            "Maybach_HL_120_TRM_A": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "Maybach_HL_120_TRM_A_bootcamp": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "M500": {
+                "wwsoundPC": "russian_1100_1200",
+                "wwsoundNPC": "russian_1100_1200"
+            },
+            "M_40": {
+                "wwsoundPC": "russian_1000_1100",
+                "wwsoundNPC": "russian_1000_1100"
+            },
+            "M_40_1200": {
+                "wwsoundPC": "russian_1100_1200",
+                "wwsoundNPC": "russian_1100_1200"
+            },
+            "V-2SNx2": {
+                "wwsoundPC": "russian_1100_1200",
+                "wwsoundNPC": "russian_1100_1200"
+            },
+            "GAZ-34-BT": {
+                "wwsoundPC": "russian_800_900",
+                "wwsoundNPC": "russian_800_900"
+            },
+            "MH_1": {
+                "wwsoundPC": "russian_1000_1100",
+                "wwsoundNPC": "russian_1000_1100"
+            },
+            "TDDG": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "BAMM_V12": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "_5TD": {
+                "wwsoundPC": "russian_500_600_10",
+                "wwsoundNPC": "russian_500_600_10"
+            },
+            "V-54K": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "V-54": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-54K_T": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "V-55": {
+                "wwsoundPC": "russian_500_600_10",
+                "wwsoundNPC": "russian_500_600_10"
+            },
+            "V-55_fallout": {
+                "wwsoundPC": "russian_500_600_10",
+                "wwsoundNPC": "russian_500_600_10"
+            },
+            "V-44": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "V-44A": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "V-12-5U": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "V-12-5_shortened": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V-2IS_R1": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "V-2IS_R1F": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "UTD_20": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "GAZ_O": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "GAZ_OU": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "Engine_01_KV": {
+                "wwsoundPC": "russian_400_500",
+                "wwsoundNPC": "russian_400_500"
+            },
+            "Engine_T-50-2": {
+                "wwsoundPC": "french_300_400",
+                "wwsoundNPC": "french_300_400"
+            },
+            "TD-12": {
+                "wwsoundPC": "russian_500_600_10",
+                "wwsoundNPC": "russian_500_600_10"
+            },
+            "_4TD": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "_2xV-16": {
+                "wwsoundPC": "russian_1100_1200",
+                "wwsoundNPC": "russian_1100_1200"
+            },
+            "_2xV-16_1000": {
+                "wwsoundPC": "russian_1000_1100",
+                "wwsoundNPC": "russian_1000_1100"
+            },
+            "_2xV_16_1000_A": {
+                "wwsoundPC": "russian_800_900",
+                "wwsoundNPC": "russian_800_900"
+            },
+            "V-7": {
+                "wwsoundPC": "russian_800_900",
+                "wwsoundNPC": "russian_800_900"
+            },
+            "V-5_IGR": {
+                "wwsoundPC": "russian_600_700_old",
+                "wwsoundNPC": "russian_600_700_old"
+            },
+            "V-2IS_IGR": {
+                "wwsoundPC": "russian_600_700_old",
+                "wwsoundNPC": "russian_600_700_old"
+            },
+            "V-54-6_IGR": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "V-2-54IS_IGR": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "M500_IGR": {
+                "wwsoundPC": "russian_1100_1200",
+                "wwsoundNPC": "russian_1100_1200"
+            },
+            "M-50T_IGR": {
+                "wwsoundPC": "russian_1000_1100",
+                "wwsoundNPC": "russian_1000_1100"
+            },
+            "_4TPD": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "V_12_5F": {
+                "wwsoundPC": "russian_1100_1200",
+                "wwsoundNPC": "russian_1100_1200"
+            },
+            "M_40_650": {
+                "wwsoundPC": "russian_600_700",
+                "wwsoundNPC": "russian_600_700"
+            },
+            "M_40_750": {
+                "wwsoundPC": "russian_700_800",
+                "wwsoundNPC": "russian_700_800"
+            },
+            "V_54S": {
+                "wwsoundPC": "russian_500_600_10",
+                "wwsoundNPC": "russian_500_600_10"
+            },
+            "TD_30": {
+                "wwsoundPC": "russian_800_900",
+                "wwsoundNPC": "russian_800_900"
+            },
+            "KCH_30": {
+                "wwsoundPC": "russian_900_1000",
+                "wwsoundNPC": "russian_900_1000"
+            },
+            "DM_45": {
+                "wwsoundPC": "russian_1100_1200",
+                "wwsoundNPC": "russian_1100_1200"
+            },
+            "M_850": {
+                "wwsoundPC": "russian_900_1000",
+                "wwsoundNPC": "russian_900_1000"
+            },
+            "_4TDF": {
+                "wwsoundPC": "russian_500_600",
+                "wwsoundNPC": "russian_500_600"
+            },
+            "M_50TS": {
+                "wwsoundPC": "russian_1000_1100",
+                "wwsoundNPC": "russian_1000_1100"
+            },
+            "_5TDF_S": {
+                "wwsoundPC": "russian_800_900",
+                "wwsoundNPC": "russian_800_900"
+            },
+            "V_4_2": {
+                "wwsoundPC": "russian_500_600_10",
+                "wwsoundNPC": "russian_500_600_10"
+            },
+            "_5TDF": {
+                "wwsoundPC": "russian_500_600_10",
+                "wwsoundNPC": "russian_500_600_10"
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+<root>
+	
+	<!-- Techical MOD ID -->
+	<id>Polyacov_Yury.PYmodsCore</id>
+	
+	<!-- Package version -->
+	<version>2.3.1</version>
+	
+	<!-- Human readable name -->
+	<name>Polyacov_Yury's mods core</name>
+	
+	<!-- Human readable description -->
+	<description>Shared code archive for Polyacov_Yury's (and other's) mods.</description>
+</root>

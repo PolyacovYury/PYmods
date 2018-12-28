@@ -1,0 +1,10 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/G76_Pz_Sfl_IVc_dg_foxerfit.json": "res/configs/PYmods/RemodEnabler/remods/G76_Pz_Sfl_IVc_dg_foxerfit.json",
+        "mods/configs/PYmods/RemodEnabler/remods/G76_Pz_Sfl_IVc_foxerfit.json": "res/configs/PYmods/RemodEnabler/remods/G76_Pz_Sfl_IVc_foxerfit.json",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/G76_Pz_Sfl_IVc_dg_foxerfit.wotmod": "build/wotmods/RemodEnabler_remods/G76_Pz_Sfl_IVc_dg_foxerfit.wotmod",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/G76_Pz_Sfl_IVc_foxerfit.wotmod": "build/wotmods/RemodEnabler_remods/G76_Pz_Sfl_IVc_foxerfit.wotmod"
+    }
+}

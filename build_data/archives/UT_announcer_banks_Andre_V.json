@@ -1,0 +1,18 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "Andre_V_Announcer BaibaKo (ProTanki)/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Announcer BaibaKo (ProTanki).wotmod",
+        "Andre_V_Announcer Commentator WoT/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Announcer Commentator WoT.wotmod",
+        "Andre_V_Announcer S.T.A.L.K.E.R  (New)/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Announcer S.T.A.L.K.E.R  (New).wotmod",
+        "Andre_V_Announcer S.T.A.L.K.E.R/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Announcer S.T.A.L.K.E.R.wotmod",
+        "Andre_V_Unreal Tournament 2004 (Eng.Man time)/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Unreal Tournament 2004 (Eng.Man time).wotmod",
+        "Andre_V_Unreal Tournament 2004 (SEXY-Eng)/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Unreal Tournament 2004 (SEXY-Eng).wotmod",
+        "Andre_V_Unreal Tournament 2004(Тime-Rus)/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Unreal Tournament 2004(Тime-Rus).wotmod",
+        "Andre_V_Unreal Tournament DOTA2 Мортред-Сестра теней (Rus)/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Unreal Tournament DOTA2 Мортред-Сестра теней (Rus).wotmod",
+        "Andre_V_Unreal Tournament DOTA2-Rus (Bristleback)/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Unreal Tournament DOTA2-Rus (Bristleback).wotmod",
+        "Andre_V_Unreal Tournament DOTA2-Rus (SEXY-Lina)/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Unreal Tournament DOTA2-Rus (SEXY-Lina).wotmod",
+        "Andre_V_Unreal Tournament DOTA2-Rus/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Unreal Tournament DOTA2-Rus.wotmod",
+        "Andre_V_Unreal Tournament.3(Rus)/mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/Andre_V_Unreal Tournament.3(Rus).wotmod"
+    }
+}

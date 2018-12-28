@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+=============================================================================
+ESPAÑOL
+=============================================================================
+
+Editor del Menu Radial v2.4.0.0
+Programado por Angelto20 (España)
+23-02-2015
+
+Diseñado para 'Enhanced customizeable Radial Menu (0.9.6) v.2.5.7' de locastan.
+
+Mod Original
+CustomCommandRose v.2.4 de hedger, traducido por locastan.
+Mod 'Radial menu customizeable commands'
+
+=============================================================================
+ENGLISH
+=============================================================================
+
+Radial Menu Editor v2.4.0.0
+Programmed by Angelto20 (Spain)
+23-02-2015
+
+Dessign for 'Enhanced customizeable Radial Menu (0.9.6) v.2.5.7' by locastan.
+
+Original MOD:
+CustomCommandRose v.2.4 by hedger, translated by locastan.
+Mod 'Radial menu customizeable commands'
+
+=============================================================================
+
+=============================================================================
+Fecha de creacion / Creation date: 17.07.2016
+=============================================================================
+-->
+<RadialMenu.xml>
+  <MapMenuKey>KEY_LALT</MapMenuKey>
+  <MenuReloadHotkey>KEY_LCONTROL+KEY_F11</MenuReloadHotkey>
+  <HotkeyCommandDelay>250</HotkeyCommandDelay>
+  <CHAT_DELAY>550</CHAT_DELAY>
+  <TankMenu>
+    <CommonCommands>
+      <Command>
+        <Title>  В о и н а !</Title>
+        <Icon>Yes</Icon>
+        <Text>.   В о и н а !</Text>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+        <Title>   Отставить истерику !</Title>
+        <Icon>No</Icon>
+        <Text>.      Отставить истерику !</Text>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+        <Title>   В  Атаку !</Title>
+        <Icon>Attack</Icon>
+        <Command>ATTACK</Command>
+        <Text>.      В  Атаку !</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>SOS</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>   SOS</Title>
+        <Icon>Helpme</Icon>
+        <Command>HELPME</Command>
+        <Text>.     Помощь нужна !!</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>SOS</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>Ни бири !!</Title>
+        <Icon>Backtobase</Icon>
+        <Text>.       НИ  БИРИ !!</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>НИ  БИРИ</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title> Бегом на заХват !</Title>
+        <Icon>Attack</Icon>
+        <Text>.     Бегом  на  заХват !</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>бегом на захват</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>Защита Базы !</Title>
+        <Icon>Backtobase</Icon>
+        <Text>Защита Базы !</Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_P</Hotkey>
+      </Command>
+      <Command>
+        <Title>.   О К Р У Ж А Й !!!</Title>
+        <Icon>Attack</Icon>
+        <Text>.   О К Р У Ж А Й  !!!</Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_O</Hotkey>
+      </Command>
+    </CommonCommands>
+    <TeamCommands>
+      <Command>
+        <Title>Не спеши</Title>
+        <Icon>Stop</Icon>
+        <Text>.    %(name)s,    не спеши.</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>%(name)s, не спеши.</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>Вперед!</Title>
+        <Icon>Followme</Icon>
+        <Command>FOLLOWME</Command>
+        <Text>.    %(name)s,    ВПЕРЕД   !!</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>%(name)s, кому стоим? вперед!</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>Не  притирайся !</Title>
+        <Icon>Stop</Icon>
+        <Command>STOP</Command>
+        <Text>%(name)s,  не притирайся, Прицел сбил !</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>%(name)s,  не притирайся, Прицел сбил !</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>Из прицела!</Title>
+        <Icon>Support</Icon>
+        <Text>.    %(name)s,    ИЗ ПРИЦЕЛА  !!</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>%(name)s,  ИЗ ПРИЦЕЛА!</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>Атакую прикрой</Title>
+        <Icon>Attack</Icon>
+        <Text>.    %(name)s    Прикрой  Атакую  !</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>%(name)s,  атакую прикрой!</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>Свети !</Title>
+        <Icon>Attack</Icon>
+        <Text>.     %(name)s,   Свети  !</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>%(name)s, спасибо!</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>Новая команда!</Title>
+        <Icon/>
+        <Text>Напишите текст и вставьте хоткей!</Text>
+        <ChatMode/>
+      </Command>
+    </TeamCommands>
+    <EnemyCommands>
+      <Command>
+        <Title>пусто</Title>
+      </Command>
+      <Command>
+        <Title>Профокусить</Title>
+        <Icon>Support</Icon>
+        <Text>Фокус на - %(vehicle)s - %(name)s!</Text>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+        <Title>пусто</Title>
+      </Command>
+      <Command>
+        <Title>пусто</Title>
+      </Command>
+      <Command>
+        <Title>Стой</Title>
+        <Icon>Stop</Icon>
+        <Text>  %(name)s    стой  РАК  !!!</Text>
+        <ChatMode>All</ChatMode>
+      </Command>
+      <Command>
+        <Title>пусто</Title>
+      </Command>
+    </EnemyCommands>
+  </TankMenu>
+  <lightTankMenu>
+  </lightTankMenu>
+  <mediumTankMenu>
+  </mediumTankMenu>
+  <heavyTankMenu>
+  </heavyTankMenu>
+  <AT-SPGMenu>
+  </AT-SPGMenu>
+  <SPGMenu>
+    <CommonCommands>
+      <Command>
+        <Title>Свет сюда!</Title>
+        <Icon>Support</Icon>
+        <Text>  Аккуратно подсветите </Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>Аккуратно подсветите %(viewPos)s</Variant>
+        </Variants>
+        <Ping>%(viewPos)s</Ping>
+      </Command>
+      <Command>
+        <Title>   Отставить истерику !</Title>
+        <Icon>No</Icon>
+        <Text>.      Отставить истерику !</Text>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+        <Title> В Атаку !</Title>
+        <Icon>Attack</Icon>
+        <Text>.    В Атаку !</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>НИ  БИРИ</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>  SOS</Title>
+        <Icon>Helpme</Icon>
+        <Command>HELPME</Command>
+        <Text>.     Помощь нужна !!</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>Уважаемые, тут требуется помощь!</Variant>
+        </Variants>
+        <Ping>%(ownPos)s</Ping>
+      </Command>
+      <Command>
+        <Title>Захват !</Title>
+        <Icon>Attack</Icon>
+        <Text>.    Бегом на заХват !</Text>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+        <Title>Ни бири !!</Title>
+        <Icon>Backtobase</Icon>
+        <Text>.       НИ  БИРИ !!</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>НИ  БИРИ</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>Защита Базы !!</Title>
+        <Icon/>
+        <Text>Защита Базы !!</Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_P</Hotkey>
+      </Command>
+      <Command>
+        <Title>.О К Р У Ж А Й  !!!</Title>
+        <Icon/>
+        <Text>..О К Р У Ж А Й  !!!</Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_O</Hotkey>
+      </Command>
+    </CommonCommands>
+    <TeamCommands>
+      <Command>
+        <Title> Только свет !</Title>
+        <Icon>Stop</Icon>
+        <Command>STOP</Command>
+        <Text>.    %(name)s  не лезь,  просто свети.</Text>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+        <Title>Из прицела!</Title>
+        <Icon>Support</Icon>
+        <Text>.     %(name)s,    ИЗ ПРИЦЕЛА  !</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>%(name)s,  ИЗ ПРИЦЕЛА!</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>Назад!</Title>
+        <Icon>Turnback</Icon>
+        <Command>TURNBACK</Command>
+        <Text>.    %(name)s    отойди назад !</Text>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+        <Title>Помогите ему</Title>
+        <Icon>Support</Icon>
+        <Text> Помогите  (%(vehicle)s)   он сам не справляется !</Text>
+        <ChatMode>Team</ChatMode>
+        <Ping>%(viewPos)s</Ping>
+      </Command>
+      <Command>
+        <Title>НЕ СТОЙ !</Title>
+        <Icon>Attack</Icon>
+        <Text>.      %(name)s,     Не  стой  !</Text>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+        <Title>  Вперед !</Title>
+        <Icon>Followme</Icon>
+        <Text>.     %(name)s,   Погнал  вперед  !</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>%(name)s, погнал вперед</Variant>
+        </Variants>
+      </Command>
+    </TeamCommands>
+    <EnemyCommands>
+      <Command>
+        <Title>пусто</Title>
+      </Command>
+      <Command>
+        <Title>Профокусить</Title>
+        <Icon>Support</Icon>
+        <Text>Фокус на  %(name)s  %(vehicle)s </Text>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+        <Title>пусто</Title>
+      </Command>
+      <Command>
+        <Title>пусто</Title>
+      </Command>
+      <Command>
+        <Title>СТОЙ РАК !</Title>
+        <Icon>Stop</Icon>
+        <Text>  %(name)s,  СТОЙ РАК !</Text>
+        <ChatMode>All</ChatMode>
+        <Variants>
+          <Variant>%(name)s,  СТОЙ РАК !</Variant>
+        </Variants>
+      </Command>
+      <Command>
+        <Title>пусто</Title>
+      </Command>
+    </EnemyCommands>
+  </SPGMenu>
+  <TankSpecificCommands>
+  </TankSpecificCommands>
+  <MapCommands>
+  </MapCommands>
+</RadialMenu.xml>

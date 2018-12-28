@@ -1,0 +1,11 @@
+<root>
+	<exportMode>	2	</exportMode>
+	<allowScale>	false	</allowScale>
+	<bumpMapped>	false	</bumpMapped>
+	<keepExistingMaterials>	false	</keepExistingMaterials>
+	<snapVertices>	false	</snapVertices>
+	<boneCount>	17	</boneCount>
+	<visualCheckerEnable>	true	</visualCheckerEnable>
+	<fixCylindrical>	false	</fixCylindrical>
+	<useLegacyOrientation>	false	</useLegacyOrientation>
+</root>

@@ -1,0 +1,12 @@
+﻿{
+    "UI_description": "Hangar screenshots",
+    "UI_message_cameraUnlocked": "Camera unlocked.",
+    "UI_setting_addUnlockMode_text": "Add unlocked camera mode into the list of modes",
+    "UI_setting_addUnlockMode_tooltip": "This setting adds another camera view \"point\" into the list which lets you to move the camera with the mouse when hangar UI is turned off.",
+    "UI_setting_camkey_text": "Camera angle change hotkey",
+    "UI_setting_camkey_tooltip": "Pressing this button in hangar while the mod is active changes the camera view point.",
+    "UI_setting_lockCamera_text": "Lock camera when UI is disabled",
+    "UI_setting_lockCamera_tooltip": "This setting restricts you from moving your camera with a mouse when hangar UI is turned off.",
+    "UI_setting_togglekey_text": "Mod activation hotkey",
+    "UI_setting_togglekey_tooltip": "Pressing this button in hangar turns hangar UI off and locks the camera."
+}

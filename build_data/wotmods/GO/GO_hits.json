@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "meta.xml": "res/meta/GO_hits.xml",
+        "res/audioww/hits_GO.bnk": "res/res/audioww/hits_GO.bnk"
+    }
+}

@@ -1,0 +1,10 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/vehicles/remods/Equipment/A_equipment_AM.dds": "res/res/vehicles/remods/Equipment/A_equipment_AM.dds",
+        "res/vehicles/remods/Equipment/A_equipment_ANM.dds": "res/res/vehicles/remods/Equipment/A_equipment_ANM.dds",
+        "res/vehicles/remods/Equipment/A_equipment_AO.dds": "res/res/vehicles/remods/Equipment/A_equipment_AO.dds",
+        "res/vehicles/remods/Equipment/A_equipment_GMM.dds": "res/res/vehicles/remods/Equipment/A_equipment_GMM.dds"
+    }
+}

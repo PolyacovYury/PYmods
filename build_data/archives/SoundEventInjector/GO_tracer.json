@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_tracer.json": "res/configs/PYmods/SoundEventInjector/configs/GO_tracer.json",
+        "mods/{GAME_VERSION}/GO/GO_tracer.wotmod": "build/wotmods/GO/GO_tracer.wotmod"
+    }
+}

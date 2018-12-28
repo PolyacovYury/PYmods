@@ -1,0 +1,22 @@
+﻿{
+    "UI_activLamps": "Фары ВКЛЮЧЕНЫ",
+    "UI_deactivLamps": "Фары ВЫКЛЮЧЕНЫ",
+    "UI_description": "Активатор фар",
+    "UI_serviceChannelPopUp": "<b>{author}<font color=\"#cc9933\"> подогнал света!</font></b>",
+    "UI_setting_attachTo": " • Будут добавлены на танки ",
+    "UI_setting_attachToAlly": "союзников",
+    "UI_setting_attachToEnemy": "противников",
+    "UI_setting_attachToPlayer": "игрока",
+    "UI_setting_caps_text": "Всего конфигов загружено: {totalCfg}, источников света: {totalSrc}, моделей: {models}",
+    "UI_setting_enableAtStartup_text": "Фары включены по умолчанию",
+    "UI_setting_enableAtStartup_tooltip": "Фары будут добавлены на танки сразу после загрузки боя.",
+    "UI_setting_enableMessage_text": "Включить оповещение в сервисном канале",
+    "UI_setting_enableMessage_tooltip": "Эта настройка позволит моду отправлять сообщение о себе в сервисный канал, если GUI не загружен.",
+    "UI_setting_hotkey_text": "Горячая клавиша включения фар",
+    "UI_setting_hotkey_tooltip": "Нажатие этой кнопки в бою переключит состояние фар.",
+    "UI_setting_meta_AND": " и ",
+    "UI_setting_meta_NDA": "{attachTo} • Данные не были загружены или автор их не предоставил.",
+    "UI_setting_meta_no_configs": "Ни одного конфига загружено не было.",
+    "UI_setting_meta_text": "Загруженные конфиги:",
+    "UI_setting_meta_tooltip": "%(meta)s"
+}

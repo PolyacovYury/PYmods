@@ -1,0 +1,71 @@
+<exporter_001_temp.visual>
+	<node>
+		<identifier>	Scene Root	</identifier>
+		<transform>
+			<row0>	1.000000 0.000000 0.000000	</row0>
+			<row1>	0.000000 1.000000 0.000000	</row1>
+			<row2>	0.000000 0.000000 1.000000	</row2>
+			<row3>	0.000000 0.000000 0.000000	</row3>
+		</transform>
+		<node>
+			<identifier>	Red_lamp	</identifier>
+			<transform>
+				<row0>	0.000000 -0.000000 -1.000000	</row0>
+				<row1>	-0.000000 1.000000 -0.000000	</row1>
+				<row2>	1.000000 0.000000 0.000000	</row2>
+				<row3>	0.000000 -0.161112 0.000040	</row3>
+			</transform>
+		</node>
+		<node>
+			<identifier>	R_lamp_node	</identifier>
+			<transform>
+				<row0>	1.000000 0.000000 0.000000	</row0>
+				<row1>	0.000000 1.000000 0.000000	</row1>
+				<row2>	0.000000 0.000000 1.000000	</row2>
+				<row3>	0.000000 -0.064000 0.000000	</row3>
+			</transform>
+		</node>
+	</node>
+	<renderSet>
+		<treatAsWorldSpaceObject>	false	</treatAsWorldSpaceObject>
+		<node>	Scene Root	</node>
+		<geometry>
+			<vertices>	vertices	</vertices>
+			<primitive>	indices	</primitive>
+			<primitiveGroup>	0
+				<material>
+					<identifier>	R_st	</identifier>
+					<fx>	shaders/std_effects/glow.fx	</fx>
+					<property>	diffuseMap
+						<Texture>	../mods/configs/PYmods/LampLights/models/FlashLight/vss1R_glass.dds	</Texture>
+					</property>
+					<property>	doubleSided
+						<Bool>	true	</Bool>
+					</property>
+					<property>	alphaTestEnable
+						<Bool>	false	</Bool>
+					</property>
+					<property>	selfIllumination
+						<Float>	1.000000	</Float>
+					</property>
+					<property>	srcBlend
+						<Int>	5	</Int>
+					</property>
+					<property>	destBlend
+						<Int>	6	</Int>
+					</property>
+					<property>	alphaReference
+						<Int>	111	</Int>
+					</property>
+					<property>	texAddressMode
+						<Int>	1	</Int>
+					</property>
+				</material>
+			</primitiveGroup>
+		</geometry>
+	</renderSet>
+	<boundingBox>
+		<min>	-0.035390 -0.156654 -0.035348	</min>
+		<max>	0.035390 -0.022709 0.020007	</max>
+	</boundingBox>
+</exporter_001_temp.visual>

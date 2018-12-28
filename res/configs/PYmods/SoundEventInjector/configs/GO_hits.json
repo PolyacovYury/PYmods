@@ -1,0 +1,606 @@
+{
+    "shot_effects": {
+        "autoArmorPiercing": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_auto",
+                "impactPC_NPC": "armor_not_pierce_auto",
+                "impactNPC_NPC": "armor_not_pierce_auto"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_auto",
+                "impactPC_NPC": "armor_not_pierce_auto",
+                "impactNPC_NPC": "armor_not_pierce_auto"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_auto",
+                "impactPC_NPC": "armor_not_pierce_auto",
+                "impactNPC_NPC": "armor_not_pierce_auto"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_auto",
+                "impactPC_NPC": "armor_pierce_auto",
+                "impactNPC_NPC": "armor_pierce_auto"
+            }
+        },
+        "autoAPCR": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_auto",
+                "impactPC_NPC": "armor_not_pierce_auto",
+                "impactNPC_NPC": "armor_not_pierce_auto"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_auto",
+                "impactPC_NPC": "armor_not_pierce_auto",
+                "impactNPC_NPC": "armor_not_pierce_auto"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_auto",
+                "impactPC_NPC": "armor_not_pierce_auto",
+                "impactNPC_NPC": "armor_not_pierce_auto"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_auto",
+                "impactPC_NPC": "armor_pierce_auto",
+                "impactNPC_NPC": "armor_pierce_auto"
+            }
+        },
+        "smallArmorPiercing": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_small",
+                "impactPC_NPC": "armor_not_pierce_small",
+                "impactNPC_NPC": "armor_not_pierce_small"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_small",
+                "impactPC_NPC": "armor_not_pierce_small",
+                "impactNPC_NPC": "armor_not_pierce_small"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_small",
+                "impactPC_NPC": "armor_not_pierce_small",
+                "impactNPC_NPC": "armor_not_pierce_small"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_small",
+                "impactPC_NPC": "armor_pierce_small",
+                "impactNPC_NPC": "armor_pierce_small"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_small",
+                "impactPC_NPC": "armor_crit_small",
+                "impactNPC_NPC": "armor_crit_small"
+            }
+        },
+        "smallHighExplosive": {
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_small",
+                "impactPC_NPC": "armor_not_pierce_fougasse_small",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_small"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_small",
+                "impactPC_NPC": "armor_pierce_fougasse_small",
+                "impactNPC_NPC": "armor_pierce_fougasse_small"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_small",
+                "impactPC_NPC": "armor_pierce_fougasse_small",
+                "impactNPC_NPC": "armor_pierce_fougasse_small"
+            }
+        },
+        "smallHollowCharge": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_small",
+                "impactPC_NPC": "armor_not_pierce_fougasse_small",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_small"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_small",
+                "impactPC_NPC": "armor_not_pierce_fougasse_small",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_small"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_small",
+                "impactPC_NPC": "armor_not_pierce_fougasse_small",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_small"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_small",
+                "impactPC_NPC": "armor_pierce_fougasse_small",
+                "impactNPC_NPC": "armor_pierce_fougasse_small"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_small",
+                "impactPC_NPC": "armor_pierce_fougasse_small",
+                "impactNPC_NPC": "armor_pierce_fougasse_small"
+            }
+        },
+        "smallAPCR": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_small",
+                "impactPC_NPC": "armor_not_pierce_small",
+                "impactNPC_NPC": "armor_not_pierce_small"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_small",
+                "impactPC_NPC": "armor_not_pierce_small",
+                "impactNPC_NPC": "armor_not_pierce_small"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_small",
+                "impactPC_NPC": "armor_not_pierce_small",
+                "impactNPC_NPC": "armor_not_pierce_small"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_small",
+                "impactPC_NPC": "armor_pierce_small",
+                "impactNPC_NPC": "armor_pierce_small"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_small",
+                "impactPC_NPC": "armor_crit_small",
+                "impactNPC_NPC": "armor_crit_small"
+            }
+        },
+        "mediumArmorPiercing": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_medium",
+                "impactPC_NPC": "armor_not_pierce_medium",
+                "impactNPC_NPC": "armor_not_pierce_medium"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_medium",
+                "impactPC_NPC": "armor_not_pierce_medium",
+                "impactNPC_NPC": "armor_not_pierce_medium"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_medium",
+                "impactPC_NPC": "armor_not_pierce_medium",
+                "impactNPC_NPC": "armor_not_pierce_medium"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_medium",
+                "impactPC_NPC": "armor_pierce_medium",
+                "impactNPC_NPC": "armor_pierce_medium"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_medium",
+                "impactPC_NPC": "armor_crit_medium",
+                "impactNPC_NPC": "armor_crit_medium"
+            }
+        },
+        "mediumHighExplosive": {
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_medium",
+                "impactPC_NPC": "armor_not_pierce_fougasse_medium",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_medium"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_medium",
+                "impactPC_NPC": "armor_pierce_fougasse_medium",
+                "impactNPC_NPC": "armor_pierce_fougasse_medium"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_medium",
+                "impactPC_NPC": "armor_crit_fougasse_medium",
+                "impactNPC_NPC": "armor_crit_fougasse_medium"
+            }
+        },
+        "mediumHollowCharge": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_medium",
+                "impactPC_NPC": "armor_not_pierce_fougasse_medium",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_medium"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_medium",
+                "impactPC_NPC": "armor_not_pierce_fougasse_medium",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_medium"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_medium",
+                "impactPC_NPC": "armor_not_pierce_fougasse_medium",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_medium"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_medium",
+                "impactPC_NPC": "armor_pierce_fougasse_medium",
+                "impactNPC_NPC": "armor_pierce_fougasse_medium"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_medium",
+                "impactPC_NPC": "armor_crit_fougasse_medium",
+                "impactNPC_NPC": "armor_crit_fougasse_medium"
+            }
+        },
+        "mediumAPCR": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_medium",
+                "impactPC_NPC": "armor_not_pierce_medium",
+                "impactNPC_NPC": "armor_not_pierce_medium"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_medium",
+                "impactPC_NPC": "armor_not_pierce_medium",
+                "impactNPC_NPC": "armor_not_pierce_medium"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_medium",
+                "impactPC_NPC": "armor_not_pierce_medium",
+                "impactNPC_NPC": "armor_not_pierce_medium"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_medium",
+                "impactPC_NPC": "armor_pierce_medium",
+                "impactNPC_NPC": "armor_pierce_medium"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_medium",
+                "impactPC_NPC": "armor_crit_medium",
+                "impactNPC_NPC": "armor_crit_medium"
+            }
+        },
+        "mainArmorPiercing": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_main",
+                "impactPC_NPC": "armor_not_pierce_main",
+                "impactNPC_NPC": "armor_not_pierce_main"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_main",
+                "impactPC_NPC": "armor_not_pierce_main",
+                "impactNPC_NPC": "armor_not_pierce_main"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_main",
+                "impactPC_NPC": "armor_not_pierce_main",
+                "impactNPC_NPC": "armor_not_pierce_main"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_main",
+                "impactPC_NPC": "armor_pierce_main",
+                "impactNPC_NPC": "armor_pierce_main"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_main",
+                "impactPC_NPC": "armor_crit_main",
+                "impactNPC_NPC": "armor_crit_main"
+            }
+        },
+        "mainHighExplosive": {
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_main",
+                "impactPC_NPC": "armor_not_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_main"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_main",
+                "impactPC_NPC": "armor_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_pierce_fougasse_main"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_main",
+                "impactPC_NPC": "armor_crit_fougasse_main",
+                "impactNPC_NPC": "armor_crit_fougasse_main"
+            }
+        },
+        "mainHollowCharge": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_main",
+                "impactPC_NPC": "armor_not_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_main"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_main",
+                "impactPC_NPC": "armor_not_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_main"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_main",
+                "impactPC_NPC": "armor_not_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_main"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_main",
+                "impactPC_NPC": "armor_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_pierce_fougasse_main"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_main",
+                "impactPC_NPC": "armor_crit_fougasse_main",
+                "impactNPC_NPC": "armor_crit_fougasse_main"
+            }
+        },
+        "mainAPCR": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_main",
+                "impactPC_NPC": "armor_not_pierce_main",
+                "impactNPC_NPC": "armor_not_pierce_main"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_main",
+                "impactPC_NPC": "armor_not_pierce_main",
+                "impactNPC_NPC": "armor_not_pierce_main"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_main",
+                "impactPC_NPC": "armor_not_pierce_main",
+                "impactNPC_NPC": "armor_not_pierce_main"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_main",
+                "impactPC_NPC": "armor_pierce_main",
+                "impactNPC_NPC": "armor_pierce_main"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_main",
+                "impactPC_NPC": "armor_crit_main",
+                "impactNPC_NPC": "armor_crit_main"
+            }
+        },
+        "largeArmorPiercing": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_large",
+                "impactPC_NPC": "armor_not_pierce_large",
+                "impactNPC_NPC": "armor_not_pierce_large"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_large",
+                "impactPC_NPC": "armor_not_pierce_large",
+                "impactNPC_NPC": "armor_not_pierce_large"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_large",
+                "impactPC_NPC": "armor_not_pierce_large",
+                "impactNPC_NPC": "armor_not_pierce_large"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_large",
+                "impactPC_NPC": "armor_pierce_large",
+                "impactNPC_NPC": "armor_pierce_large"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_large",
+                "impactPC_NPC": "armor_crit_large",
+                "impactNPC_NPC": "armor_crit_large"
+            }
+        },
+        "largeHighExplosive": {
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_large",
+                "impactPC_NPC": "armor_not_pierce_fougasse_large",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_large"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_large",
+                "impactPC_NPC": "armor_pierce_fougasse_large",
+                "impactNPC_NPC": "armor_pierce_fougasse_large"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_large",
+                "impactPC_NPC": "armor_crit_fougasse_large",
+                "impactNPC_NPC": "armor_crit_fougasse_large"
+            }
+        },
+        "largeHollowCharge": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_large",
+                "impactPC_NPC": "armor_not_pierce_fougasse_large",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_large"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_large",
+                "impactPC_NPC": "armor_not_pierce_fougasse_large",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_large"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_large",
+                "impactPC_NPC": "armor_not_pierce_fougasse_large",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_large"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_large",
+                "impactPC_NPC": "armor_pierce_fougasse_large",
+                "impactNPC_NPC": "armor_pierce_fougasse_large"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_large",
+                "impactPC_NPC": "armor_crit_fougasse_large",
+                "impactNPC_NPC": "armor_crit_fougasse_large"
+            }
+        },
+        "largeAPCR": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_large",
+                "impactPC_NPC": "armor_not_pierce_large",
+                "impactNPC_NPC": "armor_not_pierce_large"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_large",
+                "impactPC_NPC": "armor_not_pierce_large",
+                "impactNPC_NPC": "armor_not_pierce_large"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_large",
+                "impactPC_NPC": "armor_not_pierce_large",
+                "impactNPC_NPC": "armor_not_pierce_large"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_large",
+                "impactPC_NPC": "armor_pierce_large",
+                "impactNPC_NPC": "armor_pierce_large"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_large",
+                "impactPC_NPC": "armor_crit_large",
+                "impactNPC_NPC": "armor_crit_large"
+            }
+        },
+        "hugeArmorPiercing": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_huge",
+                "impactPC_NPC": "armor_not_pierce_huge",
+                "impactNPC_NPC": "armor_not_pierce_huge"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_huge",
+                "impactPC_NPC": "armor_not_pierce_huge",
+                "impactNPC_NPC": "armor_not_pierce_huge"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_huge",
+                "impactPC_NPC": "armor_not_pierce_huge",
+                "impactNPC_NPC": "armor_not_pierce_huge"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_huge",
+                "impactPC_NPC": "armor_pierce_huge",
+                "impactNPC_NPC": "armor_pierce_huge"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_huge",
+                "impactPC_NPC": "armor_crit_huge",
+                "impactNPC_NPC": "armor_crit_huge"
+            }
+        },
+        "hugeHighExplosive": {
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_huge",
+                "impactPC_NPC": "armor_not_pierce_fougasse_huge",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_huge"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_huge",
+                "impactPC_NPC": "armor_pierce_fougasse_huge",
+                "impactNPC_NPC": "armor_pierce_fougasse_huge"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_huge",
+                "impactPC_NPC": "armor_crit_fougasse_huge",
+                "impactNPC_NPC": "armor_crit_fougasse_huge"
+            }
+        },
+        "hugeHollowCharge": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_huge",
+                "impactPC_NPC": "armor_not_pierce_fougasse_huge",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_huge"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_huge",
+                "impactPC_NPC": "armor_not_pierce_fougasse_huge",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_huge"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_huge",
+                "impactPC_NPC": "armor_not_pierce_fougasse_huge",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_huge"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_huge",
+                "impactPC_NPC": "armor_pierce_fougasse_huge",
+                "impactNPC_NPC": "armor_pierce_fougasse_huge"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_huge",
+                "impactPC_NPC": "armor_crit_fougasse_huge",
+                "impactNPC_NPC": "armor_crit_fougasse_huge"
+            }
+        },
+        "hugeAPCR": {
+            "armorBasicRicochet": {
+                "impactNPC_PC": "armor_not_pierce_huge",
+                "impactPC_NPC": "armor_not_pierce_huge",
+                "impactNPC_NPC": "armor_not_pierce_huge"
+            },
+            "armorRicochet": {
+                "impactNPC_PC": "armor_not_pierce_huge",
+                "impactPC_NPC": "armor_not_pierce_huge",
+                "impactNPC_NPC": "armor_not_pierce_huge"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_huge",
+                "impactPC_NPC": "armor_not_pierce_huge",
+                "impactNPC_NPC": "armor_not_pierce_huge"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_huge",
+                "impactPC_NPC": "armor_pierce_fougasse_huge",
+                "impactNPC_NPC": "armor_pierce_fougasse_huge"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_huge",
+                "impactPC_NPC": "armor_crit_huge",
+                "impactNPC_NPC": "armor_crit_huge"
+            }
+        },
+        "sportHighExplosive": {
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_main",
+                "impactPC_NPC": "armor_not_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_main"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_main",
+                "impactPC_NPC": "armor_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_pierce_fougasse_main"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_main",
+                "impactPC_NPC": "armor_crit_fougasse_main",
+                "impactNPC_NPC": "armor_crit_fougasse_main"
+            }
+        },
+        "ArtilleryPreparation": {
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_main",
+                "impactPC_NPC": "armor_not_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_main"
+            },
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_main",
+                "impactPC_NPC": "armor_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_pierce_fougasse_main"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_main",
+                "impactPC_NPC": "armor_crit_fougasse_main",
+                "impactNPC_NPC": "armor_crit_fougasse_main"
+            }
+        },
+        "artilleryStrike": {
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_main",
+                "impactPC_NPC": "armor_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_pierce_fougasse_main"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_main",
+                "impactPC_NPC": "armor_crit_fougasse_main",
+                "impactNPC_NPC": "armor_crit_fougasse_main"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_main",
+                "impactPC_NPC": "armor_not_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_main"
+            }
+        },
+        "airbombStrike": {
+            "armorHit": {
+                "impactNPC_PC": "armor_pierce_fougasse_main",
+                "impactPC_NPC": "armor_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_pierce_fougasse_main"
+            },
+            "armorCriticalHit": {
+                "impactNPC_PC": "armor_crit_fougasse_main",
+                "impactPC_NPC": "armor_crit_fougasse_main",
+                "impactNPC_NPC": "armor_crit_fougasse_main"
+            },
+            "armorResisted": {
+                "impactNPC_PC": "armor_not_pierce_fougasse_main",
+                "impactPC_NPC": "armor_not_pierce_fougasse_main",
+                "impactNPC_NPC": "armor_not_pierce_fougasse_main"
+            }
+        }
+    }
+}
