@@ -398,22 +398,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                 chassis = data['chassis']
                 from .remods import chassis_params
                 for key in chassis_params + ('chassisLodDistance',):
-                    obj = getattr(vDesc.chassis, key)
-                    if obj is not None:
-                        if key == 'traces':
-                            obj = obj._replace(size=list(obj.size))
-                        obj = _asdict(obj)
-                        keys = ()
-                        if key == 'wheels':
-                            keys = ('groups', 'wheels')
-                        elif key in ('groundNodes', 'trackNodes'):
-                            keys = ('nodes', 'groups')
-                        elif key == 'leveredSuspension':
-                            keys = ('levers',)
-                        for sub in keys:
-                            obj[sub] = list(obj[sub])
-                            for idx, value in enumerate(obj[sub]):
-                                obj[sub][idx] = _asdict(value)
+                    obj = _asdict(getattr(vDesc.chassis, key))
                     chassis[key] = obj
                 chassis['hullPosition'] = vDesc.chassis.hullPosition.list()
                 chassis['AODecals'] = [[[decal.get(strIdx, colIdx) for colIdx in xrange(3)] for strIdx in xrange(4)]
@@ -538,7 +523,7 @@ def _asdict(obj):
             ('left', obj.segmentModelLeft(setName)),
             ('right', obj.segmentModelRight(setName)),
             ('secondLeft', obj.segment2ModelLeft(setName)),
-            ('secondRight', obj.segment2ModelRight(setName))))) for setName in obj._SplineConfig__segmentModelSets)
+            ('secondRight', obj.segment2ModelRight(setName))))) for setName in sorted(obj._SplineConfig__segmentModelSets))
         for attrName in obj.__slots__[1:]:
             attrName = attrName.strip('_')
             result[attrName] = getattr(obj, attrName)
@@ -547,6 +532,8 @@ def _asdict(obj):
         return OrderedDict(zip(obj._fields, (_asdict(x) for x in obj)))
     elif isinstance(obj, Math.Vector3):
         return obj.list()
+    elif isinstance(obj, (list, tuple)):
+        return [_asdict(x) for x in obj]
     else:
         return obj
 
