@@ -58,11 +58,12 @@ def vDesc_process(vehicleID, vDesc, mode):
     message = None
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
     if modelDesc is not None:
-        if hasattr(vDesc.chassis, 'generalWheelsAnimatorConfig'):
+        if vDesc.chassis.generalWheelsAnimatorConfig is not None:
             print g_config.ID + ':', (
                 'WARNING: wheeled vehicles are NOT processed. At least until WG moves params processing out of Vehicular, '
                 'which is an inaccessible part of game engine.')
-            modelDesc['whitelist'].remove(xmlName)
+            if xmlName in modelDesc['whitelist']:
+                modelDesc['whitelist'].remove(xmlName)
             g_config.modelsData['selected'][currentTeam].pop(xmlName, None)
             SystemMessages.pushMessage(g_config.i18n['UI_install_wheels_unsupported'], SystemMessages.SM_TYPE.Warning)
             modelDesc = None
