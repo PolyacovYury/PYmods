@@ -9,7 +9,6 @@ import os
 import traceback
 from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, showI18nDialog, overrideMethod, \
     remDups, PYViewTools
-from PYmodsCore.config.json_reader import JSONLoader as cls
 from collections import OrderedDict
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
@@ -152,19 +151,6 @@ class ConfigInterface(PYmodsConfigInterface):
                 BigWorld.g_modsListApi.updateModification(**kwargs)
             except AttributeError:
                 BigWorld.g_modsListApi.updateMod(**kwargs)
-
-    def readOrdered(self, new_path):
-        import json
-        config_new = None
-        if os.path.isfile(new_path):
-            data, excluded, success = cls.json_file_read(new_path, False)
-            if success:
-                try:
-                    config_new = cls.byte_ify(json.loads(data, object_pairs_hook=OrderedDict))
-                except StandardError as e:
-                    print new_path
-                    print e
-        return config_new
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings()

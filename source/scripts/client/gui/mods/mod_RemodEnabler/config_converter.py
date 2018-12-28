@@ -2,6 +2,7 @@ import glob
 import os
 from PYmodsCore import remDups, loadJson
 from collections import namedtuple, OrderedDict
+from PYmodsCore.config.json_reader import JSONLoader
 
 Wheel = namedtuple('Wheel', ('isLeft', 'radius', 'nodeName', 'isLeading', 'leadingSyncAngle'))
 WheelGroup = namedtuple('WheelGroup', ('isLeft', 'template', 'count', 'startIndex', 'radius'))
@@ -20,9 +21,23 @@ NodesAndGroups = namedtuple('NodesAndGroups', ('nodes', 'groups'))
 chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams')
 
 
-def migrateSettings(self, old_data, new_data):
+def readOrdered(new_path):
+    import json
+    config_new = None
+    if os.path.isfile(new_path):
+        data, excluded, success = JSONLoader.json_file_read(new_path, False)
+        if success:
+            try:
+                config_new = JSONLoader.byte_ify(json.loads(data, object_pairs_hook=OrderedDict))
+            except StandardError as e:
+                print new_path
+                print e
+    return config_new
+
+
+def migrateSettings(g_config, old_data, new_data):
     whitelist = []
-    for team in self.teams:
+    for team in g_config.teams:
         had_WL = (team + 'Whitelist') in old_data
         old_WL = (x.strip() for x in old_data.pop(team + 'Whitelist', '').split(',') if x.strip())
         new_data[team] = new_data.get(team, old_data.pop('swap' + team.capitalize(), True) and (not had_WL or bool(old_WL)))
@@ -30,35 +45,35 @@ def migrateSettings(self, old_data, new_data):
     new_data['whitelist'] = sorted(remDups(whitelist + new_data.get('whitelist', [])))
 
 
-def migrateConfigs(self):
-    settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
+def migrateConfigs(g_config):
+    settings = loadJson(g_config.ID, 'settings', g_config.settings, g_config.configPath)
     if settings and 'remods' in settings:
         for sname, remodData in settings['remods'].items():
             if not remodData.pop('enabled', True):
-                print self.ID + ': WARNING! Disabled remod detected:', sname + (
+                print g_config.ID + ': WARNING! Disabled remod detected:', sname + (
                     '. Remod disabling is not supported anymore, delete unneeded remods. '
                     'If game crashed - this is, probably, the reason.')
-            self.migrateSettings(remodData, remodData)
-        loadJson(self.ID, 'settings', settings['remods'], self.configPath, True)
+            migrateSettings(g_config, remodData, remodData)
+        loadJson(g_config.ID, 'settings', settings['remods'], g_config.configPath, True)
 
-    selectedData = loadJson(self.ID, 'remodsCache', self.modelsData['selected'], self.configPath)
+    selectedData = loadJson(g_config.ID, 'remodsCache', g_config.modelsData['selected'], g_config.configPath)
     for key in selectedData.keys():
         if not key.islower():
             selectedData[key.lower()] = selectedData.pop(key)
         if key.lower() == 'remod':
             del selectedData[key.lower()]
-    loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True)
+    loadJson(g_config.ID, 'remodsCache', selectedData, g_config.configPath, True)
 
-    configsPath = self.configPath + 'remods/*.json'
+    configsPath = g_config.configPath + 'remods/*.json'
     for configPath in glob.iglob(configsPath):
         sname = os.path.basename(configPath).split('.')[0]
-        old_conf = self.readOrdered(configPath)
+        old_conf = readOrdered(configPath)
         if not old_conf:
-            print self.ID + ': error while reading', os.path.basename(configPath) + '.'
+            print g_config.ID + ': error while reading', os.path.basename(configPath) + '.'
             continue
         new_conf = OrderedDict()
         new_conf['message'] = old_conf.get('authorMessage', old_conf.get('message', ''))
-        self.migrateSettings(old_conf, new_conf)
+        migrateSettings(g_config, old_conf, new_conf)
         for key, val in old_conf.items():
             if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key:
                 continue
@@ -72,7 +87,7 @@ def migrateConfigs(self):
             elif key == 'chassis':
                 val = migrate_chassis_config(val)
             new_conf[key] = val
-        loadJson(self.ID, sname, new_conf, self.configPath + 'remods/', True, sort_keys=False)
+        loadJson(g_config.ID, sname, new_conf, g_config.configPath + 'remods/', True, sort_keys=False)
 
 
 def migrate_chassis_config(config):  # please send data['chassis'] here
