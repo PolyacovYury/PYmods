@@ -415,7 +415,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                             for idx, value in enumerate(obj[sub]):
                                 obj[sub][idx] = _asdict(value)
                     chassis[key] = obj
-                chassis['hullPosition'] = vDesc.chassis.hullPosition.tuple()
+                chassis['hullPosition'] = vDesc.chassis.hullPosition.list()
                 chassis['AODecals'] = [[[decal.get(strIdx, colIdx) for colIdx in xrange(3)] for strIdx in xrange(4)]
                                        for decal in vDesc.chassis.AODecals]
                 for partName in ('gun', 'chassis', 'engine'):
@@ -444,7 +444,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                     for slot in part.emblemSlots:
                         slotDict = OrderedDict()
                         for key in ('rayStart', 'rayEnd', 'rayUp'):
-                            slotDict[key] = list(getattr(slot, key).tuple())
+                            slotDict[key] = getattr(slot, key).list()
                         for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId', 'slotId',
                                     'applyToFabric'):
                             slotDict[key] = getattr(slot, key)
@@ -544,7 +544,9 @@ def _asdict(obj):
             result[attrName] = getattr(obj, attrName)
         return result
     elif hasattr(obj, '_fields'):
-        return OrderedDict(zip(obj._fields, obj))
+        return OrderedDict(zip(obj._fields, (_asdict(x) for x in obj)))
+    elif isinstance(obj, Math.Vector3):
+        return obj.list()
     else:
         return obj
 
