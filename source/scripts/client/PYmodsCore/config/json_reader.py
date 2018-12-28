@@ -6,6 +6,7 @@ import codecs
 import json
 import os
 import re
+import traceback
 from collections import OrderedDict
 from .utils import smart_update
 
@@ -33,6 +34,7 @@ class JSONObjectEncoder(json.JSONEncoder):
             else:
                 return super(JSONObjectEncoder, self).encode(o)
         except StandardError:
+            traceback.print_exc()
             return str(o)
 
 

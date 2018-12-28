@@ -397,7 +397,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                     data[key]['undamaged'] = getattr(vDesc, key).models.undamaged
                 chassis = data['chassis']
                 from .remods import chassis_params
-                for key in chassis_params:
+                for key in chassis_params + ('chassisLodDistance',):
                     obj = getattr(vDesc.chassis, key)
                     if obj is not None:
                         if key == 'traces':
@@ -543,8 +543,10 @@ def _asdict(obj):
             attrName = attrName.strip('_')
             result[attrName] = getattr(obj, attrName)
         return result
-    else:
+    elif hasattr(obj, '_fields'):
         return OrderedDict(zip(obj._fields, obj))
+    else:
+        return obj
 
 
 def inj_hkKeyEvent(event):
