@@ -35,6 +35,7 @@ class JSONObjectEncoder(json.JSONEncoder):
                 return super(JSONObjectEncoder, self).encode(o)
         except StandardError:
             traceback.print_exc()
+            print type(o)
             return str(o)
 
 
