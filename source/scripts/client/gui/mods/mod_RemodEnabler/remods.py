@@ -17,7 +17,7 @@ def apply(vDesc, modelDesc):
         elif key == 'tracks':
             obj = cc.TrackMaterials(**obj)
         elif key == 'wheels':
-            obj = cc.WheelsConfig(lodDist=obj['lodDist'], groups=tuple(cc.WheelGroup(**d) for d in obj['groups']),
+            obj = cc.WheelsConfig(groups=tuple(cc.WheelGroup(**d) for d in obj['groups']),
                                   wheels=tuple(cc.Wheel(**d) for d in obj['wheels']))
         elif key == 'groundNodes':
             obj = NodesAndGroups(nodes=tuple(cc.GroundNode(**d) for d in obj['nodes']),
@@ -37,6 +37,7 @@ def apply(vDesc, modelDesc):
                 obj['levers'] = [cc.SuspensionLever(**d) for d in obj['levers']]
                 obj = cc.LeveredSuspensionConfig(**obj)
         setattr(vDesc.chassis, key, obj)
+    vDesc.chassis.chassisLodDistance = modelDesc['chassis']['chassisLodDistance']
     vDesc.chassis.physicalTracks = {}
     if modelDesc['chassis']['AODecals']:
         AODecalsOffset = vDesc.chassis.hullPosition - Math.Vector3(*modelDesc['chassis']['hullPosition'])
