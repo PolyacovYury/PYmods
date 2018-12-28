@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from functools import partial
-
 import BigWorld
 import Keys
 import Math
@@ -10,6 +8,7 @@ import traceback
 from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, showI18nDialog, overrideMethod, \
     remDups, PYViewTools
 from collections import OrderedDict
+from functools import partial
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.Scaleform.daapi.view.login.LoginView import LoginView
@@ -26,21 +25,22 @@ from items.vehicles import g_cache
 from skeletons.gui.shared.utils import IHangarSpace
 from vehicle_systems.tankStructure import TankPartNames
 from . import __date__, __modID__
+from .remods import chassis_params
 
 
 class ConfigInterface(PYmodsConfigInterface):
     hangarSpace = dependency.descriptor(IHangarSpace)
     modelDescriptor = property(lambda self: {
-            'name': '', 'message': '', 'whitelist': [],
-            'chassis': {'undamaged': '', 'emblemSlots': [], 'AODecals': [], 'hullPosition': [], 'soundID': ''},
-            'hull': {'undamaged': '', 'emblemSlots': [], 'exhaust': {'nodes': [], 'pixie': ''},
-                     'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
-            'turret': {'undamaged': '', 'emblemSlots': [],
-                       'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
-            'gun': {'undamaged': '', 'emblemSlots': [], 'soundID': '',
-                    'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
-            'engine': {'soundID': ''},
-            'common': {'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}}})
+        'name': '', 'message': '', 'whitelist': [],
+        'chassis': {'undamaged': '', 'emblemSlots': [], 'AODecals': [], 'hullPosition': [], 'soundID': ''},
+        'hull': {'undamaged': '', 'emblemSlots': [], 'exhaust': {'nodes': [], 'pixie': ''},
+                 'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
+        'turret': {'undamaged': '', 'emblemSlots': [],
+                   'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
+        'gun': {'undamaged': '', 'emblemSlots': [], 'soundID': '',
+                'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
+        'engine': {'soundID': ''},
+        'common': {'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}}})
 
     def __init__(self):
         self.teams = ('player', 'ally', 'enemy')
@@ -234,7 +234,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     if 'pixie' in confSubDict['exhaust']:
                         data['exhaust']['pixie'] = confSubDict['exhaust']['pixie']
                 if key == 'chassis':
-                    for k in ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams'):
+                    for k in chassis_params:
                         data[k] = confSubDict[k]
                 if 'soundID' in data and 'soundID' in confSubDict:
                     data['soundID'] = confSubDict['soundID']
