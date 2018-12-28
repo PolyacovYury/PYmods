@@ -530,7 +530,7 @@ def _asdict(obj):
         return result
     elif hasattr(obj, '_fields'):
         return OrderedDict(zip(obj._fields, (_asdict(x) for x in obj)))
-    elif isinstance(obj, Math.Vector3):
+    elif isinstance(obj, (Math.Vector3, Math.Vector2)):
         return obj.list()
     elif isinstance(obj, (list, tuple)):
         return [_asdict(x) for x in obj]
