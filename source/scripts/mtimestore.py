@@ -17,9 +17,9 @@ def change_date(timestamp, filename):
 def parse_line(line):
     try:
         timestamp, filename = line.split('|')
-        return int(timestamp), filename
+        return long(timestamp), filename
     except ValueError:
-        return 0, line  # there will never be a file with exactly 0 timestamp
+        return None, line
 
 
 def help():
@@ -40,19 +40,14 @@ def parse_file(path):
                 line = line.strip()
                 if not line: continue
                 timestamp, filename = parse_line(line)
-                if timestamp and '.mtimes' not in filename:
+                if timestamp is not None and '.mtimes' not in filename:
                     data[filename] = timestamp
     return data
 
 
-def update_data(root, path, data, a, rec):
-    if a:
-        rem = path
-        filesList = subprocess.check_output(['git', 'ls-files', path + '/']).split('\n')
-    else:
-        rem = os.path.join(root, path)
-        filesList = [(x if not root or not x.startswith(root) else x.split(root, 1)[1]) for x in
-                     subprocess.check_output(['git', 'diff', '--name-only', '--staged', path + '/']).split('\n')]
+def update_data(path, data, rec):
+    rem = path
+    filesList = subprocess.check_output(['git', 'ls-files', path + '/']).split('\n')
     rem = rem if not rem or rem.endswith('/') else rem + '/'
     for act_path in data.keys():
         x = rem + act_path
@@ -103,8 +98,7 @@ def main():
             if not path:
                 return
             data = mode == 's' and parse_file(path) or {}
-            update_data(subprocess.check_output('git rev-parse --show-prefix'.split()).strip(), os.path.dirname(path) or '.',
-                        data, mode == 'a', path.endswith('r'))
+            update_data(os.path.dirname(path) or '.', data, path.endswith('r'))
             write(path, data)
     else:
         print 'Unknown mode:', mode
