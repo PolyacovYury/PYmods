@@ -4,14 +4,13 @@
     "files": {
         "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",
         "mods/configs/PYmods/PYmodsGUI/i18n/ru.json": "res/configs/PYmods/PYmodsGUI/i18n/ru.json",
-        "mods/configs/PYmods/RemodEnabler/RemodEnabler.json": "res/configs/PYmods/RemodEnabler/RemodEnabler.json",
-        "mods/configs/PYmods/RemodEnabler/i18n/en.json": "res/configs/PYmods/RemodEnabler/i18n/en.json",
-        "mods/configs/PYmods/RemodEnabler/i18n/ru.json": "res/configs/PYmods/RemodEnabler/i18n/ru.json",
-        "mods/configs/PYmods/RemodEnabler/remods/": "",
+        "mods/configs/PYmods/Skinner/Skinner.json": "res/configs/PYmods/Skinner/Skinner.json",
+        "mods/configs/PYmods/Skinner/i18n/en.json": "res/configs/PYmods/Skinner/i18n/en.json",
+        "mods/configs/PYmods/Skinner/i18n/ru.json": "res/configs/PYmods/Skinner/i18n/ru.json",
         "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
         "mods/{GAME_VERSION}/*vxSettingsApi*": "res/wotmods/*vxSettingsApi*",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
-        "mods/{GAME_VERSION}/PYmods/RemodEnabler.wotmod": "build/wotmods/PYmods/RemodEnabler.wotmod"
+        "mods/{GAME_VERSION}/PYmods/Skinner.wotmod": "build/wotmods/PYmods/Skinner.wotmod"
     }
 }
