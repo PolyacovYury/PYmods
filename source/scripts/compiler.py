@@ -10,7 +10,10 @@ import time
 
 
 def get_git_date(path):
-    return subprocess.check_output('git --no-pager log -n 1 --format="%ct" --'.split() + [path])[1:-2]
+    try:
+        return subprocess.check_output('git log -n 1 --format="%ct" --'.split() + [path])[1:-2]
+    except subprocess.CalledProcessError:
+        return ''
 
 
 def compile_dir(path, max_levels=10, d_dir=None, o_dir=None, force=False, quiet=False):
