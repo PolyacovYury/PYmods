@@ -381,6 +381,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
             return True
 
     def py_getRemodData(self):
+        appearance = self.getCurrentAppearance()
         vehName = self.py_getCurrentVehicleName()
         if vehName:
             try:
@@ -390,7 +391,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                 for team in g_config.teams:
                     data[team] = True
                 data['whitelist'] = [vehName] if vehName else []
-                vDesc = self.getCurrentVDesc()
+                vDesc = appearance._HangarVehicleAppearance__vDesc
                 for key in TankPartNames.ALL + ('engine',):
                     data[key] = OrderedDict()
                 for key in TankPartNames.ALL:
@@ -400,6 +401,8 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                 for key in chassis_params + ('chassisLodDistance',):
                     obj = _asdict(getattr(vDesc.chassis, key))
                     chassis[key] = obj
+                modelsSet = appearance._HangarVehicleAppearance__outfit.modelsSet or 'default'
+                chassis['splineDesc']['segmentModelSets'] = chassis['splineDesc']['segmentModelSets'][modelsSet]
                 chassis['hullPosition'] = vDesc.chassis.hullPosition.list()
                 chassis['AODecals'] = [[[decal.get(strIdx, colIdx) for colIdx in xrange(3)] for strIdx in xrange(4)]
                                        for decal in vDesc.chassis.AODecals]
@@ -440,7 +443,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                 traceback.print_exc()
         else:
             self.py_sendMessage('', '', 'vehicleAdd', 'notSupported')
-        modelDesc = getattr(self.getCurrentVDesc(), 'modelDesc', None)
+        modelDesc = getattr(appearance._HangarVehicleAppearance__vDesc, 'modelDesc', None)
         if modelDesc is not None:
             return {'isRemod': True, 'name': modelDesc['name'], 'message': modelDesc['message'], 'vehicleName': vehName,
                     'whitelist': modelDesc['whitelist'], 'ally': g_config.settings[modelDesc['name']]['ally'],
@@ -460,12 +463,12 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
         refreshCurrentVehicle()
 
     @staticmethod
-    def getCurrentVDesc():
-        return g_config.hangarSpace.space.getVehicleEntity().appearance._HangarVehicleAppearance__vDesc
+    def getCurrentAppearance():
+        return g_config.hangarSpace.space.getVehicleEntity().appearance
 
     @staticmethod
     def py_getCurrentVehicleName():
-        vDesc = RemodEnablerUI.getCurrentVDesc()
+        vDesc = RemodEnablerUI.getCurrentAppearance()._HangarVehicleAppearance__vDesc
         if vDesc is not None:
             return vDesc.name.split(':')[1].lower()
         else:

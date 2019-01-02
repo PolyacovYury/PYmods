@@ -4,8 +4,9 @@ import traceback
 from HeroTank import HeroTank
 from gui import SystemMessages
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
+from gui.shared.gui_items.customization.outfit import Outfit
 from items.vehicles import CompositeVehicleDescriptor
-from vehicle_systems import appearance_cache
+from vehicle_systems import appearance_cache, camouflages
 from vehicle_systems.tankStructure import TankPartNames
 from . import remods, g_config
 
@@ -23,7 +24,7 @@ def debugOutput(xmlName, vehName, playerName, modelDesc):
         print header + ' processed:', info
 
 
-def vDesc_process(vehicleID, vDesc, mode):
+def vDesc_process(vehicleID, vDesc, mode, modelsSet):
     currentTeam = 'enemy'
     if mode == 'battle':
         player = BigWorld.player()
@@ -70,7 +71,7 @@ def vDesc_process(vehicleID, vDesc, mode):
         else:
             for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
                     vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
-                remods.apply(descr, modelDesc)
+                remods.apply(descr, modelDesc, modelsSet)
             if not g_config.collisionMode:
                 message = g_config.i18n['UI_install_remod'] + '<b>' + modelDesc['name'] + '</b>.\n' + modelDesc['message']
     if message is not None and mode == 'hangar':
@@ -83,12 +84,18 @@ def vDesc_process(vehicleID, vDesc, mode):
 @PYmodsCore.overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
 def new_cacheAppearance(base, self, vId, info, *args, **kwargs):
     if g_config.data['enabled']:
-        vDesc_process(vId, info.typeDescr, 'battle')
+        outfitComponent = camouflages.getOutfitComponent(info.outfitCD)
+        outfit = Outfit(component=outfitComponent)
+        player = BigWorld.player()
+        forceHistorical = player.isHistoricallyAccurate and player.playerVehicleID != self.vId and not outfit.isHistorical()
+        outfit = Outfit() if forceHistorical else outfit
+        vDesc_process(vId, info.typeDescr, 'battle', outfit.modelsSet or 'default')
     return base(self, vId, info, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled']:
-        vDesc_process(self._HangarVehicleAppearance__vEntity.id, vDesc, 'hangar')
+        vDesc_process(self._HangarVehicleAppearance__vEntity.id, vDesc, 'hangar',
+                      self._HangarVehicleAppearance__outfit.modelsSet or 'default')
     base(self, vDesc, vState)

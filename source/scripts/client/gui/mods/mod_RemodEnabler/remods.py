@@ -8,7 +8,7 @@ from vehicle_systems.tankStructure import TankPartNames
 chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams', 'leveredSuspension')
 
 
-def apply(vDesc, modelDesc):
+def apply(vDesc, modelDesc, modelsSet):
     for key in chassis_params:
         obj = modelDesc['chassis'][key]
         if key == 'traces':
@@ -27,8 +27,7 @@ def apply(vDesc, modelDesc):
             obj = NodesAndGroups(nodes=tuple(cc.TrackNode(**d) for d in obj['nodes']), groups=(),
                                  activePostmortem=obj['activePostmortem'], lodSettings=obj['lodSettings'])
         elif key == 'splineDesc':
-            obj = cc.SplineConfig(({setName: cc.SplineSegmentModelSet(**modelSet) for setName, modelSet in
-                                    obj['segmentModelSets'].items()} or None),
+            obj = cc.SplineConfig(({modelsSet: cc.SplineSegmentModelSet(**obj['segmentModelSets'])} or None),
                                   **{k: v for k, v in obj.items() if k != 'segmentModelSets'})
         elif key == 'trackParams':
             obj = cc.TrackParams(**obj)
@@ -48,12 +47,12 @@ def apply(vDesc, modelDesc):
         modelDesc['common']['camouflage']['tiling'] if exclMask else vDesc.type.camouflage.tiling, exclMask)
     for partName in TankPartNames.ALL:
         part = getattr(vDesc, partName)
-        models = part.modelsSets['default']
-        part.modelsSets['default'] = ModelStatesPaths(modelDesc[partName]['undamaged'], models.destroyed, models.exploded)
+        models = part.modelsSets[modelsSet]
+        part.modelsSets[modelsSet] = ModelStatesPaths(modelDesc[partName]['undamaged'], models.destroyed, models.exploded)
         part.models = part.modelsSets['default']
+        part.emblemSlots = tuple(modelDesc[partName]['emblemSlots'])
         if partName == 'chassis':
             continue
-        part.emblemSlots = tuple(modelDesc[partName]['emblemSlots'])
         camoData = modelDesc[partName]['camouflage']
         exclMask = camoData['exclusionMask']
         if exclMask:
