@@ -11,7 +11,7 @@ def create(vehicleID, vDesc, sname, modelsSet, visible=False):
     try:
         resList = []
         for partName in TankPartNames.ALL:
-            modelPath = getattr(vDesc, partName).part.modelsSets[modelsSet].undamaged.replace(
+            modelPath = getattr(vDesc, partName).modelsSets[modelsSet].undamaged.replace(
                 'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
             if partName == TankPartNames.CHASSIS:
                 modelPath = modelPath.replace('Chassis', 'Chassis_dynamic')
