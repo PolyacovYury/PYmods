@@ -688,10 +688,10 @@ def new_startVisual(base, self):
 
 
 @PYmodsCore.overrideMethod(Vehicle, 'stopVisual')
-def new_vehicle_onLeaveWorld(base, self, *args):
+def new_vehicle_onLeaveWorld(base, self, *args, **kwargs):
     if self.isStarted:
         lightsDestroy(self.id, 'Vehicle.stopVisual')
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, 'leaveArena')
@@ -702,11 +702,11 @@ def new_leaveArena(base, *a, **kw):
 
 
 @PYmodsCore.overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
-def new_oVHC(base, self, *args):
+def new_oVHC(base, self, *args, **kwargs):
     vehicle = self._CompoundAppearance__vehicle
     if not vehicle.isAlive():
         lightsDestroy(vehicle.id, 'oVHC_vehicle_not_isAlive')
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(CompoundAppearance, '_CompoundAppearance__onPeriodicTimer')

@@ -22,15 +22,15 @@ def clearCollision(self):
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, 'refresh')
-def new_refresh(base, self, *args):
+def new_refresh(base, self, *args, **kwargs):
     clearCollision(self)
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, 'recreate')
-def new_recreate(base, self, *args):
+def new_recreate(base, self, *args, **kwargs):
     clearCollision(self)
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__setupModel')

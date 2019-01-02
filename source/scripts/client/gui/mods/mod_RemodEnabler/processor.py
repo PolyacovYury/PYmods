@@ -81,10 +81,10 @@ def vDesc_process(vehicleID, vDesc, mode):
 
 
 @PYmodsCore.overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
-def new_cacheAppearance(base, self, vId, info, *args):
+def new_cacheAppearance(base, self, vId, info, *args, **kwargs):
     if g_config.data['enabled']:
         vDesc_process(vId, info.typeDescr, 'battle')
-    return base(self, vId, info, *args)
+    return base(self, vId, info, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')

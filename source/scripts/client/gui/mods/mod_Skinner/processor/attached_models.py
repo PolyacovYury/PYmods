@@ -135,11 +135,11 @@ def destroy_all():
 
 
 @PYmodsCore.overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
-def new_oVHC(base, self, *args):
+def new_oVHC(base, self, *args, **kwargs):
     vehicle = self._CompoundAppearance__vehicle
     if not vehicle.isAlive():
         detach(vehicle.id, 'destroy')
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(Vehicle, 'startVisual')
@@ -150,10 +150,10 @@ def new_startVisual(base, self):
 
 
 @PYmodsCore.overrideMethod(Vehicle, 'stopVisual')
-def new_vehicle_onLeaveWorld(base, self, *args):
+def new_vehicle_onLeaveWorld(base, self, *args, **kwargs):
     if self.isStarted:
         detach(self.id)
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__destroyGUI')
@@ -163,24 +163,24 @@ def new_destroyGUI(base, self):
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, 'refresh')
-def new_refresh(base, self, *args):
+def new_refresh(base, self, *args, **kwargs):
     detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, 'recreate')
-def new_recreate(base, self, *args):
+def new_recreate(base, self, *args, **kwargs):
     detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, 'remove')
-def new_remove(base, self, *args):
+def new_remove(base, self, *args, **kwargs):
     detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, 'destroy')
-def new_destroy(base, self, *args):
+def new_destroy(base, self, *args, **kwargs):
     detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
-    base(self, *args)
+    base(self, *args, **kwargs)
