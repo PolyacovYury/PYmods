@@ -172,11 +172,14 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
             obj.setdefault('lodSettings', None)
         if key == 'traces':
             obj.setdefault('activePostmortem', False)
-        if key == 'splineDesc' and 'segmentModelSets' not in obj:
-            obj['segmentModelSets'] = OrderedDict((
-                ('left', obj.pop('segmentModelLeft')),
-                ('right', obj.pop('segmentModelRight')),
-                ('secondLeft', obj.pop('segment2ModelLeft', '')),
-                ('secondRight', obj.pop('segment2ModelRight', ''))))
+        if key == 'splineDesc':
+            if 'segmentModelSets' not in obj:
+                obj['segmentModelSets'] = OrderedDict((
+                    ('left', obj.pop('segmentModelLeft')),
+                    ('right', obj.pop('segmentModelRight')),
+                    ('secondLeft', obj.pop('segment2ModelLeft', '')),
+                    ('secondRight', obj.pop('segment2ModelRight', ''))))
+            elif 'default' in obj['segmentModelSets']:
+                obj['segmentModelSets'] = obj['segmentModelSets']['default']
     new_config.setdefault('leveredSuspension', None)
     return new_config
