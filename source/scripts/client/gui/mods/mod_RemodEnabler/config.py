@@ -394,14 +394,14 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                 vDesc = appearance._HangarVehicleAppearance__vDesc
                 for key in TankPartNames.ALL + ('engine',):
                     data[key] = OrderedDict()
+                modelsSet = appearance._HangarVehicleAppearance__outfit.modelsSet or 'default'
                 for key in TankPartNames.ALL:
-                    data[key]['undamaged'] = getattr(vDesc, key).models.undamaged
+                    data[key]['undamaged'] = getattr(vDesc, key).modelsSets[modelsSet].undamaged
                 chassis = data['chassis']
                 from .remods import chassis_params
                 for key in chassis_params + ('chassisLodDistance',):
                     obj = _asdict(getattr(vDesc.chassis, key))
                     chassis[key] = obj
-                modelsSet = appearance._HangarVehicleAppearance__outfit.modelsSet or 'default'
                 chassis['splineDesc']['segmentModelSets'] = chassis['splineDesc']['segmentModelSets'][modelsSet]
                 chassis['hullPosition'] = vDesc.chassis.hullPosition.list()
                 chassis['AODecals'] = [[[decal.get(strIdx, colIdx) for colIdx in xrange(3)] for strIdx in xrange(4)]
