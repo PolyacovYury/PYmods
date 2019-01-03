@@ -161,11 +161,12 @@ def skinCRC32All(callback):
                     if vehicleSect is not None:
                         textures = [texPrefix + texName
                                     for texName in remDups(vehicleSect.keys()) if texName.endswith('.dds')]
-                        skinsSect = vehicleSect['_skins']
-                        if skinsSect is not None:
-                            for skinName in skinsSect.keys():
-                                textures.extend(texPrefix + '_skins/' + skinName + '/' + texName for texName in
-                                                remDups(skinsSect[skinName].keys()) if texName.endswith('.dds'))
+                        modelsSect = vehicleSect['_skins']
+                        if modelsSect is not None:
+                            for modelsSet in modelsSect.keys():
+                                skinVehNamesLDict.setdefault((vehicleName + '/' + modelsSet).lower(), []).append(skin)
+                                textures.extend(texPrefix + '_skins/' + modelsSet + '/' + texName for texName in
+                                                remDups(modelsSect[modelsSet].keys()) if texName.endswith('.dds'))
                     for localPath in textures:
                         texPath = skinsPath + skin + '/' + localPath
                         textureCRC32 = CRC32_from_file(texPath, localPath)
@@ -277,7 +278,10 @@ def modelsProcess(callback):
                              x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats]
             allFilesCnt = len(fileNamesList)
             for fileNum, memberFileName in enumerate(fileNamesList):
-                for skinName in skinVehNamesLDict.get(os.path.normpath(memberFileName).split('\\')[2].lower(), []):
+                attempt = memberFileName.split('/')[2]
+                if '_skins/' in memberFileName:
+                    attempt += '/' + memberFileName.split('_skins/')[1].split('/', 1)[0]
+                for skinName in skinVehNamesLDict.get(attempt.lower(), []):
                     try:
                         processMember(memberFileName, skinName)
                     except ValueError as e:
