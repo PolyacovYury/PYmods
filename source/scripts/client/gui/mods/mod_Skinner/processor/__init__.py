@@ -11,12 +11,12 @@ from . import skins_dynamic, skins_static
 from .. import g_config
 
 
-def skins_find(curVehName, currentTeam, skinType):
+def skins_find(curVehName, modelsSet, currentTeam, skinType):
     if not g_config.skinsData['models']:
         return
     for curSName in g_config.skinsData['priorities'][skinType][currentTeam]:
         curPRecord = g_config.skinsData['models'][curSName]
-        if curVehName.lower() not in curPRecord['whitelist']:
+        if (curVehName + '/' + modelsSet).lower() not in curPRecord['whitelist']:
             continue
         return curPRecord
 
@@ -79,15 +79,15 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
     vehDefNation = vDesc.chassis.hitTester.bspModelName.split('/')[1]
     if g_config.skinsData['models']:
         if vehNation == vehDefNation:
-            dynamicDesc = skins_find(vehName, currentTeam, 'dynamic')
+            dynamicDesc = skins_find(vehName, modelsSet, currentTeam, 'dynamic')
             if dynamicDesc is not None:
-                skins_dynamic.create(vehicleID, vDesc, dynamicDesc['name'], modelsSet, mode == 'hangar' and (
+                skins_dynamic.create(vehicleID, vDesc, modelsSet, dynamicDesc['name'], mode == 'hangar' and (
                         g_config.dynamicSkinEnabled and g_config.collisionMode != 2))
                 if g_config.dynamicSkinEnabled and not g_config.collisionMode:
                     message = g_config.i18n['UI_install_skin_dynamic'] + '<b>' + dynamicDesc['name'] + '</b>.'
-            staticDesc = skins_find(vehName, currentTeam, 'static')
+            staticDesc = skins_find(vehName, modelsSet, currentTeam, 'static')
             if staticDesc is not None:
-                skins_static.apply(vDesc, staticDesc['name'], modelsSet)
+                skins_static.apply(vDesc, modelsSet, staticDesc['name'])
         elif g_config.data['isDebug']:
             print g_config.ID + ': unknown vehicle nation for', vehName + ':', vehNation
         if g_config.data['isDebug'] and (

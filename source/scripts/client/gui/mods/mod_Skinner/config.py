@@ -168,14 +168,20 @@ class ConfigInterface(PYmodsConfigInterface):
                 nationDirSect = vehiclesDirSect[curNation]
                 for vehicleName in [] if nationDirSect is None else remDups(nationDirSect.keys()):
                     vehDirSect = nationDirSect[vehicleName]
-                    tracksDirSect = vehDirSect['tracks']
-                    if not any(texName.endswith('.dds') for texName in (
-                            ([] if vehDirSect is None else remDups(vehDirSect.keys())) +
-                            ([] if tracksDirSect is None else remDups(tracksDirSect.keys())))):
-                        if self.data['isDebug']:
-                            print self.ID + ':', vehicleName, 'folder from', sname, 'pack is empty.'
-                    else:
-                        pRecord['whitelist'].add(vehicleName.lower())
+                    sections = {'default': vehDirSect}
+                    modelsSetsSect = vehDirSect['_skins']
+                    if modelsSetsSect is not None:
+                        for modelsSet, modelsSetSect in modelsSetsSect.items():
+                            sections[modelsSet] = modelsSetSect
+                    for modelsSet, modelsSetSect in sections.items():
+                        tracksDirSect = modelsSetSect['tracks']
+                        if not any(texName.endswith('.dds') for texName in (
+                                ([] if modelsSetSect is None else remDups(modelsSetSect.keys())) +
+                                ([] if tracksDirSect is None else remDups(tracksDirSect.keys())))):
+                            if self.data['isDebug']:
+                                print self.ID + ':', vehicleName, 'folder from', sname, 'pack is empty.'
+                        else:
+                            pRecord['whitelist'].add((vehicleName + '/' + modelsSet).lower())
             for skinType in ('static', 'dynamic'):
                 priorities = self.skinsData['priorities'][skinType]
                 for tankType in priorities:

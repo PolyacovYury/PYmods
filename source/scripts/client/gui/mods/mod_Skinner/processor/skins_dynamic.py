@@ -7,7 +7,7 @@ from . import attached_models
 from .. import g_config
 
 
-def create(vehicleID, vDesc, sname, modelsSet, visible=False):
+def create(vehicleID, vDesc, modelsSet, sname, visible=False):
     try:
         resList = []
         for partName in TankPartNames.ALL:

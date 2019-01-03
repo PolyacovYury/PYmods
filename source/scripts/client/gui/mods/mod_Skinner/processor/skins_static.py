@@ -6,7 +6,7 @@ from vehicle_systems.tankStructure import TankPartNames
 from .. import g_config
 
 
-def apply(vDesc, sname, modelsSet):
+def apply(vDesc, modelsSet, sname):
     for partName in TankPartNames.ALL:
         for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
                 vDesc._CompositeVehicleDescriptor__vehicleDescr, vDesc._CompositeVehicleDescriptor__siegeDescr):
