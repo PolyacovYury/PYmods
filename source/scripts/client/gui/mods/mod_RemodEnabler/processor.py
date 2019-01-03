@@ -11,13 +11,15 @@ from vehicle_systems.tankStructure import TankPartNames
 from . import remods, g_config
 
 
-def debugOutput(xmlName, vehName, playerName, modelDesc):
+def debugOutput(xmlName, vehName, playerName, modelsSet, modelDesc):
     if not g_config.data['isDebug']:
         return
     info = ''
     header = g_config.ID + ': %s (%s)' % (xmlName, vehName)
     if playerName is not None:
         header += ', player: ' + playerName
+    if modelsSet != 'default':
+        header += ', modelsSet: ' + modelsSet
     if modelDesc is not None:
         info = 'modelDesc: ' + modelDesc['name']
     if info:
@@ -76,7 +78,7 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
                 message = g_config.i18n['UI_install_remod'] + '<b>' + modelDesc['name'] + '</b>.\n' + modelDesc['message']
     if message is not None and mode == 'hangar':
         SystemMessages.pushMessage('temp_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
-    debugOutput(xmlName, vehName, playerName, modelDesc)
+    debugOutput(xmlName, vehName, playerName, modelsSet, modelDesc)
     vDesc.modelDesc = modelDesc
     return modelDesc
 

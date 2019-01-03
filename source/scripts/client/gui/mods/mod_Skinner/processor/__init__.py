@@ -21,7 +21,7 @@ def skins_find(curVehName, currentTeam, skinType):
         return curPRecord
 
 
-def debugOutput(xmlName, vehName, playerName, staticDesc, dynamicDesc):
+def debugOutput(xmlName, vehName, playerName, modelsSet, staticDesc, dynamicDesc):
     if not g_config.data['isDebug']:
         return
     traceback.print_stack()
@@ -29,6 +29,8 @@ def debugOutput(xmlName, vehName, playerName, staticDesc, dynamicDesc):
     header = g_config.ID + ': %s (%s)' % (xmlName, vehName)
     if playerName is not None:
         header += ', player: ' + playerName
+    if modelsSet != 'default':
+        header += ', modelsSet: ' + modelsSet
     if staticDesc is not None:
         info.append('static skinDesc: ' + staticDesc['name'])
     if dynamicDesc is not None:
@@ -94,7 +96,7 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
                 message = g_config.i18n['UI_install_default']
     if message is not None and mode == 'hangar':
         SystemMessages.pushMessage('temp_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
-    debugOutput(xmlName, vehName, playerName, staticDesc, dynamicDesc)
+    debugOutput(xmlName, vehName, playerName, modelsSet, staticDesc, dynamicDesc)
 
 
 @PYmodsCore.overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
