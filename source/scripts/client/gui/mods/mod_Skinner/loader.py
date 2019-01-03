@@ -360,7 +360,8 @@ def processMember(memberFileName, skinName):
                     if hasTracks:
                         curSSect['material'].writeString('fx', 'shaders/std_effects/lightonly_alpha.fx')
 
-            visualSect.writeString('primitivesName', visualSect['primitivesName'] or os.path.splitext(memberFileName)[0])
+            if visualSect['primitivesName'] is None:
+                visualSect.writeString('primitivesName', os.path.splitext(memberFileName)[0])
             visualSect.save()
 
 
