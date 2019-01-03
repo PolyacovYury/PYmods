@@ -36,7 +36,9 @@ def debugOutput(xmlName, vehName, playerName, modelsSet, staticDesc, dynamicDesc
     if dynamicDesc is not None:
         info.append('dynamic skinDesc: ' + dynamicDesc['name'])
     if info:
-        print header + ' processed:', ', '.join(info)
+        print header, 'processed:', ', '.join(info)
+    else:
+        print header, 'processed.'
 
 
 def vDesc_process(vehicleID, vDesc, mode, modelsSet):
@@ -75,7 +77,7 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
     message = None
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
     vehDefNation = vDesc.chassis.hitTester.bspModelName.split('/')[1]
-    if g_config.skinsData['models']:
+    if g_config.skinsData['models'] and modelsSet not in ('default', 'SD'):
         if vehNation == vehDefNation:
             dynamicDesc = skins_find(vehName, currentTeam, 'dynamic')
             if dynamicDesc is not None:

@@ -23,7 +23,9 @@ def debugOutput(xmlName, vehName, playerName, modelsSet, modelDesc):
     if modelDesc is not None:
         info = 'modelDesc: ' + modelDesc['name']
     if info:
-        print header + ' processed:', info
+        print header, 'processed:', info
+    else:
+        print header, 'processed.'
 
 
 def vDesc_process(vehicleID, vDesc, mode, modelsSet):
