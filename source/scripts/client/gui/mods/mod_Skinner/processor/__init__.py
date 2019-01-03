@@ -77,7 +77,7 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
     message = None
     vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
     vehDefNation = vDesc.chassis.hitTester.bspModelName.split('/')[1]
-    if g_config.skinsData['models'] and modelsSet in ('default', 'SD'):
+    if g_config.skinsData['models']:
         if vehNation == vehDefNation:
             dynamicDesc = skins_find(vehName, currentTeam, 'dynamic')
             if dynamicDesc is not None:
