@@ -153,7 +153,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 BigWorld.g_modsListApi.updateMod(**kwargs)
 
     def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings()
+        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
         self.modelsData['models'].clear()
         self.modelsData['selected'] = selectedData = loadJson(
