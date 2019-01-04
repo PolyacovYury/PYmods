@@ -27,7 +27,6 @@ from helpers import getClientVersion
 from zipfile import ZipFile
 from . import g_config
 
-
 texReplaced = False
 skinsChecked = False
 clientIsNew = True
@@ -105,18 +104,22 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
     def onWindowClose(self):
         g_config.loadingProxy = None
-        self.destroy()
         if needToReReadSkinsModels:
             showConfirmDialog(
                 g_config.i18n['UI_restart_header'], g_config.i18n['UI_restart_text'],
                 (g_config.i18n['UI_restart_button_restart'], g_config.i18n['UI_restart_button_shutdown']),
                 lambda restart: (BigWorld.savePreferences(), (BigWorld.restartGame() if restart else BigWorld.quit())))
         elif self.doLogin:
-            loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
-            if loginView and loginView.loginManager.getPreference('remember_user'):
-                password = '*' * loginView.loginManager.getPreference('password_length')
-                login = loginView.loginManager.getPreference('login')
-                loginView.onLogin(login, password, loginView._servers.selectedServer['data'], '@' not in login)
+            BigWorld.callback(0.1, doLogin)
+        self.destroy()
+
+
+def doLogin():
+    loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
+    if loginView and loginView.loginManager.getPreference('remember_user'):
+        password = '*' * loginView.loginManager.getPreference('password_length')
+        login = loginView.loginManager.getPreference('login')
+        loginView.onLogin(login, password, loginView._servers.selectedServer['data'], '@' not in login)
 
 
 g_entitiesFactories.addSettings(
