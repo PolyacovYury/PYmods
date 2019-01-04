@@ -107,7 +107,7 @@ def new_cacheAppearance(base, self, vId, info, *args, **kwargs):
         outfitComponent = camouflages.getOutfitComponent(info.outfitCD)
         outfit = Outfit(component=outfitComponent)
         player = BigWorld.player()
-        forceHistorical = player.isHistoricallyAccurate and player.playerVehicleID != self.vId and not outfit.isHistorical()
+        forceHistorical = player.isHistoricallyAccurate and player.playerVehicleID != vId and not outfit.isHistorical()
         outfit = Outfit() if forceHistorical else outfit
         vDesc_process(vId, info.typeDescr, 'battle', outfit.modelsSet or 'default')
     return base(self, vId, info, *args, **kwargs)
