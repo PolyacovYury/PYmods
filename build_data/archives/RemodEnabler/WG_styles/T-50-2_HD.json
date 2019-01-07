@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/T-50-2_HD.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/T-50-2_HD.json"
+    }
+}

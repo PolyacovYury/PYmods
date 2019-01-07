@@ -1,27 +1,347 @@
 ﻿{
-    "authorMessage": "Автор: MilkyM4n",
-    "playerWhitelist": "a80_t26_e4_superpershing",
-    "allyWhitelist": "a80_t26_e4_superpershing",
-    "enemyWhitelist": "a80_t26_e4_superpershing",
+    "message": "Автор: MilkyM4n",
+    "player": true,
+    "ally": true,
+    "enemy": true,
+    "whitelist": ["a80_t26_e4_superpershing"],
     "chassis": {
         "undamaged": "vehicles/milkym4n/A80_T26_E4_SuperPershing/normal/lod0/Chassis.model",
-        "traces": "{'textureSet': 'germany_01', 'lodDist': 120.0, 'bufferPrefs': 'largeTank', 'centerOffset': 1.3969999551773071, 'size': (0.44, 0.62)}",
-        "tracks": "{'leftMaterial': 'track_mat_L_skinned', 'rightMaterial': 'track_mat_R_skinned', 'lodDist': 90.0, 'textureScale': 2.0}",
-        "wheels": "{'groups': [WheelGroup(isLeft=False, template='WD_R', count=5, startIndex=1, radius=0.17897599935531616), WheelGroup(isLeft=False, template='W_R', count=6, startIndex=0, radius=0.33683401346206665), WheelGroup(isLeft=True, template='WD_L', count=5, startIndex=1, radius=0.17897599935531616), WheelGroup(isLeft=True, template='W_L', count=6, startIndex=0, radius=0.33683401346206665)], 'wheels': [Wheel(isLeft=False, radius=0.3477019965648651, nodeName='WD_R0', isLeading=True, leadingSyncAngle=27.69230079650879), Wheel(isLeft=False, radius=0.3530290126800537, nodeName='WD_R6', isLeading=True, leadingSyncAngle=27.69230079650879), Wheel(isLeft=True, radius=0.3477019965648651, nodeName='WD_L0', isLeading=True, leadingSyncAngle=27.69230079650879), Wheel(isLeft=True, radius=0.3530290126800537, nodeName='WD_L6', isLeading=True, leadingSyncAngle=27.69230079650879)], 'lodDist': 70.0, 'leadingWheelSyncAngle': 60.0}",
-        "groundNodes": "{'nodes': [], 'groups': [GroundNodeGroup(isLeft=True, minOffset=-0.05000000074505806, maxOffset=0.10000000149011612, template='Track_L', count=6, startIndex=0), GroundNodeGroup(isLeft=False, minOffset=-0.05000000074505806, maxOffset=0.10000000149011612, template='Track_R', count=6, startIndex=0)]}",
-        "trackNodes": "{'nodes': [TrackNode(name='Track_VT_R0', isLeft=False, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VT_L0', isLeft=True, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VT_R1', isLeft=False, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VT_R2', isLeft=False, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VT_R3', isLeft=False, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VT_R4', isLeft=False, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VT_R5', isLeft=False, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VT_L1', isLeft=True, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VT_L2', isLeft=True, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VT_L3', isLeft=True, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VT_L4', isLeft=True, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VT_L5', isLeft=True, initialOffset=-0.02500000037252903, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.9100000262260437, backwardElasticityCoeff=2.0), TrackNode(name='Track_VD_L0', isLeft=True, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.800000011920929, backwardElasticityCoeff=1.25), TrackNode(name='Track_VD_R0', isLeft=False, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=0.800000011920929, backwardElasticityCoeff=1.25), TrackNode(name='Track_VD_L1', isLeft=True, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=2.0, backwardElasticityCoeff=0.8100000023841858), TrackNode(name='Track_VD_R1', isLeft=False, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1050.0, forwardElasticityCoeff=2.0, backwardElasticityCoeff=0.8100000023841858)], 'groups': []}",
-        "splineDesc": "{'segmentModelLeft': 'vehicles/milkym4n/A80_T26_E4_SuperPershing/track/segment.model', 'segmentModelRight': 'vehicles/milkym4n/A80_T26_E4_SuperPershing/track/segment.model', 'segmentOffset': 0.0860000029206276, 'segment2Offset': 0.0, 'segmentLength': 0.1599999964237213, 'atlasVTiles': 1, 'rightDesc': 'vehicles/milkym4n/A80_T26_E4_SuperPershing/track/right.track', 'lodDist': 70.0, 'segment2ModelLeft': None, 'atlasUTiles': 1, 'leftDesc': 'vehicles/milkym4n/A80_T26_E4_SuperPershing/track/left.track', 'segment2ModelRight': None}",
-        "trackParams": "{'maxAmplitude': 0.10000000149011612, 'maxOffset': 0.10000000149011612, 'gravity': -9.800000190734863, 'thickness': -0.013700000010430813}",
+        "traces": {
+            "lodDist": 120.0,
+            "bufferPrefs": "largeTank",
+            "textureSet": "germany_01",
+            "centerOffset": 1.3969999551773071,
+            "size": [0.44, 0.62],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": 2.0
+        },
+        "wheels": {
+            "groups": [
+                {
+                    "isLeft": false,
+                    "template": "WD_R",
+                    "count": 5,
+                    "startIndex": 1,
+                    "radius": 0.17897599935531616
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 6,
+                    "startIndex": 0,
+                    "radius": 0.33683401346206665
+                },
+                {
+                    "isLeft": true,
+                    "template": "WD_L",
+                    "count": 5,
+                    "startIndex": 1,
+                    "radius": 0.17897599935531616
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 6,
+                    "startIndex": 0,
+                    "radius": 0.33683401346206665
+                }
+            ],
+            "wheels": [
+                {
+                    "isLeft": false,
+                    "radius": 0.3477019965648651,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 27.69230079650879,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": false,
+                    "radius": 0.3530290126800537,
+                    "nodeName": "WD_R6",
+                    "isLeading": true,
+                    "leadingSyncAngle": 27.69230079650879,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": true,
+                    "radius": 0.3477019965648651,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 27.69230079650879,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": true,
+                    "radius": 0.3530290126800537,
+                    "nodeName": "WD_L6",
+                    "isLeading": true,
+                    "leadingSyncAngle": 27.69230079650879,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                }
+            ]
+        },
+        "chassisLodDistance": 70.0,
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": true,
+                    "minOffset": -0.05000000074505806,
+                    "maxOffset": 0.10000000149011612,
+                    "startIndex": 0,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 6,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": false,
+                    "minOffset": -0.05000000074505806,
+                    "maxOffset": 0.10000000149011612,
+                    "startIndex": 0,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 6,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_R2",
+                    "isLeft": false,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_R3",
+                    "isLeft": false,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_R4",
+                    "isLeft": false,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_R5",
+                    "isLeft": false,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_L2",
+                    "isLeft": true,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_L3",
+                    "isLeft": true,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_L4",
+                    "isLeft": true,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_L5",
+                    "isLeft": true,
+                    "initialOffset": -0.02500000037252903,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.800000011920929,
+                    "backwardElasticityCoeff": 1.25
+                },
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.800000011920929,
+                    "backwardElasticityCoeff": 1.25
+                },
+                {
+                    "name": "Track_VD_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 2.0,
+                    "backwardElasticityCoeff": 0.8100000023841858
+                },
+                {
+                    "name": "Track_VD_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 2.0,
+                    "backwardElasticityCoeff": 0.8100000023841858
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentLength": 0.1599999964237213,
+            "leftDesc": "vehicles/milkym4n/A80_T26_E4_SuperPershing/track/left.track",
+            "rightDesc": "vehicles/milkym4n/A80_T26_E4_SuperPershing/track/right.track",
+            "lodDist": 70.0,
+            "segmentOffset": 0.0860000029206276,
+            "segment2Offset": 0.0,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1,
+            "segmentModelSets": {
+                "left": "vehicles/milkym4n/A80_T26_E4_SuperPershing/track/segment.model",
+                "right": "vehicles/milkym4n/A80_T26_E4_SuperPershing/track/segment.model",
+                "secondLeft": null,
+                "secondRight": null
+            }
+        },
+        "trackParams": {
+            "thickness": -0.013700000010430813,
+            "maxAmplitude": 0.10000000149011612,
+            "maxOffset": 0.10000000149011612,
+            "gravity": -9.800000190734863
+        },
         "hullPosition": [0.0, 1.0703200101852417, 0.0],
         "AODecals": [],
-        "wwsoundPC": "treads_type_pc",
-        "wwsoundNPC": "trds_chf_npc"
+        "leveredSuspension": null
     },
     "hull": {
         "undamaged": "vehicles/milkym4n/A80_T26_E4_SuperPershing/normal/lod0/Hull.model",
         "exhaust": {
             "pixie": "",
-            "nodes": "HP_Track_Exhaus_1 HP_Track_Exhaus_2"
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
         },
         "emblemSlots": [
             {
@@ -102,8 +422,5 @@
             }
         ]
     },
-    "engine": {
-        "wwsoundPC": "eng_Continental_R975_pc",
-        "wwsoundNPC": "eng_Continental_R975_npc"
-    }
+    "engine": {}
 }

@@ -1,36 +1,259 @@
 ﻿{
-    "authorMessage": "Автор: Goodman12, Мастерская Гудмана.",
-    "playerWhitelist": "a13_t34_hvy",
-    "allyWhitelist": "a13_t34_hvy",
-    "enemyWhitelist": "a13_t34_hvy",
+    "message": "Автор: Goodman12, Мастерская Гудмана.",
+    "player": true,
+    "ally": true,
+    "enemy": true,
+    "whitelist": ["a13_t34_hvy"],
     "chassis": {
         "undamaged": "vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/chassis.model",
-        "traces": "{'textureSet': 'usa_03', 'lodDist': 120.0, 'size': (0.65, 0.72), 'centerOffset': 1.4797899723052979, 'bufferPrefs': 'largeTank'}",
-        "tracks": "{'leftMaterial': 'track_mat_L_skinned', 'rightMaterial': 'track_mat_R_skinned', 'lodDist': 90.0, 'textureScale': -2.0}",
-        "wheels": "{'wheels': [(False, 'WD_R0', 0.33000099658966064, True, 24.0), (False, 'WD_R8', 0.1447640061378479, False, 60.0), (False, 'WD_R9', 0.36892399191856384, True, 24.0), (True, 'WD_L0', 0.33000099658966064, True, 24.0), (True, 'WD_L8', 0.1447640061378479, False, 60.0), (True, 'WD_L9', 0.36892399191856384, True, 24.0)], 'lodDist': 70.0, 'leadingWheelSyncAngle': 60.0, 'groups': [(False, 'WD_R', 7, 1, 0.18355099856853485), (False, 'W_R', 8, 0, 0.32867199182510376), (True, 'WD_L', 7, 1, 0.18355099856853485), (True, 'W_L', 8, 0, 0.329800009727478)]}",
-        "groundNodes": "{'nodes': [], 'groups': [(True, 'Track_L', 8, 0, -0.07377050071954727, 0.07377050071954727), (False, 'Track_R', 8, 0, -0.07377050071954727, 0.07377050071954727)]}",
-        "trackNodes": "{'nodes': [('Track_VT_L0', True, -0.017000000923871994, 1248.0, 2.0, None, None, 1.0, 1.0), ('Track_VD_R0', False, 0.0, 1248.0, 2.0, None, None, 1.0, 1.0), ('Track_VT_L1', True, -0.017000000923871994, 1248.0, 2.0, None, None, 0.8999999761581421, 1.3700000047683716), ('Track_VD_L0', True, 0.0, 1248.0, 2.0, None, None, 1.0, 1.0), ('Track_VT_R0', False, -0.017000000923871994, 1248.0, 2.0, None, None, 1.0, 1.0), ('Track_VT_R1', False, -0.017000000923871994, 1248.0, 2.0, None, None, 0.8999999761581421, 1.3700000047683716)], 'groups': []}",
-        "splineDesc": "{'segmentModelLeft': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment1.model', 'segmentOffset': 0.10300000011920929, 'segment2Offset': 0.0729999989271164, 'atlasVTiles': 1, 'segment2ModelLeft': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment2.model', 'lodDist': 70.0, 'segment2ModelRight': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment2_R.model', 'segmentModelRight': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment1_R.model', 'segmentLength': 0.14100000262260437, 'rightDesc': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/right.track', 'atlasUTiles': 1, 'leftDesc': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/left.track'}",
-        "trackParams": "{'maxAmplitude': 0.10000000149011612, 'maxOffset': 0.10000000149011612, 'gravity': -9.800000190734863, 'thickness': 0.002099999925121665}",
-        "hullPosition": [0.000000, 1.11556, 0.000000],
-        "wwsoundPC": "treads_type_pc",
-        "wwsoundNPC": "trds_chf_npc",
-        "AODecals": [
-            {
-                "transform": {
-                    "row0": [4.980680, 0.000000, 0.000000],
-                    "row1": [0.000000, 1.623570, 0.000000],
-                    "row2": [0.000000, 0.000000, 10.430600],
-                    "row3": [0.000000, 0.000000, 0.000001]
+        "traces": {
+            "lodDist": 120.0,
+            "bufferPrefs": "largeTank",
+            "textureSet": "usa_03",
+            "centerOffset": 1.4797899723052979,
+            "size": [0.65, 0.72],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": -2.0
+        },
+        "wheels": {
+            "groups": [
+                {
+                    "isLeft": false,
+                    "template": "WD_R",
+                    "count": 7,
+                    "startIndex": 1,
+                    "radius": 0.18355099856853485
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 8,
+                    "startIndex": 0,
+                    "radius": 0.32867199182510376
+                },
+                {
+                    "isLeft": true,
+                    "template": "WD_L",
+                    "count": 7,
+                    "startIndex": 1,
+                    "radius": 0.18355099856853485
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 8,
+                    "startIndex": 0,
+                    "radius": 0.329800009727478
                 }
+            ],
+            "wheels": [
+                {
+                    "isLeft": false,
+                    "radius": 0.33000099658966064,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": false,
+                    "radius": 0.1447640061378479,
+                    "nodeName": "WD_R8",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": false,
+                    "radius": 0.36892399191856384,
+                    "nodeName": "WD_R9",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": true,
+                    "radius": 0.33000099658966064,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": true,
+                    "radius": 0.1447640061378479,
+                    "nodeName": "WD_L8",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": true,
+                    "radius": 0.36892399191856384,
+                    "nodeName": "WD_L9",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                }
+            ]
+        },
+        "chassisLodDistance": 70.0,
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": true,
+                    "minOffset": -0.07377050071954727,
+                    "maxOffset": 0.07377050071954727,
+                    "startIndex": 0,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 8,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": false,
+                    "minOffset": -0.07377050071954727,
+                    "maxOffset": 0.07377050071954727,
+                    "startIndex": 0,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 8,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": -0.017000000923871994,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": -0.017000000923871994,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 0.8999999761581421,
+                    "backwardElasticityCoeff": 1.3700000047683716
+                },
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": -0.017000000923871994,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": -0.017000000923871994,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 0.8999999761581421,
+                    "backwardElasticityCoeff": 1.3700000047683716
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentLength": 0.14100000262260437,
+            "leftDesc": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/left.track",
+            "rightDesc": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/right.track",
+            "lodDist": 70.0,
+            "segmentOffset": 0.10300000011920929,
+            "segment2Offset": 0.0729999989271164,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1,
+            "segmentModelSets": {
+                "left": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment1.model",
+                "right": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment1_R.model",
+                "secondLeft": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment2.model",
+                "secondRight": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment2_R.model"
             }
-        ]
+        },
+        "trackParams": {
+            "thickness": 0.002099999925121665,
+            "maxAmplitude": 0.10000000149011612,
+            "maxOffset": 0.10000000149011612,
+            "gravity": -9.800000190734863
+        },
+        "hullPosition": [0.0, 1.11556, 0.0],
+        "AODecals": [[[4.98068, 0.0, 0.0], [0.0, 1.62357, 0.0], [0.0, 0.0, 10.4306], [0.0, 0.0, 1e-06]]],
+        "leveredSuspension": null
     },
     "hull": {
         "undamaged": "vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/hull.model",
         "exhaust": {
             "pixie": "diesel_large",
-            "nodes": "HP_Track_Exhaus_1 HP_Track_Exhaus_2"
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
         },
         "emblemSlots": [
             {

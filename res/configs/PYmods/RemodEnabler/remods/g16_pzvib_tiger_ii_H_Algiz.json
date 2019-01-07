@@ -1,23 +1,397 @@
 ﻿{
-    "authorMessage": "Автор: Algiz",
-    "playerWhitelist": "g16_pzvib_tiger_ii",
-    "allyWhitelist": "g16_pzvib_tiger_ii",
-    "enemyWhitelist": "g16_pzvib_tiger_ii",
+    "message": "Автор: Algiz",
+    "player": true,
+    "ally": true,
+    "enemy": true,
+    "whitelist": ["g16_pzvib_tiger_ii"],
     "chassis": {
         "undamaged": "vehicles/remods/G16_PzVIB_Tiger_II_H/normal/lod0/chassis.model",
-        "traces": "{'textureSet': 'germany_02', 'lodDist': 120.0, 'bufferPrefs': 'mediumTank', 'centerOffset': 1.3976399898529053, 'size': (0.6, 0.8)}",
-        "tracks": "{'leftMaterial': 'track_mat_L_skinned', 'rightMaterial': 'track_mat_R_skinned', 'lodDist': 90.0, 'textureScale': -1.600000023841858}",
-        "wheels": "{'wheels': [(False, 'W_R', 9, 0, 0.4350000023841858), (True, 'W_L', 9, 0, 0.4350000023841858)], 'wheels': [(False, 'WD_R0', 0.4585700035095215, True, 40.0), (False, 'WD_R1', 0.3410150110721588, True, 40.0), (True, 'WD_L0', 0.4585700035095215, True, 40.0), (True, 'WD_L1', 0.34101399779319763, True, 40.0)], 'lodDist': 70.0, 'leadingWheelSyncAngle': 60.0, 'groups': [(False, 'W_R', 9, 0, 0.4350000023841858), (True, 'W_L', 9, 0, 0.4350000023841858)]}",
-        "groundNodes": "{'nodes': [], 'groups': [(True, 'Track_L', 9, 0, -0.10164300352334976, 0.09958930313587189), (False, 'Track_R', 9, 0, -0.10000000149011612, 0.10000000149011612)]}",
-        "trackNodes": "{'nodes': [('Track_VD_R0', False, 0.0, 1094.0, 2.0, None, None, 0.8899999856948853, 1.5), ('Track_VD_L0', True, 0.0, 1094.0, 2.0, None, None, 0.8899999856948853, 1.5), ('Track_VD_R1', False, 0.0, 1094.0, 2.0, None, None, 1.5, 0.8999999761581421), ('Track_VD_L1', True, 0.0, 1094.0, 2.0, None, None, 1.5, 0.8999999761581421), ('Track_VT_L0', True, -0.18000000715255737, 1094.0, 2.0, None, 'Track_VT_L1', 1.600000023841858, 0.8899999856948853), ('Track_VT_L1', True, -0.23199999332427979, 1094.0, 2.0, 'Track_VT_L0', 'Track_VT_L2', 1.9800000190734863, 0.8899999856948853), ('Track_VT_L2', True, -0.24500000476837158, 1094.0, 2.0, 'Track_VT_L1', 'Track_VT_L3', 1.899999976158142, 0.8899999856948853), ('Track_VT_L3', True, -0.25200000405311584, 1094.0, 2.0, 'Track_VT_L2', 'Track_VT_L4', 1.7899999618530273, 0.8899999856948853), ('Track_VT_L4', True, -0.25200000405311584, 1094.0, 2.0, 'Track_VT_L3', 'Track_VT_L5', 1.7000000476837158, 0.8899999856948853), ('Track_VT_L5', True, -0.23199999332427979, 1094.0, 2.0, 'Track_VT_L4', 'Track_VT_L6', 1.600000023841858, 0.8899999856948853), ('Track_VT_L6', True, -0.21199999749660492, 1094.0, 2.0, 'Track_VT_L5', 'Track_VT_L7', 1.5, 0.8899999856948853), ('Track_VT_L7', True, -0.17499999701976776, 1094.0, 2.0, 'Track_VT_L6', 'Track_VT_L8', 1.409999966621399, 0.8899999856948853), ('Track_VT_L8', True, -0.1289999932050705, 1094.0, 2.0, 'Track_VT_L7', None, 1.2999999523162842, 0.8899999856948853), ('Track_VT_R0', False, -0.18000000715255737, 1094.0, 2.0, None, 'Track_VT_R1', 1.600000023841858, 0.8899999856948853), ('Track_VT_R1', False, -0.23199999332427979, 1094.0, 2.0, 'Track_VT_R0', 'Track_VT_R2', 1.9800000190734863, 0.8899999856948853), ('Track_VT_R2', False, -0.24500000476837158, 1094.0, 2.0, 'Track_VT_R1', 'Track_VT_R3', 1.899999976158142, 0.8899999856948853), ('Track_VT_R3', False, -0.25200000405311584, 1094.0, 2.0, 'Track_VT_R2', 'Track_VT_R4', 1.7899999618530273, 0.8899999856948853), ('Track_VT_R4', False, -0.25200000405311584, 1094.0, 2.0, 'Track_VT_R3', 'Track_VT_R5', 1.7000000476837158, 0.8899999856948853), ('Track_VT_R5', False, -0.23199999332427979, 1094.0, 2.0, 'Track_VT_R4', 'Track_VT_R6', 1.600000023841858, 0.8899999856948853), ('Track_VT_R6', False, -0.21199999749660492, 1094.0, 2.0, 'Track_VT_R5', 'Track_VT_R7', 1.5, 0.8899999856948853), ('Track_VT_R7', False, -0.17499999701976776, 1094.0, 2.0, 'Track_VT_R6', 'Track_VT_R8', 1.409999966621399, 0.8899999856948853), ('Track_VT_R8', False, -0.1289999932050705, 1094.0, 2.0, 'Track_VT_R7', None, 1.2999999523162842, 0.8899999856948853)], 'groups': []}",
-        "splineDesc": "{'segmentModelLeft': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment1_R.model', 'segmentModelRight': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment1_L.model', 'segmentOffset': 0.057999998331069946, 'segment2Offset': 0.1420000046491623, 'segmentLength': 0.28999999165534973, 'atlasVTiles': 1, 'rightDesc': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/right.track', 'lodDist': 70.0, 'segment2ModelLeft': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment2_L.model', 'atlasUTiles': 1, 'leftDesc': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/left.track', 'segment2ModelRight': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment2_R.model'}",
-        "trackParams": "{'maxAmplitude': 0.10000000149011612, 'maxOffset': 0.10000000149011612, 'gravity': -9.800000190734863, 'thickness': -0.02879999950528145}"
+        "traces": {
+            "lodDist": 120.0,
+            "bufferPrefs": "mediumTank",
+            "textureSet": "germany_02",
+            "centerOffset": 1.3976399898529053,
+            "size": [0.6, 0.8],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": -1.600000023841858
+        },
+        "wheels": {
+            "groups": [
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 9,
+                    "startIndex": 0,
+                    "radius": 0.4350000023841858
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 9,
+                    "startIndex": 0,
+                    "radius": 0.4350000023841858
+                }
+            ],
+            "wheels": [
+                {
+                    "isLeft": false,
+                    "radius": 0.4585700035095215,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 40.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": false,
+                    "radius": 0.3410150110721588,
+                    "nodeName": "WD_R1",
+                    "isLeading": true,
+                    "leadingSyncAngle": 40.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": true,
+                    "radius": 0.4585700035095215,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 40.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": true,
+                    "radius": 0.34101399779319763,
+                    "nodeName": "WD_L1",
+                    "isLeading": true,
+                    "leadingSyncAngle": 40.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                }
+            ]
+        },
+        "chassisLodDistance": 70.0,
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": true,
+                    "minOffset": -0.10164300352334976,
+                    "maxOffset": 0.09958930313587189,
+                    "startIndex": 0,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 9,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": false,
+                    "minOffset": -0.10000000149011612,
+                    "maxOffset": 0.10000000149011612,
+                    "startIndex": 0,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 9,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 0.8899999856948853,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 0.8899999856948853,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VD_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.5,
+                    "backwardElasticityCoeff": 0.8999999761581421
+                },
+                {
+                    "name": "Track_VD_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.5,
+                    "backwardElasticityCoeff": 0.8999999761581421
+                },
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": -0.18000000715255737,
+                    "leftNodeName": null,
+                    "rightNodeName": "Track_VT_L1",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.600000023841858,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": -0.23199999332427979,
+                    "leftNodeName": "Track_VT_L0",
+                    "rightNodeName": "Track_VT_L2",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.9800000190734863,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_L2",
+                    "isLeft": true,
+                    "initialOffset": -0.24500000476837158,
+                    "leftNodeName": "Track_VT_L1",
+                    "rightNodeName": "Track_VT_L3",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.899999976158142,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_L3",
+                    "isLeft": true,
+                    "initialOffset": -0.25200000405311584,
+                    "leftNodeName": "Track_VT_L2",
+                    "rightNodeName": "Track_VT_L4",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.7899999618530273,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_L4",
+                    "isLeft": true,
+                    "initialOffset": -0.25200000405311584,
+                    "leftNodeName": "Track_VT_L3",
+                    "rightNodeName": "Track_VT_L5",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.7000000476837158,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_L5",
+                    "isLeft": true,
+                    "initialOffset": -0.23199999332427979,
+                    "leftNodeName": "Track_VT_L4",
+                    "rightNodeName": "Track_VT_L6",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.600000023841858,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_L6",
+                    "isLeft": true,
+                    "initialOffset": -0.21199999749660492,
+                    "leftNodeName": "Track_VT_L5",
+                    "rightNodeName": "Track_VT_L7",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.5,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_L7",
+                    "isLeft": true,
+                    "initialOffset": -0.17499999701976776,
+                    "leftNodeName": "Track_VT_L6",
+                    "rightNodeName": "Track_VT_L8",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.409999966621399,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_L8",
+                    "isLeft": true,
+                    "initialOffset": -0.1289999932050705,
+                    "leftNodeName": "Track_VT_L7",
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.2999999523162842,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": -0.18000000715255737,
+                    "leftNodeName": null,
+                    "rightNodeName": "Track_VT_R1",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.600000023841858,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": -0.23199999332427979,
+                    "leftNodeName": "Track_VT_R0",
+                    "rightNodeName": "Track_VT_R2",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.9800000190734863,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_R2",
+                    "isLeft": false,
+                    "initialOffset": -0.24500000476837158,
+                    "leftNodeName": "Track_VT_R1",
+                    "rightNodeName": "Track_VT_R3",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.899999976158142,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_R3",
+                    "isLeft": false,
+                    "initialOffset": -0.25200000405311584,
+                    "leftNodeName": "Track_VT_R2",
+                    "rightNodeName": "Track_VT_R4",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.7899999618530273,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_R4",
+                    "isLeft": false,
+                    "initialOffset": -0.25200000405311584,
+                    "leftNodeName": "Track_VT_R3",
+                    "rightNodeName": "Track_VT_R5",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.7000000476837158,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_R5",
+                    "isLeft": false,
+                    "initialOffset": -0.23199999332427979,
+                    "leftNodeName": "Track_VT_R4",
+                    "rightNodeName": "Track_VT_R6",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.600000023841858,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_R6",
+                    "isLeft": false,
+                    "initialOffset": -0.21199999749660492,
+                    "leftNodeName": "Track_VT_R5",
+                    "rightNodeName": "Track_VT_R7",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.5,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_R7",
+                    "isLeft": false,
+                    "initialOffset": -0.17499999701976776,
+                    "leftNodeName": "Track_VT_R6",
+                    "rightNodeName": "Track_VT_R8",
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.409999966621399,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                },
+                {
+                    "name": "Track_VT_R8",
+                    "isLeft": false,
+                    "initialOffset": -0.1289999932050705,
+                    "leftNodeName": "Track_VT_R7",
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1094.0,
+                    "forwardElasticityCoeff": 1.2999999523162842,
+                    "backwardElasticityCoeff": 0.8899999856948853
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentLength": 0.28999999165534973,
+            "leftDesc": "vehicles/remods/G16_PzVIB_Tiger_II_H/track/left.track",
+            "rightDesc": "vehicles/remods/G16_PzVIB_Tiger_II_H/track/right.track",
+            "lodDist": 70.0,
+            "segmentOffset": 0.057999998331069946,
+            "segment2Offset": 0.1420000046491623,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1,
+            "segmentModelSets": {
+                "left": "vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment1_R.model",
+                "right": "vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment1_L.model",
+                "secondLeft": "vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment2_L.model",
+                "secondRight": "vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment2_R.model"
+            }
+        },
+        "trackParams": {
+            "thickness": -0.02879999950528145,
+            "maxAmplitude": 0.10000000149011612,
+            "maxOffset": 0.10000000149011612,
+            "gravity": -9.800000190734863
+        },
+        "leveredSuspension": null
     },
     "hull": {
         "undamaged": "vehicles/remods/G16_PzVIB_Tiger_II_H/normal/lod0/hull.model",
         "exhaust": {
             "pixie": "gas_large",
-            "nodes": "HP_Track_Exhaus_1 HP_Track_Exhaus_2"
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
         },
         "camouflage": {
             "exclusionMask": "vehicles/remods/G16_PzVIB_Tiger_II_H/G16_PzVIB_Tiger_II_CM.dds"
@@ -49,7 +423,7 @@
         "undamaged": "vehicles/remods/G16_PzVIB_Tiger_II_H/normal/lod0/turret_02.model",
         "camouflage": {
             "exclusionMask": "vehicles/remods/G16_PzVIB_Tiger_II_H/G16_PzVIB_Tiger_II_CM.dds",
-            "tiling": [0.475, 0.475, 0.000000, 0.000000]
+            "tiling": [0.475, 0.475, 0.0, 0.0]
         },
         "emblemSlots": [
             {
@@ -88,7 +462,7 @@
         "undamaged": "vehicles/remods/G16_PzVIB_Tiger_II_H/normal/lod0/Gun_06.model",
         "camouflage": {
             "exclusionMask": "vehicles/remods/G16_PzVIB_Tiger_II_H/G16_PzVIB_Tiger_II_CM.dds",
-        "tiling": [0.305, 0.405, 0.000000, 0.000000]
+            "tiling": [0.305, 0.405, 0.0, 0.0]
         },
         "emblemSlots": [
             {

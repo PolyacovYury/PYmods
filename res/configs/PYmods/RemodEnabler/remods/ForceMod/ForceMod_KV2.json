@@ -1,0 +1,382 @@
+﻿{
+    "message": "Автор: Hellinger",
+    "player": true,
+    "ally": false,
+    "enemy": false,
+    "whitelist": ["r77_kv2"],
+    "chassis": {
+        "undamaged": "vehicles/remods/ForceMod/R77_KV2/normal/lod0/Chassis.model",
+        "traces": {
+            "lodDist": 120.0,
+            "bufferPrefs": "largeTank",
+            "textureSet": "ussr_01",
+            "centerOffset": 1.3122199773788452,
+            "size": [0.48, 0.76],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": -1.5
+        },
+        "wheels": {
+            "groups": [
+                {
+                    "isLeft": true,
+                    "template": "WD_L",
+                    "count": 3,
+                    "startIndex": 1,
+                    "radius": 0.20189499855041504
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 6,
+                    "startIndex": 0,
+                    "radius": 0.29499998688697815
+                },
+                {
+                    "isLeft": false,
+                    "template": "WD_R",
+                    "count": 3,
+                    "startIndex": 1,
+                    "radius": 0.2019689977169037
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 6,
+                    "startIndex": 0,
+                    "radius": 0.29499998688697815
+                }
+            ],
+            "wheels": [
+                {
+                    "isLeft": true,
+                    "radius": 0.3400000035762787,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 27.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": true,
+                    "radius": 0.41671299934387207,
+                    "nodeName": "WD_L4",
+                    "isLeading": true,
+                    "leadingSyncAngle": 22.5,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": false,
+                    "radius": 0.3400000035762787,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 27.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": false,
+                    "radius": 0.41671299934387207,
+                    "nodeName": "WD_R4",
+                    "isLeading": true,
+                    "leadingSyncAngle": 22.5,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                }
+            ]
+        },
+        "chassisLodDistance": 70.0,
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": true,
+                    "minOffset": -0.10000000149011612,
+                    "maxOffset": 0.10000000149011612,
+                    "startIndex": 0,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 6,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": false,
+                    "minOffset": -0.10000000149011612,
+                    "maxOffset": 0.10000000149011612,
+                    "startIndex": 0,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 6,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": "Track_VT_R1",
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 1.100000023841858,
+                    "backwardElasticityCoeff": 0.800000011920929
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_R0",
+                    "rightNodeName": "Track_VT_R2",
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.2000000476837158
+                },
+                {
+                    "name": "Track_VT_R2",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_R1",
+                    "rightNodeName": "Track_VT_R3",
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.8999999761581421,
+                    "backwardElasticityCoeff": 1.600000023841858
+                },
+                {
+                    "name": "Track_VT_R3",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_R2",
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.800000011920929,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": "Track_VT_L1",
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 1.100000023841858,
+                    "backwardElasticityCoeff": 0.800000011920929
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_L0",
+                    "rightNodeName": "Track_VT_L2",
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.2000000476837158
+                },
+                {
+                    "name": "Track_VT_L2",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_L1",
+                    "rightNodeName": "Track_VT_L3",
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.8999999761581421,
+                    "backwardElasticityCoeff": 1.600000023841858
+                },
+                {
+                    "name": "Track_VT_L3",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_L2",
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.800000011920929,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentLength": 0.15299999713897705,
+            "leftDesc": "vehicles/russian/R77_KV2/track/left.track",
+            "rightDesc": "vehicles/russian/R77_KV2/track/right.track",
+            "lodDist": 70.0,
+            "segmentOffset": 0.10999999940395355,
+            "segment2Offset": 0.0,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1,
+            "segmentModelSets": {
+                "left": "vehicles/russian/R77_KV2/track/segment.model",
+                "right": "vehicles/russian/R77_KV2/track/segment.model",
+                "secondLeft": "vehicles/russian/R77_KV2/track/segment.model",
+                "secondRight": "vehicles/russian/R77_KV2/track/segment.model"
+            }
+        },
+        "trackParams": {
+            "thickness": 0.0,
+            "maxAmplitude": 0.09000000357627869,
+            "maxOffset": 0.09000000357627869,
+            "gravity": -9.800000190734863
+        },
+        "hullPosition": [0.0, 1.0659300088882446, 0.0],
+        "AODecals": [],
+        "leveredSuspension": null
+    },
+    "hull": {
+        "undamaged": "vehicles/remods/ForceMod/R77_KV2/normal/lod0/Hull.model",
+        "exhaust": {
+            "pixie": "",
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [0.4799480140209198, 0.26858198642730713, 2.641400098800659],
+                "rayEnd": [0.4799480140209198, -0.09488890320062637, 2.474410057067871],
+                "rayUp": [0.0, 0.0, -1.0],
+                "size": 0.2800000011920929,
+                "hideIfDamaged": false,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/remods/ForceMod/R77_KV2/normal/lod0/Turret_02.model",
+        "emblemSlots": [
+            {
+                "rayStart": [-1.0175000429153442, 0.7076759934425354, -1.291849970817566],
+                "rayEnd": [-0.6189879775047302, 0.7076759934425354, -1.2574100494384766],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.3199999928474426,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [1.0125800371170044, 0.7091280221939087, -1.2973899841308594],
+                "rayEnd": [0.6140639781951904, 0.7091280221939087, -1.2629499435424805],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.3199999928474426,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [1.0768100023269653, 0.6803799867630005, -0.5658680200576782],
+                "rayEnd": [0.6782990097999573, 0.6803770065307617, -0.5314369797706604],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.8799999952316284,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [-1.0768100023269653, 0.6803799867630005, -0.5658680200576782],
+                "rayEnd": [-0.6782990097999573, 0.6803770065307617, -0.5314369797706604],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.8799999952316284,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/remods/ForceMod/R77_KV2/normal/lod0/Gun_05.model",
+        "emblemSlots": [
+            {
+                "rayStart": [0.00032273700344376266, 0.04436289891600609, 1.3846399784088135],
+                "rayEnd": [-0.06781259924173355, 0.08691219985485077, 1.3846399784088135],
+                "rayUp": [0.11900000274181366, 0.11900000274181366, 5.0],
+                "size": 0.6179999709129333,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "engine": {}
+}
