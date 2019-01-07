@@ -137,6 +137,8 @@ class JSONLoader:
         oldConfig = cls.stringed_ints(oldConfig)
         if not os.path.exists(path):
             os.makedirs(path)
+        if not path.endswith('/'):
+            path += '/'
         new_path = '%s%s.json' % (path, name)
         if save:
             if os.path.isfile(new_path):
