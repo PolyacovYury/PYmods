@@ -74,7 +74,7 @@ def new_createStickers(base, self, *a, **kw):
     base(self, *a, **kw)
     vehicle = self._CompoundAppearance__vehicle
     if not vehicle or not config.data['enabled']:
-        return
+        return base(self, *a, **kw)
     insigniaRank = origRank = vehicle.publicInfo['marksOnGun']
     if vehicle.isPlayerVehicle:
         if config.data['enablePlayer'] and (config.data['replacePlayer'] or not origRank):
@@ -85,11 +85,9 @@ def new_createStickers(base, self, *a, **kw):
     elif config.data['enableEnemy'] and (config.data['replaceEnemy'] or not origRank):
         insigniaRank = config.data['enemy']
     if insigniaRank != origRank:
-        for componentStickers in self._CompoundAppearance__vehicleStickers._VehicleStickers__stickers.itervalues():
-            params = componentStickers.stickers._ModelStickers__texParamsBySlotType
-            if SlotTypes.INSIGNIA_ON_GUN in params:
-                params[SlotTypes.INSIGNIA_ON_GUN] = [componentStickers.stickers._ModelStickers__getTexParamsForInsignia(
-                    self._CompoundAppearance__typeDesc, insigniaRank)] * len(params[SlotTypes.INSIGNIA_ON_GUN])
+        vehicle.publicInfo['marksOnGun'] = insigniaRank
+        base(self, *a, **kw)
+        vehicle.publicInfo['marksOnGun'] = origRank
 
 
 config = ConfigInterface()

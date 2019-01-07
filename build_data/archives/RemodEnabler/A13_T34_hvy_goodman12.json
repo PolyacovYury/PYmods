@@ -1,0 +1,11 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/a13_t34_hvy_goodman12.json": "res/configs/PYmods/RemodEnabler/remods/a13_t34_hvy_goodman12.json",
+        "mods/configs/PYmods/RemodEnabler/remods/a13_t34_hvy_goodman12_KR.json": "res/configs/PYmods/RemodEnabler/remods/a13_t34_hvy_goodman12_KR.json",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/A13_T34_hvy_goodman12.wotmod": "build/wotmods/RemodEnabler_remods/A13_T34_hvy_goodman12.wotmod",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/A13_T34_hvy_goodman12_KR.wotmod": "build/wotmods/RemodEnabler_remods/A13_T34_hvy_goodman12_KR.wotmod",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/A_Equipment_textures.wotmod": "build/wotmods/RemodEnabler_remods/A_Equipment_textures.wotmod"
+    }
+}

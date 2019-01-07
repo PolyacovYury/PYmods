@@ -6,4 +6,4 @@ import loader
 import processor
 
 
-statistic_mod = PYmodsCore.Analytics(g_config.ID, g_config.version, 'UA-76792179-4')
+statistic_mod = PYmodsCore.Analytics(g_config.ID, g_config.version, 'UA-76792179-23')

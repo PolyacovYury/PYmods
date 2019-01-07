@@ -1,0 +1,15 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/gui/flash/RemodEnabler.png": "res/res/gui/flash/RemodEnabler.png",
+        "res/gui/flash/RemodEnabler.swf": "res/flash/RemodEnabler.swf",
+        "res/scripts/client/gui/mods/mod_RemodEnabler.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/__init__.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/__init__.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/collision.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/collision.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/config.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/config.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/config_converter.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/config_converter.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/processor.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/processor.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/remods.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/remods.pyc"
+    }
+}

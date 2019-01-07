@@ -1,0 +1,14 @@
+<root>
+	
+	<!-- Techical MOD ID -->
+	<id>GO_sounds</id>
+	
+	<!-- Package version -->
+	<version>1.0.0</version>
+	
+	<!-- Human readable name -->
+	<name>GO sound banks</name>
+	
+	<!-- Human readable description -->
+	<description>Sound banks for GO mod.</description>
+</root>

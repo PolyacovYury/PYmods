@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/G58_VK_4502P_B2_Algiz.json": "res/configs/PYmods/RemodEnabler/remods/G58_VK_4502P_B2_Algiz.json",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/A_Equipment_textures.wotmod": "build/wotmods/RemodEnabler_remods/A_Equipment_textures.wotmod",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/G58_VK_4502P_B2_Algiz.wotmod": "build/wotmods/RemodEnabler_remods/G58_VK_4502P_B2_Algiz.wotmod"
+    }
+}

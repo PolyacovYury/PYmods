@@ -1,0 +1,34 @@
+{
+    "gun_reload_effects": {
+        "reload12_25": {
+            "type": "SimpleReload",
+            "duration": "1150.0",
+            "sound": "reload_1"
+        },
+        "reload20_45": {
+            "type": "SimpleReload",
+            "duration": "1700.0",
+            "sound": "reload_3"
+        },
+        "reload50_75": {
+            "type": "SimpleReload",
+            "duration": "1150.0",
+            "sound": "reload_2"
+        },
+        "reload85_107": {
+            "type": "SimpleReload",
+            "duration": "1100.0",
+            "sound": "reload_4"
+        },
+        "reload115_152": {
+            "type": "SimpleReload",
+            "duration": "2850.0",
+            "sound": "reload_5"
+        },
+        "reload155_170": {
+            "type": "SimpleReload",
+            "duration": "3850.0",
+            "sound": "reload_6"
+        }
+    }
+}

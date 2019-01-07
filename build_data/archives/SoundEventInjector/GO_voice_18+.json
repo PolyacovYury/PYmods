@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_voice.json": "res/configs/PYmods/SoundEventInjector/configs/GO_voice.json",
+        "mods/{GAME_VERSION}/GO/GO_voice_18+.wotmod": "build/wotmods/GO/GO_voice_18+.wotmod"
+    }
+}

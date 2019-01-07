@@ -7,11 +7,11 @@ from . import attached_models
 from .. import g_config
 
 
-def create(vehicleID, vDesc, sname, visible=False):
+def create(vehicleID, vDesc, modelsSet, sname, visible=False):
     try:
         resList = []
         for partName in TankPartNames.ALL:
-            modelPath = getattr(vDesc, partName).models.undamaged.replace(
+            modelPath = getattr(vDesc, partName).modelsSets[modelsSet].undamaged.replace(
                 'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
             if partName == TankPartNames.CHASSIS:
                 modelPath = modelPath.replace('Chassis', 'Chassis_dynamic')
@@ -37,7 +37,7 @@ def destroy(vehicleID):
 def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     attach(self._HangarVehicleAppearance__vEntity.id,
-           g_config.dynamicSkinEnabled and not g_config.collisionComparisonEnabled)
+           g_config.dynamicSkinEnabled and g_config.collisionMode != 2)
 
 
 @PYmodsCore.overrideMethod(PlayerAvatar, 'targetFocus')

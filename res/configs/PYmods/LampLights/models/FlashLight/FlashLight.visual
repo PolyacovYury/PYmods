@@ -1,0 +1,209 @@
+<exporter_003_temp.visual>
+	<node>
+		<identifier>	Scene Root	</identifier>
+		<transform>
+			<row0>	1.000000 0.000000 0.000000	</row0>
+			<row1>	0.000000 1.000000 0.000000	</row1>
+			<row2>	0.000000 0.000000 1.000000	</row2>
+			<row3>	0.000000 0.000000 0.000000	</row3>
+		</transform>
+		<node>
+			<identifier>	Levo	</identifier>
+			<transform>
+				<row0>	1.000000 0.000000 0.000000	</row0>
+				<row1>	0.000000 -0.000000 -1.000000	</row1>
+				<row2>	0.000000 1.000000 -0.000000	</row2>
+				<row3>	-0.001734 -0.057924 0.179495	</row3>
+			</transform>
+		</node>
+		<node>
+			<identifier>	Pravo	</identifier>
+			<transform>
+				<row0>	1.000000 0.000000 0.000000	</row0>
+				<row1>	0.000000 -0.000000 -1.000000	</row1>
+				<row2>	0.000000 1.000000 -0.000000	</row2>
+				<row3>	-0.000076 -0.057924 0.179495	</row3>
+			</transform>
+		</node>
+		<node>
+			<identifier>	Pravo_kolpak	</identifier>
+			<transform>
+				<row0>	1.000000 0.000000 0.000000	</row0>
+				<row1>	0.000000 -0.000000 -1.000000	</row1>
+				<row2>	0.000000 1.000000 -0.000000	</row2>
+				<row3>	0.001466 -0.057924 0.179495	</row3>
+			</transform>
+		</node>
+		<node>
+			<identifier>	Left_kolpak	</identifier>
+			<transform>
+				<row0>	1.000000 0.000000 0.000000	</row0>
+				<row1>	0.000000 -0.000000 -1.000000	</row1>
+				<row2>	0.000000 1.000000 -0.000000	</row2>
+				<row3>	-0.002292 -0.057924 0.179495	</row3>
+			</transform>
+		</node>
+		<node>
+			<identifier>	Object003	</identifier>
+			<transform>
+				<row0>	-0.000000 0.000000 -1.000000	</row0>
+				<row1>	-1.000000 -0.000000 0.000000	</row1>
+				<row2>	-0.000000 1.000000 0.000000	</row2>
+				<row3>	0.780505 -0.059299 0.000168	</row3>
+			</transform>
+		</node>
+		<node>
+			<identifier>	Object004	</identifier>
+			<transform>
+				<row0>	-0.000000 0.000000 -1.000000	</row0>
+				<row1>	-1.000000 -0.000000 0.000000	</row1>
+				<row2>	-0.000000 1.000000 0.000000	</row2>
+				<row3>	0.780505 -0.059299 0.000168	</row3>
+			</transform>
+		</node>
+		<node>
+			<identifier>	Red_node	</identifier>
+			<transform>
+				<row0>	1.000000 0.000000 0.000000	</row0>
+				<row1>	0.000000 1.000000 0.000000	</row1>
+				<row2>	0.000000 0.000000 1.000000	</row2>
+				<row3>	-0.520150 0.000000 0.000000	</row3>
+			</transform>
+		</node>
+		<node>
+			<identifier>	Blue_node	</identifier>
+			<transform>
+				<row0>	1.000000 0.000000 0.000000	</row0>
+				<row1>	0.000000 1.000000 0.000000	</row1>
+				<row2>	0.000000 0.000000 1.000000	</row2>
+				<row3>	0.520150 0.000000 0.000000	</row3>
+			</transform>
+		</node>
+	</node>
+	<renderSet>
+		<treatAsWorldSpaceObject>	false	</treatAsWorldSpaceObject>
+		<node>	Scene Root	</node>
+		<geometry>
+			<vertices>	vertices	</vertices>
+			<primitive>	indices	</primitive>
+			<primitiveGroup>	0
+				<material>
+					<identifier>	W_st	</identifier>
+					<fx>	shaders/std_effects/lightonly_alpha.fx	</fx>
+					<property>	diffuseMap
+						<Texture>	../mods/configs/PYmods/LampLights/models/FlashLight/vss1W_glass.dds	</Texture>
+					</property>
+					<property>	doubleSided
+						<Bool>	false	</Bool>
+					</property>
+					<property>	alphaTestEnable
+						<Bool>	false	</Bool>
+					</property>
+					<property>	selfIllumination
+						<Float>	0.000000	</Float>
+					</property>
+					<property>	srcBlend
+						<Int>	5	</Int>
+					</property>
+					<property>	destBlend
+						<Int>	6	</Int>
+					</property>
+					<property>	alphaReference
+						<Int>	118	</Int>
+					</property>
+					<property>	texAddressMode
+						<Int>	1	</Int>
+					</property>
+				</material>
+			</primitiveGroup>
+			<primitiveGroup>	1
+				<material>
+					<identifier>	R_st	</identifier>
+					<fx>	shaders/std_effects/lightonly_alpha.fx	</fx>
+					<property>	diffuseMap
+						<Texture>	../mods/configs/PYmods/LampLights/models/FlashLight/vss1R_glass.dds	</Texture>
+					</property>
+					<property>	doubleSided
+						<Bool>	true	</Bool>
+					</property>
+					<property>	alphaTestEnable
+						<Bool>	false	</Bool>
+					</property>
+					<property>	selfIllumination
+						<Float>	0.000000	</Float>
+					</property>
+					<property>	srcBlend
+						<Int>	5	</Int>
+					</property>
+					<property>	destBlend
+						<Int>	6	</Int>
+					</property>
+					<property>	alphaReference
+						<Int>	200	</Int>
+					</property>
+					<property>	texAddressMode
+						<Int>	1	</Int>
+					</property>
+				</material>
+			</primitiveGroup>
+			<primitiveGroup>	2
+				<material>
+					<identifier>	B_st	</identifier>
+					<fx>	shaders/std_effects/lightonly_alpha.fx	</fx>
+					<property>	diffuseMap
+						<Texture>	../mods/configs/PYmods/LampLights/models/FlashLight/vss1B_glass.dds	</Texture>
+					</property>
+					<property>	doubleSided
+						<Bool>	true	</Bool>
+					</property>
+					<property>	alphaTestEnable
+						<Bool>	false	</Bool>
+					</property>
+					<property>	selfIllumination
+						<Float>	0.000000	</Float>
+					</property>
+					<property>	srcBlend
+						<Int>	5	</Int>
+					</property>
+					<property>	destBlend
+						<Int>	6	</Int>
+					</property>
+					<property>	alphaReference
+						<Int>	200	</Int>
+					</property>
+					<property>	texAddressMode
+						<Int>	1	</Int>
+					</property>
+				</material>
+			</primitiveGroup>
+			<primitiveGroup>	3
+				<material>
+					<identifier>	W	</identifier>
+					<fx>	shaders/std_effects/lightonly.fx	</fx>
+					<property>	diffuseMap
+						<Texture>	../mods/configs/PYmods/LampLights/models/FlashLight/W_AM.dds	</Texture>
+					</property>
+					<property>	doubleSided
+						<Bool>	true	</Bool>
+					</property>
+					<property>	alphaTestEnable
+						<Bool>	false	</Bool>
+					</property>
+					<property>	selfIllumination
+						<Float>	0.000000	</Float>
+					</property>
+					<property>	alphaReference
+						<Int>	118	</Int>
+					</property>
+					<property>	texAddressMode
+						<Int>	1	</Int>
+					</property>
+				</material>
+			</primitiveGroup>
+		</geometry>
+	</renderSet>
+	<boundingBox>
+		<min>	-0.786780 -0.438773 -0.179232	</min>
+		<max>	0.785954 0.031458 0.179495	</max>
+	</boundingBox>
+</exporter_003_temp.visual>

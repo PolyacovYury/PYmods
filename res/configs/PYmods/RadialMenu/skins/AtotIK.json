@@ -1,0 +1,245 @@
+{
+    "TankMenu": {
+        "default": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team"
+            },
+            {"title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "command": "BACKTOBASE",
+                "chatMode": "Team"
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team"
+            },
+            {"title": "Нужна помощь!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "chatMode": "Team"
+            },
+            {"title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {"title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "chatMode": "Team"
+            }
+        ],
+        "ally": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team"
+            },
+            {"title": "Назад!",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "chatMode": "Team"
+            },
+            {"title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "chatMode": "Team"
+            },
+            {"title": "Помоги!",
+                "icon": "Helpmeex",
+                "command": "HELPMEEX",
+                "chatMode": "Team"
+            },
+            {"title": "За мной!",
+                "icon": "Followme",
+                "command": "FOLLOWME",
+                "chatMode": "Team"
+            },
+            {"title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team"
+            },
+            {"title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "command": "BACKTOBASE",
+                "chatMode": "Team"
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team"
+            },
+            {"title": "Нужна помощь!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "chatMode": "Team"
+            },
+            {"title": "Поддержите огнём!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "chatMode": "Team"
+            },
+            {"title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "chatMode": "Team"
+            }
+        ]
+    },
+    "SPGMenu": {
+        "default": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team"
+            },
+            {"title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "command": "BACKTOBASE",
+                "chatMode": "Team"
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team"
+            },
+            {"title": "Нужна помощь!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "chatMode": "Team"
+            },
+            {"title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {"title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "chatMode": "Team"
+            }
+        ],
+        "ally": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team"
+            },
+            {"title": "Назад!",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "chatMode": "Team"
+            },
+            {"title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "chatMode": "Team"
+            },
+            {"title": "Помоги!",
+                "icon": "Helpmeex",
+                "command": "HELPMEEX",
+                "chatMode": "Team"
+            },
+            {"title": "За мной!",
+                "icon": "Followme",
+                "command": "FOLLOWME",
+                "chatMode": "Team"
+            },
+            {"title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team"
+            },
+            {"title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "command": "BACKTOBASE",
+                "chatMode": "Team"
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team"
+            },
+            {"title": "Нужна помощь!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "chatMode": "Team"
+            },
+            {"title": "Атакую!",
+                "icon": "AttackSPG",
+                "command": "ATTACKENEMY",
+                "chatMode": "Team"
+            },
+            {"title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "chatMode": "Team"
+            }
+        ]
+    },
+    "Map_default": {
+        "default": [
+            {"title": "Помогите в кишке!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите в кишке!",
+                "chatMode": "Team"
+            },
+            {"title": "Помогите на железке!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите на железке!",
+                "chatMode": "Team"
+            },
+            {"title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {"title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {"title": "Помогите взять гору!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите взять гору!"
+            },
+            {"title": "Помогите на зелёнке!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите на зелёнке!",
+                "chatMode": "Team"
+            }
+        ]
+    },
+    "hotkeyOnly": [
+        {"title": "Перезаряжаюсь!",
+            "command": "RELOADINGGUN",
+            "chatMode": "Team",
+            "hotKey": ["KEY_C"]
+        }
+    ]
+}

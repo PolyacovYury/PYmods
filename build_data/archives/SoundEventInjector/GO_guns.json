@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_guns.json": "res/configs/PYmods/SoundEventInjector/configs/GO_guns.json",
+        "mods/configs/PYmods/SoundEventInjector/configs/gun_effects.xml": "res/configs/PYmods/SoundEventInjector/configs/gun_effects.xml",
+        "mods/{GAME_VERSION}/GO/GO_gun.wotmod": "build/wotmods/GO/GO_gun.wotmod"
+    }
+}

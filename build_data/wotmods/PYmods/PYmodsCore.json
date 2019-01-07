@@ -1,0 +1,19 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "meta.xml": "res/meta/PYmodsCore.xml",
+        "res/scripts/client/PYmodsCore/__init__.pyc": "build/scripts/client/PYmodsCore/__init__.pyc",
+        "res/scripts/client/PYmodsCore/config/__init__.pyc": "build/scripts/client/PYmodsCore/config/__init__.pyc",
+        "res/scripts/client/PYmodsCore/config/interfaces/Dummy.pyc": "build/scripts/client/PYmodsCore/config/interfaces/Dummy.pyc",
+        "res/scripts/client/PYmodsCore/config/interfaces/PYmods.pyc": "build/scripts/client/PYmodsCore/config/interfaces/PYmods.pyc",
+        "res/scripts/client/PYmodsCore/config/interfaces/Simple.pyc": "build/scripts/client/PYmodsCore/config/interfaces/Simple.pyc",
+        "res/scripts/client/PYmodsCore/config/interfaces/__init__.pyc": "build/scripts/client/PYmodsCore/config/interfaces/__init__.pyc",
+        "res/scripts/client/PYmodsCore/config/json_reader.pyc": "build/scripts/client/PYmodsCore/config/json_reader.pyc",
+        "res/scripts/client/PYmodsCore/config/template_builders.pyc": "build/scripts/client/PYmodsCore/config/template_builders.pyc",
+        "res/scripts/client/PYmodsCore/config/utils.pyc": "build/scripts/client/PYmodsCore/config/utils.pyc",
+        "res/scripts/client/PYmodsCore/events.pyc": "build/scripts/client/PYmodsCore/events.pyc",
+        "res/scripts/client/PYmodsCore/utils.pyc": "build/scripts/client/PYmodsCore/utils.pyc",
+        "res/scripts/client/PYmodsGUI.png": "res/res/scripts/client/PYmodsGUI.png"
+    }
+}

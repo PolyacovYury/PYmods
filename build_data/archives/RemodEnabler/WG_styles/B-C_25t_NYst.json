@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/B-C_25t_NYst/B-C_25t_NYst_1.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/B-C_25t_NYst/B-C_25t_NYst_1.json",
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/B-C_25t_NYst/B-C_25t_NYst_2.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/B-C_25t_NYst/B-C_25t_NYst_2.json",
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/B-C_25t_NYst/B-C_25t_NYst_3.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/B-C_25t_NYst/B-C_25t_NYst_3.json"
+    }
+}

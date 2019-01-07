@@ -27,16 +27,8 @@ from helpers import getClientVersion
 from zipfile import ZipFile
 from . import g_config
 
-
-def skinsPresenceCheck():
-    dirSect = ResMgr.openSection('vehicles/skins/textures/')
-    if dirSect is not None and dirSect.keys():
-        g_config.skinsData['found'] = True
-
-
 texReplaced = False
 skinsChecked = False
-skinsPresenceCheck()
 clientIsNew = True
 skinsModelsMissing = True
 needToReReadSkinsModels = False
@@ -112,18 +104,22 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
     def onWindowClose(self):
         g_config.loadingProxy = None
-        self.destroy()
         if needToReReadSkinsModels:
             showConfirmDialog(
                 g_config.i18n['UI_restart_header'], g_config.i18n['UI_restart_text'],
                 (g_config.i18n['UI_restart_button_restart'], g_config.i18n['UI_restart_button_shutdown']),
                 lambda restart: (BigWorld.savePreferences(), (BigWorld.restartGame() if restart else BigWorld.quit())))
         elif self.doLogin:
-            loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
-            if loginView and loginView.loginManager.getPreference('remember_user'):
-                password = '*' * loginView.loginManager.getPreference('password_length')
-                login = loginView.loginManager.getPreference('login')
-                loginView.onLogin(login, password, loginView._servers.selectedServer['data'], '@' not in login)
+            BigWorld.callback(0.1, doLogin)
+        self.destroy()
+
+
+def doLogin():
+    loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
+    if loginView and loginView.loginManager.getPreference('remember_user'):
+        password = '*' * loginView.loginManager.getPreference('password_length')
+        login = loginView.loginManager.getPreference('login')
+        loginView.onLogin(login, password, loginView._servers.selectedServer['data'], '@' not in login)
 
 
 g_entitiesFactories.addSettings(
@@ -144,8 +140,7 @@ def skinCRC32All(callback):
     CRC32cache = g_config.skinsCache['CRC32']
     skinsPath = 'vehicles/skins/textures/'
     dirSect = ResMgr.openSection(skinsPath)
-    if dirSect is not None and dirSect.keys():
-        g_config.skinsData['found'] = True
+    if dirSect is not None and dirSect.keys() and g_config.skinsData['models']:
         print g_config.ID + ': listing', skinsPath, 'for CRC32'
         g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
         CRC32 = 0
@@ -169,11 +164,12 @@ def skinCRC32All(callback):
                     if vehicleSect is not None:
                         textures = [texPrefix + texName
                                     for texName in remDups(vehicleSect.keys()) if texName.endswith('.dds')]
-                        skinsSect = vehicleSect['_skins']
-                        if skinsSect is not None:
-                            for skinName in skinsSect.keys():
-                                textures.extend(texPrefix + '_skins/' + skinName + '/' + texName for texName in
-                                                remDups(skinsSect[skinName].keys()) if texName.endswith('.dds'))
+                        modelsSect = vehicleSect['_skins']
+                        if modelsSect is not None:
+                            for modelsSet in modelsSect.keys():
+                                skinVehNamesLDict.setdefault((vehicleName + '/' + modelsSet).lower(), []).append(skin)
+                                textures.extend(texPrefix + '_skins/' + modelsSet + '/' + texName for texName in
+                                                remDups(modelsSect[modelsSet].keys()) if texName.endswith('.dds'))
                     for localPath in textures:
                         texPath = skinsPath + skin + '/' + localPath
                         textureCRC32 = CRC32_from_file(texPath, localPath)
@@ -251,14 +247,15 @@ def modelsCheck(callback):
             print g_config.ID + ': skins models dir is empty'
     else:
         print g_config.ID + ': skins models dir not found'
-    needToReReadSkinsModels = g_config.skinsData['found'] and (clientIsNew or skinsModelsMissing or texReplaced)
-    if g_config.skinsData['found'] and clientIsNew:
+    found = bool(g_config.skinsData['models'])
+    needToReReadSkinsModels = found and (clientIsNew or skinsModelsMissing or texReplaced)
+    if found and clientIsNew:
         if os.path.isdir(modelsDir):
             yield rmtree(modelsDir)
         g_config.skinsCache['version'] = getClientVersion()
-    if g_config.skinsData['found'] and not os.path.isdir(modelsDir):
+    if found and not os.path.isdir(modelsDir):
         os.makedirs(modelsDir)
-    elif not g_config.skinsData['found'] and os.path.isdir(modelsDir):
+    elif not found and os.path.isdir(modelsDir):
         print g_config.ID + ': no skins found, deleting', modelsDir
         yield rmtree(modelsDir)
     elif texReplaced and os.path.isdir(modelsDir):
@@ -284,7 +281,10 @@ def modelsProcess(callback):
                              x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats]
             allFilesCnt = len(fileNamesList)
             for fileNum, memberFileName in enumerate(fileNamesList):
-                for skinName in skinVehNamesLDict.get(os.path.normpath(memberFileName).split('\\')[2].lower(), []):
+                attempt = memberFileName.split('/')[2]
+                if '_skins/' in memberFileName:
+                    attempt += '/' + memberFileName.split('_skins/')[1].split('/', 1)[0]
+                for skinName in skinVehNamesLDict.get(attempt.lower(), []):
                     try:
                         processMember(memberFileName, skinName)
                     except ValueError as e:
@@ -367,15 +367,15 @@ def processMember(memberFileName, skinName):
                     if hasTracks:
                         curSSect['material'].writeString('fx', 'shaders/std_effects/lightonly_alpha.fx')
 
-            visualSect.writeString('primitivesName', os.path.splitext(memberFileName)[0])
-            visualSect.writeBool('customBsp', True)
+            if visualSect['primitivesName'] is None:
+                visualSect.writeString('primitivesName', os.path.splitext(memberFileName)[0])
             visualSect.save()
 
 
 @process
 def skinLoader(loginView):
     global skinsChecked
-    if g_config.data['enabled'] and g_config.skinsData['found'] and not skinsChecked:
+    if g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked:
         lobbyApp = g_appLoader.getDefLobbyApp()
         if lobbyApp is not None:
             lobbyApp.loadView(SFViewLoadParams('SkinnerLoading'))
@@ -400,7 +400,7 @@ def skinLoader(loginView):
 def new_Login_populate(base, self):
     base(self)
     if g_config.data['enabled']:
-        if g_config.skinsData['found'] and not skinsChecked:
+        if g_config.skinsData['models'] and not skinsChecked:
             self.as_setDefaultValuesS({
                 'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
                 'memberMeVisible': self._loginMode.rememberPassVisible,

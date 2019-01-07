@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-w/settings.json": "res/configs/PYmods/CamoSelector/camouflages/40t-w/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-w/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/40t-w/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-w/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/40t-w/texture.dds"
+    }
+}

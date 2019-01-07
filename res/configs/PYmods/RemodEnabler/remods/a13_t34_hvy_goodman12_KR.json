@@ -1,0 +1,341 @@
+﻿{
+    "message": "Автор: Goodman12, Мастерская Гудмана.",
+    "player": true,
+    "ally": true,
+    "enemy": true,
+    "whitelist": ["a13_t34_hvy"],
+    "chassis": {
+        "undamaged": "vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/chassis.model",
+        "traces": {
+            "lodDist": 120.0,
+            "bufferPrefs": "largeTank",
+            "textureSet": "usa_03",
+            "centerOffset": 1.4797899723052979,
+            "size": [0.65, 0.72],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": -2.0
+        },
+        "wheels": {
+            "groups": [
+                {
+                    "isLeft": false,
+                    "template": "WD_R",
+                    "count": 7,
+                    "startIndex": 1,
+                    "radius": 0.18355099856853485
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 8,
+                    "startIndex": 0,
+                    "radius": 0.32867199182510376
+                },
+                {
+                    "isLeft": true,
+                    "template": "WD_L",
+                    "count": 7,
+                    "startIndex": 1,
+                    "radius": 0.18355099856853485
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 8,
+                    "startIndex": 0,
+                    "radius": 0.329800009727478
+                }
+            ],
+            "wheels": [
+                {
+                    "isLeft": false,
+                    "radius": 0.33000099658966064,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": false,
+                    "radius": 0.1447640061378479,
+                    "nodeName": "WD_R8",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": false,
+                    "radius": 0.36892399191856384,
+                    "nodeName": "WD_R9",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": true,
+                    "radius": 0.33000099658966064,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": true,
+                    "radius": 0.1447640061378479,
+                    "nodeName": "WD_L8",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                },
+                {
+                    "isLeft": true,
+                    "radius": 0.36892399191856384,
+                    "nodeName": "WD_L9",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "index": null,
+                    "hitTester": null,
+                    "materials": null,
+                    "position": [0, 0, 0]
+                }
+            ]
+        },
+        "chassisLodDistance": 70.0,
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": true,
+                    "minOffset": -0.07377050071954727,
+                    "maxOffset": 0.07377050071954727,
+                    "startIndex": 0,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 8,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": false,
+                    "minOffset": -0.07377050071954727,
+                    "maxOffset": 0.07377050071954727,
+                    "startIndex": 0,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 8,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": -0.017000000923871994,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": -0.017000000923871994,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 0.8999999761581421,
+                    "backwardElasticityCoeff": 1.3700000047683716
+                },
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": -0.017000000923871994,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": -0.017000000923871994,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1248.0,
+                    "forwardElasticityCoeff": 0.8999999761581421,
+                    "backwardElasticityCoeff": 1.3700000047683716
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentLength": 0.14100000262260437,
+            "leftDesc": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/left.track",
+            "rightDesc": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/right.track",
+            "lodDist": 70.0,
+            "segmentOffset": 0.10300000011920929,
+            "segment2Offset": 0.0729999989271164,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1,
+            "segmentModelSets": {
+                "left": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment1.model",
+                "right": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment1_R.model",
+                "secondLeft": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment2.model",
+                "secondRight": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment2_R.model"
+            }
+        },
+        "trackParams": {
+            "thickness": 0.002099999925121665,
+            "maxAmplitude": 0.10000000149011612,
+            "maxOffset": 0.10000000149011612,
+            "gravity": -9.800000190734863
+        },
+        "hullPosition": [0.0, 1.11556, 0.0],
+        "AODecals": [[[4.98068, 0.0, 0.0], [0.0, 1.62357, 0.0], [0.0, 0.0, 10.4306], [0.0, 0.0, 1e-06]]],
+        "leveredSuspension": null
+    },
+    "hull": {
+        "undamaged": "vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/hull.model",
+        "exhaust": {
+            "pixie": "diesel_large",
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [0.002705770079046488, 0.05270649865269661, 3.3411900997161865],
+                "rayEnd": [-0.0025102701038122177, -0.26826000213623047, 3.1025500297546387],
+                "rayUp": [0.0, 0.0, -1.0],
+                "size": 0.28999999165534973,
+                "hideIfDamaged": true,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/turret_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [1.2055200338363647, 0.8156319856643677, -1.1708400249481201],
+                "rayEnd": [1.007889986038208, 0.7965989708900452, -1.146720051765442],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.30000001192092896,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [-1.1701200008392334, 0.8180050253868103, -1.1394699811935425],
+                "rayEnd": [-1.0715299844741821, 0.8063499927520752, -1.1274199485778809],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.30000001192092896,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [1.3576899766921997, 0.7702810168266296, 0.11220499873161316],
+                "rayEnd": [1.161120057106018, 0.7524440288543701, 0.07994859665632248],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.699999988079071,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [-1.3608200550079346, 0.7773150205612183, -0.05495629832148552],
+                "rayEnd": [-1.161579966545105, 0.7601569890975952, -0.05138320103287697],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.699999988079071,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/gun_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [-0.00033402699045836926, -0.01116809993982315, 2.9711101055145264],
+                "rayEnd": [-0.04400999844074249, -0.06340859830379486, 2.966209888458252],
+                "rayUp": [0.14900000393390656, 0.1379999965429306, 5.0],
+                "size": 0.8999999761581421,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "camouflage": {
+        "tiling": [1, 1, 0, 0],
+        "exclusionMask": "vehicles/remods/a13_t34_hvy_goodman12_KR/T34_hvy_CM.dds"
+    }
+}

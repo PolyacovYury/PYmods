@@ -1,0 +1,142 @@
+{
+    "shot_effects": {
+        "autoArmorPiercing": {
+            "projectile": {
+                "wwsoundPC": "tracer_small_GO",
+                "wwsoundNPC": "tracer_small_GO"
+            }
+        },
+        "autoAPCR": {
+            "projectile": {
+                "wwsoundPC": "tracer_small_GO",
+                "wwsoundNPC": "tracer_small_GO"
+            }
+        },
+        "smallArmorPiercing": {
+            "projectile": {
+                "wwsoundPC": "tracer_medium_GO",
+                "wwsoundNPC": "tracer_medium_GO"
+            }
+        },
+        "smallHighExplosive": {
+            "projectile": {
+                "wwsoundPC": "tracer_medium_GO",
+                "wwsoundNPC": "tracer_medium_GO"
+            }
+        },
+        "smallHollowCharge": {
+            "projectile": {
+                "wwsoundPC": "tracer_arty_GO",
+                "wwsoundNPC": "tracer_arty_GO"
+            }
+        },
+        "smallAPCR": {
+            "projectile": {
+                "wwsoundPC": "tracer_medium_GO",
+                "wwsoundNPC": "tracer_medium_GO"
+            }
+        },
+        "mediumArmorPiercing": {
+            "projectile": {
+                "wwsoundPC": "tracer_medium_GO",
+                "wwsoundNPC": "tracer_medium_GO"
+            }
+        },
+        "mediumHighExplosive": {
+            "projectile": {
+                "wwsoundPC": "tracer_medium_GO",
+                "wwsoundNPC": "tracer_medium_GO"
+            }
+        },
+        "mediumHollowCharge": {
+            "projectile": {
+                "wwsoundPC": "tracer_arty_GO",
+                "wwsoundNPC": "tracer_arty_GO"
+            }
+        },
+        "mediumAPCR": {
+            "projectile": {
+                "wwsoundPC": "tracer_medium_GO",
+                "wwsoundNPC": "tracer_medium_GO"
+            }
+        },
+        "mainArmorPiercing": {
+            "projectile": {
+                "wwsoundPC": "tracer_main_GO",
+                "wwsoundNPC": "tracer_main_GO"
+            }
+        },
+        "mainHighExplosive": {
+            "projectile": {
+                "wwsoundPC": "tracer_arty_GO",
+                "wwsoundNPC": "tracer_arty_GO"
+            }
+        },
+        "mainHollowCharge": {
+            "projectile": {
+                "wwsoundPC": "tracer_arty_GO",
+                "wwsoundNPC": "tracer_arty_GO"
+            }
+        },
+        "mainAPCR": {
+            "projectile": {
+                "wwsoundPC": "tracer_main_GO",
+                "wwsoundNPC": "tracer_main_GO"
+            }
+        },
+        "largeArmorPiercing": {
+            "projectile": {
+                "wwsoundPC": "tracer_main_GO",
+                "wwsoundNPC": "tracer_main_GO"
+            }
+        },
+        "largeHighExplosive": {
+            "projectile": {
+                "wwsoundPC": "tracer_arty_large_GO",
+                "wwsoundNPC": "tracer_arty_large_GO"
+            }
+        },
+        "largeHollowCharge": {
+            "projectile": {
+                "wwsoundPC": "tracer_arty_GO",
+                "wwsoundNPC": "tracer_arty_GO"
+            }
+        },
+        "largeAPCR": {
+            "projectile": {
+                "wwsoundPC": "tracer_main_GO",
+                "wwsoundNPC": "tracer_main_GO"
+            }
+        },
+        "hugeArmorPiercing": {
+            "projectile": {
+                "wwsoundPC": "tracer_main_GO",
+                "wwsoundNPC": "tracer_main_GO"
+            }
+        },
+        "hugeHighExplosive": {
+            "projectile": {
+                "wwsoundPC": "tracer_arty_large_GO",
+                "wwsoundNPC": "tracer_arty_large_GO"
+            }
+        },
+        "hugeHollowCharge": {
+            "projectile": {
+                "wwsoundPC": "tracer_arty_GO",
+                "wwsoundNPC": "tracer_arty_GO"
+            }
+        },
+        "hugeAPCR": {
+            "projectile": {
+                "wwsoundPC": "tracer_main_GO",
+                "wwsoundNPC": "tracer_main_GO"
+            }
+        },
+        "sportHighExplosive": {
+            "projectile": {
+                "wwsoundPC": "tracer_arty_GO",
+                "wwsoundNPC": "tracer_arty_GO"
+            }
+        }
+    }
+}

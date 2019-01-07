@@ -1,0 +1,17 @@
+﻿{
+    "enabled": true,
+    "ignorePresentPaints": true,
+    "removeCamouflages": true,
+    "paint_chassis": false,
+    "paint_hull": false,
+    "paint_gun": true,
+    "paint_turret": true,
+    "scale": {
+        "2020": 264,
+        "4185": 225,
+        "6340": 203,
+        "8525": 224,
+        "9930": 204,
+        "99999": 200
+    }
+}

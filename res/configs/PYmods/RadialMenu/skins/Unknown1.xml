@@ -1,0 +1,610 @@
+<?xml version="1.0"?>
+<!--
+=============================================================================
+Creation date: 09.12.2014
+=============================================================================
+CustomCommandRose // Автор:
+Конфигурационный файл мода "Кастомизируемая роза команд". 
+ВНИМАНИЕ! Через стандартный Блокнот конфиг лучше не редактировать, ломается. 
+Подойдёт WordPad, Notepad++ или другой редактор простого текста.
+================================================================================
+  ИНФОРМАЦИЯ О СТРУКТУРЕ КОНФИГУРАЦИИ НАХОДИТСЯ В ФАЙЛЕ README.TXT    
+================================================================================
+         ФОРМАТ КОМАНД
+		 
+Каждая команда определяется следующим образом:
+    <Command>
+      // Краткое название, выводимое в меню
+      <Title>КД</Title>
+      
+      // Иконка для меню (см. список ниже)
+      <Icon>Reload</Icon>
+
+      // Текст, выводимый в чат (поддерживаются макросы)
+      <Text>Ухожу на КД (%(ownPos)s), осталось %(reload)s сек.</Text> 
+
+      // Режим чата, Team или All
+      <ChatMode>Team</ChatMode>
+      
+      <!- - Ниже идут опциональные поля - ->
+      
+      // Команда из списка дефолтных, с отображением иконки на миникарте
+      <Command>RELOADINGGUN</Command>  
+
+      <Variants>
+        <Variant>Список</Variant>
+        <Variant>из нескольких строк,</Variant>
+        <Variant>одна из которых подставляется в макрос %(randpart)s</Variant>
+        <Variant>Строка выбирается случайно</Variant>
+      </Variants>
+
+      // Список квадратов для "прокликивания"
+      <Ping>B7 D9</Ping> 
+
+      // Сочетание клавиш для отдачи команды без вызова радиального меню
+      <Hotkey>KEY_LALT+KEY_R</Hotkey> 
+
+    </Command>
+
+Допустимые имена иконок:
+[ 'Attack', 'Yes', 'Helpme', 'Backtobase', 'No', 'Reload', 
+  'Followme', 'Turnback', 'Helpmeex', 'Stop', 'Support', 'AttackSPG' ]
+  
+Допустимые имена команд:
+[ 'ATTACK', 'ATTACKENEMY', 'BACKTOBASE', 'FOLLOWME', 'HELPME', 'HELPMEEX', 
+  'NEGATIVE', 'POSITIVE', 'RELOADINGGUN' 'STOP', 'SUPPORTMEWITHFIRE', 'TURNBACK']
+
+Поддерживаемые в тексте сообщения макросы:
+   %(name)s     - имя игрока, на чей танк наведён прицел
+   %(vehicle)s  - название типа техники
+   %(clan)s     - название клана
+   %(viewPos)s  - квадрат, в который направлена камера
+   %(ownPos)s   - квадрат, в котором находится свой танк
+   %(randpart)s - случайная строка из списка в тэге <Variants/>
+   %(reload)s   - оставшееся время перезарядки орудия, в секундах
+   %(ammo)s     - число неистраченных снарядов в барабане
+
+Список имён кнопок для горячих клавиш - http://pastebin.com/5GKk9jBX 
+-->
+<RadialMenu.xml>
+  <MapMenuKey>KEY_LALT</MapMenuKey>
+  <MenuReloadHotkey>KEY_LCONTROL+KEY_F11</MenuReloadHotkey>
+  <HotkeyCommandDelay>250</HotkeyCommandDelay>
+  <CHAT_DELAY>1200</CHAT_DELAY>
+  <TankMenu>
+<!-- =Команды, когда прицел ни на кого не наведен= -->
+    <CommonCommands>
+      <Command>
+        <Title>Так точно!</Title>
+        <Icon>Yes</Icon>
+        <Command>POSITIVE</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F5</Hotkey>
+      </Command>
+      <Command>
+        <Title>Защищайте базу!</Title>
+        <Icon>Backtobase</Icon>
+        <!--<Command>BACKTOBASE</Command>-->
+        <Text>%(randpart)s</Text>
+        <Variants>
+          <Variant>Защищайте базу!</Variant>
+          <Variant>Все на базу!</Variant>
+          <Variant>Светите, помогу с базой!</Variant>
+        </Variants>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F4</Hotkey>
+      </Command>
+      <Command>
+        <Title>Перезаряжаюсь!</Title>
+        <Icon>Reload</Icon>
+        <Command>RELOADINGGUN</Command>
+        <!--<Text></Text>-->
+        <ChatMode>Team</ChatMode>
+        <Ping>%(ownPos)s</Ping>
+        <Hotkey>KEY_F8</Hotkey>
+      </Command>
+      <Command>
+        <Title>Нужна помощь!</Title>
+        <Icon>Helpme</Icon>
+        <Command>HELPME</Command>
+        <Text>%(randpart)s</Text>
+		<Variants>
+          <Variant>Один не справлюсь!</Variant>
+          <Variant>HELP! SOS! Помогите!!</Variant>
+		  <Variant>Обратите внимание, сам не справлюсь!</Variant>
+		  <Variant>Уважаемые, тут требуется помощь!</Variant>
+		</Variants>
+        <ChatMode>Team</ChatMode>
+        <Ping></Ping>
+        <Hotkey>KEY_F7</Hotkey>
+      </Command>
+      <Command>
+        <Title>В атаку!</Title>
+        <Icon>Attack</Icon>
+        <Command>ATTACK</Command>
+        <Text>%(randpart)s</Text>
+		<Variants>
+		  <Variant>Настало наше время! В атаку!</Variant>
+		  <Variant>Джентльмены! В атаку!</Variant>
+		  <Variant>Пора продавливать направление! В Атаку!</Variant>
+		</Variants>
+        <ChatMode>Team</ChatMode>
+		<Ping>%(ownPos)s</Ping>
+        <Hotkey></Hotkey>
+      </Command>
+      <Command>
+        <Title>Никак нет!</Title>
+        <Icon>No</Icon>
+        <Command>NEGATIVE</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F6</Hotkey>
+      </Command>
+    </CommonCommands>
+<!-- =Команды когда прицел наведен на союзника= -->
+    <TeamCommands>
+      <Command>
+        <Title>Так точно!</Title>
+        <Icon>Yes</Icon>
+        <Command>POSITIVE</Command>
+        <Text>%(name)s (%(vehicle)s)</Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F5</Hotkey>
+      </Command>
+      <Command>
+        <Title>Назад!</Title>
+        <Icon>Turnback</Icon>
+        <Command>TURNBACK</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F4</Hotkey>
+      </Command>
+      <Command>
+        <Title>Стой!</Title>
+        <Icon>Stop</Icon>
+        <Command>STOP</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F8</Hotkey>
+      </Command>
+      <Command>
+        <Title>Помоги!</Title>
+        <Icon>Helpmeex</Icon>
+        <Command>HELPMEEX</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Ping>%(ownPos)s</Ping>
+        <Hotkey>KEY_F7</Hotkey>
+      </Command>
+      <Command>
+        <Title>За мной!</Title>
+        <Icon>Followme</Icon>
+        <Command>FOLLOWME</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Ping></Ping>
+        <Hotkey>KEY_T</Hotkey>
+      </Command>
+      <Command>
+        <Title>Никак нет!</Title>
+        <Icon>No</Icon>
+        <Command>NEGATIVE</Command>
+        <Text>%(name)s (%(vehicle)s)</Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F6</Hotkey>
+      </Command>
+    </TeamCommands>
+<!-- =Команды когда прицел наведен на врага= -->
+    <EnemyCommands>
+      <Command>
+        <Title>Так точно!</Title>
+        <Icon>Yes</Icon>
+        <Command>POSITIVE</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F5</Hotkey>
+      </Command>
+      <Command>
+        <Title>Защищайте базу!</Title>
+        <Icon>Backtobase</Icon>
+        <Command>BACKTOBASE</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F4</Hotkey>
+      </Command>
+      <Command>
+        <Title>Перезаряжаюсь!</Title>
+        <Icon>Reload</Icon>
+        <Command>RELOADINGGUN</Command>
+        <!--<Text></Text>-->
+        <ChatMode>Team</ChatMode>
+        <Ping>%(ownPos)s</Ping>
+        <Hotkey>KEY_F8</Hotkey>
+      </Command>
+      <Command>
+        <Title>Нужна помощь!</Title>
+        <Icon>Helpme</Icon>
+        <Command>HELPME</Command>
+        <Text>Один не справлюсь.</Text>
+        <ChatMode>Team</ChatMode>
+        <Ping></Ping>
+        <Hotkey>KEY_F7</Hotkey>
+      </Command>
+      <Command>
+        <Title>Поддержите огнём!</Title>
+        <Icon>Support</Icon>
+        <Command>SUPPORTMEWITHFIRE</Command>
+        <Text>Фокус на %(name)s (%(vehicle)s) Квадрат %(viewPos)s!</Text>
+        <ChatMode>Team</ChatMode>
+        <Ping></Ping>
+        <Hotkey>KEY_T</Hotkey>
+      </Command>
+      <Command>
+        <Title>Никак нет!</Title>
+        <Icon>No</Icon>
+        <Command>NEGATIVE</Command>
+        <Text>%(randpart)s </Text>
+        <ChatMode>Team</ChatMode>
+        <Ping>%(viewPos)s</Ping>
+        <Variants>
+          <Variant>Не могу достать %(name)s (%(vehicle)s) он за укрытием!</Variant>
+          <Variant>Не достаю (%(vehicle)s), он не на линии огня!</Variant>
+        </Variants>
+        <Hotkey>KEY_F6</Hotkey>
+      </Command>
+    </EnemyCommands>
+  </TankMenu>
+<!--
+  <lightTankMenu>
+  </lightTankMenu>
+  <mediumTankMenu>
+  </mediumTankMenu>
+  <heavyTankMenu>
+  </heavyTankMenu>
+  <AT-SPGMenu>
+  </AT-SPGMenu>
+-->
+  <SPGMenu>
+<!-- =АРТА - Когда прицел ни на кого не наведен= -->
+    <CommonCommands>
+      <Command>
+        <Title>Свелся на квадрат!</Title>
+        <Icon>AttackSPG</Icon>
+        <!--<Command>POSITIVE</Command>-->
+        <Text>%(randpart)s</Text>
+		<Variants>
+		  <Variant>Свелся на Квадрат %(viewPos)s, Даите свет помогу!</Variant>
+		  <Variant>Уже смотрю %(viewPos)s, сейчас будет помощь!</Variant>
+		  <Variant>Метьте цели и ставьте на гусли. Я помогу!</Variant>
+		</Variants>	
+        <ChatMode>Team</ChatMode>
+        <Ping>%(viewPos)s</Ping>
+        <Hotkey>KEY_F5</Hotkey>
+      </Command>
+      <Command>
+        <Title>Защищайте базу!</Title>
+        <Icon>Backtobase</Icon>
+        <!--<Command>BACKTOBASE</Command>-->
+        <Text>%(randpart)s</Text>
+        <Variants>
+          <Variant>Защищайте базу!</Variant>
+          <Variant>Все на базу!</Variant>
+          <Variant>Светите, помогу с базой!</Variant>
+        </Variants>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F4</Hotkey>
+      </Command>
+      <Command>
+        <Title>Перезаряжаюсь!</Title>
+        <Icon>Reload</Icon>
+        <Command>RELOADINGGUN</Command>
+        <!--<Text></Text>-->
+        <ChatMode>Team</ChatMode>
+        <Ping>%(ownPos)s</Ping>
+        <Hotkey>KEY_F8</Hotkey>
+      </Command>
+      <Command>
+        <Title>Нужна помощь!</Title>
+        <Icon>Helpme</Icon>
+        <Command>HELPME</Command>
+        <Text>%(randpart)s</Text>
+		<Variants>
+          <Variant>Один не справлюсь!</Variant>
+          <Variant>HELP! SOS! Помогите!!</Variant>
+		  <Variant>Обратите внимание, сам не справлюсь!</Variant>
+		  <Variant>Уважаемые, тут требуется помощь!</Variant>
+		</Variants>
+        <ChatMode>Team</ChatMode>
+        <Ping></Ping>
+        <Hotkey>KEY_F7</Hotkey>
+      </Command>
+      <Command>
+        <Title>В атаку!</Title>
+        <Icon>Attack</Icon>
+        <Command>ATTACK</Command>
+        <Text>%(randpart)s</Text>
+		<Variants>
+		  <Variant>Настало наше время!</Variant>
+		  <Variant>Пора продавливать направление!</Variant>
+		</Variants>
+        <ChatMode>Team</ChatMode>
+		<Ping></Ping>
+        <Hotkey></Hotkey>
+      </Command>
+      <Command>
+        <Title>Свет сюда!</Title>
+		<Icon>Attack</Icon>
+		<Text>%(randpart)s</Text>
+		<Variants>
+			<Variant>Подсветите %(viewPos)s, у нас имеется доставка чемодана!</Variant>
+			<Variant>Подсветите %(viewPos)s, старайтесь не слиться сразу</Variant>
+			<Variant>Аккуратно подсветите %(viewPos)s и назад</Variant>
+		</Variants>	
+		<ChatMode>Team</ChatMode>
+		<Ping>%(viewPos)s</Ping>
+        <Hotkey>KEY_F6</Hotkey>
+      </Command>
+    </CommonCommands>
+<!-- =Команды когда прицел наведен на союзника= -->
+    <TeamCommands>
+      <Command>
+        <Title>Так точно!</Title>
+        <Icon>Yes</Icon>
+        <Command>POSITIVE</Command>
+        <Text>%(name)s (%(vehicle)s)</Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F5</Hotkey>
+      </Command>
+      <Command>
+        <Title>Назад!</Title>
+        <Icon>Turnback</Icon>
+        <Command>TURNBACK</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F4</Hotkey>
+      </Command>
+      <Command>
+        <Title>Стой!</Title>
+        <Icon>Stop</Icon>
+        <Command>STOP</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F8</Hotkey>
+      </Command>
+      <Command>
+        <Title>Помоги!</Title>
+        <Icon>Helpmeex</Icon>
+        <Command>HELPMEEX</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Ping>%(ownPos)s</Ping>
+        <Hotkey>KEY_F7</Hotkey>
+      </Command>
+      <Command>
+        <Title>За мной!</Title>
+        <Icon>Followme</Icon>
+        <Command>FOLLOWME</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Ping></Ping>
+        <Hotkey>KEY_T</Hotkey>
+      </Command>
+      <Command>
+        <Title>Никак нет!</Title>
+        <Icon>No</Icon>
+        <Command>NEGATIVE</Command>
+        <Text>%(name)s (%(vehicle)s)</Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F6</Hotkey>
+      </Command>
+    </TeamCommands>
+<!-- =Команды когда прицел наведен на врага= -->
+    <EnemyCommands>
+      <Command>
+        <Title>Так точно!</Title>
+        <Icon>Yes</Icon>
+        <Command>POSITIVE</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F5</Hotkey>
+      </Command>
+      <Command>
+        <Title>Защищайте базу!</Title>
+        <Icon>Backtobase</Icon>
+        <Command>BACKTOBASE</Command>
+        <Text></Text>
+        <ChatMode>Team</ChatMode>
+        <Hotkey>KEY_F4</Hotkey>
+      </Command>
+      <Command>
+        <Title>Перезаряжаюсь!</Title>
+        <Icon>Reload</Icon>
+        <Command>RELOADINGGUN</Command>
+        <!--<Text></Text>-->
+        <ChatMode>Team</ChatMode>
+        <Ping>%(ownPos)s</Ping>
+        <Hotkey>KEY_F8</Hotkey>
+      </Command>
+      <Command>
+        <Title>Нужна помощь!</Title>
+        <Icon>Helpme</Icon>
+        <Command>HELPME</Command>
+        <Text>Один не справлюсь!</Text>
+        <ChatMode>Team</ChatMode>
+        <Ping></Ping>
+        <Hotkey>KEY_F7</Hotkey>
+      </Command>
+      <Command>
+        <Title>Атакую!</Title>
+        <Icon>AttackSPG</Icon>
+        <!--<Command>ATTACKENEMY</Command>-->
+        <Text>%(randpart)s</Text>
+        <ChatMode>Team</ChatMode>
+        <Variants>
+          <Variant>Отойдите от него %(name)s (%(vehicle)s), Квадрат %(viewPos)s, Нужно время для атаки!</Variant>
+          <Variant>Стреляю в (%(vehicle)s) Квадрат %(viewPos)s!</Variant>
+          <Variant>Чемодан ушел, Квадрат %(viewPos)s, ждите доставки!</Variant>
+          <Variant>Отойдите от него, %(name)s Чемодан летит!</Variant>
+          <Variant>Сейчас прилетит чемодан, на Квадрат %(viewPos)s Отойдите!</Variant>
+          <Variant>Чемодан по %(name)s на (%(vehicle)s) ушел, ждите!</Variant>
+		  <Variant>Свожусь на квадрат %(viewPos)s, нужно время для атаки</Variant>
+		  <Variant>Навожусь на цель в квадрате %(viewPos)s, наводчик пьян, результат не гарантирую</Variant>
+		  <Variant>Вижу цель в квадрате %(viewPos)s, готовлю чемодан</Variant>
+        </Variants>
+        <Ping>%(viewPos)s</Ping>
+        <Hotkey>KEY_T</Hotkey>
+      </Command>
+      <Command>
+        <Title>Никак нет!</Title>
+        <Icon>No</Icon>
+        <!--<Command>NEGATIVE</Command>-->
+        <Text>%(randpart)s </Text>
+        <ChatMode>Team</ChatMode>
+        <Ping>%(viewPos)s</Ping>
+        <Variants>
+          <Variant>Не могу достать %(name)s (%(vehicle)s) он за укрытием!</Variant>
+          <Variant>Не достаю (%(vehicle)s), он не на линии огня!</Variant>
+        </Variants>
+        <Hotkey>KEY_F6</Hotkey>
+      </Command>
+    </EnemyCommands>
+  </SPGMenu>
+  <TankSpecificCommands>
+  </TankSpecificCommands>
+<!--Дополнительное меню команд на LALT+Z.-->
+  <MapCommands>
+    <Map_Default>
+      <Command>
+		<Title>Сбейте захват!</Title>
+		<Icon>Helpme</Icon>
+		<Text>%(randpart)s</Text>
+		<Variants>
+			<Variant>БРОтюни, пора домой! Пахнет поражением! Сбивайте захват!</Variant>
+			<Variant>Господа, нужно уже сейчас возвращаться на сбитие захвата! Пахнет поражением!</Variant>
+			<Variant>GO подымать КПД сбитем захвата!</Variant>
+			<Variant>Нужно срочно вернуться на базу! Не собьем захват - будет слив!</Variant>
+		</Variants>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+		<Title>Не бери!</Title>
+		<Icon>Backtobase</Icon>
+		<Text>%(randpart)s</Text>
+		<Variants>
+			<Variant>Никакой пощады супостатам! Всех в ангар!</Variant>
+			<Variant>Давайте добьем! Опыта дадут больше! Инфа 146 процентов!</Variant>
+			<Variant>Очки захвата базы это хорошо, но за фраги и дамаг дают больше! GO добивать!;)</Variant>
+		</Variants>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+        <Title>Арта прикрой!</Title>
+        <Icon>Support</Icon>
+        <Command></Command>
+        <Text>Арта прикрой!</Text>
+        <ChatMode>Team</ChatMode>
+        <Ping>%(ownPos)s</Ping>
+      </Command>
+      <Command>
+        <Title>Я за артой!</Title>
+        <Icon>Attack</Icon>
+        <Command></Command>
+        <Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+        <ChatMode>Team</ChatMode>
+        <Ping>%(ownPos)s</Ping>
+      </Command>
+      <Command>
+        <Title>Помогите на центре!</Title>
+        <Icon>Helpme</Icon>
+        <Command></Command>
+        <Text>Помогите на центре!</Text>
+        <ChatMode>Team</ChatMode>
+      </Command>
+      <Command>
+        <Title>Переверните меня!</Title>
+        <Icon>Helpme</Icon>
+        <Command></Command>
+        <Text>%(randpart)s</Text>
+		<Variants>
+			<Variant>Ребята! Я перевернулся :( Помогите встать на гусли в %(ownPos)s!</Variant>
+			<Variant>Помогите! Пожалуйста, помогите! Я перевернулся в квадрате %(ownPos)s</Variant>
+		</Variants>
+		<Ping>%(ownPos)s</Ping>
+        <ChatMode>Team</ChatMode>
+      </Command>
+    </Map_Default>
+  </MapCommands>
+<!-- Эти команды можно вызвать только по привязанному к ним сочетанию кнопок
+ Первые 6 дублируются так как привязка к ромашке номер 2-->
+  <HotkeyOnlyCommands>
+    <Command>
+      <Title>На захват!</Title>
+      <Icon>Backtobase</Icon>
+      <!--<Command>BACKTOBASE</Command>-->
+      <Text>Все кто рядом, встаем на захват!</Text>
+      <ChatMode>Team</ChatMode>
+      <Ping>%(ownPos)s</Ping>
+      <Hotkey>KEY_LALT+KEY_1</Hotkey>
+    </Command>
+    <Command>
+      <Title>OK!</Title>
+      <Icon>Yes</Icon>
+      <!--<Command>POSITIVE</Command>-->
+      <Text>%(name)s (%(vehicle)s) %(viewPos)s %(randpart)s!</Text>
+      <ChatMode>All</ChatMode>
+      <Variants>
+        <Variant>, Я смотрю, тебе башню снесло.</Variant>
+        <Variant>, Что-то ты побледнел.</Variant>
+        <Variant>, Ну, вот и всё, а ты боялась, только гуселька помялась.</Variant>
+        <Variant>, Тебе очень идет белый цвет.</Variant>
+        <Variant>, Эка тебя расплющило!</Variant>
+        <Variant>, Ну, что, бедолага, опять в ангар?</Variant>
+		<Variant>, тебе ангар звонит! Возьми трубку!</Variant>
+		<Variant>, давай до свидания!</Variant>
+		<Variant>, везет же тебе! Отмучился!</Variant>
+		<Variant>, тебя в другом бою заждались!</Variant>
+		<Variant>, это попандос!</Variant>
+		<Variant>, it is a good day to die!</Variant>
+		<Variant>, счастливого пути!</Variant>
+		<Variant>, hasta la vista, baby!</Variant>
+		<Variant>, жаль, что уходишь в такой интересный момент!</Variant>
+		<Variant>, я думаю пришло время посмотреть на бой из танка союзника!</Variant>
+		<Variant>, не шевелись, сейчас всё закончится!</Variant>
+		<Variant>, вам мат, товарищ гроссмейстер!</Variant>
+      </Variants>
+      <Ping>%(viewPos)s</Ping>
+      <Hotkey>KEY_LALT+KEY_2</Hotkey>
+    </Command>
+    <Command>
+      <Title>Приветствие</Title>
+      <Icon>Yes</Icon>
+      <!--<Command>POSITIVE</Command>-->
+      <Text>%(randpart)s</Text>
+      <ChatMode>Team</ChatMode>
+      <Variants>
+        <Variant>Погасить светляка - твоя первейшая задача. Сделай упреждение и отправь малыша в небытие.</Variant>
+        <Variant>Мертвый противник - наш лучший союзник. Так увеличим число наших союзников до тридцати!</Variant>
+        <Variant>Сегодня враг услышит крит своих модулей. И да пребудет с нами перк нагиба.</Variant>
+        <Variant>Воздадим должное врагу нашему, и да упокоятся башни его в пункте приема металлолома.</Variant>
+        <Variant>Ты туда не ходи — ты сюда ходи. А то чемодан башня прилетит — совсем мёртвый будешь.</Variant>
+        <Variant>Как говорил один литературный герой из моего далёкого детства: "Мы принимаем бой".</Variant>
+      </Variants>
+      <NoRandomChoice>1</NoRandomChoice>
+      <Hotkey>KEY_LALT+KEY_3</Hotkey>
+    </Command>
+    <Command>
+      <Title>Из кустов</Title>
+      <Icon>Support</Icon>
+      <Text>%(randpart)s</Text>
+      <ChatMode>All</ChatMode>
+      <Variants>
+        <Variant>Свечуууууу!</Variant>
+        <Variant>Высоко сижу, далеко гляжу!</Variant>
+        <Variant>Всевидящее око наблюдает за вами!</Variant>
+        <Variant>Хрен вы меня найдете!</Variant>
+      </Variants>
+      <Hotkey>KEY_LALT+KEY_4</Hotkey>
+    </Command>
+  </HotkeyOnlyCommands>
+</RadialMenu.xml>

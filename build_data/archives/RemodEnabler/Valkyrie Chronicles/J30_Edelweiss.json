@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/Valkyrie Chronicles/J30_Edelweiss.json": "res/configs/PYmods/RemodEnabler/remods/Valkyrie Chronicles/J30_Edelweiss.json",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/Valkyrie Chronicles/J30_Edelweiss.wotmod": "build/wotmods/RemodEnabler_remods/Valkyrie Chronicles/J30_Edelweiss.wotmod"
+    }
+}

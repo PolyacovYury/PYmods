@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/camouflages/TopTier/settings.json": "res/configs/PYmods/CamoSelector/camouflages/TopTier/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/TopTier/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/TopTier/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/TopTier/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/TopTier/texture.dds"
+    }
+}

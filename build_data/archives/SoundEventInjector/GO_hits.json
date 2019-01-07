@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_hits.json": "res/configs/PYmods/SoundEventInjector/configs/GO_hits.json",
+        "mods/configs/PYmods/SoundEventInjector/configs/GO_surface_hits.json": "res/configs/PYmods/SoundEventInjector/configs/GO_surface_hits.json",
+        "mods/{GAME_VERSION}/GO/GO_hits.wotmod": "build/wotmods/GO/GO_hits.wotmod"
+    }
+}

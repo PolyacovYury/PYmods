@@ -1,0 +1,4 @@
+#!/bin/bash
+python source/scripts/mtimestore.py -r
+#git update-index --refresh #causes some problems under windows tortoise git
+

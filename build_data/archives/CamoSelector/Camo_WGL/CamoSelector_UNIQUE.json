@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/camouflages/UNIQUE/settings.json": "res/configs/PYmods/CamoSelector/camouflages/UNIQUE/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/UNIQUE/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/UNIQUE/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/UNIQUE/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/UNIQUE/texture.dds"
+    }
+}

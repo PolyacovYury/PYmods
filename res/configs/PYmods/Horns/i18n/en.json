@@ -1,0 +1,19 @@
+﻿{
+    "UI_description": "Horns",
+    "UI_setting_chatEnable_text": "Enable chat writing module",
+    "UI_setting_chatEnable_tooltip": "If toggled on, pressing a hotkey causes the mod to send a message in chat.\n<b>Current message variants:</b>\nWhen an ally tank is a target:\n%(ally)s\nWhen an enemy tank is a target:\n%(enemy)s\nWhen no tank is a target:\n%(default)s",
+    "UI_setting_chatEnable_tooltip_empty": " • No text will be sent.",
+    "UI_setting_event_text": "Number of horn sound",
+    "UI_setting_event_tooltip": "This setting changes the number of horn sound event.\n\nThe playback button simulates the hotkey being pressed for 3 seconds.",
+    "UI_setting_hotkey_text": "Horn activation hotkey",
+    "UI_setting_hotkey_tooltip": "Pressing this button in-battle plays a horn sound.",
+    "allyText": [
+        "{name}, what are you doing, man?"
+    ],
+    "defaultText": [
+        "Hello everyone!"
+    ],
+    "enemyText": [
+        "{name}, ahoy!"
+    ]
+}

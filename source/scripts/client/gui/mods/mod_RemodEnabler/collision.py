@@ -22,15 +22,15 @@ def clearCollision(self):
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, 'refresh')
-def new_refresh(base, self, *args):
+def new_refresh(base, self, *args, **kwargs):
     clearCollision(self)
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, 'recreate')
-def new_recreate(base, self, *args):
+def new_recreate(base, self, *args, **kwargs):
     clearCollision(self)
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
 @PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__setupModel')
@@ -38,7 +38,7 @@ def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     if not g_config.data['enabled']:
         return
-    if any((g_config.collisionEnabled, g_config.collisionComparisonEnabled)):
+    if g_config.collisionMode:
         vEntity = self._HangarVehicleAppearance__vEntity
         vDesc = self._HangarVehicleAppearance__vDesc
         compoundModel = vEntity.model
@@ -90,7 +90,7 @@ def new_setupModel(base, self, buildIdx):
                     pass
             moduleDict['model'].visible = True
         addCollisionGUI(self)
-    if g_config.collisionEnabled:
+    if g_config.collisionMode == 1:
         for moduleName in TankPartNames.ALL:
             # noinspection PyUnboundLocalVariable
             if compoundModel.node(moduleName) is not None:

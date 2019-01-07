@@ -1,0 +1,420 @@
+{
+    "shot_effects": {
+        "mediumArmorPiercing": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_medium_ground",
+                "impactPC_NPC": "explosion_medium_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_medium_sand",
+                "impactPC_NPC": "explosion_medium_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_medium_snow",
+                "impactPC_NPC": "explosion_medium_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_medium_wood",
+                "impactPC_NPC": "explosion_medium_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_medium_stone",
+                "impactPC_NPC": "explosion_medium_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_medium_metal",
+                "impactPC_NPC": "explosion_medium_metal"
+            }
+        },
+        "mediumHighExplosive": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_medium_ground",
+                "impactPC_NPC": "explosion_medium_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_medium_sand",
+                "impactPC_NPC": "explosion_medium_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_medium_snow",
+                "impactPC_NPC": "explosion_medium_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_medium_wood",
+                "impactPC_NPC": "explosion_medium_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_medium_stone",
+                "impactPC_NPC": "explosion_medium_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_medium_metal",
+                "impactPC_NPC": "explosion_medium_metal"
+            }
+        },
+        "mediumHollowCharge": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_medium_ground",
+                "impactPC_NPC": "explosion_medium_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_medium_sand",
+                "impactPC_NPC": "explosion_medium_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_medium_snow",
+                "impactPC_NPC": "explosion_medium_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_medium_wood",
+                "impactPC_NPC": "explosion_medium_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_medium_stone",
+                "impactPC_NPC": "explosion_medium_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_medium_metal",
+                "impactPC_NPC": "explosion_medium_metal"
+            }
+        },
+        "mediumAPCR": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_medium_ground",
+                "impactPC_NPC": "explosion_medium_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_medium_sand",
+                "impactPC_NPC": "explosion_medium_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_medium_snow",
+                "impactPC_NPC": "explosion_medium_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_medium_wood",
+                "impactPC_NPC": "explosion_medium_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_medium_stone",
+                "impactPC_NPC": "explosion_medium_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_medium_metal",
+                "impactPC_NPC": "explosion_medium_metal"
+            }
+        },
+        "mainArmorPiercing": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_main_ground",
+                "impactPC_NPC": "explosion_main_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_main_sand",
+                "impactPC_NPC": "explosion_main_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_main_snow",
+                "impactPC_NPC": "explosion_main_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_main_wood",
+                "impactPC_NPC": "explosion_main_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_main_stone",
+                "impactPC_NPC": "explosion_main_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_main_metal",
+                "impactPC_NPC": "explosion_main_metal"
+            }
+        },
+        "mainHighExplosive": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_main_ground",
+                "impactPC_NPC": "explosion_main_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_main_sand",
+                "impactPC_NPC": "explosion_main_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_main_snow",
+                "impactPC_NPC": "explosion_main_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_main_wood",
+                "impactPC_NPC": "explosion_main_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_main_stone",
+                "impactPC_NPC": "explosion_main_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_main_metal",
+                "impactPC_NPC": "explosion_main_metal"
+            }
+        },
+        "mainHollowCharge": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_main_ground",
+                "impactPC_NPC": "explosion_main_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_main_sand",
+                "impactPC_NPC": "explosion_main_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_main_snow",
+                "impactPC_NPC": "explosion_main_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_main_wood",
+                "impactPC_NPC": "explosion_main_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_main_stone",
+                "impactPC_NPC": "explosion_main_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_main_metal",
+                "impactPC_NPC": "explosion_main_metal"
+            }
+        },
+        "mainAPCR": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_main_ground",
+                "impactPC_NPC": "explosion_main_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_main_sand",
+                "impactPC_NPC": "explosion_main_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_main_snow",
+                "impactPC_NPC": "explosion_main_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_main_wood",
+                "impactPC_NPC": "explosion_main_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_main_stone",
+                "impactPC_NPC": "explosion_main_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_main_metal",
+                "impactPC_NPC": "explosion_main_metal"
+            }
+        },
+        "largeArmorPiercing": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_large_ground",
+                "impactPC_NPC": "explosion_large_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_large_sand",
+                "impactPC_NPC": "explosion_large_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_large_snow",
+                "impactPC_NPC": "explosion_large_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_large_wood",
+                "impactPC_NPC": "explosion_large_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_large_stone",
+                "impactPC_NPC": "explosion_large_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_large_metal",
+                "impactPC_NPC": "explosion_large_metal"
+            }
+        },
+        "largeHighExplosive": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_large_ground",
+                "impactPC_NPC": "explosion_large_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_large_sand",
+                "impactPC_NPC": "explosion_large_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_large_snow",
+                "impactPC_NPC": "explosion_large_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_large_wood",
+                "impactPC_NPC": "explosion_large_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_large_stone",
+                "impactPC_NPC": "explosion_large_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_large_metal",
+                "impactPC_NPC": "explosion_large_metal"
+            }
+        },
+        "largeHollowCharge": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_large_ground",
+                "impactPC_NPC": "explosion_large_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_large_sand",
+                "impactPC_NPC": "explosion_large_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_large_snow",
+                "impactPC_NPC": "explosion_large_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_large_wood",
+                "impactPC_NPC": "explosion_large_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_large_stone",
+                "impactPC_NPC": "explosion_large_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_large_metal",
+                "impactPC_NPC": "explosion_large_metal"
+            }
+        },
+        "largeAPCR": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_large_ground",
+                "impactPC_NPC": "explosion_large_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_large_sand",
+                "impactPC_NPC": "explosion_large_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_large_snow",
+                "impactPC_NPC": "explosion_large_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_large_wood",
+                "impactPC_NPC": "explosion_large_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_large_stone",
+                "impactPC_NPC": "explosion_large_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_large_metal",
+                "impactPC_NPC": "explosion_large_metal"
+            }
+        },
+        "hugeArmorPiercing": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_huge_ground",
+                "impactPC_NPC": "explosion_huge_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_huge_sand",
+                "impactPC_NPC": "explosion_huge_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_huge_snow",
+                "impactPC_NPC": "explosion_huge_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_huge_wood",
+                "impactPC_NPC": "explosion_huge_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_huge_stone",
+                "impactPC_NPC": "explosion_huge_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_huge_metal",
+                "impactPC_NPC": "explosion_huge_metal"
+            }
+        },
+        "hugeHighExplosive": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_huge_ground",
+                "impactPC_NPC": "explosion_huge_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_huge_sand",
+                "impactPC_NPC": "explosion_huge_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_huge_snow",
+                "impactPC_NPC": "explosion_huge_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_huge_wood",
+                "impactPC_NPC": "explosion_huge_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_huge_stone",
+                "impactPC_NPC": "explosion_huge_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_huge_metal",
+                "impactPC_NPC": "explosion_huge_metal"
+            }
+        },
+        "hugeHollowCharge": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_huge_ground",
+                "impactPC_NPC": "explosion_huge_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_huge_sand",
+                "impactPC_NPC": "explosion_huge_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_huge_snow",
+                "impactPC_NPC": "explosion_huge_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_huge_wood",
+                "impactPC_NPC": "explosion_huge_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_huge_stone",
+                "impactPC_NPC": "explosion_huge_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_huge_metal",
+                "impactPC_NPC": "explosion_huge_metal"
+            }
+        },
+        "hugeAPCR": {
+            "groundHit": {
+                "impactNPC_NPC": "explosion_huge_ground",
+                "impactPC_NPC": "explosion_huge_ground"
+            },
+            "sandHit": {
+                "impactNPC_NPC": "explosion_huge_sand",
+                "impactPC_NPC": "explosion_huge_sand"
+            },
+            "snowHit": {
+                "impactNPC_NPC": "explosion_huge_snow",
+                "impactPC_NPC": "explosion_huge_snow"
+            },
+            "woodHit": {
+                "impactNPC_NPC": "explosion_huge_wood",
+                "impactPC_NPC": "explosion_huge_wood"
+            },
+            "stoneHit": {
+                "impactNPC_NPC": "explosion_huge_stone",
+                "impactPC_NPC": "explosion_huge_stone"
+            },
+            "metalHit": {
+                "impactNPC_NPC": "explosion_huge_metal",
+                "impactPC_NPC": "explosion_huge_metal"
+            }
+        }
+    }
+}

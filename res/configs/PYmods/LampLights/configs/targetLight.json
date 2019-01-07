@@ -1,0 +1,201 @@
+﻿{
+//  Задействовать данный конфиг
+    "enable" : true,
+//  Информация о конфиге
+    "meta" : {
+        "en" : {
+            "name" : "<b>Beams that light up your current target</b>",
+            "desc" : "{attachTo} • Idea from: Delysid"
+        },
+        "ru" : {
+            "name" : "<b>Лучи, светящие на танк в прицеле</b>",
+            "desc" : "{attachTo} • Идея: Delysid"
+        }
+    },
+    "targetLight1" : {
+//      Отображение данного источника
+        "visible" : true,
+//      Тип источника: omniLight, spotLight, model
+        "type" : "spotLight",
+//      Место расположения: leftFront, rightFront, leftRear, rightRear, wheels_left, wheels_right, turret, hull
+        "place" : "hull",
+//      Режим работы: constant, stop, turn_left, turn_right, back, target
+        "mode" : "target",
+//      Яркость
+        "bright" : 150,
+//      Вращения осей координат в радианах Y X Z:
+//      вращение вектора без смещения координат
+        "preRotate" : [0.0, 1.5707, 0.0],
+//      вращение системы координат
+        "postRotate" : [0.0, -0.7854, 0.0],
+//      Сдвиги по осям координат (вправо/вверх/вперед)
+        "vect" : [0.0, 9.0, 0.0],
+//      Внутренний радиус
+        "innerRadius" : 3,
+//      Внешний радиус
+        "outerRadius" : 60,
+//      Угол между образующей и осью конуса в радианах
+        "ca" : 0.43,
+//      Отбрасывание теней
+        "cs" : true,
+//      Время анимации цвета источника
+        "dur" : 1.0,
+//      Кадры анимации цвета источника
+        "colour" : [255, 255, 127.5, 0]
+    },
+    "targetLight2" : {
+//      Отображение данного источника
+        "visible" : true,
+//      Тип источника: omniLight, spotLight, model
+        "type" : "spotLight",
+//      Место расположения: leftFront, rightFront, leftRear, rightRear, wheels_left, wheels_right, turret, hull
+        "place" : "hull",
+//      Режим работы: constant, stop, turn_left, turn_right, back, target
+        "mode" : "target",
+//      Яркость
+        "bright" : 150,
+//      Вращения осей координат в радианах Y X Z:
+//      вращение вектора без смещения координат
+        "preRotate" : [0.0, 1.5707, 0.0],
+//      вращение системы координат
+        "postRotate" : [1.0472, -0.7854, 0.0],
+//      Сдвиги по осям координат (вправо/вверх/вперед)
+        "vect" : [0.0, 9.0, 0.0],
+//      Внутренний радиус
+        "innerRadius" : 3,
+//      Внешний радиус
+        "outerRadius" : 60,
+//      Угол между образующей и осью конуса в радианах
+        "ca" : 0.43,
+//      Отбрасывание теней
+        "cs" : true,
+//      Время анимации цвета источника
+        "dur" : 1.0,
+//      Кадры анимации цвета источника
+        "colour" : [255, 255, 127.5, 0]
+    },
+    "targetLight3" : {
+//      Отображение данного источника
+        "visible" : true,
+//      Тип источника: omniLight, spotLight, model
+        "type" : "spotLight",
+//      Место расположения: leftFront, rightFront, leftRear, rightRear, wheels_left, wheels_right, turret, hull
+        "place" : "hull",
+//      Режим работы: constant, stop, turn_left, turn_right, back, target
+        "mode" : "target",
+//      Яркость
+        "bright" : 150,
+//      Вращения осей координат в радианах Y X Z:
+//      вращение вектора без смещения координат
+        "preRotate" : [0.0, 1.5707, 0.0],
+//      вращение системы координат
+        "postRotate" : [-1.0472, -0.7854, 0.0],
+//      Сдвиги по осям координат (вправо/вверх/вперед)
+        "vect" : [0.0, 9.0, 0.0],
+//      Внутренний радиус
+        "innerRadius" : 3,
+//      Внешний радиус
+        "outerRadius" : 60,
+//      Угол между образующей и осью конуса в радианах
+        "ca" : 0.43,
+//      Отбрасывание теней
+        "cs" : true,
+//      Время анимации цвета источника
+        "dur" : 1.0,
+//      Кадры анимации цвета источника
+        "colour" : [255, 255, 127.5, 0]
+    },
+    "targetLight4" : {
+//      Отображение данного источника
+        "visible" : true,
+//      Тип источника: omniLight, spotLight, model
+        "type" : "spotLight",
+//      Место расположения: leftFront, rightFront, leftRear, rightRear, wheels_left, wheels_right, turret, hull
+        "place" : "hull",
+//      Режим работы: constant, stop, turn_left, turn_right, back, target
+        "mode" : "target",
+//      Яркость
+        "bright" : 150,
+//      Вращения осей координат в радианах Y X Z:
+//      вращение вектора без смещения координат
+        "preRotate" : [0.0, 1.5707, 0.0],
+//      вращение системы координат
+        "postRotate" : [2.0944, -0.7854, 0.0],
+//      Сдвиги по осям координат (вправо/вверх/вперед)
+        "vect" : [0.0, 9.0, 0.0],
+//      Внутренний радиус
+        "innerRadius" : 3,
+//      Внешний радиус
+        "outerRadius" : 60,
+//      Угол между образующей и осью конуса в радианах
+        "ca" : 0.43,
+//      Отбрасывание теней
+        "cs" : true,
+//      Время анимации цвета источника
+        "dur" : 1.0,
+//      Кадры анимации цвета источника
+        "colour" : [255, 255, 127.5, 0]
+    },
+        "targetLight5" : {
+//      Отображение данного источника
+        "visible" : true,
+//      Тип источника: omniLight, spotLight, model
+        "type" : "spotLight",
+//      Место расположения: leftFront, rightFront, leftRear, rightRear, wheels_left, wheels_right, turret, hull
+        "place" : "hull",
+//      Режим работы: constant, stop, turn_left, turn_right, back, target
+        "mode" : "target",
+//      Яркость
+        "bright" : 150,
+//      Вращения осей координат в радианах Y X Z:
+//      вращение вектора без смещения координат
+        "preRotate" : [0.0, 1.5707, 0.0],
+//      вращение системы координат
+        "postRotate" : [-2.0944, -0.7854, 0.0],
+//      Сдвиги по осям координат (вправо/вверх/вперед)
+        "vect" : [0.0, 9.0, 0.0],
+//      Внутренний радиус
+        "innerRadius" : 3,
+//      Внешний радиус
+        "outerRadius" : 60,
+//      Угол между образующей и осью конуса в радианах
+        "ca" : 0.43,
+//      Отбрасывание теней
+        "cs" : true,
+//      Время анимации цвета источника
+        "dur" : 1.0,
+//      Кадры анимации цвета источника
+        "colour" : [255, 255, 127.5, 0]
+    },
+        "targetLight6" : {
+//      Отображение данного источника
+        "visible" : true,
+//      Тип источника: omniLight, spotLight, model
+        "type" : "spotLight",
+//      Место расположения: leftFront, rightFront, leftRear, rightRear, wheels_left, wheels_right, turret, hull
+        "place" : "hull",
+//      Режим работы: constant, stop, turn_left, turn_right, back, target
+        "mode" : "target",
+//      Яркость
+        "bright" : 150,
+//      Вращения осей координат в радианах Y X Z:
+//      вращение вектора без смещения координат
+        "preRotate" : [0.0, 1.5707, 0.0],
+//      вращение системы координат
+        "postRotate" : [3.1415, -0.7854, 0.0],
+//      Сдвиги по осям координат (вправо/вверх/вперед)
+        "vect" : [0.0, 9.0, 0.0],
+//      Внутренний радиус
+        "innerRadius" : 3,
+//      Внешний радиус
+        "outerRadius" : 60,
+//      Угол между образующей и осью конуса в радианах
+        "ca" : 0.43,
+//      Отбрасывание теней
+        "cs" : true,
+//      Время анимации цвета источника
+        "dur" : 1.0,
+//      Кадры анимации цвета источника
+        "colour" : [255, 255, 127.5, 0]
+    }
+}

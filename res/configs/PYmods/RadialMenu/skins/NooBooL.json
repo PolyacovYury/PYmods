@@ -1,0 +1,81 @@
+﻿{"meta": "Конфиг от NooBooL",
+							
+	"TankMenu": {
+		"default": [
+			{"title": "Вернитесь", "icon": "Backtobase", "command": "BACKTOBASE", "text": "Вернитесь на защиту базы!", "chatMode": "Team"},
+			{"title": "Нужен свет", "icon": "Yes", "command": "POSITIVE", "text": "Подсветите квадрат {viewPos}", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Перезаряжаюсь", "icon": "Reload", "command": "RELOADINGGUN", "chatMode": "Team", "hotKey": ["KEY_C"]},
+			{"title": "Помогите", "icon": "Helpme", "command": "HELPME", "text": "Нужна помощь в квадрате {ownPos}", "chatMode": "Team", "ping": "{ownPos}"},
+			{"title": "Свечу", "icon": "Followme", "command": "FOLLOWME", "text": "Свечу! Поддержите!", "chatMode": "Team", "ping": "{ownPos}"},
+			{"title": "В атаку", "icon": "Support", "command": "SUPPORTMEWITHFIRE", "text": "Атакую, поддержите меня", "chatMode": "Team"}],
+		"ally": [
+			{"title": "Вперёд", "icon": "Followme", "command": "FOLLOWME", "text": "{name}, вперёд", "chatMode": "Team"},
+			{"title": "Стой", "icon": "Stop", "command": "STOP", "text": "{name}, стой, остановись", "chatMode": "Team"},
+			{"title": "Из прицела", "icon": "Turnback", "command": "TURNBACK", "text": "{name}, мешаешь! Уйди из прицела!!!", "chatMode": "Team"},
+			{"title": "Спрячься", "icon": "No", "command": "NEGATIVE", "text": "{name}, убьют, прижмись к укрытию!", "chatMode": "Team"},
+			{"title": "Олень", "icon": "Yes", "command": "POSITIVE", "text": "{name}, тупой олень!!!", "chatMode": "Team"},
+			{"title": "Назад", "icon": "Backtobase", "command": "BACKTOBASE", "text": "{name}, вернись назад", "chatMode": "Team"}],
+		"enemy": [
+			{"title": "Я под огнём", "icon": "Turnback", "command": "TURNBACK", "text": "{vehicle} сводиться на меня", "chatMode": "Team", "ping": "{ownPos}"},
+			{"title": "Загуслил", "icon": "Attack", "command": "ATTACK", "text": "{vehicle}, стоит на гусле", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Перезаряжаюсь", "icon": "Reload", "command": "RELOADINGGUN", "text": "Перезаряжаюсь ещё {reload} сек. Светите {vehicle}", "chatMode": "Team", "ping": "{ownPos}"},
+			{"title": "Помогите", "icon": "Helpme", "command": "HELPME", "text": "HELP!!! Уничтожьте {vehicle}", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Выманить", "icon": "Yes", "command": "POSITIVE", "text": "Выманивайте {vehicle} под артилерию", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "А этот мой", "icon": "Support", "command": "SUPPORTMEWITHFIRE", "text": "Свёлся на {vehicle}, добью гада", "chatMode": "Team", "ping": "{viewPos}"}]
+	},
+	"lightTankMenu": {
+		"default": [
+			{"title": "Поддержите", "icon": "AttackSPG", "command": "HELPME", "text": "Арта, поддержи в квадрате {viewPos}, дам засвет", "chatMode": "Team"},
+			{"title": "Сваливаю", "icon": "Turnback", "command": "TURNBACK", "text": "Я сваливаю, тут слишком жарко", "chatMode": "Team"},
+			{"title": "Перезаряжаюсь", "icon": "Reload", "command": "RELOADINGGUN", "chatMode": "Team", "hotKey": ["KEY_C"]},
+			{"title": "За мной хвост!", "icon": "Helpme", "command": "HELPME", "text": "Помогите, за мной хвост! Прикройте!", "chatMode": "Team"},
+			{"title": "Свечу", "icon": "Followme", "command": "FOLLOWME", "text": "Свечу! Поддержите!", "chatMode": "Team", "ping": "{ownPos}"},
+			{"title": "Вернусь", "icon": "Backtobase", "command": "BACKTOBASE", "text": "Вернусь на защиту базы!", "chatMode": "Team"}],
+		"ally": [
+			{"title": "Прикрой", "icon": "Helpme", "command": "HELPME", "text": "{name}, прикрой!", "chatMode": "Team"},
+			{"title": "Стой", "icon": "Stop", "command": "STOP", "text": "{name}, стой, остановись", "chatMode": "Team"},
+			{"title": "Назад", "icon": "Backtobase", "command": "BACKTOBASE", "text": "{name}, вернись назад", "chatMode": "Team"},
+			{"title": "Помогите ему", "icon": "Support", "command": "SUPPORTMEWITHFIRE", "text": "Помогите {vehicle} в квадрате {viewPos}", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Олень", "icon": "Yes", "command": "POSITIVE", "text": "{name}, тупой олень!!!", "chatMode": "Team"},
+			{"title": "Поддержи", "icon": "Turnback", "command": "HELPME", "text": "{name}, поддержи, поехали со мной", "chatMode": "Team"}],
+		"enemy": [
+			{"title": "Убейте", "icon": "Support", "command": "SUPPORTMEWITHFIRE", "text": "Убейте {vehicle}, срочно", "chatMode": "Team"},
+			{"title": "Рвется к арте", "icon": "Backtobase", "command": "BACKTOBASE", "text": "{vehicle}, прорывается к арте", "chatMode": "Team"},
+			{"title": "Приоритетная цель", "icon": "Attack", "command": "ATTACK", "text": "{vehicle} - первая цель, самый опасный", "chatMode": "Team"},
+			{"title": "Помогите", "icon": "Helpme", "command": "HELPME", "text": "HELP!!! Уничтожьте {vehicle}", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Загуслил", "icon": "Attack", "command": "ATTACK", "text": "{vehicle}, стоит на гусле", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "А этот мой", "icon": "Support", "command": "SUPPORTMEWITHFIRE", "text": "Оставьте плиз {vehicle} мне", "chatMode": "Team"}]
+	},
+	"SPGMenu": {
+		"default": [
+			{"title": "Меняю позицию", "icon": "Turnback", "command": "TURNBACK", "text": "Меняю позицию", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Нужен свет", "icon": "Yes", "command": "HELPME", "text": "Подсветите квадрат {viewPos}", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Перезаряжаюсь!", "icon": "Reload", "command": "RELOADINGGUN", "chatMode": "Team", "hotKey": ["KEY_C"]},
+			{"title": "Свожусь", "icon": "AttackSPG", "command": "ATTACKENEMY", "text": "Свожусь в квадрат {viewPos}", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Помогите", "icon": "Helpme", "command": "HELPME", "text": "Помогите плиз, сам не справлюсь!", "chatMode": "Team", "ping": "{ownPos}"},
+			{"title": "В атаку", "icon": "AttackSPG", "command": "ATTACKENEMY", "text": "В атаку! Я прекрываю", "chatMode": "Team", "ping": "{viewPos}"}],
+		"ally": [
+			{"title": "На захват", "icon": "Attack", "command": "ATTACK", "text": "{name}, едь на захват", "chatMode": "Team"},
+			{"title": "Назад! Атакую!", "icon": "Turnback", "command": "TURNBACK", "text": "{name}, отойди назад! Атакую!!!", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Выманить", "icon": "Yes", "command": "POSITIVE", "text": "{name}, выманивай под арту! Я свёлся!", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Прикрой", "icon": "No", "command": "NEGATIVE", "text": "{name}, прикрой меня", "chatMode": "Team"},
+			{"title": "Стой!", "icon": "Stop", "command": "STOP", "text": "{name}, не лезь, просто свети, живи", "chatMode": "Team"},
+			{"title": "Вернись на базу", "icon": "Backtobase", "command": "BACKTOBASE", "text": "{name}, вернись на базу, помоги", "chatMode": "Team"}],
+		"enemy": [
+			{"title": "Сбейте гусеницу", "icon": "Stop", "command": "STOP", "text": "Сбейте гусеницу {vehicle}", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Атакую", "icon": "Attack", "command": "ATTACKENEMY", "text": "Атакую {vehicle} Не лезьте под снаряд!!!", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Перезаряжаюсь", "icon": "AttackSPG", "command": "ATTACKENEMY", "text": "Светите {vehicle}, атакую через {reload} сек.", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Цель недоступна", "icon": "No", "command": "NEGATIVE", "text": "{vehicle} спрятался, не могу попасть", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Выманить", "icon": "Stop", "command": "STOP", "text": "Надо выманить {vehicle} под АРТУ", "chatMode": "Team", "ping": "{viewPos}"},
+			{"title": "Опасность", "icon": "Helpme", "command": "HELPME", "text": "{vehicle}, сейчас меня уничтожит", "chatMode": "Team", "ping": "{viewPos}"}]
+	},
+	"Map_default": {
+		"default": [
+			{"title": "Прикрывай атакую", "icon": "Followme", "text": "Прикрывайте! Атакую!", "chatMode": "Team"},
+			{"title": "Спам", "icon": "No", "text": "Хорош флудить! Играйте!", "chatMode": "Team"},
+			{"title": "Стадо", "icon": "Stop", "text": "Эээй! Стадо! Смотрите на карту!!!", "chatMode": "Team"},
+			{"title": "Сдавайся", "icon": "Attack", "text": "{name},сдавайся, и будешь жить))", "chatMode": "Team"},
+			{"title": "Ебашу в кашу", "icon": "Turnback", "text": "Ебашу в кашу =)", "chatMode": "Team"},
+			{"title": "Атакуй прикрываю", "icon": "Backtobase", "text": "Атакуйте! Прикрываю!", "chatMode": "Team"}]
+	}
+}

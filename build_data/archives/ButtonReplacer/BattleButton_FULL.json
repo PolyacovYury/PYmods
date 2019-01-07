@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/ButtonReplacer/configs/BattleButton_FULL.json": "res/configs/PYmods/ButtonReplacer/configs/BattleButton_FULL.json"
+    }
+}

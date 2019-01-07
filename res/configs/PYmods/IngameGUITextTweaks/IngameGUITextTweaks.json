@@ -1,0 +1,8 @@
+﻿{
+//  Глобальный переключатель.
+    "enabled": true,
+//  Удалять никнеймы. Реквест от LESHIY_ODESSA. Умный режим добавлен по запросу от Kaeptn.
+    "removeNicknames": 0,
+//  Формат иконки класса. Реквест от angelsoft
+    "iconFormat": "<img src='img://gui/maps/icons/vehicleTypes/%(colour)s/%(classTag)s.png' width='17' height='21' vspace='-5'/>"
+}

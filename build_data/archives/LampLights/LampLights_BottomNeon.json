@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/LampLights/configs/bottomNeon.json": "res/configs/PYmods/LampLights/configs/bottomNeon.json"
+    }
+}
