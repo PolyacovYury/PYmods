@@ -136,9 +136,9 @@ class ConfigInterface(PYmodsConfigInterface):
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createHotKey('ChangeViewHotkey'),
-                            self.tb.createControl('isDebug')],
+                            self.tb.createHotKey('CollisionHotkey')],
                 'column2': [self.tb.createHotKey('SwitchRemodHotkey'),
-                            self.tb.createHotKey('CollisionHotkey')]}
+                            self.tb.createControl('isDebug')]}
 
     def onMSADestroy(self):
         refreshCurrentVehicle()

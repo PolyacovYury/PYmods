@@ -106,9 +106,9 @@ class ConfigInterface(PYmodsConfigInterface):
         template = {'modDisplayName': self.i18n['UI_description'],
                     'settingsVersion': 200,
                     'enabled': self.data['enabled'],
-                    'column1': [self.tb.createControl('isDebug')],
-                    'column2': [self.tb.createHotKey('DynamicSkinHotkey'),
-                                self.tb.createHotKey('ChangeViewHotkey')]}
+                    'column1': [self.tb.createHotKey('DynamicSkinHotkey')],
+                    'column2': [self.tb.createHotKey('ChangeViewHotkey'),
+                                self.tb.createControl('isDebug')]}
         return template
 
     def onMSADestroy(self):
