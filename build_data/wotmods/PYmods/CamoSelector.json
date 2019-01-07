@@ -1,0 +1,21 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/gui/flash/CamoSelector.png": "res/res/gui/flash/CamoSelector.png",
+        "res/scripts/client/gui/mods/mod_CamoSelector.pyc": "build/scripts/client/gui/mods/mod_CamoSelector.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/__init__.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/__init__.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/config.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/config.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/constants.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/constants.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/processors.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/processors.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/readers.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/readers.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/__init__.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/__init__.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/bottom_panel.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/bottom_panel.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/carousel.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/carousel.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/cm_handlers.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/cm_handlers.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/context.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc"
+    }
+}

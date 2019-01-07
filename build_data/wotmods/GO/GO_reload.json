@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "meta.xml": "res/meta/GO_reload.xml",
+        "res/audioww/reload_GO.bnk": "res/res/audioww/reload_GO.bnk"
+    }
+}

@@ -1,11 +1,10 @@
 .idea/
 release/
-release_hidden/
-*.cmd
-!/source/scripts/compile.cmd
-/source/scripts/others/
-/source/scripts/client_hidden/
-/BW/
+res/res/vehicles/
+res/res/audioww/
+res/flash/swc/
+res/flash/**/obj/
+*.tmp
 
 
 # Created by .ignore support plugin (hsz.mobi)

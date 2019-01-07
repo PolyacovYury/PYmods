@@ -1,0 +1,345 @@
+{
+    "TankMenu": {
+        "default": [
+            {"title": "Правый фланг открыт!",
+                "icon": "Helpme",
+                "text": "Правый фланг остался открытым! Прошу перегруппироваться!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_E"]
+            },
+            {"title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "text": "Противник на нашей базе! Нужна помощь в сбитии захвата!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_X"]
+            },
+            {"title": "Прорыв по правому флангу!",
+                "icon": "Helpme",
+                "text": "Прорыв нескольких танков противника по правому флангу!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_3"]
+            },
+            {"title": "Прорыв по левому флангу!",
+                "icon": "Helpme",
+                "text": "Прорыв нескольких танков противника по левому флангу!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_1"]
+            },
+            {"title": "Прорыв по центру!",
+                "icon": "Helpme",
+                "text": "Прорыв нескольких танков противника по центру!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_2"]
+            },
+            {"title": "Левый фланг открыт!",
+                "icon": "Helpme",
+                "text": "Левый фланг остался открытым! Прошу перегруппироваться!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_Q"]
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_C"]
+            },
+            {"title": "Нужна помощь!",
+                "icon": "Helpme",
+                "text": "Нужна помощь в квадрате {ownPos}!",
+                "ping": "{ownPos}",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_F"]
+            },
+            {"title": "На захват!",
+                "icon": "Attack",
+                "text": "Все, кто рядом, встаем на захват!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_R"]
+            },
+            {"title": "Не подпирай!",
+                "icon": "Turnback",
+                "text": "Не подпирай меня!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_S"]
+            },
+            {"title": "Продвигаюсь вперед!",
+                "icon": "Followme",
+                "text": "Продвигаюсь вперед. Прошу поддержать маневр.",
+                "hotKey": ["KEY_LALT", "KEY_G"],
+                "chatMode": "Team"
+            },
+            {"title": "Приветственные слова",
+                "icon": "Support",
+                "text": "{randPart}",
+                "chatMode": "Team",
+                "variants": [
+                    "Мы пришли уточнить, разобраться и покарать.",
+                    "На эстешке один не катайся ты, ибо танк твой нимб посмертный обретет.",
+                    "Погасить светляка - твоя первейшая задача. Сделай упреждение и отправь малыша в небытие.",
+                    "Мертвый противник - наш лучший союзник. Так увеличим число наших союзников до тридцати!",
+                    "Сегодня враг услышит крит своих модулей. И да пребудет с нами перк нагиба.",
+                    "Всем по перку неуязвимости, сокомандники. Да будет к нам благосклоннен ВБР.",
+                    "Воздадим должное врагу нашему, и да упокоятся башни его в пункте приема металлолома.",
+                    "Как говорил один литературный герой из моего далёкого детства: \"Мы принимаем бой\".",
+                    "Не респом единым жив танковод, а между респами."
+                ],
+                "hotKey": ["KEY_LALT", "KEY_5"]
+            },
+            {"title": "Приветственные слова (Duke Nukem)",
+                "icon": "Support",
+                "text": "{randPart}",
+                "chatMode": "Team",
+                "variants": [
+                    "Yeah, piece o' cake!",
+                    "Born to be wild!",
+                    "Let's rock!",
+                    "Mmm, payback time!",
+                    "Ready for Action!",
+                    "Rockin'!",
+                    "Somebody is gonna frickin' pay for screwing up MY vacation!",
+                    "Damn... I'm looking good!"
+                ],
+                "hotKey": ["KEY_LALT", "KEY_6"]
+            }
+        ],
+        "ally": [
+            {"title": "O'key.",
+                "icon": "Yes",
+                "text": "o'key.",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_A"]
+            },
+            {"title": "Назад!",
+                "icon": "Turnback",
+                "text": "{vehicle} ({name}), назад! Не лезь сейчас вперед.",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_B"]
+            },
+            {"title": "Помоги!",
+                "icon": "Helpmeex",
+                "text": "{vehicle} ({name}), помоги убрать противника.",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_F"]
+            },
+            {"title": "За мной!",
+                "icon": "Followme",
+                "text": "Продвигаюсь вперед. Прошу поддержать атаку.",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_G"]
+            },
+            {"title": "Не лучшая идея.",
+                "icon": "No",
+                "text": "Сейчас это не самая лучшая идея.",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_D"]
+            },
+            {"title": "Не подпирай!",
+                "icon": "No",
+                "text": "{name},не подпирай!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_S"]
+            },
+            {"title": "Из прицела!",
+                "icon": "Turnback",
+                "text": "{name},уйди из прицела!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_SPACE"]
+            }
+        ],
+        "enemy": [
+            {"title": "Атакую!",
+                "icon": "Attack",
+                "text": "Атакую {vehicle} ({name}). Нужна поддержка.",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_R"]
+            },
+            {"title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "text": "Противник {vehicle} ({name}) на нашей базе! Нужна помощь в сбитии захвата!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_X"]
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team",
+                "hotKey": ["KEY_C"]
+            },
+            {"title": "Нужна помощь!",
+                "icon": "Helpme",
+                "text": "Нужна помощь в уничтожении {vehicle} ({name})!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_F"]
+            },
+            {"title": "Поддержите огнём!",
+                "icon": "Support",
+                "text": "Поддержите огнем по квадрату {viewPos}",
+                "ping": "{viewPos}",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_H"]
+            },
+            {"title": "Опасность прорыва!",
+                "icon": "Helpme",
+                "text": "В квадрате {viewPos} несколько танков противника! Нужна помощь!",
+                "ping": "{viewPos}",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_2"]
+            },
+            {"title": "Врагу",
+                "icon": "Yes",
+                "text": "{randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "Тебе очень идет белый цвет.",
+                    "Прощай, малыш.",
+                    "Ну, вот, а ты боялся.",
+                    "Я смотрю, тебе башню снесло.",
+                    "Эка тебя расплющило!",
+                    "Что-то ты побледнел.",
+                    "Ну, вот и всё, а ты боялась, только гуселька помялась.",
+                    "Ну, что, бедолага, опять в ангар?",
+                    "Какой законченный образ!",
+                    "Не расстраивайся - со временем привыкнешь.",
+                    "Привыкай.",
+                    "Бл*, да ты разваливаешься!"
+                ],
+                "hotKey": ["KEY_LALT", "KEY_V"]
+            },
+            {"title": "Врагу от Duke Nukem",
+                "icon": "Yes",
+                "text": "{randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "Come get some!",
+                    "I'll rip your head off and shit down your neck.",
+                    "I'm gonna kick your ass, bitch!",
+                    "Ooh, that's gotta hurt.",
+                    "I’ve got balls of steel!",
+                    "Blow it out your ass.",
+                    "Come on!",
+                    "Damn, I'm good!",
+                    "Die a sonuvabitch!",
+                    "Eat shit and die!",
+                    "Gonna rip 'em a new one!",
+                    "Ha Ha Ha! Wasted!",
+                    "Hail to the king, baby!",
+                    "Lick My Wet Butt Hole!",
+                    "Looks like it's time for me to go POSTAL! ",
+                    "Mmm, payback time!",
+                    "Nobody steals our chicks... and lives!",
+                    "Terminated!",
+                    "Who wants some?",
+                    "Yippie kay-yay mother fucker!",
+                    "You guys suck!",
+                    "You wanna dance?",
+                    "You're an inspiration for birth control!",
+                    "You're gonna die for that!",
+                    "See you in hell!"
+                ],
+                "hotKey": ["KEY_LALT", "KEY_6"]
+            }
+        ]
+    },
+    "SPGMenu": {
+        "default": [
+            {"title": "Свожусь на квадрат.",
+                "icon": "Attack",
+                "text": "Свожусь на квадрат {viewPos}.",
+                "chatMode": "Team"
+            },
+            {"title": "Готов к залпу",
+                "icon": "Yes",
+                "text": "Готов к залпу по квадрату {viewPos}.",
+                "ping": "{viewPos}",
+                "chatMode": "Team"
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team",
+                "hotKey": ["KEY_C"]
+            },
+            {"title": "Требуется свет.",
+                "icon": "Helpme",
+                "text": "Требуется засвет противника в квадрате {viewPos}.",
+                "ping": "{viewPos}",
+                "chatMode": "Team"
+            },
+            {"title": "Нужна помощь.",
+                "icon": "Helpme",
+                "text": "Противник рядом. Прошу помощи.",
+                "chatMode": "Team"
+            },
+            {"title": "Меняю позицию.",
+                "icon": "Stop",
+                "text": "Меняю позицию. Зарядка {reload} секунд.",
+                "chatMode": "Team"
+            }
+        ],
+        "ally": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team"
+            },
+            {"title": "Назад!",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "chatMode": "Team"
+            },
+            {"title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "chatMode": "Team"
+            },
+            {"title": "Помоги!",
+                "icon": "Helpmeex",
+                "command": "HELPMEEX",
+                "chatMode": "Team"
+            },
+            {"title": "За мной!",
+                "icon": "Followme",
+                "command": "FOLLOWME",
+                "chatMode": "Team"
+            },
+            {"title": "Никак нет!!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {"title": "Свожусь на квадрат.",
+                "icon": "Attack",
+                "text": "Свожусь на квадрат {viewPos}.",
+                "chatMode": "Team"
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team",
+                "hotKey": ["KEY_C"]
+            },
+            {"title": "Цель недоступна!",
+                "icon": "Stop",
+                "text": "Цель ({vehicle} {name}) недоступна.",
+                "chatMode": "Team"
+            },
+            {"title": "Выманить!",
+                "icon": "Yes",
+                "text": "Требуется выманить {vehicle} {name} под Арт-обстрел. Перезарядка через {reload} сек.",
+                "chatMode": "Team"
+            },
+            {"title": "Цель слабодоступна!",
+                "icon": "Stop",
+                "text": "Цель ({vehicle} {name}) слабодоступна. Вероятность попадания мала.",
+                "chatMode": "Team"
+            },
+            {"title": "Меняю позицию.",
+                "icon": "Stop",
+                "text": "Меняю позицию. Зарядка {reload} секунд.",
+                "chatMode": "Team"
+            }
+        ]
+    }
+}

@@ -1,0 +1,16 @@
+Force Mod RemodEnabler edition 9.22+
+
+
+Установка:
+Скопировать папку "mods/" в папку "World_of_Tanks/", подтвердив слияние папок.
+
+Удаление:
+Удалить файлы "mods/версия/RemodEnabler_remods/ForceMod/*.wotmod" и "mods/configs/PYmods/RemodEnabler/remods/*.json" из папки "World_of_Tanks/".
+
+
+
+Installation:
+Copy "mods/" folder into "World_of_Tanks/", agreeing on folder merge.
+
+Uninstallation:
+Delete files "mods/version/RemodEnabler_remods/ForceMod/*.wotmod" and "mods/configs/PYmods/RemodEnabler/remods/*.json" from "World_of_Tanks/" folder.

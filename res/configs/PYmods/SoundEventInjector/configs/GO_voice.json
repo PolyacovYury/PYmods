@@ -1,0 +1,176 @@
+{
+    "sound_notifications": {
+        "gun_reloaded": {
+            "fx": "gun_reloaded_GO_1"
+        },
+        "target_captured": {
+            "voice": "target_captured_GO"
+        },
+        "target_lost": {
+            "voice": "target_lost_GO",
+            "fx": "target_lost_GO"
+        },
+        "target_unlocked": {
+            "voice": "target_unlocked_GO"
+        },
+        "enemy_hp_damaged_by_projectile_by_player": {
+            "voice": "armor_pierced_GO"
+        },
+        "enemy_hp_damaged_by_projectile_and_chassis_damaged_by_player": {
+            "voice": "armor_pierced_enemy_track_damaged_GO"
+        },
+        "enemy_hp_damaged_by_projectile_and_gun_damaged_by_player": {
+            "voice": "armor_pierced_enemy_gun_damaged_GO"
+        },
+        "enemy_hp_damaged_by_explosion_at_direct_hit_by_player": {
+            "voice": "armor_pierced_GO"
+        },
+        "enemy_no_hp_damage_at_attempt_by_player": {
+            "voice": "armor_not_pierced_GO"
+        },
+        "enemy_no_hp_damage_at_attempt_and_chassis_damaged_by_player": {
+            "voice": "armor_not_pierced_enemy_track_damaged_GO"
+        },
+        "enemy_no_hp_damage_at_attempt_and_gun_damaged_by_player": {
+            "voice": "armor_not_pierced_enemy_gun_destroyed_GO"
+        },
+        "enemy_no_hp_damage_at_no_attempt_by_player": {
+            "voice": "armor_not_pierced_GO"
+        },
+        "enemy_no_piercing_by_player": {
+            "voice": "armor_not_pierced_GO"
+        },
+        "enemy_no_hp_damage_at_no_attempt_and_chassis_damaged_by_player": {
+            "voice": "armor_not_pierced_enemy_track_damaged_GO"
+        },
+        "enemy_no_hp_damage_at_no_attempt_and_gun_damaged_by_player": {
+            "voice": "armor_not_pierced_enemy_gun_damaged_GO"
+        },
+        "enemy_ricochet_by_player": {
+            "voice": "armor_ricochet_GO"
+        },
+        "enemy_hp_damaged_by_near_explosion_by_player": {
+            "voice": "damage_by_near_explosion_GO"
+        },
+        "enemy_no_hp_damage_by_near_explosion_by_player": {
+            "voice": "damage_by_near_explosion_GO"
+        },
+        "enemy_fire_started_by_player": {
+            "voice": "enemy_fire_started_GO"
+        },
+        "damage_by_near_explosion_by_enemy": {
+            "voice": "our_tank_under_fire_GO"
+        },
+        "enemy_killed_by_player": {
+            "voice": "enemy_killed_GO"
+        },
+        "enemy_killed": {
+            "voice": "enemy_killed_GO"
+        },
+        "enemy_sighted": {
+            "voice": "enemy_sighted_GO"
+        },
+        "enemies_sighted": {
+            "voice": "enemy_sighted_GO"
+        },
+        "enemy_sighted_for_team": {
+            "fx": "enemy_sighted_GO"
+        },
+        "ally_killed": {
+            "voice": "ally_killed_by_player_GO"
+        },
+        "ally_killed_by_player": {
+            "voice": "ally_killed_by_player_GO"
+        },
+        "vehicle_destroyed": {
+            "voice": "vehicle_destroyed_GO"
+        },
+        "crew_deactivated": {
+            "voice": "vehicle_destroyed_GO"
+        },
+        "engine_damaged": {
+            "voice": "engine_damaged_GO"
+        },
+        "engine_destroyed": {
+            "voice": "engine_destroyed_GO"
+        },
+        "engine_functional": {
+            "voice": "engine_functional_GO"
+        },
+        "ammo_bay_damaged": {
+            "voice": "ammo_bay_damaged_GO"
+        },
+        "fuel_tank_damaged": {
+            "voice": "fuel_tank_damaged_GO"
+        },
+        "radio_damaged": {
+            "voice": "radio_damaged_GO"
+        },
+        "track_damaged": {
+            "voice": "track_damaged_GO"
+        },
+        "track_destroyed": {
+            "voice": "track_destroyed_GO"
+        },
+        "track_functional": {
+            "voice": "track_functional_GO"
+        },
+        "track_functional_can_move": {
+            "voice": "track_functional_GO"
+        },
+        "gun_damaged": {
+            "voice": "gun_damaged_GO"
+        },
+        "gun_destroyed": {
+            "voice": "gun_destroyed_GO"
+        },
+        "gun_functional": {
+            "voice": "gun_functional_GO"
+        },
+        "turret_rotator_damaged": {
+            "voice": "turret_rotator_damaged_GO"
+        },
+        "turret_rotator_destroyed": {
+            "voice": "turret_rotator_destroyed_GO"
+        },
+        "turret_rotator_functional": {
+            "voice": "turret_rotator_functional_GO"
+        },
+        "surveying_devices_damaged": {
+            "voice": "surveying_devices_damaged_GO"
+        },
+        "surveying_devices_destroyed": {
+            "voice": "surveying_devices_destroyed_GO"
+        },
+        "surveying_devices_functional": {
+            "voice": "surveying_devices_functional_GO"
+        },
+        "commander_killed": {
+            "voice": "commander_killed_GO"
+        },
+        "driver_killed": {
+            "voice": "driver_killed_GO"
+        },
+        "radioman_killed": {
+            "voice": "radioman_killed_GO"
+        },
+        "gunner_killed": {
+            "voice": "gunner_killed_GO"
+        },
+        "loader_killed": {
+            "voice": "loader_killed_GO"
+        },
+        "fire_started": {
+            "voice": "fire_started_GO"
+        },
+        "chat_shortcut_common_fx": {
+            "voice": "minimap_attention_GO"
+        },
+        "start_battle": {
+            "voice": "start_battle_GO"
+        },
+        "observed_by_enemy": {
+            "fx": "sixthsense_GO"
+        }
+    }
+}

@@ -1,0 +1,431 @@
+{
+    "TankMenu": {
+        "default": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F5"]
+            },
+            {"title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "text": "{randpart}",
+                "variants": [
+                    "Защищайте базу!",
+                    "Все на базу!",
+                    "Светите, помогу с базой!"
+                ],
+                "chatMode": "Team",
+                "hotKey": ["KEY_F4"]
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team",
+                "ping": "{ownPos}",
+                "hotKey": ["KEY_F8"]
+            },
+            {"title": "Нужна помощь!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "{randpart}",
+                "variants": [
+                    "Один не справлюсь!",
+                    "HELP! SOS! Помогите!!",
+                    "Обратите внимание, сам не справлюсь!",
+                    "Уважаемые, тут требуется помощь!"
+                ],
+                "chatMode": "Team",
+                "hotKey": ["KEY_F7"]
+            },
+            {"title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "text": "{randpart}",
+                "variants": [
+                    "Настало наше время! В атаку!",
+                    "Джентльмены! В атаку!",
+                    "Пора продавливать направление! В Атаку!"
+                ],
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {"title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F6"]
+            }
+        ],
+        "ally": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "text": "{name} ({vehicle})",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F5"]
+            },
+            {"title": "Назад!",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F4"]
+            },
+            {"title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F8"]
+            },
+            {"title": "Помоги!",
+                "icon": "Helpmeex",
+                "command": "HELPMEEX",
+                "chatMode": "Team",
+                "ping": "{ownPos}",
+                "hotKey": ["KEY_F7"]
+            },
+            {"title": "За мной!",
+                "icon": "Followme",
+                "command": "FOLLOWME",
+                "chatMode": "Team",
+                "hotKey": ["KEY_T"]
+            },
+            {"title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "text": "{name} ({vehicle})",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F6"]
+            }
+        ],
+        "enemy": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F5"]
+            },
+            {"title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "command": "BACKTOBASE",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F4"]
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team",
+                "ping": "{ownPos}",
+                "hotKey": ["KEY_F8"]
+            },
+            {"title": "Нужна помощь!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Один не справлюсь.",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F7"]
+            },
+            {"title": "Поддержите огнём!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "Фокус на {name} ({vehicle}) Квадрат {viewPos}!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_T"]
+            },
+            {"title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "text": "{randpart} ",
+                "chatMode": "Team",
+                "ping": "{viewPos}",
+                "variants": [
+                    "Не могу достать {name} ({vehicle}) он за укрытием!",
+                    "Не достаю ({vehicle}), он не на линии огня!"
+                ],
+                "hotKey": ["KEY_F6"]
+            }
+        ]
+    },
+    "SPGMenu": {
+        "default": [
+            {"title": "Свелся на квадрат!",
+                "icon": "AttackSPG",
+                "text": "{randpart}",
+                "variants": [
+                    "Свелся на Квадрат {viewPos}, Даите свет помогу!",
+                    "Уже смотрю {viewPos}, сейчас будет помощь!",
+                    "Метьте цели и ставьте на гусли. Я помогу!"
+                ],
+                "chatMode": "Team",
+                "ping": "{viewPos}",
+                "hotKey": ["KEY_F5"]
+            },
+            {"title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "text": "{randpart}",
+                "variants": [
+                    "Защищайте базу!",
+                    "Все на базу!",
+                    "Светите, помогу с базой!"
+                ],
+                "chatMode": "Team",
+                "hotKey": ["KEY_F4"]
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team",
+                "ping": "{ownPos}",
+                "hotKey": ["KEY_F8"]
+            },
+            {"title": "Нужна помощь!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "{randpart}",
+                "variants": [
+                    "Один не справлюсь!",
+                    "HELP! SOS! Помогите!!",
+                    "Обратите внимание, сам не справлюсь!",
+                    "Уважаемые, тут требуется помощь!"
+                ],
+                "chatMode": "Team",
+                "hotKey": ["KEY_F7"]
+            },
+            {"title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "text": "{randpart}",
+                "variants": [
+                    "Настало наше время!",
+                    "Пора продавливать направление!"
+                ],
+                "chatMode": "Team"
+            },
+            {"title": "Свет сюда!",
+                "icon": "Attack",
+                "text": "{randpart}",
+                "variants": [
+                    "Подсветите {viewPos}, у нас имеется доставка чемодана!",
+                    "Подсветите {viewPos}, старайтесь не слиться сразу",
+                    "Аккуратно подсветите {viewPos} и назад"
+                ],
+                "chatMode": "Team",
+                "ping": "{viewPos}",
+                "hotKey": ["KEY_F6"]
+            }
+        ],
+        "ally": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "text": "{name} ({vehicle})",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F5"]
+            },
+            {"title": "Назад!",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F4"]
+            },
+            {"title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F8"]
+            },
+            {"title": "Помоги!",
+                "icon": "Helpmeex",
+                "command": "HELPMEEX",
+                "chatMode": "Team",
+                "ping": "{ownPos}",
+                "hotKey": ["KEY_F7"]
+            },
+            {"title": "За мной!",
+                "icon": "Followme",
+                "command": "FOLLOWME",
+                "chatMode": "Team",
+                "hotKey": ["KEY_T"]
+            },
+            {"title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "text": "{name} ({vehicle})",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F6"]
+            }
+        ],
+        "enemy": [
+            {"title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F5"]
+            },
+            {"title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "command": "BACKTOBASE",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F4"]
+            },
+            {"title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team",
+                "ping": "{ownPos}",
+                "hotKey": ["KEY_F8"]
+            },
+            {"title": "Нужна помощь!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Один не справлюсь!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_F7"]
+            },
+            {"title": "Атакую!",
+                "icon": "AttackSPG",
+                "text": "{randpart}",
+                "chatMode": "Team",
+                "variants": [
+                    "Отойдите от него {name} ({vehicle}), Квадрат {viewPos}, Нужно время для атаки!",
+                    "Стреляю в ({vehicle}) Квадрат {viewPos}!",
+                    "Чемодан ушел, Квадрат {viewPos}, ждите доставки!",
+                    "Отойдите от него, {name} Чемодан летит!",
+                    "Сейчас прилетит чемодан, на Квадрат {viewPos} Отойдите!",
+                    "Чемодан по {name} на ({vehicle}) ушел, ждите!",
+                    "Свожусь на квадрат {viewPos}, нужно время для атаки",
+                    "Навожусь на цель в квадрате {viewPos}, наводчик пьян, результат не гарантирую",
+                    "Вижу цель в квадрате {viewPos}, готовлю чемодан"
+                ],
+                "ping": "{viewPos}",
+                "hotKey": ["KEY_T"]
+            },
+            {"title": "Никак нет!",
+                "icon": "No",
+                "text": "{randpart} ",
+                "chatMode": "Team",
+                "ping": "{viewPos}",
+                "variants": [
+                    "Не могу достать {name} ({vehicle}) он за укрытием!",
+                    "Не достаю ({vehicle}), он не на линии огня!"
+                ],
+                "hotKey": ["KEY_F6"]
+            }
+        ]
+    },
+    "Map_default": {
+        "default": [
+            {"title": "Сбейте захват!",
+                "icon": "Helpme",
+                "text": "{randpart}",
+                "variants": [
+                    "БРОтюни, пора домой! Пахнет поражением! Сбивайте захват!",
+                    "Господа, нужно уже сейчас возвращаться на сбитие захвата! Пахнет поражением!",
+                    "GO подымать КПД сбитем захвата!",
+                    "Нужно срочно вернуться на базу! Не собьем захват - будет слив!"
+                ],
+                "chatMode": "Team"
+            },
+            {"title": "Не бери!",
+                "icon": "Backtobase",
+                "text": "{randpart}",
+                "variants": [
+                    "Никакой пощады супостатам! Всех в ангар!",
+                    "Давайте добьем! Опыта дадут больше! Инфа 146 процентов!",
+                    "Очки захвата базы это хорошо, но за фраги и дамаг дают больше! GO добивать!;)"
+                ],
+                "chatMode": "Team"
+            },
+            {"title": "Арта прикрой!",
+                "icon": "Support",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {"title": "Я за артой!",
+                "icon": "Attack",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {"title": "Помогите на центре!",
+                "icon": "Helpme",
+                "text": "Помогите на центре!",
+                "chatMode": "Team"
+            },
+            {"title": "Переверните меня!",
+                "icon": "Helpme",
+                "text": "{randpart}",
+                "variants": [
+                    "Ребята! Я перевернулся :( Помогите встать на гусли в {ownPos}!",
+                    "Помогите! Пожалуйста, помогите! Я перевернулся в квадрате {ownPos}"
+                ],
+                "ping": "{ownPos}",
+                "chatMode": "Team"
+            }
+        ]
+    },
+    "hotkeyOnly": [
+        {"title": "На захват!",
+            "icon": "Backtobase",
+            "text": "Все кто рядом, встаем на захват!",
+            "chatMode": "Team",
+            "ping": "{ownPos}",
+            "hotKey": ["KEY_LALT", "KEY_1"]
+        },
+        {"title": "OK!",
+            "icon": "Yes",
+            "text": "{name} ({vehicle}) {viewPos} {randpart}!",
+            "chatMode": "All",
+            "variants": [
+                ", Я смотрю, тебе башню снесло.",
+                ", Что-то ты побледнел.",
+                ", Ну, вот и всё, а ты боялась, только гуселька помялась.",
+                ", Тебе очень идет белый цвет.",
+                ", Эка тебя расплющило!",
+                ", Ну, что, бедолага, опять в ангар?",
+                ", тебе ангар звонит! Возьми трубку!",
+                ", давай до свидания!",
+                ", везет же тебе! Отмучился!",
+                ", тебя в другом бою заждались!",
+                ", это попандос!",
+                ", it is a good day to die!",
+                ", счастливого пути!",
+                ", hasta la vista, baby!",
+                ", жаль, что уходишь в такой интересный момент!",
+                ", я думаю пришло время посмотреть на бой из танка союзника!",
+                ", не шевелись, сейчас всё закончится!",
+                ", вам мат, товарищ гроссмейстер!"
+            ],
+            "ping": "{viewPos}",
+            "hotKey": ["KEY_LALT", "KEY_2"]
+        },
+        {"title": "Приветствие",
+            "icon": "Yes",
+            "text": "{randpart}",
+            "chatMode": "Team",
+            "variants": [
+                "Погасить светляка - твоя первейшая задача. Сделай упреждение и отправь малыша в небытие.",
+                "Мертвый противник - наш лучший союзник. Так увеличим число наших союзников до тридцати!",
+                "Сегодня враг услышит крит своих модулей. И да пребудет с нами перк нагиба.",
+                "Воздадим должное врагу нашему, и да упокоятся башни его в пункте приема металлолома.",
+                "Ты туда не ходи — ты сюда ходи. А то чемодан башня прилетит — совсем мёртвый будешь.",
+                "Как говорил один литературный герой из моего далёкого детства: \"Мы принимаем бой\"."
+            ],
+            "noRandomChoice": "1",
+            "hotKey": ["KEY_LALT", "KEY_3"]
+        },
+        {"title": "Из кустов",
+            "icon": "Support",
+            "text": "{randpart}",
+            "chatMode": "All",
+            "variants": [
+                "Свечуууууу!",
+                "Высоко сижу, далеко гляжу!",
+                "Всевидящее око наблюдает за вами!",
+                "Хрен вы меня найдете!"
+            ],
+            "hotKey": ["KEY_LALT", "KEY_4"]
+        }
+    ]
+}

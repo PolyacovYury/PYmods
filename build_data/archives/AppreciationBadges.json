@@ -1,0 +1,14 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "1.png": "res/img/AppreciationBadges/1.png",
+        "2.png": "res/img/AppreciationBadges/2.png",
+        "3.png": "res/img/AppreciationBadges/3.png",
+        "4.png": "res/img/AppreciationBadges/4.png",
+        "5.png": "res/img/AppreciationBadges/5.png",
+        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/PYmods/PYSupport.wotmod": "build/wotmods/PYmods/PYSupport.wotmod",
+        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod"
+    }
+}

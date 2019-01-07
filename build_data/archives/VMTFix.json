@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/{GAME_VERSION}/PYmods/PYSupport.wotmod": "build/wotmods/PYmods/PYSupport.wotmod",
+        "mods/{GAME_VERSION}/PYmods/VMTFix.wotmod": "build/wotmods/PYmods/VMTFix.wotmod"
+    }
+}

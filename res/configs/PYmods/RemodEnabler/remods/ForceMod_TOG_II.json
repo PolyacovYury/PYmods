@@ -1,0 +1,113 @@
+﻿{
+    "authorMessage": "Автор: Hellinger",
+    "playerWhitelist": "gb63_tog_ii",
+    "allyWhitelist": "gb63_tog_ii",
+    "enemyWhitelist": "gb63_tog_ii",
+    "swapAlly": false,
+    "swapEnemy": false,
+    "chassis": {
+        "undamaged": "vehicles/remods/ForceMod/GB63_TOG_II/normal/lod0/Chassis.model",
+        "traces": "Traces(lodDist=120.0, bufferPrefs='largeTank', textureSet='usa_02', centerOffset=1.019629955291748, size=(0.44, 0.64))",
+        "tracks": "TrackMaterials(lodDist=90.0, leftMaterial='track_mat_L_skinned', rightMaterial='track_mat_R_skinned', textureScale=-1.149999976158142)",
+        "wheels": "WheelsConfig(lodDist=70.0, groups=(WheelGroup(isLeft=True, template='W_L', count=16, startIndex=0, radius=0.14825500547885895), WheelGroup(isLeft=False, template='W_R', count=16, startIndex=0, radius=0.14825500547885895)), wheels=(Wheel(isLeft=True, radius=0.4099999964237213, nodeName='WD_L0', isLeading=True, leadingSyncAngle=34.285701751708984), Wheel(isLeft=True, radius=0.4682359993457794, nodeName='WD_L1', isLeading=True, leadingSyncAngle=34.285701751708984), Wheel(isLeft=False, radius=0.4099999964237213, nodeName='WD_R0', isLeading=True, leadingSyncAngle=34.285701751708984), Wheel(isLeft=False, radius=0.4682359993457794, nodeName='WD_R1', isLeading=True, leadingSyncAngle=34.285701751708984)))",
+        "groundNodes": "NodesAndGroups(nodes=(), groups=(GroundNodeGroup(isLeft=True, minOffset=-0.029999999329447746, maxOffset=0.029999999329447746, template='Track_L', count=16, startIndex=0), GroundNodeGroup(isLeft=False, minOffset=-0.029999999329447746, maxOffset=0.029999999329447746, template='Track_R', count=16, startIndex=0)))",
+        "trackNodes": "NodesAndGroups(nodes=(TrackNode(name='Track_VD_L0', isLeft=True, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1100.0, forwardElasticityCoeff=0.75, backwardElasticityCoeff=2.0), TrackNode(name='Track_VD_R0', isLeft=False, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1100.0, forwardElasticityCoeff=0.75, backwardElasticityCoeff=2.0), TrackNode(name='Track_VD_L1', isLeft=True, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1100.0, forwardElasticityCoeff=3.0, backwardElasticityCoeff=0.75), TrackNode(name='Track_VD_R1', isLeft=False, initialOffset=0.0, leftNodeName=None, rightNodeName=None, damping=2.0, elasticity=1100.0, forwardElasticityCoeff=3.0, backwardElasticityCoeff=0.75)), groups=())",
+        "splineDesc": "SplineConfig(segmentModelLeft='vehicles/british/GB63_TOG_II/track/segment.model', segmentModelRight='vehicles/british/GB63_TOG_II/track/segment.model', segmentLength=0.2800000011920929, leftDesc='vehicles/british/GB63_TOG_II/track/left.track', rightDesc='vehicles/british/GB63_TOG_II/track/right.track', lodDist=70.0, segmentOffset=0.10499999672174454, segment2ModelLeft=None, segment2ModelRight=None, segment2Offset=0.0, atlasUTiles=1, atlasVTiles=1)",
+        "trackParams": "TrackParams(thickness=-0.035100001841783524, maxAmplitude=0.10000000149011612, maxOffset=0.10000000149011612, gravity=-9.800000190734863)",
+        "hullPosition": [0.0, 1.355299949645996, 0.0],
+        "AODecals": [],
+        "wwsound": "",
+        "wwsoundPC": "treads_type_pc",
+        "wwsoundNPC": "trds_chf_npc"
+    },
+    "hull": {
+        "undamaged": "vehicles/remods/ForceMod/GB63_TOG_II/normal/lod0/Hull.model",
+        "exhaust": {
+            "pixie": "",
+            "nodes": "HP_Track_Exhaus_1 HP_Track_Exhaus_2"
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [1.7620099782943726, 0.35134100914001465, 3.040879964828491],
+                "rayEnd": [1.3620100021362305, 0.35132700204849243, 3.040879964828491],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.2800000011920929,
+                "hideIfDamaged": false,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [-1.762030005455017, 0.40735799074172974, 0.30660000443458557],
+                "rayEnd": [-1.362030029296875, 0.40735799074172974, 0.3066050112247467],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.800000011920929,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/remods/ForceMod/GB63_TOG_II/normal/lod0/Turret_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [-0.9867219924926758, 0.7135059833526611, -0.8662670254707336],
+                "rayEnd": [-0.6210430264472961, 0.7135059833526611, -0.7041599750518799],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.2800000011920929,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [1.2250299453735352, 0.4282209873199463, 0.10186400264501572],
+                "rayEnd": [0.8250280022621155, 0.4282209873199463, 0.10186400264501572],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.7400000095367432,
+                "hideIfDamaged": false,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [0.9867219924926758, 0.7135059833526611, -0.8662670254707336],
+                "rayEnd": [0.6210430264472961, 0.7135059833526611, -0.7041599750518799],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.2800000011920929,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/remods/ForceMod/GB63_TOG_II/normal/lod0/Gun_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [0.0, 0.0002921739942394197, 2.414479970932007],
+                "rayEnd": [0.18414799869060516, -0.06430739909410477, 2.411639928817749],
+                "rayUp": [0.061000000685453415, 0.05900000035762787, 4.0],
+                "size": 0.6069999933242798,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "engine": {
+        "wwsound": "",
+        "wwsoundPC": "eng_v55_pc",
+        "wwsoundNPC": "eng_v55_npc"
+    }
+}

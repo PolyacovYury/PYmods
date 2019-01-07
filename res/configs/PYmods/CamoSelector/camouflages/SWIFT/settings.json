@@ -1,0 +1,8 @@
+﻿{
+    "SWIFT": {
+        "random_mode": 1,
+        "season": "winter,summer,desert",
+        "useForAlly": true,
+        "useForEnemy": true
+    }
+}

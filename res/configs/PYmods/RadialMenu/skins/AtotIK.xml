@@ -1,0 +1,385 @@
+<?xml version="1.0"?>
+
+<RadialMenu.xml>
+	<MapMenuKey>KEY_LALT</MapMenuKey>
+  	<MenuReloadHotkey>KEY_LCONTROL+KEY_F11</MenuReloadHotkey>
+  	<HotkeyCommandDelay>250</HotkeyCommandDelay>
+  	<CHAT_DELAY>1100</CHAT_DELAY>
+
+<TankMenu>
+		<CommonCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+			 	<Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+		</CommonCommands>
+
+		<TeamCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Command>TURNBACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Стой!</Title>
+				<Icon>Stop</Icon>
+				<Command>STOP</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Помоги!</Title>
+				<Icon>Helpmeex</Icon>
+				<Command>HELPMEEX</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>За мной!</Title>
+				<Icon>Followme</Icon>
+				<Command>FOLLOWME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</TeamCommands>
+
+		<EnemyCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Поддержите огнём!</Title>
+				<Icon>Support</Icon>
+				<Command>SUPPORTMEWITHFIRE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</EnemyCommands>
+</TankMenu>
+
+<SPGMenu>
+		<CommonCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</CommonCommands>
+
+		<TeamCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Command>TURNBACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Стой!</Title>
+				<Icon>Stop</Icon>
+				<Command>STOP</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Помоги!</Title>
+				<Icon>Helpmeex</Icon>
+				<Command>HELPMEEX</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>За мной!</Title>
+				<Icon>Followme</Icon>
+				<Command>FOLLOWME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</TeamCommands>
+
+		<EnemyCommands>
+			<Command>
+				<Title>Так точно!</Title>
+				<Icon>Yes</Icon>
+				<Command>POSITIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Защищайте базу!</Title>
+				<Icon>Backtobase</Icon>
+				<Command>BACKTOBASE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Нужна помощь!</Title>
+				<Icon>Helpme</Icon>
+				<Command>HELPME</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Атакую!</Title>
+				<Icon>AttackSPG</Icon>
+				<Command>ATTACKENEMY</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Никак нет!</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</EnemyCommands>
+</SPGMenu>
+
+<MapCommands>
+		<Map_Default>
+			<Command>
+				<Title>Помогите в кишке!</Title>
+				<Icon>Helpme</Icon>
+<!--
+				<Command>HELPME</Command>
+-->
+				<Text>Помогите в кишке!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Помогите на железке!</Title>
+				<Icon>Helpme</Icon>
+<!--
+				<Command>HELPME</Command>
+-->
+				<Text>Помогите на железке!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Я за артой!</Title>
+				<Icon>Helpme</Icon>
+<!--
+				<Command>HELPME</Command>
+-->
+				<Text>Я за вражеской артой! Прошу поддержки от союзной артилерии!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+
+			<Command>
+				<Title>Арта прикрой!</Title>
+				<Icon>Helpme</Icon>
+<!--
+				<Command>HELPME</Command>
+-->
+				<Text>Арта прикрой!</Text>
+				<ChatMode>Team</ChatMode>
+<!--
+				<Ping>%(ownPos)s</Ping>
+-->
+			</Command>
+			
+			<Command>
+				<Title>Помогите взять гору!</Title>
+				<Icon>Helpme</Icon>
+<!--
+				<Command>HELPME</Command>
+-->
+				<Text>Помогите взять гору!</Text>
+			</Command>
+			
+			<Command>
+			    <Title>Помогите на зелёнке!</Title>
+				<Icon>Helpme</Icon>
+<!--
+				<Command>HELPME</Command>
+-->
+				<Text>Помогите на зелёнке!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+    	</Map_Default>
+</MapCommands>
+
+<HotkeyOnlyCommands>
+		<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Command>RELOADINGGUN</Command>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_C</Hotkey>
+		</Command>
+</HotkeyOnlyCommands>  
+
+</RadialMenu.xml>

@@ -1,0 +1,110 @@
+﻿{
+    "authorMessage": "Автор: Algiz",
+    "playerWhitelist": "g16_pzvib_tiger_ii",
+    "allyWhitelist": "g16_pzvib_tiger_ii",
+    "enemyWhitelist": "g16_pzvib_tiger_ii",
+    "chassis": {
+        "undamaged": "vehicles/remods/G16_PzVIB_Tiger_II_H/normal/lod0/chassis.model",
+        "traces": "{'textureSet': 'germany_02', 'lodDist': 120.0, 'bufferPrefs': 'mediumTank', 'centerOffset': 1.3976399898529053, 'size': (0.6, 0.8)}",
+        "tracks": "{'leftMaterial': 'track_mat_L_skinned', 'rightMaterial': 'track_mat_R_skinned', 'lodDist': 90.0, 'textureScale': -1.600000023841858}",
+        "wheels": "{'wheels': [(False, 'W_R', 9, 0, 0.4350000023841858), (True, 'W_L', 9, 0, 0.4350000023841858)], 'wheels': [(False, 'WD_R0', 0.4585700035095215, True, 40.0), (False, 'WD_R1', 0.3410150110721588, True, 40.0), (True, 'WD_L0', 0.4585700035095215, True, 40.0), (True, 'WD_L1', 0.34101399779319763, True, 40.0)], 'lodDist': 70.0, 'leadingWheelSyncAngle': 60.0, 'groups': [(False, 'W_R', 9, 0, 0.4350000023841858), (True, 'W_L', 9, 0, 0.4350000023841858)]}",
+        "groundNodes": "{'nodes': [], 'groups': [(True, 'Track_L', 9, 0, -0.10164300352334976, 0.09958930313587189), (False, 'Track_R', 9, 0, -0.10000000149011612, 0.10000000149011612)]}",
+        "trackNodes": "{'nodes': [('Track_VD_R0', False, 0.0, 1094.0, 2.0, None, None, 0.8899999856948853, 1.5), ('Track_VD_L0', True, 0.0, 1094.0, 2.0, None, None, 0.8899999856948853, 1.5), ('Track_VD_R1', False, 0.0, 1094.0, 2.0, None, None, 1.5, 0.8999999761581421), ('Track_VD_L1', True, 0.0, 1094.0, 2.0, None, None, 1.5, 0.8999999761581421), ('Track_VT_L0', True, -0.18000000715255737, 1094.0, 2.0, None, 'Track_VT_L1', 1.600000023841858, 0.8899999856948853), ('Track_VT_L1', True, -0.23199999332427979, 1094.0, 2.0, 'Track_VT_L0', 'Track_VT_L2', 1.9800000190734863, 0.8899999856948853), ('Track_VT_L2', True, -0.24500000476837158, 1094.0, 2.0, 'Track_VT_L1', 'Track_VT_L3', 1.899999976158142, 0.8899999856948853), ('Track_VT_L3', True, -0.25200000405311584, 1094.0, 2.0, 'Track_VT_L2', 'Track_VT_L4', 1.7899999618530273, 0.8899999856948853), ('Track_VT_L4', True, -0.25200000405311584, 1094.0, 2.0, 'Track_VT_L3', 'Track_VT_L5', 1.7000000476837158, 0.8899999856948853), ('Track_VT_L5', True, -0.23199999332427979, 1094.0, 2.0, 'Track_VT_L4', 'Track_VT_L6', 1.600000023841858, 0.8899999856948853), ('Track_VT_L6', True, -0.21199999749660492, 1094.0, 2.0, 'Track_VT_L5', 'Track_VT_L7', 1.5, 0.8899999856948853), ('Track_VT_L7', True, -0.17499999701976776, 1094.0, 2.0, 'Track_VT_L6', 'Track_VT_L8', 1.409999966621399, 0.8899999856948853), ('Track_VT_L8', True, -0.1289999932050705, 1094.0, 2.0, 'Track_VT_L7', None, 1.2999999523162842, 0.8899999856948853), ('Track_VT_R0', False, -0.18000000715255737, 1094.0, 2.0, None, 'Track_VT_R1', 1.600000023841858, 0.8899999856948853), ('Track_VT_R1', False, -0.23199999332427979, 1094.0, 2.0, 'Track_VT_R0', 'Track_VT_R2', 1.9800000190734863, 0.8899999856948853), ('Track_VT_R2', False, -0.24500000476837158, 1094.0, 2.0, 'Track_VT_R1', 'Track_VT_R3', 1.899999976158142, 0.8899999856948853), ('Track_VT_R3', False, -0.25200000405311584, 1094.0, 2.0, 'Track_VT_R2', 'Track_VT_R4', 1.7899999618530273, 0.8899999856948853), ('Track_VT_R4', False, -0.25200000405311584, 1094.0, 2.0, 'Track_VT_R3', 'Track_VT_R5', 1.7000000476837158, 0.8899999856948853), ('Track_VT_R5', False, -0.23199999332427979, 1094.0, 2.0, 'Track_VT_R4', 'Track_VT_R6', 1.600000023841858, 0.8899999856948853), ('Track_VT_R6', False, -0.21199999749660492, 1094.0, 2.0, 'Track_VT_R5', 'Track_VT_R7', 1.5, 0.8899999856948853), ('Track_VT_R7', False, -0.17499999701976776, 1094.0, 2.0, 'Track_VT_R6', 'Track_VT_R8', 1.409999966621399, 0.8899999856948853), ('Track_VT_R8', False, -0.1289999932050705, 1094.0, 2.0, 'Track_VT_R7', None, 1.2999999523162842, 0.8899999856948853)], 'groups': []}",
+        "splineDesc": "{'segmentModelLeft': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment1_R.model', 'segmentModelRight': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment1_L.model', 'segmentOffset': 0.057999998331069946, 'segment2Offset': 0.1420000046491623, 'segmentLength': 0.28999999165534973, 'atlasVTiles': 1, 'rightDesc': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/right.track', 'lodDist': 70.0, 'segment2ModelLeft': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment2_L.model', 'atlasUTiles': 1, 'leftDesc': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/left.track', 'segment2ModelRight': 'vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment2_R.model'}",
+        "trackParams": "{'maxAmplitude': 0.10000000149011612, 'maxOffset': 0.10000000149011612, 'gravity': -9.800000190734863, 'thickness': -0.02879999950528145}"
+    },
+    "hull": {
+        "undamaged": "vehicles/remods/G16_PzVIB_Tiger_II_H/normal/lod0/hull.model",
+        "exhaust": {
+            "pixie": "gas_large",
+            "nodes": "HP_Track_Exhaus_1 HP_Track_Exhaus_2"
+        },
+        "camouflage": {
+            "exclusionMask": "vehicles/remods/G16_PzVIB_Tiger_II_H/G16_PzVIB_Tiger_II_CM.dds"
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [-1.03478, 0.557954, 2.64548],
+                "rayEnd": [-1.03489, 0.402678, 2.51943],
+                "rayUp": [0, 0, -1],
+                "size": 0.3199999928474426,
+                "hideIfDamaged": false,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true
+            },
+            {
+                "rayStart": [-0.0289963, 0.277136, 3.1497],
+                "rayEnd": [-0.0289962, -0.0332205, 2.89737],
+                "rayUp": [0, 0, -1],
+                "size": 0.7799999713897705,
+                "hideIfDamaged": false,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/remods/G16_PzVIB_Tiger_II_H/normal/lod0/turret_02.model",
+        "camouflage": {
+            "exclusionMask": "vehicles/remods/G16_PzVIB_Tiger_II_H/G16_PzVIB_Tiger_II_CM.dds",
+            "tiling": [0.475, 0.475, 0.000000, 0.000000]
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [-0.900048, 0.500656, 0.918067],
+                "rayEnd": [-0.732087, 0.403057, 0.870492],
+                "rayUp": [0, 1, 0],
+                "size": 0.3199999928474426,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true
+            },
+            {
+                "rayStart": [0.944463, 0.517784, -0.943459],
+                "rayEnd": [0.772543, 0.421225, -0.909994],
+                "rayUp": [0, 1, 0],
+                "size": 0.7799999713897705,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true
+            },
+            {
+                "rayStart": [0.900048, 0.500656, 0.918067],
+                "rayEnd": [0.732087, 0.403057, 0.870492],
+                "rayUp": [0, 1, 0],
+                "size": 0.3199999928474426,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/remods/G16_PzVIB_Tiger_II_H/normal/lod0/Gun_06.model",
+        "camouflage": {
+            "exclusionMask": "vehicles/remods/G16_PzVIB_Tiger_II_H/G16_PzVIB_Tiger_II_CM.dds",
+        "tiling": [0.305, 0.405, 0.000000, 0.000000]
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [0.0437177, -0.0636021, 4.20505],
+                "rayEnd": [0.188498, -0.0977738, 4.20061],
+                "rayUp": [0.074, 0.07, 4],
+                "size": 0.405,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true
+            }
+        ]
+    },
+    "camouflage": {
+        "tiling": [1, 1, 0, 0],
+        "exclusionMask": ""
+    }
+}

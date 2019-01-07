@@ -1,0 +1,11 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/LampLights/configs/spotLights.json": "res/configs/PYmods/LampLights/configs/spotLights.json",
+        "mods/configs/PYmods/LampLights/models/SpotSphere/sphere.dds": "res/configs/PYmods/LampLights/models/SpotSphere/sphere.dds",
+        "mods/configs/PYmods/LampLights/models/SpotSphere/sphere.model": "res/configs/PYmods/LampLights/models/SpotSphere/sphere.model",
+        "mods/configs/PYmods/LampLights/models/SpotSphere/sphere.primitives": "res/configs/PYmods/LampLights/models/SpotSphere/sphere.primitives",
+        "mods/configs/PYmods/LampLights/models/SpotSphere/sphere.visual": "res/configs/PYmods/LampLights/models/SpotSphere/sphere.visual"
+    }
+}

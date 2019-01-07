@@ -1,0 +1,32 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/ButtonReplacer/configs/Polyacov_YuryIngameGUI.json": "res/configs/PYmods/ButtonReplacer/configs/Polyacov_YuryIngameGUI.json",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Artillery.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Artillery.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Bomber.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Bomber.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Image-524.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Image-524.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Recon.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Recon.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Smoke.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Smoke.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/airstrikeEnemy.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/airstrikeEnemy.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/artilleryEnemy.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/artilleryEnemy.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/attack.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/attack.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/attack_enemy.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/attack_enemy.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/back_to_base.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/back_to_base.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/crew.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/crew.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/drowning.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/drowning.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/enemy.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/enemy.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/follow_me.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/follow_me.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/help_me.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/help_me.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/help_me_ex.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/help_me_ex.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/negative.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/negative.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/overturn.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/overturn.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/positive.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/positive.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/raming_rock.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/raming_rock.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/ramming.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/ramming.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/reloading_gun.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/reloading_gun.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/stop.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/stop.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/support_me_with_fire.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/support_me_with_fire.png",
+        "mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/turn_back.png": "res/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/turn_back.png"
+    }
+}

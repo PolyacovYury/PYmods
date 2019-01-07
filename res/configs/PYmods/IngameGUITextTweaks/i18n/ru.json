@@ -1,0 +1,10 @@
+﻿{
+    "UI_setting_iconFormat_text": "Формат иконки",
+    "UI_setting_iconFormat_tooltip": "Формат иконки класса техники, вставляемой перед ее названием.\n%(colour)s: \"green\" если машина принадлежит союзнику, иначе \"red\".\n%(classTag)s: заменяется на тег класса машины. Варианты: \"lightTank\", \"mediumTank\", \"heavyTank\", \"SPG\", \"AT-SPG\" (не чувствительно к регистру).",
+    "UI_setting_removeNicknames_all": "Все",
+    "UI_setting_removeNicknames_none": "Не убирать",
+    "UI_setting_removeNicknames_smart": "По-умному",
+    "UI_setting_removeNicknames_text": "Убирать ники",
+    "UI_setting_removeNicknames_tooltip": "Ники в боевом чате, сообщениях над миникартой и других местах будут срезаны. Режимы: \n<b>Нет</b>: ники не срезаются. \n<b>По-умному</b>: оставит никнеймы для друзей, совзводных и союзников в не-рандомных боях.\n<b>Все</b>: все ники будут срезаны.",
+    "name": "Твики боевого интерфейса"
+}

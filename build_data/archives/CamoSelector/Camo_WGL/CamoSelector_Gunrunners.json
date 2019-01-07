@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/camouflages/Gunrunners/settings.json": "res/configs/PYmods/CamoSelector/camouflages/Gunrunners/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/Gunrunners/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/Gunrunners/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/Gunrunners/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/Gunrunners/texture.dds"
+    }
+}

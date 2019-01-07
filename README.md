@@ -1,8 +1,11 @@
 Storage for World of Tanks mods.
 ```
-source/scripts:  
-  gitcompileall.py - my modification to standard compileall which uses git calls to retrieve commit date  
-  /client:  
+source/scripts:
+  compiler.py - my modification of standard compileall which uses git calls to retrieve commit dates
+  generate_configs.py - build configs automagic generator
+  mtimestore.py - my implementation of kareltucek's git-mtime-extension, also made it more versatile
+  pack_wotmods.py - archive packer
+  /client:
     /gui/mods:
       /mod_CamoSelector - custom camouflage installer
       /mod_RemodEnabler - custom models dispatcher
@@ -40,3 +43,5 @@ source/scripts:
       CameraNode.py - obsolete mod loader
     /PYmodsCore - a good ol' code dump with inter-mod classes and functions
 ```
+After cloning it is recommended to run `python source\scripts\mtimestore.py -r` and read and follow instructions in
+res/res/res.md file, otherwise correct buildage of the mods is not guaranteed.

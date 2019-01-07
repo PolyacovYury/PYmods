@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+//  Клавиши, меняющие режим отображения танков (Игрок->Союзник->Противник->Игрок->...)
+    "ChangeViewHotKey": ["KEY_F2", ["KEY_LCONTROL", "KEY_RCONTROL"]],
+//  Клавиши, переключающие отображение динамических шкурок в ангаре
+    "DynamicSkinHotKey": ["KEY_F1", ["KEY_LCONTROL", "KEY_RCONTROL"]],
+//  Расширенный вывод в лог
+    "isDebug": false
+}

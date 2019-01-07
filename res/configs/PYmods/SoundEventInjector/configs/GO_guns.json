@@ -1,0 +1,1343 @@
+{
+    "guns": {
+        "china": {
+            "_76mm_54-76TG": {
+                "effects": "gun_76mm_shot_CH"
+            },
+            "_76mm_54-76T": {
+                "effects": "gun_76mm_shot_CH"
+            },
+            "_76mm_ZiS_3": {
+                "effects": "gun_76mm_shot_CH"
+            },
+            "_76mm_Gun_Type64": {
+                "effects": "gun_76mm_shot_CH"
+            },
+            "_85mm_Tip_62-85TS": {
+                "effects": "gun_85mm_shot_CH_2"
+            },
+            "_85mm_S-53": {
+                "effects": "gun_85mm_shot_CH"
+            },
+            "_85mm_Tip_56-85JT": {
+                "effects": "gun_85mm_shot_CH_1"
+            },
+            "_85mm_56_85TG_FT": {
+                "effects": "gun_85mm_shot_CH_1"
+            },
+            "_85mm_Tip_62-85T": {
+                "effects": "gun_85mm_shot_CH_3"
+            },
+            "_85mm_62_85TG_FT": {
+                "effects": "gun_85mm_shot_CH_3"
+            },
+            "_85mm_Tip_64-85T": {
+                "effects": "gun_85mm_shot_CH"
+            },
+            "_85mm_Tip_64-85TG": {
+                "effects": "gun_85mm_shot_CH_1"
+            },
+            "_90mm_Gun_M41": {
+                "effects": "gun_90mm_shot_US"
+            },
+            "_100mm_59": {
+                "effects": "gun_100mm_shot_CH_2"
+            },
+            "_100mm_44-100JT": {
+                "effects": "gun_100mm_shot_CH"
+            },
+            "_100mm_59-100T": {
+                "effects": "gun_100mm_shot_CH_1"
+            },
+            "_100mm_59-100TA": {
+                "effects": "gun_100mm_shot_CH_2"
+            },
+            "_100mm_59_100TG_FT": {
+                "effects": "gun_100mm_shot_CH"
+            },
+            "_100mm_60-100T": {
+                "effects": "gun_100mm_shot_CH_2"
+            },
+            "_100mm_60-100TA": {
+                "effects": "gun_100mm_shot_CH"
+            },
+            "_100mm_60_100TG_FT": {
+                "effects": "gun_100mm_shot_CH"
+            },
+            "_100mm_62-100T": {
+                "effects": "gun_100mm_shot_CH_3"
+            },
+            "_100mm_62-100TA": {
+                "effects": "gun_100mm_shot_CH_1"
+            },
+            "_105mm_L7C": {
+                "effects": "gun_105mm_shot_UK_2"
+            },
+            "_105mm_L7A3C": {
+                "effects": "gun_105mm_shot_UK"
+            },
+            "_122-mm_D25-TA": {
+                "effects": "gun_122mm_shot_CH_1"
+            },
+            "_122-mm_D25-T": {
+                "effects": "gun_122mm_shot_CH_2"
+            },
+            "_122mm_D25_TG_FT": {
+                "effects": "gun_122mm_shot_CH_2"
+            },
+            "_122-mm_37-122JT": {
+                "effects": "gun_122mm_shot_CH_3"
+            },
+            "_122-mm_60-122T": {
+                "effects": "gun_122mm_shot_CH_3"
+            },
+            "_122-mm_60-122TP": {
+                "effects": "gun_122mm_shot_CH_3"
+            },
+            "_122mm_60_122T_113": {
+                "effects": "gun_122mm_shot_CH_3"
+            },
+            "_122-mm_60-122TG": {
+                "effects": "gun_122mm_shot_CH"
+            },
+            "_122mm_60_122TG_FT": {
+                "effects": "gun_122mm_shot_CH"
+            },
+            "_122mm_60_122TG_FT_A": {
+                "effects": "gun_122mm_shot_CH_2"
+            },
+            "_130mm_59-130T": {
+                "effects": "gun_130mm_shot_CH"
+            },
+            "_130mm_59_130TA": {
+                "effects": "gun_130mm_shot_CH"
+            },
+            "_130mm_59_130TA_QL": {
+                "effects": "gun_130mm_shot_CH"
+            },
+            "_130mm_59_130JG_FT": {
+                "effects": "gun_130mm_shot_CH"
+            },
+            "_130mm_59_130JG_FT_A": {
+                "effects": "gun_130mm_shot_CH"
+            },
+            "_152mm_59_152JG_FT": {
+                "effects": "gun_152mm_shot_RU_2"
+            },
+            "_100mm_44-100JTtraining": {
+                "effects": "gun_100mm_shot_CH_1"
+            },
+            "_100mm_60-100TA_IGR": {
+                "effects": "gun_100mm_shot_CH_2"
+            },
+            "_100mm_62-100T_IGR": {
+                "effects": "gun_100mm_shot_CH_3"
+            },
+            "_122-mm_60-122TG_IGR": {
+                "effects": "gun_122mm_shot_CH"
+            }
+        },
+        "czech": {
+            "_88mm_Vz_37N": {
+                "effects": "gun_88mm_shot_CZ_1"
+            },
+            "_88mm_Vz_37N_A": {
+                "effects": "gun_88mm_shot_CZ_2"
+            },
+            "_88mm_vz_41N": {
+                "effects": "gun_88mm_shot_CZ"
+            },
+            "_100mm_vz_44S": {
+                "effects": "gun_100mm_shot_CZ_2"
+            },
+            "_100mm_A20": {
+                "effects": "gun_100mm_shot_CZ"
+            },
+            "_100mm_R11": {
+                "effects": "gun_100mm_shot_CZ_1"
+            },
+            "_100mm_AK1": {
+                "effects": "gun_100mm_shot_RU"
+            },
+            "_105mm_vz_39N": {
+                "effects": "gun_105mm_shot_CZ"
+            }
+        },
+        "france": {
+            "_57mm_AC_canon_L100": {
+                "effects": "gun_57mm_shot_FR"
+            },
+            "Canon_de_75mm_Vo_920_m_s": {
+                "effects": "gun_75mm_shot_FR"
+            },
+            "Canon_de_75mm_Vo_1000_m_s": {
+                "effects": "gun_75mm_shot_FR"
+            },
+            "_75mm_SA50": {
+                "effects": "gun_75mm_shot_FR"
+            },
+            "_75mm_SA50M": {
+                "effects": "gun_75mm_shot_FR"
+            },
+            "_17_pdr_Gan_MK.II": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "_76mm_Gun_M1A1": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_90mm_canon_DCA_30": {
+                "effects": "gun_90mm_shot_FR_1"
+            },
+            "_90mm_canon_DCA_30_Halloween": {
+                "effects": "gun_90mm_shot_FR_1"
+            },
+            "_90mm_canon_DCA_30_CA": {
+                "effects": "gun_90mm_shot_FR_2"
+            },
+            "_90mm_F3": {
+                "effects": "gun_90mm_shot_FR_3"
+            },
+            "_90mm_F3M": {
+                "effects": "gun_105mm_shot_FR"
+            },
+            "_90mm_D914": {
+                "effects": "gun_90mm_shot_FR"
+            },
+            "_90mm_D_919": {
+                "effects": "gun_105mm_shot_FR"
+            },
+            "_90mm_canon_DCA_45": {
+                "effects": "gun_90mm_shot_FR"
+            },
+            "_90mm_canon_DCA_45_AC": {
+                "effects": "gun_90mm_shot_FR_1"
+            },
+            "_90mm_canon_DCA_45A": {
+                "effects": "gun_90mm_shot_FR_2"
+            },
+            "_90mm_canon_DCA_45_AC_A": {
+                "effects": "gun_90mm_shot_FR_3"
+            },
+            "Canon_de_90mm_Vo_930_m_s": {
+                "effects": "gun_90mm_shot_FR"
+            },
+            "_100mm_SA_47": {
+                "effects": "gun_100mm_shot_FR"
+            },
+            "_100mm_SA_47_A": {
+                "effects": "gun_100mm_shot_FR_2"
+            },
+            "_100mm_SA_47_L": {
+                "effects": "gun_100mm_shot_FR_3"
+            },
+            "_105mm_CN_105_57": {
+                "effects": "gun_105mm_shot_FR_1"
+            },
+            "_105mm_mle_F1": {
+                "effects": "gun_105mm_shot_FR_2"
+            },
+            "_105mm_CN_105": {
+                "effects": "gun_105mm_shot_FR_2"
+            },
+            "_105mm_D1504": {
+                "effects": "gun_105mm_shot_FR_3"
+            },
+            "_105mm_D1504_L51": {
+                "effects": "gun_105mm_shot_FR_3"
+            },
+            "_100mm_SA_47_AC": {
+                "effects": "gun_100mm_shot_FR_3"
+            },
+            "_105mm_canon_13TR": {
+                "effects": "gun_105mm_shot_FR"
+            },
+            "Canon_de_105_mle_1930_Schneider_AC": {
+                "effects": "gun_105mm_shot_FR_2"
+            },
+            "_120mm_SA_46": {
+                "effects": "gun_120mm_shot_FR_2"
+            },
+            "_120mm_SA_46_fallout": {
+                "effects": "gun_120mm_shot_FR_2"
+            },
+            "_120mm_SA_46_AC": {
+                "effects": "gun_120mm_shot_FR"
+            },
+            "_120mm_D_1203": {
+                "effects": "gun_120mm_shot_FR"
+            },
+            "_120mm_D_1203_A": {
+                "effects": "gun_120mm_shot_FR"
+            },
+            "_120mm_D_1203_B": {
+                "effects": "gun_120mm_shot_FR"
+            },
+            "_127mm_54_Model_1948": {
+                "effects": "gun_155mm_shot_FR"
+            },
+            "_130mm_45_Model_1935": {
+                "effects": "gun_155mm_shot_FR"
+            },
+            "_155mm_SA_58_AC": {
+                "effects": "gun_155mm_shot_FR"
+            },
+            "Canon_de_155mm_de_33_calibres": {
+                "effects": "gun_155mm_shot_FR"
+            },
+            "Obusier_de_155mm_mle.1950": {
+                "effects": "gun_155mm_shot_FR"
+            },
+            "Canon_de_155mm_L_GPF": {
+                "effects": "gun_155mm_shot_FR"
+            },
+            "Canon_de_155mm": {
+                "effects": "gun_155mm_shot_FR"
+            },
+            "_120mm_SA_46_AC_IGR": {
+                "effects": "gun_120mm_shot_FR"
+            },
+            "_90mm_F3M_IGR": {
+                "effects": "gun_90mm_shot_FR"
+            },
+            "_100mm_SA_47_IGR": {
+                "effects": "gun_100mm_shot_FR"
+            },
+            "_90mm_canon_DCA_30_CA_IGR": {
+                "effects": "gun_90mm_shot_FR_2"
+            },
+            "_90mm_D914_IGR": {
+                "effects": "gun_90mm_shot_FR"
+            },
+            "_105mm_CN_105_57_IGR": {
+                "effects": "gun_105mm_shot_FR_1"
+            }
+        },
+        "germany": {
+            "_75mm_KwK_40_L48L": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_Flak_L60": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_KwK_L70": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_KwK_L70_bootcamp": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_KwK_L70_A": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_KwK_L70_ATraining": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_KwK_441_A": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_KwK45_L100": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_StuK42_L70": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_StuK42_L70A": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_KwK41_L58_conic": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_Waffe0725_1944": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_88mm_Flak_37_L56": {
+                "effects": "gun_88mm_shot_GER_2"
+            },
+            "_88mm_KwK_36_L56": {
+                "effects": "gun_88mm_shot_GER_3"
+            },
+            "_88mm_KwK_36_L56A": {
+                "effects": "gun_88mm_shot_GER"
+            },
+            "_88mm_PaK_36_L56": {
+                "effects": "gun_88mm_shot_GER_1"
+            },
+            "_88mm_Flak_41_L74": {
+                "effects": "gun_88mm_shot_GER"
+            },
+            "_88mm_KwK_43_L71": {
+                "effects": "gun_88mm_shot_GER_1"
+            },
+            "_88mm_PaK_43_L71": {
+                "effects": "gun_88mm_shot_GER_2"
+            },
+            "_88mm_KwK_43_L71A": {
+                "effects": "gun_88mm_shot_GER_3"
+            },
+            "_88mm_Pak_43_L71A": {
+                "effects": "gun_88mm_shot_GER_3"
+            },
+            "_88mm_KwK_43_L71B": {
+                "effects": "gun_88mm_shot_GER_2"
+            },
+            "_88mm_KwK_43_L71_T": {
+                "effects": "gun_88mm_shot_GER_1"
+            },
+            "_88mm_KwK_L100": {
+                "effects": "gun_88mm_shot_GER_3"
+            },
+            "_90mm_D921_F1": {
+                "effects": "gun_90mm_shot_GER"
+            },
+            "_90mm_Mecar": {
+                "effects": "gun_90mm_shot_GER_1"
+            },
+            "_90mm_Mecar_N": {
+                "effects": "gun_90mm_shot_GER"
+            },
+            "_90mm_Mecar_mit_Mehrladeeinrichtung": {
+                "effects": "gun_90mm_shot_GER_2"
+            },
+            "_90mm_Rheinmetall_90_L40": {
+                "effects": "gun_90mm_shot_GER"
+            },
+            "_90mm_Rheinmetall_90_L40A": {
+                "effects": "gun_90mm_shot_GER_1"
+            },
+            "_9cm_KwK_51_L71": {
+                "effects": "gun_90mm_shot_GER_2"
+            },
+            "_9cm_Kan": {
+                "effects": "gun_90mm_shot_GER_3"
+            },
+            "_90_76mm_US_Kanone_M_32": {
+                "effects": "gun_90mm_shot_GER_3"
+            },
+            "_100mm_Typ_D-10T2S": {
+                "effects": "gun_100mm_shot_RU"
+            },
+            "_105mm_StuH42_L28Pz": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "_105mm_K18_L52": {
+                "effects": "gun_105mm_shot_GER_3"
+            },
+            "_105mm_K18_L52_R": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "_105mm_K18_L52A": {
+                "effects": "gun_105mm_shot_GER_1"
+            },
+            "_105mm_KwK45_L52": {
+                "effects": "gun_105mm_shot_GER_2"
+            },
+            "_105mm_KwK45_L52_ausf_B": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "_105mm_KwK45_L52_ausf_K": {
+                "effects": "gun_105mm_shot_GER_3"
+            },
+            "_105mm_L7A1": {
+                "effects": "gun_105mm_shot_UK"
+            },
+            "_105mm_BK_L7A3_L51": {
+                "effects": "gun_122mm_shot_RU"
+            },
+            "_105mm_BK_L7": {
+                "effects": "gun_122mm_shot_RU"
+            },
+            "_105mm_KwK46_L68": {
+                "effects": "gun_105mm_shot_GER_1"
+            },
+            "_105mm_KwK46_L70": {
+                "effects": "gun_105mm_shot_GER_2"
+            },
+            "_105mm_Kanone": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "_128mm_L50": {
+                "effects": "gun_128mm_shot_GER_3"
+            },
+            "_128mm_L50A": {
+                "effects": "gun_128mm_shot_GER"
+            },
+            "_128mm_L50P": {
+                "effects": "gun_128mm_shot_GER_1"
+            },
+            "_128mm_KwK44_L55": {
+                "effects": "gun_128mm_shot_GER_1"
+            },
+            "Gun_VK4502P": {
+                "effects": "gun_128mm_shot_GER_2"
+            },
+            "_128mm_PaK44_2_L61": {
+                "effects": "gun_128mm_shot_GER_3"
+            },
+            "_128mm_KwK46_L61": {
+                "effects": "gun_128mm_shot_GER"
+            },
+            "_128mm_SF_L61": {
+                "effects": "gun_128mm_shot_GER"
+            },
+            "_128mm_PaK44_L55": {
+                "effects": "gun_128mm_shot_GER"
+            },
+            "_128mm_PaK44_L55A": {
+                "effects": "gun_128mm_shot_GER_1"
+            },
+            "_128mm_K43_L55": {
+                "effects": "gun_128mm_shot_GER_1"
+            },
+            "_128mm_K44_L55": {
+                "effects": "gun_128mm_shot_GER_1"
+            },
+            "_128mm_K44_2_L61": {
+                "effects": "gun_128mm_shot_GER_2"
+            },
+            "_128mm_K44_2_L61_WT": {
+                "effects": "gun_128mm_shot_GER_2"
+            },
+            "_150mm_sFH18_L30": {
+                "effects": "gun_150mm_shot_GER"
+            },
+            "_150mm_sFH36_L43": {
+                "effects": "gun_150mm_shot_GER"
+            },
+            "_150mm_KwK44_L38": {
+                "effects": "gun_150mm_shot_GER"
+            },
+            "_150mm_Rohr_L38": {
+                "effects": "gun_150mm_shot_GER"
+            },
+            "_150mm_Rohr_L29_5": {
+                "effects": "gun_150mm_shot_GER"
+            },
+            "_150mm_KwK44_L38_A": {
+                "effects": "gun_150mm_shot_GER"
+            },
+            "_150mm_Pak_L63": {
+                "effects": "gun_150mm_shot_GER"
+            },
+            "_88mm_KwK_43_L71A_IGR": {
+                "effects": "gun_88mm_shot_GER_3"
+            },
+            "_88mm_KwK_43_L71_IGR": {
+                "effects": "gun_88mm_shot_GER_1"
+            },
+            "_105mm_KwK46_L68_IGR": {
+                "effects": "gun_105mm_shot_GER_1"
+            },
+            "_75mm_StuK42_L70_IGR": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_StuK42_L70A_IGR": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_KwK45_L100_IGR": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_128mm_PaK44_L55_IGR": {
+                "effects": "gun_128mm_shot_GER"
+            },
+            "_128mm_KwK44_L55_IGR": {
+                "effects": "gun_128mm_shot_GER_1"
+            }
+        },
+        "italy": {
+            "Cannone_da_90_42": {
+                "effects": "gun_88mm_shot_GER_3"
+            },
+            "Cannone_da_90_53": {
+                "effects": "gun_90mm_shot_GER_2"
+            },
+            "Cannone_da_90_74": {
+                "effects": "gun_90mm_shot_GER_2"
+            },
+            "Cannone_da_90_50_T119E1": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "Cannone_da_90_Rh": {
+                "effects": "gun_90mm_shot_GER_3"
+            },
+            "Cannone_da_105_Rh_V1": {
+                "effects": "gun_105mm_shot_UK"
+            },
+            "Cannone_da_105_51_M68": {
+                "effects": "gun_105mm_shot_UK"
+            }
+        },
+        "japan": {
+            "_75mm_Gun_Type5_M1": {
+                "effects": "gun_75mm_shot_JAP"
+            },
+            "_75mm_Gun_Type5_M1_auto": {
+                "effects": "gun_75mm_shot_JAP"
+            },
+            "_88mm_KwK_36_L56A": {
+                "effects": "gun_88mm_shot_GER"
+            },
+            "_88mm_Edelweiss_Gun": {
+                "effects": "gun_88mm_shot_GER"
+            },
+            "_88mm_Nameless_Gun": {
+                "effects": "gun_88mm_shot_GER"
+            },
+            "_90mm_Gun_M3A1": {
+                "effects": "gun_90mm_shot_US_2"
+            },
+            "_90mm_Rifled_Gun": {
+                "effects": "gun_90mm_shot_JAP"
+            },
+            "_90mm_Rifled_Gun_1": {
+                "effects": "gun_90mm_shot_JAP_1"
+            },
+            "_90mm_Gun_Type61": {
+                "effects": "gun_90mm_shot_JAP_2"
+            },
+            "_105mm_Cannon_Type_14": {
+                "effects": "gun_105mm_shot_JAP"
+            },
+            "_105mm_Cannon_Type92": {
+                "effects": "gun_105mm_shot_JAP_3"
+            },
+            "_105mm_Experimental_Tank_Gun": {
+                "effects": "gun_105mm_shot_JAP_1"
+            },
+            "_105mm_Rifled_Gun": {
+                "effects": "gun_105mm_shot_JAP"
+            },
+            "_105mm_Experimental_Tank_Gun_Kai": {
+                "effects": "gun_105mm_shot_JAP_2"
+            },
+            "_127mm_50_3rd_Year_Type": {
+                "effects": "gun_127mm_shot_JAP"
+            },
+            "_140mm_50_3rd_Year_Type": {
+                "effects": "gun_140mm_shot_JAP"
+            },
+            "_150mm_45_41st_Year_Type": {
+                "effects": "gun_140mm_shot_JAP"
+            },
+            "_90mm_Gun_Type61_IGR": {
+                "effects": "gun_90mm_shot_JAP_2"
+            },
+            "_75mm_Gun_Type5_M1_auto_IGR": {
+                "effects": "gun_105mm_shot_JAP"
+            },
+            "_105mm_Rifled_Gun_IGR": {
+                "effects": "gun_105mm_shot_JAP"
+            },
+            "_75mm_Gun_Type5": {
+                "effects": "gun_75mm_shot_JAP"
+            }
+        },
+        "poland": {
+            "_75mm_KwK_L70": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_wz_1897": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_wz_22_24": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_wz_36_37": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_90mm_wz_39_40": {
+                "effects": "gun_88mm_shot_GER"
+            },
+            "_105mm_Bofors_wz_34": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "_122_mm_wz_43_50": {
+                "effects": "gun_128mm_shot_GER_1"
+            },
+            "_122mm_D_25T_P": {
+                "effects": "gun_128mm_shot_GER_1"
+            },
+            "_122mm_wz_53": {
+                "effects": "gun_128mm_shot_GER_1"
+            },
+            "_130mm_R_14_wz_56": {
+                "effects": "gun_128mm_shot_GER_1"
+            },
+            "_152mm_J_2": {
+                "effects": "gun_150mm_shot_GER"
+            }
+        },
+        "sweden": {
+            "_37mm_kanon_m_Skoda": {
+                "effects": "shot_KwK_L46"
+            },
+            "_37mm_kan_m_38_49_strv": {
+                "effects": "shot_KwK_L46"
+            },
+            "_75mm_lvkan_m_36": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_kan_strv_74_R": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_75mm_kan_strv_74": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "_84mm_kan_strv_81_1": {
+                "effects": "gun_88mm_shot_GER_3"
+            },
+            "_90mm_Bofors_L_43": {
+                "effects": "gun_88mm_shot_GER_1"
+            },
+            "_90mm_Bofors_L_53": {
+                "effects": "gun_88mm_shot_GER_2"
+            },
+            "_90mm_kan_m_F": {
+                "effects": "gun_88mm_shot_GER_1"
+            },
+            "_105mm_kan_m_44_sav": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "_105mm_kan_ikv_102": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "_105mm_kan_ikv_103": {
+                "effects": "gun_105mm_shot_GER_1"
+            },
+            "_105mm_kan_m_34": {
+                "effects": "gun_105mm_shot_GER_2"
+            },
+            "_105mm_lvkan_m_42": {
+                "effects": "gun_105mm_shot_GER_3"
+            },
+            "_105mm_TK_105_9": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "_120mm_akan_L_40": {
+                "effects": "gun_128mm_shot_GER_1"
+            },
+            "_105mm_kan_UDES_03": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "_105mm_kan_strv_103_L_51": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "_105mm_kan_strv_103_L_51_1": {
+                "effects": "gun_105mm_shot_GER"
+            },
+            "_105mm_kan_strv_103_L_62": {
+                "effects": "gun_128mm_shot_GER"
+            },
+            "_105mm_kan_strv_103_L_62_1": {
+                "effects": "gun_128mm_shot_GER"
+            }
+        },
+        "uk": {
+            "_75mm_Gun_Mk_VA": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "_76mm_Gun_M1A1": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "OQF_77mm_Gun_MkII": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "OQF_77mm_AT_Gun_MkII": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "_75mm_Gun_Vickers_HV": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "_76mm_Excalibur_Gun": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "OQF_17pdr_Gun_Mk_IV_SH_SH": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "OQF_17pdr_Gun_Mk_VII": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "OQF_17pdr_Gun_Mk_VII_A": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "_17pdr_OQF_AT": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "_17pdr_OQF_AT_1": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "_17pdr_OQF_AT_Mk_II": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "_17pdr_OQF_AT_Mk_V": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "_20pdr_Gun_Type_A": {
+                "effects": "gun_20pdr_shot_UK"
+            },
+            "_20pdr_AT_Gun_Type_A": {
+                "effects": "gun_20pdr_shot_UK_1"
+            },
+            "_20pdr_Gun_Type_B": {
+                "effects": "gun_20pdr_shot_UK_1"
+            },
+            "_20pdr_Gun_Type_B_1": {
+                "effects": "gun_20pdr_shot_UK_2"
+            },
+            "_20pdr_AT_Gun_Type_B": {
+                "effects": "gun_20pdr_shot_UK_3"
+            },
+            "_90mm_Gun_T208_rifled": {
+                "effects": "gun_90mm_shot_UK"
+            },
+            "_105mm_Gun_L7": {
+                "effects": "gun_105mm_shot_UK"
+            },
+            "_105mm_AT_Gun_L7": {
+                "effects": "gun_105mm_shot_UK_1"
+            },
+            "_105mm_Gun_L7_HEAT": {
+                "effects": "gun_105mm_shot_UK_2"
+            },
+            "_32_pounder_Gun_OQF": {
+                "effects": "gun_32pdr_shot_UK"
+            },
+            "_32-pounder_AT_Gun_OQF": {
+                "effects": "gun_32pdr_shot_UK"
+            },
+            "_32_pounder_AT_Gun_OQF_Mk_II": {
+                "effects": "gun_32pdr_shot_UK"
+            },
+            "_120mm_Gun_L1A1": {
+                "effects": "gun_120mm_shot_UK"
+            },
+            "_120mm_Gun_L1A1_A": {
+                "effects": "gun_120mm_shot_UK_1"
+            },
+            "_120mm_AT_Gun_L1A1": {
+                "effects": "gun_120mm_shot_UK_1"
+            },
+            "_120mm_Gun_L11A1": {
+                "effects": "gun_120mm_shot_UK_2"
+            },
+            "_123mm_OQF_Mk_1": {
+                "effects": "gun_120mm_shot_UK_2"
+            },
+            "_20pdr_Gun_Type_A_IGR": {
+                "effects": "gun_20pdr_shot_UK"
+            },
+            "_20pdr_Gun_Type_B_IGR": {
+                "effects": "gun_20pdr_shot_UK_1"
+            },
+            "_75mm_Gun_Vickers_HV_IGR": {
+                "effects": "gun_17pdr_shot_UK"
+            },
+            "_20pdr_AT_Gun_Type_B_IGR": {
+                "effects": "gun_20pdr_shot_UK_3"
+            },
+            "_120mm_Gun_L1A1_IGR": {
+                "effects": "gun_120mm_shot_UK"
+            },
+            "Gun_FV4202": {
+                "effects": "gun_105mm_shot_UK"
+            }
+        },
+        "usa": {
+            "_76mm_Gun_M1A1": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_M1A1L": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_M1A1T": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_AT_Gun_M1A1": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_M1A2": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_M1A2L": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_M1A2A": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_T94": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_T102": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_T91": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_M32": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_M32_late": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_T185": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_T185E": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_T185E1": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_Gun_T185_A": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_AT_Gun_M1A2": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_75mm_KwK_L70": {
+                "effects": "gun_75mm_shot_GER"
+            },
+            "Gun_1_M4A3E8_Sherman_training": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_90mm_Gun_M3E": {
+                "effects": "gun_90mm_shot_US"
+            },
+            "_90mm_Gun_T7": {
+                "effects": "gun_90mm_shot_US"
+            },
+            "_90mm_Gun_M3": {
+                "effects": "gun_90mm_shot_US_1"
+            },
+            "_90mm_Gun_T7E1": {
+                "effects": "gun_90mm_shot_US_3"
+            },
+            "_90mm_Gun_M3A1": {
+                "effects": "gun_90mm_shot_US_2"
+            },
+            "_90mm_Gun_M36": {
+                "effects": "gun_90mm_shot_US_3"
+            },
+            "_90mm_Gun_M41": {
+                "effects": "gun_90mm_shot_US"
+            },
+            "_90mm_Gun_M41E1": {
+                "effects": "gun_90mm_shot_US_1"
+            },
+            "_90mm_Gun_M54": {
+                "effects": "gun_90mm_shot_US_2"
+            },
+            "_90mm_Gun_T132E3": {
+                "effects": "gun_90mm_shot_US"
+            },
+            "_90mm_AT_Gun_M3": {
+                "effects": "gun_90mm_shot_US"
+            },
+            "_90mm_Gun_T178": {
+                "effects": "gun_90mm_shot_US"
+            },
+            "_90mm_Gun_T15E2": {
+                "effects": "gun_90mm_shot_US_1"
+            },
+            "_90mm_Gun_T15E2M2": {
+                "effects": "gun_90mm_shot_US_2"
+            },
+            "_90mm_AT_Gun_T15E2": {
+                "effects": "gun_90mm_shot_US_2"
+            },
+            "_90mm_Gun_T15E1": {
+                "effects": "gun_90mm_shot_US"
+            },
+            "_105mm_Gun_T5E1": {
+                "effects": "gun_105mm_shot_US_3"
+            },
+            "_105mm_Gun_T5E1_1": {
+                "effects": "gun_105mm_shot_US_2"
+            },
+            "_105mm_Gun_T5E1_2": {
+                "effects": "gun_105mm_shot_US_3"
+            },
+            "_105mm_AT_Gun_T5A": {
+                "effects": "gun_105mm_shot_US"
+            },
+            "_105mm_AT_Gun_T5E1": {
+                "effects": "gun_105mm_shot_US_1"
+            },
+            "_105mm_Gun_T5E1M2": {
+                "effects": "gun_105mm_shot_US_3"
+            },
+            "_105mm_Gun_M68": {
+                "effects": "gun_105mm_shot_US_2"
+            },
+            "_105mm_Gun_M68_1": {
+                "effects": "gun_105mm_shot_US_2"
+            },
+            "_105mm_Gun_T140E2": {
+                "effects": "gun_105mm_shot_US"
+            },
+            "_105mm_Lightweight_Gun": {
+                "effects": "gun_105mm_shot_US_3"
+            },
+            "_120mm_Gun_T53A1": {
+                "effects": "gun_120mm_shot_US_2"
+            },
+            "_120mm_Gun_T179": {
+                "effects": "gun_120mm_shot_US_1"
+            },
+            "_120mm_Gun_T122": {
+                "effects": "gun_120mm_shot_US_3"
+            },
+            "_120mm_Gun_M58": {
+                "effects": "gun_120mm_shot_US_2"
+            },
+            "_120mm_Gun_T123E6": {
+                "effects": "gun_120mm_shot_US_3"
+            },
+            "_120mm_AT_Gun_T53": {
+                "effects": "gun_120mm_shot_US"
+            },
+            "_76mm_Gun_T185E_IGR": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_90mm_Gun_T178_IGR": {
+                "effects": "gun_90mm_shot_US"
+            },
+            "_120mm_Gun_T53A1_IGR": {
+                "effects": "gun_120mm_shot_US_2"
+            },
+            "_76mm_Gun_M1A2_IGR": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_76mm_AT_Gun_M1A1_IGR": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_90mm_Gun_T15E2M2_IGR": {
+                "effects": "gun_90mm_shot_US_2"
+            },
+            "_105mm_Gun_T5E1_IGR": {
+                "effects": "gun_105mm_shot_US_3"
+            },
+            "_76mm_Gun_M1A1_IGR": {
+                "effects": "gun_76mm_shot_US"
+            },
+            "_105mm_Gun_M68_IGR": {
+                "effects": "gun_105mm_shot_US_2"
+            }
+        },
+        "ussr": {
+            "_85mm_D-5T": {
+                "effects": "gun_85mm_shot_RU"
+            },
+            "_85mm_S-31": {
+                "effects": "gun_85mm_shot_RU_1"
+            },
+            "_85mm_D-5S": {
+                "effects": "gun_85mm_shot_RU_2"
+            },
+            "_85mm_D-5S-85A": {
+                "effects": "gun_85mm_shot_RU_3"
+            },
+            "_85mm_D-5S-85A_1": {
+                "effects": "gun_85mm_shot_RU"
+            },
+            "_85mm_D5T-85BM": {
+                "effects": "gun_85mm_shot_RU"
+            },
+            "_85mm_D5T-85BMA": {
+                "effects": "gun_85mm_shot_RU_1"
+            },
+            "_85mm_D5T-85BMU": {
+                "effects": "gun_85mm_shot_RU_2"
+            },
+            "_85mm_D5S-85BM": {
+                "effects": "gun_85mm_shot_RU_2"
+            },
+            "_85mm_D10_85": {
+                "effects": "gun_85mm_shot_RU_1"
+            },
+            "_85mm_D_58": {
+                "effects": "gun_85mm_shot_RU_1"
+            },
+            "_85mm_ZiS_S-53": {
+                "effects": "gun_85mm_shot_RU_1"
+            },
+            "_85mm_ZiS_S-53M": {
+                "effects": "gun_85mm_shot_RU_2"
+            },
+            "_85mm_ZiS_S-53A": {
+                "effects": "gun_85mm_shot_RU_2"
+            },
+            "_85mm_ZiS_S-53_B": {
+                "effects": "gun_85mm_shot_RU_3"
+            },
+            "_85mm_ZiS_S-53_44": {
+                "effects": "gun_85mm_shot_RU"
+            },
+            "_85mm_ZiS_S-53_44BM": {
+                "effects": "gun_85mm_shot_RU_2"
+            },
+            "_85mm_ZiS_S-53T": {
+                "effects": "gun_85mm_shot_RU_1"
+            },
+            "_85mm_LB-2S": {
+                "effects": "gun_85mm_shot_RU_2"
+            },
+            "_85mm_F-30": {
+                "effects": "gun_85mm_shot_RU_3"
+            },
+            "_85mm_F-30A": {
+                "effects": "gun_85mm_shot_RU"
+            },
+            "_100mm_S34": {
+                "effects": "gun_100mm_shot_RU_6"
+            },
+            "_100mm_D10T": {
+                "effects": "gun_100mm_shot_RU_7"
+            },
+            "_100mm_D10TM": {
+                "effects": "gun_100mm_shot_RU"
+            },
+            "_100mm_D10S": {
+                "effects": "gun_100mm_shot_RU_8"
+            },
+            "_100mm_D10T_obr_45": {
+                "effects": "gun_100mm_shot_RU_9"
+            },
+            "_100mm_D10T_obr_45M": {
+                "effects": "gun_100mm_shot_RU_1"
+            },
+            "_100mm_D-10T2S": {
+                "effects": "gun_100mm_shot_RU_2"
+            },
+            "_100mm_D10S_obr_44": {
+                "effects": "gun_100mm_shot_RU_10"
+            },
+            "_100mm_D10TK": {
+                "effects": "gun_100mm_shot_RU_9"
+            },
+            "_100mm_LB-1": {
+                "effects": "gun_100mm_shot_RU_8"
+            },
+            "_100mm_LB-1A": {
+                "effects": "gun_100mm_shot_RU_9"
+            },
+            "_100mm_LB-1B": {
+                "effects": "gun_100mm_shot_RU_10"
+            },
+            "_100mm_LB-1S": {
+                "effects": "gun_100mm_shot_RU_10"
+            },
+            "_100mm_D54_obr_45": {
+                "effects": "gun_100mm_shot_RU_3"
+            },
+            "_100mm_D54_obr_45U": {
+                "effects": "gun_100mm_shot_RU_3"
+            },
+            "_100mm_D54_TS": {
+                "effects": "gun_100mm_shot_RU"
+            },
+            "_100mm_D54_TS_fallout": {
+                "effects": "gun_100mm_shot_RU"
+            },
+            "_100mm_D54_M": {
+                "effects": "gun_100mm_shot_RU_1"
+            },
+            "_100mm_D54S": {
+                "effects": "gun_100mm_shot_RU_4"
+            },
+            "_100mm_M-63": {
+                "effects": "gun_100mm_shot_RU_5"
+            },
+            "_100mm_T_100": {
+                "effects": "gun_100mm_shot_RU_2"
+            },
+            "_100mm_D_46T": {
+                "effects": "gun_100mm_shot_RU_2"
+            },
+            "_107mm_ZiS-6": {
+                "effects": "gun_107mm_shot_RU_3"
+            },
+            "_107mm_ZiS-6_S": {
+                "effects": "gun_107mm_shot_RU_1"
+            },
+            "_107mm_ZiS-24": {
+                "effects": "gun_107mm_shot_RU"
+            },
+            "_107mm_ZiS-24_A": {
+                "effects": "gun_107mm_shot_RU_2"
+            },
+            "_107mm_ZiS-6M": {
+                "effects": "gun_107mm_shot_RU"
+            },
+            "_122-mm_D-25T_with_a_piston_shutter": {
+                "effects": "gun_122mm_shot_RU"
+            },
+            "_122-mm_D-25T_with_wedges_shutter": {
+                "effects": "gun_122mm_shot_RU_2"
+            },
+            "_122-mm_D-25T_with_wedges_shutter_A": {
+                "effects": "gun_122mm_shot_RU_3"
+            },
+            "_122-mm_D-25T_with_wedges_shutter_B": {
+                "effects": "gun_122mm_shot_RU_3"
+            },
+            "_122-mm_D-30": {
+                "effects": "gun_122mm_shot_RU"
+            },
+            "_122-mm_D-25TA": {
+                "effects": "gun_122mm_shot_RU_1"
+            },
+            "_122mm_D_25TS": {
+                "effects": "gun_122mm_shot_RU_1"
+            },
+            "_122mm_D_25TSU": {
+                "effects": "gun_122mm_shot_RU_1"
+            },
+            "_122-mm_D-49": {
+                "effects": "gun_122mm_shot_RU_2"
+            },
+            "_122-mm_D-25S_with_a_piston_shutter": {
+                "effects": "gun_122mm_shot_RU_1"
+            },
+            "_122-mm_D-25S_with_wedges_shutter_A": {
+                "effects": "gun_122mm_shot_RU_3"
+            },
+            "_122mm_D-25C_mod1944": {
+                "effects": "gun_122mm_shot_RU"
+            },
+            "_122mm_D-25C_mod1944_B": {
+                "effects": "gun_122mm_shot_RU_1"
+            },
+            "_122mm_D_25_SU_101": {
+                "effects": "gun_122mm_shot_RU_1"
+            },
+            "_122mm_D-25-44": {
+                "effects": "gun_122mm_shot_RU_2"
+            },
+            "_122mm_D-25-44_1": {
+                "effects": "gun_122mm_shot_RU_3"
+            },
+            "_122mm_D_25BM": {
+                "effects": "gun_122mm_shot_RU_3"
+            },
+            "_122mm_A-19": {
+                "effects": "gun_122mm_shot_RU_2"
+            },
+            "_122mm_howitzer_A-19": {
+                "effects": "gun_122mm_shot_RU_3"
+            },
+            "_122mm_BL-9": {
+                "effects": "gun_122mm_shot_RU"
+            },
+            "_122mm_M62-T2": {
+                "effects": "gun_122mm_shot_RU"
+            },
+            "_122mm_M62-T2A": {
+                "effects": "gun_122mm_shot_RU_1"
+            },
+            "_122mm_M62-T2S": {
+                "effects": "gun_122mm_shot_RU_2"
+            },
+            "_122mm_M62_T2": {
+                "effects": "gun_122mm_shot_RU_2"
+            },
+            "_122mm_BL_13": {
+                "effects": "gun_122mm_shot_RU_3"
+            },
+            "_122mm_BL-13-1": {
+                "effects": "gun_122mm_shot_RU_3"
+            },
+            "_122mm_BL_13_1_A": {
+                "effects": "gun_122mm_shot_RU_3"
+            },
+            "_122mm_BL-9S": {
+                "effects": "gun_122mm_shot_RU_1"
+            },
+            "_130mm_S-70": {
+                "effects": "gun_130mm_shot_RU"
+            },
+            "_130mm_S-70A": {
+                "effects": "gun_130mm_shot_RU_2"
+            },
+            "_130mm_S-70_fallout": {
+                "effects": "gun_130mm_shot_RU"
+            },
+            "_130mm_B-13-S2": {
+                "effects": "gun_130mm_shot_RU_1"
+            },
+            "_130mm_B_13": {
+                "effects": "gun_130mm_shot_RU_1"
+            },
+            "_130mm_S-26A": {
+                "effects": "gun_130mm_shot_RU_3"
+            },
+            "_130mm_M_65": {
+                "effects": "gun_130mm_shot_RU"
+            },
+            "_152mm_BR-2": {
+                "effects": "gun_152mm_shot_RU_1"
+            },
+            "_152mm_M-10": {
+                "effects": "gun_152mm_shot_RU"
+            },
+            "_152mm_M-10_W": {
+                "effects": "gun_152mm_shot_RU"
+            },
+            "_152mm_ML-20_mod_1937": {
+                "effects": "gun_152mm_shot_RU_1"
+            },
+            "_152mm_howitzer_ML-20_mod_1931": {
+                "effects": "gun_152mm_shot_RU_2"
+            },
+            "_152mm_howitzer_D-1": {
+                "effects": "gun_152mm_shot_RU_3"
+            },
+            "_152mm_ML-20C": {
+                "effects": "gun_152mm_shot_RU"
+            },
+            "_152mm_ML-20CM_obr1944": {
+                "effects": "gun_152mm_shot_RU_3"
+            },
+            "_152mm_D_4S": {
+                "effects": "gun_152mm_shot_RU_3"
+            },
+            "_152mm_BL-10": {
+                "effects": "gun_152mm_shot_RU"
+            },
+            "_152mm_M64": {
+                "effects": "gun_152mm_shot_RU_2"
+            },
+            "_152mm_M_53": {
+                "effects": "gun_152mm_shot_RU_3"
+            },
+            "_152mm_M_53_A": {
+                "effects": "gun_152mm_shot_RU_3"
+            },
+            "_152mm_M_51": {
+                "effects": "gun_152mm_shot_RU_3"
+            },
+            "_152mm_BL-10_IGR": {
+                "effects": "gun_152mm_shot_RU"
+            },
+            "_100mm_LB-1_IGR": {
+                "effects": "gun_100mm_shot_RU_8"
+            },
+            "_122mm_BL-9_IGR": {
+                "effects": "gun_122mm_shot_RU"
+            },
+            "_100mm_S34_IGR": {
+                "effects": "gun_100mm_shot_RU_6"
+            },
+            "_152mm_M-10_IGR": {
+                "effects": "gun_152mm_shot_RU"
+            },
+            "_122mm_D-25C_mod1944_IGR": {
+                "effects": "gun_122mm_shot_RU"
+            },
+            "_107mm_ZiS-6M_IGR": {
+                "effects": "gun_107mm_shot_RU"
+            },
+            "_130mm_S-70_IGR": {
+                "effects": "gun_130mm_shot_RU"
+            }
+        }
+    }
+}

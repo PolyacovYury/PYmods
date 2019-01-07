@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/audioww/audio_mods.xml": "res/res/audioww/audio_mods.xml"
+    }
+}

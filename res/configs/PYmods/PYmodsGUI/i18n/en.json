@@ -1,0 +1,9 @@
+﻿{
+    "gui_buttonApply": "Apply",
+    "gui_buttonCancel": "Cancel",
+    "gui_buttonOK": "OK",
+    "gui_description": "<font color='#DD7700'><b>Polyacov_Yury</b></font>'s modifications enabling and settings",
+    "gui_enableButtonTooltip": "{HEADER}ON/OFF{/HEADER}{BODY}Enable/disable this mod{/BODY}",
+    "gui_name": "PY's mods settings",
+    "gui_windowTitle": "Polyacov_Yury's mods settings"
+}

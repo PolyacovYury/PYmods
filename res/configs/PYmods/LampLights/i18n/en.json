@@ -1,0 +1,22 @@
+﻿{
+    "UI_activLamps": "Lamps ENABLED",
+    "UI_deactivLamps": "Lamps DISABLED",
+    "UI_description": "Lamp Lights Enabler",
+    "UI_serviceChannelPopUp": "<b>{author}<font color=\"#cc9933\"> brought some light!</font></b>",
+    "UI_setting_attachTo": " • Will be attached to ",
+    "UI_setting_attachToAlly": "allies",
+    "UI_setting_attachToEnemy": "enemies",
+    "UI_setting_attachToPlayer": "player tanks",
+    "UI_setting_caps_text": "Total configs loaded: {totalCfg}, light sources: {totalSrc}, models: {models}",
+    "UI_setting_enableAtStartup_text": "Lamps are enabled by default",
+    "UI_setting_enableAtStartup_tooltip": "Lamp lights will be added after battle loads.",
+    "UI_setting_enableMessage_text": "Enable service channel message",
+    "UI_setting_enableMessage_tooltip": "This allows the mod to send a notification to service channel in no-GUI mode.",
+    "UI_setting_hotkey_text": "LampLights hotkey",
+    "UI_setting_hotkey_tooltip": "Pressing this button in-battle toggles lamps on/off.",
+    "UI_setting_meta_AND": " and ",
+    "UI_setting_meta_NDA": "{attachTo} • No data available or provided.",
+    "UI_setting_meta_no_configs": "No configs were loaded.",
+    "UI_setting_meta_text": "Loaded configs:",
+    "UI_setting_meta_tooltip": "%(meta)s"
+}

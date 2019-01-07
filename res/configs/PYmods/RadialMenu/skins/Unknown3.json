@@ -1,0 +1,741 @@
+{
+    "TankMenu": {
+        "default": [
+            {"title": "Победа!",
+                "icon": "Support",
+                "text": "{randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "Победа!",
+                    "Terrorist win!",
+                    "Fatality!",
+                    "Пришел, увидел, победил! Veni, vidi, vici!",
+                    "Троекратное: Ура! Ура! Урааааа!",
+                    "Победа принадлежит самым упорным.",
+                    "Всегда победа с теми, в ком согласие."
+                ]
+            },
+            {"title": "Сбейте захват!",
+                "icon": "Backtobase",
+                "text": "Нужно срочно сбивать захват!",
+                "chatMode": "Team"
+            },
+            {"title": "Не лезьте!",
+                "icon": "Yes",
+                "text": "{randpart}!",
+                "chatMode": "Team",
+                "variants": [
+                    "Не лезьте,они этого и ждут!",
+                    "Не лезьте,будьте умнее!",
+                    "Не лезьте,это игра на нервы!",
+                    "Не лезьте,не стоит отхватывать от кучи стволов!",
+                    "Не лезьте,не надо!",
+                    "Не лезьте,рано еще!",
+                    "Не лезьте,сами вылезут!",
+                    "Не лезьте!"
+                ]
+            },
+            {"title": "Приколы",
+                "icon": "YES",
+                "text": "{randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "Ну что, постреляем? Или сразу назад в красивый ангар?",
+                    "Да я пока звезды снимаю уже 1.5кк накопил!!!! Чтоб вам всем жена так готовила, как вы играете!",
+                    "Играешь 15 на 15 , а кажется что у врагов всё равно на 5 танков больше",
+                    "Танкист ошибается дважды. В первый раз выручает аптечка",
+                    "Чаще всего побеждает тот, кого не принимали всерьёз!",
+                    "Мертвый противник - наш лучший союзник. Так увеличим число наших союзников до тридцати!"
+                ]
+            },
+            {"title": "Спасибо!",
+                "icon": "Yes",
+                "text": "Спасибо, товарищ!",
+                "chatMode": "Team"
+            },
+            {"title": "Команда оленей!",
+                "icon": "No",
+                "text": "{randpart}",
+                "chatMode": "Team",
+                "variants": [
+                    "О великий ВБР... ну ЗА ЧТО?",
+                    "Снова одни олени!",
+                    "Опять сливаем из-за вас",
+                    "Вы дно!",
+                    "Слов не хватает, чтобы описать, как я зол",
+                    "Шо, Апять кОникулы?!",
+                    "Чую, ВБР меня недолюбливает...",
+                    "Опять сливаться?"
+                ]
+            }
+        ],
+        "ally": [
+            {"title": "Не спеши!",
+                "icon": "Stop",
+                "text": "{name}, не спеши слиться, успеешь.",
+                "chatMode": "Team"
+            },
+            {"title": "За мной!",
+                "icon": "Followme",
+                "text": "{name}, следуй за мной, нужна поддержка!",
+                "chatMode": "Team"
+            },
+            {"title": "Не подпирай!",
+                "icon": "Stop",
+                "text": "{name}, не подпирай, идиот!",
+                "chatMode": "Team"
+            },
+            {"title": "Уйди из прицела!",
+                "icon": "Turnback",
+                "text": "{name}, свали! Не прозрачный! Бью насквозь!",
+                "chatMode": "Team"
+            },
+            {"title": "Помоги!",
+                "icon": "Followme",
+                "text": "{name}, помоги, иду в атаку!",
+                "chatMode": "Team"
+            },
+            {"title": "Останусь в дефе",
+                "icon": "No",
+                "text": "{name}, я в дефе, дальше не пойду",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {"title": "Он на гуслях",
+                "icon": "Support",
+                "text": "Танк - {name} ({vehicle}) на гуслях!!!",
+                "chatMode": "Team"
+            },
+            {"title": "Умри!",
+                "icon": "Yes",
+                "text": "{name}, {randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "словил чемодан?",
+                    "в ангаре тебе самое место!",
+                    "умри, умри, умри!",
+                    "ты почему ещё не сдох?",
+                    "сдохни уже!",
+                    "Аид тебя уже заждался!",
+                    "воды Стикса ждут тебя!",
+                    "лови чемодан!",
+                    "лови!",
+                    "везунчик, ты ещё не сдох?",
+                    "как тебе плюшка?",
+                    "поймал?"
+                ]
+            },
+            {"title": "Я тебя убью!",
+                "icon": "Attack",
+                "text": "{name}, {randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "сейчас я тебя съем!",
+                    "ням-ням!",
+                    "я тебя загрызу!",
+                    "пришла твоя смерть!",
+                    "стой, печенька!",
+                    "царство мертвых ждёт тебя!",
+                    "стой, говорю!",
+                    "улыбанись, тебя снимает... снайпер!",
+                    "Аид передавал тебе приглашение в гости!",
+                    "отправляйся к праотцам",
+                    "принимай посылку",
+                    "лови плюшку",
+                    "лови печеньку",
+                    "лови чемодан",
+                    "посылка нашла адресата?"
+                ]
+            },
+            {"title": "Фокус",
+                "icon": "Support",
+                "text": "Атака по - {vehicle} - {name}!",
+                "chatMode": "Team"
+            },
+            {"title": "Он на КД, помогите!",
+                "icon": "Support",
+                "text": "Танк - {name} ({vehicle}) разряжен, помогите!",
+                "chatMode": "Team"
+            },
+            {"title": "Погибшему врагу",
+                "icon": "Followme",
+                "text": "{name}, {randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "поймал? Чего молчишь?",
+                    "как тебе последняя плюшка?",
+                    "словил?",
+                    "отдыхай!",
+                    "отправляйся в ангар!",
+                    "передавай привет Аиду!",
+                    "вкусная печенька!",
+                    "посылка нашла адресата!",
+                    "мир праху твоему"
+                ]
+            }
+        ]
+    },
+    "lightTankMenu": {
+        "default": [
+            {"title": "Свечу здесь",
+                "icon": "Support",
+                "text": "Будьте готовы, дам засвет в {viewPos}",
+                "chatMode": "Team"
+            },
+            {"title": "Ближе",
+                "icon": "Support",
+                "text": "Ближе подъедьте к {ownPos}. Я кому свечу? Вы же НЕ ДОСТАЕТЕ",
+                "chatMode": "Team"
+            },
+            {"title": "Сваливаю",
+                "icon": "Turnback",
+                "text": "Я сваливаю, тут слишком жарко",
+                "chatMode": "Team"
+            },
+            {"title": "Беру базу!",
+                "icon": "Helpme",
+                "text": "Буду делать захват, требуется прикрытие!",
+                "chatMode": "Team"
+            },
+            {"title": "Метим цели",
+                "icon": "Support",
+                "text": "Арта, метим и бьём по одной цели, а то светить не буду :)",
+                "chatMode": "Team"
+            },
+            {"title": "Поддержи, арта!",
+                "icon": "AttackSPG",
+                "command": "HELPME",
+                "text": "Арта, поддержи в квадрате {viewPos}, дам засвет",
+                "chatMode": "Team"
+            }
+        ],
+        "ally": [
+            {"title": "Прикрой",
+                "icon": "Helpme",
+                "text": "{name} {vehicle}, прикрой",
+                "chatMode": "Team"
+            },
+            {"title": "Стой",
+                "icon": "Stop",
+                "text": "{name} {vehicle}, не лезь, просто свети",
+                "chatMode": "Team"
+            },
+            {"title": "Назад",
+                "icon": "Turnback",
+                "text": "{name} {vehicle}, отойди назад",
+                "chatMode": "Team"
+            },
+            {"title": "Дам свет",
+                "icon": "Helpme",
+                "text": "Приготовься {name} {vehicle} в квадрате {viewPos} дам свет",
+                "chatMode": "Team"
+            },
+            {"title": "Как танк?",
+                "icon": "Reload",
+                "text": "{name}, как {vehicle}? Нагибает?",
+                "chatMode": "Team"
+            },
+            {"title": "Поддержи!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "{name} ({vehicle}), поддержи!",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {"title": "Убейте!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "Убейте {name} ({vehicle}), он меня загрызет!",
+                "chatMode": "Team"
+            },
+            {"title": "Рвется к арте!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "Убейте {name} ({vehicle}), он рвется к нашей арте!",
+                "chatMode": "Team"
+            },
+            {"title": "Приоритетная цель!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "{name} ({vehicle}) - первая цель, он очень опасен!",
+                "chatMode": "Team"
+            },
+            {"title": "Отдыхай!",
+                "icon": "Yes",
+                "text": "{name}, {randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "покойся с миром",
+                    "отдыхай",
+                    "в ангаре тебе самое место",
+                    "больше ты никого не убьешь"
+                ]
+            },
+            {"title": "Всех покараю!",
+                "icon": "Attack",
+                "text": "Всех покараю, всех засвечу!",
+                "chatMode": "All"
+            },
+            {"title": "Я тебя вижу",
+                "icon": "Yes",
+                "text": "{name}, {randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "а я тебя вижу!",
+                    "привет!",
+                    "улыбнись, тебя снимает скрытая арта!",
+                    "готовь чемоданоприемник!"
+                ]
+            }
+        ]
+    },
+    "mediumTankMenu": {
+        "default": [
+            {"title": "Деф!!!",
+                "icon": "Backtobase",
+                "text": "Все в оборону!!! Работаем по фокусу!!",
+                "chatMode": "Team"
+            },
+            {"title": "Свет сюда!",
+                "icon": "Support",
+                "text": "Подсветите {viewPos}, старайтесь не слиться сразу",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            },
+            {"title": "Сваливаю!",
+                "icon": "Helpme",
+                "text": "Нужна помощь!!!",
+                "chatMode": "Team"
+            },
+            {"title": "Даю свет!",
+                "icon": "Helpme",
+                "text": "Помогите! Даю свет {ownPos}!!!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {"title": "Раш!!!",
+                "icon": "Attack",
+                "text": "Давим, парни!!!!",
+                "chatMode": "Team"
+            },
+            {"title": "Поддержи, арта!",
+                "icon": "AttackSPG",
+                "command": "HELPME",
+                "text": "Арта, поддержи в квадрате {viewPos}",
+                "chatMode": "Team"
+            }
+        ],
+        "ally": [
+            {"title": "Прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "{vehicle}, прикрой!",
+                "chatMode": "Team"
+            },
+            {"title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "text": "{name}, не лезь!",
+                "chatMode": "Team"
+            },
+            {"title": "Назад!",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "text": "{name}, Назад!!! Сами высунутся!!!",
+                "chatMode": "Team"
+            },
+            {"title": "Пошли со мной!",
+                "icon": "Helpme",
+                "text": "Пошли со мной! Поможешь!",
+                "chatMode": "Team"
+            },
+            {"title": "Как танк?",
+                "icon": "Reload",
+                "text": "{name}, как {vehicle}? Нагибает?",
+                "chatMode": "Team"
+            },
+            {"title": "Поддержи!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "{name} ({vehicle}), поддержи!",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {"title": "Убейте!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "Убейте {name} ({vehicle}), он меня загрызет!",
+                "chatMode": "Team"
+            },
+            {"title": "Рвется к арте!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "Убейте {name} ({vehicle}), он рвется к нашей арте!",
+                "chatMode": "Team"
+            },
+            {"title": "Приоритетная цель!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "{name} ({vehicle}) - первая цель, он очень опасен!",
+                "chatMode": "Team"
+            },
+            {"title": "Отдыхай!",
+                "icon": "Yes",
+                "text": "{name}, {randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "покойся с миром",
+                    "отдыхай",
+                    "в ангаре тебе самое место",
+                    "больше ты никого не убьешь"
+                ]
+            },
+            {"title": "Всех покараю!",
+                "icon": "Attack",
+                "text": "Всех покараю!!",
+                "chatMode": "All"
+            },
+            {"title": "Я тебя вижу",
+                "icon": "Yes",
+                "text": "{name}, {randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "а я тебя вижу!",
+                    "привет!",
+                    "улыбнись, тебя снимает скрытая арта!",
+                    "готовь чемоданоприемник!"
+                ]
+            }
+        ]
+    },
+    "heavyTankMenu": {
+        "default": [
+            {"title": "Деф!!!",
+                "icon": "Backtobase",
+                "text": "Все в оборону!!! Работаем по фокусу!!",
+                "chatMode": "Team"
+            },
+            {"title": "Свет сюда!",
+                "icon": "Support",
+                "text": "Подсветите {viewPos}, старайтесь не слиться сразу",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            },
+            {"title": "Сваливаю!",
+                "icon": "Helpme",
+                "text": "Нужна помощь!!!",
+                "chatMode": "Team"
+            },
+            {"title": "Даю свет!",
+                "icon": "Helpme",
+                "text": "Помогите! Даю свет {ownPos}!!!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {"title": "Раш!!!",
+                "icon": "Attack",
+                "text": "Давим, парни!!!!",
+                "chatMode": "Team"
+            },
+            {"title": "Поддержи, арта!",
+                "icon": "AttackSPG",
+                "command": "HELPME",
+                "text": "Арта, поддержи в квадрате {viewPos}",
+                "chatMode": "Team"
+            }
+        ],
+        "ally": [
+            {"title": "Прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "{vehicle}, прикрой!",
+                "chatMode": "Team"
+            },
+            {"title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "text": "{name}, не лезь!",
+                "chatMode": "Team"
+            },
+            {"title": "Назад!",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "text": "{name}, Назад!!! Сами высунутся!!!",
+                "chatMode": "Team"
+            },
+            {"title": "Пошли со мной!",
+                "icon": "Helpme",
+                "text": "Пошли со мной! Поможешь!",
+                "chatMode": "Team"
+            },
+            {"title": "Как танк?",
+                "icon": "Reload",
+                "text": "{name}, как {vehicle}? Нагибает?",
+                "chatMode": "Team"
+            },
+            {"title": "Поддержи!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "{name} ({vehicle}), поддержи!",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {"title": "Убейте!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "Убейте {name} ({vehicle}), он меня загрызет!",
+                "chatMode": "Team"
+            },
+            {"title": "Рвется к арте!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "Убейте {name} ({vehicle}), он рвется к нашей арте!",
+                "chatMode": "Team"
+            },
+            {"title": "Приоритетная цель!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "text": "{name} ({vehicle}) - первая цель, он очень опасен!",
+                "chatMode": "Team"
+            },
+            {"title": "Отдыхай!",
+                "icon": "Yes",
+                "text": "{name}, {randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "покойся с миром",
+                    "отдыхай",
+                    "в ангаре тебе самое место",
+                    "больше ты никого не убьешь"
+                ]
+            },
+            {"title": "Всех покараю!",
+                "icon": "Attack",
+                "text": "Всех покараю!!",
+                "chatMode": "All"
+            },
+            {"title": "Я тебя вижу",
+                "icon": "Yes",
+                "text": "{name}, {randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "а я тебя вижу!",
+                    "привет!",
+                    "улыбнись, тебя снимает скрытая арта!",
+                    "готовь чемоданоприемник!"
+                ]
+            }
+        ]
+    },
+    "SPGMenu": {
+        "default": [
+            {"title": "Подсветите",
+                "icon": "Support",
+                "text": "Аккуратно подсветите {viewPos} и назад",
+                "chatMode": "Team"
+            },
+            {"title": "Свелся, помогу",
+                "icon": "Yes",
+                "text": "Свелся на квадрат {viewPos}, помогу",
+                "chatMode": "Team"
+            },
+            {"title": "Переезжаю",
+                "icon": "Support",
+                "text": "Перебираюсь в квадрат {viewPos}",
+                "chatMode": "Team"
+            },
+            {"title": "Ловим свет",
+                "icon": "Support",
+                "text": "Внимание, летит светляк. Ловим",
+                "chatMode": "Team"
+            },
+            {"title": "От арты",
+                "icon": "Support",
+                "text": "ТТ, отойдите от арты минимум на 300 метров. Приедут, засветят и убьют арту. Кто вам поможет?",
+                "chatMode": "Team"
+            },
+            {"title": "Метьте цели",
+                "icon": "Support",
+                "text": "Метьте цели и ставьте на гусли. Я помогу",
+                "chatMode": "Team"
+            }
+        ],
+        "ally": [
+            {"title": "Атакую клинч",
+                "icon": "Attack",
+                "text": "{name} ({vehicle}), {randpart}",
+                "chatMode": "Team",
+                "variants": [
+                    "сейчас прилетит чемодан, отойди",
+                    "откатись назад, стреляю по клинчу",
+                    "отвали от него, чемодан летит"
+                ],
+                "noRandomChoice": "1"
+            },
+            {"title": "Стой-свети",
+                "icon": "Stop",
+                "text": "{name} {vehicle}, не лезь, просто свети, живи.",
+                "chatMode": "Team"
+            },
+            {"title": "Назад",
+                "icon": "Turnback",
+                "text": "{name} {vehicle}, отойди назад",
+                "chatMode": "Team"
+            },
+            {"title": "Помогите ему",
+                "icon": "Helpme",
+                "text": "Помогите {name} {vehicle} в квадрате {viewPos}, он сам не справится",
+                "chatMode": "Team"
+            },
+            {"title": "Дай свет",
+                "icon": "Support",
+                "text": "{name} {vehicle}, дай лёгкий свет и назад",
+                "chatMode": "Team"
+            },
+            {"title": "От арты",
+                "icon": "Support",
+                "text": "{name}  {vehicle}, отойди от арты минимум на 300 метров. Свети - помогу",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {"title": "Атакую клинч",
+                "icon": "AttackSPG",
+                "text": "Атакую {name}, {randpart}",
+                "chatMode": "Team",
+                "variants": [
+                    "отойдите от него",
+                    "откатитесь назад, стреляю по клинчу",
+                    "отвалите от него, чемодан летит"
+                ],
+                "noRandomChoice": "1"
+            },
+            {"title": "Добейте",
+                "icon": "Attack",
+                "text": "Добейте ваншотного {name}  {vehicle}",
+                "chatMode": "Team"
+            },
+            {"title": "Я тебя вижу",
+                "icon": "Yes",
+                "text": "{name}  {vehicle}, {randpart}",
+                "variants": [
+                    "а я тебя вижу",
+                    "привет от арты, парень",
+                    "улыбнись, тебя снимает скрытая арта",
+                    "готовь чемоданоприемник"
+                ],
+                "noRandomChoice": "1",
+                "chatMode": "All"
+            },
+            {"title": "Поймал?",
+                "icon": "Yes",
+                "text": "{name}  {vehicle}, {randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "поймал? Чего молчишь, парень?",
+                    "как тебе плюшка, пацан?",
+                    "как тебе чемодан, парень?",
+                    "словил плюху? Ничего личного",
+                    "извини, не хотел"
+                ],
+                "noRandomChoice": "1"
+            },
+            {"title": "Не достаю",
+                "icon": "No",
+                "text": "Не могу достать {name} {vehicle}, он за укрытием",
+                "chatMode": "Team"
+            },
+            {"title": "Поймайте свет",
+                "icon": "Stop",
+                "text": "Поймайте свет {vehicle} в {viewPos}",
+                "chatMode": "Team"
+            }
+        ]
+    },
+    "Map_default": {
+        "default": [
+            {"title": "Победа!",
+                "icon": "Support",
+                "text": "{randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "Победа!",
+                    "Terrorist win!",
+                    "Fatality!",
+                    "Пришел, увидел, победил! Veni, vidi, vici!",
+                    "Троекратное: Ура! Ура! Урааааа!",
+                    "Победа принадлежит самым упорным.",
+                    "Всегда победа с теми, в ком согласие."
+                ]
+            },
+            {"title": "Сбейте захват!",
+                "icon": "Backtobase",
+                "command": "BACKTOBASE",
+                "text": "Нужно срочно сбивать захват!",
+                "chatMode": "Team"
+            },
+            {"title": "Не лезьте!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "text": "{randpart}!",
+                "chatMode": "Team",
+                "variants": [
+                    "Не лезьте,они этого и ждут!",
+                    "Не лезьте,будьте умнее!",
+                    "Не лезьте,это игра на нервы!",
+                    "Не лезьте,не стоит отхватывать от кучи стволов!",
+                    "Не лезьте,не надо!",
+                    "Не лезьте,рано еще!",
+                    "Не лезьте,сами вылезут!",
+                    "Не лезьте!"
+                ]
+            },
+            {"title": "Приколы",
+                "icon": "YES",
+                "text": "{randpart}",
+                "chatMode": "All",
+                "variants": [
+                    "Ну что, постреляем? Или сразу назад в красивый ангар?",
+                    "Да я пока звезды снимаю уже 1.5кк накопил!!!! Чтоб вам всем жена так готовила, как вы играете!",
+                    "Играешь 15 на 15 , а кажется что у врагов всё равно на 5 танков больше",
+                    "Танкист ошибается дважды. В первый раз выручает аптечка",
+                    "Чаще всего побеждает тот, кого не принимали всерьёз!",
+                    "Мертвый противник - наш лучший союзник. Так увеличим число наших союзников до тридцати!"
+                ]
+            },
+            {"title": "Спасибо!",
+                "icon": "Yes",
+                "text": "Спасибо, товарищ!",
+                "chatMode": "Team"
+            },
+            {"title": "Команда оленей!",
+                "icon": "No",
+                "text": "{randpart}",
+                "chatMode": "Team",
+                "variants": [
+                    "О великий ВБР... ну ЗА ЧТО?",
+                    "Снова одни олени!",
+                    "Опять сливаем из-за вас",
+                    "Вы дно!",
+                    "Слов не хватает, чтобы описать, как я зол",
+                    "Шо, Апять кОникулы?!",
+                    "Чую, ВБР меня недолюбливает...",
+                    "Опять сливаться?"
+                ]
+            }
+        ]
+    },
+    "hotkeyOnly": [
+        {"title": "Заряжаюсь",
+            "icon": "Reload",
+            "text": "Заряжаюсь, осталось {reload} секунд. Я на {viewPos}",
+            "chatMode": "Team",
+            "hotKey": ["KEY_C"],
+            "cooldown": "4"
+        }
+    ]
+}

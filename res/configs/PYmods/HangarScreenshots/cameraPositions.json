@@ -1,0 +1,26 @@
+[
+    {
+        "angles": [-80.0, -13.0],
+        "dist": 10.0,
+        "pivot_pos": "",
+        "target_pos": ""
+    },
+    {
+        "angles": [-18.0, -6.0],
+        "dist": 8.5,
+        "pivot_pos": "preview_",
+        "target_pos": "preview_"
+    },
+    {
+        "angles": [100.0, -25.0],
+        "dist": 11.0,
+        "pivot_pos": "",
+        "target_pos": ""
+    },
+    {
+        "angles": [162.0, -6.0],
+        "dist": 8.5,
+        "pivot_pos": "preview_",
+        "target_pos": "preview_"
+    }
+]

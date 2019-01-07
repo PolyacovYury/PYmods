@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "meta.xml": "res/meta/GO_voice.xml",
+        "res/audioww/voice_GO.bnk": "res/res/audioww/voice_GO.bnk"
+    }
+}

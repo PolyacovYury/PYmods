@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/A80_T26_E4_MilkyM4n.json": "res/configs/PYmods/RemodEnabler/remods/A80_T26_E4_MilkyM4n.json",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/A80_T26_E4_MilkyM4n.wotmod": "build/wotmods/RemodEnabler_remods/A80_T26_E4_MilkyM4n.wotmod"
+    }
+}

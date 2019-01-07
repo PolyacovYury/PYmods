@@ -1,0 +1,118 @@
+﻿{
+    "authorMessage": "Автор: Goodman12, Мастерская Гудмана.",
+    "playerWhitelist": "a13_t34_hvy",
+    "allyWhitelist": "a13_t34_hvy",
+    "enemyWhitelist": "a13_t34_hvy",
+    "chassis": {
+        "undamaged": "vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/chassis.model",
+        "traces": "{'textureSet': 'usa_03', 'lodDist': 120.0, 'size': (0.65, 0.72), 'centerOffset': 1.4797899723052979, 'bufferPrefs': 'largeTank'}",
+        "tracks": "{'leftMaterial': 'track_mat_L_skinned', 'rightMaterial': 'track_mat_R_skinned', 'lodDist': 90.0, 'textureScale': -2.0}",
+        "wheels": "{'wheels': [(False, 'WD_R0', 0.33000099658966064, True, 24.0), (False, 'WD_R8', 0.1447640061378479, False, 60.0), (False, 'WD_R9', 0.36892399191856384, True, 24.0), (True, 'WD_L0', 0.33000099658966064, True, 24.0), (True, 'WD_L8', 0.1447640061378479, False, 60.0), (True, 'WD_L9', 0.36892399191856384, True, 24.0)], 'lodDist': 70.0, 'leadingWheelSyncAngle': 60.0, 'groups': [(False, 'WD_R', 7, 1, 0.18355099856853485), (False, 'W_R', 8, 0, 0.32867199182510376), (True, 'WD_L', 7, 1, 0.18355099856853485), (True, 'W_L', 8, 0, 0.329800009727478)]}",
+        "groundNodes": "{'nodes': [], 'groups': [(True, 'Track_L', 8, 0, -0.07377050071954727, 0.07377050071954727), (False, 'Track_R', 8, 0, -0.07377050071954727, 0.07377050071954727)]}",
+        "trackNodes": "{'nodes': [('Track_VT_L0', True, -0.017000000923871994, 1248.0, 2.0, None, None, 1.0, 1.0), ('Track_VD_R0', False, 0.0, 1248.0, 2.0, None, None, 1.0, 1.0), ('Track_VT_L1', True, -0.017000000923871994, 1248.0, 2.0, None, None, 0.8999999761581421, 1.3700000047683716), ('Track_VD_L0', True, 0.0, 1248.0, 2.0, None, None, 1.0, 1.0), ('Track_VT_R0', False, -0.017000000923871994, 1248.0, 2.0, None, None, 1.0, 1.0), ('Track_VT_R1', False, -0.017000000923871994, 1248.0, 2.0, None, None, 0.8999999761581421, 1.3700000047683716)], 'groups': []}",
+        "splineDesc": "{'segmentModelLeft': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment1.model', 'segmentOffset': 0.10300000011920929, 'segment2Offset': 0.0729999989271164, 'atlasVTiles': 1, 'segment2ModelLeft': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment2.model', 'lodDist': 70.0, 'segment2ModelRight': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment2_R.model', 'segmentModelRight': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment1_R.model', 'segmentLength': 0.14100000262260437, 'rightDesc': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/right.track', 'atlasUTiles': 1, 'leftDesc': 'vehicles/remods/a13_t34_hvy_goodman12_KR/track/left.track'}",
+        "trackParams": "{'maxAmplitude': 0.10000000149011612, 'maxOffset': 0.10000000149011612, 'gravity': -9.800000190734863, 'thickness': 0.002099999925121665}",
+        "hullPosition": [0.000000, 1.11556, 0.000000],
+        "wwsoundPC": "treads_type_pc",
+        "wwsoundNPC": "trds_chf_npc",
+        "AODecals": [
+            {
+                "transform": {
+                    "row0": [4.980680, 0.000000, 0.000000],
+                    "row1": [0.000000, 1.623570, 0.000000],
+                    "row2": [0.000000, 0.000000, 10.430600],
+                    "row3": [0.000000, 0.000000, 0.000001]
+                }
+            }
+        ]
+    },
+    "hull": {
+        "undamaged": "vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/hull.model",
+        "exhaust": {
+            "pixie": "diesel_large",
+            "nodes": "HP_Track_Exhaus_1 HP_Track_Exhaus_2"
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [0.002705770079046488, 0.05270649865269661, 3.3411900997161865],
+                "rayEnd": [-0.0025102701038122177, -0.26826000213623047, 3.1025500297546387],
+                "rayUp": [0.0, 0.0, -1.0],
+                "size": 0.28999999165534973,
+                "hideIfDamaged": true,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/turret_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [1.2055200338363647, 0.8156319856643677, -1.1708400249481201],
+                "rayEnd": [1.007889986038208, 0.7965989708900452, -1.146720051765442],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.30000001192092896,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [-1.1701200008392334, 0.8180050253868103, -1.1394699811935425],
+                "rayEnd": [-1.0715299844741821, 0.8063499927520752, -1.1274199485778809],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.30000001192092896,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [1.3576899766921997, 0.7702810168266296, 0.11220499873161316],
+                "rayEnd": [1.161120057106018, 0.7524440288543701, 0.07994859665632248],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.699999988079071,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            },
+            {
+                "rayStart": [-1.3608200550079346, 0.7773150205612183, -0.05495629832148552],
+                "rayEnd": [-1.161579966545105, 0.7601569890975952, -0.05138320103287697],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.699999988079071,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/gun_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [-0.00033402699045836926, -0.01116809993982315, 2.9711101055145264],
+                "rayEnd": [-0.04400999844074249, -0.06340859830379486, 2.966209888458252],
+                "rayUp": [0.14900000393390656, 0.1379999965429306, 5.0],
+                "size": 0.8999999761581421,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null
+            }
+        ]
+    },
+    "camouflage": {
+        "tiling": [1, 1, 0, 0],
+        "exclusionMask": "vehicles/remods/a13_t34_hvy_goodman12_KR/T34_hvy_CM.dds"
+    }
+}

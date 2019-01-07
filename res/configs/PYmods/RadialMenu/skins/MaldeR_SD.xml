@@ -1,0 +1,818 @@
+<?xml version="1.0"?>
+
+<RadialMenu.xml>
+
+  <TankMenu>
+		<CommonCommands>
+			<!-- =1= -->
+			<Command>
+				<Title>Проснулись!</Title>
+				<Icon>Attack</Icon>
+				<Text>Доброе утро кэмпера на базе. Бой уже идет!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<!-- =2= -->
+			<Command>
+				<Title>КД</Title>
+				<Icon>Reload</Icon>
+				<Command>RELOADINGGUN</Command>
+				<Text>Ухожу на КД из %(ownPos)s, %(reload)s секунд</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_C</Hotkey>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+			<!-- =3= -->
+			<Command>
+				<Title>Запрос Арты</Title>
+				<Icon>AttackSPG</Icon>
+				<Text>Артиллерийская поддержка нужна в квадрате %(position)s, пожалуйста.</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+			<!-- =4= -->
+			<Command>
+				<Title>Все на захват!</Title>
+				<Icon>Attack</Icon>
+				<Text>Все на захват!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<!-- =5= -->
+			<Command>
+				<Title>В атаку!</Title>
+				<Icon>Attack</Icon>
+				<Command>ATTACK</Command>
+				<Text></Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<!-- =6= -->
+			<Command>
+				<Title>Назад на базу</Title>
+				<Icon>Backtobase</Icon>
+				<Text>Пожалуйста назад на базу, быренько!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</CommonCommands>
+
+		<TeamCommands>
+		<!-- =1= -->
+			<Command>
+				<Title>Не спеши</Title>
+				<Icon>Stop</Icon>
+				<Text>%(name)s, не спеши, притормози.</Text>
+				<ChatMode>Team</ChatMode>
+				<Hotkey>KEY_LALT+KEY_S</Hotkey>					
+			</Command>
+		<!-- =2= -->
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Command>TURNBACK</Command>
+				<Text>%(name)s, назад! Там завалят!</Text>
+				<ChatMode>Team</ChatMode>
+				
+			</Command>
+		<!-- =3= -->
+			<Command>
+				<Title>Погнали!</Title>
+				<Icon>Followme</Icon>
+				<Text>%(name)s, поехали продавим.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		<!-- =4= -->
+			<Command>
+				<Title>Не подпирай</Title>
+				<Icon>Stop</Icon>
+				<Command>STOP</Command>
+				<Text>%(name)s, не подпирай!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		<!-- =5= -->
+			<Command>
+				<Title>Из прицела!</Title>
+				<Icon>Turnback</Icon>
+				<Text>%(name)s, уйди из прицела!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		<!-- =6= -->
+			<Command>
+				<Title>Оборона</Title>
+				<Icon>Stop</Icon>
+				<Text>%(name)s, оставновись и удерживай оборону.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</TeamCommands>
+
+		<EnemyCommands>
+		<!-- =1= -->	
+			<Command>		
+				<Title>Насмешка</Title>
+				<Icon>Followme</Icon>
+				<Text>%(name)s, едь ко мне и сражайся боягуз!</Text>
+				<ChatMode>All</ChatMode>
+			</Command>
+		<!-- =2= -->
+			<Command>
+				<Title>Профокусить</Title>
+				<Icon>Support</Icon>
+				<Text>Фокусим - %(vehicle)s - %(name)s!</Text>
+				<Hotkey>KEY_T</Hotkey>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		<!-- =3= -->
+			<Command>
+				<Title>Стреляю</Title>
+				<Icon>Attack</Icon>
+				<Text>Стреляю , - %(vehicle)s - %(name)s!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		<!-- =4= -->
+			<Command>
+				<Title>Вылазь</Title>
+				<Icon>Turnback</Icon>
+				<Text>%(name)s, вылазь, не боись:)</Text>
+				<ChatMode>All</ChatMode>
+			</Command>
+		<!-- =5= -->
+			<Command>
+				<Title>Отлично</Title>
+				<Icon>Yes</Icon>
+				<Text>Молодец %(name)s. Уважаю.</Text>
+				<ChatMode>All</ChatMode>
+			</Command>
+		<!-- =6= -->
+			<Command>
+				<Title>Пока!</Title>
+				<Icon>Turnback</Icon>
+				<Text>Твое время вышло, %(name)s пока!</Text>
+				<ChatMode>All</ChatMode>
+			</Command>
+		</EnemyCommands>
+	</TankMenu>
+
+	<SPGMenu>
+		<CommonCommands>
+			<!-- =1= -->
+			<Command>
+				<Title>Свет сюда!</Title>
+				<Icon>Attack</Icon>
+				<Text>Подсветите %(viewPos)s, старайтесь не слиться сразу</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(viewPos)s</Ping>
+			</Command>
+			<!-- =2= -->
+			<Command>
+				<Title>Свелся, помогу!</Title>
+				<Icon>Yes</Icon>
+				<Text>Свелся на квадрат %(viewPos)s, помогу!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(viewPos)s</Ping>
+			</Command>
+			<!-- =3= -->
+			<Command>
+				<Title>Помогите!</Title>
+				<Icon>Helpme</Icon>
+				<Text>Обратите внимание. Нужна помощь, сам не справлюсь!</Text>
+				<Command>HELPME</Command>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+			<!-- =4= -->		
+			<Command>
+				<Title>Перезаряжаюсь!</Title>
+				<Icon>Reload</Icon>
+				<Text>Заряжаюсь ещё %(reload)s секунд</Text>
+				<Command>RELOADINGGUN</Command>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<!-- =5= -->		
+			<Command>
+				<Title>Свожусь!</Title>
+				<Icon>AttackSPG</Icon>
+				<Text>Свожусь на квадрат %(viewPos)s, нужно время для атаки</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(viewPos)s</Ping>
+			</Command>
+			<!-- =6= -->
+			<Command>
+				<Title>Готовлюсь</Title>
+				<Icon>No</Icon>
+				<Text>Занимаю позицию/Cтрелять пока не могу/Cвет сейчас бесполезен</Text>
+				<Command>NEGATIVE</Command>
+				<ChatMode>Team</ChatMode>
+			</Command>
+		</CommonCommands>
+
+		<TeamCommands>
+			<!-- =1= -->		
+			<Command>
+				<Title>Пошел!</Title>
+				<Icon>Followme</Icon>
+				<Text>%(name)s (%(vehicle)s), вперед, погнал, давай!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<!-- =2= -->
+			<Command>
+				<Title>Стой!</Title>
+				<Icon>Stop</Icon>
+				<Text>%(name)s (%(vehicle)s), не лезь, просто свети, живи.</Text>
+				<Command>STOP</Command>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<!-- =3= -->
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Text>%(name)s (%(vehicle)s), отойди назад!</Text>
+				<ChatMode>Team</ChatMode>
+				<Command>TURNBACK</Command>				
+			</Command>			
+			<!-- =4= -->			
+			<Command>
+				<Title>Помогите ему</Title>
+				<Icon>Support</Icon>
+				<Text>Помогите %(name)s (%(vehicle)s) в квадрате %(viewPos)s, он сам не справляется!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(viewPos)s</Ping> 
+			</Command>				
+			<!-- =5= -->			
+			<Command>
+				<Title>Не достаю</Title>
+				<Icon>Support</Icon>
+				<Text>%(name)s, не на линии огня.</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>			
+			<!-- =6= -->			
+			<Command>
+				<Title>Атакую клинч</Title>
+				<Icon>Turnback</Icon>
+				<Command>TURNBACK</Command>
+				<Text>%(name)s, %(randpart)s!</Text>
+				<Variants>
+					<Variant>СЕЙЧАС ПРИЛЕТИТ ЧЕМОДАН, ОТОЙДИ</Variant>
+					<Variant>ОТКАТИСЬ НАЗАД, СТРЕЛЯЮ ПО КЛИНЧУ</Variant>
+					<Variant>ОТВАЛИ ОТ НЕГО, ЧЕМОДАН ЛЕТИТ</Variant>
+				</Variants>
+				<ChatMode>Team</ChatMode>
+			</Command>	
+		</TeamCommands>
+
+		<EnemyCommands>
+			<!-- =1= -->		
+			<Command>
+				<Title>Атакую</Title>
+				<Icon>AttackSPG</Icon>
+				<Text>Чемодан  по %(name)s (%(vehicle)s) ушел, ждите доставки</Text>
+				<ChatMode>Team</ChatMode>
+				<Command>ATTACKENEMY</Command>
+				<Ping>%(viewPos)s</Ping>
+			</Command>
+			<!-- =2= -->			
+			<Command>
+				<Title>Я тебя вижу</Title>
+				<Icon>Yes</Icon>
+				<Text>%(name)s, %(randpart)s</Text>
+				<ChatMode>All</ChatMode>
+				<Variants>
+					<Variant>а я тебя вижу!</Variant>
+					<Variant>привет!</Variant>
+					<Variant>улыбнись, тебя снимает скрытая арта!</Variant>
+					<Variant>готовь чемоданоприемник!</Variant>
+				</Variants>
+			</Command>	
+			<!-- =3= -->		
+			<Command>
+				<Title>Атакую</Title>
+				<Icon>AttackSPG</Icon>
+				<Command>ATTACKENEMY</Command>
+				<Text>Стреляю в %(name)s (%(vehicle)s), ОТОЙДИТЕ ОТ НЕГО</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<!-- =4= -->
+			<Command>
+				<Title>Не достаю</Title>
+				<Icon>No</Icon>
+				<Command>NEGATIVE</Command>
+				<Text>Не могу достать %(name)s (%(vehicle)s), он за укрытием</Text>
+				<ChatMode>Team</ChatMode>
+				<ping>%(viewPos)s</ping>
+			</Command>
+			<!-- =5= -->
+			<Command>
+				<Title>Стой смирно!</Title>
+				<Icon>Stop</Icon>
+				<Text>%(name)s, да не дергайся ты, стой смирно!</Text>
+				<ChatMode>All</ChatMode>
+			</Command>	
+			<!-- =6= -->
+			<Command>
+				<Title>Поймал?</Title>
+				<Icon>Followme</Icon>
+				<Text>%(name)s, %(randpart)s</Text>
+				<ChatMode>All</ChatMode>
+				<Variants>
+					<Variant>поймал? Чего молчишь?</Variant>
+					<Variant>как тебе плюшка?</Variant>
+					<Variant>как тебе чемодан?</Variant>
+					<Variant>словил?</Variant>
+				</Variants>
+			</Command>
+		</EnemyCommands>
+	</SPGMenu>
+
+	<lightTankMenu>
+		<TeamCommands>
+			<!-- =1= -->
+			<Command>
+				<Title>Прикрой!</Title>
+				<Icon>Helpme</Icon>
+				<Text>%(vehicle)s, прикрой!</Text>
+				<Command>HELPME</Command>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<!-- =2= -->			
+			<Command>
+				<Title>Стой!</Title>
+				<Icon>Stop</Icon>
+				<Text>%(name)s, не лезь!</Text>
+				<Command>STOP</Command>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<!-- =3= -->
+			<Command>
+				<Title>Назад!</Title>
+				<Icon>Turnback</Icon>
+				<Text>%(name)s, отойди назад!</Text>
+				<ChatMode>Team</ChatMode>
+				<Command>TURNBACK</Command>				
+			</Command>			
+			<!-- =4= -->			
+			<Command>
+				<Title>Помогите ему</Title>
+				<Icon>Support</Icon>
+				<Text>Помогите %(name)s (%(vehicle)s) в квадрате %(viewPos)s!!!</Text>
+				<ChatMode>Team</ChatMode>
+				<Ping>%(viewPos)s</Ping> 
+			</Command>				
+			<!-- =5= -->			
+			<Command>
+				<Title>Как танк?</Title>
+				<Icon>Reload</Icon>
+				<Text>%(name)s, как %(vehicle)s?</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>			
+			<!-- =6= -->	
+			<Command>
+				<Title>Поддержи!</Title>
+				<Icon>Helpme</Icon>
+				<Text>%(name)s (%(vehicle)s), поддержи!</Text>
+				<Command>HELPME</Command>
+				<ChatMode>Team</ChatMode>
+			</Command>		
+
+		</TeamCommands>
+
+		<EnemyCommands>
+			<!-- =1= -->
+			<Command>
+				<Title>Убейте!</Title>
+				<Icon>Support</Icon>
+				<Text>Убейте %(name)s (%(vehicle)s), он меня загрызет!</Text>
+				<ChatMode>Team</ChatMode>
+				<Command>SUPPORTMEWITHFIRE</Command>
+			</Command>
+			<!-- =2= -->			
+			<Command>
+				<Title>Рвется к арте!</Title>
+				<Icon>Support</Icon>
+				<Text>Убейте %(name)s (%(vehicle)s), он рвется к нашей арте!</Text>
+				<ChatMode>Team</ChatMode>
+				<Command>SUPPORTMEWITHFIRE</Command>
+			</Command>		
+			<!-- =3= -->
+			<Command>
+				<Title>Приоритетная цель!</Title>
+				<Icon>Support</Icon>
+				<Text>%(name)s (%(vehicle)s) - первая цель, он очень опасен!</Text>
+				<ChatMode>Team</ChatMode>
+				<Command>SUPPORTMEWITHFIRE</Command>
+			</Command>			
+			<!-- =4= -->			
+			<Command>
+				<Title>Отдыхай!</Title>
+				<Icon>Yes</Icon>
+				<Text>%(name)s, %(randpart)s</Text>
+				<ChatMode>All</ChatMode>
+				<Variants>
+					<Variant>покойся с миром</Variant>
+					<Variant>отдыхай</Variant>
+					<Variant>в ангаре тебе самое место</Variant>
+					<Variant>больше ты никого не убьешь</Variant>
+				</Variants>
+			</Command>
+			<!-- =5= -->
+			<Command>
+				<Title>Я тебя съем!</Title>
+				<Icon>Attack</Icon>
+				<Text>%(name)s, %(randpart)s</Text>
+				<ChatMode>All</ChatMode>
+				<Variants>
+					<Variant>сейчас я тебя съем!</Variant>
+					<Variant>ням-ням!</Variant>
+					<Variant>я тебя загрызу!</Variant>
+					<Variant>пришла твоя смерть!</Variant>
+				</Variants>
+			</Command>			
+			<!-- =6= -->
+			<Command>
+				<Title>Я тебя вижу</Title>
+				<Icon>Yes</Icon>
+				<Text>%(name)s, %(randpart)s</Text>
+				<ChatMode>All</ChatMode>
+				<Variants>
+					<Variant>а я тебя вижу!</Variant>
+					<Variant>привет!</Variant>
+					<Variant>улыбнись, тебя снимает скрытая арта!</Variant>
+					<Variant>готовь чемоданоприемник!</Variant>
+				</Variants>
+			</Command>	
+
+		</EnemyCommands>
+
+		<CommonCommands>
+			<!-- =1= -->	
+			<Command>
+				<Title>Поддержи!</Title>
+				<Icon>AttackSPG</Icon>
+				<Text>Арта, поддержи в квадрате %(viewPos)s, дам засвет</Text>
+				<Command>HELPME</Command>
+				<ChatMode>Team</ChatMode>
+				<ping>%(viewPos)s</ping>
+			</Command>	
+			<!-- =2= -->			
+			<Command>
+				<Title>Сваливаю!</Title>
+				<Icon>Turnback</Icon>
+				<Text>Я сваливаю, тут слишком жарко!</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>		
+			<!-- =3= -->
+			<Command>
+				<Title>За мной хвост!</Title>
+				<Icon>Helpme</Icon>
+				<Text>Помогите, за мной хвост! Прикройте!</Text>
+				<Command>HELPME</Command>
+				<ChatMode>Team</ChatMode>
+			</Command>		
+			<!-- =4= -->
+			<Command>
+				<Title>Злые!</Title>
+				<Icon>No</Icon>
+				<Text>Какие вы злые</Text>
+				<ChatMode>All</ChatMode>
+			</Command>			
+			<!-- =5= -->			
+			<Command>
+				<Title>Ну вас нафиг!</Title>
+				<Icon>Turnback</Icon>
+				<Text>Неее, ну вас нафиг!</Text>
+				<ChatMode>All</ChatMode>
+			</Command>	
+			<!-- =6= -->			
+			<Command>
+				<Title>Из кустов</Title>
+				<Icon>Support</Icon>
+				<Text>%(randpart)s</Text>
+				<ChatMode>All</ChatMode>
+				<Variants>
+					<Variant>Печеньки! Печеньки!</Variant>
+					<Variant>Высоко сижу, далеко гляжу!</Variant>
+					<Variant>Всевидящее око наблюдает за вами</Variant>
+					<Variant>Хрен вы меня найдете</Variant>
+				</Variants>				
+			</Command>				
+
+		</CommonCommands>
+	</lightTankMenu>
+
+	<!--  <mediumTankMenu>
+    <TeamCommands>
+    </TeamCommands>
+    
+    <EnemyCommands>
+    </EnemyCommands>
+    
+    <CommonCommands>
+    </CommonCommands>
+  </mediumTankMenu>
+  -->
+
+	<!--  <heavyTankMenu>
+    <TeamCommands>
+    </TeamCommands>
+    
+    <EnemyCommands>
+    </EnemyCommands>
+    
+    <CommonCommands>
+    </CommonCommands>
+  </heavyTankMenu>
+  -->
+
+	<!--   <AT-SPGMenu>
+    <TeamCommands>
+    </TeamCommands>
+    
+    <EnemyCommands>
+    </EnemyCommands>
+    
+    <CommonCommands>
+    </CommonCommands>
+  </AT-SPGMenu>
+  -->
+
+	<MapCommands>
+		<Map_01_karelia>
+		</Map_01_karelia>
+
+		<Map_02_malinovka>
+        </Map_02_malinovka>
+
+		<Map_03_campania>
+		</Map_03_campania>
+
+		<Map_04_himmelsdorf>
+		</Map_04_himmelsdorf>
+
+		<Map_05_prohorovka>
+		</Map_05_prohorovka>
+
+		<Map_06_ensk>
+		</Map_06_ensk>
+
+		<Map_07_lakeville>
+		</Map_07_lakeville>
+
+		<Map_08_ruinberg>
+		</Map_08_ruinberg>
+
+		<Map_10_hills>
+		</Map_10_hills>
+
+		<Map_11_murovanka>
+		</Map_11_murovanka>
+
+		<Map_13_erlenberg>
+		</Map_13_erlenberg>
+
+		<Map_14_siegfried_line>
+		</Map_14_siegfried_line>
+
+		<Map_15_komarin>
+		</Map_15_komarin>
+
+		<Map_17_munchen>
+		</Map_17_munchen>
+
+		<Map_18_cliff>
+		</Map_18_cliff>
+
+		<Map_19_monastery>
+		</Map_19_monastery>
+
+		<Map_22_slough>
+		</Map_22_slough>
+
+		<Map_23_westfeld>
+		</Map_23_westfeld>
+
+		<Map_28_desert>
+		</Map_28_desert>
+
+		<Map_29_el_hallouf>
+		</Map_29_el_hallouf>
+
+		<Map_31_airfield>
+		</Map_31_airfield>
+
+		<Map_33_fjord>
+		</Map_33_fjord>
+
+		<Map_34_Redshire>
+		</Map_34_Redshire>
+
+		<Map_35_steppes>
+		</Map_35_steppes>
+
+		<Map_36_fishing_bay>
+		</Map_36_fishing_bay>
+
+		<Map_37_caucasus>
+		</Map_37_caucasus>
+
+		<Map_38_mannerheim_line>
+		</Map_38_mannerheim_line>
+
+		<Map_39_crimea>
+		</Map_39_crimea>
+
+		<Map_42_north_america>
+		</Map_42_north_america>
+
+		<Map_44_north_america>
+		</Map_44_north_america>
+
+		<Map_45_north_america>
+		</Map_45_north_america>
+
+		<Map_47_canada_a>
+		</Map_47_canada_a>
+
+		<Map_51_asia>
+		</Map_51_asia>
+
+		<Map_Default>
+			<Command>
+				<Title>Меня засветили!</Title> 
+				<Icon>Helpme</Icon> 
+				<Text>Меня засветили!</Text> 
+				<ChatMode>Team</ChatMode> 
+				<Ping>%(ownPos)s</Ping>
+			</Command>
+			<Command>
+				<Title>:) смайлик</Title> 
+				<Icon>Yes</Icon> 
+				<Text>:)</Text> 
+				<ChatMode>All</ChatMode> 
+			</Command>
+			<Command>
+				<Title>Так то оно да!</Title> 
+				<Icon>Attack</Icon> 
+				<Text>Так то оно да!</Text> 
+				<ChatMode>Team</ChatMode> 
+			</Command>
+			<Command>
+				<Title>Свет арте</Title>
+				<Icon>Turnback</Icon>
+				<Text>Даём засвет арте, не лезем</Text>
+				<ChatMode>Team</ChatMode>
+			</Command>
+			<Command>
+				<Title>Подходи по одному!</Title> 
+				<Icon>Attack</Icon> 
+				<Text>Подходи по одному!</Text> 
+				<ChatMode>All</ChatMode> 
+			</Command>
+			<Command>
+				<Title>я не виноват!</Title> 
+				<Icon>Helpme</Icon> 
+				<Text>Вот тока не надо потом говорить что опять я виноват!</Text> 
+				<ChatMode>Team</ChatMode> 
+			</Command>
+		</Map_Default>
+	</MapCommands>
+  
+  	<HotkeyOnlyCommands>
+		<Command>
+			<Title>Атакуем!</Title>
+			<Icon>Attack</Icon>
+			<Text>Поехали убивать, их меньше, чем нас</Text>
+			<ChatMode>Team</ChatMode>
+			<Hotkey>KEY_LALT+KEY_1</Hotkey>
+		</Command>
+
+		<Command>
+			<Title>Не лезть</Title>
+			<Icon>Stop</Icon>
+			<Text>НЕ ЛЕЗЬТЕ НА НИХ</Text>
+			<ChatMode>Team</ChatMode>
+			<Hotkey>KEY_LALT+KEY_2</Hotkey>
+		</Command>
+		<Command>
+			<Title>Статочка</Title>
+			<Icon>Attack</Icon>
+			<Text>Статистика %(name)s: побед: %(winrate)s%%, эфф.: %(eff)s, боёв: %(kbattles)sК, ср. уровень: %(avglvl)s, винрейт: %(twr)s, дамаг: %(tankDamage)s, винрейт танка: %(tankWinrate)s%%</Text>
+			<ChatMode>All</ChatMode>
+			<Hotkey>KEY_0</Hotkey>
+		</Command>
+		<Command>
+			<Title>глупый вопрос.</Title>
+			<Icon>Attack</Icon>
+			<Text>%(name)s, Как ты с %(winrate)s%% и %(eff)s по РЭ играешь-то еще ваще, а, днищще?</Text>
+			<ChatMode>All</ChatMode>
+			<Hotkey>KEY_9</Hotkey>
+		</Command>
+	</HotkeyOnlyCommands>
+	
+	
+	<TankSpecificCommands>	
+		<AMX_12t>
+			<Alias>AutoloaderTank</Alias>
+		</AMX_12t>
+
+		<AMX_13_75>
+			<Alias>AutoloaderTank</Alias>
+		</AMX_13_75>
+
+		<AMX_13_90>
+			<Alias>AutoloaderTank</Alias>
+		</AMX_13_90>
+
+		<AMX_13_90>
+			<Alias>AutoloaderTank</Alias>
+		</AMX_13_90>
+
+		<AMX_50Fosh_155>
+			<Alias>AutoloaderTank</Alias>
+		</AMX_50Fosh_155>
+
+		<AMX_50_100>
+			<Alias>AutoloaderTank</Alias>
+		</AMX_50_100>   
+
+		<AMX_50_120>
+			<Alias>AutoloaderTank</Alias>
+		</AMX_50_120>
+
+		<Lorraine40t>
+			<Alias>AutoloaderTank</Alias>
+		</Lorraine40t>
+
+		<Bat_Chatillon25t>
+			<Alias>AutoloaderTank</Alias>
+		</Bat_Chatillon25t>
+		
+		<t71>
+			<Alias>AutoloaderTank</Alias>
+		</t71>
+
+		<t69>
+			<Alias>AutoloaderTank</Alias>
+		</t69>
+
+		<t54e1>
+			<Alias>AutoloaderTank</Alias>
+		</t54e1>
+
+		<t57_58>
+			<Alias>AutoloaderTank</Alias>
+		</t57_58>
+
+		<AutoloaderTank>
+			<CommonCommands>
+				<!-- =1= -->		
+				<Command>
+					<Title>Барабан</Title>
+					<Icon>Support</Icon>
+					<Text>%(randpart)s</Text>
+					<ChatMode>Team</ChatMode>
+					<Variants>
+						<Variant>Барабан заряжен! Снарядов - %(ammo)s</Variant>
+						<Variant>Снарядов - %(ammo)s. Барабан - заряжен!</Variant>
+					</Variants>				
+				</Command>
+				<!-- =2= -->
+				<Command>
+					<Title>Сбивать захват!</Title>
+					<Icon>Backtobase</Icon>
+					<Text>Нужно срочно сбивать захват!</Text>
+					<Command>BACKTOBASE</Command>
+					<ChatMode>Team</ChatMode>
+				</Command>
+				<!-- =3= -->
+				<Command>
+					<Title>Помогите!</Title>
+					<Icon>Helpme</Icon>
+					<Text>Нужна помощь в квадрате %(ownPos)s, сам не справлюсь!</Text>
+					<ChatMode>Team</ChatMode>
+					<Ping>%(ownPos)s</Ping>
+				</Command>
+				<!-- =4= -->
+				<Command>
+					<Title>Ещё заряжаюсь</Title>
+					<Icon>Reload</Icon>
+					<Text>Заряжаюсь, ещё %(reload)s секунд</Text>
+					<ChatMode>Team</ChatMode>
+					<Hotkey>KEY_LALT+KEY_C</Hotkey>
+				</Command>
+				<!-- =5= -->				
+				<Command>
+					<Title>Спасибо!</Title>
+					<Icon>Yes</Icon>
+					<Text>Спасибо комрад!</Text>
+					<ChatMode>Team</ChatMode>
+				</Command>
+				<!-- =6= -->
+				<Command>
+					<Title>На перезарядку</Title>
+					<Icon>Reload</Icon>
+					<Command>RELOADINGGUN</Command>
+					<Text>Ухожу на перезаряд из %(ownPos)s, осталось %(reload)s секунд</Text>
+					<ChatMode>Team</ChatMode>
+					<Hotkey>KEY_C</Hotkey>
+					<Ping>%(ownPos)s</Ping> 				
+				</Command>
+			</CommonCommands>
+		</AutoloaderTank>
+	</TankSpecificCommands>
+	
+</RadialMenu.xml>
