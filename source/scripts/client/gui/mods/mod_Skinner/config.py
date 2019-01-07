@@ -112,7 +112,10 @@ class ConfigInterface(PYmodsConfigInterface):
         return template
 
     def onMSADestroy(self):
-        refreshCurrentVehicle()
+        try:
+            from gui.mods import mod_remodenabler
+        except ImportError:
+            refreshCurrentVehicle()
 
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
@@ -284,15 +287,12 @@ def lobbyKeyControl(event):
         if re_config is None:
             newModeNum = (g_config.teams.index(g_config.currentTeam) + 1) % len(g_config.teams)
             g_config.currentTeam = g_config.teams[newModeNum]
-        else:
-            g_config.currentTeam = re_config.currentTeam
-        if g_config.data['isDebug']:
-            print g_config.ID + ': changing display mode to', g_config.currentTeam
-        if re_config is None:
+            if g_config.data['isDebug']:
+                print g_config.ID + ': changing display mode to', g_config.currentTeam
             SystemMessages.pushMessage(
                 'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentTeam]),
                 SystemMessages.SM_TYPE.Warning)
-        refreshCurrentVehicle()
+            refreshCurrentVehicle()
     if checkKeys(g_config.data['DynamicSkinHotkey']):
         enabled = g_config.dynamicSkinEnabled
         g_config.dynamicSkinEnabled = not enabled

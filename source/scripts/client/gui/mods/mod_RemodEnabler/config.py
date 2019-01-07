@@ -301,6 +301,11 @@ class ConfigInterface(PYmodsConfigInterface):
             if checkKeys(self.data['ChangeViewHotkey']):
                 newModeNum = (self.teams.index(self.currentTeam) + 1) % len(self.teams)
                 self.currentTeam = self.teams[newModeNum]
+                try:
+                    from gui.mods.mod_skinner import g_config as _
+                    _.currentTeam = self.currentTeam
+                except ImportError:
+                    pass
                 if self.data['isDebug']:
                     print self.ID + ': changing display mode to', self.currentTeam
                 SystemMessages.pushMessage(
