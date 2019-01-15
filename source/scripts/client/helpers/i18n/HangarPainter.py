@@ -13,7 +13,6 @@ class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.backupData = {}
         self.blacklists = {}
-        self.needRestart = False
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -41,7 +40,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_restart_reason_colourChanged': 'text colour was changed',
             'UI_restart_reason_modDisabled': 'mod was disabled',
             'UI_restart_reason_modEnabled': 'mod was enabled',
-            'UI_restart': 'Restart'}
+            'UI_restart_restart': 'Restart',
+            'UI_restart_shutdown': 'Shutdown'}
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
@@ -63,8 +63,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def onMSADestroy(self):
         if any(self.data[setting] != self.backupData[setting] for setting in self.backupData):
-            self.onRequestRestart(self.data[key] != self.backupData.get(key, self.data[key]) for key in
-                                  ('colour', 'enabled'))
+            self.onRequestRestart(self.data[key] != self.backupData.get(key, self.data[key]) for key in ('colour', 'enabled'))
         self.backupData = {}
 
     def readCurrentSettings(self, quiet=True):
@@ -72,9 +71,12 @@ class ConfigInterface(PYmodsConfigInterface):
         self.blacklists = loadJson(self.ID, 'blacklist', self.blacklists, self.configPath)
 
     @staticmethod
-    def onRestartConfirmed(*_):
+    def onRestartConfirmed(confirm):
         BigWorld.savePreferences()
-        BigWorld.restartGame()
+        if confirm:
+            BigWorld.restartGame()
+        else:
+            BigWorld.quit()
 
     def onRequestRestart(self, reason):
         colourChanged, toggled = reason
@@ -84,7 +86,8 @@ class ConfigInterface(PYmodsConfigInterface):
         if toggled:
             reasons.append(self.i18n['UI_restart_reason_mod' + ('Enabled' if self.data['enabled'] else 'Disabled')])
         dialogText = self.i18n['UI_restart_text'].format(reason='; '.join(reasons))
-        showInfoDialog(self.i18n['UI_restart_header'], dialogText, self.i18n['UI_restart'], self.onRestartConfirmed)
+        showInfoDialog(self.i18n['UI_restart_header'], dialogText,
+                       [self.i18n['UI_restart_%s' % act] for act in ('restart', 'close')], self.onRestartConfirmed)
 
     def load(self):
         try:
