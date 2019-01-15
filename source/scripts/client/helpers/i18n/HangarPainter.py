@@ -120,14 +120,12 @@ def i18n_hook_makeString(key, *args, **kwargs):
                 return key
             moFile = '#' + moName
             identity = {listType: any(
-                moKey in moFile and (not idList[moKey] or any(x in subkey for x in idList[moKey])) for moKey in idList)
-                for listType, idList in _config.blacklists.iteritems()}
-            identity['commonBlacklist'] = identity['commonBlacklist'] or (
-                '#messenger' in moFile and subkey.startswith('server/errors/') and subkey.endswith('/title'))
+                moKey in moFile and (not idList[moKey] or any(re.search(x, subkey) for x in idList[moKey]))
+                for moKey in idList) for listType, idList in _config.blacklists.iteritems()}
             if moFile == '#menu' and subkey.startswith('tankmen/') and len(subkey.split('/')) == 2:
-                from CurrentVehicle import g_currentVehicle
-                if g_currentVehicle.isPresent() and g_currentVehicle.item.type in subkey:
-                    identity['commonBlacklist'] = False
+                from CurrentVehicle import g_currentVehicle  # this can't be in the script header
+                if g_currentVehicle.isPresent() and g_currentVehicle.item.type in subkey:  # don't recolor mismatches
+                    identity['commonBlacklist'] = False  # fix for tankmen popover
             whitelist = _config.blacklists['commonWhitelist']
             identity['commonWhitelist'] = any(
                 moKey in moFile and any(x == subkey for x in whitelist[moKey]) for moKey in whitelist)
