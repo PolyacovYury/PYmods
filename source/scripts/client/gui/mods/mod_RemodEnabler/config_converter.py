@@ -81,6 +81,8 @@ def migrateConfigs(g_config):
                 val = OrderedDict((k, v) for k, v in val.iteritems() if 'wwsound' not in k)
             elif key == 'gun':
                 val = OrderedDict((k, v) for k, v in val.iteritems() if 'ffect' not in k)
+                if 'drivenJoints' not in val:
+                    val['drivenJoints'] = None
             elif key == 'hull':
                 if 'exhaust' in val and 'nodes' in val['exhaust'] and isinstance(val['exhaust']['nodes'], basestring):
                     val['exhaust']['nodes'] = val['exhaust']['nodes'].split()

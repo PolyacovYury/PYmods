@@ -37,7 +37,7 @@ class ConfigInterface(PYmodsConfigInterface):
                  'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
         'turret': {'undamaged': '', 'emblemSlots': [],
                    'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
-        'gun': {'undamaged': '', 'emblemSlots': [], 'soundID': '',
+        'gun': {'undamaged': '', 'emblemSlots': [], 'soundID': '', 'drivenJoints': None,
                 'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
         'engine': {'soundID': ''},
         'common': {'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}}})
@@ -236,8 +236,9 @@ class ConfigInterface(PYmodsConfigInterface):
                     if key == 'chassis':
                         for k in chassis_params + ('chassisLodDistance',):
                             data[k] = confSubDict[k]
-                    if 'soundID' in data and 'soundID' in confSubDict:
-                        data['soundID'] = confSubDict['soundID']
+                    for k in ('soundID', 'drivenJoints'):
+                        if k in data and k in confSubDict:
+                            data[k] = confSubDict[k]
                 if self.data['isDebug']:
                     print self.ID + ': config for', sName, 'loaded.'
 
@@ -417,6 +418,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                                        for decal in vDesc.chassis.AODecals]
                 for partName in ('gun', 'chassis', 'engine'):
                     data[partName]['soundID'] = getattr(vDesc, partName).name
+                data['gun']['drivenJoints'] = vDesc.gun.drivenJoints
                 pixieID = ''
                 for key, value in g_cache._customEffects['exhaust'].iteritems():
                     if value == vDesc.hull.customEffects[0]._selectorDesc:
