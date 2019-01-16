@@ -57,6 +57,7 @@ def apply(vDesc, modelDesc, modelsSet):
         exclMask = camoData['exclusionMask']
         if exclMask:
             part.camouflage = Camouflage(camoData['tiling'], exclMask)
+    vDesc.gun.drivenJoints = modelDesc['gun']['drivenJoints']
     exhaust = modelDesc['hull']['exhaust']
     for effectDesc in vDesc.hull.customEffects:
         if exhaust['nodes']:

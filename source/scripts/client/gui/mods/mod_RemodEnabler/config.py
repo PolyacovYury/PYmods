@@ -37,7 +37,7 @@ class ConfigInterface(PYmodsConfigInterface):
                  'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
         'turret': {'undamaged': '', 'emblemSlots': [],
                    'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
-        'gun': {'undamaged': '', 'emblemSlots': [], 'soundID': '',
+        'gun': {'undamaged': '', 'emblemSlots': [], 'soundID': '', 'drivenJoints': None,
                 'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
         'engine': {'soundID': ''},
         'common': {'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}}})
@@ -113,13 +113,15 @@ class ConfigInterface(PYmodsConfigInterface):
                 ' • Player tank\n • Ally tank\n • Enemy tank'),
             'UI_setting_CollisionHotkey_text': 'Collision view switch hotkey',
             'UI_setting_CollisionHotkey_tooltip': (
+                '<b>WARNING: this module is non-functional. Apologies for the inconvenience.</b>\n'
                 'This hotkey will switch collision preview mode in hangar.\n'
                 '<b>Possible modes:</b>\n • OFF\n • Model replace\n • Model add'),
             'UI_setting_SwitchRemodHotkey_text': 'Remod switch hotkey',
             'UI_setting_SwitchRemodHotkey_tooltip': 'This hotkey will cycle through all remods.',
-            'UI_disableCollisionComparison': '<b>RemodEnabler:</b>\nDisabling collision comparison mode.',
-            'UI_enableCollisionComparison': '<b>RemodEnabler:</b>\nEnabling collision comparison mode.',
-            'UI_enableCollision': '<b>RemodEnabler:</b>\nEnabling collision mode.',
+            'UI_collision_compare_enable': '<b>RemodEnabler:</b>\nDisabling collision comparison mode.',
+            'UI_collision_compare_disable': '<b>RemodEnabler:</b>\nEnabling collision comparison mode.',
+            'UI_collision_enable': '<b>RemodEnabler:</b>\nEnabling collision mode.',
+            'UI_collision_unavailable': '<b>RemodEnabler:</b>\nCollision displaying is currently not supported.',
             'UI_install_remod': '<b>RemodEnabler:</b>\nRemod installed: ',
             'UI_install_default': '<b>RemodEnabler:</b>\nDefault model applied.',
             'UI_install_wheels_unsupported':
@@ -234,8 +236,9 @@ class ConfigInterface(PYmodsConfigInterface):
                     if key == 'chassis':
                         for k in chassis_params + ('chassisLodDistance',):
                             data[k] = confSubDict[k]
-                    if 'soundID' in data and 'soundID' in confSubDict:
-                        data['soundID'] = confSubDict['soundID']
+                    for k in ('soundID', 'drivenJoints'):
+                        if k in data and k in confSubDict:
+                            data[k] = confSubDict[k]
                 if self.data['isDebug']:
                     print self.ID + ': config for', sName, 'loaded.'
 
@@ -332,22 +335,26 @@ class ConfigInterface(PYmodsConfigInterface):
                          quiet=not self.data['isDebug'])
                 refreshCurrentVehicle()
         if checkKeys(self.data['CollisionHotkey']):
+            SystemMessages.pushMessage('temp_SM' + self.i18n['UI_collision_unavailable'],
+                                       SystemMessages.SM_TYPE.CustomizationForGold)
+            return
+            # noinspection PyUnreachableCode
             self.collisionMode += 1
             self.collisionMode %= 3
             if self.collisionMode == 0:
                 if self.data['isDebug']:
                     print self.ID + ': disabling collision displaying'
-                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_disableCollisionComparison'],
+                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_collision_compare_disable'],
                                            SystemMessages.SM_TYPE.CustomizationForGold)
             elif self.collisionMode == 2:
                 if self.data['isDebug']:
                     print self.ID + ': enabling collision display comparison mode'
-                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_enableCollisionComparison'],
+                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_collision_compare_enable'],
                                            SystemMessages.SM_TYPE.CustomizationForGold)
             else:
                 if self.data['isDebug']:
                     print self.ID + ': enabling collision display'
-                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_enableCollision'],
+                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_collision_enable'],
                                            SystemMessages.SM_TYPE.CustomizationForGold)
             refreshCurrentVehicle()
 
@@ -411,6 +418,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                                        for decal in vDesc.chassis.AODecals]
                 for partName in ('gun', 'chassis', 'engine'):
                     data[partName]['soundID'] = getattr(vDesc, partName).name
+                data['gun']['drivenJoints'] = vDesc.gun.drivenJoints
                 pixieID = ''
                 for key, value in g_cache._customEffects['exhaust'].iteritems():
                     if value == vDesc.hull.customEffects[0]._selectorDesc:
