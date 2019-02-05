@@ -11,7 +11,7 @@ from Avatar import PlayerAvatar
 from ReloadEffect import _BarrelReloadDesc
 from debug_utils import LOG_ERROR
 from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc
-from items.components import sound_components
+from items.components.sound_components import WWTripleSoundConfig as SoundConfig
 from items.vehicles import g_cache
 from material_kinds import EFFECT_MATERIALS
 
@@ -85,8 +85,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                         continue
                     if item_type == 'engines':
                         s = item.sounds.getEvents()
-                        item.sounds = sound_components.WWTripleSoundConfig(
-                            '', itemData.get('wwsoundPC', s[0]), itemData.get('wwsoundNPC', s[1]))
+                        item.sounds = SoundConfig('', itemData.get('wwsoundPC', s[0]), itemData.get('wwsoundNPC', s[1]))
                     elif item_type == 'guns' and 'effects' in itemData:
                         item.effects = items.vehicles.g_cache._gunEffects.get(itemData['effects'], item.effects)
         for sname, descr in g_cache._gunReloadEffects.iteritems():
@@ -134,8 +133,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             itemData = self.data['engines'].get(nations.NAMES[nationID], {}).get(item.name)
             if itemData:
                 s = item.sounds.getEvents()
-                item.sounds = sound_components.WWTripleSoundConfig(
-                    '', itemData.get('wwsoundPC', s[0]), itemData.get('wwsoundNPC', s[1]))
+                item.sounds = SoundConfig('', itemData.get('wwsoundPC', s[0]), itemData.get('wwsoundNPC', s[1]))
         for turrets in vehicleType.turrets:
             for turret in turrets:
                 for item in turret.guns:
