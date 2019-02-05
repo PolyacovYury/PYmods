@@ -228,11 +228,15 @@ def main():
     if version_file:
         try:
             with open(version_file, 'r') as v_file:
-                version_str = v_file.read()
+                version_str = v_file.read().strip()
+            assert version_str
             timeStr = subprocess.check_output('git --no-pager log -n 1 --format="%ct" --'.split() + [version_file])[1:-2]
             version_date = datetime.fromtimestamp(long(timeStr) if timeStr else long(os.stat(version_file).st_mtime))
         except IOError:
             print 'WARNING: version file not found:', version_file
+        except AssertionError:
+            print 'WARNING: version was empty'
+            version_str = None
     else:
         print 'WARNING: version file not provided'
     try:
