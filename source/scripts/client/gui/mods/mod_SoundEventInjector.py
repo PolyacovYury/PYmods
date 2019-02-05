@@ -84,9 +84,9 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
                     if not itemData:
                         continue
                     if item_type == 'engines':
-                        s = item.sounds
+                        s = item.sounds.getEvents()
                         item.sounds = sound_components.WWTripleSoundConfig(
-                            '', itemData.get('wwsoundPC', s.getEvents()[0]), itemData.get('wwsoundNPC', s.getEvents()[1]))
+                            '', itemData.get('wwsoundPC', s[0]), itemData.get('wwsoundNPC', s[1]))
                     elif item_type == 'guns' and 'effects' in itemData:
                         item.effects = items.vehicles.g_cache._gunEffects.get(itemData['effects'], item.effects)
         for sname, descr in g_cache._gunReloadEffects.iteritems():
@@ -133,9 +133,9 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             nationID, itemID = item.id
             itemData = self.data['engines'].get(nations.NAMES[nationID], {}).get(item.name)
             if itemData:
-                s = item.sounds
+                s = item.sounds.getEvents()
                 item.sounds = sound_components.WWTripleSoundConfig(
-                    '', itemData.get('wwsoundPC', s.getEvents()[0]), itemData.get('wwsoundNPC', s.getEvents()[1]))
+                    '', itemData.get('wwsoundPC', s[0]), itemData.get('wwsoundNPC', s[1]))
         for turrets in vehicleType.turrets:
             for turret in turrets:
                 for item in turret.guns:
