@@ -118,7 +118,7 @@ def check_identical(fp, arc_data, v_str, quiet=False):
                 if f_path in act_data:
                     act_path = act_data[f_path] or f_path
                     info = zf_orig.getinfo(act_path.encode('cp866'))
-                    files = glob.glob(arc_data[f_path])
+                    files = [p.replace(os.sep, '/') for p in glob.iglob(arc_data[f_path])]
                     if files:
                         if len(files) > 1:
                             ch_print(fp, quiet, 'Ambiguous wildcard:', arc_data[f_path], 'picked file:', files[0],
@@ -163,7 +163,7 @@ def pack_stuff(zf_new, mode, tree, arc_data, cur_path):
             else:
                 zf_new.writestr(zipfile.ZipInfo(sub_path, min_time.timetuple()[:6]), '', mode)
         else:
-            path = glob.glob(arc_data[sub_path])[0]
+            path = glob.glob(arc_data[sub_path])[0].replace(os.sep, '/')
             with open(path, 'rb') as f:
                 st_time = get_stat_size_time(path)[1]
                 min_time = min(min_time, datetime(*st_time))
