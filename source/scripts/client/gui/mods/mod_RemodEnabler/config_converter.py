@@ -1,3 +1,5 @@
+import fnmatch
+
 import glob
 import os
 from PYmodsCore import remDups, loadJson
@@ -64,32 +66,32 @@ def migrateConfigs(g_config):
             del selectedData[key.lower()]
     loadJson(g_config.ID, 'remodsCache', selectedData, g_config.configPath, True)
 
-    configsPath = g_config.configPath + 'remods/*.json'
-    for configPath in glob.iglob(configsPath):
-        sname = os.path.basename(configPath).split('.')[0]
-        old_conf = readOrdered(configPath)
-        if not old_conf:
-            print g_config.ID + ': error while reading', os.path.basename(configPath) + '.'
-            continue
-        new_conf = OrderedDict()
-        new_conf['message'] = old_conf.get('authorMessage', old_conf.get('message', ''))
-        migrateSettings(g_config, old_conf, new_conf)
-        for key, val in old_conf.items():
-            if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key:
+    for root, _, fNames in os.walk(g_config.configPath + 'remods/'):
+        for fName in fnmatch.filter(fNames, '*.json'):
+            sname = fName.split('.')[0]
+            old_conf = readOrdered(root + '/' + fName)
+            if not old_conf:
+                print g_config.ID + ': error while reading', fName + '.'
                 continue
-            elif key == 'engine':
-                val = OrderedDict((k, v) for k, v in val.iteritems() if 'wwsound' not in k)
-            elif key == 'gun':
-                val = OrderedDict((k, v) for k, v in val.iteritems() if 'ffect' not in k)
-                if 'drivenJoints' not in val:
-                    val['drivenJoints'] = None
-            elif key == 'hull':
-                if 'exhaust' in val and 'nodes' in val['exhaust'] and isinstance(val['exhaust']['nodes'], basestring):
-                    val['exhaust']['nodes'] = val['exhaust']['nodes'].split()
-            elif key == 'chassis':
-                val = migrate_chassis_config(val)
-            new_conf[key] = val
-        loadJson(g_config.ID, sname, new_conf, g_config.configPath + 'remods/', True, sort_keys=False)
+            new_conf = OrderedDict()
+            new_conf['message'] = old_conf.get('authorMessage', old_conf.get('message', ''))
+            migrateSettings(g_config, old_conf, new_conf)
+            for key, val in old_conf.items():
+                if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key:
+                    continue
+                elif key == 'engine':
+                    val = OrderedDict((k, v) for k, v in val.iteritems() if 'wwsound' not in k)
+                elif key == 'gun':
+                    val = OrderedDict((k, v) for k, v in val.iteritems() if 'ffect' not in k)
+                    if 'drivenJoints' not in val:
+                        val['drivenJoints'] = None
+                elif key == 'hull':
+                    if 'exhaust' in val and 'nodes' in val['exhaust'] and isinstance(val['exhaust']['nodes'], basestring):
+                        val['exhaust']['nodes'] = val['exhaust']['nodes'].split()
+                elif key == 'chassis':
+                    val = migrate_chassis_config(val)
+                new_conf[key] = val
+            loadJson(g_config.ID, sname, new_conf, root, True, sort_keys=False)
 
 
 def migrate_chassis_config(config):  # please send data['chassis'] here

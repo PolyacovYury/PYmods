@@ -420,7 +420,8 @@
                 "isUVProportional": true,
                 "emblemId": null
             }
-        ]
+        ],
+        "drivenJoints": null
     },
     "engine": {}
 }

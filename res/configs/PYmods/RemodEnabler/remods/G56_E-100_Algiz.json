@@ -497,7 +497,8 @@
                 "isMirrored": false,
                 "isUVProportional": true
             }
-        ]
+        ],
+        "drivenJoints": null
     },
     "camouflage": {
         "tiling": [1, 1, 0, 0],
