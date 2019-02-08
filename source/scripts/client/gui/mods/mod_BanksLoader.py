@@ -21,11 +21,11 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.9.6 (%(file_compile_date)s)'
+        self.version = '1.9.7 (%(file_compile_date)s)'
         self.author += ' and Ekspoint'
         self.data = {'defaultPool': 36,
                      'lowEnginePool': 10,
-                     'preparedPool': 200,
+                     'memoryLimit': 250,
                      'streamingPool': 8,
                      'IOPoolSize': 8,
                      'max_voices': 110,
@@ -268,8 +268,14 @@ class ConfigInterface(PYmodsConfigInterface):
             audio_mods_new['loadBanks'].deleteSection(bankSect)
         self.editedBanks['delete'] = remDups(self.editedBanks['delete'])
         bankFiles['orig'] = set(map(str.lower, bankFiles['orig']))
-        poolKeys = {'memoryManager': ('defaultPool', 'lowEnginePool', 'preparedPool', 'streamingPool', 'IOPoolSize'),
+        poolKeys = {'memoryManager': ('defaultPool', 'lowEnginePool', 'streamingPool', 'IOPoolSize'),
                     'soundRender': ('max_voices',)}
+        for mgrKey in ('memoryLimit',):  # in case they add something later
+            value = soundMgr[mgrKey]
+            if value is not None and value.asInt != int(self.data[mgrKey]):
+                self.editedBanks['memory'].append(mgrKey)
+                soundMgr.writeInt(mgrKey, self.data[mgrKey])
+                print self.ID + ': changing value for memory setting:', mgrKey
         for profile_name in ('WWISE_active_profile', 'WWISE_emergency_profile'):
             moddedExist = set()
             profile_type = profile_name.split('_')[1]
