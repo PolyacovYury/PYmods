@@ -389,7 +389,8 @@
                 "isUVProportional": true,
                 "emblemId": null
             }
-        ]
+        ],
+        "drivenJoints": null
     },
     "engine": {
         "soundID": "V-5_W"

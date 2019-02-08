@@ -405,7 +405,8 @@
     },
     "gun": {
         "undamaged": "vehicles/remods/ForceMod/G63_PzI_ausf_C/normal/lod0/Gun_02.model",
-        "emblemSlots": []
+        "emblemSlots": [],
+        "drivenJoints": null
     },
     "engine": {}
 }

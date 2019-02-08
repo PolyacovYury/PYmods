@@ -444,7 +444,8 @@
                 "slotId": 771,
                 "applyToFabric": true
             }
-        ]
+        ],
+        "drivenJoints": null
     },
     "engine": {
         "soundID": "Continental_AV_1790_5C"

@@ -531,7 +531,8 @@
                 "slotId": 771,
                 "applyToFabric": true
             }
-        ]
+        ],
+        "drivenJoints": null
     },
     "engine": {
         "soundID": "V_2_34E"
