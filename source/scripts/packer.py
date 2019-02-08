@@ -151,18 +151,32 @@ def make_tree(paths):
     return tree
 
 
+def pack_directory(zf, mode, path, st_time, v_str, v_date):
+    v_was = False
+    if isinstance(path, unicode):
+        path = path.encode('cp866')
+    if v_str is not None:
+        if '{GAME_VERSION}' in path:
+            if path.endswith('{GAME_VERSION}/'):
+                st_time = v_date.timetuple()[:6]
+            v_was = True
+            path = path.replace('{GAME_VERSION}', v_str)
+    zf.writestr(zipfile.ZipInfo(path, st_time), '', mode)
+    return v_was
+
+
 def pack_stuff(zf_new, mode, tree, arc_data, v_str, v_date, v_was, cur_path):
     min_time, max_time = datetime.fromtimestamp(time.time()), datetime(1970, 1, 1)
     for sub_name, sub_data in sorted(tree.iteritems(), key=lambda i: (isinstance(i[1], dict), not bool(i[1]), i[0])):
         sub_path = sub_name if not cur_path else cur_path + sub_name
-        if isinstance(sub_data, dict):
+        if isinstance(sub_data, dict):  # dicts are directories, strings are files. No exceptions.
             if sub_data:  # non-empty folder
                 packed = pack_stuff(zf_new, mode, sub_data, arc_data, v_str, v_date, v_was, sub_path)
                 min_time = min(min_time, packed[0])
                 max_time = max(max_time, packed[1])
                 v_was |= packed[2]
             else:
-                zf_new.writestr(zipfile.ZipInfo(sub_path, min_time.timetuple()[:6]), '', mode)
+                v_was |= pack_directory(zf_new, mode, sub_path, min_time.timetuple()[:6], v_str, v_date)
         else:
             path = glob.glob(arc_data[sub_path])[0].replace(os.sep, '/')
             with open(path, 'rb') as f:
@@ -172,14 +186,12 @@ def pack_stuff(zf_new, mode, tree, arc_data, v_str, v_date, v_was, cur_path):
                 path = sub_path if '*' not in sub_path else os.path.dirname(sub_path) + '/' + os.path.basename(path)
                 if isinstance(path, unicode):
                     path = path.encode('cp866')
-                if v_str is not None:
-                    if path.endswith('{GAME_VERSION}/'):
-                        st_time = v_date.timetuple()[:6]
-                        v_was = True
+                if v_str is not None and '{GAME_VERSION}' in path:
+                    v_was = True
                     path = path.replace('{GAME_VERSION}', v_str)
                 zf_new.writestr(zipfile.ZipInfo(path, st_time), f.read(), mode)
     if cur_path:
-        zf_new.writestr(zipfile.ZipInfo(cur_path, min_time.timetuple()[:6]), '', mode)
+        v_was |= pack_directory(zf_new, mode, cur_path, min_time.timetuple()[:6], v_str, v_date)
     return min_time, max_time, v_was
 
 
