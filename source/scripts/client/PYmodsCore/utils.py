@@ -106,6 +106,12 @@ def new_callHandler(base, self, buttonID):
         base(self, buttonID)
 
 
+def new_Dialog_dispose(base, self):
+    if len(self._SimpleDialog__buttons) == 3:
+        self._SimpleDialog__isProcessed = True  # don't call the handler upon window destruction, onWindowClose is fine
+    return base(self)
+
+
 class DialogButtons(object):
     def __init__(self):
         self.confirm = None
@@ -137,13 +143,14 @@ def showInfoDialog(header, text, button, callback):
 
 # noinspection PyGlobalUndefined
 def PMC_hooks():
-    global new_addItem, new_handleAction, new_callHandler
+    global new_addItem, new_handleAction, new_callHandler, new_Dialog_dispose
     from notification.actions_handlers import NotificationsActionsHandlers
     from notification.NotificationsCollection import NotificationsCollection
     from gui.Scaleform.daapi.view.dialogs.SimpleDialog import SimpleDialog
     new_addItem = overrideMethod(NotificationsCollection, 'addItem')(new_addItem)
     new_handleAction = overrideMethod(NotificationsActionsHandlers, 'handleAction')(new_handleAction)
     new_callHandler = overrideMethod(SimpleDialog, '_SimpleDialog__callHandler')(new_callHandler)
+    new_Dialog_dispose = overrideMethod(SimpleDialog, '_dispose')(new_Dialog_dispose)
 
     from gui.Scaleform.daapi.view.dialogs import ConfirmDialogButtons
     from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
