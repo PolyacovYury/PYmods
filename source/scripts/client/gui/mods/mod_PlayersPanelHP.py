@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 import BigWorld
-import PYmodsCore
+import Keys
 import traceback
 from Avatar import PlayerAvatar
+from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod, checkKeys
 from Vehicle import Vehicle
 from constants import ARENA_GUI_TYPE
+from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared.minimap.plugins import ArenaVehiclesPlugin
+from gui.app_loader import g_appLoader
 from gui.battle_control.arena_info import vos_collections
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 
 
-class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
+class PlayersPanelController(PYmodsConfigInterface):
     vCache = property(lambda self: self.__vCache)
 
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -20,30 +23,46 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
         self.__hpCache = dict()
         self.__vCache = set()
         self.uiFlash = None
+        self.displayed = True
         super(PlayersPanelController, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.1.2 (%(file_compile_date)s)'
+        self.version = '1.2.0 (%(file_compile_date)s)'
         self.author = 'by PolarFox (forked %s)' % self.author
-        self.data = {'textFields': {}}
+        self.defaultKeys = {'toggle_key': [[Keys.KEY_LALT, Keys.KEY_RALT]]}
+        self.data = {'enabled': True, 'textFields': {}, 'mode': 0, 'toggle_key': self.defaultKeys['toggle_key']}
+        self.i18n = {
+            'UI_description': 'PlayersPanelHP',
+            'UI_setting_mode_text': 'Displaying mode',
+            'UI_setting_mode_tooltip': (
+                ' • <b>Always</b> - HP markers will always be displayed.\n'
+                ' • <b>Toggle</b> - HP markers will be toggled on/off upon toggle key press.\n'
+                ' • <b>Holding</b> - HP markers will only be displayed <b>while</b> the toggle key is pressed.'),
+            'UI_setting_mode_always': 'Always',
+            'UI_setting_mode_toggle': 'Toggle',
+            'UI_setting_mode_holding': 'Holding',
+            'UI_setting_toggle_key_text': 'Toggle hotkey',
+            'UI_setting_toggle_key_tooltip': 'Pressing this button in-battle toggles HP markers displaying.'}
         vxEvents.onStateChanged += self.__onStateChanged
         super(PlayersPanelController, self).init()
 
-    def loadLang(self):
-        pass
-
-    def updateMod(self):
-        pass
-
     def createTemplate(self):
-        pass
-
-    def registerSettings(self):
-        pass
+        return {'modDisplayName': self.i18n['UI_description'],
+                'settingsVersion': 1,
+                'enabled': self.data['enabled'],
+                'column1': [self.tb.createOptions('mode'),
+                            [self.i18n['UI_setting_mode_' + x] for x in ('always', 'toggle', 'holding')]],
+                'column2': [self.tb.createHotKey('toggle_key')]}
 
     def readCurrentSettings(self, quiet=True):
+        super(PlayersPanelController, self).readCurrentSettings(quiet)
         self.data['textFields'].update(self.loadJsonData().get('textFields', {}))
+        self.displayed = not self.data['mode']
+
+    def onApplySettings(self, settings):
+        super(PlayersPanelController, self).onApplySettings(settings)
+        self.displayed = not settings['mode']
 
     @staticmethod
     def getVehicleHealth(vehicleID):
@@ -68,9 +87,8 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
         player = BigWorld.player()
         if player.arena.guiType in (ARENA_GUI_TYPE.EPIC_RANDOM, ARENA_GUI_TYPE.EPIC_RANDOM_TRAINING):
             return
-        playerTeam = player.team
         team = player.arena.vehicles[vehicleID]['team']
-        panelSide = 'left' if playerTeam == team else 'right'
+        panelSide = 'left' if player.team == team else 'right'
         currentHP = self.__hpCache[vehicleID]['current']
         maxHP = self.__hpCache[vehicleID]['max']
         for fieldName, fieldData in sorted(self.data['textFields'].iteritems()):
@@ -81,10 +99,11 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
                 'curHealth': currentHP,
                 'maxHealth': maxHP,
                 'barWidth': barWidth
-            }) if not fieldData.get('hideIfDead', False) or barWidth else ''])
+            }) if self.displayed and (not fieldData.get('hideIfDead', False) or barWidth) else ''])
 
     def onEndBattle(self):
         BigWorld.player().arena.onVehicleKilled -= self.onVehicleKilled
+        self.displayed = not self.data['mode']
         self.__hpCache.clear()
         self.__vCache.clear()
 
@@ -100,8 +119,7 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
             self.__hpCache[vehicleID] = {'current': self.getVehicleHealth(vehicleID), 'max': maxHealth}
         else:
             health = newHealth if newHealth > 0 else 0
-            self.__hpCache[vehicleID]['current'] = health if vehicleID in self.__vCache else self.__hpCache[vehicleID][
-                'max']
+            self.__hpCache[vehicleID]['current'] = health if vehicleID in self.__vCache else self.__hpCache[vehicleID]['max']
         if self.uiFlash:
             self.setHPField(vehicleID)
 
@@ -123,20 +141,31 @@ class PlayersPanelController(PYmodsCore.PYmodsConfigInterface):
         for fieldName, fieldData in self.data['textFields'].iteritems():
             self.uiFlash.as_setPPConfigS(self.ID + fieldName, fieldData)
 
+    def battleKeyControl(self, event):
+        if not self.data['mode']:
+            return
+        if self.data['mode'] == 1 and checkKeys(self.data['toggle_key']) and event.isKeyDown():
+            self.displayed = not self.displayed
+        elif self.data['mode'] == 2:
+            self.displayed = checkKeys(self.data['toggle_key'])
+        for vehicleID in self.__hpCache:
+            self.setHPField(vehicleID)
+
 
 mod_playersHP = None
 try:
     from gui.vxBattleFlash import vxBattleFlash, vxBattleFlashAliases
     from gui.vxBattleFlash.events import vxEvents, BATTLE_FLASH_EVENT_ID
     from gui.vxBattleFlash.constants import FLASH
+
     mod_playersHP = PlayersPanelController()
-    statistic_mod = PYmodsCore.Analytics(mod_playersHP.ID, mod_playersHP.version, 'UA-76792179-11')
+    statistic_mod = Analytics(mod_playersHP.ID, mod_playersHP.version, 'UA-76792179-11')
 except ImportError:
     print '%(mod_ID)s: Battle Flash API (vxBattleFlash) not found. Text viewing disabled.'
 except StandardError:
     traceback.print_exc()
 else:
-    @PYmodsCore.overrideMethod(ArenaVehiclesPlugin, '_ArenaVehiclesPlugin__setInAoI')
+    @overrideMethod(ArenaVehiclesPlugin, '_ArenaVehiclesPlugin__setInAoI')
     def new_setInAoI(base, self, entry, isInAoI):
         result = base(self, entry, isInAoI)
         try:
@@ -151,7 +180,7 @@ else:
             return result
 
 
-    @PYmodsCore.overrideMethod(PlayerAvatar, 'vehicle_onEnterWorld')
+    @overrideMethod(PlayerAvatar, 'vehicle_onEnterWorld')
     def new_vehicle_onEnterWorld(base, self, vehicle):
         result = base(self, vehicle)
         try:
@@ -164,7 +193,7 @@ else:
             return result
 
 
-    @PYmodsCore.overrideMethod(Vehicle, 'onHealthChanged')
+    @overrideMethod(Vehicle, 'onHealthChanged')
     def new_vehicle_onHealthChanged(base, self, newHealth, attackerID, attackReasonID):
         result = base(self, newHealth, attackerID, attackReasonID)
         try:
@@ -173,3 +202,17 @@ else:
             traceback.print_exc()
         finally:
             return result
+
+
+    def inj_hkKeyEvent(event):
+        BattleApp = g_appLoader.getDefBattleApp()
+        try:
+            if BattleApp and mod_playersHP.data['enabled']:
+                mod_playersHP.battleKeyControl(event)
+        except StandardError:
+            print mod_playersHP.ID + ': ERROR at inj_hkKeyEvent'
+            traceback.print_exc()
+
+
+    InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
+    InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
