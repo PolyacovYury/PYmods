@@ -1,0 +1,10 @@
+﻿{
+    "UI_description": "PlayersPanelHP",
+    "UI_setting_mode_always": "Always",
+    "UI_setting_mode_holding": "Holding",
+    "UI_setting_mode_text": "Displaying mode",
+    "UI_setting_mode_toggle": "Toggle",
+    "UI_setting_mode_tooltip": " • <b>Always</b> - HP markers will always be displayed.\n • <b>Toggle</b> - HP markers will be toggled on/off upon toggle key press.\n • <b>Holding</b> - HP markers will only be displayed <b>while</b> the toggle key is pressed.",
+    "UI_setting_toggle_key_text": "Toggle hotkey",
+    "UI_setting_toggle_key_tooltip": "Pressing this button in-battle toggles HP markers displaying."
+}
