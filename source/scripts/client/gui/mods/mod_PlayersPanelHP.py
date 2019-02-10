@@ -51,8 +51,8 @@ class PlayersPanelController(PYmodsConfigInterface):
         return {'modDisplayName': self.i18n['UI_description'],
                 'settingsVersion': 1,
                 'enabled': self.data['enabled'],
-                'column1': [self.tb.createOptions('mode'),
-                            [self.i18n['UI_setting_mode_' + x] for x in ('always', 'toggle', 'holding')]],
+                'column1': [self.tb.createOptions('mode',
+                            [self.i18n['UI_setting_mode_' + x] for x in ('always', 'toggle', 'holding')])],
                 'column2': [self.tb.createHotKey('toggle_key')]}
 
     def readCurrentSettings(self, quiet=True):
