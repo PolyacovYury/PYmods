@@ -8,7 +8,7 @@ import os
 import traceback
 import zipfile
 
-folder_ix_all = re.compile('mods/[.\d]*( Common Test)?/')
+folder_ix_all = re.compile(r'mods/[.\d]*( Common Test)?/')
 
 
 def main():
@@ -125,7 +125,6 @@ def gen_file(fp, d_dir, s_dir):
         with zipfile.ZipFile(fp) as zf_orig:
             paths = sorted(x.decode('cp866').encode('cp1251') for x in zf_orig.namelist())
             for idx, filename in enumerate(paths):
-                filename = filename
                 if not filename.endswith('/'):
                     if folder_ix_all.search(filename):
                         filename = folder_ix_all.sub('mods/{GAME_VERSION}/', filename)
