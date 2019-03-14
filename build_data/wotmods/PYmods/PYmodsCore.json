@@ -12,7 +12,6 @@
         "res/scripts/client/PYmodsCore/config/json_reader.pyc": "build/scripts/client/PYmodsCore/config/json_reader.pyc",
         "res/scripts/client/PYmodsCore/config/template_builders.pyc": "build/scripts/client/PYmodsCore/config/template_builders.pyc",
         "res/scripts/client/PYmodsCore/config/utils.pyc": "build/scripts/client/PYmodsCore/config/utils.pyc",
-        "res/scripts/client/PYmodsCore/events.pyc": "build/scripts/client/PYmodsCore/events.pyc",
         "res/scripts/client/PYmodsCore/utils.pyc": "build/scripts/client/PYmodsCore/utils.pyc",
         "res/scripts/client/PYmodsGUI.png": "res/res/scripts/client/PYmodsGUI.png"
     }

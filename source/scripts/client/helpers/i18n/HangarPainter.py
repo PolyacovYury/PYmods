@@ -4,7 +4,7 @@ import json
 import re
 import traceback
 import urllib2
-from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, doOverrideMethod, showConfirmDialog
+from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, overrideMethod, showConfirmDialog
 from debug_utils import LOG_ERROR
 from functools import partial
 
@@ -197,12 +197,12 @@ def delayedHooks():
     from gui.Scaleform.daapi.view.lobby.hangar.Crew import Crew
     from gui.shared.tooltips.tankman import TankmanSkillListField, ToolTipAttrField, TankmanRoleLevelField, \
         TankmanCurrentVehicleAttrField
-    doOverrideMethod(Crew, 'as_tankmenResponseS', new_as_tankmenResponseS)
-    doOverrideMethod(TankmanSkillListField, '_getValue', new_tankmanSkill_getValue)
-    doOverrideMethod(ToolTipAttrField, '_getValue', new_tankmanAttr_getValue)
-    doOverrideMethod(TankmanRoleLevelField, '_getValue', new_tankmanAttr_getValue)
-    doOverrideMethod(TankmanCurrentVehicleAttrField, '_getValue', new_tankmanAttr_getValue)
-    doOverrideMethod(I18nDialogMeta, '__init__', new_I18nDialog_init)
+    overrideMethod(Crew, 'as_tankmenResponseS', new_as_tankmenResponseS)
+    overrideMethod(TankmanSkillListField, '_getValue', new_tankmanSkill_getValue)
+    overrideMethod(ToolTipAttrField, '_getValue', new_tankmanAttr_getValue)
+    overrideMethod(TankmanRoleLevelField, '_getValue', new_tankmanAttr_getValue)
+    overrideMethod(TankmanCurrentVehicleAttrField, '_getValue', new_tankmanAttr_getValue)
+    overrideMethod(I18nDialogMeta, '__init__', new_I18nDialog_init)
 
 
 BigWorld.callback(0, delayedHooks)

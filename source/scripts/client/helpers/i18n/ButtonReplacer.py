@@ -4,7 +4,7 @@ import glob
 import os
 import re
 import traceback
-from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart, Analytics, doOverrideMethod
+from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart, Analytics, overrideMethod
 from debug_utils import LOG_ERROR, LOG_WARNING
 from functools import partial
 
@@ -193,10 +193,10 @@ def ButtonReplacer_hooks():
     from gui.Scaleform.daapi.view.meta.LobbyHeaderMeta import LobbyHeaderMeta
     from gui.Scaleform.daapi.view.meta.ModuleInfoMeta import ModuleInfoMeta
     from gui.shared.tooltips.module import EffectsBlockConstructor
-    doOverrideMethod(PlayerAvatar, '_PlayerAvatar__destroyGUI', new_destroyGUI)
-    doOverrideMethod(ModuleInfoMeta, 'as_setModuleInfoS', new_setModuleInfoS)
-    doOverrideMethod(EffectsBlockConstructor, 'construct', new_construct)
-    doOverrideMethod(LobbyHeaderMeta, 'as_setFightButtonS', new_setFightButtonS)
+    overrideMethod(PlayerAvatar, '_PlayerAvatar__destroyGUI', new_destroyGUI)
+    overrideMethod(ModuleInfoMeta, 'as_setModuleInfoS', new_setModuleInfoS)
+    overrideMethod(EffectsBlockConstructor, 'construct', new_construct)
+    overrideMethod(LobbyHeaderMeta, 'as_setFightButtonS', new_setFightButtonS)
 
 
 BigWorld.callback(0.0, ButtonReplacer_hooks)
