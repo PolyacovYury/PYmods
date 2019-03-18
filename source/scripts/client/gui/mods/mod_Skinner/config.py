@@ -3,7 +3,7 @@ import BigWorld
 import Keys
 import ResMgr
 import traceback
-from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, PYViewTools, showI18nDialog
+from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, showI18nDialog, objToDict
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
@@ -244,7 +244,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.isModAdded = True
 
 
-class SkinnerUI(AbstractWindowView, PYViewTools):
+class SkinnerUI(AbstractWindowView):
     def py_onRequestSettings(self):
         g_config.readCurrentSettings(not g_config.data['isDebug'])
         texts = {k[9:]: v for k, v in g_config.i18n.iteritems() if k.startswith('UI_flash_')}
@@ -252,7 +252,7 @@ class SkinnerUI(AbstractWindowView, PYViewTools):
         self.flashObject.as_updateData(texts, settings)
 
     def py_checkSettings(self, settings):
-        settings = self.objToDict(settings)
+        settings = objToDict(settings)
         if g_config.settings != settings['skins'] or g_config.skinsData['priorities'] != settings['priorities']:
             showI18nDialog(
                 g_config.i18n['UI_flash_unsaved_header'], g_config.i18n['UI_flash_unsaved_text'], 'common/confirm',
@@ -263,7 +263,7 @@ class SkinnerUI(AbstractWindowView, PYViewTools):
             return True
 
     def py_onSaveSettings(self, settings):
-        settings = self.objToDict(settings)
+        settings = objToDict(settings)
         g_config.settings = settings['skins']
         loadJson(g_config.ID, 'settings', g_config.settings, g_config.configPath, True, quiet=not g_config.data['isDebug'])
         g_config.skinsData['priorities'] = settings['priorities']
@@ -274,6 +274,11 @@ class SkinnerUI(AbstractWindowView, PYViewTools):
 
     def onWindowClose(self):
         self.destroy()
+
+    @staticmethod
+    def py_printLog(*args):
+        for arg in args:
+            print arg
 
 
 def lobbyKeyControl(event):

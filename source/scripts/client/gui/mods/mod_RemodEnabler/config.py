@@ -5,13 +5,10 @@ import Math
 import fnmatch
 import os
 import traceback
-from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, showI18nDialog, overrideMethod, \
-    remDups, PYViewTools
+from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, showI18nDialog, remDups, objToDict
 from collections import OrderedDict
 from functools import partial
 from gui import InputHandler, SystemMessages
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
-from gui.Scaleform.daapi.view.login.LoginView import LoginView
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
@@ -48,7 +45,6 @@ class ConfigInterface(PYmodsConfigInterface):
         self.modelsData = {'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}}}
         self.isModAdded = False
         self.collisionMode = 0
-        self.isInHangar = False
         self.currentTeam = self.teams[0]
         self.previewRemod = None
         super(ConfigInterface, self).__init__()
@@ -308,7 +304,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     from gui.mods.mod_skinner import g_config as _
                     _.currentTeam = self.currentTeam
                 except ImportError:
-                    pass
+                    _ = None
                 if self.data['isDebug']:
                     print self.ID + ': changing display mode to', self.currentTeam
                 SystemMessages.pushMessage(
@@ -359,7 +355,7 @@ class ConfigInterface(PYmodsConfigInterface):
             refreshCurrentVehicle()
 
 
-class RemodEnablerUI(AbstractWindowView, PYViewTools):
+class RemodEnablerUI(AbstractWindowView):
     def _populate(self):
         super(self.__class__, self)._populate()
         g_config.hangarSpace.onVehicleChanged += self.onVehicleReloaded
@@ -379,8 +375,8 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
         self.flashObject.as_updateData(texts, g_config.settings, g_config.modelsData['selected'])
 
     def py_checkSettings(self, settings, cache):
-        settings = self.objToDict(settings)
-        cache = self.objToDict(cache)
+        settings = objToDict(settings)
+        cache = objToDict(cache)
         if g_config.settings != settings or g_config.modelsData['selected'] != cache:
             showI18nDialog(
                 g_config.i18n['UI_flash_unsaved_header'], g_config.i18n['UI_flash_unsaved_text'], 'common/confirm',
@@ -410,7 +406,7 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
                 chassis = data['chassis']
                 from .remods import chassis_params
                 for key in chassis_params + ('chassisLodDistance',):
-                    obj = _asdict(getattr(vDesc.chassis, key))
+                    obj = _asDict(getattr(vDesc.chassis, key))
                     chassis[key] = obj
                 chassis['splineDesc']['segmentModelSets'] = chassis['splineDesc']['segmentModelSets'][modelsSet]
                 chassis['hullPosition'] = vDesc.chassis.hullPosition.list()
@@ -491,8 +487,8 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
             partial(self.flashObject.as_onRemodDeleteConfirmed, vehicleName, remodName))
 
     def py_onSaveSettings(self, settings, cache):
-        g_config.settings = settings = self.objToDict(settings)
-        g_config.modelsData['selected'] = cache = self.objToDict(cache)
+        g_config.settings = settings = objToDict(settings)
+        g_config.modelsData['selected'] = cache = objToDict(cache)
         loadJson(g_config.ID, 'remodsCache', cache, g_config.configPath, True, quiet=not g_config.data['isDebug'])
         loadJson(g_config.ID, 'settings', settings, g_config.configPath, True, quiet=not g_config.data['isDebug'])
         g_config.readCurrentSettings(not g_config.data['isDebug'])
@@ -529,8 +525,13 @@ class RemodEnablerUI(AbstractWindowView, PYViewTools):
         self.py_onModelRestore()
         self.destroy()
 
+    @staticmethod
+    def py_printLog(*args):
+        for arg in args:
+            print arg
 
-def _asdict(obj):
+
+def _asDict(obj):
     if isinstance(obj, SplineConfig):
         result = OrderedDict()
         result['segmentModelSets'] = OrderedDict((setName, OrderedDict((
@@ -543,11 +544,11 @@ def _asdict(obj):
             result[attrName] = getattr(obj, attrName)
         return result
     elif hasattr(obj, '_fields'):
-        return OrderedDict(zip(obj._fields, (_asdict(x) for x in obj)))
+        return OrderedDict(zip(obj._fields, (_asDict(x) for x in obj)))
     elif isinstance(obj, (Math.Vector3, Math.Vector2)):
         return obj.list()
     elif isinstance(obj, (list, tuple)):
-        return [_asdict(x) for x in obj]
+        return [_asDict(x) for x in obj]
     else:
         return obj
 
@@ -565,15 +566,3 @@ def inj_hkKeyEvent(event):
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 g_config = ConfigInterface()
-
-
-@overrideMethod(LoginView, '_populate')
-def new_Login_populate(base, self):
-    base(self)
-    g_config.isInHangar = False
-
-
-@overrideMethod(LobbyView, '_populate')
-def new_Lobby_populate(base, self):
-    base(self)
-    g_config.isInHangar = True

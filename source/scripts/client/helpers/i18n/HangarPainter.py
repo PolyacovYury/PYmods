@@ -87,7 +87,7 @@ class ConfigInterface(PYmodsConfigInterface):
             reasons.append(self.i18n['UI_restart_reason_mod' + ('Enabled' if self.data['enabled'] else 'Disabled')])
         dialogText = self.i18n['UI_restart_text'].format(reason='; '.join(reasons))
         showConfirmDialog(self.i18n['UI_restart_header'], dialogText,
-                       [self.i18n['UI_restart_%s' % act] for act in ('restart', 'shutdown')], self.onRestartConfirmed)
+                          [self.i18n['UI_restart_%s' % act] for act in ('restart', 'shutdown')], self.onRestartConfirmed)
 
     def load(self):
         try:
@@ -110,7 +110,7 @@ i18nHooks = ('i18n_hook_makeString',)
 
 
 def old_makeString(*_, **__):
-    LOG_ERROR('i18n hook failed')
+    return LOG_ERROR('i18n hook failed')
 
 
 def i18n_hook_makeString(key, *args, **kwargs):

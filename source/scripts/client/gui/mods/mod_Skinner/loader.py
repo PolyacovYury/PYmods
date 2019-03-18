@@ -10,14 +10,13 @@ import os
 import shutil
 import traceback
 import weakref
-from PYmodsCore import showConfirmDialog, remDups, loadJson, overrideMethod
+from PYmodsCore import showConfirmDialog, remDups, loadJson, events
 from adisp import AdispException, async, process
 from functools import partial
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
-from gui.Scaleform.daapi.view.login.LoginView import LoginView
 from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -115,6 +114,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
 
 def doLogin():
+    # noinspection PyArgumentList
     loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
     if loginView and loginView.loginManager.getPreference('remember_user'):
         password = '*' * loginView.loginManager.getPreference('password_length')
@@ -396,9 +396,8 @@ def skinLoader(loginView):
         loginView.update()
 
 
-@overrideMethod(LoginView, '_populate')
-def new_Login_populate(base, self):
-    base(self)
+@events.LoginView.populate.after
+def new_Login_populate(self, *_, **__):
     if g_config.data['enabled']:
         if g_config.skinsData['models'] and not skinsChecked:
             self.as_setDefaultValuesS({

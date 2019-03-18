@@ -12,7 +12,16 @@ from functools import partial, update_wrapper
 
 MAX_CHAT_MESSAGE_LENGTH = 220
 __all__ = ['pickRandomPart', 'sendMessage', 'sendChatMessage', 'remDups', 'checkKeys', 'refreshCurrentVehicle', 'Analytics',
-           'Sound', 'showConfirmDialog', 'showI18nDialog', 'showInfoDialog', 'PYViewTools', 'overrideMethod']
+           'Sound', 'showConfirmDialog', 'showI18nDialog', 'showInfoDialog', 'objToDict', 'overrideMethod']
+
+
+def checkKeys(keys):
+    return keys and all(BigWorld.isKeyDown(k) if isinstance(k, int) else any(BigWorld.isKeyDown(x) for x in k) for k in keys)
+
+
+def remDups(seq):  # Dave Kirby, order preserving
+    seen = set()
+    return [x for x in seq if x not in seen and not seen.add(x)]
 
 
 def overrideMethod(obj, prop, getter=None, setter=None, deleter=None):
@@ -22,7 +31,7 @@ def overrideMethod(obj, prop, getter=None, setter=None, deleter=None):
     :param getter: fget function or None
     :param setter: fset function or None
     :param deleter: fdel function or None
-    :return function: unmodified getter or, if getter is None and src is not property - acts as decorator"""
+    :return function: unmodified getter or, if getter is None and src is not property, decorator"""
 
     if inspect.isclass(obj) and prop.startswith('__') and prop not in dir(obj) + dir(type(obj)):
         prop = obj.__name__ + prop
@@ -58,23 +67,75 @@ def overrideMethod(obj, prop, getter=None, setter=None, deleter=None):
         return partial(overrideMethod, obj, prop)
 
 
-def pickRandomPart(variantList, lastRandId, doNext=False):
-    if not len(variantList):
-        return ['', -1]
-    if len(variantList) > 1:
-        if doNext:
-            newId = lastRandId + 1
-            if newId >= len(variantList) or newId < 0:
-                newId = 0
-        else:
-            bLoop = True
-            newId = 0
-            while bLoop:
-                newId = random.randrange(len(variantList))
-                bLoop = newId == lastRandId
+def objToDict(obj):
+    if isinstance(obj, list):
+        return [objToDict(o) for o in obj]
+    elif hasattr(obj, 'toDict'):
+        return {k: objToDict(v) for k, v in obj.toDict().iteritems()}
+    elif isinstance(obj, dict):  # just in case
+        return {k: objToDict(v) for k, v in obj.iteritems()}
+    return obj
 
-        return variantList[newId], newId
-    return variantList[0], 0
+
+def pickRandomPart(variantList, lastID, isRandom=True):
+    if not variantList:
+        return ['', -1]
+    elif len(variantList) == 1:
+        return variantList[0], 0
+    newID = lastID
+    while isRandom and newID == lastID:
+        newID = random.randrange(len(variantList))
+    if not isRandom:
+        newID = (newID + 1) % len(variantList)
+    return variantList[newID], newID
+
+
+def refreshCurrentVehicle():
+    from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
+    if g_currentPreviewVehicle.item:
+        g_currentPreviewVehicle.hangarSpace.updatePreviewVehicle(g_currentPreviewVehicle.item)
+    else:
+        g_currentVehicle.refreshModel()
+    from HeroTank import HeroTank
+    for entity in HeroTank.allCameraObjects:
+        if isinstance(entity, HeroTank):
+            entity.recreateVehicle()
+
+
+def sendMessage(text='', colour='Green', panel='Player'):
+    from gui.Scaleform.framework import ViewTypes
+    from gui.app_loader import g_appLoader
+    """
+    panel = 'Player', 'Vehicle', 'VehicleError'
+    colour = 'Red', 'Purple', 'Green', 'Gold', 'Yellow', 'Self'
+    """
+    battle_page = g_appLoader.getDefBattleApp().containerManager.getContainer(ViewTypes.VIEW).getView()
+    if battle_page is not None:
+        getattr(battle_page.components['battle%sMessages' % panel], 'as_show%sMessageS' % colour, None)(None, text)
+    else:
+        BigWorld.callback(0.5, partial(sendMessage, text, colour, panel))
+
+
+def sendChatMessage(fullMsg, chanId, delay):
+    currPart, remains = __splitMsg(fullMsg)
+    __sendMessagePart(currPart, chanId)
+    if remains:
+        BigWorld.callback(delay / 1000.0, partial(sendChatMessage, remains, chanId))
+
+
+def __sendMessagePart(msg, chanId):
+    import BattleReplay
+    from messenger import MessengerEntry
+    from messenger.m_constants import PROTO_TYPE
+    from messenger.proto import proto_getter
+    msg = msg.encode('utf-8')
+    proto = proto_getter(PROTO_TYPE.BW_CHAT2).get()
+    if proto is None or BattleReplay.isPlaying():
+        MessengerEntry.g_instance.gui.addClientMessage('OFFLINE: %s' % msg, True)
+    elif chanId in (0, 1):
+        proto.arenaChat.broadcast(msg, int(not chanId))
+    elif chanId == 2:
+        proto.unitChat.broadcast(msg, 1)
 
 
 def __splitMsg(msg):
@@ -87,50 +148,14 @@ def __splitMsg(msg):
     return msg[:splitPos], msg[splitPos:]
 
 
-def __sendMessagePart(msg, chanId):
-    class ClientChat(object):
-        from messenger.m_constants import PROTO_TYPE
-        from messenger.proto import proto_getter
-
-        def __init__(self):
-            pass
-
-        @proto_getter(PROTO_TYPE.BW_CHAT2)
-        def proto(self):
-            return None
-
-    msg = msg.encode('utf-8')
-    import BattleReplay
-    if ClientChat.proto is None or BattleReplay.isPlaying():
-        from messenger import MessengerEntry
-        MessengerEntry.g_instance.gui.addClientMessage('OFFLINE: %s' % msg, True)
-        return
-    else:
-        if chanId == 0:
-            ClientChat.proto.arenaChat.broadcast(msg, 1)
-        if chanId == 1:
-            ClientChat.proto.arenaChat.broadcast(msg, 0)
-        if chanId == 2:
-            ClientChat.proto.unitChat.broadcast(msg, 1)
-
-
-def sendChatMessage(fullMsg, chanId, delay):
-    currPart, remains = __splitMsg(fullMsg)
-    __sendMessagePart(currPart, chanId)
-    if len(remains) == 0:
-        return
-    BigWorld.callback(delay / 1000.0, partial(sendChatMessage, remains, chanId))
-
-
 def new_addItem(base, self, item):
-    if 'temp_SM' in item._vo['message']['message']:
-        item._vo['message']['message'] = item._vo['message']['message'].replace('temp_SM', '')
-        item._vo['notify'] = False
-        if item._settings:
-            item._settings.isNotify = False
-        return True
-    else:
+    if 'temp_SM' not in item._vo['message']['message']:
         return base(self, item)
+    item._vo['message']['message'] = item._vo['message']['message'].replace('temp_SM', '')
+    item._vo['notify'] = False
+    if item._settings:
+        item._settings.isNotify = False
+    return True
 
 
 def new_handleAction(base, self, model, typeID, entityID, actionName):
@@ -142,11 +167,10 @@ def new_handleAction(base, self, model, typeID, entityID, actionName):
 
 
 def new_callHandler(base, self, buttonID):
-    if len(self._SimpleDialog__buttons) == 3:
-        self._SimpleDialog__handler(buttonID)
-        self._SimpleDialog__isProcessed = True
-    else:
-        base(self, buttonID)
+    if len(self._SimpleDialog__buttons) != 3:
+        return base(self, buttonID)
+    self._SimpleDialog__handler(buttonID)
+    self._SimpleDialog__isProcessed = True
 
 
 def new_Dialog_dispose(base, self):
@@ -155,23 +179,14 @@ def new_Dialog_dispose(base, self):
     return base(self)
 
 
-class DialogButtons(object):
-    def __init__(self):
-        self.confirm = None
-        self.restart = None
-
-
-_dialogButtons = DialogButtons()
-
-
-def showSimpleDialog(header, text, meta, callback):
+def showSimpleDialog(header, text, buttons, callback):
     from gui import DialogsInterface
     from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta
-    DialogsInterface.showDialog(SimpleDialogMeta(header, text, meta, None), callback)
+    DialogsInterface.showDialog(SimpleDialogMeta(header, text, buttons, None), callback)
 
 
-def showConfirmDialog(header, text, buttons, cb):
-    showSimpleDialog(header, text, (_dialogButtons.confirm if len(buttons) == 2 else _dialogButtons.restart)(*buttons), cb)
+def showConfirmDialog(header, text, buttons, callback):
+    showSimpleDialog(header, text, (Confirm if len(buttons) == 2 else Restart)(*buttons), callback)
 
 
 def showI18nDialog(header, text, key, callback):
@@ -185,18 +200,16 @@ def showInfoDialog(header, text, button, callback):
 
 
 # noinspection PyGlobalUndefined
-def PMC_hooks():
-    global new_addItem, new_handleAction, new_callHandler, new_Dialog_dispose
+def delayedCalls():
+    global new_addItem, new_handleAction, new_callHandler, new_Dialog_dispose, Confirm, Restart
     from notification.actions_handlers import NotificationsActionsHandlers
     from notification.NotificationsCollection import NotificationsCollection
     from gui.Scaleform.daapi.view.dialogs.SimpleDialog import SimpleDialog
+    from gui.Scaleform.daapi.view.dialogs import ConfirmDialogButtons, DIALOG_BUTTON_ID
     new_addItem = overrideMethod(NotificationsCollection, 'addItem', new_addItem)
     new_handleAction = overrideMethod(NotificationsActionsHandlers, 'handleAction', new_handleAction)
     new_callHandler = overrideMethod(SimpleDialog, '_SimpleDialog__callHandler', new_callHandler)
     new_Dialog_dispose = overrideMethod(SimpleDialog, '_dispose', new_Dialog_dispose)
-
-    from gui.Scaleform.daapi.view.dialogs import ConfirmDialogButtons
-    from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
 
     class ConfirmButtons(ConfirmDialogButtons):
         def getLabels(self):
@@ -213,59 +226,15 @@ def PMC_hooks():
                     {'id': 'shutdown', 'label': self._shutdown, 'focused': False},
                     {'id': DIALOG_BUTTON_ID.CLOSE, 'label': self._close, 'focused': False})
 
-    _dialogButtons.confirm = ConfirmButtons
-    _dialogButtons.restart = RestartButtons
+    Confirm, Restart = ConfirmButtons, RestartButtons
 
 
-BigWorld.callback(0.0, PMC_hooks)
-
-
-def remDups(seq):  # Dave Kirby
-    # Order preserving
-    seen = set()
-    return [x for x in seq if x not in seen and not seen.add(x)]
-
-
-def sendMessage(text='', colour='Green', panel='Player'):
-    from gui.Scaleform.framework import ViewTypes
-    from gui.app_loader import g_appLoader
-    """
-    panel = 'Player', 'Vehicle', 'VehicleError'
-    colour = 'Red', 'Purple', 'Green', 'Gold', 'Yellow', 'Self'
-    """
-    battle = g_appLoader.getDefBattleApp()
-    battle_page = battle.containerManager.getContainer(ViewTypes.VIEW).getView()
-    if battle_page is not None:
-        getattr(battle_page.components['battle%sMessages' % panel], 'as_show%sMessageS' % colour, None)(None, text)
-    else:
-        BigWorld.callback(0.5, partial(sendMessage, text, colour, panel))
-
-
-def checkKeys(keys):
-    if not keys:
-        return False
-    for key in keys:
-        if isinstance(key, int) and not BigWorld.isKeyDown(key):
-            return False
-        if isinstance(key, list) and not any(BigWorld.isKeyDown(x) for x in key):
-            return False
-
-    return True
-
-
-def refreshCurrentVehicle():
-    from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
-    if g_currentPreviewVehicle._CurrentPreviewVehicle__vehAppearance:
-        g_currentPreviewVehicle._CurrentPreviewVehicle__vehAppearance.refreshVehicle(g_currentPreviewVehicle.item)
-    else:
-        g_currentVehicle.refreshModel()
-    from HeroTank import HeroTank
-    for entity in HeroTank.allCameraObjects:
-        if isinstance(entity, HeroTank):
-            entity.recreateVehicle()
+BigWorld.callback(0, delayedCalls)
 
 
 class Analytics(object):
+    from .events import game
+
     def __init__(self, description, version, ID, confList=None):
         self.mod_description = description
         self.mod_id_analytics = ID
@@ -296,15 +265,7 @@ class Analytics(object):
         }
 
     def game_fini_hook(self):
-        import game
-
-        def new_fini(old_fini):
-            try:
-                self.end()
-            finally:
-                old_fini()
-
-        game.fini = partial(new_fini, game.fini)
+        self.game.fini.before(self.end)
 
     def analytics_start(self):
         from helpers import getClientLanguage
@@ -313,8 +274,7 @@ class Analytics(object):
         requestsPool = []
         if not self.analytics_started:
             requestsPool.append(dict(template, sc='start', t='screenview'))
-            for idx, confName in enumerate(self.confList):
-                requestsPool.append(dict(template, ec='config', ea='collect', el=confName.split('.')[0]))
+            requestsPool.extend(dict(template, ec='config', ea='collect', el=conf.split('.')[0]) for conf in self.confList)
             self.analytics_started = True
             self.old_user = BigWorld.player().databaseID
             self.old_playerName = BigWorld.player().name
@@ -372,21 +332,3 @@ class Sound(object):
         if self.__sndTick:
             self.__sndTick.stop()
         self.__isPlaying = False
-
-
-class PYViewTools:
-    @staticmethod
-    def objToDict(obj):
-        if isinstance(obj, list):
-            return [PYViewTools.objToDict(o) for o in obj]
-        elif hasattr(obj, 'toDict'):
-            return {k: PYViewTools.objToDict(v) for k, v in obj.toDict().iteritems()}
-        elif isinstance(obj, dict):  # just in case
-            return {k: PYViewTools.objToDict(v) for k, v in obj.iteritems()}
-        else:
-            return obj
-
-    @staticmethod
-    def py_printLog(*args):
-        for arg in args:
-            print arg

@@ -12,6 +12,11 @@
         "res/scripts/client/PYmodsCore/config/json_reader.pyc": "build/scripts/client/PYmodsCore/config/json_reader.pyc",
         "res/scripts/client/PYmodsCore/config/template_builders.pyc": "build/scripts/client/PYmodsCore/config/template_builders.pyc",
         "res/scripts/client/PYmodsCore/config/utils.pyc": "build/scripts/client/PYmodsCore/config/utils.pyc",
+        "res/scripts/client/PYmodsCore/events/__init__.pyc": "build/scripts/client/PYmodsCore/events/__init__.pyc",
+        "res/scripts/client/PYmodsCore/events/game.pyc": "build/scripts/client/PYmodsCore/events/game.pyc",
+        "res/scripts/client/PYmodsCore/events/LobbyView.pyc": "build/scripts/client/PYmodsCore/events/LobbyView.pyc",
+        "res/scripts/client/PYmodsCore/events/LoginView.pyc": "build/scripts/client/PYmodsCore/events/LoginView.pyc",
+        "res/scripts/client/PYmodsCore/events/PlayerAvatar.pyc": "build/scripts/client/PYmodsCore/events/PlayerAvatar.pyc",
         "res/scripts/client/PYmodsCore/utils.pyc": "build/scripts/client/PYmodsCore/utils.pyc",
         "res/scripts/client/PYmodsGUI.png": "res/res/scripts/client/PYmodsGUI.png"
     }

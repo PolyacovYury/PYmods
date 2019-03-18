@@ -5,18 +5,16 @@ import glob
 import os
 import traceback
 import zipfile
-from Avatar import PlayerAvatar
-from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, overrideMethod, showConfirmDialog
+from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, showConfirmDialog, events
 from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
-from gui.Scaleform.daapi.view.login.LoginView import LoginView
 
 
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.editedBanks = {'create': [], 'delete': [], 'memory': [], 'move': [], 'remap': set(), 'wotmod': []}
         self.was_declined = False
+        events.LoginView.populate.after(events.LobbyView.populate.after(events.PlayerAvatar.startGUI.after(self.tryRestart)))
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -66,7 +64,7 @@ class ConfigInterface(PYmodsConfigInterface):
             print self.ID + ': client restart declined.'
             self.was_declined = True
 
-    def onRequestRestart(self):
+    def tryRestart(self, *_, **__):
         if self.was_declined:
             return
         if not any(self.editedBanks.itervalues()):
@@ -370,21 +368,3 @@ class ConfigInterface(PYmodsConfigInterface):
 
 _config = ConfigInterface()
 statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-9')
-
-
-@overrideMethod(LoginView, '_populate')
-def new_Login_populate(base, self):
-    base(self)
-    _config.onRequestRestart()
-
-
-@overrideMethod(LobbyView, '_populate')
-def new_Lobby_populate(base, self):
-    base(self)
-    _config.onRequestRestart()
-
-
-@overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
-def new_startGUI(base, *a, **kw):
-    base(*a, **kw)
-    _config.onRequestRestart()

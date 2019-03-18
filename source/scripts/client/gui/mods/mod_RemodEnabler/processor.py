@@ -1,7 +1,7 @@
 import BigWorld
-import PYmodsCore
 import traceback
 from HeroTank import HeroTank
+from PYmodsCore import overrideMethod
 from gui import SystemMessages
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items.customization.outfit import Outfit
@@ -61,7 +61,7 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
                 traceback.print_exc()
                 print partName
     message = None
-    vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
+    vehName = vDesc.chassis.models.undamaged.split('/')[2]
     if modelDesc is not None:
         if vDesc.chassis.generalWheelsAnimatorConfig is not None:
             print g_config.ID + ':', (
@@ -85,7 +85,7 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
     return modelDesc
 
 
-@PYmodsCore.overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
+@overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
 def new_cacheAppearance(base, self, vId, info, *args, **kwargs):
     if g_config.data['enabled']:
         outfitComponent = camouflages.getOutfitComponent(info.outfitCD)
@@ -97,7 +97,7 @@ def new_cacheAppearance(base, self, vId, info, *args, **kwargs):
     return base(self, vId, info, *args, **kwargs)
 
 
-@PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
+@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled']:
         vDesc_process(self._HangarVehicleAppearance__vEntity.id, vDesc, 'hangar',
