@@ -233,9 +233,8 @@ BigWorld.callback(0, delayedCalls)
 
 
 class Analytics(object):
-    from .events import game
-
     def __init__(self, description, version, ID, confList=None):
+        from .events import game
         self.mod_description = description
         self.mod_id_analytics = ID
         self.mod_version = version
@@ -249,7 +248,7 @@ class Analytics(object):
         self.lang = ''
         self.lastTime = BigWorld.time()
         g_playerEvents.onAccountShowGUI += self.start
-        BigWorld.callback(0.0, self.game_fini_hook)
+        game.fini.before.event += self.end
 
     def template(self, old=False):
         return {
@@ -263,9 +262,6 @@ class Analytics(object):
             'ul': '%s' % self.lang,  # client language
             't': 'event'  # Hit type
         }
-
-    def game_fini_hook(self):
-        self.game.fini.before(self.end)
 
     def analytics_start(self):
         from helpers import getClientLanguage
@@ -297,7 +293,7 @@ class Analytics(object):
         self._thread_analytics = threading.Thread(target=self.analytics_start, name=threading._newname('Analytics-%d'))
         self._thread_analytics.start()
 
-    def end(self):
+    def end(self, *_, **__):
         if self.analytics_started:
             from helpers import getClientLanguage
             self.lang = str(getClientLanguage()).upper()

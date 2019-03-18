@@ -11,3 +11,6 @@ def delayed_hooks():
     from gui.app_loader.loader import _AppLoader
     from .. import overrideMethod
     fini = overrideMethod(_AppLoader, 'fini', fini)  # well, it's not the 'game' itself, but this is called from there
+
+
+BigWorld.callback(0, delayed_hooks)
