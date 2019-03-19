@@ -167,7 +167,7 @@ class JSONLoader:
             else:
                 cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
         elif os.path.isfile(new_path):
-            data, excluded, success = cls.json_file_read(new_path, encrypted)
+            data, _, success = cls.json_file_read(new_path, encrypted)
             if success:
                 try:
                     config_new = cls.byte_ify(json.loads(data, object_hook=cls.byte_ify), ignore_dicts=True)

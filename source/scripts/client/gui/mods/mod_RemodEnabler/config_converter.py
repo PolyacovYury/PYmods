@@ -1,10 +1,8 @@
 import fnmatch
-
-import glob
 import os
 from PYmodsCore import remDups, loadJson
-from collections import namedtuple, OrderedDict
 from PYmodsCore.config.json_reader import JSONLoader
+from collections import namedtuple, OrderedDict
 
 Wheel = namedtuple('Wheel', ('isLeft', 'radius', 'nodeName', 'isLeading', 'leadingSyncAngle'))
 WheelGroup = namedtuple('WheelGroup', ('isLeft', 'template', 'count', 'startIndex', 'radius'))
@@ -27,7 +25,7 @@ def readOrdered(new_path):
     import json
     config_new = None
     if os.path.isfile(new_path):
-        data, excluded, success = JSONLoader.json_file_read(new_path, False)
+        data, _, success = JSONLoader.json_file_read(new_path, False)
         if success:
             try:
                 config_new = JSONLoader.byte_ify(json.loads(data, object_pairs_hook=OrderedDict))
@@ -185,5 +183,5 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
                     ('secondRight', obj.pop('segment2ModelRight', ''))))
             elif 'default' in obj['segmentModelSets']:
                 obj['segmentModelSets'] = obj['segmentModelSets']['default']
-    new_config.setdefault('leveredSuspension', None)
+    new_config.setdefault('leveredSuspension')
     return new_config

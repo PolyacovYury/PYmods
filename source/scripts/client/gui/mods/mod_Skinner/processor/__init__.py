@@ -1,6 +1,6 @@
 import BigWorld
-import PYmodsCore
 import traceback
+from PYmodsCore import overrideMethod
 from gui import SystemMessages
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items.customization.outfit import Outfit
@@ -101,7 +101,7 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
     debugOutput(xmlName, vehName, playerName, modelsSet, staticDesc, dynamicDesc)
 
 
-@PYmodsCore.overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
+@overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
 def new_cacheAppearance(base, self, vId, info, *args, **kwargs):
     if g_config.data['enabled'] and getattr(info.typeDescr, 'modelDesc', None) is None:
         outfitComponent = camouflages.getOutfitComponent(info.outfitCD)
@@ -113,7 +113,7 @@ def new_cacheAppearance(base, self, vId, info, *args, **kwargs):
     return base(self, vId, info, *args, **kwargs)
 
 
-@PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
+@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled'] and getattr(vDesc, 'modelDesc', None) is None:
         vDesc_process(self._HangarVehicleAppearance__vEntity.id, vDesc, 'hangar',

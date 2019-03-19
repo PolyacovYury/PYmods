@@ -1,9 +1,8 @@
 import BigWorld
 import Math
-import PYmodsCore
 import traceback
-from Avatar import PlayerAvatar
 from AvatarInputHandler import mathUtils
+from PYmodsCore import overrideMethod, events
 from Vehicle import Vehicle
 from functools import partial
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
@@ -134,7 +133,7 @@ def destroy_all():
         detach(vehicleID, 'destroy')
 
 
-@PYmodsCore.overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
+@overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
 def new_oVHC(base, self, *args, **kwargs):
     vehicle = self._CompoundAppearance__vehicle
     if not vehicle.isAlive():
@@ -142,45 +141,44 @@ def new_oVHC(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
 
 
-@PYmodsCore.overrideMethod(Vehicle, 'startVisual')
+@overrideMethod(Vehicle, 'startVisual')
 def new_startVisual(base, self):
     base(self)
     if self.isStarted and self.isAlive() and g_config.data['enabled']:
         BigWorld.callback(0.1, partial(attach, self.id, visible=True))
 
 
-@PYmodsCore.overrideMethod(Vehicle, 'stopVisual')
+@overrideMethod(Vehicle, 'stopVisual')
 def new_vehicle_onLeaveWorld(base, self, *args, **kwargs):
     if self.isStarted:
         detach(self.id)
     base(self, *args, **kwargs)
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__destroyGUI')
-def new_destroyGUI(base, self):
+@events.PlayerAvatar.destroyGUI.before
+def destroyGUI(*_, **__):
     destroy_all()
-    base(self)
 
 
-@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'refresh')
+@overrideMethod(HangarVehicleAppearance, 'refresh')
 def new_refresh(base, self, *args, **kwargs):
     detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
     base(self, *args, **kwargs)
 
 
-@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'recreate')
+@overrideMethod(HangarVehicleAppearance, 'recreate')
 def new_recreate(base, self, *args, **kwargs):
     detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
     base(self, *args, **kwargs)
 
 
-@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'remove')
+@overrideMethod(HangarVehicleAppearance, 'remove')
 def new_remove(base, self, *args, **kwargs):
     detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
     base(self, *args, **kwargs)
 
 
-@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'destroy')
+@overrideMethod(HangarVehicleAppearance, 'destroy')
 def new_destroy(base, self, *args, **kwargs):
     detach(self._HangarVehicleAppearance__vEntity.id, 'destroy')
     base(self, *args, **kwargs)

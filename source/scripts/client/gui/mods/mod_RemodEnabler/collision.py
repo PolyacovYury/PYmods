@@ -1,9 +1,9 @@
 import BigWorld
 import GUI
 import Math
-import PYmodsCore
 import material_kinds
 from AvatarInputHandler import mathUtils
+from PYmodsCore import overrideMethod
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from . import g_config
@@ -12,7 +12,7 @@ from . import g_config
 def clearCollision(self):
     vEntity = self._HangarVehicleAppearance__vEntity
     if getattr(self, 'collisionLoaded', False):
-        for moduleName, moduleDict in self.modifiedModelsDesc.items():
+        for moduleDict in self.modifiedModelsDesc.itervalues():
             if moduleDict['model'] in tuple(vEntity.models):
                 vEntity.delModel(moduleDict['model'])
                 for motor in tuple(moduleDict['model'].motors):
@@ -21,19 +21,19 @@ def clearCollision(self):
         del self.collisionTable
 
 
-@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'refresh')
+@overrideMethod(HangarVehicleAppearance, 'refresh')
 def new_refresh(base, self, *args, **kwargs):
     clearCollision(self)
     base(self, *args, **kwargs)
 
 
-@PYmodsCore.overrideMethod(HangarVehicleAppearance, 'recreate')
+@overrideMethod(HangarVehicleAppearance, 'recreate')
 def new_recreate(base, self, *args, **kwargs):
     clearCollision(self)
     base(self, *args, **kwargs)
 
 
-@PYmodsCore.overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__setupModel')
+@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__setupModel')
 def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     if not g_config.data['enabled']:
@@ -65,7 +65,7 @@ def new_setupModel(base, self, buildIdx):
         hullMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), hullOffset)
         self.modifiedModelsDesc[TankPartNames.HULL]['matrix'] = fullHullMP = mathUtils.MatrixProviders.product(
             hullMP, fullChassisMP)
-        for idx, turretPosition in enumerate(vDesc.hull.turretPositions):
+        for idx in xrange(len(vDesc.hull.turretPositions)):
             if idx:
                 print g_config.ID + ': WARNING: multiple turrets are present!', vDesc.name
                 break
@@ -80,7 +80,7 @@ def new_setupModel(base, self, buildIdx):
             self.modifiedModelsDesc[TankPartNames.TURRET]['matrix'] = fullTurretMP = mathUtils.MatrixProviders.product(
                 turretMP, fullHullMP)
             self.modifiedModelsDesc[TankPartNames.GUN]['matrix'] = mathUtils.MatrixProviders.product(gunMP, fullTurretMP)
-        for moduleName, moduleDict in self.modifiedModelsDesc.items():
+        for moduleDict in self.modifiedModelsDesc.itervalues():
             motor = BigWorld.Servo(mathUtils.MatrixProviders.product(moduleDict['matrix'], vEntity.matrix))
             moduleDict['model'].addMotor(motor)
             if moduleDict['model'] not in tuple(vEntity.models):
@@ -147,7 +147,7 @@ def addCollisionGUI(self):
     for moduleIdx, moduleName in enumerate(TankPartNames.ALL):
         self.collisionTable[moduleName] = curCollisionTable = {'textBoxes': [], 'texBoxes': [], 'armorValues': {}}
         moduleDict = getattr(vDesc, moduleName)
-        for Idx, groupNum in enumerate(sorted(moduleDict.materials.keys())):
+        for groupNum in sorted(moduleDict.materials.keys()):
             armorValue = int(moduleDict.materials[groupNum].armor)
             curCollisionTable['armorValues'].setdefault(armorValue, [])
             if groupNum not in curCollisionTable['armorValues'][armorValue]:

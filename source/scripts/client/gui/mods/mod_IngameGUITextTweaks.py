@@ -1,5 +1,5 @@
 import BigWorld
-from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics, doOverrideMethod
+from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics
 from constants import ARENA_GUI_TYPE
 from functools import partial
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -144,5 +144,5 @@ def new_setPlayerInfo(attrClass, base, self, vehicleID, *a, **kw):
         setattr(self, '_%s__playerInfo' % attrClass, pInfo._replace(playerFullName=fullName))
 
 
-doOverrideMethod(PostmortemPanel, '_PostmortemPanel__setPlayerInfo', partial(new_setPlayerInfo, 'PostmortemPanel'))
-doOverrideMethod(VehicleStatePlugin, '_VehicleStatePlugin__setPlayerInfo', partial(new_setPlayerInfo, 'VehicleStatePlugin'))
+overrideMethod(PostmortemPanel, '_PostmortemPanel__setPlayerInfo', partial(new_setPlayerInfo, 'PostmortemPanel'))
+overrideMethod(VehicleStatePlugin, '_VehicleStatePlugin__setPlayerInfo', partial(new_setPlayerInfo, 'VehicleStatePlugin'))

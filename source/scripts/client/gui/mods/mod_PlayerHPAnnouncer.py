@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-import PYmodsCore
 import SoundGroups
-from Avatar import PlayerAvatar
+from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod, events
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 
 
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.currentPercent = None
         super(ConfigInterface, self).__init__()
@@ -32,22 +31,20 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
 
 
 _config = ConfigInterface()
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-12')
+statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-12')
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
-def new_startGUI(base, self):
-    base(self)
+@events.PlayerAvatar.startGUI.after
+def new_startGUI(*_, **__):
     _config.currentPercent = 100
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__destroyGUI')
-def new_destroyGUI(base, self):
-    base(self)
+@events.PlayerAvatar.destroyGUI.before
+def new_destroyGUI(*_, **__):
     _config.currentPercent = None
 
 
-@PYmodsCore.overrideMethod(DamagePanelMeta.DamagePanelMeta, 'as_updateHealthS')
+@overrideMethod(DamagePanelMeta.DamagePanelMeta, 'as_updateHealthS')
 def new_updateHealth(base, self, healthStr, progress):
     base(self, healthStr, progress)
     if _config.currentPercent is None:

@@ -9,7 +9,7 @@ import time
 import zipfile
 from datetime import datetime
 
-folder_ix_all = re.compile('mods/[.\d]*( Common Test)?/')
+folder_ix_all = re.compile(r'mods/[.\d]*( Common Test)?/')
 printed = False
 
 
