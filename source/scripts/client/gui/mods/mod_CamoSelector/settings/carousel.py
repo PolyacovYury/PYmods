@@ -29,12 +29,13 @@ def createBaseRequirements(ctx, season=None):
 @overrideMethod(CustomizationCarouselDataProvider, '__init__')
 def init(base, self, *a, **kw):
     base(self, *a, **kw)
-    buildFilterData(self)
+    updateTabGroups(self)
 
 
-def buildFilterData(self):
+def updateTabGroups(self):
     self._allSeasonAndTabFilterData = {}
     visibleTabs = defaultdict(set)
+    stylesTabEnabled = {s: False for s in SeasonType.COMMON_SEASONS}
     anchorsData = self._proxy.hangarSpace.getSlotPositions()
     requirement = createBaseRequirements(self._proxy)
     allItems = getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, self._proxy, requirement)
@@ -61,19 +62,14 @@ def buildFilterData(self):
                 if groupName and groupName not in seasonAndTabData.allGroups:
                     seasonAndTabData.allGroups.append(groupName)
                 seasonAndTabData.itemCount += 1
-                if item.itemTypeID in (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.EMBLEM):
-                    for areaData in anchorsData.itervalues():
-                        if areaData.get(item.itemTypeID):
-                            hasSlots = True
-                            break
-                    else:
-                        hasSlots = False
-
-                    if not hasSlots:
+                if tabIndex == self._proxy.tabsData.STYLE:
+                    stylesTabEnabled[seasonType] = True
+                if item.itemTypeID in (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.EMBLEM, GUI_ITEM_TYPE.PERSONAL_NUMBER):
+                    if not self._CustomizationCarouselDataProvider__hasSlots(anchorsData, item.itemTypeID):
                         continue
                 visibleTabs[seasonType].add(tabIndex)
 
-    self._proxy.updateVisibleTabsList(visibleTabs)
+    self._proxy.updateVisibleTabsList(visibleTabs, stylesTabEnabled)
     for tabIndex in self._proxy.tabsData.ALL:
         for seasonType in SeasonType.COMMON_SEASONS:
             seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
@@ -83,7 +79,7 @@ def buildFilterData(self):
 
 @overrideMethod(CustomizationCarouselDataProvider, '_buildCustomizationItems')
 def _buildCustomizationItems(_, self):
-    # buildFilterData(self)
+    # updateTabGroups(self)
     season = self._seasonID
     isBuy = self._proxy.isBuy
     requirement = createBaseRequirements(self._proxy, season)
@@ -113,7 +109,7 @@ def _buildCustomizationItems(_, self):
         groupID = item.groupID
         group = groupID if isBuy else groupName
         if item.intCD == self._selectIntCD:
-            self._selectedIdx = len(self._customizationItems)
+            self._selectedIdx = self.itemCount
             self._selectIntCD = None
         if group != lastGroup:
             lastGroup = group
@@ -121,6 +117,8 @@ def _buildCustomizationItems(_, self):
                 CustomizationBookmarkVO((item.groupUserName if isBuy else groupName), idx).asDict())
         self._customizationItems.append(item.intCD)
         self._itemSizeData.append(item.isWide())
+
+    self._proxy.setCarouselItems(self.collection)
 
 
 def isItemSuitableForTab(item, tabIndex):

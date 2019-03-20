@@ -152,7 +152,8 @@ class MainView(WGMainView):
         for season in SEASONS_ORDER:
             seasonName = SEASON_TYPE_TO_NAME.get(season)
             isFilled = self.__ctx.mode == CSMode.SETUP or (
-                    self.__ctx.checkSlotsFillingForSeason(season) or self.__ctx.modifiedStyle is not None)
+                    all((count == filledCount for count, filledCount in self.__ctx.checkSlotsFillingForSeason(season)))
+                    or self.__ctx.modifiedStyle is not None)
             filledSeasonSlots += int(isFilled)
             seasonRenderersList.append(
                 {'nameText': VEHICLE_CUSTOMIZATION.getSeasonName(seasonName),

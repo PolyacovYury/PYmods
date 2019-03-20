@@ -12,7 +12,7 @@ from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.money import Money
 from gui.shared.utils.functions import makeTooltip
 from helpers.i18n import makeString as _ms
-from .carousel import buildFilterData
+from .carousel import updateTabGroups
 from .shared import CSMode, tabToItem
 from .. import g_config
 
@@ -126,7 +126,7 @@ class CustomizationBottomPanel(CBP):
 
     def __onModeChanged(self, mode):
         self.__setFooterInitData()
-        buildFilterData(self._carouselDP)
+        updateTabGroups(self._carouselDP)
         self.__refreshCarousel(force=True)
         self.__updateTabs(self.__ctx.currentTab)
         self._carouselDP.selectItem(self.__ctx.modifiedStyle if self.__ctx.currentTab == self.__ctx.tabsData.STYLE else None)
