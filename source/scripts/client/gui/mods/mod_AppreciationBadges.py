@@ -1,7 +1,7 @@
 import ResMgr
 import os
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from PYmodsCore import overrideMethod, overrideClassMethod, overrideStaticMethod, remDups, Analytics
+from PYmodsCore import overrideMethod, remDups, Analytics
 from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
 from gui.battle_results.components import style
 from gui.battle_results.components.vehicles import RegularVehicleStatsBlock
@@ -43,7 +43,7 @@ if badges_dir is not None:
         addLobbyBadge(self.creatorDbId, self.badges._BadgesHelper__badges)
 
 
-    @overrideStaticMethod(PrbInviteWrapper, '__new__')
+    @overrideMethod(PrbInviteWrapper, '__new__')
     def new_PIW_new(base, *a, **kw):
         result = base(*a, **kw)
         addLobbyBadge(result.creatorDBID, result.creatorBadges._BadgesHelper__badges)
@@ -77,14 +77,14 @@ if badges_dir is not None:
             self.badgeIcon = style.makeBadgeIcon(self.badge)
 
 
-    @overrideClassMethod(RES_ICONS, 'getBadgeIcon')
+    @overrideMethod(RES_ICONS, 'getBadgeIcon')
     def new_getBadgeIcon(base, _, size, value):
         if isinstance(value, int):
             return base(size, value)
         return getBadgePath(value)
 
 
-    @overrideClassMethod(RES_ICONS, 'getBadgeIconBySize')
+    @overrideMethod(RES_ICONS, 'getBadgeIconBySize')
     def new_getBadgeIconBySize(base, _, w, h, value):
         if isinstance(value, int):
             return base(w, h, value)

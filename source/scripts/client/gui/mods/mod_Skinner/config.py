@@ -3,7 +3,7 @@ import BigWorld
 import Keys
 import ResMgr
 import traceback
-from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups
+from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, showI18nDialog, objToDict
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
@@ -16,27 +16,26 @@ from . import __date__, __modID__
 
 class ConfigInterface(PYmodsConfigInterface):
     hangarSpace = dependency.descriptor(IHangarSpace)
+    defaultSkinConfig = property(lambda self: {
+        'static': {'player': True, 'ally': True, 'enemy': True},
+        'dynamic': {'player': False, 'ally': True, 'enemy': True}})
 
     def __init__(self):
-        self.possibleModes = ['player', 'ally', 'enemy']
-        self.defaultSkinConfig = {'static': {'enabled': True, 'swapPlayer': True, 'swapAlly': True, 'swapEnemy': True},
-                                  'dynamic': {'enabled': True, 'swapPlayer': False, 'swapAlly': True, 'swapEnemy': True}}
-        self.settings = {'skins': {}, 'skins_dynamic': {}}
+        self.teams = ('player', 'ally', 'enemy')
+        self.settings = {}
         self.skinsCache = {'CRC32': '', 'version': ''}
         self.skinsData = {
-            'enabled': True, 'found': False, 'models': {'static': {}, 'dynamic': {}},
+            'models': {},
             'priorities': {skinType: {'player': [], 'ally': [], 'enemy': []} for skinType in ('static', 'dynamic')}}
         self.loadingProxy = None
         self.isModAdded = False
-        self.collisionEnabled = False
-        self.collisionComparisonEnabled = False
         self.dynamicSkinEnabled = False
-        self.currentMode = self.possibleModes[0]
+        self.currentTeam = self.teams[0]
         super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = __modID__
-        self.version = '1.0.0 (%s)' % __date__
+        self.version = '1.1.0 (%s)' % __date__
         self.defaultKeys = {'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
         self.data = {'enabled': True,
@@ -62,6 +61,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_useFor_ally_text': 'Allies',
             'UI_flash_useFor_enemy_text': 'Enemies',
             'UI_flash_saveBtn': 'Save',
+            'UI_flash_unsaved_header': 'Unsaved settings',
+            'UI_flash_unsaved_text': 'Unsaved setting changes detected. Do you want to save them?',
             'UI_loading_autoLogin': 'Log in afterwards',
             'UI_loading_autoLogin_cancel': 'Cancel auto login',
             'UI_loading_done': ' Done!',
@@ -105,106 +106,122 @@ class ConfigInterface(PYmodsConfigInterface):
         template = {'modDisplayName': self.i18n['UI_description'],
                     'settingsVersion': 200,
                     'enabled': self.data['enabled'],
-                    'column1': [self.tb.createControl('isDebug')],
-                    'column2': [self.tb.createHotKey('DynamicSkinHotkey'),
-                                self.tb.createHotKey('ChangeViewHotkey')]}
+                    'column1': [self.tb.createHotKey('DynamicSkinHotkey')],
+                    'column2': [self.tb.createHotKey('ChangeViewHotkey'),
+                                self.tb.createControl('isDebug')]}
         return template
 
     def onMSADestroy(self):
-        refreshCurrentVehicle()
+        try:
+            from gui.mods import mod_remodenabler
+        except ImportError:
+            refreshCurrentVehicle()
 
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
         if self.isModAdded:
-            kwargs = dict(id='SkinnerUI', enabled=self.data['enabled'])
+            kwargs = dict(id='SkinnerUI', enabled=self.data['enabled'] and bool(self.skinsData['models']))
             try:
                 BigWorld.g_modsListApi.updateModification(**kwargs)
             except AttributeError:
                 BigWorld.g_modsListApi.updateMod(**kwargs)
 
+    def migrateConfigs(self):
+        settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
+        if settings.keys() == ['skins', 'skins_dynamic']:
+            new_settings = {}
+            for skinTypeName, skinTypeConf in settings.iteritems():
+                skinType = skinTypeName.replace('skins', '')
+                if not skinType:
+                    skinType = 'static'
+                else:
+                    skinType = skinType[1:]
+                for skinName, skinConf in skinTypeConf.iteritems():
+                    skinSettings = new_settings.setdefault(skinName, {}).setdefault(skinType, {})
+                    for setting in skinConf:
+                        if 'swap' not in setting:
+                            continue
+                        new_setting = setting[4:].lower()
+                        if new_setting not in self.teams:
+                            print new_setting
+                            assert False
+                        skinSettings[new_setting] = skinConf[setting]
+            loadJson(self.ID, 'settings', new_settings, self.configPath, True)
+        priorities = loadJson(self.ID, 'skinsPriority', self.skinsData['priorities'], self.configPath)
+        for skinType in ('static', 'dynamic'):
+            priority = priorities[skinType]
+            for key in priority.keys():
+                if not key.islower():
+                    priority[key.lower()] = priority.pop(key)
+        loadJson(self.ID, 'skinsPriority', priorities, self.configPath, True)
+
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings()
         self.settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
         self.skinsCache.update(loadJson(self.ID, 'skinsCache', self.skinsCache, self.configPath))
-        self.skinsData['enabled'] = ResMgr.openSection('vehicles/skins/') is not None and ResMgr.isDir('vehicles/skins/')
-        if self.skinsData['enabled']:
-            self.skinsData['priorities'] = loadJson(self.ID, 'skinsPriority', self.skinsData['priorities'], self.configPath)
-            skinDir = 'vehicles/skins/textures/'
-            for skinTypeSuff in ('', '_dynamic'):
-                skinType = 'static' if not skinTypeSuff else skinTypeSuff[1:]
-                for key in self.skinsData['priorities'][skinType].keys():
-                    if not key.islower():
-                        self.skinsData['priorities'][skinType][key.lower()] = self.skinsData['priorities'][skinType].pop(key)
-                skinsSettings = self.settings['skins' + skinTypeSuff]
-                disabledSkins = []
-                if self.data['isDebug']:
-                    print self.ID + ': loading configs for', skinType, 'skins'
-                skinDirSect = ResMgr.openSection(skinDir)
-                for sname in [] if skinDirSect is None else remDups(skinDirSect.keys()):
-                    confDict = skinsSettings.setdefault(sname, self.defaultSkinConfig[skinType])
-                    if not confDict.get('enabled', True):
-                        print self.ID + ':', sname, 'disabled, moving on'
-                        disabledSkins.append(sname)
-                        continue
-                    self.skinsData['models'][skinType][sname] = pRecord = {'name': '', 'whitelist': set()}
-                    pRecord['name'] = sname
-                    priorities = self.skinsData['priorities'][skinType]
-                    for tankType in priorities:
-                        key = 'swap' + tankType.capitalize()
-                        if not confDict.setdefault(key, self.defaultSkinConfig[skinType][key]):
+        self.skinsData['priorities'] = loadJson(self.ID, 'skinsPriority', self.skinsData['priorities'], self.configPath)
+        if self.data['isDebug']:
+            print self.ID + ': loading skin configs:'
+        skinDirSect = ResMgr.openSection('vehicles/skins/textures/')
+        for sname in () if skinDirSect is None else remDups(skinDirSect.keys()):
+            confDict = self.settings.setdefault(sname, self.defaultSkinConfig)
+            self.skinsData['models'][sname] = pRecord = {'name': sname, 'whitelist': set()}
+            vehiclesDirSect = skinDirSect[sname]['vehicles']
+            for curNation in [] if vehiclesDirSect is None else remDups(vehiclesDirSect.keys()):
+                nationDirSect = vehiclesDirSect[curNation]
+                for vehicleName in [] if nationDirSect is None else remDups(nationDirSect.keys()):
+                    vehDirSect = nationDirSect[vehicleName]
+                    sections = {'default': vehDirSect}
+                    modelsSetsSect = vehDirSect['_skins']
+                    if modelsSetsSect is not None:
+                        for modelsSet, modelsSetSect in modelsSetsSect.items():
+                            sections[modelsSet] = modelsSetSect
+                    for modelsSet, modelsSetSect in sections.items():
+                        tracksDirSect = modelsSetSect['tracks']
+                        if not any(texName.endswith('.dds') for texName in (
+                                ([] if modelsSetSect is None else remDups(modelsSetSect.keys())) +
+                                ([] if tracksDirSect is None else remDups(tracksDirSect.keys())))):
                             if self.data['isDebug']:
-                                print self.ID + ':', tankType, 'swapping in', sname, 'disabled.'
-                            if sname in priorities[tankType]:
-                                priorities[tankType].remove(sname)
-                            continue
-                        if sname not in priorities[tankType]:
-                            priorities[tankType].append(sname)
-                    pRecord['whitelist'].clear()
-                    vehiclesDirPath = skinDir + sname + '/vehicles/'
-                    vehiclesDirSect = ResMgr.openSection(vehiclesDirPath)
-                    for curNation in [] if vehiclesDirSect is None else remDups(vehiclesDirSect.keys()):
-                        nationDirPath = vehiclesDirPath + curNation + '/'
-                        nationDirSect = ResMgr.openSection(nationDirPath)
-                        for vehicleName in [] if nationDirSect is None else remDups(nationDirSect.keys()):
-                            vehDirPath = nationDirPath + vehicleName + '/'
-                            vehDirSect = ResMgr.openSection(vehDirPath)
-                            tracksDirPath = vehDirPath + 'tracks/'
-                            tracksDirSect = ResMgr.openSection(tracksDirPath)
-                            if not any(texName.endswith('.dds') for texName in (
-                                    ([] if vehDirSect is None else remDups(vehDirSect.keys())) +
-                                    ([] if tracksDirSect is None else remDups(tracksDirSect.keys())))):
-                                if self.data['isDebug']:
-                                    print self.ID + ':', vehicleName, 'folder from', sname, 'pack is empty.'
-                            else:
-                                pRecord['whitelist'].add(vehicleName)
-
-                    if self.data['isDebug']:
-                        print self.ID + ': config for', sname, 'loaded.'
-                snameList = self.skinsData['models'][skinType].keys() + disabledSkins
-                for sname in skinsSettings.keys():
-                    if sname not in snameList:
-                        del skinsSettings[sname]
-            if not any(self.skinsData['models'].values()):
-                if not quiet:
-                    print self.ID + ': no skin pack configs found, skin module standing down.'
-                self.skinsData['enabled'] = False
-                for skinType in self.skinsData['priorities']:
-                    for key in self.skinsData['priorities'][skinType]:
-                        self.skinsData['priorities'][skinType][key] = []
-            else:
-                for skinType in self.skinsData['priorities']:
-                    for key in self.skinsData['priorities'][skinType]:
-                        for sname in self.skinsData['priorities'][skinType][key]:
-                            if sname not in self.skinsData['models'][skinType]:
-                                self.skinsData['priorities'][skinType][key].remove(sname)
-        else:
+                                print self.ID + ':', vehicleName, 'folder from', sname, 'pack is empty.'
+                        else:
+                            pRecord['whitelist'].add((vehicleName + '/' + modelsSet).lower())
+            for skinType in ('static', 'dynamic'):
+                priorities = self.skinsData['priorities'][skinType]
+                for tankType in priorities:
+                    if not confDict[skinType][tankType]:
+                        if self.data['isDebug']:
+                            print self.ID + ':', tankType, 'swapping in', sname, 'disabled.'
+                        if sname in priorities[tankType]:
+                            priorities[tankType].remove(sname)
+                    elif sname not in priorities[tankType]:
+                        priorities[tankType].append(sname)
+                if self.data['isDebug']:
+                    print self.ID + ': config for', sname, 'loaded.'
+        for sname in self.settings.keys():
+            if sname not in self.skinsData['models']:
+                del self.settings[sname]
+        if not self.skinsData['models']:
             if not quiet:
                 print self.ID + ': no skin packs found, skin module standing down.'
-            for skinType in self.skinsData['priorities']:
-                for key in self.skinsData['priorities'][skinType]:
-                    self.skinsData['priorities'][skinType][key] = []
+        for skinType in self.skinsData['priorities']:
+            for key in self.skinsData['priorities'][skinType]:
+                for sname in self.skinsData['priorities'][skinType][key]:
+                    if sname not in self.skinsData['models']:
+                        self.skinsData['priorities'][skinType][key].remove(sname)
         loadJson(self.ID, 'skinsPriority', self.skinsData['priorities'], self.configPath, True, quiet=quiet)
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
+
+    def load(self):
+        self.migrateConfigs()
+        super(ConfigInterface, self).load()
+
+    @property
+    def collisionMode(self):
+        try:
+            from gui.mods.mod_remodenabler import g_config as re_config
+            return re_config.collisionMode
+        except ImportError:
+            return 0
 
     def registerSettings(self):
         super(ConfigInterface, self).registerSettings()
@@ -216,10 +233,10 @@ class ConfigInterface(PYmodsConfigInterface):
                          ScopeTemplates.GLOBAL_SCOPE, False))
         kwargs = dict(
             id='SkinnerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
-            icon='gui/flash/Skinner.png', enabled=self.data['enabled'] and self.skinsData['enabled'], login=True, lobby=True,
-            callback=lambda:
-                g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
-                or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI')))
+            icon='gui/flash/Skinner.png', enabled=self.data['enabled'] and bool(self.skinsData['models']), login=True,
+            lobby=True, callback=lambda: (
+                    g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
+                    or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI'))))
         try:
             BigWorld.g_modsListApi.addModification(**kwargs)
         except AttributeError:
@@ -230,62 +247,30 @@ class ConfigInterface(PYmodsConfigInterface):
 class SkinnerUI(AbstractWindowView):
     def py_onRequestSettings(self):
         g_config.readCurrentSettings(not g_config.data['isDebug'])
-        texts = {
-            'header': {
-                'skinSetup': g_config.i18n['UI_flash_skinSetup'],
-                'priorities': g_config.i18n['UI_flash_skinPriority']},
-            'skinsSetupBtn': g_config.i18n['UI_flash_skinSetupBtn'],
-            'skinsPriorityBtn': g_config.i18n['UI_flash_skinPriorityBtn'],
-            'skinTypes': [g_config.i18n['UI_flash_skinType_' + skinType] for skinType in ('static', 'dynamic')],
-            'teams': [g_config.i18n['UI_flash_team_' + team] for team in ('player', 'ally', 'enemy')],
-            'skinNames': [[], []],
-            'useFor': {'header': g_config.tb.createLabel('useFor_header', 'flash'),
-                       'ally': g_config.tb.createLabel('useFor_ally', 'flash'),
-                       'enemy': g_config.tb.createLabel('useFor_enemy', 'flash'),
-                       'player': g_config.tb.createLabel('useFor_player', 'flash')},
-            'saveBtn': g_config.i18n['UI_flash_saveBtn']
-        }
-        settings = {
-            'skins': [[], []],
-            'priorities': [[g_config.skinsData['priorities'][sType][team] for team in ('player', 'ally', 'enemy')] for
-                           sType in ('static', 'dynamic')]
-        }
-        for idx, skinType in enumerate(('', '_dynamic')):
-            skins = g_config.settings['skins' + skinType]
-            for sname in sorted(g_config.skinsData['models']['static' if not skinType else 'dynamic']):
-                sDesc = skins[sname]
-                texts['skinNames'][idx].append(sname)
-                settings['skins'][idx].append(
-                    {'useFor': {k: sDesc['swap' + k.capitalize()] for k in ('player', 'ally', 'enemy')}})
+        texts = {k[9:]: v for k, v in g_config.i18n.iteritems() if k.startswith('UI_flash_')}
+        settings = {'skins': g_config.settings, 'priorities': g_config.skinsData['priorities']}
         self.flashObject.as_updateData(texts, settings)
 
-    @staticmethod
-    def py_getCurrentVehicleName():
-        vDesc = g_config.hangarSpace.space.getVehicleEntity().appearance._HangarVehicleAppearance__vDesc
-        return vDesc.name.split(':')[1].lower()
+    def py_checkSettings(self, settings):
+        settings = objToDict(settings)
+        if g_config.settings != settings['skins'] or g_config.skinsData['priorities'] != settings['priorities']:
+            showI18nDialog(
+                g_config.i18n['UI_flash_unsaved_header'], g_config.i18n['UI_flash_unsaved_text'], 'common/confirm',
+                lambda confirm: (
+                    (self.py_onSaveSettings(settings) if confirm else None), self.flashObject.as_onSettingsChecked()))
+            return False
+        else:
+            return True
 
-    @staticmethod
-    def py_onSaveSettings(settings):
-        for idx, settingsArray in enumerate(settings.skins):
-            for nameIdx, setObj in enumerate(settingsArray):
-                for key in ('player', 'ally', 'enemy'):
-                    g_config.settings['skins' + ('', '_dynamic')[idx]][
-                        sorted(g_config.skinsData['models'][('static', 'dynamic')[idx]])[nameIdx]][
-                        'swap' + key.capitalize()] = getattr(setObj.useFor, key)
-        for idx, prioritiesArray in enumerate(settings.priorities):
-            for teamIdx, team in enumerate(('player', 'ally', 'enemy')):
-                g_config.skinsData['priorities'][('static', 'dynamic')[idx]][team] = prioritiesArray[teamIdx]
+    def py_onSaveSettings(self, settings):
+        settings = objToDict(settings)
+        g_config.settings = settings['skins']
+        loadJson(g_config.ID, 'settings', g_config.settings, g_config.configPath, True, quiet=not g_config.data['isDebug'])
+        g_config.skinsData['priorities'] = settings['priorities']
         loadJson(g_config.ID, 'skinsPriority', g_config.skinsData['priorities'], g_config.configPath, True,
                  quiet=not g_config.data['isDebug'])
-        loadJson(g_config.ID, 'settings', g_config.settings, g_config.configPath, True, quiet=not g_config.data['isDebug'])
         g_config.readCurrentSettings(not g_config.data['isDebug'])
         refreshCurrentVehicle()
-
-    @staticmethod
-    def py_sendMessage(xmlName, action, status):
-        SystemMessages.pushMessage(
-            'temp_SM%s<b>%s</b>.' % (g_config.i18n['UI_flash_vehicle%s_%s' % (action, status)], xmlName),
-            SystemMessages.SM_TYPE.CustomizationForGold)
 
     def onWindowClose(self):
         self.destroy()
@@ -297,7 +282,7 @@ class SkinnerUI(AbstractWindowView):
 
 
 def lobbyKeyControl(event):
-    if not event.isKeyDown() or g_config.isMSAWindowOpen or not g_config.skinsData['enabled']:
+    if not event.isKeyDown() or g_config.isMSAWindowOpen or not g_config.skinsData['models']:
         return
     if checkKeys(g_config.data['ChangeViewHotkey']):
         try:
@@ -305,17 +290,14 @@ def lobbyKeyControl(event):
         except ImportError:
             re_config = None
         if re_config is None:
-            newModeNum = (g_config.possibleModes.index(g_config.currentMode) + 1) % len(g_config.possibleModes)
-            g_config.currentMode = g_config.possibleModes[newModeNum]
-        elif re_config.currentMode != 'remod':
-            g_config.currentMode = re_config.currentMode
-        if g_config.data['isDebug']:
-            print g_config.ID + ': changing display mode to', g_config.currentMode
-        if re_config is None:
+            newModeNum = (g_config.teams.index(g_config.currentTeam) + 1) % len(g_config.teams)
+            g_config.currentTeam = g_config.teams[newModeNum]
+            if g_config.data['isDebug']:
+                print g_config.ID + ': changing display mode to', g_config.currentTeam
             SystemMessages.pushMessage(
-                'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentMode]),
+                'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentTeam]),
                 SystemMessages.SM_TYPE.Warning)
-        refreshCurrentVehicle()
+            refreshCurrentVehicle()
     if checkKeys(g_config.data['DynamicSkinHotkey']):
         enabled = g_config.dynamicSkinEnabled
         g_config.dynamicSkinEnabled = not enabled

@@ -1,6 +1,7 @@
 ﻿{
     "UI_description": "Ангарный Краскопульт",
-    "UI_restart": "Перезапуск",
+    "UI_restart_restart": "Перезапуск",
+    "UI_restart_shutdown": "Выход",
     "UI_restart_header": "Запрос перезапуска",
     "UI_restart_reason_colourChanged": "изменен цвет текста",
     "UI_restart_reason_modDisabled": "мод был выключен",

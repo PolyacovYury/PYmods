@@ -1,6 +1,7 @@
 ﻿{
     "UI_description": "Hangar Painter",
-    "UI_restart": "Restart",
+    "UI_restart_restart": "Restart",
+    "UI_restart_shutdown": "Shutdown",
     "UI_restart_header": "Restart request",
     "UI_restart_reason_colourChanged": "text colour was changed",
     "UI_restart_reason_modDisabled": "mod was disabled",

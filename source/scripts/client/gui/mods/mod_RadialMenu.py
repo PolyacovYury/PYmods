@@ -5,12 +5,12 @@ import BigWorld
 import CommandMapping
 import Keys
 import Math
-import PYmodsCore
 import glob
 import os
 import string
 import traceback
-from Avatar import PlayerAvatar
+from PYmodsCore import PYmodsConfigInterface, loadJson, config, checkKeys, pickRandomPart, Analytics, overrideMethod, \
+    sendChatMessage, events
 from Vehicle import Vehicle
 from constants import ARENA_BONUS_TYPE
 from functools import partial
@@ -28,7 +28,7 @@ from skeletons.gui.battle_session import IBattleSessionProvider
 g_sessionProvider = dependency.instance(IBattleSessionProvider)
 
 
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.configsMeta = {}
         self.activeConfigs = []
@@ -84,7 +84,7 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
         for confPath in glob.iglob(self.configPath + 'skins/*.json'):
             confName = os.path.basename(confPath).split('.')[0]
             try:
-                confDict = PYmodsCore.loadJson(self.ID, confName, {}, os.path.dirname(confPath) + '/')
+                confDict = loadJson(self.ID, confName, {}, os.path.dirname(confPath) + '/')
             except StandardError:
                 print self.ID + ': config', os.path.basename(confPath), 'is invalid.'
                 traceback.print_exc()
@@ -217,16 +217,14 @@ class CustomMenuCommand:
         if variants is not None:
             self.variantList.extend(variants)
 
-        PYmodsCore.config.utils.processHotKeys(confDict, ('hotkey',), 'read')
+        config.utils.processHotKeys(confDict, ('hotkey',), 'read')
         self.hotKeys = confDict.get('hotkey', [])
 
     def __repr__(self):
         return '<CMC %s (%s)>' % (self.title, self.icon)
 
-    def handleKeys(self, keyCodes):
-        return False \
-            if len(self.hotKeys) == 1 and BigWorld.player()._PlayerAvatar__forcedGuiCtrlModeFlags \
-            else PYmodsCore.checkKeys(keyCodes)
+    def handleKeys(self, keys):
+        return not (len(self.hotKeys) == 1 and BigWorld.player()._PlayerAvatar__forcedGuiCtrlModeFlags) and checkKeys(keys)
 
     def doPing(self, seqId):
         if seqId == len(self.pingList):
@@ -259,8 +257,7 @@ class CustomMenuCommand:
                             'reload': '%.3g' % g_sessionProvider.shared.ammo.getGunReloadingState().getTimeLeft(),
                             'ammo': g_sessionProvider.shared.ammo.getCurrentShells()[1],
                             'ownVehicle': g_sessionProvider.getArenaDP().getVehicleInfo().vehicleType.shortName})
-            argDict['randPart'], self.lastRandId = PYmodsCore.pickRandomPart(self.variantList, self.lastRandId,
-                                                                             not self.randomChoice)
+            argDict['randPart'], self.lastRandId = pickRandomPart(self.variantList, self.lastRandId, self.randomChoice)
             argDict['randPart'] = safeFmt.format(argDict['randPart'], **argDict)
             return safeFmt.format(self.cmd, **argDict)
         except StandardError:
@@ -268,8 +265,8 @@ class CustomMenuCommand:
 
 
 _config = ConfigInterface()
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-10',
-                                     [_config.activeConfigs[_config.data['selectedConfig']]])
+statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-10',
+                          [_config.activeConfigs[_config.data['selectedConfig']]])
 
 
 def getCrosshairType(player, target):
@@ -320,7 +317,7 @@ def inj_hkKeyEvent(event):
     BattleApp = g_appLoader.getDefBattleApp()
     try:
         if BattleApp and _config.data['enabled']:
-            isDown = PYmodsCore.checkKeys(_config.data['mapMenu_key'])
+            isDown = checkKeys(_config.data['mapMenu_key'])
             if isDown or _config.wasAltMenuPressed:
                 _config.wasAltMenuPressed = isDown
                 CommandMapping.g_instance.onMappingChanged()
@@ -341,9 +338,8 @@ def inj_hkKeyEvent(event):
         traceback.print_exc()
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__destroyGUI')
-def new_destroyGUI(base, self):
-    base(self)
+@events.PlayerAvatar.destroyGUI.before
+def new_destroyGUI(*_, **__):
     _config.bestConf = None
     _config.confType = ''
 
@@ -352,14 +348,14 @@ InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 
 
-@PYmodsCore.overrideMethod(radial_menu.RadialMenu, '_RadialMenu__updateMenu')
+@overrideMethod(radial_menu.RadialMenu, '_RadialMenu__updateMenu')
 def new_updateMenu(_, self):
     data = []
     menuConf = None
     menuType = ''
     mapName = BigWorld.player().arena.arenaType.geometryName
     commandConf = _config.commands.get(_config.activeConfigs[_config.data['selectedConfig']], {})
-    if PYmodsCore.checkKeys(_config.data['mapMenu_key']):
+    if checkKeys(_config.data['mapMenu_key']):
         menuConf = commandConf.get('Map_' + mapName)
         menuType = 'Map_' + mapName
         if menuConf is None:
@@ -418,13 +414,13 @@ def onCustomAction(cmd, target):
         if chatCommands is not None:
             chatCommands.handleChatCommand(cmd.builtinCmd, target.id)
         BigWorld.callback(_config.data['chatDelay'] / 1000.0,
-                          partial(PYmodsCore.sendChatMessage, msg.decode('utf-8'), chanId, _config.data['chatDelay']))
+                          partial(sendChatMessage, msg.decode('utf-8'), chanId, _config.data['chatDelay']))
     else:
-        PYmodsCore.sendChatMessage(msg.decode('utf-8'), chanId, _config.data['chatDelay'])
+        sendChatMessage(msg.decode('utf-8'), chanId, _config.data['chatDelay'])
     cmd.updateCooldown()
 
 
-@PYmodsCore.overrideMethod(radial_menu.RadialMenu, 'onAction')
+@overrideMethod(radial_menu.RadialMenu, 'onAction')
 def new_onAction(base, self, action):
     if '.' in action:
         commands = _config.commands.get(_config.activeConfigs[_config.data['selectedConfig']])

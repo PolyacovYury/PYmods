@@ -3,15 +3,13 @@ import time
 
 import BigWorld
 import Keys
-import PYmodsCore
 import traceback
-from Avatar import PlayerAvatar
+from PYmodsCore import PYmodsConfigInterface, checkKeys, sendMessage, Analytics, events
 from gui import InputHandler, SystemMessages
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.app_loader.loader import g_appLoader
 
 
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         super(ConfigInterface, self).__init__()
 
@@ -64,8 +62,8 @@ if _config.data['enableMessage']:
     isLogin = True
 
 
-    @PYmodsCore.overrideMethod(LobbyView, '_populate')
-    def new_populate(base, self):
+    @events.LobbyView.populate.after
+    def new_Lobby_populate(*_, **__):
         LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAll'].format(
             author='<font color="#DD7700">Polyacov_Yury</font>')
         try:
@@ -81,7 +79,6 @@ if _config.data['enableMessage']:
         except StandardError:
             pass
         global isLogin
-        base(self)
         if isLogin and not isRegistered:
             SystemMessages.pushMessage(LOGIN_TEXT_MESSAGE, type=SystemMessages.SM_TYPE.Information)
             isLogin = False
@@ -110,9 +107,8 @@ def sun_controller(isControlled=True):
             pass
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
-def new_startGUI(base, self):
-    base(self)
+@events.PlayerAvatar.startGUI.after
+def new_startGUI(*_, **__):
     temp_t = BigWorld.time()
 
     def _clear_loop():
@@ -129,13 +125,13 @@ def new_startGUI(base, self):
 
 def battleKeyControl(event):
     global isSunControlled
-    if PYmodsCore.checkKeys(_config.data['hotkey']) and event.isKeyDown():
+    if checkKeys(_config.data['hotkey']) and event.isKeyDown():
         isSunControlled = not isSunControlled
         sun_controller(isSunControlled)
         if isSunControlled:
-            PYmodsCore.sendMessage(_config.i18n['UI_activSunMod'])
+            sendMessage(_config.i18n['UI_activSunMod'])
         else:
-            PYmodsCore.sendMessage(_config.i18n['UI_deactivSunMod'], 'Red')
+            sendMessage(_config.i18n['UI_deactivSunMod'], 'Red')
 
 
 def inj_hkKeyEvent(event):
@@ -150,4 +146,4 @@ def inj_hkKeyEvent(event):
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-3')
+statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-3')

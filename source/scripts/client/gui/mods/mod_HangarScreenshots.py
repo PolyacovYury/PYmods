@@ -73,10 +73,10 @@ def toggleHangarUI(visible):
 
 
 @overrideMethod(HangarCameraManager, '_HangarCameraManager__updateCameraByMouseMove')
-def new_updateCameraByMouseMove(base, *args):
+def new_updateCameraByMouseMove(base, *args, **kwargs):
     if config.data['UIVisible'] or not config.cameraPos or config.data['currentCamPos'] == len(
             config.cameraPos) or not config.data['lockCamera']:
-        base(*args)
+        base(*args, **kwargs)
 
 
 def setCameraLocation(settings):

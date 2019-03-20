@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/KanJPz_105_KanonenPanter.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/KanJPz_105_KanonenPanter.json"
+    }
+}

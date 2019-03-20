@@ -8,7 +8,8 @@
         "res/scripts/client/gui/mods/mod_RemodEnabler/__init__.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/__init__.pyc",
         "res/scripts/client/gui/mods/mod_RemodEnabler/collision.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/collision.pyc",
         "res/scripts/client/gui/mods/mod_RemodEnabler/config.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/config.pyc",
-        "res/scripts/client/gui/mods/mod_RemodEnabler/processor/__init__.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/processor/__init__.pyc",
-        "res/scripts/client/gui/mods/mod_RemodEnabler/processor/remods.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/processor/remods.pyc"
+        "res/scripts/client/gui/mods/mod_RemodEnabler/config_converter.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/config_converter.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/processor.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/processor.pyc",
+        "res/scripts/client/gui/mods/mod_RemodEnabler/remods.pyc": "build/scripts/client/gui/mods/mod_RemodEnabler/remods.pyc"
     }
 }

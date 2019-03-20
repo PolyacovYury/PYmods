@@ -6,6 +6,7 @@ import codecs
 import json
 import os
 import re
+import traceback
 from collections import OrderedDict
 from .utils import smart_update
 
@@ -33,25 +34,25 @@ class JSONObjectEncoder(json.JSONEncoder):
             else:
                 return super(JSONObjectEncoder, self).encode(o)
         except StandardError:
+            traceback.print_exc()
+            print type(o)
             return str(o)
 
 
 class JSONLoader:
     @classmethod
-    def byte_ify(cls, inputs, ignore_dicts=False):
-        if inputs:  # https://stackoverflow.com/a/33571117
-            if isinstance(inputs, unicode):
-                # noinspection PyArgumentEqualDefault
-                return inputs.encode('utf-8')
-            elif isinstance(inputs, list):
-                return [cls.byte_ify(element, ignore_dicts=True) for element in inputs]
-            elif isinstance(inputs, tuple):
-                return tuple(cls.byte_ify(element, ignore_dicts=True) for element in inputs)
-            elif isinstance(inputs, OrderedDict):  # can't use object_hook and object_pairs_hook at the same time
-                return OrderedDict((cls.byte_ify(key), cls.byte_ify(value)) for key, value in inputs.iteritems())
-            elif isinstance(inputs, dict) and not ignore_dicts:
-                return {cls.byte_ify(key, ignore_dicts=True): cls.byte_ify(value, ignore_dicts=True) for key, value in
-                        inputs.iteritems()}
+    def byte_ify(cls, inputs, ignore_dicts=False):  # https://stackoverflow.com/a/33571117
+        if isinstance(inputs, unicode):
+            return inputs.encode('utf-8')
+        elif isinstance(inputs, list):
+            return [cls.byte_ify(element, ignore_dicts=True) for element in inputs]
+        elif isinstance(inputs, tuple):
+            return tuple(cls.byte_ify(element, ignore_dicts=True) for element in inputs)
+        elif isinstance(inputs, OrderedDict):  # can't use object_hook and object_pairs_hook at the same time
+            return OrderedDict((cls.byte_ify(key), cls.byte_ify(value)) for key, value in inputs.iteritems())
+        elif isinstance(inputs, dict) and not ignore_dicts:
+            return {cls.byte_ify(key, ignore_dicts=True): cls.byte_ify(value, ignore_dicts=True) for key, value in
+                    inputs.iteritems()}
         return inputs
 
     @classmethod
@@ -136,6 +137,8 @@ class JSONLoader:
         oldConfig = cls.stringed_ints(oldConfig)
         if not os.path.exists(path):
             os.makedirs(path)
+        if not path.endswith('/'):
+            path += '/'
         new_path = '%s%s.json' % (path, name)
         if save:
             if os.path.isfile(new_path):
@@ -146,7 +149,7 @@ class JSONLoader:
                 if rewrite:
                     updated = read_data != oldConfig
                     read_data = oldConfig
-                    sort_keys = True
+                    sort_keys = not isinstance(oldConfig, OrderedDict)
                 else:
                     updated = smart_update(read_data, oldConfig)
                     sort_keys = False
@@ -164,7 +167,7 @@ class JSONLoader:
             else:
                 cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
         elif os.path.isfile(new_path):
-            data, excluded, success = cls.json_file_read(new_path, encrypted)
+            data, _, success = cls.json_file_read(new_path, encrypted)
             if success:
                 try:
                     config_new = cls.byte_ify(json.loads(data, object_hook=cls.byte_ify), ignore_dicts=True)

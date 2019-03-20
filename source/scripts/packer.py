@@ -9,7 +9,7 @@ import time
 import zipfile
 from datetime import datetime
 
-folder_ix_all = re.compile('mods/[.\d]*( Common Test)?/')
+folder_ix_all = re.compile(r'mods/[.\d]*( Common Test)?/')
 printed = False
 
 
@@ -118,7 +118,7 @@ def check_identical(fp, arc_data, v_str, quiet=False):
                 if f_path in act_data:
                     act_path = act_data[f_path] or f_path
                     info = zf_orig.getinfo(act_path.encode('cp866'))
-                    files = glob.glob(arc_data[f_path])
+                    files = [p.replace(os.sep, '/') for p in glob.iglob(arc_data[f_path])]
                     if files:
                         if len(files) > 1:
                             ch_print(fp, quiet, 'Ambiguous wildcard:', arc_data[f_path], 'picked file:', files[0],
@@ -151,28 +151,48 @@ def make_tree(paths):
     return tree
 
 
-def pack_stuff(zf_new, mode, tree, arc_data, cur_path):
+def pack_directory(zf, mode, path, st_time, v_str, v_date):
+    v_was = False
+    if isinstance(path, unicode):
+        path = path.encode('cp866')
+    if v_str is not None:
+        if '{GAME_VERSION}' in path:
+            if path.endswith('{GAME_VERSION}/'):
+                st_time = v_date.timetuple()[:6]
+            v_was = True
+            path = path.replace('{GAME_VERSION}', v_str)
+    zf.writestr(zipfile.ZipInfo(path, st_time), '', mode)
+    return v_was
+
+
+def pack_stuff(zf_new, mode, tree, arc_data, v_str, v_date, v_was, cur_path):
     min_time, max_time = datetime.fromtimestamp(time.time()), datetime(1970, 1, 1)
     for sub_name, sub_data in sorted(tree.iteritems(), key=lambda i: (isinstance(i[1], dict), not bool(i[1]), i[0])):
         sub_path = sub_name if not cur_path else cur_path + sub_name
-        if isinstance(sub_data, dict):
+        if isinstance(sub_data, dict):  # dicts are directories, strings are files. No exceptions.
             if sub_data:  # non-empty folder
-                packed = pack_stuff(zf_new, mode, sub_data, arc_data, sub_path)
+                packed = pack_stuff(zf_new, mode, sub_data, arc_data, v_str, v_date, v_was, sub_path)
                 min_time = min(min_time, packed[0])
                 max_time = max(max_time, packed[1])
+                v_was |= packed[2]
             else:
-                zf_new.writestr(zipfile.ZipInfo(sub_path, min_time.timetuple()[:6]), '', mode)
+                v_was |= pack_directory(zf_new, mode, sub_path, min_time.timetuple()[:6], v_str, v_date)
         else:
-            path = glob.glob(arc_data[sub_path])[0]
+            path = glob.glob(arc_data[sub_path])[0].replace(os.sep, '/')
             with open(path, 'rb') as f:
                 st_time = get_stat_size_time(path)[1]
                 min_time = min(min_time, datetime(*st_time))
                 max_time = max(max_time, datetime(*st_time))
                 path = sub_path if '*' not in sub_path else os.path.dirname(sub_path) + '/' + os.path.basename(path)
+                if isinstance(path, unicode):
+                    path = path.encode('cp866')
+                if v_str is not None and '{GAME_VERSION}' in path:
+                    v_was = True
+                    path = path.replace('{GAME_VERSION}', v_str)
                 zf_new.writestr(zipfile.ZipInfo(path, st_time), f.read(), mode)
     if cur_path:
-        zf_new.writestr(zipfile.ZipInfo(cur_path, min_time.timetuple()[:6]), '', mode)
-    return min_time, max_time
+        v_was |= pack_directory(zf_new, mode, cur_path, min_time.timetuple()[:6], v_str, v_date)
+    return min_time, max_time, v_was
 
 
 def do_pack(fp, arc_data, mode, v_str, v_date):
@@ -181,15 +201,9 @@ def do_pack(fp, arc_data, mode, v_str, v_date):
         os.makedirs(fd)
     tree = make_tree(sorted(arc_data))
     with zipfile.ZipFile(fp, 'w', mode) as zf_new:
-        min_time, max_time = pack_stuff(zf_new, mode, tree, arc_data, '')
-        for info in zf_new.infolist():
-            if isinstance(info.filename, unicode):
-                info.filename = info.filename.encode('cp866')
-            if v_str is not None:
-                if info.filename.endswith('{GAME_VERSION}/'):
-                    max_time = max(max_time, v_date)
-                    info.date_time = v_date.timetuple()[:6]
-                info.filename = info.filename.replace('{GAME_VERSION}', v_str)
+        min_time, max_time, v_was = pack_stuff(zf_new, mode, tree, arc_data, v_str, v_date, False, '')
+    if v_str is not None and v_was:
+        max_time = max(max_time, v_date)
     os.utime(fp, (time.time(), time.mktime(max_time.timetuple())))
     return True
 
@@ -228,11 +242,15 @@ def main():
     if version_file:
         try:
             with open(version_file, 'r') as v_file:
-                version_str = v_file.read()
+                version_str = v_file.read().strip()
+            assert version_str
             timeStr = subprocess.check_output('git --no-pager log -n 1 --format="%ct" --'.split() + [version_file])[1:-2]
             version_date = datetime.fromtimestamp(long(timeStr) if timeStr else long(os.stat(version_file).st_mtime))
         except IOError:
             print 'WARNING: version file not found:', version_file
+        except AssertionError:
+            print 'WARNING: version was empty'
+            version_str = None
     else:
         print 'WARNING: version file not provided'
     try:

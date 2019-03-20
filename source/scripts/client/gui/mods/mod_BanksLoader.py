@@ -5,27 +5,25 @@ import glob
 import os
 import traceback
 import zipfile
-from Avatar import PlayerAvatar
-from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, overrideMethod, showConfirmDialog
+from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, showConfirmDialog, events
 from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
-from gui.Scaleform.daapi.view.login.LoginView import LoginView
 
 
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.editedBanks = {'create': [], 'delete': [], 'memory': [], 'move': [], 'remap': set(), 'wotmod': []}
         self.was_declined = False
+        events.LoginView.populate.after(events.LobbyView.populate.after(events.PlayerAvatar.startGUI.after(self.tryRestart)))
         super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.9.6 (%(file_compile_date)s)'
+        self.version = '1.9.7 (%(file_compile_date)s)'
         self.author += ' and Ekspoint'
         self.data = {'defaultPool': 36,
                      'lowEnginePool': 10,
-                     'preparedPool': 200,
+                     'memoryLimit': 250,
                      'streamingPool': 8,
                      'IOPoolSize': 8,
                      'max_voices': 110,
@@ -66,7 +64,7 @@ class ConfigInterface(PYmodsConfigInterface):
             print self.ID + ': client restart declined.'
             self.was_declined = True
 
-    def onRequestRestart(self):
+    def tryRestart(self, *_, **__):
         if self.was_declined:
             return
         if not any(self.editedBanks.itervalues()):
@@ -268,8 +266,14 @@ class ConfigInterface(PYmodsConfigInterface):
             audio_mods_new['loadBanks'].deleteSection(bankSect)
         self.editedBanks['delete'] = remDups(self.editedBanks['delete'])
         bankFiles['orig'] = set(map(str.lower, bankFiles['orig']))
-        poolKeys = {'memoryManager': ('defaultPool', 'lowEnginePool', 'preparedPool', 'streamingPool', 'IOPoolSize'),
+        poolKeys = {'memoryManager': ('defaultPool', 'lowEnginePool', 'streamingPool', 'IOPoolSize'),
                     'soundRender': ('max_voices',)}
+        for mgrKey in ('memoryLimit',):  # in case they add something later
+            value = soundMgr[mgrKey]
+            if value is not None and value.asInt != int(self.data[mgrKey]):
+                self.editedBanks['memory'].append(mgrKey)
+                soundMgr.writeInt(mgrKey, self.data[mgrKey])
+                print self.ID + ': changing value for memory setting:', mgrKey
         for profile_name in ('WWISE_active_profile', 'WWISE_emergency_profile'):
             moddedExist = set()
             profile_type = profile_name.split('_')[1]
@@ -364,21 +368,3 @@ class ConfigInterface(PYmodsConfigInterface):
 
 _config = ConfigInterface()
 statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-9')
-
-
-@overrideMethod(LoginView, '_populate')
-def new_Login_populate(base, self):
-    base(self)
-    _config.onRequestRestart()
-
-
-@overrideMethod(LobbyView, '_populate')
-def new_Lobby_populate(base, self):
-    base(self)
-    _config.onRequestRestart()
-
-
-@overrideMethod(PlayerAvatar, '_PlayerAvatar__startGUI')
-def new_startGUI(base, *a, **kw):
-    base(*a, **kw)
-    _config.onRequestRestart()

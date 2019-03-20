@@ -4,7 +4,7 @@ import json
 import re
 import traceback
 import urllib2
-from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, doOverrideMethod, showInfoDialog
+from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, overrideMethod, showConfirmDialog
 from debug_utils import LOG_ERROR
 from functools import partial
 
@@ -13,7 +13,6 @@ class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.backupData = {}
         self.blacklists = {}
-        self.needRestart = False
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -41,7 +40,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_restart_reason_colourChanged': 'text colour was changed',
             'UI_restart_reason_modDisabled': 'mod was disabled',
             'UI_restart_reason_modEnabled': 'mod was enabled',
-            'UI_restart': 'Restart'}
+            'UI_restart_restart': 'Restart',
+            'UI_restart_shutdown': 'Shutdown'}
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
@@ -63,8 +63,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def onMSADestroy(self):
         if any(self.data[setting] != self.backupData[setting] for setting in self.backupData):
-            self.onRequestRestart(self.data[key] != self.backupData.get(key, self.data[key]) for key in
-                                  ('colour', 'enabled'))
+            self.onRequestRestart(self.data[key] != self.backupData.get(key, self.data[key]) for key in ('colour', 'enabled'))
         self.backupData = {}
 
     def readCurrentSettings(self, quiet=True):
@@ -72,9 +71,12 @@ class ConfigInterface(PYmodsConfigInterface):
         self.blacklists = loadJson(self.ID, 'blacklist', self.blacklists, self.configPath)
 
     @staticmethod
-    def onRestartConfirmed(*_):
+    def onRestartConfirmed(confirm):
         BigWorld.savePreferences()
-        BigWorld.restartGame()
+        if confirm:
+            BigWorld.restartGame()
+        else:
+            BigWorld.quit()
 
     def onRequestRestart(self, reason):
         colourChanged, toggled = reason
@@ -84,7 +86,8 @@ class ConfigInterface(PYmodsConfigInterface):
         if toggled:
             reasons.append(self.i18n['UI_restart_reason_mod' + ('Enabled' if self.data['enabled'] else 'Disabled')])
         dialogText = self.i18n['UI_restart_text'].format(reason='; '.join(reasons))
-        showInfoDialog(self.i18n['UI_restart_header'], dialogText, self.i18n['UI_restart'], self.onRestartConfirmed)
+        showConfirmDialog(self.i18n['UI_restart_header'], dialogText,
+                          [self.i18n['UI_restart_%s' % act] for act in ('restart', 'shutdown')], self.onRestartConfirmed)
 
     def load(self):
         try:
@@ -107,7 +110,7 @@ i18nHooks = ('i18n_hook_makeString',)
 
 
 def old_makeString(*_, **__):
-    LOG_ERROR('i18n hook failed')
+    return LOG_ERROR('i18n hook failed')
 
 
 def i18n_hook_makeString(key, *args, **kwargs):
@@ -120,14 +123,12 @@ def i18n_hook_makeString(key, *args, **kwargs):
                 return key
             moFile = '#' + moName
             identity = {listType: any(
-                moKey in moFile and (not idList[moKey] or any(x in subkey for x in idList[moKey])) for moKey in idList)
-                for listType, idList in _config.blacklists.iteritems()}
-            identity['commonBlacklist'] = identity['commonBlacklist'] or (
-                '#messenger' in moFile and subkey.startswith('server/errors/') and subkey.endswith('/title'))
+                moKey in moFile and (not idList[moKey] or any(re.search(x, subkey) for x in idList[moKey]))
+                for moKey in idList) for listType, idList in _config.blacklists.iteritems()}
             if moFile == '#menu' and subkey.startswith('tankmen/') and len(subkey.split('/')) == 2:
-                from CurrentVehicle import g_currentVehicle
-                if g_currentVehicle.isPresent() and g_currentVehicle.item.type in subkey:
-                    identity['commonBlacklist'] = False
+                from CurrentVehicle import g_currentVehicle  # this can't be in the script header
+                if g_currentVehicle.isPresent() and g_currentVehicle.item.type in subkey:  # don't recolor mismatches
+                    identity['commonBlacklist'] = False  # fix for tankmen popover
             whitelist = _config.blacklists['commonWhitelist']
             identity['commonWhitelist'] = any(
                 moKey in moFile and any(x == subkey for x in whitelist[moKey]) for moKey in whitelist)
@@ -196,12 +197,12 @@ def delayedHooks():
     from gui.Scaleform.daapi.view.lobby.hangar.Crew import Crew
     from gui.shared.tooltips.tankman import TankmanSkillListField, ToolTipAttrField, TankmanRoleLevelField, \
         TankmanCurrentVehicleAttrField
-    doOverrideMethod(Crew, 'as_tankmenResponseS', new_as_tankmenResponseS)
-    doOverrideMethod(TankmanSkillListField, '_getValue', new_tankmanSkill_getValue)
-    doOverrideMethod(ToolTipAttrField, '_getValue', new_tankmanAttr_getValue)
-    doOverrideMethod(TankmanRoleLevelField, '_getValue', new_tankmanAttr_getValue)
-    doOverrideMethod(TankmanCurrentVehicleAttrField, '_getValue', new_tankmanAttr_getValue)
-    doOverrideMethod(I18nDialogMeta, '__init__', new_I18nDialog_init)
+    overrideMethod(Crew, 'as_tankmenResponseS', new_as_tankmenResponseS)
+    overrideMethod(TankmanSkillListField, '_getValue', new_tankmanSkill_getValue)
+    overrideMethod(ToolTipAttrField, '_getValue', new_tankmanAttr_getValue)
+    overrideMethod(TankmanRoleLevelField, '_getValue', new_tankmanAttr_getValue)
+    overrideMethod(TankmanCurrentVehicleAttrField, '_getValue', new_tankmanAttr_getValue)
+    overrideMethod(I18nDialogMeta, '__init__', new_I18nDialog_init)
 
 
 BigWorld.callback(0, delayedHooks)

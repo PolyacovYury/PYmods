@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 import BigWorld
 import Keys
-import PYmodsCore
 import Vehicle
 import traceback
-from PYmodsCore import Sound
+from PYmodsCore import Sound, PYmodsConfigInterface, pickRandomPart, sendChatMessage, checkKeys, Analytics
 from functools import partial
 from gui import InputHandler
 from gui.app_loader.loader import g_appLoader
 from gui.battle_control import avatar_getter
 
 
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
-        self.lastRandID = {'ally': -1,
-                           'enemy': -1,
-                           'default': -1}
+        self.lastRandID = {'ally': -1, 'enemy': -1, 'default': -1}
         self.hornSoundEvent = None
         self.soundCallback = None
         super(ConfigInterface, self).__init__()
@@ -88,7 +85,7 @@ def __getIsLive(player, entityID):
 
 def __getIsFriendly(player, entityID):
     return __getBattleOn(player) and player.arena.vehicles[player.playerVehicleID]['team'] == \
-                                     player.arena.vehicles[entityID]['team']
+           player.arena.vehicles[entityID]['team']
 
 
 def getCrosshairType():
@@ -110,11 +107,11 @@ def calltext():
         if target is None:
             target = BigWorld.entities.get(player.playerVehicleID)
         curVariantList = _config.i18n[chatType + 'Text']
-        msg, _config.lastRandID[chatType] = PYmodsCore.pickRandomPart(curVariantList, _config.lastRandID[chatType])
+        msg, _config.lastRandID[chatType] = pickRandomPart(curVariantList, _config.lastRandID[chatType])
         if '{name}' in msg:
             msg = msg.format(name=target.publicInfo.name)
         if msg:
-            PYmodsCore.sendChatMessage(msg, 1, 1.0)
+            sendChatMessage(msg, 1, 1.0)
     except StandardError:
         traceback.print_exc()
 
@@ -135,14 +132,14 @@ def SoundLoop(start):
 def inj_hkKeyEvent(event):
     BattleApp = g_appLoader.getDefBattleApp()
     try:
-        if BattleApp and _config.data['enabled']:
-            if not (len(_config.data['hotkey']) == 1 and BigWorld.player()._PlayerAvatar__forcedGuiCtrlModeFlags):
-                if avatar_getter.isVehicleAlive() and event.isKeyDown() and PYmodsCore.checkKeys(_config.data['hotkey']):
-                    SoundLoop(True)
-                    if _config.data['chatEnable']:
-                        calltext()
-                else:
-                    SoundLoop(False)
+        if BattleApp and _config.data['enabled'] and not (
+                len(_config.data['hotkey']) == 1 and BigWorld.player().getForcedGuiControlModeFlags()):
+            if avatar_getter.isVehicleAlive() and event.isKeyDown() and checkKeys(_config.data['hotkey']):
+                SoundLoop(True)
+                if _config.data['chatEnable']:
+                    calltext()
+            else:
+                SoundLoop(False)
     except StandardError:
         print 'Horns: ERROR at inj_hkKeyEvent'
         traceback.print_exc()
@@ -150,4 +147,4 @@ def inj_hkKeyEvent(event):
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-5')
+statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-5')

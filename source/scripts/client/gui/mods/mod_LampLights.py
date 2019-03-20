@@ -2,18 +2,17 @@
 import BigWorld
 import Keys
 import Math
-import PYmodsCore
 import ResMgr
 import glob
 import os
 import traceback
 from Avatar import PlayerAvatar
 from AvatarInputHandler import mathUtils
+from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKeys, sendMessage, Analytics, events
 from Vehicle import Vehicle
 from debug_utils import LOG_ERROR, LOG_NOTE
 from functools import partial
 from gui import InputHandler, SystemMessages
-from gui.Scaleform.daapi.view.lobby.LobbyView import LobbyView
 from gui.app_loader.loader import g_appLoader
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
@@ -23,7 +22,7 @@ def listToTuple(seq):
     return tuple(listToTuple(item) for item in seq) if isinstance(seq, list) else seq
 
 
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.isTickRequired = True
         self.configsDict = {}
@@ -189,9 +188,8 @@ class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
             for confPath in glob.iglob(configPath + '*.json'):
                 confName = os.path.basename(confPath)
                 try:
-                    confdict = PYmodsCore.loadJson(
-                        self.ID, confName.split('.')[0], self.configsDict.get(confName.split('.')[0], {}),
-                        os.path.dirname(confPath) + '/')
+                    confdict = loadJson(self.ID, confName.split('.')[0], self.configsDict.get(confName.split('.')[0], {}),
+                                        os.path.dirname(confPath) + '/')
                 except StandardError:
                     print self.ID + ': config', confName, 'is invalid.'
                     traceback.print_exc()
@@ -252,10 +250,10 @@ if _config.data['enableMessage']:
     isLogin = True
     LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUp'].format(author='<font color="#DD7700">Polyacov_Yury</font>')
 
-    @PYmodsCore.overrideMethod(LobbyView, '_populate')
-    def new_Lobby_populate(base, self):
+
+    @events.LobbyView.populate.after
+    def new_Lobby_populate(*_, **__):
         global isLogin
-        base(self)
         try:
             # noinspection PyUnresolvedReferences
             from gui.vxSettingsApi import vxSettingsApi
@@ -337,7 +335,7 @@ def computeTransform(confDict):
         for confKey in matDict.keys():
             if isinstance(confDict[confKey][0], tuple):
                 keyframes = []
-                for frameIdx, keyframe in enumerate(confDict[confKey]):
+                for keyframe in confDict[confKey]:
                     timeStamp, value = keyframe
                     if 'vect' in confKey:
                         Mat = mathUtils.createTranslationMatrix(value)
@@ -541,8 +539,8 @@ def lightsCreate(vehicleID, callPlace=''):
                     for curKey in lightDBDict[vehicleID].keys():
                         curTree = curKey.split('.')
                         if len(curTree) != len(nameTree) or any(
-                                        upperName not in curTree[depth] for depth, upperName in
-                                        enumerate(nameTree)):
+                                upperName not in curTree[depth] for depth, upperName in
+                                enumerate(nameTree)):
                             continue
                         namesList.append(curKey + '.' + name.split('.')[-1])
                     if not namesList:
@@ -647,7 +645,7 @@ def lightsDestroy(vehicleID, callPlace=''):
 
 
 def battleKeyControl(event):
-    if PYmodsCore.checkKeys(_config.data['hotkey']) and event.isKeyDown():
+    if checkKeys(_config.data['hotkey']) and event.isKeyDown():
         _config.isLampsVisible = not _config.isLampsVisible
         if _config.isLampsVisible:
             _config.readCurrentSettings(not _config.data['Debug'])
@@ -656,12 +654,12 @@ def battleKeyControl(event):
                 if curVehicle is not None and curVehicle.isAlive():
                     lightsCreate(vehicleID, 'keyPress')
 
-            PYmodsCore.sendMessage(_config.i18n['UI_activLamps'])
+            sendMessage(_config.i18n['UI_activLamps'])
         else:
             for vehicleID in lightDBDict.keys():
                 lightsDestroy(vehicleID, 'keyPress')
 
-            PYmodsCore.sendMessage(_config.i18n['UI_deactivLamps'], 'Red')
+            sendMessage(_config.i18n['UI_deactivLamps'], 'Red')
 
 
 def inj_hkKeyEvent(event):
@@ -676,40 +674,40 @@ def inj_hkKeyEvent(event):
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-2', _config.configsDict)
+statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-2', _config.configsDict)
 curSpeedsDict = {}
 
 
-@PYmodsCore.overrideMethod(Vehicle, 'startVisual')
+@overrideMethod(Vehicle, 'startVisual')
 def new_startVisual(base, self):
     base(self)
     if self.isStarted and self.isAlive() and _config.data['enabled'] and _config.isLampsVisible:
         BigWorld.callback(0.1, partial(lightsCreate, self.id, 'Vehicle.startVisual'))
 
 
-@PYmodsCore.overrideMethod(Vehicle, 'stopVisual')
-def new_vehicle_onLeaveWorld(base, self, *args):
+@overrideMethod(Vehicle, 'stopVisual')
+def new_vehicle_onLeaveWorld(base, self, *args, **kwargs):
     if self.isStarted:
         lightsDestroy(self.id, 'Vehicle.stopVisual')
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, 'leaveArena')
+@overrideMethod(PlayerAvatar, 'leaveArena')
 def new_leaveArena(base, *a, **kw):
     for vehID in lightDBDict.keys():
         lightsDestroy(vehID, 'Avatar.leaveArena')
     base(*a, **kw)
 
 
-@PYmodsCore.overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
-def new_oVHC(base, self, *args):
+@overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
+def new_oVHC(base, self, *args, **kwargs):
     vehicle = self._CompoundAppearance__vehicle
     if not vehicle.isAlive():
         lightsDestroy(vehicle.id, 'oVHC_vehicle_not_isAlive')
-    base(self, *args)
+    base(self, *args, **kwargs)
 
 
-@PYmodsCore.overrideMethod(CompoundAppearance, '_CompoundAppearance__onPeriodicTimer')
+@overrideMethod(CompoundAppearance, '_CompoundAppearance__onPeriodicTimer')
 def new_onPeriodicTimer(base, self):
     base(self)
     if CompoundAppearance.frameTimeStamp > BigWorld.wg_getFrameTimestamp():
@@ -752,12 +750,13 @@ def spotToggle(vehicleID, lightIdx, status):
         for confKey in _config.modes['spot']:
             for curKey in lightDBDict[vehicleID]:
                 if confKey in curKey and nodes[lightIdx] in curKey:
-                    lightVisible(lightDBDict[vehicleID][curKey],
-                                 status if not isinstance(lightDBDict[vehicleID][curKey], BigWorld.Model) or
-                                 lightIdx not in (1, 6) else False)
+                    lightVisible(lightDBDict[vehicleID][curKey], (
+                        status
+                        if not isinstance(lightDBDict[vehicleID][curKey], BigWorld.Model) or lightIdx not in (1, 6)
+                        else False))
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, 'targetFocus')
+@overrideMethod(PlayerAvatar, 'targetFocus')
 def new_targetFocus(base, self, entity):
     base(self, entity)
     if entity not in self._PlayerAvatar__vehicles:
@@ -770,7 +769,7 @@ def new_targetFocus(base, self, entity):
                         lightVisible(lightDBDict[vehicleID][curKey], vehicleID == entity.id)
 
 
-@PYmodsCore.overrideMethod(PlayerAvatar, 'targetBlur')
+@overrideMethod(PlayerAvatar, 'targetBlur')
 def new_targetBlur(base, self, prevEntity):
     base(self, prevEntity)
     if prevEntity not in self._PlayerAvatar__vehicles:

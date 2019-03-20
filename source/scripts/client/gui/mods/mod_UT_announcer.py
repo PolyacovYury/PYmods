@@ -11,12 +11,12 @@ final version by Polyacov_Yury
 """
 import BigWorld
 import ClientArena
-import PYmodsCore
 import ResMgr
 import SoundGroups
 import os
 import traceback
 from Avatar import PlayerAvatar
+from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod
 from collections import OrderedDict
 from constants import ARENA_PERIOD, ARENA_GUI_TYPE
 from debug_utils import LOG_ERROR
@@ -29,7 +29,7 @@ from gui.app_loader.settings import GUI_GLOBAL_SPACE_ID
 from string import Template
 
 
-class ConfigInterface(PYmodsCore.PYmodsConfigInterface):
+class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.timerSounds = ('sndStart', 'snd5min', 'snd3min', 'snd2min', 'snd1min', 'snd30sec', 'snd10sec', 'snd5sec',
                             'sndFinish')
@@ -363,7 +363,7 @@ class _Flash(object):
 
 
 _config = ConfigInterface()
-statistic_mod = PYmodsCore.Analytics(_config.ID, _config.version, 'UA-76792179-8')
+statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-8')
 PlayerAvatar.sounds = None
 try:
     from gui.vxBattleFlash import vxBattleFlash, vxBattleFlashAliases
@@ -661,7 +661,7 @@ def startBattleL(SpaceID):
 g_appLoader.onGUISpaceEntered += startBattleL
 
 
-@PYmodsCore.overrideMethod(BattleEndWarningPanel, 'setTotalTime')
+@overrideMethod(BattleEndWarningPanel, 'setTotalTime')
 def new_setCurrentTimeLeft(base, self, totalTime):
     base(self, totalTime)
     if not _config.data['enabled']:
@@ -673,11 +673,11 @@ def new_setCurrentTimeLeft(base, self, totalTime):
         soundMgr.addToQueue(events_by_time[totalTime])
 
 
-@PYmodsCore.overrideMethod(ClientArena.ClientArena, '_ClientArena__onVehicleKilled')
+@overrideMethod(ClientArena.ClientArena, '_ClientArena__onVehicleKilled')
 def new_AVK(base, self, argStr):
     if _config.data['enabled'] and BigWorld.player().arena is not None:
         import cPickle
-        victimID, killerID, equipmentID, reason = cPickle.loads(argStr)
+        victimID, killerID, _, reason = cPickle.loads(argStr)
         if not hasattr(BigWorld.player().arena, 'UT'):
             initial()
         LOG_NOTE('A Vehicle got Killed (targetID, attackerID, reason):', victimID, killerID, reason)
@@ -687,7 +687,7 @@ def new_AVK(base, self, argStr):
     base(self, argStr)
 
 
-@PYmodsCore.overrideMethod(DamagePanelMeta.DamagePanelMeta, 'as_setVehicleDestroyedS')
+@overrideMethod(DamagePanelMeta.DamagePanelMeta, 'as_setVehicleDestroyedS')
 def new_onVehicleDestroyed(base, self):
     if _config.data['enabled'] and not hasattr(BigWorld.player().arena, 'UT'):
         initial()
@@ -696,7 +696,7 @@ def new_onVehicleDestroyed(base, self):
     base(self)
 
 
-@PYmodsCore.overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '_IngameSoundNotifications__readConfig')
+@overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '_IngameSoundNotifications__readConfig')
 def new_readConfig(base, self):
     base(self)
     if _config.data['enabled'] and _config.data['disStand']:

@@ -4,7 +4,7 @@ import glob
 import os
 import re
 import traceback
-from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart, Analytics, doOverrideMethod
+from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart, Analytics, overrideMethod, events
 from debug_utils import LOG_ERROR, LOG_WARNING
 from functools import partial
 
@@ -119,7 +119,7 @@ def i18n_hook_makeString(key, *args, **kwargs):
                     _config.textStack[key], _config.textId[key] = textList[0], 0
                 elif mode in ('circle', 'random'):
                     _config.textStack[key], _config.textId[key] = pickRandomPart(
-                        textList, _config.textId.get(key, -1), mode == 'circle')
+                        textList, _config.textId.get(key, -1), mode != 'circle')
                 elif mode == 'bindToKey':
                     _config.textStack[key] = textList[
                         min(_config.textId.get(_config.sectDict[key].get('bindToKey', key), 0), len(textList) - 1)]
@@ -151,8 +151,8 @@ def i18n_hook_makeString(key, *args, **kwargs):
     return old_makeString(key, *args, **kwargs)
 
 
-def new_destroyGUI(base, self):
-    base(self)
+@events.PlayerAvatar.destroyGUI.after
+def new_destroyGUI(*_, **__):
     if _config.data['enabled'] and _config.data['reReadAtEnd']:
         _config.wasReplaced = dict.fromkeys(_config.wasReplaced.keys(), False)
 
@@ -189,14 +189,12 @@ def new_setFightButtonS(base, self, label):
 
 
 def ButtonReplacer_hooks():
-    from Avatar import PlayerAvatar
     from gui.Scaleform.daapi.view.meta.LobbyHeaderMeta import LobbyHeaderMeta
     from gui.Scaleform.daapi.view.meta.ModuleInfoMeta import ModuleInfoMeta
     from gui.shared.tooltips.module import EffectsBlockConstructor
-    doOverrideMethod(PlayerAvatar, '_PlayerAvatar__destroyGUI', new_destroyGUI)
-    doOverrideMethod(ModuleInfoMeta, 'as_setModuleInfoS', new_setModuleInfoS)
-    doOverrideMethod(EffectsBlockConstructor, 'construct', new_construct)
-    doOverrideMethod(LobbyHeaderMeta, 'as_setFightButtonS', new_setFightButtonS)
+    overrideMethod(ModuleInfoMeta, 'as_setModuleInfoS', new_setModuleInfoS)
+    overrideMethod(EffectsBlockConstructor, 'construct', new_construct)
+    overrideMethod(LobbyHeaderMeta, 'as_setFightButtonS', new_setFightButtonS)
 
 
 BigWorld.callback(0.0, ButtonReplacer_hooks)

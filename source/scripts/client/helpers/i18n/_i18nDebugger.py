@@ -48,7 +48,7 @@ def checkTexts(key, text):
 
 
 def old_makeString(*_, **__):
-    LOG_ERROR('i18n hook failed')
+    return LOG_ERROR('i18n hook failed')
 
 
 def i18n_hook_makeString(key, *args, **kwargs):

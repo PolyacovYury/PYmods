@@ -556,10 +556,15 @@ package  {
 					return;
 				}
 				var remodName:String = ""
+				var WLArray: Array = [];
 				if (this.mode == "advanced_setup") {
 					remodName = this.remodNameArray[this.remodNameDropdown.selectedIndex];
+					WLArray = this.settings[remodName].whitelist;
+				} else {
+					remodName = this.newSettings.name;
+					WLArray = this.newSettings.whitelist;
 				}
-				this.py_onRequestRemodDelete(this.settings[remodName].whitelist[this.whitelistDropdown.selectedIndex - 1], remodName);
+				this.py_onRequestRemodDelete(WLArray[this.whitelistDropdown.selectedIndex - 1], remodName);
 			}
 		}
 
