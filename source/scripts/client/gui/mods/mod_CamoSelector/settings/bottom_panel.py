@@ -42,23 +42,19 @@ class CustomizationBottomPanel(CBP):
                 self.__setFooterInitData()
 
     def _carouseItemWrapper(self, itemCD):
-        try:
-            item = self.service.getItemByCD(itemCD)
-            itemInventoryCount = self.__ctx.getItemInventoryCount(item)
-            purchaseLimit = self.__ctx.getPurchaseLimit(item)
-            showUnsupportedAlert = item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION and not isRendererPipelineDeferred()
-            isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
-            noPrice = item.buyCount <= 0
-            isDarked = purchaseLimit == 0 and itemInventoryCount == 0
-            isAlreadyUsed = isDarked and not isCurrentlyApplied
-            autoRentEnabled = self.__ctx.autoRentEnabled()
-            print 'building VO for', itemCD
-            return buildCustomizationItemDataVO(
-                item, itemInventoryCount, plainView=self.__ctx.isBuy, showUnsupportedAlert=showUnsupportedAlert,
-                isCurrentlyApplied=isCurrentlyApplied, isAlreadyUsed=isAlreadyUsed, forceLocked=isAlreadyUsed,
-                isDarked=isDarked, noPrice=noPrice, autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item)
-        except StandardError:
-            traceback.print_exc()
+        item = self.service.getItemByCD(itemCD)
+        itemInventoryCount = self.__ctx.getItemInventoryCount(item)
+        purchaseLimit = self.__ctx.getPurchaseLimit(item)
+        showUnsupportedAlert = item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION and not isRendererPipelineDeferred()
+        isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
+        noPrice = item.buyCount <= 0
+        isDarked = purchaseLimit == 0 and itemInventoryCount == 0
+        isAlreadyUsed = isDarked and not isCurrentlyApplied
+        autoRentEnabled = self.__ctx.autoRentEnabled()
+        return buildCustomizationItemDataVO(
+            item, itemInventoryCount, plainView=not self.__ctx.isBuy, showUnsupportedAlert=showUnsupportedAlert,
+            isCurrentlyApplied=isCurrentlyApplied, isAlreadyUsed=isAlreadyUsed, forceLocked=isAlreadyUsed,
+            isDarked=isDarked, noPrice=noPrice, autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item)
 
     def __setNotificationCounters(self):
         vehicle = g_currentVehicle.item
