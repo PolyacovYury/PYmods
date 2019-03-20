@@ -1,8 +1,10 @@
 import struct
 from CurrentVehicle import g_currentVehicle
+from account_helpers import AccountSettings
+from account_helpers.AccountSettings import CUSTOMIZATION_SECTION, CAROUSEL_ARROWS_HINT_SHOWN_FIELD
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView as WGMainView, CustomizationSlotIdVO, \
     CustomizationAnchorPositionVO, CustomizationAnchorsSetVO, CustomizationSlotUpdateVO, CustomizationAnchorInitVO
-from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_MAPPING, DRAG_AND_DROP_INACTIVE_TABS as \
+from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_SLOT_TYPE_MAPPING, DRAG_AND_DROP_INACTIVE_TABS as \
     DND_INACTIVE_TABS, C11nTabs, SEASONS_ORDER, SEASON_TYPE_TO_NAME
 from gui.Scaleform.daapi.view.lobby.customization.sound_constants import SOUNDS
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES
@@ -23,7 +25,7 @@ class MainView(WGMainView):
         self.service.stopHighlighter()
         if self.__ctx.isBuy:
             if tabIndex in C11nTabs.REGIONS:
-                self.service.startHighlighter(chooseMode(TABS_ITEM_MAPPING[tabIndex], g_currentVehicle.item))
+                self.service.startHighlighter(chooseMode(TABS_SLOT_TYPE_MAPPING[tabIndex], g_currentVehicle.item))
         elif self.__ctx.mode == CSMode.SETUP:
             self.service.startHighlighter(HighlightingMode.WHOLE_VEHICLE)
         elif tabIndex in CSTabs.REGIONS:
@@ -132,10 +134,10 @@ class MainView(WGMainView):
         tabIndex = self.__ctx.currentTab
         if tabIndex in self.__ctx.tabsData.REGIONS:
             self.service.resetHighlighting()
-        else:
-            self.__hideAnchorSwitchers()
         self._isPropertySheetShown = False
         self.__updateDnd()
+        if self.__ctx.currentTab in (self.__ctx.tabsData.INSCRIPTION, self.__ctx.tabsData.EMBLEM):
+            self.__setAnchorsInitData()
 
     def __updateDnd(self):
         isDndEnable = False
@@ -186,8 +188,7 @@ class MainView(WGMainView):
                 if self.__ctx.isC11nItemsQuantityLimitReached(outfit, cType):
                     maxItemsReached = True
                     potentialPlaceTooltip = makeTooltip(
-                        VEHICLE_CUSTOMIZATION.CUSTOMIZATION_TOOLTIP_POTENTIALPROJDECALPLACE_TITLE,
-                        VEHICLE_CUSTOMIZATION.CUSTOMIZATION_TOOLTIP_POTENTIALPROJDECALPLACE_TEXT)
+                        body=VEHICLE_CUSTOMIZATION.CUSTOMIZATION_TOOLTIP_POTENTIALPROJDECALPLACE_TOLTIP_TEXT)
             for areaId in Area.ALL:
                 regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, cType)
                 slot = self.__ctx.currentOutfit.getContainer(areaId).slotFor(cType)
@@ -215,18 +216,18 @@ class MainView(WGMainView):
         else:
             self.as_setAnchorInitS(CustomizationAnchorInitVO(anchorVOs, typeRegions, maxItemsReached)._asdict())
 
-    def __showPropertiesSheet(self, areaId, slotType, regionIdx):
+    def __showPropertiesSheet(self, areaId, slotType, regionIdx, forceUpdate=False):
         if self.__propertiesSheet:
             if self.__ctx.vehicleAnchorsUpdater is not None:
                 self.__ctx.vehicleAnchorsUpdater.attachMenuToAnchor(self.__ctx.selectedAnchor)
-                if self.__ctx.currentTab in self.__ctx.tabsData.REGIONS:
-                    self.__ctx.vehicleAnchorsUpdater.changeAnchorParams(self.__ctx.selectedAnchor, True, False)
-            if self.__propertiesSheet.isVisible:
-                self.soundManager.playInstantSound(SOUNDS.CHOOSE)
-            self.__propertiesSheet.show(areaId, slotType, regionIdx)
-            tabIndex = self.__ctx.currentTab
-            if tabIndex not in self.__ctx.tabsData.REGIONS:
-                self.__showAnchorSwitchers(tabIndex == self.__ctx.tabsData.EMBLEM)
+                tabIndex = self.__ctx.currentTab
+                self.__propertiesSheet.show(areaId, slotType, regionIdx, tabIndex not in self.__ctx.tabsData.REGIONS,
+                                            tabIndex == self.__ctx.tabsData.EMBLEM, forceUpdate)
+                custSett = AccountSettings.getSettings(CUSTOMIZATION_SECTION)
+                if not custSett.get(CAROUSEL_ARROWS_HINT_SHOWN_FIELD, False) and not self.__ctx.numberEditModeActive:
+                    self.as_showCarouselsArrowsNotificationS(VEHICLE_CUSTOMIZATION.PROPERTYSHEET_KEYBOARD_HINT)
+                    custSett[CAROUSEL_ARROWS_HINT_SHOWN_FIELD] = True
+                    AccountSettings.setSettings(CUSTOMIZATION_SECTION, custSett)
 
     def __hidePropertiesSheet(self):
         if self.__propertiesSheet:

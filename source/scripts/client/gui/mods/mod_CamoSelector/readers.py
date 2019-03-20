@@ -13,8 +13,8 @@ from . import g_config
 
 
 class LegacyCamouflageReader(CamouflageXmlReader):
-    def _readFromXml(self, target, xmlCtx, section):
-        super(LegacyCamouflageReader, self)._readFromXml(target, xmlCtx, section)
+    def _readFromXml(self, target, xmlCtx, section, cache=None):
+        super(LegacyCamouflageReader, self)._readFromXml(target, xmlCtx, section, cache)
         if section.has_key('colors'):
             palette = []
             for c_name in section['colors'].keys():

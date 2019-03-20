@@ -2,6 +2,7 @@ from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
 from functools import partial
 from gui import g_tankActiveCamouflage, SystemMessages
+from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
 from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_IDX, SEASON_IDX_TO_TYPE, \
     SEASON_TYPE_TO_NAME, getOutfitWithoutItems, getItemInventoryCount, getStyleInventoryCount, OutfitInfo, \
     SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems
@@ -97,7 +98,9 @@ class CustomizationContext(WGCtx):
         self.service.tryOnOutfit(self._currentOutfit)
         g_tankActiveCamouflage[g_currentVehicle.item.intCD] = self._currentSeason
 
-    def tabChanged(self, tabIndex):
+    def tabChanged(self, tabIndex, update=False):
+        if self.numberEditModeActive:
+            self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._tabIndex = tabIndex
         if self._tabIndex == self.tabsData.EFFECT:
             self._selectedAnchor = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.MODIFICATION, regionIdx=0)
@@ -106,7 +109,10 @@ class CustomizationContext(WGCtx):
         else:
             self._selectedAnchor = C11nId()
         self._selectedCaruselItem = CaruselItemData()
-        self.onCustomizationTabChanged(tabIndex)
+        if update:
+            self.onCustomizationTabsUpdated(tabIndex)
+        else:
+            self.onCustomizationTabChanged(tabIndex)
 
     def anchorSelected(self, slotType, areaId, regionIdx):
         if self._tabIndex in (self.tabsData.EFFECT, self.tabsData.STYLE):
@@ -234,7 +240,7 @@ class CustomizationContext(WGCtx):
             if component.patternSize != scale:
                 component.patternSize = scale
                 self.refreshOutfit()
-                self.onCustomizationCamouflageScaleChanged(areaId, regionIdx, scale)
+                self.onCamouflageScaleChanged(areaId, regionIdx, scale)
                 self.itemDataChanged(areaId, GUI_ITEM_TYPE.CAMOUFLAGE, regionIdx)
         elif self._randMode != scale:
             self._randMode = scale
@@ -312,14 +318,12 @@ class CustomizationContext(WGCtx):
     @classmethod
     def deleteEmpty(cls, settings):
         for key, value in settings.items():
-            if key == 'camo':
-                if g_currentVehicle.item.turret.isGunCarriage:
-                    settings[key].pop('turret', None)
-            else:
-                if isinstance(settings[key], dict):
-                    cls.deleteEmpty(settings[key])
-                    if not settings[key]:
-                        del settings[key]
+            if key == 'camo' and g_currentVehicle.item.turret.isGunCarriage:
+                value.pop('turret', None)
+            elif isinstance(value, dict):
+                cls.deleteEmpty(value)
+                if not value:
+                    del settings[key]
 
     def getOutfitsInfo(self):
         outfitsInfo = {}
@@ -593,15 +597,16 @@ class CustomizationContext(WGCtx):
             self._modifiedCSStyle = self.service.getItemByCD(self._modifiedCSStyle.intCD)
         self._state.clear()
 
-    def updateVisibleTabsList(self, visibleTabs):
+    def updateVisibleTabsList(self, visibleTabs, stylesTabEnabled):
         for seasonType in SeasonType.COMMON_SEASONS:
             self.__visibleTabs[seasonType] = sorted(visibleTabs[seasonType])
+        self.__stylesTabEnabled = stylesTabEnabled
         tabIndex = self._lastTab[self._mode]
         if tabIndex not in self.visibleTabs:
             tabIndex = first(self.visibleTabs, -1)
         self._lastTab[self._mode] = tabIndex
         self._tabIndex = tabIndex
-        nextTick(self.tabChanged)(tabIndex)
+        nextTick(self.tabChanged)(tabIndex, update=True)
 
     def __isItemInstalledInOutfitSlot(self, slotId, itemIntCD):
         if slotId.slotType == GUI_ITEM_TYPE.STYLE:

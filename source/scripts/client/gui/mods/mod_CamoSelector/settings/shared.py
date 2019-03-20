@@ -1,4 +1,4 @@
-from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_MAPPING
+from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_SLOT_TYPE_MAPPING
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.components.c11n_constants import SeasonType
@@ -20,15 +20,17 @@ class CSTabs(CONST_CONTAINER):
     REGIONS = CAMO + (STYLE, EFFECT, PAINT)
 
 
-ITEM_TO_TABS = {GUI_ITEM_TYPE.PAINT: (CSTabs.PAINT,), GUI_ITEM_TYPE.CAMOUFLAGE: CSTabs.CAMO,
+ITEM_TO_TABS = {GUI_ITEM_TYPE.STYLE: (CSTabs.STYLE,),
+                GUI_ITEM_TYPE.PAINT: (CSTabs.PAINT,), GUI_ITEM_TYPE.CAMOUFLAGE: CSTabs.CAMO,
                 GUI_ITEM_TYPE.EMBLEM: (CSTabs.EMBLEM,), GUI_ITEM_TYPE.INSCRIPTION: (CSTabs.INSCRIPTION,),
-                GUI_ITEM_TYPE.MODIFICATION: (CSTabs.EFFECT,), GUI_ITEM_TYPE.STYLE: (CSTabs.STYLE,),
-                GUI_ITEM_TYPE.PROJECTION_DECAL: (CSTabs.PROJECTION_DECAL,)}
+                GUI_ITEM_TYPE.PERSONAL_NUMBER: (CSTabs.INSCRIPTION,),
+                GUI_ITEM_TYPE.PROJECTION_DECAL: (CSTabs.PROJECTION_DECAL,),
+                GUI_ITEM_TYPE.MODIFICATION: (CSTabs.EFFECT,)}
 
 
 def tabToItem(tabIndex, isBuy):
     if isBuy:
-        return TABS_ITEM_MAPPING.get(tabIndex)
+        return TABS_SLOT_TYPE_MAPPING.get(tabIndex)
     return next(itemType for itemType in ITEM_TO_TABS if tabIndex in ITEM_TO_TABS[itemType])
 
 

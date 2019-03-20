@@ -29,15 +29,22 @@ class CustomizationPropertiesSheet(CPS):
             self.__ctx.removeItemFromAllTankAreas(currentSeason, self._slotID)
         self.__update()
 
-    def __applyToOtherSeasons(self, installItem):
+    def __applyToOtherSeasons(self):
         if self.__ctx.currentTab not in (
                 self.__ctx.tabsData.EFFECT, self.__ctx.tabsData.EMBLEM, self.__ctx.tabsData.INSCRIPTION,
                 self.__ctx.tabsData.PROJECTION_DECAL):
             return
-        if installItem:
+        if not self._isItemAppliedToAll:
+            if self.__ctx.currentTab == self.__ctx.tabsData.PROJECTION_DECAL:
+                lockedSeasons = self.__ctx.getLockedProjectionDecalSeasons(self._regionID)
+                if lockedSeasons:
+                    self.__showApplyToOtherSeasonsDialog(lockedSeasons)
+                    return
             self.__ctx.installItemForAllSeasons(self._areaID, self._slotID, self._regionID, self._currentSlotData)
+            self._isItemAppliedToAll = True
         else:
             self.__ctx.removeItemForAllSeasons(self._areaID, self._slotID, self._regionID)
+            self._isItemAppliedToAll = False
         self.__update()
 
     def __updateItemAppliedToAllFlag(self):
@@ -62,8 +69,8 @@ class CustomizationPropertiesSheet(CPS):
                                'label': g_config.i18n['UI_flash_randMode_' + RandMode.NAMES[idx]], 'value': idx})
 
         return {'titleText': text_styles.standard(g_config.i18n['UI_flashCol_randMode_label']),
-                'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_SCALE,
-                'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_SCALE_HOVER,
+                'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_SCALE,
+                'iconHoverSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_SCALE_HOVER,
                 'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_SCALE_CHANGE,
                 'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SCALE_COLOR_RENDERER_UI,
                 'btnsBlockVO': btnBlockVO}
@@ -83,7 +90,7 @@ class CustomizationPropertiesSheet(CPS):
                 actionBtnIconSrc = RES_ICONS.MAPS_ICONS_LIBRARY_ASSET_1
             result.append({
                 'titleText': text_styles.standard(titleText),
-                'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_TANK,
+                'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_FULL_TANK,
                 'actionBtnLabel': actionBtnLabel,
                 'actionBtnIconSrc': actionBtnIconSrc,
                 'isAppliedToAll': False,
