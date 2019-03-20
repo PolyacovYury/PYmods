@@ -1,3 +1,4 @@
+from CurrentVehicle import g_currentVehicle
 from gui import InputHandler
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
@@ -13,7 +14,7 @@ from gui.shared.money import Money
 from gui.shared.utils.functions import makeTooltip
 from helpers.i18n import makeString as _ms
 from .carousel import updateTabGroups
-from .shared import CSMode, tabToItem
+from .shared import CSMode, tabToItem, ITEM_TO_TABS
 from .. import g_config
 
 
@@ -35,6 +36,16 @@ class CustomizationBottomPanel(CBP):
             if self.__isShiftDown != event.isKeyDown():
                 self.__isShiftDown = event.isKeyDown()
                 self.__setFooterInitData()
+
+    def __setNotificationCounters(self):
+        vehicle = g_currentVehicle.item
+        proxy = g_currentVehicle.itemsCache.items
+        tabsCounters = []
+        for tabIdx in self.__ctx.visibleTabs:
+            tabsCounters.append(vehicle.getC11nItemsNoveltyCounter(
+                proxy, itemTypes=(ITEM_TO_TABS[tabIdx],), season=self.__ctx.currentSeason))
+        self.as_setNotificationCountersS({'tabsCounters': tabsCounters,
+         'switchersCounter': vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=GUI_ITEM_TYPE.CUSTOMIZATIONS)})
 
     def __setFooterInitData(self):
         self.__ctx.isSwitcherIgnored = True
