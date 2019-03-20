@@ -12,9 +12,11 @@ from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.money import Money
 from gui.shared.utils.functions import makeTooltip
+from gui.shared.utils.graphics import isRendererPipelineDeferred
 from helpers.i18n import makeString as _ms
 from .carousel import updateTabGroups
-from .shared import CSMode, tabToItem, ITEM_TO_TABS
+from .item_vo import buildCustomizationItemDataVO
+from .shared import CSMode, tabToItem
 from .. import g_config
 
 
@@ -37,6 +39,21 @@ class CustomizationBottomPanel(CBP):
                 self.__isShiftDown = event.isKeyDown()
                 self.__setFooterInitData()
 
+    def _carouseItemWrapper(self, itemCD):
+        item = self.service.getItemByCD(itemCD)
+        itemInventoryCount = self.__ctx.getItemInventoryCount(item)
+        purchaseLimit = self.__ctx.getPurchaseLimit(item)
+        showUnsupportedAlert = item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION and not isRendererPipelineDeferred()
+        isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
+        noPrice = item.buyCount <= 0
+        isDarked = purchaseLimit == 0 and itemInventoryCount == 0
+        isAlreadyUsed = isDarked and not isCurrentlyApplied
+        autoRentEnabled = self.__ctx.autoRentEnabled()
+        return buildCustomizationItemDataVO(
+            item, itemInventoryCount, plainView=self.__ctx.isBuy, showUnsupportedAlert=showUnsupportedAlert,
+            isCurrentlyApplied=isCurrentlyApplied, isAlreadyUsed=isAlreadyUsed, forceLocked=isAlreadyUsed,
+            isDarked=isDarked, noPrice=noPrice, autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item)
+
     def __setNotificationCounters(self):
         vehicle = g_currentVehicle.item
         proxy = g_currentVehicle.itemsCache.items
@@ -45,7 +62,8 @@ class CustomizationBottomPanel(CBP):
             tabsCounters.append(vehicle.getC11nItemsNoveltyCounter(
                 proxy, itemTypes=(tabToItem(tabIdx, self.__ctx.isBuy),), season=self.__ctx.currentSeason))
         self.as_setNotificationCountersS({'tabsCounters': tabsCounters,
-         'switchersCounter': vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=GUI_ITEM_TYPE.CUSTOMIZATIONS)})
+                                          'switchersCounter': vehicle.getC11nItemsNoveltyCounter(proxy,
+                                                                                                 itemTypes=GUI_ITEM_TYPE.CUSTOMIZATIONS)})
 
     def __setFooterInitData(self):
         self.__ctx.isSwitcherIgnored = True
