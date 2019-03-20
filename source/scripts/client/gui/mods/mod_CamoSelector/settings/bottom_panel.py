@@ -43,7 +43,7 @@ class CustomizationBottomPanel(CBP):
         tabsCounters = []
         for tabIdx in self.__ctx.visibleTabs:
             tabsCounters.append(vehicle.getC11nItemsNoveltyCounter(
-                proxy, itemTypes=(ITEM_TO_TABS[tabIdx],), season=self.__ctx.currentSeason))
+                proxy, itemTypes=(tabToItem(tabIdx, self.__ctx.isBuy),), season=self.__ctx.currentSeason))
         self.as_setNotificationCountersS({'tabsCounters': tabsCounters,
          'switchersCounter': vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=GUI_ITEM_TYPE.CUSTOMIZATIONS)})
 
