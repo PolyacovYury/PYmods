@@ -42,7 +42,6 @@ class CustomizationBottomPanel(CBP):
             'tabsAvailableRegions': self.__ctx.tabsData.AVAILABLE_REGIONS,
             'defaultStyleLabel': g_config.i18n['UI_flash_switcher_tabsInvisible'],
             'carouselInitData': self.__getCarouselInitData(),
-            'switcherInitData': self.__getSwitcherInitData(self.__ctx.mode),
             'filtersVO': {'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER,
                           'mainBtn': {'value': RES_ICONS.MAPS_ICONS_BUTTONS_FILTER,
                                       'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_MAINBTN},
@@ -52,8 +51,10 @@ class CustomizationBottomPanel(CBP):
                                          {'value': RES_ICONS.MAPS_ICONS_BUTTONS_EQUIPPED_ICON,
                                           'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_EQUIPPEDBTN,
                                           'selected': self._carouselDP.getAppliedFilter()}]}})
+        self.__updateSetSwitcherData()
+        self.__setNotificationCounters()
 
-    def __getSwitcherInitData(self, mode):
+    def __getSwitcherInitData(self, mode, rightEnabled):
         isShift = self.__isShiftDown
         leftMode = mode if not isShift else (mode - 1) % len(CSMode.NAMES)
         rightMode = (leftMode + 1) % len(CSMode.NAMES)
@@ -61,7 +62,8 @@ class CustomizationBottomPanel(CBP):
                 'rightLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[rightMode]],
                 'leftEvent': 'installStyle',
                 'rightEvent': 'installStyles',
-                'isLeft': not isShift}
+                'isLeft': not isShift,
+                'rightEnabled': rightEnabled or True}
 
     def __setBottomPanelBillData(self, *_):
         purchaseItems = self.__ctx.getPurchaseItems()
