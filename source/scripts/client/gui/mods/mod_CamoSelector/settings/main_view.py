@@ -245,7 +245,7 @@ class MainView(WGMainView):
                     if anchor.slotId not in visibleAnchors:
                         continue
                     anchorId = CustomizationSlotIdVO(areaId, slotType, regionIdx)
-                    slotId = self.__ctx.getSlotIdByAnchorId(C11nId(areaId=areaId, slotType=slotType, regionIdx=regionsIndex))
+                    slotId = self.__ctx.getSlotIdByAnchorId(C11nId(areaId=areaId, slotType=slotType, regionIdx=regionIdx))
                     itemIntCD = 0
                     if slotId and slotId.slotType == GUI_ITEM_TYPE.INSCRIPTION:
                         item = slot.getItem(slotId.regionIdx)
