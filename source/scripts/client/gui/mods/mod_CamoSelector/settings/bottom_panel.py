@@ -4,6 +4,7 @@ from CurrentVehicle import g_currentVehicle
 from gui import InputHandler
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
+from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import comparisonKey
 from gui.Scaleform.daapi.view.lobby.customization.shared import getTotalPurchaseInfo
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -16,7 +17,7 @@ from gui.shared.money import Money
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.graphics import isRendererPipelineDeferred
 from helpers.i18n import makeString as _ms
-from .carousel import updateTabGroups
+from .carousel import updateTabGroups, CSComparisonKey
 from .item_vo import buildCustomizationItemDataVO
 from .shared import CSMode, tabToItem
 from .. import g_config
@@ -164,3 +165,12 @@ class CustomizationBottomPanel(CBP):
         self.__updateTabs(self.__ctx.currentTab)
         self._carouselDP.selectItem(self.__ctx.modifiedStyle if self.__ctx.currentTab == self.__ctx.tabsData.STYLE else None)
         self.__setBottomPanelBillData()
+
+    def __scrollToNewItem(self):
+        isBuy = self.__ctx.isBuy
+        currentTypes = tabToItem(self.__ctx.currentTab, isBuy)
+        newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items),
+                          key=comparisonKey if isBuy else CSComparisonKey)
+        for item in newItems:
+            if item.itemTypeID in currentTypes and item.season & self.__ctx.currentSeason:
+                self.as_scrollToSlotS(item.intCD)
