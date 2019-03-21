@@ -10,7 +10,8 @@ def buildCustomizationItemDataVO(
         item, count, plainView=False, showDetailItems=True, forceLocked=False, showUnsupportedAlert=False,
         isCurrentlyApplied=False, addExtraName=True, isAlreadyUsed=False, isDarked=False, noPrice=False,
         autoRentEnabled=False, customIcon=None, vehicle=None):
-    isSpecial = item.isVehicleBound and (item.buyCount > 0 or item.inventoryCount > 0) or item.isLimited and item.buyCount > 0
+    isSpecial = item.isVehicleBound and (item.buyCount > 0 or item.inventoryCount > 0) or item.isLimited and item.buyCount \
+                > 0 and not plainView
     hasBonus = item.bonus is not None and not plainView
     locked = (not item.isUnlocked or forceLocked) and not plainView
     if plainView or item.isHidden or noPrice:
