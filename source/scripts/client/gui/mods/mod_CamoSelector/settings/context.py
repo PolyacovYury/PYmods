@@ -143,11 +143,11 @@ class CustomizationContext(WGCtx):
             print intCD, slotId, seasonIdx, component
             return False
         item = self.service.getItemByCD(intCD)
-        inventoryCount = self.getItemInventoryCount(item)
-        if self.isBuy and item.isHidden and not inventoryCount:
-            SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_PROHIBITED, type=SystemMessages.SM_TYPE.Warning,
-                                           itemName=item.userName)
-            return False
+        prevItem = self.getItemFromRegion(slotId)
+        if prevItem is None or prevItem != item and self.isBuy and self.isBuyLimitReached(item):
+                SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_PROHIBITED, type=SystemMessages.SM_TYPE.Warning,
+                                               itemName=item.userName)
+                return False
         if self._mode != CSMode.SETUP:
             if slotId.slotType == GUI_ITEM_TYPE.STYLE:
                 if self.isBuy:
@@ -157,6 +157,8 @@ class CustomizationContext(WGCtx):
             else:
                 season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
                 outfit = self.modifiedOutfits[season]
+                if self.numberEditModeActive and item.itemTypeID != GUI_ITEM_TYPE.PERSONAL_NUMBER:
+                    self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_BY_INSCRIPTION_SELECT)
                 outfit.getContainer(slotId.areaId).slotFor(slotId.slotType).set(
                     item, idx=slotId.regionIdx, component=component)
                 outfit.invalidate()
@@ -172,7 +174,7 @@ class CustomizationContext(WGCtx):
 
         self.refreshOutfit()
         buyLimitReached = self.isBuyLimitReached(item)
-        self.onCustomizationItemInstalled(item, slotId, buyLimitReached)
+        self.onCustomizationItemInstalled(item, component, slotId, buyLimitReached)
         return True
 
     def removeItemFromSlot(self, season, slotId, refresh=True):
