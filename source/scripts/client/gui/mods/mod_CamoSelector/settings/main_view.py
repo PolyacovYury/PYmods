@@ -2,6 +2,7 @@ import struct
 from CurrentVehicle import g_currentVehicle
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import CUSTOMIZATION_SECTION, CAROUSEL_ARROWS_HINT_SHOWN_FIELD
+from adisp import process as adisp_process
 from gui import DialogsInterface
 from gui.Scaleform.daapi.view.dialogs.confirm_customization_item_dialog_meta import ConfirmC11nBuyMeta, ConfirmC11nSellMeta
 from gui.Scaleform.daapi.view.lobby.customization.customization_cm_handlers import CustomizationOptions
@@ -21,7 +22,7 @@ from gui.shared.gui_items.customization.outfit import Area
 from gui.shared.utils.functions import makeTooltip
 from helpers import i18n, int2roman
 from items.components.c11n_constants import ApplyArea, SeasonType
-from .shared import CSMode, CSTabs, tabToItem
+from .shared import CSMode, tabToItem
 
 
 class MainView(WGMainView):
@@ -201,7 +202,7 @@ class MainView(WGMainView):
     def __setNotificationCounters(self):
         currentSeason = self.__ctx.currentSeason
         newItems = g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items)
-        seasonCounters = {season:0 for season in SEASONS_ORDER}
+        seasonCounters = {season: 0 for season in SEASONS_ORDER}
         if self.__ctx.mode == CSMode.BUY:
             itemTypes = GUI_ITEM_TYPE.CUSTOMIZATIONS
         else:
@@ -210,7 +211,7 @@ class MainView(WGMainView):
             if item.season != SeasonType.ALL and item.itemTypeID in itemTypes and not item.season & currentSeason:
                 seasonCounters[item.season] += 1
 
-        self.as_setNotificationCountersS([ seasonCounters[season] for season in SEASONS_ORDER ])
+        self.as_setNotificationCountersS([seasonCounters[season] for season in SEASONS_ORDER])
 
     def __setAnchorsInitData(self, update=False):
         def customizationSlotIdToUid(customizationSlotIdVO):
@@ -281,7 +282,8 @@ class MainView(WGMainView):
         currentTab = self.__ctx.currentTab
         if currentTab == self.__ctx.tabsData.STYLE:
             if self.__ctx.modifiedStyle:
-                itemsCounter = text_styles.bonusPreviewText(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_HEADER_COUNTER_STYLE_INSTALLED)
+                itemsCounter = text_styles.bonusPreviewText(
+                    VEHICLE_CUSTOMIZATION.CUSTOMIZATION_HEADER_COUNTER_STYLE_INSTALLED)
             else:
                 itemsCounter = text_styles.stats(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_HEADER_COUNTER_STYLE_NOTINSTALLED)
         else:
@@ -292,11 +294,11 @@ class MainView(WGMainView):
             itemsCounter = textStyle(i18n.makeString('#vehicle_customization:customization/header/counter/' + typeName,
                                                      filled=filledSlotsCount, available=slotsCount))
         self.as_setHeaderDataS({'tankTier': str(int2roman(vehicle.level)),
-         'tankName': vehicle.shortUserName,
-         'tankInfo': itemsCounter,
-         'tankType': '{}_elite'.format(vehicle.type) if vehicle.isElite else vehicle.type,
-         'isElite': vehicle.isElite,
-         'closeBtnTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_HEADERCLOSEBTN})
+                                'tankName': vehicle.shortUserName,
+                                'tankInfo': itemsCounter,
+                                'tankType': '{}_elite'.format(vehicle.type) if vehicle.isElite else vehicle.type,
+                                'isElite': vehicle.isElite,
+                                'closeBtnTooltip': VEHICLE_CUSTOMIZATION.CUSTOMIZATION_HEADERCLOSEBTN})
 
     def __showPropertiesSheet(self, areaId, slotType, regionIdx, forceUpdate=False):
         if self.__propertiesSheet:
