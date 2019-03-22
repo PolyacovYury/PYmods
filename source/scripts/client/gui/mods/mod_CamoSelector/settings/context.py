@@ -227,6 +227,8 @@ class CustomizationContext(WGCtx):
         self.refreshOutfit()
 
     def cancelChanges(self):
+        if self.numberEditModeActive:
+            self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_NUMBER)
         if self._tabIndex == self.tabsData.STYLE:
             self.__cancelModifiedStyle()
         elif self._mode == CSMode.SETUP:
@@ -234,6 +236,7 @@ class CustomizationContext(WGCtx):
         else:
             self.__cancelModifiedOufits()
         self.refreshOutfit()
+        self.clearStoredPersonalNumber()
         self.onChangesCanceled()
 
     def changeCamouflageScale(self, areaId, regionIdx, scale):
