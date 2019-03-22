@@ -1,5 +1,6 @@
 import struct
 from CurrentVehicle import g_currentVehicle
+from PYmodsCore import overrideMethod
 from account_helpers import AccountSettings
 from account_helpers.AccountSettings import CUSTOMIZATION_SECTION, CAROUSEL_ARROWS_HINT_SHOWN_FIELD
 from adisp import process as adisp_process
@@ -23,6 +24,7 @@ from gui.shared.utils.functions import makeTooltip
 from helpers import i18n, int2roman
 from items.components.c11n_constants import ApplyArea, SeasonType
 from .shared import CSMode, tabToItem
+from .. import g_config
 
 
 class MainView(WGMainView):
@@ -316,3 +318,10 @@ class MainView(WGMainView):
     def __hidePropertiesSheet(self):
         if self.__propertiesSheet:
             self.__propertiesSheet.hide()
+
+
+@overrideMethod(WGMainView, '__new__')
+def new(base, cls, *a, **kw):
+    if not g_config.data['enabled']:
+        return base(cls, *a, **kw)
+    return base(MainView, *a, **kw)

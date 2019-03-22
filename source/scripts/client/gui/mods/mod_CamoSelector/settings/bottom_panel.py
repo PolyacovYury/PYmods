@@ -1,6 +1,7 @@
 import traceback
 
 from CurrentVehicle import g_currentVehicle
+from PYmodsCore import overrideMethod
 from gui import InputHandler
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
@@ -174,3 +175,10 @@ class CustomizationBottomPanel(CBP):
         for item in newItems:
             if item.itemTypeID in currentTypes and item.season & self.__ctx.currentSeason:
                 self.as_scrollToSlotS(item.intCD)
+
+
+@overrideMethod(CBP, '__new__')
+def new(base, cls, *a, **kw):
+    if not g_config.data['enabled']:
+        return base(cls, *a, **kw)
+    return base(CustomizationBottomPanel, *a, **kw)
