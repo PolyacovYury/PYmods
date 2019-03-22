@@ -23,6 +23,7 @@ from gui.shared.gui_items.customization.outfit import Area
 from gui.shared.utils.functions import makeTooltip
 from helpers import i18n, int2roman
 from items.components.c11n_constants import ApplyArea, SeasonType
+from .. import g_config
 from .shared import CSMode, tabToItem
 from .. import g_config
 

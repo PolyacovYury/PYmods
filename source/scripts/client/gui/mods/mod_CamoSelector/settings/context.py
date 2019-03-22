@@ -6,6 +6,7 @@ from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_cont
 from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_IDX, SEASON_IDX_TO_TYPE, \
     SEASON_TYPE_TO_NAME, getOutfitWithoutItems, getItemInventoryCount, getStyleInventoryCount, OutfitInfo, \
     SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems
+from gui.Scaleform.daapi.view.lobby.customization.vehicle_anchors_updater import VehicleAnchorsUpdater
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.customization import CustomizationService
@@ -21,8 +22,7 @@ from items.vehicles import g_cache
 from shared_utils import nextTick, first
 from soft_exception import SoftException
 from vehicle_systems.tankStructure import TankPartIndexes
-from .shared import CSMode, CSTabs, tabToItem
-from .vehicle_anchors_updater import VehicleAnchorsUpdater
+from .shared import CSMode
 from .. import g_config
 from ..constants import RandMode
 
@@ -30,11 +30,7 @@ from ..constants import RandMode
 class CustomizationContext(WGCtx):
     @property
     def isBuy(self):
-        return self._mode == CSMode.BUY
-
-    @property
-    def tabsData(self):
-        return C11nTabs if self.isBuy else CSTabs
+        return self._actualMode == CSMode.BUY
 
     @property
     def originalOutfit(self):
