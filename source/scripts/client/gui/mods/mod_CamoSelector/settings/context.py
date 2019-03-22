@@ -145,9 +145,9 @@ class CustomizationContext(WGCtx):
         item = self.service.getItemByCD(intCD)
         prevItem = self.getItemFromRegion(slotId)
         if prevItem is None or prevItem != item and self.isBuy and self.isBuyLimitReached(item):
-                SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_PROHIBITED, type=SystemMessages.SM_TYPE.Warning,
-                                               itemName=item.userName)
-                return False
+            SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_PROHIBITED, type=SystemMessages.SM_TYPE.Warning,
+                                           itemName=item.userName)
+            return False
         if self._mode != CSMode.SETUP:
             if slotId.slotType == GUI_ITEM_TYPE.STYLE:
                 if self.isBuy:
@@ -169,8 +169,8 @@ class CustomizationContext(WGCtx):
             itemSettings, _, itemSeasons, itemOrigSettings = self.getItemSettings(item)
             self._settingSeason = itemSeasons
             self._randMode = itemSettings.get('random_mode', itemOrigSettings.get('random_mode', RandMode.RANDOM))
-            self.useFor_ally = itemSettings.get('useForAlly', itemOrigSettings.get('useForAlly', True))
-            self.useFor_enemy = itemSettings.get('useForEnemy', itemOrigSettings.get('useForEnemy', True))
+            self.useFor_ally = itemSettings.get('ally', itemOrigSettings.get('ally', True))
+            self.useFor_enemy = itemSettings.get('enemy', itemOrigSettings.get('enemy', True))
 
         self.refreshOutfit()
         buyLimitReached = self.isBuyLimitReached(item)
@@ -280,8 +280,8 @@ class CustomizationContext(WGCtx):
         item = self.currentOutfit.getContainer(1).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(0)
         itemName, itemKey = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
         settings = self._currentSettings[itemKey].setdefault(itemName, {})
-        settings['useForAlly'] = self.useFor_ally
-        settings['useForEnemy'] = self.useFor_enemy
+        settings['ally'] = self.useFor_ally
+        settings['enemy'] = self.useFor_enemy
         settings['random_mode'] = self._randMode
 
     def _cleanSettings(self, allSettings, checkSeasons=True):
@@ -309,7 +309,7 @@ class CustomizationContext(WGCtx):
                             del camoSetting['season']
                     elif origSetting['season'] == camoSetting['season']:
                         del camoSetting['season']
-                for team in ('useForAlly', 'useForEnemy'):
+                for team in ('ally', 'enemy'):
                     if team in camoSetting:
                         if origSetting.get(team, True) == camoSetting[team]:
                             del camoSetting[team]

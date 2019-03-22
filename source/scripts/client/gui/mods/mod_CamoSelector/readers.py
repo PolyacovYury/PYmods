@@ -34,7 +34,7 @@ class LegacyCamouflageReader(CamouflageXmlReader):
 @overrideMethod(iv.Cache, 'customization20')
 def new_customization20(base, *args, **kwargs):
     cache = base(*args, **kwargs)
-    if g_config.data['enabled'] and 'custom' not in cache.priceGroupNames:
+    if g_config.data['enabled'] and g_config.configFolders and 'custom' not in cache.priceGroupNames:
         createPriceGroup(cache)
         groupName = g_config.i18n['UI_flashCol_camoGroup_custom']
         for configDir in sorted(g_config.configFolders, key=lambda s: s.lower()):

@@ -14,7 +14,7 @@ from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
 from items.components.c11n_constants import SeasonType
 from . import __date__, __modID__
-from .constants import RandMode
+from .constants import RandMode, SEASON_NAME_TO_TYPE
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -27,7 +27,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.camouflages = {}
         self.configFolders = {}
         self.teamCamo = dict.fromkeys(('ally', 'enemy'))
-        self.interCamo = []
+        self.internationalCamoIDs = []
         self.isModAdded = False
         super(ConfigInterface, self).__init__()
 
@@ -184,120 +184,113 @@ class ConfigInterface(PYmodsConfigInterface):
         self.configFolders.clear()
         self.camouflages = {'remap': {}, 'custom': {}}
         self.outfitCache = loadJson(self.ID, 'outfitCache', self.outfitCache, self.configPath)
+        camoDirPath = '../' + self.configPath + 'camouflages'
+        camoDirKeys = getattr(ResMgr.openSection(camoDirPath), 'keys', lambda: [])()
+        for camoName in remDups(x for x in camoDirKeys if ResMgr.isDir(camoDirPath + '/' + x)):
+            fileName = self.configPath + 'camouflages/' + camoName + '/'
+            settings = loadJson(self.ID, 'settings', {}, fileName)
+            self.configFolders[camoName] = set(settings)
+            self.camouflages['custom'].update(settings)
+            loadJson(self.ID, 'settings', settings, fileName, True)
+        settings = loadJson(self.ID, 'settings', {}, self.configPath)
+        self.disable = settings.setdefault('disable', self.disable)
+        self.camouflages['remap'] = settings.setdefault('remap', {})
+        loadJson(self.ID, 'settings', settings, self.configPath, True)
+
+    def load(self):
+        camouflages = items.vehicles.g_cache.customization20().camouflages
+        camoData = {}
+        for camoID, x in camouflages.iteritems():
+            data = camoData.setdefault(os.path.splitext(os.path.basename(x.texture))[0], {'ids': [], 'nations': []})
+            data['ids'].append(camoID)
+            for filterNode in getattr(camouflages[camoID].filter, 'include', ()):
+                data['nations'] += filterNode.nations
+        for data in camoData.itervalues():
+            if set(data['nations']) >= set(idx for idx, name in enumerate(nations.NAMES) if name != 'italy'):
+                self.internationalCamoIDs += data['ids']
+        self.migrateSettings(camoData)
+        super(ConfigInterface, self).load()
+
+    def migrateSettings(self, camoData):
+        outfitCache = {}
         if os.path.isfile(self.configPath + 'camouflagesCache.json'):
             camouflagesCache = loadJson(self.ID, 'camouflagesCache', {}, self.configPath)
             for nat in camouflagesCache:
                 for vehName in camouflagesCache[nat]:
                     for season in camouflagesCache[nat][vehName]:
-                        self.outfitCache.setdefault(nat, {}).setdefault(vehName, {}).setdefault(season, {})['camo'] = \
+                        outfitCache.setdefault(nat, {}).setdefault(vehName, {}).setdefault(season, {})['camo'] = \
                             camouflagesCache[nat][vehName][season]
             os.remove(self.configPath + 'camouflagesCache.json')
-            loadJson(self.ID, 'outfitCache', self.outfitCache, self.configPath, True)
-        try:
-            camoDirPath = '../' + self.configPath + 'camouflages'
-            camoDirSect = ResMgr.openSection(camoDirPath)
-            for camoName in remDups(
-                    (x for x in camoDirSect.keys() if ResMgr.isDir(camoDirPath + '/' + x))
-                    if camoDirSect is not None else []):
-                self.configFolders[camoName] = confFolder = set()
-                fileName = self.configPath + 'camouflages/' + camoName + '/'
-                settings = loadJson(self.ID, 'settings', {}, fileName)
-                for key in settings:
-                    conf = settings[key]
-                    if 'kinds' in conf:
-                        conf['season'] = conf['kinds']
-                        del conf['kinds']
-                    if 'season' in conf:
-                        seasonNames = [x for x in conf['season'].split(',') if x]
-                        seasonType = SeasonType.UNDEFINED
-                        for season in seasonNames:
-                            if season in SEASONS_CONSTANTS.SEASONS:
-                                seasonType |= getattr(SeasonType, season.upper())
-                            else:
-                                print self.ID + ': unknown season name for camouflage', key + ':', season
-                                conf['season'] = conf['season'].replace(season, '')
-                        while ',,' in conf['season']:
-                            conf['season'] = conf['season'].replace(',,', ',')
-                    else:
-                        conf['season'] = ','.join(SEASONS_CONSTANTS.SEASONS)
-                    confFolder.add(key)
-                self.camouflages['custom'].update(settings)
-                loadJson(self.ID, 'settings', settings, fileName, True)
-        except StandardError:
-            traceback.print_exc()
+            loadJson(self.ID, 'outfitCache', outfitCache, self.configPath, True)
+        camoDirPath = '../' + self.configPath + 'camouflages'
+        camoDirKeys = getattr(ResMgr.openSection(camoDirPath), 'keys', lambda: [])()
+        for camoID in remDups(x for x in camoDirKeys if ResMgr.isDir(camoDirPath + '/' + x)):
+            fileName = self.configPath + 'camouflages/' + camoID + '/'
+            settings = loadJson(self.ID, 'settings', {}, fileName)
+            for key in settings:
+                self.migrateSeasons(key, settings[key])
+                self.migrateTeams(settings[key])
+            loadJson(self.ID, 'settings', settings, fileName, True)
         camouflages = items.vehicles.g_cache.customization20().camouflages
-        camoNames = {id: getCamoTextureName(x) for id, x in camouflages.iteritems() if 'custom' not in x.priceGroupTags}
-        camoIndices = {}
-        for camoID, camoName in camoNames.iteritems():
-            camoIndices.setdefault(camoName, []).append(camoID)
-        self.interCamo = []
-        for camoName, indices in camoIndices.iteritems():
-            nationsList = []
-            for ID in indices:
-                camo_filter = camouflages[ID].filter
-                if camo_filter is not None:
-                    for filterNode in camo_filter.include:
-                        if filterNode.nations:
-                            nationsList += filterNode.nations
-            if set(nationsList) >= set(idx for idx, name in enumerate(nations.NAMES) if name != 'italy'):
-                self.interCamo.append(camoName)
         settings = loadJson(self.ID, 'settings', {}, self.configPath)
-        if 'disable' in settings:
-            if not settings['disable']:
-                del settings['disable']
-            else:
-                self.disable = settings['disable']
-        if 'remap' in settings:
-            conf = settings['remap']
-            for camoName in conf.keys():
-                try:
-                    camoName = int(camoName)
-                except ValueError:
-                    if camoName not in camoIndices:
-                        print self.ID + ': unknown camouflage for remapping:', camoName
-                    else:
-                        for camoID in camoIndices[camoName]:
-                            conf[camoID] = conf[camoName].copy()
-                    del conf[camoName]
-                    continue
-                if camoName not in camoNames:
+        settings.setdefault('disable', self.disable)
+        conf = settings.setdefault('remap', {})
+        for camoName in conf.keys():
+            try:
+                camoID = int(camoName)
+            except ValueError:
+                if camoName not in camoData:
                     print self.ID + ': unknown camouflage for remapping:', camoName
-                    del conf[str(camoName)]
                 else:
-                    conf[camoName] = conf.pop(str(camoName))
-            for camoID, camouflage in camouflages.items():
-                if camoID not in conf:
-                    continue
-                camoConf = conf[camoID]
-                if camoConf.get('random_mode') == 2:  # RandMode.RANDOM
-                    del camoConf['random_mode']
-                if 'kinds' in camoConf:
-                    camoConf['season'] = camoConf['kinds']
-                    del camoConf['kinds']
-                if 'season' in camoConf:
-                    seasonNames = [x for x in camoConf['season'].split(',') if x]
-                    seasonType = SeasonType.UNDEFINED
-                    for season in seasonNames:
-                        if season in SEASONS_CONSTANTS.SEASONS:
-                            seasonType |= getattr(SeasonType, season.upper())
-                        else:
-                            print self.ID + ': unknown season name for camouflage', camoID + ':', season
-                            camoConf['season'] = camoConf['season'].replace(season, '')
-                    while ',,' in camoConf['season']:
-                        camoConf['season'] = camoConf['season'].replace(',,', ',')
-                    if seasonType == camouflage.season:
-                        del camoConf['season']
-                for team in ('Ally', 'Enemy'):
-                    if camoConf.get('useFor' + team):
-                        del camoConf['useFor' + team]
-                if not camoConf:
-                    del conf[camoID]
-            self.camouflages['remap'] = conf
-        newSettings = {}
-        if self.disable:
-            newSettings['disable'] = self.disable
-        newSettings['remap'] = settings.get('remap', {})
-        loadJson(self.ID, 'settings', newSettings, self.configPath, True)
+                    for newID in camoData[camoName]['ids']:
+                        conf[newID] = conf[camoName].copy()
+                del conf[camoName]
+                continue
+            if camoID not in camouflages:
+                print self.ID + ': unknown camouflage for remapping:', camoName
+                del conf[camoName]
+            else:
+                conf[camoID] = conf.pop(camoName)
+        for camoID, camouflage in camouflages.items():
+            if camoID not in conf:
+                continue
+            camoConf = conf[camoID]
+            if camoConf.get('random_mode') == RandMode.RANDOM:
+                del camoConf['random_mode']
+            self.migrateSeasons(camoID, camoConf, camouflage.season)
+            if 'season' in camoConf:
+                actualSeason = SeasonType.UNDEFINED
+                for season in conf['season']:
+                    actualSeason |= SEASON_NAME_TO_TYPE[season]
+                if camouflage.season & ~SeasonType.EVENT == actualSeason:
+                    del conf['season']
+            self.migrateTeams(camoConf)
+            for team in ('ally', 'enemy'):
+                if camoConf.get(team):
+                    del camoConf[team]
+            if not camoConf:
+                del conf[camoID]
+        loadJson(self.ID, 'settings', settings, self.configPath, True)
+
+    def migrateSeasons(self, key, conf, itemSeason=None):
+        if 'kinds' in conf:
+            conf['season'] = conf.pop('kinds')
+        if 'season' not in conf:
+            if itemSeason is None:
+                conf['season'] = SEASONS_CONSTANTS.SEASONS[:]
+            else:
+                return
+        elif isinstance(conf['season'], basestring):
+            conf['season'] = [x for x in conf['season'].split(',') if x]
+        for season in conf['season']:
+            if season not in SEASON_NAME_TO_TYPE:
+                print self.ID + ': unknown season name for camouflage', key + ':', season
+                conf['season'].remove(season)
+
+    def migrateTeams(self, conf):
+        for key in conf.keys():
+            if 'useFor' in key:
+                conf[key.replace('useFor', '').lower()] = conf.pop(key)
 
     def registerSettings(self):
         super(self.__class__, self).registerSettings()
@@ -315,43 +308,28 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def collectCamouflageData(self):
         camouflages = items.vehicles.g_cache.customization20().camouflages
-        self.camoForSeason = {}
+        self.camoForSeason.clear()
         for season in SEASONS_CONSTANTS.SEASONS:
             self.camoForSeason[season] = {'random': [], 'ally': [], 'enemy': []}
-        for camoID, camouflage in camouflages.iteritems():
-            itemName, itemKey = (camouflage.userKey, 'custom') if camouflage.priceGroup == 'custom' else (
-                camoID, 'remap')
-            itemSeason = camouflage.season
-            itemMode = RandMode.RANDOM
-            isAlly = True
-            isEnemy = True
-            if itemName in self.camouflages[itemKey]:
-                camoCfg = self.camouflages[itemKey][itemName]
-                itemMode = camoCfg.get('random_mode', itemMode)
-                isAlly = camoCfg.get('useForAlly', True)
-                isEnemy = camoCfg.get('useForEnemy', True)
-                if 'season' in camoCfg:
-                    itemSeason = SeasonType.UNDEFINED
-                    for season in SEASONS_CONSTANTS.SEASONS:
-                        if season in camoCfg['season']:
-                            itemSeason |= getattr(SeasonType, season.upper())
-            for season in SeasonType.COMMON_SEASONS:
-                camoForSeason = self.camoForSeason[SEASON_TYPE_TO_NAME[season]]
-                if itemSeason & season:
-                    if itemMode == RandMode.RANDOM:
-                        camoForSeason['random'].append(camoID)
-                    elif itemMode == RandMode.TEAM:
-                        if isAlly:
-                            camoForSeason['ally'].append(camoID)
-                        if isEnemy:
-                            camoForSeason['enemy'].append(camoID)
+        for camoID, camo in camouflages.iteritems():
+            itemName, itemKey = (camo.userKey, 'custom') if camo.priceGroup == 'custom' else (camoID, 'remap')
+            cfg = self.camouflages[itemKey].get(itemName, {})
+            mode = cfg.get('random_mode', RandMode.RANDOM)
+            isAlly = cfg.get('useForAlly', True)
+            isEnemy = cfg.get('useForEnemy', True)
+            seasons = cfg.get('season', []) or [x for x in SEASONS_CONSTANTS.SEASONS if SEASON_NAME_TO_TYPE[x] & camo.season]
+            for seasonName in seasons:
+                camoForSeason = self.camoForSeason[seasonName]
+                if mode == RandMode.RANDOM:
+                    camoForSeason['random'].append(camoID)
+                elif mode == RandMode.TEAM:
+                    if isAlly:
+                        camoForSeason['ally'].append(camoID)
+                    if isEnemy:
+                        camoForSeason['enemy'].append(camoID)
 
     def isCamoGlobal(self, camo):
-        return getCamoTextureName(camo) in self.interCamo
-
-
-def getCamoTextureName(camo):
-    return os.path.splitext(os.path.basename(camo.texture))[0]
+        return camo.id in self.internationalCamoIDs
 
 
 g_config = ConfigInterface()
