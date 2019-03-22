@@ -1,12 +1,10 @@
-import traceback
-
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
-from gui import InputHandler
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import comparisonKey
-from gui.Scaleform.daapi.view.lobby.customization.shared import getTotalPurchaseInfo
+from gui.Scaleform.daapi.view.lobby.customization.shared import getTotalPurchaseInfo, TABS_ITEM_TYPE_MAPPING, C11nTabs, \
+    TABS_SLOT_TYPE_MAPPING
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -18,43 +16,27 @@ from gui.shared.money import Money
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.graphics import isRendererPipelineDeferred
 from helpers.i18n import makeString as _ms
-from .carousel import updateTabGroups, CSComparisonKey
+from .carousel import CSComparisonKey
 from .item_vo import buildCustomizationItemDataVO
 from .shared import CSMode
 from .. import g_config
 
 
 class CustomizationBottomPanel(CBP):
-    def _carouseItemWrapper(self, itemCD):
-        item = self.service.getItemByCD(itemCD)
-        itemInventoryCount = self.__ctx.getItemInventoryCount(item)
-        purchaseLimit = self.__ctx.getPurchaseLimit(item)
-        showUnsupportedAlert = item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION and not isRendererPipelineDeferred()
-        isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
-        noPrice = item.buyCount <= 0
-        isDarked = self.__ctx.isBuy and purchaseLimit == 0 and itemInventoryCount == 0
-        isAlreadyUsed = isDarked and not isCurrentlyApplied
-        autoRentEnabled = self.__ctx.autoRentEnabled()
-        return buildCustomizationItemDataVO(
-            item, itemInventoryCount, plainView=not self.__ctx.isBuy, showUnsupportedAlert=showUnsupportedAlert,
-            isCurrentlyApplied=isCurrentlyApplied, isAlreadyUsed=isAlreadyUsed, forceLocked=isAlreadyUsed,
-            isDarked=isDarked, noPrice=noPrice, autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item)
-
     def __setNotificationCounters(self):
         vehicle = g_currentVehicle.item
         proxy = g_currentVehicle.itemsCache.items
         tabsCounters = []
         for tabIdx in self.__ctx.visibleTabs:
             tabsCounters.append(vehicle.getC11nItemsNoveltyCounter(
-                proxy, itemTypes=(tabToItem(tabIdx, self.__ctx.isBuy),), season=self.__ctx.currentSeason))
-        self.as_setNotificationCountersS({'tabsCounters': tabsCounters,
-                                          'switchersCounter': vehicle.getC11nItemsNoveltyCounter(proxy,
-                                                                                                 itemTypes=GUI_ITEM_TYPE.CUSTOMIZATIONS)})
+                proxy, itemTypes=TABS_ITEM_TYPE_MAPPING[tabIdx], season=self.__ctx.currentSeason))
+        self.as_setNotificationCountersS({
+            'tabsCounters': tabsCounters,
+            'switchersCounter': vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=GUI_ITEM_TYPE.CUSTOMIZATIONS)})
 
     def __setFooterInitData(self):
-        self.__ctx.isSwitcherIgnored = True
         self.as_setBottomPanelInitDataS({
-            'tabsAvailableRegions': self.__ctx.tabsData.AVAILABLE_REGIONS,
+            'tabsAvailableRegions': C11nTabs.AVAILABLE_REGIONS,
             'defaultStyleLabel': g_config.i18n['UI_flash_switcher_tabsInvisible'],
             'carouselInitData': self.__getCarouselInitData(),
             'filtersVO': {'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER,
@@ -69,18 +51,19 @@ class CustomizationBottomPanel(CBP):
         self.__updateSetSwitcherData()
         self.__setNotificationCounters()
 
-    def __getSwitcherInitData(self, mode, rightEnabled):
-        isShift = self.__isShiftDown
-        leftMode = mode if not isShift else (mode - 1) % len(CSMode.NAMES)
-        rightMode = (leftMode + 1) % len(CSMode.NAMES)
-        return {'leftLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[leftMode]],
-                'rightLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[rightMode]],
+    def __updateSetSwitcherData(self):
+        self.as_setSwitchersDataS(self.__getSwitcherInitData(self.__ctx.actualMode))
+
+    @staticmethod
+    def __getSwitcherInitData(mode):
+        return {'leftLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[mode]],
+                'rightLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[(mode + 1) % len(CSMode.NAMES)]],
                 'leftEvent': 'installStyle',
                 'rightEvent': 'installStyles',
-                'isLeft': not isShift,
-                'rightEnabled': rightEnabled or True}
+                'isLeft': True,
+                'rightEnabled': True}
 
-    def __setBottomPanelBillData(self, *_):
+    def __setBottomPanelBillData(self, *_):  # TODO: process installed items correctly
         purchaseItems = self.__ctx.getPurchaseItems()
         cartInfo = getTotalPurchaseInfo(purchaseItems)
         totalPriceVO = getItemPricesVO(cartInfo.totalPrice)
@@ -114,46 +97,48 @@ class CustomizationBottomPanel(CBP):
                        'priceLbl': text_styles.main('{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_PRICE), toByeCount)),
                        'fromStorageLbl': text_styles.main(
                            '{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_FROMSTORAGE), fromStorageCount)),
-                       'isEnoughStatuses': getMoneyVO(Money(outfitsModified, outfitsModified, outfitsModified)),
+                       'isEnoughStatuses': getMoneyVO(Money(True, True, True)),
                        'pricePanel': totalPriceVO[0]}})
+        self.as_setItemsPopoverBtnEnabledS(self.__ctx.currentOutfit.isEmpty())
+
+    def _carouseItemWrapper(self, itemCD):
+        item = self.service.getItemByCD(itemCD)
+        itemInventoryCount = self.__ctx.getItemInventoryCount(item)
+        purchaseLimit = self.__ctx.getPurchaseLimit(item)
+        showUnsupportedAlert = item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION and not isRendererPipelineDeferred()
+        isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
+        noPrice = item.buyCount <= 0
+        isDarked = self.__ctx.isBuy and purchaseLimit == 0 and itemInventoryCount == 0
+        isAlreadyUsed = isDarked and not isCurrentlyApplied
+        autoRentEnabled = self.__ctx.autoRentEnabled()
+        return buildCustomizationItemDataVO(
+            item, itemInventoryCount, plainView=not self.__ctx.isBuy, showUnsupportedAlert=showUnsupportedAlert,
+            isCurrentlyApplied=isCurrentlyApplied, isAlreadyUsed=isAlreadyUsed, forceLocked=isAlreadyUsed,
+            isDarked=isDarked, noPrice=noPrice, autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item)
 
     def __getItemTabsData(self):
         data = []
         pluses = []
         for tabIdx in self.__ctx.visibleTabs:
-            itemTypeID = tabToItem(tabIdx, self.__ctx.isBuy)
+            itemTypeID = TABS_SLOT_TYPE_MAPPING[tabIdx]
             typeName = GUI_ITEM_TYPE_NAMES[itemTypeID]
-            showPlus = not self.__ctx.checkSlotsFilling(itemTypeID, self.__ctx.currentSeason)
-            tabData = {'id': tabIdx,
-                       'icon': RES_ICONS.getCustomizationIcon(typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else
-                       RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_FULL_TANK_HOVER}
-            if self.__ctx.isBuy:
-                tabData.update({'label': _ms(ITEM_TYPES.customizationPlural(typeName)),
-                                'tooltip': makeTooltip(
-                                    ITEM_TYPES.customizationPlural(typeName),
-                                    TOOLTIPS.customizationItemTab(typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else
-                                    g_config.i18n['UI_flashCol_tabs_0_tooltip'])})
-            else:
-                tabData.update({'label': g_config.i18n['UI_flash_tabs_%s_label' % tabIdx],
-                                'tooltip': makeTooltip(g_config.i18n['UI_flashCol_tabs_%s_text' % tabIdx],
-                                                       g_config.i18n['UI_flashCol_tabs_%s_tooltip' % tabIdx])})
-            data.append(tabData)
+            slotsCount, filledSlotsCount = self.__ctx.checkSlotsFilling(itemTypeID, self.__ctx.currentSeason)
+            showPlus = filledSlotsCount < slotsCount
+            data.append({'label': _ms(ITEM_TYPES.customizationPlural(typeName)),
+                         'icon': RES_ICONS.getCustomizationIcon(typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else
+                         RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_FULL_TANK,
+                         'tooltip': makeTooltip(
+                             ITEM_TYPES.customizationPlural(typeName),
+                             TOOLTIPS.customizationItemTab(typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else
+                             g_config.i18n['UI_flashCol_tabs_0_tooltip']),
+                         'id': tabIdx})
             pluses.append(showPlus)
         return data, pluses
 
-    def __onModeChanged(self, mode):
-        self.__setFooterInitData()
-        updateTabGroups(self._carouselDP)
-        self.__refreshCarousel(force=True)
-        self.__updateTabs(self.__ctx.currentTab)
-        self._carouselDP.selectItem(self.__ctx.modifiedStyle if self.__ctx.currentTab == self.__ctx.tabsData.STYLE else None)
-        self.__setBottomPanelBillData()
-
     def __scrollToNewItem(self):
-        isBuy = self.__ctx.isBuy
-        currentTypes = tabToItem(self.__ctx.currentTab, isBuy)
+        currentTypes = TABS_ITEM_TYPE_MAPPING[self.__ctx.currentTab]
         newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items),
-                          key=comparisonKey if isBuy else CSComparisonKey)
+                          key=comparisonKey if self.__ctx.isBuy else CSComparisonKey)
         for item in newItems:
             if item.itemTypeID in currentTypes and item.season & self.__ctx.currentSeason:
                 self.as_scrollToSlotS(item.intCD)
