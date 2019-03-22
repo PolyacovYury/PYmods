@@ -260,10 +260,10 @@ class ConfigInterface(PYmodsConfigInterface):
             self.migrateSeasons(camoID, camoConf, camouflage.season)
             if 'season' in camoConf:
                 actualSeason = SeasonType.UNDEFINED
-                for season in conf['season']:
+                for season in camoConf['season']:
                     actualSeason |= SEASON_NAME_TO_TYPE[season]
                 if camouflage.season & ~SeasonType.EVENT == actualSeason:
-                    del conf['season']
+                    del camoConf['season']
             self.migrateTeams(camoConf)
             for team in ('ally', 'enemy'):
                 if camoConf.get(team):
