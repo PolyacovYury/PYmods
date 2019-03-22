@@ -20,29 +20,11 @@ from gui.shared.utils.graphics import isRendererPipelineDeferred
 from helpers.i18n import makeString as _ms
 from .carousel import updateTabGroups, CSComparisonKey
 from .item_vo import buildCustomizationItemDataVO
-from .shared import CSMode, tabToItem
+from .shared import CSMode
 from .. import g_config
 
 
 class CustomizationBottomPanel(CBP):
-    def _populate(self):
-        self.__isShiftDown = False
-        super(CustomizationBottomPanel, self)._populate()
-        InputHandler.g_instance.onKeyDown += self.__handleKeyEvent
-        InputHandler.g_instance.onKeyUp += self.__handleKeyEvent
-
-    def _dispose(self):
-        InputHandler.g_instance.onKeyDown -= self.__handleKeyEvent
-        InputHandler.g_instance.onKeyUp -= self.__handleKeyEvent
-        super(CustomizationBottomPanel, self)._dispose()
-
-    def __handleKeyEvent(self, event):
-        import Keys
-        if event.key in [Keys.KEY_LSHIFT, Keys.KEY_RSHIFT]:
-            if self.__isShiftDown != event.isKeyDown():
-                self.__isShiftDown = event.isKeyDown()
-                self.__setFooterInitData()
-
     def _carouseItemWrapper(self, itemCD):
         item = self.service.getItemByCD(itemCD)
         itemInventoryCount = self.__ctx.getItemInventoryCount(item)
