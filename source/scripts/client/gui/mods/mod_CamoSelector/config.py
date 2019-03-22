@@ -204,7 +204,7 @@ class ConfigInterface(PYmodsConfigInterface):
             data = camoData.setdefault(os.path.splitext(os.path.basename(x.texture))[0], {'ids': [], 'nations': []})
             data['ids'].append(camoID)
             for filterNode in getattr(camouflages[camoID].filter, 'include', ()):
-                data['nations'] += filterNode.nations
+                data['nations'] += filterNode.nations or []
         for data in camoData.itervalues():
             if set(data['nations']) >= set(idx for idx, name in enumerate(nations.NAMES) if name != 'italy'):
                 self.internationalCamoIDs += data['ids']
