@@ -3,15 +3,14 @@ from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
-from helpers import i18n
+from helpers.i18n import makeString as _ms
 
 
 def buildCustomizationItemDataVO(
         item, count, plainView=False, showDetailItems=True, forceLocked=False, showUnsupportedAlert=False,
         isCurrentlyApplied=False, addExtraName=True, isAlreadyUsed=False, isDarked=False, noPrice=False,
         autoRentEnabled=False, customIcon=None, vehicle=None):
-    isSpecial = item.isVehicleBound and (item.buyCount > 0 or item.inventoryCount > 0) or item.isLimited and item.buyCount \
-                > 0 and not plainView
+    isSpecial = item.isVehicleBound and (item.buyCount > 0 or item.inventoryCount > 0) or item.isLimited and item.buyCount > 0
     hasBonus = item.bonus is not None and not plainView
     locked = (not item.isUnlocked or forceLocked) and not plainView
     if plainView or item.isHidden or noPrice:
@@ -26,8 +25,7 @@ def buildCustomizationItemDataVO(
     imageCached = item.itemTypeID is not GUI_ITEM_TYPE.PROJECTION_DECAL
     rentalInfoText = ''
     if item.isRentable and count <= 0:
-        rentalInfoText = text_styles.main(i18n.makeString(VEHICLE_CUSTOMIZATION.CAROUSEL_RENTALBATTLES,
-                                                          battlesNum=item.rentCount))
+        rentalInfoText = text_styles.main(_ms(VEHICLE_CUSTOMIZATION.CAROUSEL_RENTALBATTLES, battlesNum=item.rentCount))
     icon = customIcon if customIcon else item.icon
     noveltyCounter = 0 if not vehicle else item.getNoveltyCounter(vehicle)
     return CustomizationCarouselRendererVO(
