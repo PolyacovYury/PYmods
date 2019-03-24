@@ -18,7 +18,7 @@ from gui.shared.utils.graphics import isRendererPipelineDeferred
 from helpers.i18n import makeString as _ms
 from .carousel import CSComparisonKey
 from .item_vo import buildCustomizationItemDataVO
-from .shared import CSMode
+from .shared import CSMode, getItemSeason
 from .. import g_config
 
 
@@ -140,7 +140,8 @@ class CustomizationBottomPanel(CBP):
         newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items),
                           key=comparisonKey if self.__ctx.isBuy else CSComparisonKey)
         for item in newItems:
-            if item.itemTypeID in currentTypes and item.season & self.__ctx.currentSeason:
+            if item.itemTypeID in currentTypes and (
+                    item.season if self.__ctx.isBuy else getItemSeason(item)) & self.__ctx.currentSeason:
                 self.as_scrollToSlotS(item.intCD)
 
 
