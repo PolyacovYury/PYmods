@@ -180,17 +180,16 @@ def getGroupName(item):
 
 
 def getItems(itemTypeID, ctx, criteria):
-    if not isinstance(itemTypeID, tuple):
-        itemTypeID = (itemTypeID,)
     if ctx.isBuy:
         return ctx.itemsCache.items.getItems(itemTypeID, criteria)
-    else:
-        result = ItemsCollection()
-        itemGetter = ctx.itemsCache.items.getItemByCD
-        itemTypes = g_cache.customization20().itemTypes
-        for typeID in itemTypeID:
-            for item in itemTypes[C11N_ITEM_TYPE_MAP[typeID]].itervalues():
-                guiItem = itemGetter(item.compactDescr)
-                if criteria(guiItem):
-                    result[guiItem.intCD] = guiItem
-        return result
+    if not isinstance(itemTypeID, tuple):
+        itemTypeID = (itemTypeID,)
+    result = ItemsCollection()
+    itemGetter = ctx.itemsCache.items.getItemByCD
+    itemTypes = g_cache.customization20().itemTypes
+    for typeID in itemTypeID:
+        for item in itemTypes[C11N_ITEM_TYPE_MAP[typeID]].itervalues():
+            guiItem = itemGetter(item.compactDescr)
+            if criteria(guiItem):
+                result[guiItem.intCD] = guiItem
+    return result
