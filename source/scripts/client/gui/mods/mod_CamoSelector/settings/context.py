@@ -5,7 +5,7 @@ from gui import g_tankActiveCamouflage, SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
 from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_IDX, SEASON_IDX_TO_TYPE, \
     SEASON_TYPE_TO_NAME, getOutfitWithoutItems, getItemInventoryCount, getStyleInventoryCount, OutfitInfo, \
-    SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems
+    SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems, C11nMode
 from gui.Scaleform.daapi.view.lobby.customization.vehicle_anchors_updater import VehicleAnchorsUpdater
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
@@ -48,17 +48,12 @@ class CustomizationContext(WGCtx):
         return [SEASON_TYPE_TO_IDX[x] for x in SeasonType.COMMON_SEASONS if x & self._settingSeason]
 
     def changeAlly(self, apply):
-        self.useFor_ally = apply
-        self._updateCurrentSettings()
+        self._updateCurrentSettings(ally=apply)
         self.onCacheResync()
 
     def changeEnemy(self, apply):
-        self.useFor_enemy = apply
-        self._updateCurrentSettings()
+        self._updateCurrentSettings(enemy=apply)
         self.onCacheResync()
-
-    def getRandMode(self):
-        return self._randMode
 
     @property
     def modifiedStyle(self):
@@ -66,9 +61,7 @@ class CustomizationContext(WGCtx):
 
     def __init__(self):
         super(CustomizationContext, self).__init__()
-        self._originalMode = CSMode.BUY
-        self._mode = self._originalMode
-        self._lastTab = {CSMode.BUY: C11nTabs.PAINT, CSMode.INSTALL: CSTabs.CAMO_SHOP, CSMode.SETUP: CSTabs.CAMO_SHOP}
+        self._lastTab = {CSMode.BUY: C11nTabs.PAINT, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
         self._originalCSOutfits = {}
         self._modifiedCSOutfits = {}
         self._originalCSStyle = None
@@ -76,15 +69,10 @@ class CustomizationContext(WGCtx):
         self._setupOutfit = None
         self._currentSettings = {'custom': {}, 'remap': {}}
         self._settingSeason = None
-        self._randMode = None
-        self.useFor_ally = False
-        self.useFor_enemy = False
-        self.isSwitcherIgnored = False
+        self._actualMode = CSMode.INSTALL
 
     def refreshOutfit(self):
-        if self._mode == CSMode.SETUP:
-            self._currentOutfit = self._setupOutfit
-        elif self._tabIndex == self.tabsData.STYLE:
+        if self._tabIndex == C11nTabs.STYLE:
             if self.modifiedStyle:
                 self._currentOutfit = self.modifiedStyle.getOutfit(self._currentSeason)
             else:
@@ -98,9 +86,11 @@ class CustomizationContext(WGCtx):
         if self.numberEditModeActive:
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._tabIndex = tabIndex
-        if self._tabIndex == self.tabsData.EFFECT:
+        self._mode = C11nMode.CUSTOM
+        if self._tabIndex == C11nTabs.EFFECT:
             self._selectedAnchor = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.MODIFICATION, regionIdx=0)
-        elif self._tabIndex == self.tabsData.STYLE:
+        elif self._tabIndex == C11nTabs.STYLE:
+            self._mode = C11nMode.STYLE
             self._selectedAnchor = C11nId(areaId=Area.CHASSIS, slotType=GUI_ITEM_TYPE.STYLE, regionIdx=0)
         else:
             self._selectedAnchor = C11nId()
@@ -272,13 +262,10 @@ class CustomizationContext(WGCtx):
                 x for x in SEASONS_CONSTANTS.SEASONS if getattr(SeasonType, x.upper()) & itemSeasons)
         return itemSettings, itemSeasonsStr, itemSeasons, itemOrigSettings
 
-    def _updateCurrentSettings(self):
+    def _updateCurrentSettings(self, **kwargs):
         item = self.currentOutfit.getContainer(1).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(0)
         itemName, itemKey = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
-        settings = self._currentSettings[itemKey].setdefault(itemName, {})
-        settings['ally'] = self.useFor_ally
-        settings['enemy'] = self.useFor_enemy
-        settings['random_mode'] = self._randMode
+        self._currentSettings[itemKey].setdefault(itemName, {}).update(kwargs)
 
     def _cleanSettings(self, allSettings, checkSeasons=True):
         camouflages = g_cache.customization20().camouflages
