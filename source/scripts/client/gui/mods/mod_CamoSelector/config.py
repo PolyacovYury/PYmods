@@ -4,14 +4,8 @@ import ResMgr
 import items.vehicles
 import nations
 import os
-import traceback
-from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups, Analytics
-from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
-from gui.Scaleform.framework import g_entitiesFactories
-from gui.Scaleform.framework.managers.loaders import ViewLoadParams
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
-from gui.app_loader import g_appLoader
 from items.components.c11n_constants import SeasonType
 from . import __date__, __modID__
 from .constants import SelectionMode, SEASON_NAME_TO_TYPE
@@ -106,7 +100,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createOptions('hangarCamoKind', [
-                                self.i18n['UI_setting_hangarCamo_' + x] for x in ('winter', 'summer', 'desert', 'random')]),
+                    self.i18n['UI_setting_hangarCamo_' + x] for x in ('winter', 'summer', 'desert', 'random')]),
                             self.tb.createControl('doRandom'),
                             self.tb.createControl('disableWithDefault')],
                 'column2': [self.tb.createControl('fillEmptySlots'),
@@ -255,8 +249,8 @@ class ConfigInterface(PYmodsConfigInterface):
             itemName, itemKey = (camo.userKey, 'custom') if camo.priceGroup == 'custom' else (camoID, 'remap')
             cfg = self.camouflages[itemKey].get(itemName, {})
             mode = cfg.get('random_mode', SelectionMode.RANDOM)
-            isAlly = cfg.get('useForAlly', True)
-            isEnemy = cfg.get('useForEnemy', True)
+            isAlly = cfg.get('ally', True)
+            isEnemy = cfg.get('enemy', True)
             seasons = cfg.get('season', []) or [x for x in SEASONS_CONSTANTS.SEASONS if SEASON_NAME_TO_TYPE[x] & camo.season]
             for seasonName in seasons:
                 camoForSeason = self.camoForSeason[seasonName]

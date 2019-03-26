@@ -1,28 +1,20 @@
-import operator
-
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
-from functools import partial
-from gui import g_tankActiveCamouflage, SystemMessages
+from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
-from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_IDX, SEASON_IDX_TO_TYPE, \
-    SEASON_TYPE_TO_NAME, getOutfitWithoutItems, getItemInventoryCount, getStyleInventoryCount, OutfitInfo, \
-    SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems, C11nMode
-from gui.Scaleform.daapi.view.lobby.customization.vehicle_anchors_updater import VehicleAnchorsUpdater
+from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_IDX_TO_TYPE, \
+    SEASON_TYPE_TO_NAME, C11nMode
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.customization import CustomizationService
 from gui.customization.context import CustomizationContext as WGCtx, CaruselItemData
-from gui.customization.shared import C11nId, getAppliedRegionsForCurrentHangarVehicle, appliedToFromSlotsIds
-from gui.hangar_cameras.c11n_hangar_camera_manager import C11nHangarCameraManager
+from gui.customization.shared import C11nId
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
-from gui.shared.gui_items.processors.common import OutfitApplier, StyleApplier, CustomizationsSeller
 from gui.shared.utils.decorators import process
 from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
-from shared_utils import nextTick, first
-from soft_exception import SoftException
+from shared_utils import first
 from vehicle_systems.tankStructure import TankPartIndexes
 from .shared import CSMode
 from .. import g_config
@@ -35,30 +27,44 @@ class CustomizationContext(WGCtx):
         return self._actualMode == CSMode.BUY
 
     @property
-    def originalOutfit(self):
-        return self.originalOutfits[self._currentSeason]
+    def _originalOutfits(self):
+        return super(CustomizationContext, self)._originalOutfits if self.isBuy else self._originalCSOutfits
 
     @property
-    def originalOutfits(self):
-        return self._originalOutfits if self.isBuy else self._originalCSOutfits
+    def _modifiedOutfits(self):
+        return self.__modifiedOutfits if self.isBuy else self._modifiedCSOutfits
+
+    @_modifiedOutfits.setter
+    def _modifiedOutfits(self, value):
+        self.__modifiedOutfits = value
 
     @property
-    def modifiedOutfits(self):
-        return self._modifiedOutfits if self.isBuy else self._modifiedCSOutfits
+    def _modifiedStyle(self):
+        return self.__modifiedStyle if self.isBuy else self._modifiedCSStyle
 
-    @property
-    def modifiedStyle(self):
-        return self._modifiedStyle if self.isBuy else self._modifiedCSStyle
+    @_modifiedStyle.setter
+    def _modifiedStyle(self, value):
+        self.__modifiedStyle = value
 
     def __init__(self):
         super(CustomizationContext, self).__init__()
-        self._lastTab = {CSMode.BUY: C11nTabs.PAINT, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
+        self._lastTab = {CSMode.BUY: C11nTabs.STYLE, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
         self._originalCSOutfits = {}
         self._modifiedCSOutfits = {}
         self._originalCSStyle = None
         self._modifiedCSStyle = None
+        self.__modifiedStyle = None
+        self.__modifiedOutfits = None
         self._currentSettings = {'custom': {}, 'remap': {}}
         self._actualMode = CSMode.INSTALL
+
+    @property
+    def numberEditModeActive(self):
+        return self._numberEditModeActive
+
+    @numberEditModeActive.setter
+    def numberEditModeActive(self, value):
+        self._numberEditModeActive = value
 
     def getItemSettings(self, item):
         name, key = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
@@ -70,162 +76,6 @@ class CustomizationContext(WGCtx):
         settings.setdefault('ally', origSettings.get('ally', True))
         settings.setdefault('enemy', origSettings.get('enemy', True))
         return settings
-
-    def refreshOutfit(self):
-        if self._tabIndex == C11nTabs.STYLE:
-            if self.modifiedStyle:
-                self._currentOutfit = self.modifiedStyle.getOutfit(self._currentSeason)
-            else:
-                self._currentOutfit = self.service.getEmptyOutfit()
-        else:
-            self._currentOutfit = self.modifiedOutfits[self._currentSeason]
-        self.service.tryOnOutfit(self._currentOutfit)
-        g_tankActiveCamouflage[g_currentVehicle.item.intCD] = self._currentSeason
-
-    def tabChanged(self, tabIndex, update=False):
-        if self.numberEditModeActive:
-            self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
-        self._tabIndex = tabIndex
-        self._mode = C11nMode.CUSTOM
-        if self._tabIndex == C11nTabs.EFFECT:
-            self._selectedAnchor = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.MODIFICATION, regionIdx=0)
-        elif self._tabIndex == C11nTabs.STYLE:
-            self._mode = C11nMode.STYLE
-            self._selectedAnchor = C11nId(areaId=Area.CHASSIS, slotType=GUI_ITEM_TYPE.STYLE, regionIdx=0)
-        else:
-            self._selectedAnchor = C11nId()
-        self._selectedCaruselItem = CaruselItemData()
-        if update:
-            self.onCustomizationTabsUpdated(tabIndex)
-        else:
-            self.onCustomizationTabChanged(tabIndex)
-
-    def anchorSelected(self, slotType, areaId, regionIdx):
-        if self._tabIndex in (self.tabsData.EFFECT, self.tabsData.STYLE):
-            return False
-        if self._mode == CSMode.SETUP:
-            slotType = tabToItem(self._tabIndex, self.isBuy)
-            areaId = Area.HULL
-        prevSelectedAnchor = self._selectedAnchor
-        self._selectedAnchor = C11nId(areaId=areaId, slotType=slotType, regionIdx=regionIdx)
-        if prevSelectedAnchor != self._selectedAnchor:
-            if self._vehicleAnchorsUpdater is not None and self.currentTab in C11nTabs.REGIONS:
-                self._vehicleAnchorsUpdater.changeAnchorParams(prevSelectedAnchor, True, True)
-        self.onCustomizationAnchorSelected(self._selectedAnchor.slotType, self._selectedAnchor.areaId,
-                                           self._selectedAnchor.regionIdx)
-        if areaId != -1 and regionIdx != -1 and self._selectedCaruselItem.intCD != -1:
-            outfit = self._modifiedOutfits[self._currentSeason]
-            slotId = self.__getFreeSlot(self._selectedAnchor, outfit)
-            if slotId is None or not self.__isItemInstalledInOutfitSlot(slotId, self._selectedCaruselItem.intCD):
-                item = self.service.getItemByCD(self._selectedCaruselItem.intCD)
-                component = self.__getComponent(item.id, self.selectedAnchor)
-                if self.installItem(self._selectedCaruselItem.intCD, slotId, SEASON_TYPE_TO_IDX[self.currentSeason],
-                                    component):
-                    return True
-        return False
-
-    def installItem(self, intCD, slotId, seasonIdx, component=None):
-        if slotId is None:
-            print intCD, slotId, seasonIdx, component
-            return False
-        item = self.service.getItemByCD(intCD)
-        prevItem = self.getItemFromRegion(slotId)
-        if prevItem is None or prevItem != item and self.isBuy and self.isBuyLimitReached(item):
-            SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_PROHIBITED, type=SystemMessages.SM_TYPE.Warning,
-                                           itemName=item.userName)
-            return False
-        if slotId.slotType == GUI_ITEM_TYPE.STYLE:
-            if self.isBuy:
-                self._modifiedStyle = item
-            else:
-                self._modifiedCSStyle = item
-        else:
-            season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
-            outfit = self.modifiedOutfits[season]
-            if self.numberEditModeActive and item.itemTypeID != GUI_ITEM_TYPE.PERSONAL_NUMBER:
-                self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_BY_INSCRIPTION_SELECT)
-            outfit.getContainer(slotId.areaId).slotFor(slotId.slotType).set(
-                item, idx=slotId.regionIdx, component=component)
-            outfit.invalidate()
-        self.refreshOutfit()
-        buyLimitReached = self.isBuyLimitReached(item)
-        self.onCustomizationItemInstalled(item, component, slotId, buyLimitReached)
-        return True
-
-    def removeItemFromSlot(self, season, slotId, refresh=True):
-        outfit = self.modifiedOutfits[season]
-        slot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
-        if slot.capacity() > slotId.regionIdx:
-            item = slot.getItem(slotId.regionIdx)
-            if item is not None and not item.isHiddenInUI():
-                slot.remove(idx=slotId.regionIdx)
-        if refresh:
-            self.refreshOutfit()
-            self.onCustomizationItemsRemoved()
-
-    def removeStyle(self, intCD):
-        if self.isBuy:
-            if self._modifiedStyle and self._modifiedStyle.intCD == intCD:
-                self._modifiedStyle = None
-        elif self._mode == CSMode.INSTALL:
-            if self._modifiedCSStyle and self._modifiedCSStyle.intCD == intCD:
-                self._modifiedCSStyle = None
-        self.refreshOutfit()
-        self.onCustomizationItemsRemoved()
-
-    def removeItems(self, onlyCurrent, *intCDs):
-        def intCdFilter(item):
-            return item.intCD in intCDs
-
-        if onlyCurrent:
-            self.removeItemsFromOutfit(self._currentOutfit, intCdFilter, False)
-        else:
-            for outfit in self.modifiedOutfits.itervalues():
-                self.removeItemsFromOutfit(outfit, intCdFilter, False)
-        self.refreshOutfit()
-        self.onCustomizationItemsRemoved()
-
-    def switchToCustom(self):
-        self.changeMode(False)
-
-    def switchToStyle(self):
-        self.changeMode(True)
-
-    def changeMode(self, wasLeft):
-        if self.isSwitcherIgnored:
-            self.isSwitcherIgnored = False
-            return
-        self.isSwitcherIgnored = True  # the switcher just jumps backwards immediately. -_-
-        self._lastTab[self._mode] = self._tabIndex
-        self._mode = ((self._mode + 1) if wasLeft else (self._mode - 1)) % len(CSMode.NAMES)
-        self.onCustomizationModeChanged(self._mode)
-        self.refreshOutfit()
-
-    def cancelChanges(self):
-        if self.numberEditModeActive:
-            self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_NUMBER)
-        if self._tabIndex == self.tabsData.STYLE:
-            self.__cancelModifiedStyle()
-        elif self._mode == CSMode.SETUP:
-            self._currentSettings = {'custom': {}, 'remap': {}}
-        else:
-            self.__cancelModifiedOufits()
-        self.refreshOutfit()
-        self.clearStoredPersonalNumber()
-        self.onChangesCanceled()
-
-    def changeCamouflageScale(self, areaId, regionIdx, scale):
-        component = self.currentOutfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getComponent(regionIdx)
-        if component.patternSize != scale:
-            component.patternSize = scale
-            self.refreshOutfit()
-            self.onCamouflageScaleChanged(areaId, regionIdx, scale)
-            self.itemDataChanged(areaId, GUI_ITEM_TYPE.CAMOUFLAGE, regionIdx)
-
-    def _updateCurrentSettings(self, **kwargs):
-        item = self.currentOutfit.getContainer(1).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(0)
-        itemName, itemKey = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
-        self._currentSettings[itemKey].setdefault(itemName, {}).update(kwargs)
 
     def _cleanSettings(self, allSettings, checkSeasons=True):
         camouflages = g_cache.customization20().camouflages
@@ -248,7 +98,7 @@ class CustomizationContext(WGCtx):
                             if season in camoSetting['season']:
                                 itemSeasons |= getattr(SeasonType, season.upper())
                         camoSeason = camouflages[camoID].season
-                        if itemSeasons == (camoSeason if camoSeason < 8 else camoSeason - 8):
+                        if camoSeason & ~SeasonType.EVENT == itemSeasons:
                             del camoSetting['season']
                     elif origSetting['season'] == camoSetting['season']:
                         del camoSetting['season']
@@ -273,50 +123,88 @@ class CustomizationContext(WGCtx):
                 if not value:
                     del settings[key]
 
-    def getOutfitsInfo(self):
-        outfitsInfo = {}
-        for season in SEASONS_ORDER:
-            outfitsInfo[season] = OutfitInfo(self.originalOutfits[season], self.modifiedOutfits[season])
-
-        return outfitsInfo
-
-    def getStyleInfo(self):
-        return OutfitInfo(self._originalStyle, self._modifiedStyle)
-
-    def getPurchaseItems(self):
-        return getCustomPurchaseItems(
-            self.getOutfitsInfo()) if self._tabIndex != self.tabsData.STYLE else getStylePurchaseItems(self.getStyleInfo())
-
-    def getItemInventoryCount(self, item):
-        return getItemInventoryCount(
-            item, self.getOutfitsInfo()) if item.itemTypeID != GUI_ITEM_TYPE.STYLE else getStyleInventoryCount(
-            item, self.getStyleInfo())
-
-    def getModifiedOutfit(self, season):
-        return self.modifiedOutfits.get(season)
-
-    def getAppliedItems(self, isOriginal=True):
-        if self._mode != CSMode.SETUP:
-            outfits = self.originalOutfits if isOriginal else self.modifiedOutfits
-            style = self.originalStyle if isOriginal else self.modifiedStyle
+    def tabChanged(self, tabIndex, update=False):
+        if self.numberEditModeActive:
+            self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
+        self._tabIndex = tabIndex
+        self._mode = C11nMode.CUSTOM
+        if self._tabIndex == C11nTabs.EFFECT:
+            self._selectedAnchor = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.MODIFICATION, regionIdx=0)
+        elif self._tabIndex == C11nTabs.STYLE:
+            self._mode = C11nMode.STYLE
+            self._selectedAnchor = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.STYLE, regionIdx=0)
         else:
-            return set(i.intCD for i in self.currentOutfit.items())
-        seasons = SeasonType.COMMON_SEASONS if isOriginal else (self._currentSeason,)
-        appliedItems = set()
-        for seasonType in seasons:
-            appliedItems.update(i.intCD for i in outfits[seasonType].items())
-        if style:
-            appliedItems.add(style.intCD)
-        return appliedItems
+            self._selectedAnchor = C11nId()
+        self._selectedCarouselItem = CaruselItemData()
+        if update:
+            self.onCustomizationTabsUpdated(tabIndex)
+        else:
+            self.onCustomizationTabChanged(tabIndex)
+        self.onCustomizationModeChanged(self._mode)
 
-    def isItemInOutfit(self, item):
-        return any((outfit.has(item) for outfit in self.originalOutfits.itervalues())) or any(
-            (outfit.has(item) for outfit in self.modifiedOutfits.itervalues()))
+    def installItem(self, intCD, slotId, seasonIdx, component=None):
+        if slotId is None:
+            return False
+        item = self.service.getItemByCD(intCD)
+        prevItem = self.getItemFromRegion(slotId)
+        if prevItem is None or prevItem != item and self.isBuy and self.isBuyLimitReached(item):
+            SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_PROHIBITED, type=SystemMessages.SM_TYPE.Warning,
+                                           itemName=item.userName)
+            return False
+        if slotId.slotType == GUI_ITEM_TYPE.STYLE:
+            if self.isBuy:
+                self._modifiedStyle = item
+            else:
+                self._modifiedCSStyle = item
+        else:
+            season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
+            outfit = self._modifiedOutfits[season]
+            if self.numberEditModeActive and item.itemTypeID != GUI_ITEM_TYPE.PERSONAL_NUMBER:
+                self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_BY_INSCRIPTION_SELECT)
+            outfit.getContainer(slotId.areaId).slotFor(slotId.slotType).set(
+                item, idx=slotId.regionIdx, component=component)
+            outfit.invalidate()
+        self.refreshOutfit()
+        buyLimitReached = self.isBuyLimitReached(item)
+        self.onCustomizationItemInstalled(item, component, slotId, buyLimitReached)
+        return True
 
-    def getNotModifiedItems(self, season):
-        df = self.modifiedOutfits[season].diff(self.originalOutfits[season])
-        notModifiedItems = df.diff(self.originalOutfits[self.currentSeason])
-        return notModifiedItems
+    def isPossibleToInstallToAllTankAreas(self, season, slotType, currentSlotData):
+        return not self.isBuy or super(CustomizationContext, self).isPossibleToInstallToAllTankAreas(
+            season, slotType, currentSlotData)
+
+    def isPossibleToInstallItemForAllSeasons(self, areaID, slotType, regionIdx, currentSlotData):
+        return not self.isBuy or super(CustomizationContext, self).isPossibleToInstallItemForAllSeasons(
+            areaID, slotType, regionIdx, currentSlotData)
+
+    def getLockedProjectionDecalSeasons(self, regionIdx):
+        return [] if not self.isBuy else super(CustomizationContext, self).getLockedProjectionDecalSeasons(regionIdx)
+
+    def removeStyle(self, intCD):
+        if self.isBuy:
+            if self._modifiedStyle and self._modifiedStyle.intCD == intCD:
+                self._modifiedStyle = None
+        elif self._mode == CSMode.INSTALL:
+            if self._modifiedCSStyle and self._modifiedCSStyle.intCD == intCD:
+                self._modifiedCSStyle = None
+        self.refreshOutfit()
+        self.onCustomizationItemsRemoved()
+
+    def switchToCustom(self):
+        pass
+
+    def switchToStyle(self):
+        if self.numberEditModeActive:
+            self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
+        self._lastTab[self._actualMode] = self._tabIndex
+        self._actualMode = (self._mode + 1) % len(CSMode.NAMES)
+        self.refreshOutfit()
+        self.tabChanged(self._lastTab[self._actualMode])
+        self.onCustomizationModeChanged(self._mode)
+
+    def cancelChanges(self):
+        self._currentSettings = {'custom': {}, 'remap': {}}
+        super(CustomizationContext, self).cancelChanges()
 
     @process('customizationApply')
     def applyItems(self, purchaseItems):
@@ -373,105 +261,6 @@ class CustomizationContext(WGCtx):
         self.__onCacheResync()  # TODO: whip up style saving (and applying, for that measure)
         self.itemsCache.onSyncCompleted += self.__onCacheResync
 
-    @process('sellItem')
-    def sellItem(self, intCD, count):
-        if not count:
-            return
-        item = self.service.getItemByCD(intCD)
-        if item.fullInventoryCount(g_currentVehicle.item) < count:
-            if item.itemTypeID != GUI_ITEM_TYPE.STYLE:
-                for season, outfit in getOutfitWithoutItems(self.getOutfitsInfo(), intCD, count):
-                    yield OutfitApplier(g_currentVehicle.item, outfit, season).request()
-
-            else:
-                yield StyleApplier(g_currentVehicle.item).request()
-        yield CustomizationsSeller(g_currentVehicle.item, item, count).request()
-        nextTick(self.refreshOutfit)()
-        nextTick(partial(self.onCustomizationItemSold, item=item, count=count))()
-
-    def init(self):
-        if not g_currentVehicle.isPresent():
-            raise SoftException('There is not vehicle in hangar for customization.')
-        self._autoRentEnabled = g_currentVehicle.item.isAutoRentStyle
-        self._vehicleAnchorsUpdater = VehicleAnchorsUpdater(self.service, self)
-        self._vehicleAnchorsUpdater.startUpdater(self.settingsCore.interfaceScale.get())
-        if self.hangarSpace.spaceInited:
-            self._c11CameraManager = C11nHangarCameraManager(self.hangarSpace.space.getCameraManager())
-            self._c11CameraManager.init()
-        self.settingsCore.interfaceScale.onScaleExactlyChanged += self.__onInterfaceScaleChanged
-        self.service.onOutfitChanged += self.__onOutfitChanged
-        self.itemsCache.onSyncCompleted += self.__onCacheResync
-        self.carveUpOutfits()
-        currVehSeasonType = g_tankActiveCamouflage.get(g_currentVehicle.item.intCD, SeasonType.SUMMER)
-        self._currentSeason = currVehSeasonType
-        if self._originalStyle:
-            self._tabIndex = self.tabsData.STYLE
-        else:
-            self._tabIndex = self.tabsData.PAINT
-            notInst = all([not self.originalOutfits[season].isInstalled() for season in SeasonType.COMMON_SEASONS])
-            if notInst and not self.isOutfitsEmpty(self.modifiedOutfits) and not self.modifiedStyle:
-                self._tabIndex = self.tabsData.STYLE
-        self._originalMode = self._mode
-        self.refreshOutfit()
-
-    def isOutfitsModified(self):  # TODO: fix this damn fuckery
-        if self._mode == self._originalMode:
-            if self.isBuy:
-                currentStyle = self.service.getCurrentStyle()
-                if self._modifiedStyle and currentStyle:
-                    return self._modifiedStyle.intCD != currentStyle.intCD
-                if not (self._modifiedStyle is None and currentStyle is None):
-                    return True
-                for season in SeasonType.COMMON_SEASONS:
-                    outfit = self._modifiedOutfits[season]
-                    currOutfit = self._originalOutfits[season]
-                    if not currOutfit.isEqual(outfit) or not outfit.isEqual(currOutfit):
-                        return True
-            if self._mode == CSMode.INSTALL:
-                currentStyle = self.service.getCurrentStyle()  # TODO: change to CamoSelector's style getter
-                if self._modifiedCSStyle and currentStyle:
-                    return self._modifiedCSStyle.intCD != currentStyle.intCD
-                if not (self._modifiedCSStyle is None and currentStyle is None):
-                    return True
-                for season in SeasonType.COMMON_SEASONS:
-                    outfit = self._modifiedCSOutfits[season]
-                    currOutfit = self._originalCSOutfits[season]
-                    if not currOutfit.isEqual(outfit) or not outfit.isEqual(currOutfit):
-                        return True
-
-            return False
-        else:
-            if (self.isOutfitsEmpty(self._modifiedOutfits) and self._originalStyle is None) or (
-                    self._modifiedStyle is None and self.isOutfitsEmpty(self._originalOutfits)):
-                return False
-            return True
-
-    def isSlotFilled(self, anchorId):
-        if anchorId.slotType == GUI_ITEM_TYPE.STYLE:
-            return self._modifiedStyle is not None
-        else:
-            slotId = self.getSlotIdByAnchorId(anchorId)
-            if slotId is not None:
-                multiSlot = self._currentOutfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
-                if multiSlot is not None:
-                    item = multiSlot.getItem(slotId.regionIdx)
-                    return item is not None
-            return False
-
-    def getEmptyRegions(self):
-        emptyRegions = []
-        slotType = tabToItem(self._tabIndex, self.isBuy)
-        for areaId in Area.ALL:
-            regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, slotType)
-            for regionIdx in regionsIndexes:
-                outfit = self.getModifiedOutfit(self._currentSeason)
-                item = outfit.getContainer(areaId).slotFor(slotType).getItem(regionIdx)
-                if item is None:
-                    emptyRegions.append((areaId, slotType, regionIdx))
-
-        mask = appliedToFromSlotsIds(emptyRegions)
-        return mask
-
     def __carveUpOutfits(self):
         for season in SeasonType.COMMON_SEASONS:
             outfit = self.service.getCustomOutfit(season)
@@ -487,7 +276,6 @@ class CustomizationContext(WGCtx):
                         slot.remove(idx)
 
         from ..processors import applyCamoCache, applyPlayerCache
-        self._setupOutfit = self.service.getEmptyOutfit()
         descriptor = g_currentVehicle.item.descriptor
         nationName, vehName = descriptor.name.split(':')
         for season in SeasonType.COMMON_SEASONS:
@@ -510,16 +298,10 @@ class CustomizationContext(WGCtx):
                 self._modifiedStyle = None
             else:
                 self._modifiedStyle = style
-        if self._mode == CSMode.SETUP:
-            self._currentOutfit = self._setupOutfit
-        elif self._tabIndex == self.tabsData.STYLE:
-            self._currentOutfit = self.modifiedStyle.getOutfit(self._currentSeason)
+        if self._tabIndex == C11nTabs.STYLE:
+            self._currentOutfit = style.getOutfit(self._currentSeason)
         else:
-            self._currentOutfit = self.modifiedOutfits[self._currentSeason]
-
-    def __cancelModifiedOufits(self):
-        for season in SeasonType.COMMON_SEASONS:
-            self.modifiedOutfits[season] = self.originalOutfits[season].copy()
+            self._currentOutfit = self._modifiedOutfits[self._currentSeason]
 
     def __cancelModifiedStyle(self):
         if self.isBuy:
@@ -545,28 +327,16 @@ class CustomizationContext(WGCtx):
             self._modifiedCSStyle = self.service.getItemByCD(self._modifiedCSStyle.intCD)
         self._state.clear()
 
-    def updateVisibleTabsList(self, visibleTabs, stylesTabEnabled):
+    # noinspection PyMethodOverriding
+    def updateVisibleTabsList(self, visibleTabs):
         for seasonType in SeasonType.COMMON_SEASONS:
             self.__visibleTabs[seasonType] = sorted(visibleTabs[seasonType])
-        self.__stylesTabEnabled = stylesTabEnabled
         tabIndex = self._lastTab[self._mode]
         if tabIndex not in self.visibleTabs:
             tabIndex = first(self.visibleTabs, -1)
-        self._lastTab[self._mode] = tabIndex
+        self._lastTab[self._actualMode] = tabIndex
         self._tabIndex = tabIndex
-        nextTick(self.tabChanged)(tabIndex, update=True)
-
-    def __isItemInstalledInOutfitSlot(self, slotId, itemIntCD):
-        if slotId.slotType == GUI_ITEM_TYPE.STYLE:
-            return self.modifiedStyle.intCD == itemIntCD
-        else:
-            outfit = self.modifiedOutfits[self._currentSeason]
-            multiSlot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
-            if multiSlot is not None:
-                item = multiSlot.getItem(slotId.regionIdx)
-                if item is not None:
-                    return item.intCD == itemIntCD
-            return False
+        self.tabChanged(tabIndex, update=True)
 
 
 @overrideMethod(CustomizationService, 'getCtx')

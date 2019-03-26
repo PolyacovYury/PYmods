@@ -54,6 +54,7 @@ class CustomizationBottomPanel(CBP):
     def __updateSetSwitcherData(self):
         self.as_setSwitchersDataS(self.__getSwitcherInitData(self.__ctx.actualMode))
 
+    # noinspection PyMethodOverriding
     @staticmethod
     def __getSwitcherInitData(mode):
         return {'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[mode]],

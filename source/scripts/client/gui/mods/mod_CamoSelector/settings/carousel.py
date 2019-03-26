@@ -64,7 +64,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                             continue
                     visibleTabs[seasonType].add(tabIndex)
 
-        self._proxy.updateVisibleTabsList(visibleTabs, None)
+        self._proxy.updateVisibleTabsList(visibleTabs)
         for tabIndex in C11nTabs.ALL:
             for seasonType in SeasonType.COMMON_SEASONS:
                 seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
