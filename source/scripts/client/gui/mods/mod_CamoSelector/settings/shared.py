@@ -1,11 +1,10 @@
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from items.components.c11n_constants import SeasonType
-from shared_utils import CONST_CONTAINER
 from .. import g_config
 from ..constants import SEASON_NAME_TO_TYPE
 
 
-class CSMode(CONST_CONTAINER):
+class CSMode(object):
     BUY, INSTALL = range(2)
     NAMES = {BUY: 'buy', INSTALL: 'install'}
 
