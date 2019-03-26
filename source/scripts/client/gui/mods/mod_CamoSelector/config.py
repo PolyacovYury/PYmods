@@ -14,7 +14,7 @@ from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.app_loader import g_appLoader
 from items.components.c11n_constants import SeasonType
 from . import __date__, __modID__
-from .constants import RandMode, SEASON_NAME_TO_TYPE
+from .constants import SelectionMode, SEASON_NAME_TO_TYPE
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -39,73 +39,36 @@ class ConfigInterface(PYmodsConfigInterface):
                      'fullAlpha': False, 'disableWithDefault': False, 'fillEmptySlots': True, 'uniformOutfit': False}
         self.i18n = {
             'UI_description': 'Camouflage selector',
-            'UI_flash_header': 'Camouflages setup',
-            'UI_flash_header_tooltip': ('Advanced settings for camouflages added by CamoSelector by '
-                                        '<font color=\'#DD7700\'><b>Polyacov_Yury</b></font>'),
-            'UI_flash_tabs_0_label': 'Styles',
-            'UI_flashCol_tabs_0_text': 'Styles',
-            'UI_flashCol_tabs_0_tooltip': "If only you'd know how much time it took me to make this work...",
-            'UI_flash_tabs_1_label': 'Paint',
-            'UI_flashCol_tabs_1_text': 'Paint',
-            'UI_flashCol_tabs_1_tooltip': 'Not camouflages at all. Paints. :)',
-            'UI_flash_tabs_2_label': 'Shop',
-            'UI_flashCol_tabs_2_text': 'Shop',
-            'UI_flashCol_tabs_2_tooltip': 'Those which can be bought normally.',
-            'UI_flash_tabs_3_label': 'Hidden',
-            'UI_flashCol_tabs_3_text': 'Hidden',
-            'UI_flashCol_tabs_3_tooltip': 'Those which are inaccessible under usual circumstances.',
-            'UI_flash_tabs_4_label': 'Global',
-            'UI_flashCol_tabs_4_text': 'Global map',
-            'UI_flashCol_tabs_4_tooltip':
-                'Those which are awarded for global map achievements, thus available for all nations.',
-            'UI_flash_tabs_5_label': 'Custom',
-            'UI_flashCol_tabs_5_text': 'Custom',
-            'UI_flashCol_tabs_5_tooltip': 'Those which were added via config files.',
-            'UI_flash_tabs_6_label': 'Emblems',
-            'UI_flashCol_tabs_6_text': 'Emblems',
-            'UI_flashCol_tabs_6_tooltip': 'Those small pictures that are added on your machine in place of nation flags.',
-            'UI_flash_tabs_7_label': 'Inscriptions',
-            'UI_flashCol_tabs_7_text': 'Inscriptions',
-            'UI_flashCol_tabs_7_tooltip': 'Looks like chat is not enough.',
-            'UI_flash_tabs_8_label': 'Effects',
-            'UI_flashCol_tabs_8_text': 'Effects',
-            'UI_flashCol_tabs_8_tooltip': 'Also known as paint scrambles.',
-            'UI_flash_switcher_buy': 'PURCHASE',
-            'UI_flash_switcher_setup': 'SETUP',
-            'UI_flash_switcher_install': 'INSTALL',
-            'UI_flash_switcher_tabsInvisible': 'Tabs are invisible while Shift key is pressed. #BlameWG',
-            'UI_flash_commit_apply': 'Apply',
-            'UI_flash_commit_install': 'Install',
-            'UI_flash_commit_install_and_apply': 'Install and apply',
-            'UI_flashCol_randMode_label': 'Random selection mode',
-            'UI_flash_randMode_off': 'Disable',
-            'UI_flash_randMode_random': 'Random',
-            'UI_flash_randMode_team': 'Team',
-            'UI_flashCol_teamMode_enemy_apply_label': 'Use for team: enemy',
-            'UI_flash_teamMode_enemy_apply_btn': 'Apply',
-            'UI_flashCol_teamMode_enemy_applied_label': 'Used for team: enemy',
-            'UI_flash_teamMode_enemy_applied_btn': 'Remove',
-            'UI_flashCol_teamMode_ally_apply_label': 'Use for team: ally',
-            'UI_flash_teamMode_ally_apply_btn': 'Apply',
-            'UI_flashCol_teamMode_ally_applied_label': 'Used for team: ally',
-            'UI_flash_teamMode_ally_applied_btn': 'Remove',
-            'UI_flash_teamMode_remove_btn': 'Remove from vehicle',
-            'UI_flashCol_season_summer_apply_label': 'Apply for season: summer',
-            'UI_flash_season_summer_apply_btn': 'Apply',
-            'UI_flashCol_season_summer_applied_label': 'Applied for season: summer',
-            'UI_flash_season_summer_applied_btn': 'Remove',
-            'UI_flashCol_season_winter_apply_label': 'Apply for season: winter',
-            'UI_flash_season_winter_apply_btn': 'Apply',
-            'UI_flashCol_season_winter_applied_label': 'Applied for season: winter',
-            'UI_flash_season_winter_applied_btn': 'Remove',
-            'UI_flashCol_season_desert_apply_label': 'Apply for season: desert',
-            'UI_flash_season_desert_apply_btn': 'Apply',
-            'UI_flashCol_season_desert_applied_label': 'Applied for season: desert',
-            'UI_flash_season_desert_applied_btn': 'Remove',
-            'UI_flashCol_camoGroup_multinational': 'Multinational',
-            'UI_flashCol_camoGroup_special': 'Special',
-            'UI_flashCol_camoGroup_custom': 'Custom',
-            'UI_flashCol_applied_money': 'Customization elements applied.\nWould buy %(count)s items, would spend %(money)s.',
+            'flash_tabs_0_label': 'Styles',
+            'flashCol_tabs_0_text': 'Styles',
+            'flashCol_tabs_0_tooltip': "If only you'd know how much time it took me to make this work...",
+            'flash_switcher_buy': 'PURCHASE',
+            'flash_switcher_install': 'INSTALL',
+            'flash_switcher_tabsInvisible': 'Tabs are invisible while Shift key is pressed. #BlameWG',
+            'flash_commit_apply': 'Apply',
+            'flash_commit_install': 'Install',
+            'flash_commit_install_and_apply': 'Install and apply',
+            'flashCol_camoGroup_multinational': 'Multinational',
+            'flashCol_camoGroup_special': 'Special',
+            'flashCol_camoGroup_custom': 'Custom',
+            'flashCol_applied_money': 'Customization elements applied.\nWould buy %(count)s items, would spend %(money)s.',
+            'contextMenu_season_group': 'Season remap',
+            'contextMenu_season_summer': 'Apply for summer',
+            'contextMenu_season_summer_remove': 'Remove from summer',
+            'contextMenu_season_winter': 'Apply for winter',
+            'contextMenu_season_winter_remove': 'Remove from winter',
+            'contextMenu_season_desert': 'Apply for desert',
+            'contextMenu_season_desert_remove': 'Remove from desert',
+            'contextMenu_selectionMode_group': 'Current selection mode: ',
+            'contextMenu_selectionMode_change': 'Change to ',
+            'contextMenu_selectionMode_off': 'Disabled',
+            'contextMenu_selectionMode_random': 'Random',
+            'contextMenu_selectionMode_team': 'Team',
+            'contextMenu_team_group': 'Team display',
+            'contextMenu_team_ally': 'Apply for allies',
+            'contextMenu_team_ally_remove': 'Remove from allies',
+            'contextMenu_team_enemy': 'Apply for enemies',
+            'contextMenu_team_enemy_remove': 'Remove from enemies',
             'UI_setting_doRandom_text': 'Select random camouflages',
             'UI_setting_doRandom_tooltip': (
                 'If enabled, mod will select a random available camouflage if no other option is provided.'),
@@ -132,7 +95,7 @@ class ConfigInterface(PYmodsConfigInterface):
         try:
             from helpers.i18n.hangarpainter import _config
             for key in self.i18n:
-                if not key.startswith('UI_flashCol_'):
+                if not key.startswith('flashCol_'):
                     continue
                 self.i18n[key] = "<font color='#%s'>%s</font>" % (_config.data['colour'], self.i18n[key])
         except ImportError:
@@ -161,15 +124,6 @@ class ConfigInterface(PYmodsConfigInterface):
         if 'fullAlpha' in settings and settings['fullAlpha'] != self.data['fullAlpha']:
             items.vehicles.g_cache._Cache__customization20 = None
             items.vehicles.g_cache.customization20()
-        # if 'enabled' in settings and settings['enabled'] != self.data['enabled'] and not settings['enabled']:
-        #     from .settings import backups
-        #     for alias in backups.keys():
-        #         settings = g_entitiesFactories.getSettings(alias)
-        #         if settings is None:
-        #             del backups[alias]
-        #             continue
-        #         g_entitiesFactories.removeSettings(alias)
-        #         g_entitiesFactories.addSettings(backups.pop(alias))
         super(self.__class__, self).onApplySettings(settings)
         self.hangarCamoCache.clear()
         if self.isModAdded:
@@ -255,7 +209,7 @@ class ConfigInterface(PYmodsConfigInterface):
             if camoID not in conf:
                 continue
             camoConf = conf[camoID]
-            if camoConf.get('random_mode') == RandMode.RANDOM:
+            if camoConf.get('random_mode') == SelectionMode.RANDOM:
                 del camoConf['random_mode']
             self.migrateSeasons(camoID, camoConf, camouflage.season)
             if 'season' in camoConf:
@@ -292,20 +246,6 @@ class ConfigInterface(PYmodsConfigInterface):
             if 'useFor' in key:
                 conf[key.replace('useFor', '').lower()] = conf.pop(key)
 
-    def registerSettings(self):
-        super(self.__class__, self).registerSettings()
-        if hasattr(BigWorld, 'g_modsListApi'):
-            kwargs = dict(
-                id='CamoSelectorUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
-                icon='gui/flash/CamoSelector.png', enabled=self.data['enabled'], login=False, lobby=True,
-                callback=lambda: None if g_currentVehicle.isInBattle() or g_currentPreviewVehicle.isPresent() else (
-                    self.onMSAPopulate(), g_appLoader.getDefLobbyApp().loadView(ViewLoadParams('CamoSelectorMainView'))))
-            try:
-                BigWorld.g_modsListApi.addModification(**kwargs)
-            except AttributeError:
-                BigWorld.g_modsListApi.addMod(**kwargs)
-            self.isModAdded = True
-
     def collectCamouflageData(self):
         camouflages = items.vehicles.g_cache.customization20().camouflages
         self.camoForSeason.clear()
@@ -314,15 +254,15 @@ class ConfigInterface(PYmodsConfigInterface):
         for camoID, camo in camouflages.iteritems():
             itemName, itemKey = (camo.userKey, 'custom') if camo.priceGroup == 'custom' else (camoID, 'remap')
             cfg = self.camouflages[itemKey].get(itemName, {})
-            mode = cfg.get('random_mode', RandMode.RANDOM)
+            mode = cfg.get('random_mode', SelectionMode.RANDOM)
             isAlly = cfg.get('useForAlly', True)
             isEnemy = cfg.get('useForEnemy', True)
             seasons = cfg.get('season', []) or [x for x in SEASONS_CONSTANTS.SEASONS if SEASON_NAME_TO_TYPE[x] & camo.season]
             for seasonName in seasons:
                 camoForSeason = self.camoForSeason[seasonName]
-                if mode == RandMode.RANDOM:
+                if mode == SelectionMode.RANDOM:
                     camoForSeason['random'].append(camoID)
-                elif mode == RandMode.TEAM:
+                elif mode == SelectionMode.TEAM:
                     if isAlly:
                         camoForSeason['ally'].append(camoID)
                     if isEnemy:

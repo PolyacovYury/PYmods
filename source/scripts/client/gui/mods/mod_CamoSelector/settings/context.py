@@ -1,3 +1,5 @@
+import operator
+
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
 from functools import partial
@@ -24,7 +26,7 @@ from soft_exception import SoftException
 from vehicle_systems.tankStructure import TankPartIndexes
 from .shared import CSMode
 from .. import g_config
-from ..constants import RandMode
+from ..constants import SelectionMode, SEASON_NAME_TO_TYPE
 
 
 class CustomizationContext(WGCtx):
@@ -44,17 +46,6 @@ class CustomizationContext(WGCtx):
     def modifiedOutfits(self):
         return self._modifiedOutfits if self.isBuy else self._modifiedCSOutfits
 
-    def getSeasonIndices(self):
-        return [SEASON_TYPE_TO_IDX[x] for x in SeasonType.COMMON_SEASONS if x & self._settingSeason]
-
-    def changeAlly(self, apply):
-        self._updateCurrentSettings(ally=apply)
-        self.onCacheResync()
-
-    def changeEnemy(self, apply):
-        self._updateCurrentSettings(enemy=apply)
-        self.onCacheResync()
-
     @property
     def modifiedStyle(self):
         return self._modifiedStyle if self.isBuy else self._modifiedCSStyle
@@ -66,10 +57,19 @@ class CustomizationContext(WGCtx):
         self._modifiedCSOutfits = {}
         self._originalCSStyle = None
         self._modifiedCSStyle = None
-        self._setupOutfit = None
         self._currentSettings = {'custom': {}, 'remap': {}}
-        self._settingSeason = None
         self._actualMode = CSMode.INSTALL
+
+    def getItemSettings(self, item):
+        name, key = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
+        settings = self._currentSettings[key].setdefault(name, {})
+        origSettings = g_config.camouflages[key].get(name, {})
+        settings.setdefault('season', origSettings.get('season', []) or [
+            x for x in SEASONS_CONSTANTS.SEASONS if SEASON_NAME_TO_TYPE[x] & item.season])
+        settings.setdefault('random_mode', origSettings.get('random_mode', SelectionMode.RANDOM))
+        settings.setdefault('ally', origSettings.get('ally', True))
+        settings.setdefault('enemy', origSettings.get('enemy', True))
+        return settings
 
     def refreshOutfit(self):
         if self._tabIndex == C11nTabs.STYLE:
@@ -134,30 +134,19 @@ class CustomizationContext(WGCtx):
             SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_PROHIBITED, type=SystemMessages.SM_TYPE.Warning,
                                            itemName=item.userName)
             return False
-        if self._mode != CSMode.SETUP:
-            if slotId.slotType == GUI_ITEM_TYPE.STYLE:
-                if self.isBuy:
-                    self._modifiedStyle = item
-                else:
-                    self._modifiedCSStyle = item
+        if slotId.slotType == GUI_ITEM_TYPE.STYLE:
+            if self.isBuy:
+                self._modifiedStyle = item
             else:
-                season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
-                outfit = self.modifiedOutfits[season]
-                if self.numberEditModeActive and item.itemTypeID != GUI_ITEM_TYPE.PERSONAL_NUMBER:
-                    self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_BY_INSCRIPTION_SELECT)
-                outfit.getContainer(slotId.areaId).slotFor(slotId.slotType).set(
-                    item, idx=slotId.regionIdx, component=component)
-                outfit.invalidate()
+                self._modifiedCSStyle = item
         else:
-            outfit = self._setupOutfit
-            for areaId in xrange(1, 4):
-                outfit.getContainer(areaId).slotFor(slotId.slotType).set(item, idx=slotId.regionIdx, component=component)
-            itemSettings, _, itemSeasons, itemOrigSettings = self.getItemSettings(item)
-            self._settingSeason = itemSeasons
-            self._randMode = itemSettings.get('random_mode', itemOrigSettings.get('random_mode', RandMode.RANDOM))
-            self.useFor_ally = itemSettings.get('ally', itemOrigSettings.get('ally', True))
-            self.useFor_enemy = itemSettings.get('enemy', itemOrigSettings.get('enemy', True))
-
+            season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
+            outfit = self.modifiedOutfits[season]
+            if self.numberEditModeActive and item.itemTypeID != GUI_ITEM_TYPE.PERSONAL_NUMBER:
+                self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_BY_INSCRIPTION_SELECT)
+            outfit.getContainer(slotId.areaId).slotFor(slotId.slotType).set(
+                item, idx=slotId.regionIdx, component=component)
+            outfit.invalidate()
         self.refreshOutfit()
         buyLimitReached = self.isBuyLimitReached(item)
         self.onCustomizationItemInstalled(item, component, slotId, buyLimitReached)
@@ -226,41 +215,12 @@ class CustomizationContext(WGCtx):
         self.onChangesCanceled()
 
     def changeCamouflageScale(self, areaId, regionIdx, scale):
-        if self._mode != CSMode.SETUP:
-            component = self.currentOutfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getComponent(regionIdx)
-            if component.patternSize != scale:
-                component.patternSize = scale
-                self.refreshOutfit()
-                self.onCamouflageScaleChanged(areaId, regionIdx, scale)
-                self.itemDataChanged(areaId, GUI_ITEM_TYPE.CAMOUFLAGE, regionIdx)
-        elif self._randMode != scale:
-            self._randMode = scale
-            self._updateCurrentSettings()
-            self.onCacheResync()
-
-    def toggleSeason(self, seasonIdx):
-        item = self.currentOutfit.getContainer(1).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(0)
-        itemSettings, itemSeasonsStr, _, _ = self.getItemSettings(item)
-        self._settingSeason |= SEASON_IDX_TO_TYPE[seasonIdx]
-        newSeasons = set(x for x in SEASONS_CONSTANTS.SEASONS if x in itemSeasonsStr)
-        newSeasons.add(SEASON_TYPE_TO_NAME[SEASON_IDX_TO_TYPE[seasonIdx]])
-        itemSettings['season'] = ','.join(x for x in SEASONS_CONSTANTS.SEASONS if x in newSeasons)
-
-    def getItemSettings(self, item):
-        itemName, itemKey = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
-        itemSettings = self._currentSettings[itemKey].setdefault(itemName, {})
-        itemOrigSettings = g_config.camouflages[itemKey].get(itemName, {})
-        itemSeasonsStr = itemSettings.get('season', itemOrigSettings.get('season', None))
-        if itemSeasonsStr is not None:
-            itemSeasons = SeasonType.UNDEFINED
-            for season in SEASONS_CONSTANTS.SEASONS:
-                if season in itemSeasonsStr:
-                    itemSeasons |= getattr(SeasonType, season.upper())
-        else:
-            itemSeasons = item.season
-            itemSeasonsStr = itemSettings['season'] = ','.join(
-                x for x in SEASONS_CONSTANTS.SEASONS if getattr(SeasonType, x.upper()) & itemSeasons)
-        return itemSettings, itemSeasonsStr, itemSeasons, itemOrigSettings
+        component = self.currentOutfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getComponent(regionIdx)
+        if component.patternSize != scale:
+            component.patternSize = scale
+            self.refreshOutfit()
+            self.onCamouflageScaleChanged(areaId, regionIdx, scale)
+            self.itemDataChanged(areaId, GUI_ITEM_TYPE.CAMOUFLAGE, regionIdx)
 
     def _updateCurrentSettings(self, **kwargs):
         item = self.currentOutfit.getContainer(1).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE).getItem(0)
@@ -297,7 +257,7 @@ class CustomizationContext(WGCtx):
                         if origSetting.get(team, True) == camoSetting[team]:
                             del camoSetting[team]
                 if 'random_mode' in camoSetting:
-                    if camoSetting['random_mode'] == origSetting.get('random_mode', RandMode.RANDOM):
+                    if camoSetting['random_mode'] == origSetting.get('random_mode', SelectionMode.RANDOM):
                         del camoSetting['random_mode']
                 if not camoSetting:
                     del itemSettings[camoID]

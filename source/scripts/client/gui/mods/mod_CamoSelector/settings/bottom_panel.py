@@ -37,7 +37,7 @@ class CustomizationBottomPanel(CBP):
     def __setFooterInitData(self):
         self.as_setBottomPanelInitDataS({
             'tabsAvailableRegions': C11nTabs.AVAILABLE_REGIONS,
-            'defaultStyleLabel': g_config.i18n['UI_flash_switcher_tabsInvisible'],
+            'defaultStyleLabel': g_config.i18n['flash_switcher_tabsInvisible'],
             'carouselInitData': self.__getCarouselInitData(),
             'filtersVO': {'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER,
                           'mainBtn': {'value': RES_ICONS.MAPS_ICONS_BUTTONS_FILTER,
@@ -56,8 +56,8 @@ class CustomizationBottomPanel(CBP):
 
     @staticmethod
     def __getSwitcherInitData(mode):
-        return {'leftLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[mode]],
-                'rightLabel': g_config.i18n['UI_flash_switcher_' + CSMode.NAMES[(mode + 1) % len(CSMode.NAMES)]],
+        return {'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[mode]],
+                'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[(mode + 1) % len(CSMode.NAMES)]],
                 'leftEvent': 'installStyle',
                 'rightEvent': 'installStyles',
                 'isLeft': True,
@@ -130,7 +130,7 @@ class CustomizationBottomPanel(CBP):
                          'tooltip': makeTooltip(
                              ITEM_TYPES.customizationPlural(typeName),
                              TOOLTIPS.customizationItemTab(typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else
-                             g_config.i18n['UI_flashCol_tabs_0_tooltip']),
+                             g_config.i18n['flashCol_tabs_0_tooltip']),
                          'id': tabIdx})
             pluses.append(showPlus)
         return data, pluses

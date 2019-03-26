@@ -12,7 +12,7 @@ class CSMode(CONST_CONTAINER):
 
 def getItemSeason(item):
     import operator
-    itemName, itemKey = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
-    cfg = g_config.camouflages[itemKey].get(itemName, {})
+    name, key = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
+    cfg = g_config.camouflages[key].get(name, {})
     seasons = cfg.get('season', []) or [x for x in SEASONS_CONSTANTS.SEASONS if SEASON_NAME_TO_TYPE[x] & item.season]
     return reduce(operator.ior, (SEASON_NAME_TO_TYPE[x] for x in seasons), SeasonType.UNDEFINED)
