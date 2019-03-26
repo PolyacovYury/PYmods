@@ -14,10 +14,9 @@
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/carousel.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/carousel.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/cm_handlers.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/cm_handlers.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/context.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/inscription_controller.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/inscription_controller.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/item_vo.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/item_vo.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc",
-        "res/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc",
-        "res/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc",
-        "res/scripts/client/gui/mods/mod_CamoSelector/settings/vehicle_anchors_updater.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/vehicle_anchors_updater.pyc"
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc"
     }
 }
