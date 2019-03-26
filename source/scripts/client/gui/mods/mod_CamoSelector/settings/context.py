@@ -28,7 +28,11 @@ class CustomizationContext(WGCtx):
 
     @property
     def _originalOutfits(self):
-        return super(CustomizationContext, self)._originalOutfits if self.isBuy else self._originalCSOutfits
+        return self.__originalOutfits if self.isBuy else self._originalCSOutfits
+
+    @_originalOutfits.setter
+    def _originalOutfits(self, value):
+        self.__originalOutfits = value
 
     @property
     def _modifiedOutfits(self):
@@ -53,8 +57,9 @@ class CustomizationContext(WGCtx):
         self._modifiedCSOutfits = {}
         self._originalCSStyle = None
         self._modifiedCSStyle = None
+        self.__originalOutfits = {}
+        self.__modifiedOutfits = {}
         self.__modifiedStyle = None
-        self.__modifiedOutfits = None
         self._currentSettings = {'custom': {}, 'remap': {}}
         self._actualMode = CSMode.INSTALL
 
