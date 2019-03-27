@@ -128,17 +128,6 @@ class CustomizationContext(WGCtx):
                 if not value:
                     del settings[key]
 
-    def refreshOutfit(self):
-        if self._mode == C11nMode.STYLE:
-            if self._modifiedStyle:
-                self._currentOutfit = self._modifiedStyle.getOutfit(self._currentSeason)
-            else:
-                self._currentOutfit = self.service.getEmptyOutfit()
-        else:
-            self._currentOutfit = self._modifiedOutfits[self._currentSeason]
-        self.service.tryOnOutfit(self._currentOutfit)
-        g_tankActiveCamouflage[g_currentVehicle.item.intCD] = self._currentSeason
-
     def tabChanged(self, tabIndex, update=False):
         if self.numberEditModeActive:
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
@@ -213,7 +202,7 @@ class CustomizationContext(WGCtx):
         if self.numberEditModeActive:
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._lastTab[self._actualMode] = self._tabIndex
-        self._actualMode = (self._mode + 1) % len(CSMode.NAMES)
+        self._actualMode = (self._actualMode + 1) % len(CSMode.NAMES)
         self.refreshOutfit()
         self.tabChanged(self._lastTab[self._actualMode])
         self.onCustomizationModeChanged(self._mode)
@@ -221,6 +210,10 @@ class CustomizationContext(WGCtx):
     def cancelChanges(self):
         self._currentSettings = {'custom': {}, 'remap': {}}
         super(CustomizationContext, self).cancelChanges()
+
+    def prolongStyleRent(self, style):
+        self._lastTab[CSMode.BUY] = C11nTabs.STYLE
+        super(CustomizationContext, self).prolongStyleRent(style)
 
     @process('customizationApply')
     def applyItems(self, purchaseItems):
@@ -280,12 +273,12 @@ class CustomizationContext(WGCtx):
     def __carveUpOutfits(self):
         for season in SeasonType.COMMON_SEASONS:
             outfit = self.service.getCustomOutfit(season)
-            self._modifiedOutfits[season] = outfit.copy()
+            self.__modifiedOutfits[season] = outfit.copy()
             if outfit.isInstalled():
-                self._originalOutfits[season] = outfit.copy()
+                self.__originalOutfits[season] = outfit.copy()
             else:
-                self._originalOutfits[season] = self.service.getEmptyOutfit()
-            for slot in self._modifiedOutfits[season].slots():
+                self.__originalOutfits[season] = self.service.getEmptyOutfit()
+            for slot in self.__modifiedOutfits[season].slots():
                 for idx in range(slot.capacity()):
                     item = slot.getItem(idx)
                     if item and item.isHidden and item.fullInventoryCount(g_currentVehicle.item) == 0:
@@ -306,14 +299,14 @@ class CustomizationContext(WGCtx):
         # TODO: add CamoSelector style getter
         style = self.service.getCurrentStyle()
         if self.service.isCurrentStyleInstalled():
-            self._originalStyle = style
-            self._modifiedStyle = style
+            self.__originalStyle = style
+            self.__modifiedStyle = style
         else:
             self._originalStyle = None
             if style and style.isHidden and style.fullInventoryCount(g_currentVehicle.item) == 0:
-                self._modifiedStyle = None
+                self.__modifiedStyle = None
             else:
-                self._modifiedStyle = style
+                self.__modifiedStyle = style
         if self._tabIndex == C11nTabs.STYLE:
             self._currentOutfit = style.getOutfit(self._currentSeason)
         else:
@@ -327,8 +320,8 @@ class CustomizationContext(WGCtx):
 
     def __preserveState(self):
         self._state.update(
-            modifiedStyle=self._modifiedStyle,
-            modifiedOutfits={season: outfit.copy() for season, outfit in self._modifiedOutfits.iteritems()},
+            modifiedStyle=self.__modifiedStyle,
+            modifiedOutfits={season: outfit.copy() for season, outfit in self.__modifiedOutfits.iteritems()},
             modifiedCSStyle=self._modifiedCSStyle,
             modifiedCSOutfits={season: outfit.copy() for season, outfit in self._modifiedCSOutfits.iteritems()})
 
