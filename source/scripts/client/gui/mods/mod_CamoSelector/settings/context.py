@@ -1,9 +1,9 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
-from gui import SystemMessages, g_tankActiveCamouflage
+from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
 from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_IDX_TO_TYPE, \
-    SEASON_TYPE_TO_NAME, C11nMode
+    SEASON_TYPE_TO_NAME, C11nMode, SEASON_TYPE_TO_IDX
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.customization import CustomizationService
@@ -210,6 +210,34 @@ class CustomizationContext(WGCtx):
     def cancelChanges(self):
         self._currentSettings = {'custom': {}, 'remap': {}}
         super(CustomizationContext, self).cancelChanges()
+
+    def caruselItemSelected(self, index, intCD):
+        import bwpydevd
+        bwpydevd.startPyDevD('pycharm', suspend=True)
+        prevItemSelected = self.isCaruselItemSelected()
+        self._selectedCarouselItem = CaruselItemData(index=index, intCD=intCD)
+        itemSelected = self.isCaruselItemSelected()
+        if self.isAnyAnchorSelected() and itemSelected and not prevItemSelected:
+            slotId = self.__getFreeSlot(self.selectedAnchor, self.currentSeason)
+            if slotId is None:
+                return False
+            item = self.service.getItemByCD(intCD)
+            component = self.__getComponent(item, self.selectedAnchor)
+            if self.currentTab == C11nTabs.INSCRIPTION:
+                slot = self.currentOutfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
+                slotData = slot.getSlotData(slotId.regionIdx)
+                if slotData.item is not None and slotData.item.itemTypeID != item.itemTypeID and abs(
+                        self._carouselItems.index(slotData.item.intCD) - index) == 1:
+                    self.__manageStoredPersonalNumber(slotData, item)
+                elif item.itemTypeID != GUI_ITEM_TYPE.PERSONAL_NUMBER:
+                    self.clearStoredPersonalNumber()
+                if item.itemTypeID == GUI_ITEM_TYPE.PERSONAL_NUMBER and self.storedPersonalNumber is not None:
+                    component.number = self.storedPersonalNumber
+            self.installItem(intCD, slotId, SEASON_TYPE_TO_IDX[self.currentSeason], component)
+            self._selectedCarouselItem = CaruselItemData()
+        else:
+            self.service.highlightRegions(self.getEmptyRegions())
+        self.onCaruselItemSelected(index, intCD)
 
     def prolongStyleRent(self, style):
         self._lastTab[CSMode.BUY] = C11nTabs.STYLE
