@@ -24,6 +24,11 @@ from .. import g_config
 
 
 class CustomizationBottomPanel(CBP):
+    def switchToStyle(self):
+        self._carouselDP.updateTabGroups()
+        self.__ctx.switchToStyle()
+        self.__updatePopoverBtnIcon()
+
     def __onSlotSelected(self, areaId, slotType, regionIdx):
         item = self.__ctx.getItemFromRegion(C11nId(areaId, slotType, regionIdx))
         itemIdx = -1
@@ -109,11 +114,6 @@ class CustomizationBottomPanel(CBP):
                        'isEnoughStatuses': getMoneyVO(Money(True, True, True)),
                        'pricePanel': totalPriceVO[0]}})
         self.as_setItemsPopoverBtnEnabledS(self.__ctx.currentOutfit.isEmpty())
-
-    def __refreshCarousel(self, force=False):
-        self._carouselDP.updateTabGroups()
-        # noinspection PyUnresolvedReferences
-        super(CustomizationBottomPanel, self)._CustomizationBottomPanel__refreshCarousel(force)
 
     def _carouseItemWrapper(self, itemCD):
         isBuy = self.__ctx.isBuy

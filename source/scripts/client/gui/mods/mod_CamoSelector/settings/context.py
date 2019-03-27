@@ -133,6 +133,7 @@ class CustomizationContext(WGCtx):
         if self.numberEditModeActive:
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._tabIndex = tabIndex
+        mode = self._mode
         self._mode = C11nMode.CUSTOM
         if self._tabIndex == C11nTabs.EFFECT:
             self._selectedAnchor = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.MODIFICATION, regionIdx=0)
@@ -146,7 +147,8 @@ class CustomizationContext(WGCtx):
             self.onCustomizationTabsUpdated(tabIndex)
         else:
             self.onCustomizationTabChanged(tabIndex)
-        self.onCustomizationModeChanged(self._mode)
+        if self._mode != mode:
+            self.onCustomizationModeChanged(self._mode)
 
     def installItem(self, intCD, slotId, seasonIdx, component=None):
         if slotId is None:
