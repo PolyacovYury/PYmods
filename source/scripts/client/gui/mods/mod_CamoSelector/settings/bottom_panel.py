@@ -60,7 +60,7 @@ class CustomizationBottomPanel(CBP):
         self.__setNotificationCounters()
 
     def __updateSetSwitcherData(self):
-        self.as_setSwitchersDataS(self.__getSwitcherInitData(self.__ctx._actualMode))
+        self.as_setSwitchersDataS(self.__getSwitcherInitData(self.__ctx.actualMode))
 
     # noinspection PyMethodOverriding
     @staticmethod
