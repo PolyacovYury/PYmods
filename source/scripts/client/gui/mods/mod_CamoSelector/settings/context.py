@@ -152,7 +152,7 @@ class CustomizationContext(WGCtx):
             return False
         item = self.service.getItemByCD(intCD)
         prevItem = self.getItemFromRegion(slotId)
-        if prevItem is None or prevItem != item and self.isBuy and self.isBuyLimitReached(item):
+        if (prevItem is None or prevItem != item) and self.isBuy and self.isBuyLimitReached(item):
             SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_PROHIBITED, type=SystemMessages.SM_TYPE.Warning,
                                            itemName=item.userName)
             return False
@@ -203,9 +203,9 @@ class CustomizationContext(WGCtx):
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._lastTab[self._actualMode] = self._tabIndex
         self._actualMode = (self._actualMode + 1) % len(CSMode.NAMES)
-        self.refreshOutfit()
         self.tabChanged(self._lastTab[self._actualMode])
         self.onCustomizationModeChanged(self._mode)
+        self.refreshOutfit()
 
     def cancelChanges(self):
         self._currentSettings = {'custom': {}, 'remap': {}}
