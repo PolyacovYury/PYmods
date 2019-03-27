@@ -52,6 +52,7 @@ class CustomizationContext(WGCtx):
 
     def __init__(self):
         super(CustomizationContext, self).__init__()
+        self.__switcherIgnored = False
         self._lastTab = {CSMode.BUY: C11nTabs.STYLE, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
         self._originalCSOutfits = {}
         self._modifiedCSOutfits = {}
@@ -201,12 +202,15 @@ class CustomizationContext(WGCtx):
     def switchToStyle(self):
         import bwpydevd
         bwpydevd.startPyDevD('pycharm', suspend=True)
+        if self.__switcherIgnored:
+            self.__switcherIgnored = False
+            return
+        self.__switcherIgnored = True
         if self.numberEditModeActive:
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._lastTab[self._actualMode] = self._tabIndex
         self._actualMode = (self._actualMode + 1) % len(CSMode.NAMES)
         self.tabChanged(self._lastTab[self._actualMode])
-        self.onCustomizationModeChanged(self._mode)
         self.refreshOutfit()
 
     def cancelChanges(self):
