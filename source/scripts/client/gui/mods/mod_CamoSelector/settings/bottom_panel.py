@@ -68,8 +68,8 @@ class CustomizationBottomPanel(CBP):
         return {'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[mode]],
                 'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[(mode + 1) % len(CSMode.NAMES)]],
                 'leftEvent': 'installStyle',
-                'rightEvent': 'installStyles',
-                'isLeft': True,
+                'rightEvent': 'installStyle',
+                'isLeft': mode == CSMode.BUY,
                 'rightEnabled': True}
 
     def __setBottomPanelBillData(self, *_):  # TODO: process installed items correctly

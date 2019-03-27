@@ -197,11 +197,9 @@ class CustomizationContext(WGCtx):
         self.onCustomizationItemsRemoved()
 
     def switchToCustom(self):
-        pass
+        self.switchToStyle()
 
     def switchToStyle(self):
-        import bwpydevd
-        bwpydevd.startPyDevD('pycharm', suspend=True)
         if self.__switcherIgnored:
             self.__switcherIgnored = False
             return
