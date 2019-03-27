@@ -14,6 +14,8 @@ def buildCustomizationItemDataVO(
     hasBonus = item.bonus is not None and not plainView
     locked = (not item.isUnlocked or forceLocked) and not plainView
     buyPrice = ITEM_PRICE_EMPTY if isBuy and (plainView or item.isHidden or noPrice) else item.getBuyPrice()
+    if buyPrice == ITEM_PRICE_EMPTY and count <= 0:
+        count = 1
     isNonHistoric = not item.isHistorical()
     if addExtraName and item.itemTypeID in (GUI_ITEM_TYPE.MODIFICATION, GUI_ITEM_TYPE.STYLE):
         extraNames = (text_styles.bonusLocalText(item.userName), text_styles.highTitle(item.userName))
