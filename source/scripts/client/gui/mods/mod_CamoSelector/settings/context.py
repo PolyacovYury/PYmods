@@ -199,6 +199,8 @@ class CustomizationContext(WGCtx):
         pass
 
     def switchToStyle(self):
+        import bwpydevd
+        bwpydevd.startPyDevD('pycharm', suspend=True)
         if self.numberEditModeActive:
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._lastTab[self._actualMode] = self._tabIndex
@@ -212,8 +214,6 @@ class CustomizationContext(WGCtx):
         super(CustomizationContext, self).cancelChanges()
 
     def caruselItemSelected(self, index, intCD):
-        import bwpydevd
-        bwpydevd.startPyDevD('pycharm', suspend=True)
         prevItemSelected = self.isCaruselItemSelected()
         self._selectedCarouselItem = CaruselItemData(index=index, intCD=intCD)
         itemSelected = self.isCaruselItemSelected()
