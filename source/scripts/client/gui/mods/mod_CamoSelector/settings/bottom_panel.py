@@ -110,6 +110,11 @@ class CustomizationBottomPanel(CBP):
                        'pricePanel': totalPriceVO[0]}})
         self.as_setItemsPopoverBtnEnabledS(self.__ctx.currentOutfit.isEmpty())
 
+    def __refreshCarousel(self, force=False):
+        self._carouselDP.updateTabGroups()
+        # noinspection PyUnresolvedReferences
+        super(CustomizationBottomPanel, self)._CustomizationBottomPanel__refreshCarousel(force)
+
     def _carouseItemWrapper(self, itemCD):
         isBuy = self.__ctx.isBuy
         item = self.service.getItemByCD(itemCD)

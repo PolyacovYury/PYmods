@@ -81,7 +81,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         allItemsGroup = len(seasonAndTabData.allGroups) - 1
         if seasonAndTabData.selectedGroupIndex != allItemsGroup:
             selectedGroup = seasonAndTabData.allGroups[seasonAndTabData.selectedGroupIndex]
-            requirement |= REQ_CRITERIA.CUSTOMIZATION.ONLY_IN_GROUP(selectedGroup)
+            requirement |= REQ_CRITERIA.CUSTOM(lambda x: (x.groupUserName if isBuy else getGroupName(x)) == selectedGroup)
         if self._historicOnlyItems:
             requirement |= ~REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
         if self._onlyOwnedAndFreeItems:
@@ -138,8 +138,8 @@ def matchVehicleLevel(self, vehicleType):
 
 
 def CSComparisonKey(item):
-    return (TYPES_ORDER.index(item.itemTypeID), item.isHidden, item.priceGroup == 'custom',
-            g_config.isCamoGlobal(item.descriptor), not item.isRare(), getGroupName(item), item.id)
+    return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', g_config.isCamoGlobal(item.descriptor),
+            item.isHidden, not item.isRare(), getGroupName(item), item.id)
 
 
 def getGroupName(item):
