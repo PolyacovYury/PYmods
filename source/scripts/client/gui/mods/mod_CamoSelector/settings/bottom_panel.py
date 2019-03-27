@@ -60,13 +60,13 @@ class CustomizationBottomPanel(CBP):
         self.__setNotificationCounters()
 
     def __updateSetSwitcherData(self):
-        self.as_setSwitchersDataS(self.__getSwitcherInitData(int(not self.__ctx.isBuy)))
+        self.as_setSwitchersDataS(self.__getSwitcherInitData(self.__ctx._actualMode))
 
     # noinspection PyMethodOverriding
     @staticmethod
     def __getSwitcherInitData(mode):
-        return {'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[mode]],
-                'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[(mode + 1) % len(CSMode.NAMES)]],
+        return {'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.BUY]],
+                'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.INSTALL]],
                 'leftEvent': 'installStyle',
                 'rightEvent': 'installStyle',
                 'isLeft': mode == CSMode.BUY,

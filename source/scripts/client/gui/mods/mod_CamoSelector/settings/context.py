@@ -24,7 +24,7 @@ from ..constants import SelectionMode, SEASON_NAME_TO_TYPE
 class CustomizationContext(WGCtx):
     @property
     def isBuy(self):
-        return self._actualMode == CSMode.BUY
+        return self.actualMode == CSMode.BUY
 
     @property
     def _originalOutfits(self):
@@ -62,7 +62,7 @@ class CustomizationContext(WGCtx):
         self.__modifiedOutfits = {}
         self.__modifiedStyle = None
         self._currentSettings = {'custom': {}, 'remap': {}}
-        self._actualMode = CSMode.INSTALL
+        self.actualMode = CSMode.INSTALL
 
     @property
     def numberEditModeActive(self):
@@ -206,9 +206,9 @@ class CustomizationContext(WGCtx):
         self.__switcherIgnored = True
         if self.numberEditModeActive:
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
-        self._lastTab[self._actualMode] = self._tabIndex
-        self._actualMode = (self._actualMode + 1) % len(CSMode.NAMES)
-        self.tabChanged(self._lastTab[self._actualMode])
+        self._lastTab[self.actualMode] = self._tabIndex
+        self.actualMode = (self.actualMode + 1) % len(CSMode.NAMES)
+        self.tabChanged(self._lastTab[self.actualMode])
         self.refreshOutfit()
 
     def cancelChanges(self):
@@ -373,7 +373,7 @@ class CustomizationContext(WGCtx):
         tabIndex = self._lastTab[self._mode]
         if tabIndex not in self.visibleTabs:
             tabIndex = first(self.visibleTabs, -1)
-        self._lastTab[self._actualMode] = tabIndex
+        self._lastTab[self.actualMode] = tabIndex
         self._tabIndex = tabIndex
         self.tabChanged(tabIndex, update=True)
 
