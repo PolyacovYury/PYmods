@@ -1,6 +1,6 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
-from gui import SystemMessages
+from gui import SystemMessages, g_tankActiveCamouflage
 from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
 from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_IDX_TO_TYPE, \
     SEASON_TYPE_TO_NAME, C11nMode
@@ -127,6 +127,17 @@ class CustomizationContext(WGCtx):
                 cls.deleteEmpty(value)
                 if not value:
                     del settings[key]
+
+    def refreshOutfit(self):
+        if self._mode == C11nMode.STYLE:
+            if self._modifiedStyle:
+                self._currentOutfit = self._modifiedStyle.getOutfit(self._currentSeason)
+            else:
+                self._currentOutfit = self.service.getEmptyOutfit()
+        else:
+            self._currentOutfit = self._modifiedOutfits[self._currentSeason]
+        self.service.tryOnOutfit(self._currentOutfit)
+        g_tankActiveCamouflage[g_currentVehicle.item.intCD] = self._currentSeason
 
     def tabChanged(self, tabIndex, update=False):
         if self.numberEditModeActive:
