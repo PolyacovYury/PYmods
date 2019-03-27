@@ -9,6 +9,7 @@ from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui.customization.shared import C11nId
 from gui.shared.formatters import getItemPricesVO, text_styles, getMoneyVO
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
@@ -23,6 +24,13 @@ from .. import g_config
 
 
 class CustomizationBottomPanel(CBP):
+    def __onSlotSelected(self, areaId, slotType, regionIdx):
+        item = self.__ctx.getItemFromRegion(C11nId(areaId, slotType, regionIdx))
+        itemIdx = -1
+        if item is not None and item.intCD in self._carouselDP.collection:
+            itemIdx = self._carouselDP.collection.index(item.intCD)
+        self._carouselDP.selectItemIdx(itemIdx)
+
     def __setNotificationCounters(self):
         vehicle = g_currentVehicle.item
         proxy = g_currentVehicle.itemsCache.items
@@ -108,14 +116,14 @@ class CustomizationBottomPanel(CBP):
         purchaseLimit = self.__ctx.getPurchaseLimit(item)
         showUnsupportedAlert = item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION and not isRendererPipelineDeferred()
         isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
-        noPrice = item.buyCount <= 0
+        noPrice = not self.__ctx.isBuy or item.buyCount <= 0
         isDarked = self.__ctx.isBuy and purchaseLimit == 0 and itemInventoryCount == 0
         isAlreadyUsed = isDarked and not isCurrentlyApplied
         autoRentEnabled = self.__ctx.autoRentEnabled()
         return buildCustomizationItemDataVO(
-            item, itemInventoryCount, plainView=not self.__ctx.isBuy, showUnsupportedAlert=showUnsupportedAlert,
-            isCurrentlyApplied=isCurrentlyApplied, isAlreadyUsed=isAlreadyUsed, forceLocked=isAlreadyUsed,
-            isDarked=isDarked, noPrice=noPrice, autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item)
+            item, itemInventoryCount, showUnsupportedAlert=showUnsupportedAlert, isCurrentlyApplied=isCurrentlyApplied,
+            isAlreadyUsed=isAlreadyUsed, forceLocked=isAlreadyUsed, isDarked=isDarked, noPrice=noPrice,
+            autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item)
 
     def __getItemTabsData(self):
         data = []

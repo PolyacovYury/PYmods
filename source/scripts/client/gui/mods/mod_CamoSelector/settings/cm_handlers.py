@@ -2,7 +2,7 @@ from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization import CustomizationItemCMHandler as WGCMHandler
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from .. import g_config
-from ..constants import SelectionMode as SM
+from ..constants import SelectionMode
 
 
 class Options(object):
@@ -21,6 +21,7 @@ class Options(object):
     MODE = (MODE_OFF, MODE_TEAM, MODE_RANDOM)
     SEASON = (SEASON_SUMMER, SEASON_WINTER, SEASON_DESERT)
     TEAM = (TEAM_ALLY, TEAM_ENEMY)
+    ALL = MODE + SEASON + TEAM
 
 
 class CustomizationItemCMHandler(WGCMHandler):
@@ -29,33 +30,36 @@ class CustomizationItemCMHandler(WGCMHandler):
         if self.__ctx.isBuy:
             return result
         result = result[-1:]
-        settings = self.__ctx.getItemSettings(self.itemsCache.items.getItemByCD(self._intCD))
-        selectionMode = settings['random_mode']
-        getOptLabel = lambda option: g_config.i18n['contextMenu_' + option]
-        getOptData = lambda option, condition=False: (option, getOptLabel(option + ('_remove' if condition else '')))
-        getSeasonOptData = lambda option, season: getOptData(option, season in settings['season']) + (
-            {'enabled': not (len(settings['season']) == 1 and season in settings['season'])},)
-        getTeamData = lambda option, condition=False: getOptData(option, condition) + ({'enabled': selectionMode != SM.OFF},)
-        sub = []
-        modeLabel = ''
-        for mode, opt in zip(SM.ALL, Options.MODE):
-            if selectionMode != mode:
-                sub.append(self._makeItem(opt, getOptLabel(Options.MODE_CHANGE) + getOptLabel(opt)))
+        item = self.itemsCache.items.getItemByCD(self._intCD)
+        settings = self.__ctx.getItemSettings(item)
+        mode = settings['random_mode']
+        getOptionLabel = lambda option: g_config.i18n['contextMenu_' + option]
+        getOptionData = lambda option, remove=False, enabled=True: (
+            option, getOptionLabel(option + ('_remove' if remove else '')), {'enabled': enabled})
+        getSeasonOptionData = lambda option, remove=False, enabled=True: getOptionData(
+            option, remove, enabled and (item.priceGroup == 'custom' or item.isHidden))
+        getSeasonSubOptionData = lambda option, season: getSeasonOptionData(
+            option, season in settings['season'], len(settings['season']) != 1 or season not in settings['season'])
+        getTeamOptionData = lambda option, remove=False: getOptionData(option, remove, mode != SelectionMode.OFF)
+        sub, modeLabel = [], ''
+        for _mode, _option in zip(SelectionMode.ALL, Options.MODE):
+            if mode != _mode:
+                sub.append(self._makeItem(_option, getOptionLabel(Options.MODE_CHANGE) + getOptionLabel(_option)))
             else:
-                modeLabel = getOptLabel(opt)
+                modeLabel = getOptionLabel(_option)
         result += (
-            self._makeItem(*getOptData(Options.SEASON_GROUP), optSubMenu=[
-                self._makeItem(*getSeasonOptData(Options.SEASON_SUMMER, SEASONS_CONSTANTS.SUMMER)),
-                self._makeItem(*getSeasonOptData(Options.SEASON_WINTER, SEASONS_CONSTANTS.WINTER)),
-                self._makeItem(*getSeasonOptData(Options.SEASON_DESERT, SEASONS_CONSTANTS.DESERT))]),
-            self._makeItem(Options.MODE_GROUP, getOptLabel(Options.MODE_GROUP) + modeLabel, optSubMenu=sub),
-            self._makeItem(*getTeamData(Options.TEAM_GROUP), optSubMenu=[
-                self._makeItem(*getTeamData(Options.TEAM_ALLY, settings['ally'])),
-                self._makeItem(*getTeamData(Options.TEAM_ENEMY, settings['enemy']))]))
+            self._makeItem(*getSeasonOptionData(Options.SEASON_GROUP), optSubMenu=[
+                self._makeItem(*getSeasonSubOptionData(Options.SEASON_SUMMER, SEASONS_CONSTANTS.SUMMER)),
+                self._makeItem(*getSeasonSubOptionData(Options.SEASON_WINTER, SEASONS_CONSTANTS.WINTER)),
+                self._makeItem(*getSeasonSubOptionData(Options.SEASON_DESERT, SEASONS_CONSTANTS.DESERT))]),
+            self._makeItem(Options.MODE_GROUP, getOptionLabel(Options.MODE_GROUP) + modeLabel, optSubMenu=sub),
+            self._makeItem(*getTeamOptionData(Options.TEAM_GROUP), optSubMenu=[
+                self._makeItem(*getTeamOptionData(Options.TEAM_ALLY, settings['ally'])),
+                self._makeItem(*getTeamOptionData(Options.TEAM_ENEMY, settings['enemy']))]))
         return result
 
     def onOptionSelect(self, optionId):
-        if optionId not in Options:
+        if optionId not in Options.ALL:
             return super(CustomizationItemCMHandler, self).onOptionSelect(optionId)
         settings = self.__ctx.getItemSettings(self.itemsCache.items.getItemByCD(self._intCD))
         value = optionId.split('_')[1]
@@ -66,7 +70,7 @@ class CustomizationItemCMHandler(WGCMHandler):
             else:
                 seasons.remove(value)
         elif optionId in Options.MODE:
-            settings['random_mode'] = getattr(SM, value.upper())
+            settings['random_mode'] = SelectionMode.INDICES[value]
         elif optionId in Options.TEAM:
             settings[value] = not settings[value]
         self.__ctx.onCacheResync()

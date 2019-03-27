@@ -96,6 +96,8 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         self._customizationBookmarks = []
         lastGroup = None
         for item in sorted(allItems.itervalues(), key=comparisonKey if isBuy else CSComparisonKey):
+            if isBuy and item.isHiddenInUI():
+                continue
             groupName = getGroupName(item)
             group = item.groupID if isBuy else groupName
             if item.intCD == self._selectIntCD:
