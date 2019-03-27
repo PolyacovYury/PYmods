@@ -111,17 +111,18 @@ class CustomizationBottomPanel(CBP):
         self.as_setItemsPopoverBtnEnabledS(self.__ctx.currentOutfit.isEmpty())
 
     def _carouseItemWrapper(self, itemCD):
+        isBuy = self.__ctx.isBuy
         item = self.service.getItemByCD(itemCD)
         itemInventoryCount = self.__ctx.getItemInventoryCount(item)
         purchaseLimit = self.__ctx.getPurchaseLimit(item)
         showUnsupportedAlert = item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION and not isRendererPipelineDeferred()
         isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
-        noPrice = self.__ctx.isBuy and item.buyCount <= 0
-        isDarked = self.__ctx.isBuy and purchaseLimit == 0 and itemInventoryCount == 0
+        noPrice = isBuy and item.buyCount <= 0
+        isDarked = isBuy and purchaseLimit == 0 and itemInventoryCount == 0
         isAlreadyUsed = isDarked and not isCurrentlyApplied
         autoRentEnabled = self.__ctx.autoRentEnabled()
         return buildCustomizationItemDataVO(
-            item, itemInventoryCount, showUnsupportedAlert=showUnsupportedAlert, isCurrentlyApplied=isCurrentlyApplied,
+            isBuy, item, itemInventoryCount, showUnsupportedAlert=showUnsupportedAlert, isCurrentlyApplied=isCurrentlyApplied,
             isAlreadyUsed=isAlreadyUsed, forceLocked=isAlreadyUsed, isDarked=isDarked, noPrice=noPrice,
             autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item)
 

@@ -7,16 +7,13 @@ from helpers.i18n import makeString as _ms
 
 
 def buildCustomizationItemDataVO(
-        item, count, plainView=False, showDetailItems=True, forceLocked=False, showUnsupportedAlert=False,
+        isBuy, item, count, plainView=False, showDetailItems=True, forceLocked=False, showUnsupportedAlert=False,
         isCurrentlyApplied=False, addExtraName=True, isAlreadyUsed=False, isDarked=False, noPrice=False,
         autoRentEnabled=False, customIcon=None, vehicle=None):
     isSpecial = item.isVehicleBound and (item.buyCount > 0 or item.inventoryCount > 0) or item.isLimited and item.buyCount > 0
     hasBonus = item.bonus is not None and not plainView
     locked = (not item.isUnlocked or forceLocked) and not plainView
-    if plainView or item.isHidden or noPrice:
-        buyPrice = ITEM_PRICE_EMPTY
-    else:
-        buyPrice = item.getBuyPrice()
+    buyPrice = ITEM_PRICE_EMPTY if isBuy and (plainView or item.isHidden or noPrice) else item.getBuyPrice()
     isNonHistoric = not item.isHistorical()
     if addExtraName and item.itemTypeID in (GUI_ITEM_TYPE.MODIFICATION, GUI_ITEM_TYPE.STYLE):
         extraNames = (text_styles.bonusLocalText(item.userName), text_styles.highTitle(item.userName))
