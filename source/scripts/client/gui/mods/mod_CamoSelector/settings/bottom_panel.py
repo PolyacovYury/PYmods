@@ -65,11 +65,11 @@ class CustomizationBottomPanel(CBP):
     # noinspection PyMethodOverriding
     @staticmethod
     def __getSwitcherInitData(mode):
-        return {'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.BUY]],
-                'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.INSTALL]],
+        return {'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[mode]],
+                'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[(mode + 1) % len(CSMode.NAMES)]],
                 'leftEvent': 'installStyle',
                 'rightEvent': 'installStyle',
-                'isLeft': mode == CSMode.BUY,
+                'isLeft': True,
                 'rightEnabled': True}
 
     def __setBottomPanelBillData(self, *_):  # TODO: process installed items correctly
