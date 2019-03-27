@@ -116,7 +116,7 @@ class CustomizationBottomPanel(CBP):
         purchaseLimit = self.__ctx.getPurchaseLimit(item)
         showUnsupportedAlert = item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION and not isRendererPipelineDeferred()
         isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
-        noPrice = not self.__ctx.isBuy or item.buyCount <= 0
+        noPrice = self.__ctx.isBuy and item.buyCount <= 0
         isDarked = self.__ctx.isBuy and purchaseLimit == 0 and itemInventoryCount == 0
         isAlreadyUsed = isDarked and not isCurrentlyApplied
         autoRentEnabled = self.__ctx.autoRentEnabled()
