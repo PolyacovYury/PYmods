@@ -1,10 +1,11 @@
 import BigWorld
 from HeroTank import HeroTank
-from PYmodsCore import overrideMethod
+from PYmodsCore import overrideMethod, refreshCurrentVehicle
 from gui import SystemMessages
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.app_loader import g_appLoader
+from gui.customization import CustomizationService
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items.customization.outfit import Outfit
 from items.vehicles import CompositeVehicleDescriptor as CompVDesc
@@ -106,3 +107,10 @@ def new_startBuild(base, self, vDesc, vState):
         else:
             applyModelDesc(vDesc, modelDesc, self._HangarVehicleAppearance__outfit.modelsSet or 'default', playerName)
     base(self, vDesc, vState)
+
+
+@overrideMethod(CustomizationService, 'showCustomization')
+def new_showCustomization(base, *a, **kw):
+    if g_config.data['enabled']:
+        BigWorld.callback(4, refreshCurrentVehicle)
+    return base(*a, **kw)
