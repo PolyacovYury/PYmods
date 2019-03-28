@@ -61,8 +61,6 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                     if groupName and groupName not in seasonAndTabData.allGroups:
                         seasonAndTabData.allGroups.append(groupName)
                     seasonAndTabData.itemCount += 1
-                    if isBuy and tabIndex not in C11nTabs.VISIBLE:
-                        continue
                     if item.itemTypeID in (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.EMBLEM, GUI_ITEM_TYPE.PERSONAL_NUMBER):
                         if not self.__hasSlots(anchorsData, item.itemTypeID):
                             continue

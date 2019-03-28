@@ -129,9 +129,10 @@ class CustomizationContext(WGCtx):
                 if not value:
                     del settings[key]
 
-    def tabChanged(self, tabIndex, update=False):
+    def tabChanged(self, tabIndex, update=False, modeChanged=False):
         if self.numberEditModeActive:
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
+        prevIndex = self._tabIndex
         self._tabIndex = tabIndex
         mode = self._mode
         self._mode = C11nMode.CUSTOM
@@ -143,10 +144,11 @@ class CustomizationContext(WGCtx):
         else:
             self._selectedAnchor = C11nId()
         self._selectedCarouselItem = CaruselItemData()
-        if update:
-            self.onCustomizationTabsUpdated(tabIndex)
-        else:
-            self.onCustomizationTabChanged(tabIndex)
+        if prevIndex != self._tabIndex or modeChanged:  # prevent rebuilding the whole carousel 5 times in a row
+            if update:
+                self.onCustomizationTabsUpdated(tabIndex)
+            else:
+                self.onCustomizationTabChanged(tabIndex)
         if self._mode != mode:
             self.onCustomizationModeChanged(self._mode)
 
@@ -210,7 +212,7 @@ class CustomizationContext(WGCtx):
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._lastTab[self.actualMode] = self._tabIndex
         self.actualMode = (self.actualMode + 1) % len(CSMode.NAMES)
-        self.tabChanged(self._lastTab[self.actualMode])
+        self.tabChanged(self._lastTab[self.actualMode], modeChanged=True)
         self.refreshOutfit()
 
     def cancelChanges(self):

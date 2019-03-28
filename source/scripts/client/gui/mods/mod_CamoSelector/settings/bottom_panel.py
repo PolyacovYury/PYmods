@@ -47,6 +47,12 @@ class CustomizationBottomPanel(CBP):
             'tabsCounters': tabsCounters,
             'switchersCounter': vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=GUI_ITEM_TYPE.CUSTOMIZATIONS)})
 
+    def __updateTabs(self, selectedTab=-1):
+        self.as_setBottomPanelTabsDataS({'tabsDP': [], 'selectedTab': 0})  # clear the tabs first
+        tabsDP, pluses = self.__getItemTabsData()
+        self.as_setBottomPanelTabsDataS({'tabsDP': tabsDP, 'selectedTab': selectedTab})
+        self.as_setBottomPanelTabsPlusesS(pluses)
+
     def __setFooterInitData(self):
         self.as_setBottomPanelInitDataS({
             'tabsAvailableRegions': C11nTabs.AVAILABLE_REGIONS,
