@@ -2,8 +2,8 @@ from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
-from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_IDX_TO_TYPE, \
-    SEASON_TYPE_TO_NAME, C11nMode, SEASON_TYPE_TO_IDX
+from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_NAME, C11nMode,\
+    SEASON_TYPE_TO_IDX, TYPES_ORDER, TABS_SLOT_TYPE_MAPPING
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.customization import CustomizationService
@@ -371,7 +371,8 @@ class CustomizationContext(WGCtx):
     # noinspection PyMethodOverriding
     def updateVisibleTabsList(self, visibleTabs):
         for seasonType in SeasonType.COMMON_SEASONS:
-            self.__visibleTabs[seasonType] = sorted(visibleTabs[seasonType])
+            self.__visibleTabs[seasonType] = sorted(
+                visibleTabs[seasonType], key=lambda it: TYPES_ORDER.index(TABS_SLOT_TYPE_MAPPING[it]))
         tabIndex = self._lastTab[self._mode]
         if tabIndex not in self.visibleTabs:
             tabIndex = first(self.visibleTabs, -1)
