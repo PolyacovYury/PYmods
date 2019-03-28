@@ -46,8 +46,12 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
 
         isBuy = self._proxy.isBuy
         for item in sorted(allItems.itervalues(), key=comparisonKey if isBuy else CSComparisonKey):
+            if isBuy and item.isHiddenInUI():
+                continue
             groupName = item.groupUserName if isBuy else getGroupName(item)
-            tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID, -1)
+            tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)
+            if not (isBuy or isItemSuitableForTab(item, tabIndex)):
+                continue
             if (isBuy and tabIndex == C11nTabs.CAMOUFLAGE and
                     g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage):
                 continue
