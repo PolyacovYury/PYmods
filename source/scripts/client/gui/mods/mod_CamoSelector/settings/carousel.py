@@ -84,11 +84,13 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             requirement |= REQ_CRITERIA.CUSTOM(lambda x: (x.groupUserName if isBuy else getGroupName(x)) == selectedGroup)
         if self._historicOnlyItems:
             requirement |= ~REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
-        if self._onlyOwnedAndFreeItems:
+        applied = self._proxy.getAppliedItems(isOriginal=False)
+        if self._onlyOwnedAndFreeItems and self._onlyAppliedItems:
+            requirement |= REQ_CRITERIA.CUSTOM(lambda x: x.intCD in applied or self._proxy.getItemInventoryCount(x) > 0)
+        elif self._onlyOwnedAndFreeItems:
             requirement |= REQ_CRITERIA.CUSTOM(lambda x: self._proxy.getItemInventoryCount(x) > 0)
-        if self._onlyAppliedItems:
-            appliedItems = self._proxy.getAppliedItems(isOriginal=False)
-            requirement |= REQ_CRITERIA.CUSTOM(lambda x: x.intCD in appliedItems)
+        elif self._onlyAppliedItems:
+            requirement |= REQ_CRITERIA.CUSTOM(lambda x: x.intCD in applied)
         allItems = {}
         for itemTypeId in TABS_ITEM_TYPE_MAPPING[self._tabIndex]:
             allItems.update(getItems(itemTypeId, self._proxy, requirement))
