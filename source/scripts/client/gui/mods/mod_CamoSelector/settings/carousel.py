@@ -72,6 +72,8 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                 seasonAndTabData.selectedGroupIndex = len(seasonAndTabData.allGroups) - 1
 
     def _buildCustomizationItems(self):
+        import bwpydevd
+        bwpydevd.startPyDevD('pycharm', suspend=True)
         season = self._seasonID
         isBuy = self._proxy.isBuy
         requirement = createBaseRequirements(self._proxy, season)
@@ -122,7 +124,7 @@ def isItemSuitableForTab(item, tabIndex):
     if tabIndex in (C11nTabs.CAMOUFLAGE, C11nTabs.EMBLEM, C11nTabs.INSCRIPTION):
         return True
     vehicle = g_currentVehicle.item
-    if tabIndex in (C11nTabs.STYLE, C11nTabs.PAINT, C11nTabs.EFFECT):
+    if tabIndex in (C11nTabs.STYLE, C11nTabs.PAINT, C11nTabs.EFFECT, C11nTabs.PROJECTION_DECAL):
         return mayInstall(item, vehicle)
 
 
