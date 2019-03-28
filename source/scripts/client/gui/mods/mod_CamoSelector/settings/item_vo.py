@@ -14,7 +14,7 @@ def buildCustomizationItemDataVO(
     hasBonus = item.bonus is not None and not plainView
     locked = (not item.isUnlocked or forceLocked) and not plainView
     buyPrice = ITEM_PRICE_EMPTY if isBuy and (plainView or item.isHidden or noPrice) else item.getBuyPrice()
-    if buyPrice == ITEM_PRICE_EMPTY and count <= 0:
+    if not isBuy and buyPrice == ITEM_PRICE_EMPTY and count <= 0:
         count = 1
     isNonHistoric = not item.isHistorical()
     if addExtraName and item.itemTypeID in (GUI_ITEM_TYPE.MODIFICATION, GUI_ITEM_TYPE.STYLE):
@@ -23,7 +23,7 @@ def buildCustomizationItemDataVO(
         extraNames = None
     imageCached = item.itemTypeID is not GUI_ITEM_TYPE.PROJECTION_DECAL
     rentalInfoText = ''
-    if item.isRentable and count <= 0:
+    if isBuy and item.isRentable and count <= 0:
         rentalInfoText = text_styles.main(_ms(VEHICLE_CUSTOMIZATION.CAROUSEL_RENTALBATTLES, battlesNum=item.rentCount))
     icon = customIcon if customIcon else item.icon
     noveltyCounter = 0 if not vehicle else item.getNoveltyCounter(vehicle)
