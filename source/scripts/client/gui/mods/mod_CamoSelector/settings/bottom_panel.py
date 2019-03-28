@@ -26,7 +26,7 @@ from .. import g_config
 class CustomizationBottomPanel(CBP):
     def switchToCustom(self):
         self._carouselDP.updateTabGroups()
-        self.__ctx.switchToStyle()
+        self.__ctx.switchToCustom()
         self.__updatePopoverBtnIcon()
 
     def __onSlotSelected(self, areaId, slotType, regionIdx):
