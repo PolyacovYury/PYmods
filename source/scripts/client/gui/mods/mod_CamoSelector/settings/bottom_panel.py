@@ -24,11 +24,6 @@ from .. import g_config
 
 
 class CustomizationBottomPanel(CBP):
-    def switchToCustom(self):
-        self._carouselDP.updateTabGroups()
-        self.__ctx.switchToCustom()
-        self.__updatePopoverBtnIcon()
-
     def __onSlotSelected(self, areaId, slotType, regionIdx):
         item = self.__ctx.getItemFromRegion(C11nId(areaId, slotType, regionIdx))
         itemIdx = -1
@@ -46,12 +41,6 @@ class CustomizationBottomPanel(CBP):
         self.as_setNotificationCountersS({
             'tabsCounters': tabsCounters,
             'switchersCounter': vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=GUI_ITEM_TYPE.CUSTOMIZATIONS)})
-
-    def __updateTabs(self, selectedTab=-1):
-        self.as_setBottomPanelTabsDataS({'tabsDP': [], 'selectedTab': 0})  # clear the tabs first
-        tabsDP, pluses = self.__getItemTabsData()
-        self.as_setBottomPanelTabsDataS({'tabsDP': tabsDP, 'selectedTab': selectedTab})
-        self.as_setBottomPanelTabsPlusesS(pluses)
 
     def __setFooterInitData(self):
         self.as_setBottomPanelInitDataS({
