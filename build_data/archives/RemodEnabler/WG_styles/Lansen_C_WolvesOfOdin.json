@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/Lansen_C_WolvesOfOdin.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/Lansen_C_WolvesOfOdin.json"
+    }
+}
