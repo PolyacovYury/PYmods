@@ -129,20 +129,11 @@ def isItemSuitableForTab(item, tabIndex):
         return True
     vehicle = g_currentVehicle.item
     if tabIndex in (C11nTabs.STYLE, C11nTabs.PAINT, C11nTabs.EFFECT, C11nTabs.PROJECTION_DECAL):
-        return mayInstall(item, vehicle)
+        return not item.descriptor.filter or matchVehicleLevel(item.descriptor.filter, vehicle.descriptor.type)
 
 
-def mayInstall(self, vehicle):
-    return True if not self.descriptor.filter else matchVehicleType(self.descriptor.filter, vehicle.descriptor.type)
-
-
-def matchVehicleType(self, vehicleType):
-    include = not self.include or any((matchVehicleLevel(f, vehicleType) for f in self.include))
-    return include and not (self.exclude and any((matchVehicleLevel(f, vehicleType) for f in self.exclude)))
-
-
-def matchVehicleLevel(self, vehicleType):
-    return not self.levels or vehicleType.level in self.levels
+def matchVehicleLevel(f, vehicleType):
+    return not f.include or any((not node.levels or vehicleType.level in node.levels) for node in f.include)
 
 
 def CSComparisonKey(item):
