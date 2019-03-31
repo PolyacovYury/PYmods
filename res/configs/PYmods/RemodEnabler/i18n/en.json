@@ -39,6 +39,7 @@
     "UI_flash_vehicleAdd_success": "Vehicle added to <b>%s</b> whitelist: <b>%s</b>",
     "UI_flash_vehicleDelete_success": "Vehicle deleted from <b>%s</b> whitelist: <b>%s</b>",
     "UI_flash_whiteDropdown_default": "Expand",
+    "UI_install_customization": "<b>RemodEnabler:</b>\nRemods are not displayed when customization is open.",
     "UI_install_default": "<b>RemodEnabler:</b>\nDefault model applied.",
     "UI_install_remod": "<b>RemodEnabler:</b>\nRemod installed: ",
     "UI_install_wheels_unsupported": "<b>RemodEnabler:</b>\nWARNING: wheeled vehicles are NOT processed. At least until WG moves params processing out of Vehicular, which is an inaccessible part of game engine.",

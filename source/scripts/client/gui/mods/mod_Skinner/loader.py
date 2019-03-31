@@ -11,21 +11,26 @@ import shutil
 import traceback
 import weakref
 from PYmodsCore import showConfirmDialog, remDups, loadJson, events
+from account_helpers.settings_core.settings_constants import GAME
 from adisp import AdispException, async, process
 from functools import partial
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
+from gui.Scaleform.daapi.view.login.login_modes import wgc_mode
 from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.app_loader.loader import g_appLoader
-from helpers import getClientVersion
+from helpers import getClientVersion, dependency
+from skeletons.account_helpers.settings_core import ISettingsCore
+from skeletons.gui.login_manager import ILoginManager
 from zipfile import ZipFile
 from . import g_config
 
+wgc_mode._g_firstEntry = False
 texReplaced = False
 skinsChecked = False
 clientIsNew = True
@@ -36,11 +41,14 @@ skinVehNamesLDict = {}
 
 
 class SkinnerLoading(LoginQueueWindowMeta):
+    loginManager = dependency.descriptor(ILoginManager)
+    sCore = dependency.descriptor(ISettingsCore)
+
     def __init__(self):
         super(self.__class__, self).__init__()
         self.lines = []
         self.curPercentage = 0
-        self.doLogin = False
+        self.doLogin = self.loginManager.checkWgcAvailability() and not self.sCore.getSetting(GAME.LOGIN_SERVER_SELECTION)
         g_config.loadingProxy = weakref.proxy(self)
 
     def _populate(self):
@@ -116,7 +124,11 @@ class SkinnerLoading(LoginQueueWindowMeta):
 def doLogin():
     # noinspection PyArgumentList
     loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
-    if loginView and loginView.loginManager.getPreference('remember_user'):
+    if not loginView:
+        return
+    if loginView.loginManager.checkWgcAvailability():
+        loginView.loginManager.tryWgcLogin()
+    elif loginView.loginManager.getPreference('remember_user'):
         password = '*' * loginView.loginManager.getPreference('password_length')
         login = loginView.loginManager.getPreference('login')
         loginView.onLogin(login, password, loginView._servers.selectedServer['data'], '@' not in login)

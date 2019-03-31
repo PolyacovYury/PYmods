@@ -118,6 +118,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_collision_compare_disable': '<b>RemodEnabler:</b>\nEnabling collision comparison mode.',
             'UI_collision_enable': '<b>RemodEnabler:</b>\nEnabling collision mode.',
             'UI_collision_unavailable': '<b>RemodEnabler:</b>\nCollision displaying is currently not supported.',
+            'UI_install_customization': '<b>RemodEnabler:</b>\nRemods are not displayed when customization is open.',
             'UI_install_remod': '<b>RemodEnabler:</b>\nRemod installed: ',
             'UI_install_default': '<b>RemodEnabler:</b>\nDefault model applied.',
             'UI_install_wheels_unsupported':
