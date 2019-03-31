@@ -42,13 +42,13 @@ skinVehNamesLDict = {}
 
 class SkinnerLoading(LoginQueueWindowMeta):
     loginManager = dependency.descriptor(ILoginManager)
-    settings = dependency.descriptor(ISettingsCore)
+    sCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self):
         super(self.__class__, self).__init__()
         self.lines = []
         self.curPercentage = 0
-        self.doLogin = self.loginManager.checkWgcAvailability() and not self.settings.getSetting(GAME.LOGIN_SERVER_SELECTION)
+        self.doLogin = self.loginManager.checkWgcAvailability() and not self.sCore.getSetting(GAME.LOGIN_SERVER_SELECTION)
         g_config.loadingProxy = weakref.proxy(self)
 
     def _populate(self):
