@@ -58,7 +58,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             for seasonType in SeasonType.COMMON_SEASONS:
                 if (item.season if isBuy else getItemSeason(item)) & seasonType:
                     seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
-                    for name in groupName.split(' / '):
+                    for name in groupName.split(g_config.i18n['flashCol_camoGroup_separator']):
                         if name and name not in seasonAndTabData.allGroups:
                             seasonAndTabData.allGroups.append(name)
                     seasonAndTabData.itemCount += 1
@@ -152,12 +152,7 @@ def getGroupName(item):
     if not groupName:
         groupName = g_config.i18n['flashCol_camoGroup_special']
     else:  # HangarPainter support
-        nationUserName = nationUserName.replace('</font>', '')
-        if ' ' in nationUserName.replace('<font ', ''):
-            nationUserName = nationUserName.rsplit(' ', 1)[0]
-        if '>' in groupName:
-            groupName = groupName.split('>', 1)[1]
-        groupName = nationUserName + ' / ' + groupName
+        groupName = nationUserName + g_config.i18n['flashCol_camoGroup_separator'] + groupName
     return groupName
 
 

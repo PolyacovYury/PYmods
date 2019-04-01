@@ -45,6 +45,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'flashCol_camoGroup_multinational': 'Multinational',
             'flashCol_camoGroup_special': 'Special',
             'flashCol_camoGroup_custom': 'Custom',
+            'flashCol_camoGroup_separator': ' / ',
             'flashCol_applied_money': 'Customization elements applied.\nWould buy %(count)s items, would spend %(money)s.',
             'contextMenu_season_group': 'Season remap',
             'contextMenu_season_summer': 'Apply for summer',
