@@ -80,21 +80,22 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         requirement = createBaseRequirements(self._proxy, season)
         if not isBuy:
             requirement |= REQ_CRITERIA.CUSTOM(partial(isItemSuitableForTab, tabIndex=self._tabIndex))
+        filterCriteria = REQ_CRITERIA.EMPTY
         seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][season]
         allItemsGroupIndex = len(seasonAndTabData.allGroups) - 1
         if seasonAndTabData.selectedGroupIndex != allItemsGroupIndex:
             selectedGroup = seasonAndTabData.allGroups[seasonAndTabData.selectedGroupIndex]
-            requirement |= REQ_CRITERIA.CUSTOM(lambda x: selectedGroup in (x.groupUserName if isBuy else getGroupName(x)))
+            filterCriteria |= REQ_CRITERIA.CUSTOM(lambda x: selectedGroup in (x.groupUserName if isBuy else getGroupName(x)))
         if self._historicOnlyItems:
-            requirement |= ~REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
+            filterCriteria |= ~REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
         if self._onlyOwnedAndFreeItems:
-            requirement |= REQ_CRITERIA.CUSTOM(lambda x: self._proxy.getItemInventoryCount(x) > 0)
-        sub = REQ_CRITERIA.CUSTOM(lambda x: x.intCD in self._proxy.getAppliedItems(isOriginal=False))
+            filterCriteria |= REQ_CRITERIA.CUSTOM(lambda x: self._proxy.getItemInventoryCount(x) > 0)
+        sub = REQ_CRITERIA.IN_CD_LIST(self._proxy.getAppliedItems(isOriginal=False))
         if self._onlyAppliedItems:
-            requirement |= sub
+            filterCriteria |= sub
         else:
-            requirement ^= sub
-        allItems = getItems(TABS_ITEM_TYPE_MAPPING[self._tabIndex], self._proxy, requirement)
+            filterCriteria ^= sub
+        allItems = getItems(TABS_ITEM_TYPE_MAPPING[self._tabIndex], self._proxy, requirement | filterCriteria)
         self._customizationItems = []
         self._customizationBookmarks = []
         lastGroup = None
