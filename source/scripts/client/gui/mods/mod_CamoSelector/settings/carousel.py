@@ -74,8 +74,6 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                 seasonAndTabData.selectedGroupIndex = len(seasonAndTabData.allGroups) - 1
 
     def _buildCustomizationItems(self):
-        import bwpydevd
-        bwpydevd.startPyDevD('pycharm', suspend=True)
         season = self._seasonID
         isBuy = self._proxy.isBuy
         requirement = createBaseRequirements(self._proxy, season)
