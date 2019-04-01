@@ -146,7 +146,7 @@ class CustomizationContext(WGCtx):
         self._selectedCarouselItem = CaruselItemData()
         if update:
             self.onCustomizationTabsUpdated(tabIndex)
-        elif prevIndex != self._tabIndex or modeChanged:  # prevent rebuilding the whole carousel 5 times in a row
+        else:
             self.onCustomizationTabChanged(tabIndex)
         if self._mode != mode:
             self.onCustomizationModeChanged(self._mode)
