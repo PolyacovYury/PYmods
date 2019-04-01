@@ -1,4 +1,5 @@
 import nations
+import re
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from collections import defaultdict
@@ -144,15 +145,15 @@ def getGroupName(item):
     for filterNode in getattr(item.descriptor.filter, 'include', ()):
         nationIDs += filterNode.nations or []
     if len(nationIDs) == 1:
-        nationUserName = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
+        nation = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
     elif len(nationIDs) > 1:
-        nationUserName = g_config.i18n['flashCol_camoGroup_multinational']
+        nation = g_config.i18n['flashCol_camoGroup_multinational']
     else:
-        nationUserName = g_config.i18n['flashCol_camoGroup_special']
+        nation = g_config.i18n['flashCol_camoGroup_special']
     if not groupName:
         groupName = g_config.i18n['flashCol_camoGroup_special']
     else:  # HangarPainter support
-        groupName = nationUserName + g_config.i18n['flashCol_camoGroup_separator'] + groupName
+        groupName = re.sub(r'( [^ <>]+)(?![^ <>]*>)', '', nation) + g_config.i18n['flashCol_camoGroup_separator'] + groupName
     return groupName
 
 
