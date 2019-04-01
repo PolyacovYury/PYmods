@@ -85,18 +85,15 @@ class CustomizationContext(WGCtx):
         settings.setdefault('enemy', origSettings.get('enemy', True))
         return settings
 
-    def _cleanSettings(self, allSettings, checkSeasons=True):
+    def _cleanSettings(self):
         camouflages = g_cache.customization20().camouflages
-        for itemsKey in allSettings:
-            itemSettings = allSettings[itemsKey]
-            for camoID in itemSettings.keys():
-                origSetting = g_config.camouflages[itemsKey].get(camoID, {})
-                camoSetting = itemSettings[camoID]
+        for itemsKey, itemSettings in self._currentSettings.iteritems():
+            for ID, camoSetting in itemSettings.items():
+                origSetting = g_config.camouflages[itemsKey].get(ID, {})
                 if 'season' in camoSetting:
-                    if checkSeasons and itemsKey == 'remap' and not self.itemsCache.items.getItemByCD(
-                            camouflages[camoID].compactDescr).isHidden:
+                    if itemsKey == 'remap' and not self.itemsCache.items.getItemByCD(camouflages[ID].compactDescr).isHidden:
                         print g_config.ID + ': in-shop camouflage season changing is disabled (id:', \
-                            camoID + ', season setting was', (camoSetting['season'] or 'empty') + ')'
+                            ID + ', season setting was', (camoSetting['season'] or 'empty') + ')'
                         del camoSetting['season']
                         if 'season' in origSetting:
                             del origSetting['season']
@@ -105,7 +102,7 @@ class CustomizationContext(WGCtx):
                         for season in SEASONS_CONSTANTS.SEASONS:
                             if season in camoSetting['season']:
                                 itemSeasons |= getattr(SeasonType, season.upper())
-                        camoSeason = camouflages[camoID].season
+                        camoSeason = camouflages[ID].season
                         if camoSeason & ~SeasonType.EVENT == itemSeasons:
                             del camoSetting['season']
                     elif origSetting['season'] == camoSetting['season']:
@@ -118,8 +115,7 @@ class CustomizationContext(WGCtx):
                     if camoSetting['random_mode'] == origSetting.get('random_mode', SelectionMode.RANDOM):
                         del camoSetting['random_mode']
                 if not camoSetting:
-                    del itemSettings[camoID]
-        return allSettings
+                    del itemSettings[ID]
 
     @classmethod
     def deleteEmpty(cls, settings):
@@ -131,6 +127,7 @@ class CustomizationContext(WGCtx):
                 if not value:
                     del settings[key]
 
+    # noinspection PyMethodOverriding
     def tabChanged(self, tabIndex):
         if self.numberEditModeActive:
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
@@ -250,7 +247,7 @@ class CustomizationContext(WGCtx):
     @process('customizationApply')
     def applyItems(self, purchaseItems):
         yield super(CustomizationContext, self).applyItems(purchaseItems)
-        self._currentSettings = self._cleanSettings(self._currentSettings)
+        self._cleanSettings()
         for itemsKey in self._currentSettings:
             for camoName in self._currentSettings[itemsKey]:
                 g_config.camouflages[itemsKey].setdefault(camoName, {}).update(self._currentSettings[itemsKey][camoName])
