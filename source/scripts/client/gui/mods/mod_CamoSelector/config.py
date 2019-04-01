@@ -33,12 +33,8 @@ class ConfigInterface(PYmodsConfigInterface):
                      'fullAlpha': False, 'disableWithDefault': False, 'fillEmptySlots': True, 'uniformOutfit': False}
         self.i18n = {
             'UI_description': 'Camouflage selector',
-            'flash_tabs_0_label': 'Styles',
-            'flashCol_tabs_0_text': 'Styles',
-            'flashCol_tabs_0_tooltip': "If only you'd know how much time it took me to make this work...",
             'flash_switcher_buy': 'PURCHASE',
             'flash_switcher_install': 'INSTALL',
-            'flash_switcher_tabsInvisible': 'Tabs are invisible while Shift key is pressed. #BlameWG',
             'flash_commit_apply': 'Apply',
             'flash_commit_install': 'Install',
             'flash_commit_install_and_apply': 'Install and apply',

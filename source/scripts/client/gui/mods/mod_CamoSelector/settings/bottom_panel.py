@@ -1,9 +1,8 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import comparisonKey
-from gui.Scaleform.daapi.view.lobby.customization.shared import getTotalPurchaseInfo, TABS_ITEM_TYPE_MAPPING, C11nTabs, \
+from gui.Scaleform.daapi.view.lobby.customization.shared import getTotalPurchaseInfo, TABS_ITEM_TYPE_MAPPING, \
     TABS_SLOT_TYPE_MAPPING
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
@@ -49,23 +48,6 @@ class CustomizationBottomPanel(CBP):
         self.as_setNotificationCountersS({
             'tabsCounters': tabsCounters,
             'switchersCounter': vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=GUI_ITEM_TYPE.CUSTOMIZATIONS)})
-
-    def __setFooterInitData(self):
-        self.as_setBottomPanelInitDataS({
-            'tabsAvailableRegions': C11nTabs.AVAILABLE_REGIONS,
-            'defaultStyleLabel': g_config.i18n['flash_switcher_tabsInvisible'],
-            'carouselInitData': self.__getCarouselInitData(),
-            'filtersVO': {'popoverAlias': VIEW_ALIAS.CUSTOMIZATION_FILTER_POPOVER,
-                          'mainBtn': {'value': RES_ICONS.MAPS_ICONS_BUTTONS_FILTER,
-                                      'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_MAINBTN},
-                          'hotFilters': [{'value': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_STORAGE_ICON,
-                                          'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_STORAGEBTN,
-                                          'selected': self._carouselDP.getOwnedFilter()},
-                                         {'value': RES_ICONS.MAPS_ICONS_BUTTONS_EQUIPPED_ICON,
-                                          'tooltip': VEHICLE_CUSTOMIZATION.CAROUSEL_FILTER_EQUIPPEDBTN,
-                                          'selected': self._carouselDP.getAppliedFilter()}]}})
-        self.__updateSetSwitcherData()
-        self.__setNotificationCounters()
 
     def __updateSetSwitcherData(self):
         self.as_setSwitchersDataS(self.__getSwitcherInitData(self.__ctx.actualMode))
@@ -148,7 +130,7 @@ class CustomizationBottomPanel(CBP):
                          'tooltip': makeTooltip(
                              ITEM_TYPES.customizationPlural(typeName),
                              TOOLTIPS.customizationItemTab(typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else
-                             g_config.i18n['flashCol_tabs_0_tooltip']),
+                             VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL),
                          'id': tabIdx})
             pluses.append(showPlus)
         return data, pluses
