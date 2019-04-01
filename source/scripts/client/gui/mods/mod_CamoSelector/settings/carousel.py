@@ -46,12 +46,12 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                 self._allSeasonAndTabFilterData[tabIndex][season] = CustomizationSeasonAndTypeFilterData()
 
         isBuy = self._proxy.isBuy
-        for item in sorted(allItems.itervalues(), key=comparisonKey if isBuy else CSComparisonKey):
+        for item in sorted(allItems.itervalues(), key=self.CSComparisonKey):
             if isBuy and item.isHiddenInUI():
                 continue
-            groupName = item.groupUserName if isBuy else getGroupName(item)
+            groupName = getGroupName(item, isBuy)
             tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)
-            if not (isBuy or isItemSuitableForTab(item, tabIndex)):
+            if not self.isItemSuitableForTab(tabIndex, anchorsData, item):
                 continue
             for seasonType in SeasonType.COMMON_SEASONS:
                 if (item.season if isBuy else getItemSeason(item)) & seasonType:
@@ -60,12 +60,6 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                         if name and name not in seasonAndTabData.allGroups:
                             seasonAndTabData.allGroups.append(name)
                     seasonAndTabData.itemCount += 1
-                    typeID = item.itemTypeID
-                    if typeID == GUI_ITEM_TYPE.PERSONAL_NUMBER:
-                        typeID = GUI_ITEM_TYPE.INSCRIPTION
-                    if typeID in (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.EMBLEM):
-                        if not self.__hasSlots(anchorsData, typeID):
-                            continue
                     visibleTabs[seasonType].add(tabIndex)
         for tabIndex in C11nTabs.ALL:
             for seasonType in SeasonType.COMMON_SEASONS:
@@ -77,15 +71,16 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
     def _buildCustomizationItems(self):
         season = self._seasonID
         isBuy = self._proxy.isBuy
+        anchorsData = self._proxy.hangarSpace.getSlotPositions()
         requirement = createBaseRequirements(self._proxy, season)
         if not isBuy:
-            requirement |= REQ_CRITERIA.CUSTOM(partial(isItemSuitableForTab, tabIndex=self._tabIndex))
+            requirement |= REQ_CRITERIA.CUSTOM(partial(self.isItemSuitableForTab, self._tabIndex, anchorsData))
         filterCriteria = REQ_CRITERIA.EMPTY
         seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][season]
         allItemsGroupIndex = len(seasonAndTabData.allGroups) - 1
         if seasonAndTabData.selectedGroupIndex != allItemsGroupIndex:
             selectedGroup = seasonAndTabData.allGroups[seasonAndTabData.selectedGroupIndex]
-            filterCriteria |= REQ_CRITERIA.CUSTOM(lambda x: selectedGroup in (x.groupUserName if isBuy else getGroupName(x)))
+            filterCriteria |= REQ_CRITERIA.CUSTOM(lambda x: selectedGroup in getGroupName(x, isBuy))
         if self._historicOnlyItems:
             filterCriteria |= ~REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
         if self._onlyOwnedAndFreeItems:
@@ -99,46 +94,44 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         self._customizationItems = []
         self._customizationBookmarks = []
         lastGroup = None
-        for item in sorted(allItems.itervalues(), key=comparisonKey if isBuy else CSComparisonKey):
+        for item in sorted(allItems.itervalues(), key=self.CSComparisonKey):
             if isBuy and item.isHiddenInUI():
                 continue
-            groupName = getGroupName(item)
+            groupName = getGroupName(item, isBuy)
             group = item.groupID if isBuy else groupName
             if item.intCD == self._selectIntCD:
                 self._selectedIdx = self.itemCount
                 self._selectIntCD = None
             if group != lastGroup:
                 lastGroup = group
-                self._customizationBookmarks.append(
-                    CustomizationBookmarkVO((item.groupUserName if isBuy else groupName), self.itemCount).asDict())
+                self._customizationBookmarks.append(CustomizationBookmarkVO(groupName, self.itemCount).asDict())
             self._customizationItems.append(item.intCD)
             self._itemSizeData.append(item.isWide())
 
         self._proxy.setCarouselItems(self.collection)
         return
 
+    def isItemSuitableForTab(self, tabIndex, anchorsData, item):
+        if item is None or tabIndex != TYPE_TO_TAB_IDX[item.itemTypeID]:
+            return False
+        typeID = item.itemTypeID
+        if typeID == GUI_ITEM_TYPE.STYLE:
+            return item.mayInstall(g_currentVehicle.item) if item.modelsSet else all(
+                self.isItemSuitableForTab(TYPE_TO_TAB_IDX[x.itemTypeID], anchorsData, x) for season in
+                SeasonType.COMMON_SEASONS for x in item.getOutfit(season).items())
+        elif typeID == GUI_ITEM_TYPE.PERSONAL_NUMBER:
+            typeID = GUI_ITEM_TYPE.INSCRIPTION
+        return self.__hasSlots(anchorsData, typeID)
 
-def isItemSuitableForTab(item, tabIndex):
-    if item is None or tabIndex != TYPE_TO_TAB_IDX[item.itemTypeID]:
-        return False
-    if tabIndex in (C11nTabs.CAMOUFLAGE, C11nTabs.EMBLEM, C11nTabs.INSCRIPTION):
-        return True
-    vehicle = g_currentVehicle.item
-    if tabIndex in (C11nTabs.STYLE, C11nTabs.PAINT, C11nTabs.EFFECT, C11nTabs.PROJECTION_DECAL):
-        return not item.descriptor.filter or matchVehicleLevel(item.descriptor.filter, vehicle.descriptor.type)
-
-
-def matchVehicleLevel(f, vehicleType):
-    return not f.include or any((not node.levels or vehicleType.level in node.levels) for node in f.include)
-
-
-def CSComparisonKey(item):
-    return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', g_config.isCamoGlobal(item.descriptor),
-            item.isHidden, not item.isRare(), getGroupName(item), item.id)
+    def CSComparisonKey(self, item):
+        return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', g_config.isCamoGlobal(item.descriptor),
+                item.isHidden, not item.isRare(), getGroupName(item, self._proxy.isBuy), item.id)
 
 
-def getGroupName(item):
+def getGroupName(item, isBuy=False):
     groupName = item.groupUserName
+    if isBuy:
+        return groupName
     nationIDs = []
     for filterNode in getattr(item.descriptor.filter, 'include', ()):
         nationIDs += filterNode.nations or []

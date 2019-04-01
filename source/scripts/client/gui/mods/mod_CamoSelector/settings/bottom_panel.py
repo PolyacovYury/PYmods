@@ -16,7 +16,6 @@ from gui.shared.money import Money
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.graphics import isRendererPipelineDeferred
 from helpers.i18n import makeString as _ms
-from .carousel import CSComparisonKey
 from .item_vo import buildCustomizationItemDataVO
 from .shared import CSMode, getItemSeason
 from .. import g_config
@@ -137,8 +136,7 @@ class CustomizationBottomPanel(CBP):
 
     def __scrollToNewItem(self):
         currentTypes = TABS_ITEM_TYPE_MAPPING[self.__ctx.currentTab]
-        newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items),
-                          key=comparisonKey if self.__ctx.isBuy else CSComparisonKey)
+        newItems = sorted(g_currentVehicle.item.getNewC11nItems(self.itemsCache.items), key=self._carouselDP.CSComparisonKey)
         for item in newItems:
             if item.itemTypeID in currentTypes and (
                     item.season if self.__ctx.isBuy else getItemSeason(item)) & self.__ctx.currentSeason:
