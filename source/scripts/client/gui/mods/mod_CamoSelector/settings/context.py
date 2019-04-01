@@ -148,6 +148,7 @@ class CustomizationContext(WGCtx):
         self.onCustomizationTabChanged(tabIndex)
         if self._mode != mode:
             self.onCustomizationModeChanged(self._mode)
+            self.refreshOutfit()
 
     def installItem(self, intCD, slotId, seasonIdx, component=None):
         if slotId is None:
