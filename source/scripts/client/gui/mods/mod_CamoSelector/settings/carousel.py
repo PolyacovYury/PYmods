@@ -65,13 +65,12 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                         if not self.__hasSlots(anchorsData, item.itemTypeID):
                             continue
                     visibleTabs[seasonType].add(tabIndex)
-
-        self._proxy.updateVisibleTabsList(visibleTabs)
         for tabIndex in C11nTabs.ALL:
             for seasonType in SeasonType.COMMON_SEASONS:
                 seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
                 seasonAndTabData.allGroups.append(_ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_FILTER_ALLGROUPS))
                 seasonAndTabData.selectedGroupIndex = len(seasonAndTabData.allGroups) - 1
+        self._proxy.updateVisibleTabsList(visibleTabs)
 
     def _buildCustomizationItems(self):
         season = self._seasonID

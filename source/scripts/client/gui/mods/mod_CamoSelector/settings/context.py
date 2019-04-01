@@ -131,7 +131,7 @@ class CustomizationContext(WGCtx):
                 if not value:
                     del settings[key]
 
-    def tabChanged(self, tabIndex, update=False):
+    def tabChanged(self, tabIndex):
         if self.numberEditModeActive:
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._tabIndex = tabIndex
@@ -145,10 +145,7 @@ class CustomizationContext(WGCtx):
         else:
             self._selectedAnchor = C11nId()
         self._selectedCarouselItem = CaruselItemData()
-        if update:
-            self.onCustomizationTabsUpdated(tabIndex)
-        else:
-            self.onCustomizationTabChanged(tabIndex)
+        self.onCustomizationTabChanged(tabIndex)
         if self._mode != mode:
             self.onCustomizationModeChanged(self._mode)
 
@@ -379,7 +376,7 @@ class CustomizationContext(WGCtx):
         if tabIndex not in self.visibleTabs:
             tabIndex = first(self.visibleTabs, -1)
         self._lastTab[self.actualMode] = tabIndex
-        self.tabChanged(tabIndex, update=True)
+        self.tabChanged(tabIndex)
 
 
 @overrideMethod(CustomizationService, 'getCtx')
