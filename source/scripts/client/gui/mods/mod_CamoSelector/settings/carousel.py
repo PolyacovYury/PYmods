@@ -80,8 +80,8 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         if not isBuy:
             requirement |= REQ_CRITERIA.CUSTOM(partial(isItemSuitableForTab, tabIndex=self._tabIndex))
         seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][season]
-        allItemsGroup = len(seasonAndTabData.allGroups) - 1
-        if seasonAndTabData.selectedGroupIndex != allItemsGroup:
+        allItemsGroupIndex = len(seasonAndTabData.allGroups) - 1
+        if seasonAndTabData.selectedGroupIndex != allItemsGroupIndex:
             selectedGroup = seasonAndTabData.allGroups[seasonAndTabData.selectedGroupIndex]
             requirement |= REQ_CRITERIA.CUSTOM(lambda x: (x.groupUserName if isBuy else getGroupName(x)) == selectedGroup)
         if self._historicOnlyItems:
@@ -93,9 +93,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             requirement |= REQ_CRITERIA.CUSTOM(lambda x: self._proxy.getItemInventoryCount(x) > 0)
         elif self._onlyAppliedItems:
             requirement |= REQ_CRITERIA.CUSTOM(lambda x: x.intCD in applied)
-        allItems = {}
-        for itemTypeId in TABS_ITEM_TYPE_MAPPING[self._tabIndex]:
-            allItems.update(getItems(itemTypeId, self._proxy, requirement))
+        allItems = getItems(TABS_ITEM_TYPE_MAPPING[self._tabIndex], self._proxy, requirement)
         self._customizationItems = []
         self._customizationBookmarks = []
         lastGroup = None

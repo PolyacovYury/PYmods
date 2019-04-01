@@ -1,3 +1,4 @@
+import Event
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
 from gui import SystemMessages
@@ -52,6 +53,7 @@ class CustomizationContext(WGCtx):
 
     def __init__(self):
         super(CustomizationContext, self).__init__()
+        self.onActualModeChanged = Event.Event(self._eventsManager)
         self.__switcherIgnored = False
         self._lastTab = {CSMode.BUY: C11nTabs.STYLE, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
         self._originalCSOutfits = {}
@@ -129,10 +131,9 @@ class CustomizationContext(WGCtx):
                 if not value:
                     del settings[key]
 
-    def tabChanged(self, tabIndex, update=False, modeChanged=False):
+    def tabChanged(self, tabIndex, update=False):
         if self.numberEditModeActive:
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
-        prevIndex = self._tabIndex
         self._tabIndex = tabIndex
         mode = self._mode
         self._mode = C11nMode.CUSTOM
@@ -211,7 +212,7 @@ class CustomizationContext(WGCtx):
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._lastTab[self.actualMode] = self._tabIndex
         self.actualMode = (self.actualMode + 1) % len(CSMode.NAMES)
-        self.tabChanged(self._lastTab[self.actualMode], modeChanged=True)
+        self.onActualModeChanged()  # this will cause the carousel to update, which will call onTabChanged anyway
         self.refreshOutfit()
 
     def cancelChanges(self):
