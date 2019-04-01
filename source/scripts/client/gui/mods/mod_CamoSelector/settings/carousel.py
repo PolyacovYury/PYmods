@@ -39,7 +39,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         visibleTabs = defaultdict(set)
         anchorsData = self._proxy.hangarSpace.getSlotPositions()
         requirement = createBaseRequirements(self._proxy)
-        allItems = getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, self._proxy, requirement)
+        allItems = self.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, False, requirement)  # dodge the bug with tabs changing
         for tabIndex in C11nTabs.ALL:
             self._allSeasonAndTabFilterData[tabIndex] = {}
             for season in SeasonType.COMMON_SEASONS:
@@ -90,7 +90,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             filterCriteria |= sub
         else:
             filterCriteria ^= sub
-        allItems = getItems(TABS_ITEM_TYPE_MAPPING[self._tabIndex], self._proxy, requirement | filterCriteria)
+        allItems = self.getItems(TABS_ITEM_TYPE_MAPPING[self._tabIndex], self._proxy.isBuy, requirement | filterCriteria)
         self._customizationItems = []
         self._customizationBookmarks = []
         lastGroup = None
@@ -127,6 +127,21 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', g_config.isCamoGlobal(item.descriptor),
                 item.isHidden, not item.isRare(), getGroupName(item, self._proxy.isBuy), item.id)
 
+    def getItems(self, itemTypeID, isBuy, criteria):
+        if isBuy:
+            return self.itemsCache.items.getItems(itemTypeID, criteria)
+        if not isinstance(itemTypeID, tuple):
+            itemTypeID = (itemTypeID,)
+        result = ItemsCollection()
+        itemGetter = self.itemsCache.items.getItemByCD
+        itemTypes = g_cache.customization20().itemTypes
+        for typeID in itemTypeID:
+            for item in itemTypes[C11N_ITEM_TYPE_MAP[typeID]].itervalues():
+                guiItem = itemGetter(item.compactDescr)
+                if criteria(guiItem):
+                    result[guiItem.intCD] = guiItem
+        return result
+
 
 def getGroupName(item, isBuy=False):
     groupName = item.groupUserName
@@ -146,22 +161,6 @@ def getGroupName(item, isBuy=False):
     else:  # HangarPainter support
         groupName = re.sub(r'( [^ <>]+)(?![^ <>]*>)', '', nation) + g_config.i18n['flashCol_camoGroup_separator'] + groupName
     return groupName
-
-
-def getItems(itemTypeID, ctx, criteria):
-    if ctx.isBuy:
-        return ctx.itemsCache.items.getItems(itemTypeID, criteria)
-    if not isinstance(itemTypeID, tuple):
-        itemTypeID = (itemTypeID,)
-    result = ItemsCollection()
-    itemGetter = ctx.itemsCache.items.getItemByCD
-    itemTypes = g_cache.customization20().itemTypes
-    for typeID in itemTypeID:
-        for item in itemTypes[C11N_ITEM_TYPE_MAP[typeID]].itervalues():
-            guiItem = itemGetter(item.compactDescr)
-            if criteria(guiItem):
-                result[guiItem.intCD] = guiItem
-    return result
 
 
 @overrideMethod(WGCarouselDataProvider, '__new__')
