@@ -61,8 +61,11 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                     if groupName and groupName not in seasonAndTabData.allGroups:
                         seasonAndTabData.allGroups.append(groupName)
                     seasonAndTabData.itemCount += 1
-                    if item.itemTypeID in (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.EMBLEM, GUI_ITEM_TYPE.PERSONAL_NUMBER):
-                        if not self.__hasSlots(anchorsData, item.itemTypeID):
+                    typeID = item.itemTypeID
+                    if typeID == GUI_ITEM_TYPE.PERSONAL_NUMBER:
+                        typeID = GUI_ITEM_TYPE.INSCRIPTION
+                    if typeID in (GUI_ITEM_TYPE.INSCRIPTION, GUI_ITEM_TYPE.EMBLEM):
+                        if not self.__hasSlots(anchorsData, typeID):
                             continue
                     visibleTabs[seasonType].add(tabIndex)
         for tabIndex in C11nTabs.ALL:
@@ -85,13 +88,13 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             requirement |= REQ_CRITERIA.CUSTOM(lambda x: (x.groupUserName if isBuy else getGroupName(x)) == selectedGroup)
         if self._historicOnlyItems:
             requirement |= ~REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
-        applied = self._proxy.getAppliedItems(isOriginal=False)
-        if self._onlyOwnedAndFreeItems and self._onlyAppliedItems:
-            requirement |= REQ_CRITERIA.CUSTOM(lambda x: x.intCD in applied or self._proxy.getItemInventoryCount(x) > 0)
-        elif self._onlyOwnedAndFreeItems:
+        if self._onlyOwnedAndFreeItems:
             requirement |= REQ_CRITERIA.CUSTOM(lambda x: self._proxy.getItemInventoryCount(x) > 0)
-        elif self._onlyAppliedItems:
-            requirement |= REQ_CRITERIA.CUSTOM(lambda x: x.intCD in applied)
+        sub = REQ_CRITERIA.CUSTOM(lambda x: x.intCD in self._proxy.getAppliedItems(isOriginal=False))
+        if self._onlyAppliedItems:
+            requirement |= sub
+        else:
+            requirement ^= sub
         allItems = getItems(TABS_ITEM_TYPE_MAPPING[self._tabIndex], self._proxy, requirement)
         self._customizationItems = []
         self._customizationBookmarks = []
