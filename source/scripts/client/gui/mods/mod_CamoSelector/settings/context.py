@@ -144,11 +144,10 @@ class CustomizationContext(WGCtx):
         else:
             self._selectedAnchor = C11nId()
         self._selectedCarouselItem = CaruselItemData()
-        if prevIndex != self._tabIndex or modeChanged:  # prevent rebuilding the whole carousel 5 times in a row
-            if update:
-                self.onCustomizationTabsUpdated(tabIndex)
-            else:
-                self.onCustomizationTabChanged(tabIndex)
+        if update:
+            self.onCustomizationTabsUpdated(tabIndex)
+        elif prevIndex != self._tabIndex or modeChanged:  # prevent rebuilding the whole carousel 5 times in a row
+            self.onCustomizationTabChanged(tabIndex)
         if self._mode != mode:
             self.onCustomizationModeChanged(self._mode)
 
@@ -379,7 +378,6 @@ class CustomizationContext(WGCtx):
         if tabIndex not in self.visibleTabs:
             tabIndex = first(self.visibleTabs, -1)
         self._lastTab[self.actualMode] = tabIndex
-        self._tabIndex = tabIndex
         self.tabChanged(tabIndex, update=True)
 
 
