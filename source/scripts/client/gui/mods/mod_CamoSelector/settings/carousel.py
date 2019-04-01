@@ -39,7 +39,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         visibleTabs = defaultdict(set)
         anchorsData = self._proxy.hangarSpace.getSlotPositions()
         requirement = createBaseRequirements(self._proxy)
-        allItems = self.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, False, requirement)  # dodge the bug with tabs changing
+        allItems = self.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, requirement)
         for tabIndex in C11nTabs.ALL:
             self._allSeasonAndTabFilterData[tabIndex] = {}
             for season in SeasonType.COMMON_SEASONS:
@@ -48,6 +48,8 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         isBuy = self._proxy.isBuy
         for item in sorted(allItems.itervalues(), key=self.CSComparisonKey):
             if isBuy and item.isHiddenInUI():
+                continue
+            if item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION and not item.mayInstall(g_currentVehicle.item):
                 continue
             groupName = getGroupName(item, isBuy)
             tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)
@@ -90,12 +92,14 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             filterCriteria |= sub
         else:
             filterCriteria ^= sub
-        allItems = self.getItems(TABS_ITEM_TYPE_MAPPING[self._tabIndex], self._proxy.isBuy, requirement | filterCriteria)
+        allItems = self.getItems(TABS_ITEM_TYPE_MAPPING[self._tabIndex], requirement | filterCriteria)
         self._customizationItems = []
         self._customizationBookmarks = []
         lastGroup = None
         for item in sorted(allItems.itervalues(), key=self.CSComparisonKey):
             if isBuy and item.isHiddenInUI():
+                continue
+            if item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION and not item.mayInstall(g_currentVehicle.item):
                 continue
             groupName = getGroupName(item, isBuy)
             group = item.groupID if isBuy else groupName
@@ -119,7 +123,9 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             return item.mayInstall(g_currentVehicle.item) if item.modelsSet else all(
                 self.isItemSuitableForTab(TYPE_TO_TAB_IDX[x.itemTypeID], anchorsData, x) for season in
                 SeasonType.COMMON_SEASONS for x in item.getOutfit(season).items())
-        elif typeID == GUI_ITEM_TYPE.PERSONAL_NUMBER:
+        if typeID == GUI_ITEM_TYPE.MODIFICATION:
+            return item.mayInstall(g_currentVehicle.item)
+        if typeID == GUI_ITEM_TYPE.PERSONAL_NUMBER:
             typeID = GUI_ITEM_TYPE.INSCRIPTION
         return self.__hasSlots(anchorsData, typeID)
 
@@ -127,8 +133,8 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', g_config.isCamoGlobal(item.descriptor),
                 item.isHidden, not item.isRare(), getGroupName(item, self._proxy.isBuy), item.id)
 
-    def getItems(self, itemTypeID, isBuy, criteria):
-        if isBuy:
+    def getItems(self, itemTypeID, criteria):
+        if self._proxy.isBuy:
             return self.itemsCache.items.getItems(itemTypeID, criteria)
         if not isinstance(itemTypeID, tuple):
             itemTypeID = (itemTypeID,)
