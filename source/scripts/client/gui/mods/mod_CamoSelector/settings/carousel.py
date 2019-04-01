@@ -58,8 +58,9 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             for seasonType in SeasonType.COMMON_SEASONS:
                 if (item.season if isBuy else getItemSeason(item)) & seasonType:
                     seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
-                    if groupName and groupName not in seasonAndTabData.allGroups:
-                        seasonAndTabData.allGroups.append(groupName)
+                    for name in groupName.split(' / '):
+                        if name and name not in seasonAndTabData.allGroups:
+                            seasonAndTabData.allGroups.append(name)
                     seasonAndTabData.itemCount += 1
                     typeID = item.itemTypeID
                     if typeID == GUI_ITEM_TYPE.PERSONAL_NUMBER:
@@ -85,7 +86,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         allItemsGroupIndex = len(seasonAndTabData.allGroups) - 1
         if seasonAndTabData.selectedGroupIndex != allItemsGroupIndex:
             selectedGroup = seasonAndTabData.allGroups[seasonAndTabData.selectedGroupIndex]
-            requirement |= REQ_CRITERIA.CUSTOM(lambda x: (x.groupUserName if isBuy else getGroupName(x)) == selectedGroup)
+            requirement |= REQ_CRITERIA.CUSTOM(lambda x: selectedGroup in (x.groupUserName if isBuy else getGroupName(x)))
         if self._historicOnlyItems:
             requirement |= ~REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
         if self._onlyOwnedAndFreeItems:
