@@ -189,7 +189,7 @@ class CustomizationContext(WGCtx):
         if self.isBuy:
             if self._modifiedStyle and self._modifiedStyle.intCD == intCD:
                 self._modifiedStyle = None
-        elif self._mode == CSMode.INSTALL:
+        elif self.actualMode == CSMode.INSTALL:
             if self._modifiedCSStyle and self._modifiedCSStyle.intCD == intCD:
                 self._modifiedCSStyle = None
         self.refreshOutfit()
@@ -370,7 +370,7 @@ class CustomizationContext(WGCtx):
         for seasonType in SeasonType.COMMON_SEASONS:
             self.__visibleTabs[seasonType] = sorted(
                 visibleTabs[seasonType], key=lambda it: TYPES_ORDER.index(TABS_SLOT_TYPE_MAPPING[it]))
-        tabIndex = self._lastTab[self._mode]
+        tabIndex = self._lastTab[self.actualMode]
         if tabIndex not in self.visibleTabs:
             tabIndex = first(self.visibleTabs, -1)
         self._lastTab[self.actualMode] = tabIndex

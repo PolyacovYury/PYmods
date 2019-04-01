@@ -53,9 +53,6 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)
             if not (isBuy or isItemSuitableForTab(item, tabIndex)):
                 continue
-            if (isBuy and tabIndex == C11nTabs.CAMOUFLAGE and
-                    g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage):
-                continue
             for seasonType in SeasonType.COMMON_SEASONS:
                 if (item.season if isBuy else getItemSeason(item)) & seasonType:
                     seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
