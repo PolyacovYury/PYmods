@@ -131,7 +131,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
 
     def CSComparisonKey(self, item):
         return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', g_config.isCamoGlobal(item.descriptor),
-                item.isHidden, not item.isRare(), getGroupName(item, self._proxy.isBuy), item.id)
+                item.isHidden, getGroupName(item, self._proxy.isBuy), item.isRare(), item.id)
 
     def getItems(self, itemTypeID, criteria):
         if self._proxy.isBuy:
