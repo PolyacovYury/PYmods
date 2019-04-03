@@ -254,32 +254,6 @@ class CustomizationContext(WGCtx):
         self._currentSettings = {'custom': {}, 'remap': {}}
         super(CustomizationContext, self).cancelChanges()
 
-    def caruselItemSelected(self, index, intCD):
-        prevItemSelected = self.isCaruselItemSelected()
-        self._selectedCarouselItem = CaruselItemData(index=index, intCD=intCD)
-        itemSelected = self.isCaruselItemSelected()
-        if self.isAnyAnchorSelected() and itemSelected and not prevItemSelected:
-            slotId = self.__getFreeSlot(self.selectedAnchor, self.currentSeason)
-            if slotId is None:
-                return False
-            item = self.service.getItemByCD(intCD)
-            component = self.__getComponent(item, self.selectedAnchor)
-            if self.currentTab == C11nTabs.INSCRIPTION:
-                slot = self.currentOutfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
-                slotData = slot.getSlotData(slotId.regionIdx)
-                if slotData.item is not None and slotData.item.itemTypeID != item.itemTypeID and abs(
-                        self._carouselItems.index(slotData.item.intCD) - index) == 1:
-                    self.__manageStoredPersonalNumber(slotData, item)
-                elif item.itemTypeID != GUI_ITEM_TYPE.PERSONAL_NUMBER:
-                    self.clearStoredPersonalNumber()
-                if item.itemTypeID == GUI_ITEM_TYPE.PERSONAL_NUMBER and self.storedPersonalNumber is not None:
-                    component.number = self.storedPersonalNumber
-            self.installItem(intCD, slotId, SEASON_TYPE_TO_IDX[self.currentSeason], component)
-            self._selectedCarouselItem = CaruselItemData()
-        else:
-            self.service.highlightRegions(self.getEmptyRegions())
-        self.onCaruselItemSelected(index, intCD)
-
     def getOutfitsInfo(self):
         outfitsInfo = {}
         for season in SEASONS_ORDER:
@@ -349,12 +323,6 @@ class CustomizationContext(WGCtx):
             self._currentOutfit = style.getOutfit(self._currentSeason)
         else:
             self._currentOutfit = self._modifiedOutfits[self._currentSeason]
-
-    def __cancelModifiedStyle(self):
-        if self.isBuy:
-            self._modifiedStyle = self._originalStyle
-        else:
-            self._modifiedModdedStyle = self._originalModdedStyle
 
     def __preserveState(self):
         self._state.update(
