@@ -227,8 +227,8 @@ class CustomizationContext(WGCtx):
         self._selectedCarouselItem = CaruselItemData()
         self.onCustomizationTabChanged(tabIndex)
         if self._mode != mode:
-            self.onCustomizationModeChanged(self._mode)
             self.refreshOutfit()
+            self.onCustomizationModeChanged(self._mode)
 
     def isPossibleToInstallToAllTankAreas(self, season, slotType, currentSlotData):
         return not self.isBuy or super(CustomizationContext, self).isPossibleToInstallToAllTankAreas(
