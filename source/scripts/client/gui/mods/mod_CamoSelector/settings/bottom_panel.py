@@ -97,7 +97,7 @@ class CustomizationBottomPanel(CBP):
                            '{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_FROMSTORAGE), fromStorageCount)),
                        'isEnoughStatuses': getMoneyVO(Money(True, True, True)),
                        'pricePanel': totalPriceVO[0]}})
-        self.as_setItemsPopoverBtnEnabledS(self.__ctx.currentOutfit.isEmpty())
+        self.as_setItemsPopoverBtnEnabledS(not self.__ctx.currentOutfit.isEmpty())
 
     def _carouseItemWrapper(self, itemCD):
         isBuy = self.__ctx.isBuy
