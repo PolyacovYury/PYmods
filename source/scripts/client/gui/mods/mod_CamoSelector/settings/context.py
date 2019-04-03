@@ -55,7 +55,10 @@ class CustomizationContext(WGCtx):
 
     @_modifiedStyle.setter
     def _modifiedStyle(self, value):
-        self.__modifiedStyle = value
+        if self.isBuy:
+            self.__modifiedStyle = value
+        else:
+            self._modifiedModdedStyle = value
 
     def __init__(self):
         super(CustomizationContext, self).__init__()
@@ -341,10 +344,10 @@ class CustomizationContext(WGCtx):
             modifiedModdedOutfits={season: outfit.copy() for season, outfit in self._modifiedModdedOutfits.iteritems()})
 
     def __restoreState(self):
-        self._modifiedStyle = self._state.get('modifiedStyle')
-        self._modifiedOutfits = self._state.get('modifiedOutfits')
-        if self._modifiedStyle:
-            self._modifiedStyle = self.service.getItemByCD(self._modifiedStyle.intCD)
+        self.__modifiedStyle = self._state.get('modifiedStyle')
+        self.__modifiedOutfits = self._state.get('modifiedOutfits')
+        if self.__modifiedStyle:
+            self.__modifiedStyle = self.service.getItemByCD(self.__modifiedStyle.intCD)
         self._modifiedModdedStyle = self._state.get('modifiedModdedStyle')
         self._modifiedModdedOutfits = self._state.get('modifiedModdedOutfits')
         if self._modifiedModdedStyle:
