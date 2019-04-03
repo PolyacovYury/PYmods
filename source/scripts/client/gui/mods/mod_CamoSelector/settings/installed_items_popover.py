@@ -1,11 +1,15 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.installed_items_popover import InstalledItemsPopoverDataProvider as \
     WGDataProvider, _ItemGroupDescription, _RegionId
-from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER
+from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER, C11nMode
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui.Scaleform.managers.PopoverManager import PopoverManager
 from gui.shared.formatters import text_styles
+from helpers import dependency
 from helpers.i18n import makeString as _ms
+from skeletons.gui.customization import ICustomizationService
 from .. import g_config
 
 
@@ -64,3 +68,10 @@ def new(base, cls, *a, **kw):
     if not g_config.data['enabled']:
         return base(cls, *a, **kw)
     return base(InstalledItemsPopoverDataProvider, *a, **kw)
+
+
+@overrideMethod(PopoverManager, 'requestShowPopover')
+def new_requestShowPopover(base, self, alias, data, srv=None):
+    if g_config.data['enabled'] and alias == VIEW_ALIAS.CUSTOMIZATION_ITEMS_POPOVER and srv.getCtx().mode == C11nMode.STYLE:
+        alias = VIEW_ALIAS.CUSTOMIZATION_KIT_POPOVER
+    return base(self, alias, data)
