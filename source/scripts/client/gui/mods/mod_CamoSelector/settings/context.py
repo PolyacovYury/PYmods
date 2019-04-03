@@ -42,6 +42,14 @@ class CustomizationContext(WGCtx):
         self.__modifiedOutfits = value
 
     @property
+    def _originalStyle(self):
+        return self.__originalStyle if self.isBuy else self._originalModdedStyle
+
+    @_originalStyle.setter
+    def _originalStyle(self, value):
+        self.__originalStyle = value
+
+    @property
     def _modifiedStyle(self):
         return self.__modifiedStyle if self.isBuy else self._modifiedModdedStyle
 
@@ -60,6 +68,7 @@ class CustomizationContext(WGCtx):
         self._modifiedModdedStyle = None
         self.__originalOutfits = {}
         self.__modifiedOutfits = {}
+        self.__originalStyle = None
         self.__modifiedStyle = None
         self._currentSettings = {'custom': {}, 'remap': {}}
         self.actualMode = CSMode.INSTALL
@@ -314,7 +323,7 @@ class CustomizationContext(WGCtx):
             self.__originalStyle = style
             self.__modifiedStyle = style
         else:
-            self._originalStyle = None
+            self.__originalStyle = None
             if style and style.isHidden and style.fullInventoryCount(g_currentVehicle.item) == 0:
                 self.__modifiedStyle = None
             else:
