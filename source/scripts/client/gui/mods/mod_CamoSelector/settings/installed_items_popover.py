@@ -71,6 +71,7 @@ def new(base, cls, *a, **kw):
 
 
 @overrideMethod(PopoverManager, 'requestShowPopover')
+@dependency.replace_none_kwargs(srv=ICustomizationService)
 def new_requestShowPopover(base, self, alias, data, srv=None):
     if g_config.data['enabled'] and alias == VIEW_ALIAS.CUSTOMIZATION_ITEMS_POPOVER and srv.getCtx().mode == C11nMode.STYLE:
         alias = VIEW_ALIAS.CUSTOMIZATION_KIT_POPOVER
