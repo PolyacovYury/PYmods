@@ -295,6 +295,9 @@ class CustomizationContext(WGCtx):
         self.actualMode = mode
         self.applyModdedStuff()
 
+    def isBuyLimitReached(self, item):
+        return self.isBuy and super(CustomizationContext, self).isBuyLimitReached(item)
+
     def __carveUpOutfits(self):
         for season in SeasonType.COMMON_SEASONS:
             outfit = self.service.getCustomOutfit(season)
