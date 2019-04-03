@@ -10,52 +10,51 @@ from .. import g_config
 
 
 class InstalledItemsPopoverDataProvider(WGDataProvider):
-    def buildList(self, isNonHistoric):
+    def buildList(self, nonHistoric):
         self.clear()
-        hasCustomDefaultCamouflage = g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage
+        hasDefaultCamo = g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage
+        isBuy = self.__ctx.isBuy
         purchaseItems = [
-            it for it in (self.__ctx.getPurchaseItems() if self.__ctx.isBuy else self.__ctx.getModdedPurchaseItems())
+            it for it in (self.__ctx.getPurchaseItems() if isBuy else self.__ctx.getModdedPurchaseItems())
             if not it.isDismantling and it.group == self.__ctx.currentSeason]
-        purchaseItemsGroups = {}
+        purchaseGroups = {}
         for it in purchaseItems:
-            if not isNonHistoric or not it.item.isHistorical():
-                key = (it.item.intCD, it.isFromInventory)
-                if key not in purchaseItemsGroups:
-                    purchaseItemsGroups[key] = _ItemGroupDescription(it.item, 0, [], it.slot, it.isFromInventory)
-                purchaseItemsGroups[key].numItems += 1
-                purchaseItemsGroups[key].regionIdList.append(_RegionId(it.areaID, it.slot, it.regionID))
+            if nonHistoric and it.item.isHistorical():
+                continue
+            key = (it.item.intCD, it.isFromInventory)
+            if key not in purchaseGroups:
+                purchaseGroups[key] = _ItemGroupDescription(it.item, 0, [], it.slot, it.isFromInventory)
+            purchaseGroups[key].numItems += 1
+            purchaseGroups[key].regionIdList.append(_RegionId(it.areaID, it.slot, it.regionID))
 
         notModifiedOutfit = self.__ctx.getNotModifiedItems(self.__ctx.currentSeason)
-        notModifiedItemsGroups = {}
+        notModifiedGroups = {}
         for container in notModifiedOutfit.containers():
             for slot in container.slots():
                 for idx in range(slot.capacity()):
                     item = slot.getItem(idx)
-                    if item:
-                        if self.__ctx.isBuy and item.isHiddenInUI() and hasCustomDefaultCamouflage:
-                            continue
-                        if not isNonHistoric or not item.isHistorical():
-                            if item.intCD not in notModifiedItemsGroups:
-                                notModifiedItemsGroups[item.intCD] = _ItemGroupDescription(item, 0, [], item.itemTypeID, True)
-                            notModifiedItemsGroups[item.intCD].numItems += 1
-                            notModifiedItemsGroups[item.intCD].regionIdList.append(
-                                _RegionId(container.getAreaID(), item.itemTypeID, idx))
+                    if not item or isBuy and item.isHiddenInUI() and hasDefaultCamo or nonHistoric and item.isHistorical():
+                        continue
+                    if item.intCD not in notModifiedGroups:
+                        notModifiedGroups[item.intCD] = _ItemGroupDescription(item, 0, [], item.itemTypeID, True)
+                    notModifiedGroups[item.intCD].numItems += 1
+                    notModifiedGroups[item.intCD].regionIdList.append(_RegionId(container.getAreaID(), item.itemTypeID, idx))
 
-        if purchaseItemsGroups and notModifiedItemsGroups:
+        if purchaseGroups and notModifiedGroups:
             self._list.append({
                 'userName': text_styles.main(_ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_NONHISTORIC_TABLEHEADERS_NEW)),
                 'isTitle': True})
         purchaseItemsGroupsSorted = sorted(
-            purchaseItemsGroups.values(), key=lambda v: (TYPES_ORDER.index(v.slotType), v.item.intCD, not v.isFromInventory))
+            purchaseGroups.values(), key=lambda v: (TYPES_ORDER.index(v.slotType), v.item.intCD, not v.isFromInventory))
         for group in purchaseItemsGroupsSorted:
             self._list.append(self._makeVO(group, False, group.isFromInventory))
 
-        if purchaseItemsGroups and notModifiedItemsGroups:
+        if purchaseGroups and notModifiedGroups:
             self._list.append({
                 'userName': text_styles.main(_ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_NONHISTORIC_TABLEHEADERS_PURCHASE)),
                 'isTitle': True})
         notModifiedItemsGroupsSorted = sorted(
-            notModifiedItemsGroups.values(), key=lambda v: (TYPES_ORDER.index(v.slotType), v.item.intCD))
+            notModifiedGroups.values(), key=lambda v: (TYPES_ORDER.index(v.slotType), v.item.intCD))
         for group in notModifiedItemsGroupsSorted:
             self._list.append(self._makeVO(group, True))
 
