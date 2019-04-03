@@ -1,14 +1,8 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
-from gui import DialogsInterface
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
-from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView as WGMainView
-from gui.Scaleform.daapi.view.lobby.customization.shared import SEASONS_ORDER, getTotalPurchaseInfo, containsVehicleBound
-from gui.Scaleform.genConsts.CUSTOMIZATION_DIALOGS import CUSTOMIZATION_DIALOGS
-from gui.shared import events, EVENT_BUS_SCOPE
+from gui.Scaleform.daapi.view.lobby.customization.shared import SEASONS_ORDER
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from items.components.c11n_constants import SeasonType
 from .. import g_config
 

@@ -1,7 +1,6 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
-from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import comparisonKey
 from gui.Scaleform.daapi.view.lobby.customization.shared import getTotalPurchaseInfo, TABS_ITEM_TYPE_MAPPING, \
     TABS_SLOT_TYPE_MAPPING, C11nMode
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES

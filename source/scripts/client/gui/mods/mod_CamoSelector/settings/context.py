@@ -1,19 +1,16 @@
 import Event
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
-from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
-from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_NAME, C11nMode, \
+from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_NAME, C11nMode, \
     SEASON_TYPE_TO_IDX, TYPES_ORDER, TABS_SLOT_TYPE_MAPPING, SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems, \
     OutfitInfo, getItemInventoryCount, getStyleInventoryCount
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
-from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.customization import CustomizationService
 from gui.customization.context import CustomizationContext as WGCtx, CaruselItemData
 from gui.customization.shared import C11nId
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
-from gui.shared.utils.decorators import process
 from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from shared_utils import first
@@ -220,33 +217,6 @@ class CustomizationContext(WGCtx):
             self.onCustomizationModeChanged(self._mode)
             self.refreshOutfit()
 
-    def installItem(self, intCD, slotId, seasonIdx, component=None):
-        if slotId is None:
-            return False
-        item = self.service.getItemByCD(intCD)
-        prevItem = self.getItemFromRegion(slotId)
-        if (prevItem is None or prevItem != item) and self.isBuy and self.isBuyLimitReached(item):
-            SystemMessages.pushI18nMessage(SYSTEM_MESSAGES.CUSTOMIZATION_PROHIBITED, type=SystemMessages.SM_TYPE.Warning,
-                                           itemName=item.userName)
-            return False
-        if slotId.slotType == GUI_ITEM_TYPE.STYLE:
-            if self.isBuy:
-                self.__modifiedStyle = item
-            else:
-                self._modifiedModdedStyle = item
-        else:
-            season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
-            outfit = self._modifiedOutfits[season]
-            if self.numberEditModeActive and item.itemTypeID != GUI_ITEM_TYPE.PERSONAL_NUMBER:
-                self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_BY_INSCRIPTION_SELECT)
-            outfit.getContainer(slotId.areaId).slotFor(slotId.slotType).set(
-                item, idx=slotId.regionIdx, component=component)
-            outfit.invalidate()
-        self.refreshOutfit()
-        buyLimitReached = self.isBuyLimitReached(item)
-        self.onCustomizationItemInstalled(item, component, slotId, buyLimitReached)
-        return True
-
     def isPossibleToInstallToAllTankAreas(self, season, slotType, currentSlotData):
         return not self.isBuy or super(CustomizationContext, self).isPossibleToInstallToAllTankAreas(
             season, slotType, currentSlotData)
@@ -254,9 +224,6 @@ class CustomizationContext(WGCtx):
     def isPossibleToInstallItemForAllSeasons(self, areaID, slotType, regionIdx, currentSlotData):
         return not self.isBuy or super(CustomizationContext, self).isPossibleToInstallItemForAllSeasons(
             areaID, slotType, regionIdx, currentSlotData)
-
-    def getLockedProjectionDecalSeasons(self, regionIdx):
-        return [] if not self.isBuy else super(CustomizationContext, self).getLockedProjectionDecalSeasons(regionIdx)
 
     def removeStyle(self, intCD):
         if self.isBuy:
@@ -322,7 +289,7 @@ class CustomizationContext(WGCtx):
     def getPurchaseItems(self):
         if self._mode == C11nMode.CUSTOM:
             currentSeason = self.currentSeason
-            order = [currentSeason] + [ s for s in SEASONS_ORDER if s != currentSeason ]
+            order = [currentSeason] + [s for s in SEASONS_ORDER if s != currentSeason]
             return getCustomPurchaseItems(self.getOutfitsInfo(), order)
         return getStylePurchaseItems(OutfitInfo(self.__originalStyle, self.__modifiedStyle), buyMore=self.__prolongStyleRent)
 
@@ -335,7 +302,10 @@ class CustomizationContext(WGCtx):
         super(CustomizationContext, self).prolongStyleRent(style)
 
     def applyItems(self, purchaseItems):
+        mode = self.actualMode
+        self.actualMode = CSMode.BUY
         super(CustomizationContext, self).applyItems(purchaseItems)
+        self.actualMode = mode
         self.applyModdedStuff()
 
     def __carveUpOutfits(self):
