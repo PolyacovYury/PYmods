@@ -14,24 +14,6 @@ from .. import g_config
 
 
 class MainView(WGMainView):
-    def showBuyWindow(self, ctx=None):  # TODO: teach this not to by CamoSelector's stuff
-        if self.__ctx.isOnly1ChangedNumberInEditMode():
-            self.__ctx.sendNumberEditModeCommand(PersonalNumEditCommands.FINISH_BY_CLICK)
-        elif self.__ctx.numberEditModeActive:
-            self.__ctx.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
-        if not self.__ctx.numberEditModeActive:
-            self.changeVisible(False)
-            purchaseItems = self.__ctx.getPurchaseItems()
-            cart = getTotalPurchaseInfo(purchaseItems)
-            if cart.totalPrice == ITEM_PRICE_EMPTY:
-                if containsVehicleBound(purchaseItems):
-                    DialogsInterface.showI18nConfirmDialog(
-                        CUSTOMIZATION_DIALOGS.CUSTOMIZATION_INSTALL_BOUND_CHECK_NOTIFICATION, self.onBuyConfirmed)
-                else:
-                    self.__ctx.applyItems(purchaseItems)
-            else:
-                self.fireEvent(events.LoadViewEvent(VIEW_ALIAS.CUSTOMIZATION_PURCHASE_WINDOW, ctx=ctx), EVENT_BUS_SCOPE.LOBBY)
-
     def __setNotificationCounters(self):
         currentSeason = self.__ctx.currentSeason
         newItems = g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items)

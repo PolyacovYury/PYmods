@@ -3,8 +3,9 @@ from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
-from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_NAME, C11nMode,\
-    SEASON_TYPE_TO_IDX, TYPES_ORDER, TABS_SLOT_TYPE_MAPPING
+from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_NAME, C11nMode, \
+    SEASON_TYPE_TO_IDX, TYPES_ORDER, TABS_SLOT_TYPE_MAPPING, SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems, \
+    OutfitInfo, getItemInventoryCount, getStyleInventoryCount
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.SYSTEM_MESSAGES import SYSTEM_MESSAGES
 from gui.customization import CustomizationService
@@ -29,7 +30,7 @@ class CustomizationContext(WGCtx):
 
     @property
     def _originalOutfits(self):
-        return self.__originalOutfits if self.isBuy else self._originalCSOutfits
+        return self.__originalOutfits if self.isBuy else self._originalModdedOutfits
 
     @_originalOutfits.setter
     def _originalOutfits(self, value):
@@ -37,7 +38,7 @@ class CustomizationContext(WGCtx):
 
     @property
     def _modifiedOutfits(self):
-        return self.__modifiedOutfits if self.isBuy else self._modifiedCSOutfits
+        return self.__modifiedOutfits if self.isBuy else self._modifiedModdedOutfits
 
     @_modifiedOutfits.setter
     def _modifiedOutfits(self, value):
@@ -45,7 +46,7 @@ class CustomizationContext(WGCtx):
 
     @property
     def _modifiedStyle(self):
-        return self.__modifiedStyle if self.isBuy else self._modifiedCSStyle
+        return self.__modifiedStyle if self.isBuy else self._modifiedModdedStyle
 
     @_modifiedStyle.setter
     def _modifiedStyle(self, value):
@@ -56,10 +57,10 @@ class CustomizationContext(WGCtx):
         self.onActualModeChanged = Event.Event(self._eventsManager)
         self.__switcherIgnored = False
         self._lastTab = {CSMode.BUY: C11nTabs.STYLE, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
-        self._originalCSOutfits = {}
-        self._modifiedCSOutfits = {}
-        self._originalCSStyle = None
-        self._modifiedCSStyle = None
+        self._originalModdedOutfits = {}
+        self._modifiedModdedOutfits = {}
+        self._originalModdedStyle = None
+        self._modifiedModdedStyle = None
         self.__originalOutfits = {}
         self.__modifiedOutfits = {}
         self.__modifiedStyle = None
@@ -127,6 +128,78 @@ class CustomizationContext(WGCtx):
                 if not value:
                     del settings[key]
 
+    def getModdedOutfitsInfo(self):
+        outfitsInfo = {}
+        for season in SEASONS_ORDER:
+            outfitsInfo[season] = OutfitInfo(self._originalModdedOutfits[season], self._modifiedModdedOutfits[season])
+        return outfitsInfo
+
+    def getModdedPurchaseItems(self):
+        if self._mode == C11nMode.CUSTOM:
+            currentSeason = self.currentSeason
+            order = [currentSeason] + [s for s in SEASONS_ORDER if s != currentSeason]
+            return getCustomPurchaseItems(self.getModdedOutfitsInfo(), order)
+        return getStylePurchaseItems(OutfitInfo(self._originalModdedStyle, self._modifiedModdedStyle))
+
+    def applyModdedStuff(self):
+        self.applyModdedSettings()
+        self.applyModdedItems()
+
+    def applyModdedSettings(self):
+        self._cleanSettings()
+        for itemsKey in self._currentSettings:
+            for camoName in self._currentSettings[itemsKey]:
+                g_config.camouflages[itemsKey].setdefault(camoName, {}).update(self._currentSettings[itemsKey][camoName])
+        if self._currentSettings['remap']:
+            newSettings = {'disable': g_config.disable, 'remap': g_config.camouflages['remap']}
+            loadJson(g_config.ID, 'settings', newSettings, g_config.configPath, True)
+        if self._currentSettings['custom']:
+            for confFolderName in g_config.configFolders:
+                configFolder = g_config.configFolders[confFolderName]
+                loadJson(g_config.ID, 'settings', {key: g_config.camouflages['custom'][key] for key in configFolder},
+                         g_config.configPath + 'camouflages/' + confFolderName + '/', True, False)
+        if any(self._currentSettings.itervalues()):
+            g_config.collectCamouflageData()
+
+    def applyModdedItems(self):  # TODO: whip up style saving (and applying, for that measure)
+        self.itemsCache.onSyncCompleted -= self.__onCacheResync
+        boughtOutfits = {season: self.service.getCustomOutfit(season) for season in SeasonType.COMMON_SEASONS}
+        boughtStyles = {season: self.service.getStyledOutfit(season) for season in SeasonType.COMMON_SEASONS}
+        nationName, vehicleName = g_currentVehicle.item.descriptor.name.split(':')
+        vehConfig = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
+        for pItem in (x for x in self.getModdedPurchaseItems() if x.selected):
+            seasonName = SEASON_TYPE_TO_NAME[pItem.group]
+            if pItem.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
+                bItem, bComp = boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot)._items.get(
+                    pItem.regionID, (None, None))
+                component = self._modifiedOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getComponent(
+                    pItem.regionID)
+                if pItem.isDismantling and (not bItem or not bComp) or not pItem.isDismantling and pItem.item == bItem and \
+                        component.palette == bComp.palette and component.patternSize == bComp.patternSize:
+                    vehConfig.get(seasonName, {}).get('camo', {}).pop(TankPartIndexes.getName(pItem.areaID), [])
+                else:
+                    g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
+                        seasonName, {}).setdefault('camo', {})[TankPartIndexes.getName(pItem.areaID)] = (
+                        [pItem.item.id, component.palette, component.patternSize] if not pItem.isDismantling else [])
+                g_config.hangarCamoCache.get(nationName, {}).get(vehicleName, {}).get(seasonName, {}).pop(
+                    TankPartIndexes.getName(pItem.areaID), {})
+            else:
+                typeName = GUI_ITEM_TYPE_NAMES[pItem.slot]
+                bItem = boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getItem(pItem.regionID)
+                if pItem.isDismantling and not bItem or not pItem.isDismantling and pItem.item == bItem:
+                    vehConfig.get(seasonName, {}).get(typeName, {}).get(
+                        TankPartIndexes.getName(pItem.areaID) if pItem.areaID < 4 else 'misc',
+                        {}).pop(str(pItem.regionID), None)
+                else:
+                    g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
+                        seasonName, {}).setdefault(typeName, {}).setdefault(
+                        TankPartIndexes.getName(pItem.areaID) if pItem.areaID < 4 else 'misc', {})[
+                        str(pItem.regionID)] = (pItem.item.id if not pItem.isDismantling else None)
+        self.deleteEmpty(g_config.outfitCache)
+        loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
+        self.__onCacheResync()
+        self.itemsCache.onSyncCompleted += self.__onCacheResync
+
     # noinspection PyMethodOverriding
     def tabChanged(self, tabIndex):
         if self.numberEditModeActive:
@@ -158,9 +231,9 @@ class CustomizationContext(WGCtx):
             return False
         if slotId.slotType == GUI_ITEM_TYPE.STYLE:
             if self.isBuy:
-                self._modifiedStyle = item
+                self.__modifiedStyle = item
             else:
-                self._modifiedCSStyle = item
+                self._modifiedModdedStyle = item
         else:
             season = SEASON_IDX_TO_TYPE.get(seasonIdx, self._currentSeason)
             outfit = self._modifiedOutfits[season]
@@ -187,11 +260,11 @@ class CustomizationContext(WGCtx):
 
     def removeStyle(self, intCD):
         if self.isBuy:
-            if self._modifiedStyle and self._modifiedStyle.intCD == intCD:
-                self._modifiedStyle = None
+            if self.__modifiedStyle and self.__modifiedStyle.intCD == intCD:
+                self.__modifiedStyle = None
         elif self.actualMode == CSMode.INSTALL:
-            if self._modifiedCSStyle and self._modifiedCSStyle.intCD == intCD:
-                self._modifiedCSStyle = None
+            if self._modifiedModdedStyle and self._modifiedModdedStyle.intCD == intCD:
+                self._modifiedModdedStyle = None
         self.refreshOutfit()
         self.onCustomizationItemsRemoved()
 
@@ -240,64 +313,30 @@ class CustomizationContext(WGCtx):
             self.service.highlightRegions(self.getEmptyRegions())
         self.onCaruselItemSelected(index, intCD)
 
+    def getOutfitsInfo(self):
+        outfitsInfo = {}
+        for season in SEASONS_ORDER:
+            outfitsInfo[season] = OutfitInfo(self.__originalOutfits[season], self.__modifiedOutfits[season])
+        return outfitsInfo
+
+    def getPurchaseItems(self):
+        if self._mode == C11nMode.CUSTOM:
+            currentSeason = self.currentSeason
+            order = [currentSeason] + [ s for s in SEASONS_ORDER if s != currentSeason ]
+            return getCustomPurchaseItems(self.getOutfitsInfo(), order)
+        return getStylePurchaseItems(OutfitInfo(self.__originalStyle, self.__modifiedStyle), buyMore=self.__prolongStyleRent)
+
+    def getItemInventoryCount(self, item):
+        return (getItemInventoryCount(item, self.getOutfitsInfo()) if self._mode == C11nMode.CUSTOM else
+                getStyleInventoryCount(item, OutfitInfo(self.__originalStyle, self.__modifiedStyle)))
+
     def prolongStyleRent(self, style):
         self._lastTab[CSMode.BUY] = C11nTabs.STYLE
         super(CustomizationContext, self).prolongStyleRent(style)
 
-    @process('customizationApply')
     def applyItems(self, purchaseItems):
-        yield super(CustomizationContext, self).applyItems(purchaseItems)
-        self._cleanSettings()
-        for itemsKey in self._currentSettings:
-            for camoName in self._currentSettings[itemsKey]:
-                g_config.camouflages[itemsKey].setdefault(camoName, {}).update(self._currentSettings[itemsKey][camoName])
-        if self._currentSettings['remap']:
-            newSettings = {'disable': g_config.disable,
-                           'remap': g_config.camouflages['remap']}
-            loadJson(g_config.ID, 'settings', newSettings, g_config.configPath, True)
-        if self._currentSettings['custom']:
-            for confFolderName in g_config.configFolders:
-                configFolder = g_config.configFolders[confFolderName]
-                loadJson(g_config.ID, 'settings', {key: g_config.camouflages['custom'][key] for key in configFolder},
-                         g_config.configPath + 'camouflages/' + confFolderName + '/', True, False)
-        if any(self._currentSettings.itervalues()):
-            g_config.collectCamouflageData()
-        self.itemsCache.onSyncCompleted -= self.__onCacheResync
-        boughtOutfits = {season: self.service.getCustomOutfit(season) for season in SeasonType.COMMON_SEASONS}
-        nationName, vehicleName = g_currentVehicle.item.descriptor.name.split(':')
-        vehConfig = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
-        for pItem in (x for x in purchaseItems if x.selected):
-            seasonName = SEASON_TYPE_TO_NAME[pItem.group]
-            if pItem.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
-                bItem, bComp = boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot)._items.get(
-                    pItem.regionID, (None, None))
-                component = self._modifiedOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getComponent(
-                    pItem.regionID)
-                if pItem.isDismantling and (not bItem or not bComp) or not pItem.isDismantling and pItem.item == bItem and \
-                        component.palette == bComp.palette and component.patternSize == bComp.patternSize:
-                    vehConfig.get(seasonName, {}).get('camo', {}).pop(TankPartIndexes.getName(pItem.areaID), [])
-                else:
-                    g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
-                        seasonName, {}).setdefault('camo', {})[TankPartIndexes.getName(pItem.areaID)] = (
-                        [pItem.item.id, component.palette, component.patternSize] if not pItem.isDismantling else [])
-                g_config.hangarCamoCache.get(nationName, {}).get(vehicleName, {}).get(seasonName, {}).pop(
-                    TankPartIndexes.getName(pItem.areaID), {})
-            else:
-                typeName = GUI_ITEM_TYPE_NAMES[pItem.slot]
-                bItem = boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getItem(pItem.regionID)
-                if pItem.isDismantling and not bItem or not pItem.isDismantling and pItem.item == bItem:
-                    vehConfig.get(seasonName, {}).get(typeName, {}).get(
-                        TankPartIndexes.getName(pItem.areaID) if pItem.areaID < 4 else 'misc',
-                        {}).pop(str(pItem.regionID), None)
-                else:
-                    g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
-                        seasonName, {}).setdefault(typeName, {}).setdefault(
-                        TankPartIndexes.getName(pItem.areaID) if pItem.areaID < 4 else 'misc', {})[
-                        str(pItem.regionID)] = (pItem.item.id if not pItem.isDismantling else None)
-        self.deleteEmpty(g_config.outfitCache)
-        loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-        self.__onCacheResync()  # TODO: whip up style saving (and applying, for that measure)
-        self.itemsCache.onSyncCompleted += self.__onCacheResync
+        super(CustomizationContext, self).applyItems(purchaseItems)
+        self.applyModdedStuff()
 
     def __carveUpOutfits(self):
         for season in SeasonType.COMMON_SEASONS:
@@ -322,9 +361,9 @@ class CustomizationContext(WGCtx):
             seasonCache = g_config.outfitCache.get(nationName, {}).get(vehName, {}).get(seasonName, {})
             applyCamoCache(outfit, vehName, seasonCache.get('camo', {}))
             applyPlayerCache(outfit, vehName, seasonCache)
-            self._originalCSOutfits[season] = outfit.copy()
+            self._originalModdedOutfits[season] = outfit.copy()
             applyCamoCache(outfit, vehName, g_config.hangarCamoCache.get(nationName, {}).get(vehName, {}).get(seasonName, {}))
-            self._modifiedCSOutfits[season] = outfit.copy()
+            self._modifiedModdedOutfits[season] = outfit.copy()
         # TODO: add CamoSelector style getter
         style = self.service.getCurrentStyle()
         if self.service.isCurrentStyleInstalled():
@@ -345,31 +384,30 @@ class CustomizationContext(WGCtx):
         if self.isBuy:
             self._modifiedStyle = self._originalStyle
         else:
-            self._modifiedCSStyle = self._originalCSStyle
+            self._modifiedModdedStyle = self._originalModdedStyle
 
     def __preserveState(self):
         self._state.update(
             modifiedStyle=self.__modifiedStyle,
             modifiedOutfits={season: outfit.copy() for season, outfit in self.__modifiedOutfits.iteritems()},
-            modifiedCSStyle=self._modifiedCSStyle,
-            modifiedCSOutfits={season: outfit.copy() for season, outfit in self._modifiedCSOutfits.iteritems()})
+            modifiedModdedStyle=self._modifiedModdedStyle,
+            modifiedModdedOutfits={season: outfit.copy() for season, outfit in self._modifiedModdedOutfits.iteritems()})
 
     def __restoreState(self):
         self._modifiedStyle = self._state.get('modifiedStyle')
         self._modifiedOutfits = self._state.get('modifiedOutfits')
         if self._modifiedStyle:
             self._modifiedStyle = self.service.getItemByCD(self._modifiedStyle.intCD)
-        self._modifiedCSStyle = self._state.get('modifiedCSStyle')
-        self._modifiedCSOutfits = self._state.get('modifiedCSOutfits')
-        if self._modifiedCSStyle:
-            self._modifiedCSStyle = self.service.getItemByCD(self._modifiedCSStyle.intCD)
+        self._modifiedModdedStyle = self._state.get('modifiedModdedStyle')
+        self._modifiedModdedOutfits = self._state.get('modifiedModdedOutfits')
+        if self._modifiedModdedStyle:
+            self._modifiedModdedStyle = self.service.getItemByCD(self._modifiedModdedStyle.intCD)
         self._state.clear()
 
     # noinspection PyMethodOverriding
     def updateVisibleTabsList(self, visibleTabs):
-        for seasonType in SeasonType.COMMON_SEASONS:
-            self.__visibleTabs[seasonType] = sorted(
-                visibleTabs[seasonType], key=lambda it: TYPES_ORDER.index(TABS_SLOT_TYPE_MAPPING[it]))
+        for s in SeasonType.COMMON_SEASONS:
+            self.__visibleTabs[s] = sorted(visibleTabs[s], key=lambda it: TYPES_ORDER.index(TABS_SLOT_TYPE_MAPPING[it]))
         tabIndex = self._lastTab[self.actualMode]
         if tabIndex not in self.visibleTabs:
             tabIndex = first(self.visibleTabs, -1)
