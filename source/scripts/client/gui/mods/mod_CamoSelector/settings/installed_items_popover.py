@@ -1,10 +1,12 @@
 from CurrentVehicle import g_currentVehicle
+from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.installed_items_popover import InstalledItemsPopoverDataProvider as \
     WGDataProvider, _ItemGroupDescription, _RegionId
 from gui.Scaleform.daapi.view.lobby.customization.shared import TYPES_ORDER
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.shared.formatters import text_styles
 from helpers.i18n import makeString as _ms
+from .. import g_config
 
 
 class InstalledItemsPopoverDataProvider(WGDataProvider):
@@ -58,3 +60,10 @@ class InstalledItemsPopoverDataProvider(WGDataProvider):
             notModifiedItemsGroups.values(), key=lambda v: (TYPES_ORDER.index(v.slotType), v.item.intCD))
         for group in notModifiedItemsGroupsSorted:
             self._list.append(self._makeVO(group, True))
+
+
+@overrideMethod(WGDataProvider, '__new__')
+def new(base, cls, *a, **kw):
+    if not g_config.data['enabled']:
+        return base(cls, *a, **kw)
+    return base(InstalledItemsPopoverDataProvider, *a, **kw)
