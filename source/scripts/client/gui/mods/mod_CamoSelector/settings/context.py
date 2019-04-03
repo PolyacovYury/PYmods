@@ -61,7 +61,9 @@ class CustomizationContext(WGCtx):
             self._modifiedModdedStyle = value
 
     def __init__(self):
+        self.actualMode = CSMode.BUY
         super(CustomizationContext, self).__init__()
+        self.actualMode = CSMode.INSTALL
         self.onActualModeChanged = Event.Event(self._eventsManager)
         self.__switcherIgnored = False
         self._lastTab = {CSMode.BUY: C11nTabs.STYLE, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
@@ -74,7 +76,6 @@ class CustomizationContext(WGCtx):
         self.__originalStyle = None
         self.__modifiedStyle = None
         self._currentSettings = {'custom': {}, 'remap': {}}
-        self.actualMode = CSMode.INSTALL
 
     @property
     def numberEditModeActive(self):
