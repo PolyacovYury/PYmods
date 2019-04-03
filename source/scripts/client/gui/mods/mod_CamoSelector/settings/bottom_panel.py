@@ -23,11 +23,15 @@ from .. import g_config
 class CustomizationBottomPanel(CBP):
     def _populate(self):
         super(CustomizationBottomPanel, self)._populate()
-        self.__ctx.onActualModeChanged += self._carouselDP.updateTabGroups
+        self.__ctx.onActualModeChanged += self.__onActualModeChanged
 
     def _dispose(self):
-        self.__ctx.onActualModeChanged -= self._carouselDP.updateTabGroups
+        self.__ctx.onActualModeChanged -= self.__onActualModeChanged
         super(CustomizationBottomPanel, self)._dispose()
+
+    def __onActualModeChanged(self):
+        self._carouselDP.updateTabGroups()
+        self.__updatePopoverBtnIcon()
 
     def __onSlotSelected(self, areaId, slotType, regionIdx):
         item = self.__ctx.getItemFromRegion(C11nId(areaId, slotType, regionIdx))
