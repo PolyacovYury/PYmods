@@ -3,7 +3,7 @@ from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import comparisonKey
 from gui.Scaleform.daapi.view.lobby.customization.shared import getTotalPurchaseInfo, TABS_ITEM_TYPE_MAPPING, \
-    TABS_SLOT_TYPE_MAPPING
+    TABS_SLOT_TYPE_MAPPING, C11nMode
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -133,6 +133,13 @@ class CustomizationBottomPanel(CBP):
                          'id': tabIdx})
             pluses.append(showPlus)
         return data, pluses
+
+    def __onModeChanged(self, mode):
+        self._carouselDP.selectItem(self.__ctx.modifiedStyle if mode == C11nMode.STYLE else None)
+        self.__setBottomPanelBillData()
+        self.__setFooterInitData()
+        self.__scrollToNewItem()
+        self.__updatePopoverBtnIcon()
 
     def __scrollToNewItem(self):
         currentTypes = TABS_ITEM_TYPE_MAPPING[self.__ctx.currentTab]
