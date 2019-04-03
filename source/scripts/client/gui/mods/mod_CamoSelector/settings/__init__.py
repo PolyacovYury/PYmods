@@ -1,1 +1,1 @@
-from . import bottom_panel, carousel, cm_handlers, inscription_controller, context, main_view, shared
+from . import bottom_panel, carousel, cm_handlers, context, inscription_controller, installed_items_popover, main_view, shared
