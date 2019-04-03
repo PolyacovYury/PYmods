@@ -1,6 +1,7 @@
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization import CustomizationItemCMHandler as WGCMHandler
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from .. import g_config
 from ..constants import SelectionMode
 
@@ -31,6 +32,8 @@ class CustomizationItemCMHandler(WGCMHandler):
             return result
         result = result[-1:]
         item = self.itemsCache.items.getItemByCD(self._intCD)
+        if item.itemTypeID != GUI_ITEM_TYPE.CAMOUFLAGE:
+            return result
         settings = self.__ctx.getItemSettings(item)
         mode = settings['random_mode']
         getOptionLabel = lambda option: g_config.i18n['contextMenu_' + option]
