@@ -11,8 +11,6 @@ from .. import g_config
 
 class InstalledItemsPopoverDataProvider(WGDataProvider):
     def buildList(self, isNonHistoric):
-        import bwpydevd
-        bwpydevd.startPyDevD('pycharm', suspend=True)
         self.clear()
         hasCustomDefaultCamouflage = g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage
         purchaseItems = [
