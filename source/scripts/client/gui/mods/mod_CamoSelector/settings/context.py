@@ -13,6 +13,7 @@ from gui.customization.shared import C11nId, __isTurretCustomizable as isTurretC
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from items.components.c11n_constants import SeasonType
+from items.customizations import EmptyComponent
 from items.vehicles import g_cache
 from shared_utils import first
 from .shared import CSMode
@@ -173,7 +174,8 @@ class CustomizationContext(WGCtx):
             if not origComponent if p.isDismantling else p.component.weak_eq(origComponent):
                 conf.pop(reg, None)
             else:
-                conf[reg] = ({f: getattr(p.component, f) for f, fd in p.component.fields.items() if not fd.weakEqualIgnored}
+                conf[reg] = (({f: getattr(p.component, f) for f, fd in p.component.fields.items() if not fd.weakEqualIgnored}
+                             if not isinstance(p.component, EmptyComponent) else {'id': p.item.id})
                              if not p.isDismantling else {'id': None})
         self.deleteEmpty(g_config.outfitCache)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
