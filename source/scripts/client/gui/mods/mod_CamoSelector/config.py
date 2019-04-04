@@ -158,7 +158,7 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).load()
 
     def migrateSettings(self, camoData):
-        outfitCache = loadJson(self.ID, 'outfitCache', {}, self.configPath, True)
+        outfitCache = loadJson(self.ID, 'outfitCache', {}, self.configPath)
         if os.path.isfile(self.configPath + 'camouflagesCache.json'):
             camouflagesCache = loadJson(self.ID, 'camouflagesCache', {}, self.configPath)
             for nat in camouflagesCache:
@@ -167,8 +167,6 @@ class ConfigInterface(PYmodsConfigInterface):
                         outfitCache.setdefault(nat, {}).setdefault(vehName, {}).setdefault(season, {})[
                             GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]] = camouflagesCache[nat][vehName][season]
             os.remove(self.configPath + 'camouflagesCache.json')
-        import bwpydevd
-        bwpydevd.startPyDevD('pycharm', suspend=True)
         for nat in outfitCache.values():
             for veh in nat.values():
                 for season in veh.values():
