@@ -158,6 +158,8 @@ class CustomizationContext(WGCtx):
             g_config.collectCamouflageData()
 
     def applyModdedItems(self):  # TODO: whip up style saving (and applying, for that measure)
+        import bwpydevd
+        bwpydevd.startPyDevD('pycharm', suspend=True)
         self.itemsCache.onSyncCompleted -= self.__onCacheResync
         nationName, vehicleName = g_currentVehicle.item.descriptor.name.split(':')
         vehConfig = g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {})
