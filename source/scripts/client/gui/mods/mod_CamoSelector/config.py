@@ -167,6 +167,8 @@ class ConfigInterface(PYmodsConfigInterface):
                         outfitCache.setdefault(nat, {}).setdefault(vehName, {}).setdefault(season, {})[
                             GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]] = camouflagesCache[nat][vehName][season]
             os.remove(self.configPath + 'camouflagesCache.json')
+        import bwpydevd
+        bwpydevd.startPyDevD('pycharm', suspend=True)
         for nat in outfitCache.values():
             for veh in nat.values():
                 for season in veh.values():
