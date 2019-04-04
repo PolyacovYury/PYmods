@@ -2,11 +2,10 @@ import Event
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
 from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
-from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_NAME, C11nMode, \
-    SEASON_TYPE_TO_IDX, TYPES_ORDER, TABS_SLOT_TYPE_MAPPING, SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems, \
-    OutfitInfo, getItemInventoryCount, getStyleInventoryCount
+from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_NAME, C11nMode, TYPES_ORDER, \
+    TABS_SLOT_TYPE_MAPPING, SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems, OutfitInfo, getItemInventoryCount, \
+    getStyleInventoryCount
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
-from gui.customization import CustomizationService
 from gui.customization.context import CustomizationContext as WGCtx, CaruselItemData
 from gui.customization.shared import C11nId
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
@@ -264,7 +263,6 @@ class CustomizationContext(WGCtx):
         self.refreshOutfit()
 
     def cancelChanges(self):
-        print 'CamoSelector: cancelChanges'
         self._currentSettings = {'custom': {}, 'remap': {}}
         super(CustomizationContext, self).cancelChanges()
 
@@ -302,6 +300,43 @@ class CustomizationContext(WGCtx):
         super(CustomizationContext, self).applyItems(purchaseItems)
         self.actualMode = mode
         self.applyModdedStuff()
+
+    def init(self):  # TODO: rewrite
+        super(CustomizationContext, self).init()
+        if self._originalStyle:
+            self._mode = C11nMode.STYLE
+            self._tabIndex = C11nTabs.STYLE
+        else:
+            self._mode = C11nMode.CUSTOM
+            self._tabIndex = C11nTabs.PAINT
+            notInst = all([not self._originalOutfits[season].isInstalled() for season in SeasonType.COMMON_SEASONS])
+            if notInst and not self.isOutfitsEmpty(self._modifiedOutfits) and not self._modifiedStyle:
+                self._mode = C11nMode.STYLE
+        self._originalMode = self._mode
+        self.refreshOutfit()
+
+    def isOutfitsModified(self):  # TODO: rewrite
+        if self._mode == self._originalMode:
+            if self._mode == C11nMode.STYLE:
+                if self._modifiedStyle and self._originalStyle:
+                    return self._modifiedStyle.intCD != self._originalStyle.intCD or self._autoRentEnabled != g_currentVehicle.item.isAutoRentStyle
+                return not (self._modifiedStyle is None and self._originalStyle is None)
+            if self.numberEditModeActive and self.isOnly1ChangedNumberInEditMode() and self._numberIsEmpty:
+                return False
+            for season in SeasonType.COMMON_SEASONS:
+                outfit = self._modifiedOutfits[season]
+                currOutfit = self._originalOutfits[season]
+                if not currOutfit.isEqual(outfit) or not outfit.isEqual(currOutfit):
+                    return True
+
+            return False
+        else:
+            if self._mode == C11nMode.CUSTOM:
+                if self.isOutfitsEmpty(self._modifiedOutfits) and self._originalStyle is None:
+                    return False
+            elif self._modifiedStyle is None and self.isOutfitsEmpty(self._originalOutfits):
+                return False
+            return True
 
     def isBuyLimitReached(self, item):
         return self.isBuy and super(CustomizationContext, self).isBuyLimitReached(item)
@@ -348,6 +383,7 @@ class CustomizationContext(WGCtx):
         else:
             self._currentOutfit = self._modifiedOutfits[self._currentSeason]
 
+    # noinspection SpellCheckingInspection
     def __cancelModifiedOufits(self):
         for season in SeasonType.COMMON_SEASONS:
             self.__modifiedOutfits[season] = self.__originalOutfits[season].copy()
@@ -386,11 +422,8 @@ class CustomizationContext(WGCtx):
         self.tabChanged(tabIndex)
 
 
-@overrideMethod(CustomizationService, 'getCtx')
-def new_getCtx(base, self):
+@overrideMethod(WGCtx, '__new__')
+def new(base, cls, *a, **kw):
     if not g_config.data['enabled']:
-        return base(self)
-    if not self._CustomizationService__customizationCtx:
-        self._CustomizationService__customizationCtx = CustomizationContext()
-        self._CustomizationService__customizationCtx.init()
-    return self._CustomizationService__customizationCtx
+        return base(cls, *a, **kw)
+    return base(CustomizationContext, *a, **kw)
