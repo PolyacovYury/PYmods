@@ -1,3 +1,5 @@
+import operator
+
 import Event
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
@@ -7,13 +9,12 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON
     getStyleInventoryCount
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.customization.context import CustomizationContext as WGCtx, CaruselItemData
-from gui.customization.shared import C11nId
+from gui.customization.shared import C11nId, __isTurretCustomizable as isTurretCustom
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from shared_utils import first
-from vehicle_systems.tankStructure import TankPartIndexes
 from .shared import CSMode
 from .. import g_config
 from ..constants import SelectionMode, SEASON_NAME_TO_TYPE
@@ -97,41 +98,27 @@ class CustomizationContext(WGCtx):
 
     def _cleanSettings(self):
         camouflages = g_cache.customization20().camouflages
-        for itemsKey, itemSettings in self._currentSettings.iteritems():
-            for ID, camoSetting in itemSettings.items():
-                origSetting = g_config.camouflages[itemsKey].get(ID, {})
-                if 'season' in camoSetting:
-                    if itemsKey == 'remap' and not self.itemsCache.items.getItemByCD(camouflages[ID].compactDescr).isHidden:
-                        print g_config.ID + ': in-shop camouflage season changing is disabled (id:', \
-                            ID + ', season setting was', (camoSetting['season'] or 'empty') + ')'
-                        del camoSetting['season']
-                        if 'season' in origSetting:
-                            del origSetting['season']
-                    elif 'season' not in origSetting:
-                        itemSeasons = SeasonType.UNDEFINED
-                        for season in SEASONS_CONSTANTS.SEASONS:
-                            if season in camoSetting['season']:
-                                itemSeasons |= getattr(SeasonType, season.upper())
-                        camoSeason = camouflages[ID].season
-                        if camoSeason & ~SeasonType.EVENT == itemSeasons:
-                            del camoSetting['season']
-                    elif origSetting['season'] == camoSetting['season']:
-                        del camoSetting['season']
+        for key, settings in self._currentSettings.iteritems():
+            for ID, conf in settings.items():
+                orig = g_config.camouflages[key].get(ID, {})
+                if 'season' in conf and (
+                        camouflages[ID].season & ~SeasonType.EVENT == reduce(
+                            operator.ior, (SEASON_NAME_TO_TYPE[x] for x in conf['season']), SeasonType.UNDEFINED)
+                        if 'season' not in orig else orig['season'] == conf['season']):
+                    del conf['season']
                 for team in ('ally', 'enemy'):
-                    if team in camoSetting:
-                        if origSetting.get(team, True) == camoSetting[team]:
-                            del camoSetting[team]
-                if 'random_mode' in camoSetting:
-                    if camoSetting['random_mode'] == origSetting.get('random_mode', SelectionMode.RANDOM):
-                        del camoSetting['random_mode']
-                if not camoSetting:
-                    del itemSettings[ID]
+                    if team in conf and orig.get(team, True) == conf[team]:
+                        del conf[team]
+                if 'random_mode' in conf and conf['random_mode'] == orig.get('random_mode', SelectionMode.RANDOM):
+                    del conf['random_mode']
+                if not conf:
+                    del settings[ID]
 
     @classmethod
     def deleteEmpty(cls, settings):
         for key, value in settings.items():
-            if key == 'camo' and g_currentVehicle.item.turret.isGunCarriage:
-                value.pop('turret', None)
+            if key == GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE] and not isTurretCustom(g_currentVehicle.item.descriptor):
+                value.pop(Area.TURRET, None)
             elif isinstance(value, dict):
                 cls.deleteEmpty(value)
                 if not value:
@@ -172,38 +159,20 @@ class CustomizationContext(WGCtx):
 
     def applyModdedItems(self):  # TODO: whip up style saving (and applying, for that measure)
         self.itemsCache.onSyncCompleted -= self.__onCacheResync
-        boughtOutfits = {season: self.service.getCustomOutfit(season) for season in SeasonType.COMMON_SEASONS}
-        boughtStyles = {season: self.service.getStyledOutfit(season) for season in SeasonType.COMMON_SEASONS}
         nationName, vehicleName = g_currentVehicle.item.descriptor.name.split(':')
-        vehConfig = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
-        for pItem in (x for x in self.getModdedPurchaseItems() if x.selected):
-            seasonName = SEASON_TYPE_TO_NAME[pItem.group]
-            if pItem.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
-                bItem, bComp = boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot)._items.get(
-                    pItem.regionID, (None, None))
-                component = self._modifiedOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getComponent(
-                    pItem.regionID)
-                if pItem.isDismantling and (not bItem or not bComp) or not pItem.isDismantling and pItem.item == bItem and \
-                        component.palette == bComp.palette and component.patternSize == bComp.patternSize:
-                    vehConfig.get(seasonName, {}).get('camo', {}).pop(TankPartIndexes.getName(pItem.areaID), [])
-                else:
-                    g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
-                        seasonName, {}).setdefault('camo', {})[TankPartIndexes.getName(pItem.areaID)] = (
-                        [pItem.item.id, component.palette, component.patternSize] if not pItem.isDismantling else [])
-                g_config.hangarCamoCache.get(nationName, {}).get(vehicleName, {}).get(seasonName, {}).pop(
-                    TankPartIndexes.getName(pItem.areaID), {})
+        vehConfig = g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {})
+        for p in (x for x in self.getModdedPurchaseItems() if x.selected):
+            seasonName = SEASON_TYPE_TO_NAME[p.group]
+            typeName = GUI_ITEM_TYPE_NAMES[p.slot]
+            area = Area.getName(p.areaID) if p.areaID != Area.MISC else 'misc'
+            conf = vehConfig.setdefault(seasonName, {}).setdefault(typeName, {}).setdefault(area, {})
+            origComponent = self.__originalOutfits[p.group].getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
+            reg = str(p.regionID)
+            if not origComponent if p.isDismantling else origComponent.weak_eq(p.component):
+                conf.pop(reg, None)
             else:
-                typeName = GUI_ITEM_TYPE_NAMES[pItem.slot]
-                bItem = boughtOutfits[pItem.group].getContainer(pItem.areaID).slotFor(pItem.slot).getItem(pItem.regionID)
-                if pItem.isDismantling and not bItem or not pItem.isDismantling and pItem.item == bItem:
-                    vehConfig.get(seasonName, {}).get(typeName, {}).get(
-                        TankPartIndexes.getName(pItem.areaID) if pItem.areaID < 4 else 'misc',
-                        {}).pop(str(pItem.regionID), None)
-                else:
-                    g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
-                        seasonName, {}).setdefault(typeName, {}).setdefault(
-                        TankPartIndexes.getName(pItem.areaID) if pItem.areaID < 4 else 'misc', {})[
-                        str(pItem.regionID)] = (pItem.item.id if not pItem.isDismantling else None)
+                conf[reg] = ({f: getattr(p.component, f) for f, fd in p.component.fields.items() if not fd.weakEqualIgnored}
+                             if not p.isDismantling else {'id': None})
         self.deleteEmpty(g_config.outfitCache)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
         self.__onCacheResync()
@@ -362,7 +331,7 @@ class CustomizationContext(WGCtx):
             outfit = self.service.getCustomOutfit(season).copy()
             seasonName = SEASON_TYPE_TO_NAME[season]
             seasonCache = g_config.outfitCache.get(nationName, {}).get(vehName, {}).get(seasonName, {})
-            applyCamoCache(outfit, vehName, seasonCache.get('camo', {}))
+            applyCamoCache(outfit, vehName, seasonCache.get(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], {}))
             applyPlayerCache(outfit, vehName, seasonCache)
             self._originalModdedOutfits[season] = outfit.copy()
             applyCamoCache(outfit, vehName, g_config.hangarCamoCache.get(nationName, {}).get(vehName, {}).get(seasonName, {}))

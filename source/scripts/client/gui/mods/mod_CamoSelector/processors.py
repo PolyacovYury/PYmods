@@ -10,8 +10,9 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_N
 from gui.Scaleform.framework import ViewTypes
 from gui.app_loader import g_appLoader
 from gui.customization.shared import C11N_ITEM_TYPE_MAP
+from gui.customization.shared import __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
-from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES
+from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.c11n_items import Camouflage
 from gui.shared.gui_items.customization.outfit import Outfit, Area
 from helpers import dependency
@@ -39,13 +40,13 @@ def applyCamoCache(outfit, vehName, seasonCache):
             print g_config.ID + ': exception while reading camouflages cache for', vehName, 'in', areaName + ':', e.message
             continue
         slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
-        if not seasonCache[areaName]:
+        if not seasonCache[areaName] or seasonCache[areaName].get('0', {'id': None})['id'] is None:
             try:
                 slot.remove(0)
             except KeyError:
                 pass
             continue
-        camoID, paletteIdx, scale = seasonCache[areaName]
+        camoID, paletteIdx, scale = [seasonCache[areaName]['0'][k] for k in ('id', 'palette', 'patternSize')]
         if camoID not in camouflages:
             print '%s: wrong camouflage ID for %s:' % (g_config.ID, areaName), camoID
             del seasonCache[areaName]
@@ -77,14 +78,9 @@ def applyCamoCache(outfit, vehName, seasonCache):
 def applyPlayerCache(outfit, vehName, seasonCache):
     itemsCache = dependency.instance(IItemsCache)
     for itemTypeName in seasonCache.keys():
-        if itemTypeName not in ('paint', 'modification', 'emblem', 'inscription'):
-            if itemTypeName != 'camo':
-                print '%s: invalid item type in outfit cache for %s:' % (g_config.ID, vehName), itemTypeName
-                del seasonCache[itemTypeName]
-            continue
         itemDB = items.vehicles.g_cache.customization20().itemTypes[C11N_ITEM_TYPE_MAP[GUI_ITEM_TYPE_INDICES[itemTypeName]]]
         for areaName in seasonCache[itemTypeName].keys():
-            if itemTypeName == 'modification':
+            if itemTypeName == GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.MODIFICATION]:
                 if areaName != 'misc':
                     print g_config.ID + ': wrong area name for', vehName, 'modification:', areaName
                     del seasonCache[itemTypeName][areaName]
@@ -99,8 +95,8 @@ def applyPlayerCache(outfit, vehName, seasonCache):
                     continue
             slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE_INDICES[itemTypeName])
             for regionIdx in seasonCache[itemTypeName][areaName].keys():
-                itemID = seasonCache[itemTypeName][areaName][regionIdx]
-                if not itemID:
+                itemID = seasonCache[itemTypeName][areaName][regionIdx]['id']
+                if itemID is None:
                     try:
                         slot.remove(int(regionIdx))
                     except KeyError:  # a paint is being deleted while not applied at all. possible change after last cache
@@ -121,7 +117,7 @@ def applyPlayerCache(outfit, vehName, seasonCache):
     outfit.invalidate()
 
 
-def processRandomCamouflages(outfit, seasonName, seasonCache, vID=None, isGunCarriage=True):
+def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
     if not g_config.camoForSeason:
         g_config.collectCamouflageData()
     if vID is not None:
@@ -138,7 +134,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vID=None, isGunCar
     outfitItemIDs = set()
     outfitItems = set()
     for container in outfit.containers():
-        if isGunCarriage and container.getAreaID() == Area.TURRET:
+        if not isTurretCustom(vDesc) and container.getAreaID() == Area.TURRET:
             continue
         for slot in container.slots():
             item = slot.getItem(0)
@@ -150,7 +146,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vID=None, isGunCar
     if canBeUniform and outfitItemIDs:
         camoID, palette, patternSize = outfitItems.pop()
     for areaId, areaName in enumerate(TankPartNames.ALL):
-        if areaName == TankPartNames.CHASSIS or isGunCarriage and areaName == TankPartNames.TURRET:
+        if areaName == TankPartNames.CHASSIS or not isTurretCustom(vDesc) and areaName == TankPartNames.TURRET:
             continue
         slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
         item = slot.getItem(0)
@@ -158,7 +154,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vID=None, isGunCar
             continue
         if areaName in seasonCache:
             if seasonCache[areaName]:
-                camoID, palette, patternSize = seasonCache[areaName]
+                camoID, palette, patternSize = [seasonCache[areaName]['0'][k] for k in ('id', 'palette', 'patternSize')]
         else:
             if camoID is None or not g_config.data['uniformOutfit'] or not canBeUniform:
                 camoForSeason = g_config.camoForSeason[seasonName]
@@ -186,9 +182,9 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vID=None, isGunCar
             component = slot.getComponent()
             component.palette = palette
             component.patternSize = patternSize
-            seasonCache[areaName] = [camoID, palette, patternSize]
+            seasonCache[areaName]['0'] = {'id': camoID, 'palette': palette, 'patternSize': patternSize}
         else:
-            seasonCache[areaName] = []
+            seasonCache[areaName]['0'] = {'id': None}
     random.seed()
 
 
@@ -248,7 +244,7 @@ def new_assembleModel(base, self, *a, **kw):
             if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
                 seasonCache = g_config.hangarCamoCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
                     seasonName, {})
-                processRandomCamouflages(outfit, seasonName, seasonCache, isGunCarriage=vDesc.turret.isGunCarriage)
+                processRandomCamouflages(outfit, seasonName, seasonCache, vDesc)
                 applyCamoCache(outfit, vehicleName, seasonCache)
             self._HangarVehicleAppearance__outfit = outfit
             self.updateCustomization(outfit)
@@ -280,7 +276,7 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
                 vehCache.pop(seasonName, None)
         if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
             seasonCache = g_config.arenaCamoCache.setdefault(vID, {})
-            processRandomCamouflages(result, seasonName, seasonCache, vID, isGunCarriage=vDesc.turret.isGunCarriage)
+            processRandomCamouflages(result, seasonName, seasonCache, vDesc, vID)
             applyCamoCache(result, vehicleName, seasonCache)
     self._CompoundAppearance__outfit = result
     base(self, *a, **kw)

@@ -6,6 +6,7 @@ import nations
 import os
 from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups, Analytics
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
+from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from items.components.c11n_constants import SeasonType
 from . import __date__, __modID__
 from .constants import SelectionMode, SEASON_NAME_TO_TYPE
@@ -157,16 +158,35 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).load()
 
     def migrateSettings(self, camoData):
-        outfitCache = {}
+        outfitCache = loadJson(self.ID, 'outfitCache', {}, self.configPath, True)
         if os.path.isfile(self.configPath + 'camouflagesCache.json'):
             camouflagesCache = loadJson(self.ID, 'camouflagesCache', {}, self.configPath)
             for nat in camouflagesCache:
                 for vehName in camouflagesCache[nat]:
                     for season in camouflagesCache[nat][vehName]:
-                        outfitCache.setdefault(nat, {}).setdefault(vehName, {}).setdefault(season, {})['camo'] = \
-                            camouflagesCache[nat][vehName][season]
+                        outfitCache.setdefault(nat, {}).setdefault(vehName, {}).setdefault(season, {})[
+                            GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]] = camouflagesCache[nat][vehName][season]
             os.remove(self.configPath + 'camouflagesCache.json')
-            loadJson(self.ID, 'outfitCache', outfitCache, self.configPath, True)
+        for nat in outfitCache.values():
+            for veh in nat.values():
+                for season in veh.values():
+                    if 'camo' in season:
+                        season[GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]] = season.pop('camo')
+                    for typeName, tc in season.items():
+                        if typeName == GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]:
+                            for part in tc:
+                                if not isinstance(tc[part], list):
+                                    continue
+                                if not tc[part]:
+                                    tc[part] = {'0': {'id': None}}
+                                else:
+                                    tc[part] = {'0': {k: v for k, v in zip(('id', 'palette', 'patternSize'), tc[part])}}
+                        else:
+                            for part in tc:
+                                for region in tc[part]:
+                                    if tc[part][region] is None:
+                                        tc[part][region] = {'id': None}
+        loadJson(self.ID, 'outfitCache', outfitCache, self.configPath, True)
         camoDirPath = '../' + self.configPath + 'camouflages'
         camoDirKeys = getattr(ResMgr.openSection(camoDirPath), 'keys', lambda: [])()
         for camoID in remDups(x for x in camoDirKeys if ResMgr.isDir(camoDirPath + '/' + x)):
@@ -203,12 +223,6 @@ class ConfigInterface(PYmodsConfigInterface):
             if camoConf.get('random_mode') == SelectionMode.RANDOM:
                 del camoConf['random_mode']
             self.migrateSeasons(camoID, camoConf, camouflage.season)
-            if 'season' in camoConf:
-                actualSeason = SeasonType.UNDEFINED
-                for season in camoConf['season']:
-                    actualSeason |= SEASON_NAME_TO_TYPE[season]
-                if camouflage.season & ~SeasonType.EVENT == actualSeason:
-                    del camoConf['season']
             self.migrateTeams(camoConf)
             for team in ('ally', 'enemy'):
                 if camoConf.get(team):
@@ -227,10 +241,15 @@ class ConfigInterface(PYmodsConfigInterface):
                 return
         elif isinstance(conf['season'], basestring):
             conf['season'] = [x for x in conf['season'].split(',') if x]
+        actualSeason = SeasonType.UNDEFINED
         for season in conf['season']:
             if season not in SEASON_NAME_TO_TYPE:
                 print self.ID + ': unknown season name for camouflage', key + ':', season
                 conf['season'].remove(season)
+            else:
+                actualSeason |= SEASON_NAME_TO_TYPE[season]
+        if itemSeason is not None and itemSeason & ~SeasonType.EVENT == actualSeason:
+            del conf['season']
 
     def migrateTeams(self, conf):
         for key in conf.keys():
