@@ -168,7 +168,7 @@ class CustomizationContext(WGCtx):
             conf = vehConfig.setdefault(seasonName, {}).setdefault(typeName, {}).setdefault(area, {})
             origComponent = self.__originalOutfits[p.group].getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
             reg = str(p.regionID)
-            if not origComponent if p.isDismantling else origComponent.weak_eq(p.component):
+            if not origComponent if p.isDismantling else p.component.weak_eq(origComponent):
                 conf.pop(reg, None)
             else:
                 conf[reg] = ({f: getattr(p.component, f) for f, fd in p.component.fields.items() if not fd.weakEqualIgnored}
