@@ -236,9 +236,10 @@ def new_assembleModel(base, self, *a, **kw):
             seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
             vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
             applyPlayerCache(outfit, vehicleName, vehCache.get(seasonName, {}))
-            applied, cleaned = applyCamoCache(outfit, vehicleName, vehCache.get(seasonName, {}).get('camo', {}))
+            applied, cleaned = applyCamoCache(
+                outfit, vehicleName, vehCache.get(seasonName, {}).get(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], {}))
             if cleaned:
-                vehCache.get(seasonName, {}).pop('camo', None)
+                vehCache.get(seasonName, {}).pop(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], None)
             if not vehCache.get(seasonName, None):
                 vehCache.pop(seasonName, None)
             if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
@@ -269,9 +270,10 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
         if self._CompoundAppearance__vID == BigWorld.player().playerVehicleID:
             vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
             applyPlayerCache(result, vehicleName, vehCache.get(seasonName, {}))
-            applied, cleaned = applyCamoCache(result, vehicleName, vehCache.get(seasonName, {}).get('camo', {}))
+            applied, cleaned = applyCamoCache(
+                result, vehicleName, vehCache.get(seasonName, {}).get(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], {}))
             if cleaned:
-                vehCache.get(seasonName, {}).pop('camo', None)
+                vehCache.get(seasonName, {}).pop(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], None)
             if not vehCache.get(seasonName, None):
                 vehCache.pop(seasonName, None)
         if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
