@@ -182,9 +182,9 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
             component = slot.getComponent()
             component.palette = palette
             component.patternSize = patternSize
-            seasonCache[areaName]['0'] = {'id': camoID, 'palette': palette, 'patternSize': patternSize}
+            seasonCache[areaName] = {'0': {'id': camoID, 'palette': palette, 'patternSize': patternSize}}
         else:
-            seasonCache[areaName]['0'] = {'id': None}
+            seasonCache[areaName] = {'0': {'id': None}}
     random.seed()
 
 
