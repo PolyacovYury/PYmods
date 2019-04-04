@@ -264,8 +264,16 @@ class CustomizationContext(WGCtx):
         self.refreshOutfit()
 
     def cancelChanges(self):
+        print 'CamoSelector: cancelChanges'
         self._currentSettings = {'custom': {}, 'remap': {}}
         super(CustomizationContext, self).cancelChanges()
+
+    def isOnly1ChangedNumberInEditMode(self):
+        if self.numberEditModeActive and not g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage:
+            purchaseItems = [it for it in (self.getPurchaseItems() if self.isBuy else self.getModdedPurchaseItems())
+                             if not it.isDismantling and it.group == self.currentSeason]
+            return len(purchaseItems) == 1 and purchaseItems[0].item.itemTypeID == GUI_ITEM_TYPE.PERSONAL_NUMBER
+        return False
 
     def getOutfitsInfo(self):
         outfitsInfo = {}
@@ -339,6 +347,15 @@ class CustomizationContext(WGCtx):
             self._currentOutfit = style.getOutfit(self._currentSeason)
         else:
             self._currentOutfit = self._modifiedOutfits[self._currentSeason]
+
+    def __cancelModifiedOufits(self):
+        for season in SeasonType.COMMON_SEASONS:
+            self.__modifiedOutfits[season] = self.__originalOutfits[season].copy()
+            self._modifiedModdedOutfits[season] = self._originalModdedOutfits[season].copy()
+
+    def __cancelModifiedStyle(self):
+        self.__modifiedStyle = self.__originalStyle
+        self._modifiedModdedStyle = self._originalModdedStyle
 
     def __preserveState(self):
         self._state.update(

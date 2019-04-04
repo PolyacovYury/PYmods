@@ -12,10 +12,7 @@ class MainView(WGMainView):
         currentSeason = self.__ctx.currentSeason
         newItems = g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items)
         seasonCounters = {season: 0 for season in SEASONS_ORDER}
-        if self.__ctx.isBuy:
-            itemTypes = GUI_ITEM_TYPE.CUSTOMIZATIONS
-        else:
-            itemTypes = ()
+        itemTypes = GUI_ITEM_TYPE.CUSTOMIZATIONS if self.__ctx.isBuy else ()
         for item in newItems:
             if item.season != SeasonType.ALL and item.itemTypeID in itemTypes and not item.season & currentSeason:
                 seasonCounters[item.season] += 1
