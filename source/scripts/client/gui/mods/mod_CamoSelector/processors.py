@@ -78,9 +78,10 @@ def applyCamoCache(outfit, vehName, seasonCache):
 def applyPlayerCache(outfit, vehName, seasonCache):
     itemsCache = dependency.instance(IItemsCache)
     for itemTypeName in seasonCache.keys():
-        itemDB = items.vehicles.g_cache.customization20().itemTypes[C11N_ITEM_TYPE_MAP[GUI_ITEM_TYPE_INDICES[itemTypeName]]]
+        itemType = GUI_ITEM_TYPE_INDICES[itemTypeName]
+        itemDB = items.vehicles.g_cache.customization20().itemTypes[C11N_ITEM_TYPE_MAP[itemType]]
         for areaName in seasonCache[itemTypeName].keys():
-            if itemTypeName == GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.MODIFICATION]:
+            if itemType in (GUI_ITEM_TYPE.MODIFICATION, GUI_ITEM_TYPE.PROJECTION_DECAL):
                 if areaName != 'misc':
                     print g_config.ID + ': wrong area name for', vehName, 'modification:', areaName
                     del seasonCache[itemTypeName][areaName]
@@ -88,12 +89,8 @@ def applyPlayerCache(outfit, vehName, seasonCache):
                 else:
                     areaId = Area.MISC
             else:
-                try:
-                    areaId = TankPartNames.getIdx(areaName)
-                except Exception as e:
-                    print g_config.ID + ': exception while reading outfit cache for', vehName, 'in', areaName + ':', e.message
-                    continue
-            slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE_INDICES[itemTypeName])
+                areaId = TankPartNames.getIdx(areaName)
+            slot = outfit.getContainer(areaId).slotFor(itemType)
             for regionIdx in seasonCache[itemTypeName][areaName].keys():
                 itemID = seasonCache[itemTypeName][areaName][regionIdx]['id']
                 if itemID is None:
