@@ -37,17 +37,13 @@ def applyCamoCache(outfit, vehName, seasonCache):
     applied = False
     cleaned = False
     for areaName in seasonCache.keys():
-        try:
-            areaId = TankPartNames.getIdx(areaName)
-        except Exception as e:
-            print g_config.ID + ': exception while reading camouflages cache for', vehName, 'in', areaName + ':', e.message
+        areaId = TankPartNames.getIdx(areaName)
+        if areaId is None:
+            print g_config.ID + ': exception while reading cache for', vehName, 'in', areaName + ': invalid area name'
             continue
         slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
         if seasonCache[areaName]['0']['id'] is None:
-            try:
-                slot.remove(0)
-            except KeyError:
-                pass
+            slot.remove(0)
             continue
         camoID, paletteIdx, scale = [seasonCache[areaName]['0'][k] for k in ('id', 'palette', 'patternSize')]
         if camoID not in camouflages:
@@ -97,9 +93,9 @@ def applyPlayerCache(outfit, vehName, seasonCache):
             for regionIdx in seasonCache[itemTypeName][areaName].keys():
                 itemID = seasonCache[itemTypeName][areaName][regionIdx]['id']
                 if itemID is None:
-                    try:
+                    if slot.getItem(int(regionIdx)) is not None:
                         slot.remove(int(regionIdx))
-                    except KeyError:  # a paint is being deleted while not applied at all. possible change after last cache
+                    else:  # item is being deleted while not applied at all. possible change after last cache
                         del seasonCache[itemTypeName][areaName][regionIdx]  # so we remove an obsolete key
                     continue
                 if itemID not in itemDB:
