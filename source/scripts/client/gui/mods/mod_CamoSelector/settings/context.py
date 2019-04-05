@@ -67,7 +67,7 @@ class CustomizationContext(WGCtx):
         self.actualMode = CSMode.INSTALL
         self.onActualModeChanged = Event.Event(self._eventsManager)
         self.__switcherIgnored = False
-        self._lastTab = {CSMode.BUY: C11nTabs.STYLE, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
+        self._lastTab = {CSMode.BUY: C11nTabs.CAMOUFLAGE, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
         self._originalModdedOutfits = {}
         self._modifiedModdedOutfits = {}
         self._originalModdedStyle = None
