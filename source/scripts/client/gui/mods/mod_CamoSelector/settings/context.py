@@ -177,7 +177,9 @@ class CustomizationContext(WGCtx):
                              if not p.isDismantling else {'id': None})
         self.deleteEmpty(g_config.outfitCache)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
+        print g_config.hangarCamoCache
         self.__onCacheResync()
+        print g_config.hangarCamoCache
         self.itemsCache.onSyncCompleted += self.__onCacheResync
 
     # noinspection PyMethodOverriding
@@ -269,6 +271,7 @@ class CustomizationContext(WGCtx):
     def applyItems(self, purchaseItems):
         mode = self.actualMode
         self.actualMode = CSMode.BUY
+        print g_config.hangarCamoCache
         super(CustomizationContext, self).applyItems(purchaseItems)
         self.actualMode = mode
         self.applyModdedStuff()
