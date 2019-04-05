@@ -208,8 +208,8 @@ def new_assembleModel(base, self, *a, **kw):
         container = manager.getContainer(ViewTypes.LOBBY_SUB)
         if container is not None:
             c11nView = container.getView()
-            if c11nView is not None and hasattr(c11nView, 'getCurrentOutfit'):
-                outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
+            if c11nView is not None and hasattr(c11nView, 'service'):
+                outfit = c11nView.service.getCtx().currentOutfit  # fix for HangarFreeCam
                 self.updateCustomization(outfit)
                 return result
     if g_currentPreviewVehicle.isPresent():
