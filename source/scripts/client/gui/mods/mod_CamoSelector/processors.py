@@ -118,6 +118,8 @@ def applyPlayerCache(outfit, vehName, seasonCache):
 
 
 def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
+    import bwpydevd
+    bwpydevd.startPyDevD('pycharm', suspend=True)
     if not g_config.camoForSeason:
         g_config.collectCamouflageData()
     if vID is not None:
