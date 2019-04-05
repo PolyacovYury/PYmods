@@ -190,9 +190,8 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
     random.seed()
 
 
-@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__assembleModel')
-def new_assembleModel(base, self, *a, **kw):
-    result = base(self, *a, **kw)
+@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
+def new_startBuild(base, self, *a, **kw):
     if not self._HangarVehicleAppearance__isVehicleDestroyed:
         manager = g_appLoader.getDefLobbyApp().containerManager
         if manager is not None:
@@ -202,7 +201,7 @@ def new_assembleModel(base, self, *a, **kw):
                 if c11nView is not None and hasattr(c11nView, 'getCurrentOutfit'):
                     outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
                     self.updateCustomization(outfit)
-                    return result
+                    return base(self, *a, **kw)
         if g_currentPreviewVehicle.isPresent():
             vehicle = g_currentPreviewVehicle.item
         elif g_currentVehicle.isPresent():
@@ -216,23 +215,17 @@ def new_assembleModel(base, self, *a, **kw):
             intCD = vDesc.type.compactDescr
             if g_config.data['useBought']:
                 if g_config.data['hangarCamoKind'] < 3:
-                    idx = g_config.data['hangarCamoKind']
-                    season = SeasonType.fromArenaKind(idx)
-                    outfit = None
-                    if vehicle:
-                        outfit = vehicle.getOutfit(season)
-                    if not outfit:
-                        outfit = self.itemsFactory.createOutfit()
-                    outfit = outfit.copy()
-                    g_tankActiveCamouflage[intCD] = season
-                else:
-                    outfit = self._getActiveOutfit().copy()
-                    if g_tankActiveCamouflage.get(intCD, SeasonType.EVENT) == SeasonType.EVENT:
-                        active = []
-                        for season in SeasonType.SEASONS:
-                            if vehicle and vehicle.hasOutfitWithItems(season):
-                                active.append(season)
-                        g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
+                    g_tankActiveCamouflage[intCD] = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
+                elif g_tankActiveCamouflage.get(intCD, SeasonType.EVENT) == SeasonType.EVENT:
+                    active = [season for season in SeasonType.SEASONS if vehicle and vehicle.hasOutfitWithItems(season)]
+                    g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
+                season = g_tankActiveCamouflage[intCD]
+                outfit = self._HangarVehicleAppearance__outfit
+                if vehicle and not outfit:
+                    outfit = vehicle.getOutfit(season)
+                if not outfit:
+                    outfit = self.itemsFactory.createOutfit()
+                outfit = outfit.copy()
             else:
                 outfit = self.itemsFactory.createOutfit()
             seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
@@ -252,7 +245,7 @@ def new_assembleModel(base, self, *a, **kw):
             self._HangarVehicleAppearance__outfit = outfit
             self.updateCustomization(outfit)
             loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-    return result
+    return base(self, *a, **kw)
 
 
 @overrideMethod(CompoundAppearance, '_CompoundAppearance__applyVehicleOutfit')
