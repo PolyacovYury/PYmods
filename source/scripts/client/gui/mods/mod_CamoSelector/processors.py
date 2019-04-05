@@ -192,57 +192,59 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
 
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
 def new_startBuild(base, self, vDesc, vState):
-    if not self._HangarVehicleAppearance__isVehicleDestroyed:
-        manager = g_appLoader.getDefLobbyApp().containerManager
-        if manager is not None:
-            container = manager.getContainer(ViewTypes.LOBBY_SUB)
-            if container is not None:
-                c11nView = container.getView()
-                if c11nView is not None and hasattr(c11nView, 'getCurrentOutfit'):
-                    outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
-                    self.updateCustomization(outfit)
-                    return base(self, vDesc, vState)
-        if g_currentPreviewVehicle.isPresent():
-            vehicle = g_currentPreviewVehicle.item
-        elif g_currentVehicle.isPresent():
-            vehicle = g_currentVehicle.item
-        else:
-            vehicle = None
-        if g_config.data['enabled'] and vDesc.name not in g_config.disable and not (
-                vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
-            nationName, vehicleName = vDesc.name.split(':')
-            intCD = vDesc.type.compactDescr
-            if g_config.data['useBought']:
-                if g_config.data['hangarCamoKind'] < 3:
-                    g_tankActiveCamouflage[intCD] = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
-                elif g_tankActiveCamouflage.get(intCD, SeasonType.EVENT) == SeasonType.EVENT:
-                    active = [season for season in SeasonType.SEASONS if vehicle and vehicle.hasOutfitWithItems(season)]
-                    g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
-                season = g_tankActiveCamouflage[intCD]
-                outfit = self._HangarVehicleAppearance__outfit
-                if vehicle and not outfit:
-                    outfit = vehicle.getOutfit(season)
-                if not outfit:
-                    outfit = self.itemsFactory.createOutfit()
-                outfit = outfit.copy()
-            else:
-                outfit = self.itemsFactory.createOutfit()
-            seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
-            vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
-            applyPlayerCache(outfit, vehicleName, vehCache.get(seasonName, {}))
-            applied, cleaned = applyCamoCache(
-                outfit, vehicleName, vehCache.get(seasonName, {}).get(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], {}))
-            if cleaned:
-                vehCache.get(seasonName, {}).pop(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], None)
-            if not vehCache.get(seasonName, None):
-                vehCache.pop(seasonName, None)
-            if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
-                seasonCache = g_config.hangarCamoCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
-                    seasonName, {})
-                processRandomCamouflages(outfit, seasonName, seasonCache, vDesc)
-                applyCamoCache(outfit, vehicleName, seasonCache)
-            self._HangarVehicleAppearance__outfit = outfit
-            loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
+    if vState != 'undamaged':
+        return base(self, vDesc, vState)
+    manager = g_appLoader.getDefLobbyApp().containerManager
+    if manager is not None:
+        container = manager.getContainer(ViewTypes.LOBBY_SUB)
+        if container is not None:
+            c11nView = container.getView()
+            if c11nView is not None and hasattr(c11nView, 'getCurrentOutfit'):
+                outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
+                self.updateCustomization(outfit)
+                return base(self, vDesc, vState)
+    if g_currentPreviewVehicle.isPresent():
+        vehicle = g_currentPreviewVehicle.item
+    elif g_currentVehicle.isPresent():
+        vehicle = g_currentVehicle.item
+    else:
+        vehicle = None
+    if not (g_config.data['enabled'] or vDesc.name in g_config.disable or (
+            vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault'])):
+        return base(self, vDesc, vState)
+    nationName, vehicleName = vDesc.name.split(':')
+    intCD = vDesc.type.compactDescr
+    if g_config.data['useBought']:
+        if g_config.data['hangarCamoKind'] < 3:
+            g_tankActiveCamouflage[intCD] = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
+        elif g_tankActiveCamouflage.get(intCD, SeasonType.EVENT) == SeasonType.EVENT:
+            active = [season for season in SeasonType.SEASONS if vehicle and vehicle.hasOutfitWithItems(season)]
+            g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
+        season = g_tankActiveCamouflage[intCD]
+        outfit = self._HangarVehicleAppearance__outfit
+        if vehicle and not outfit:
+            outfit = vehicle.getOutfit(season)
+        if not outfit:
+            outfit = self.itemsFactory.createOutfit()
+        outfit = outfit.copy()
+    else:
+        outfit = self.itemsFactory.createOutfit()
+    seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
+    vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
+    applyPlayerCache(outfit, vehicleName, vehCache.get(seasonName, {}))
+    applied, cleaned = applyCamoCache(
+        outfit, vehicleName, vehCache.get(seasonName, {}).get(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], {}))
+    if cleaned:
+        vehCache.get(seasonName, {}).pop(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], None)
+    if not vehCache.get(seasonName, None):
+        vehCache.pop(seasonName, None)
+    if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
+        seasonCache = g_config.hangarCamoCache.setdefault(nationName, {}).setdefault(vehicleName, {}).setdefault(
+            seasonName, {})
+        processRandomCamouflages(outfit, seasonName, seasonCache, vDesc)
+        applyCamoCache(outfit, vehicleName, seasonCache)
+    self._HangarVehicleAppearance__outfit = outfit
+    loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
     return base(self, vDesc, vState)
 
 
