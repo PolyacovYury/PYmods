@@ -193,7 +193,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__assembleModel')
 def new_assembleModel(base, self, *a, **kw):
     result = base(self, *a, **kw)
-    if not self._HangarVehicleAppearance__isVehicleDestroyed:
+    if self._HangarVehicleAppearance__isVehicleDestroyed:
         return result
     manager = g_appLoader.getDefLobbyApp().containerManager
     if manager is not None:
