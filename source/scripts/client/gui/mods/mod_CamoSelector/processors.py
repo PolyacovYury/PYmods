@@ -209,37 +209,38 @@ def new_assembleModel(base, self, *a, **kw):
         if container is not None:
             c11nView = container.getView()
             if c11nView is not None and hasattr(c11nView, 'service'):
-                outfit = c11nView.service.getCtx().currentOutfit  # fix for HangarFreeCam
+                outfit = c11nView.service.getCtx().currentOutfit
                 self.updateCustomization(outfit)
                 return result
-    if g_currentPreviewVehicle.isPresent():
-        vehicle = g_currentPreviewVehicle.item
-    elif g_currentVehicle.isPresent():
-        vehicle = g_currentVehicle.item
-    else:
-        vehicle = None
     vDesc = self._HangarVehicleAppearance__vDesc
     if (not g_config.data['enabled'] or vDesc.name in g_config.disable or (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault'])):
         return result
+    for descr in g_currentPreviewVehicle, g_currentVehicle:
+        if descr.isPresent() and descr.item.descriptor.name == vDesc.name:
+            vehicle = descr.item
+            break
+    else:
+        vehicle = None
     traceback.print_stack()
     print g_config.hangarCamoCache
     nationName, vehicleName = vDesc.name.split(':')
     intCD = vDesc.type.compactDescr
+    outfit = None
     if g_config.data['useBought']:
+        outfit = self._getActiveOutfit()
         if g_config.data['hangarCamoKind'] < 3:
             g_tankActiveCamouflage[intCD] = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
         elif g_tankActiveCamouflage.get(intCD, SeasonType.EVENT) == SeasonType.EVENT:
             active = [season for season in SeasonType.SEASONS if vehicle and vehicle.hasOutfitWithItems(season)]
             g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
+            outfit = None
         season = g_tankActiveCamouflage[intCD]
-        outfit = None
-        if vehicle:
+        if vehicle and not outfit:
             outfit = vehicle.getOutfit(season)
-        if not outfit:
-            outfit = self._HangarVehicleAppearance__outfit or self.itemsFactory.createOutfit()
-        outfit = outfit.copy()
-    else:
+        if outfit:
+            outfit = outfit.copy()
+    if not outfit:
         outfit = self.itemsFactory.createOutfit()
     seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
     vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
