@@ -190,14 +190,6 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
     random.seed()
 
 
-@overrideMethod(HangarVehicleAppearance, '__startBuild')
-def new_startBuild(base, self, vDesc, vState):
-    if g_config.data['enabled'] and not (vDesc.name in g_config.disable) and not (
-            vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
-        traceback.print_stack()
-    return base(self, vDesc, vState)
-
-
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__assembleModel')
 def new_assembleModel(base, self, *a, **kw):
     result = base(self, *a, **kw)
@@ -222,8 +214,6 @@ def new_assembleModel(base, self, *a, **kw):
             break
     else:
         vehicle = None
-    traceback.print_stack()
-    print g_config.hangarCamoCache
     nationName, vehicleName = vDesc.name.split(':')
     intCD = vDesc.type.compactDescr
     outfit = None
@@ -259,7 +249,6 @@ def new_assembleModel(base, self, *a, **kw):
     self._HangarVehicleAppearance__outfit = outfit
     self.updateCustomization(outfit)
     loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-    print g_config.hangarCamoCache
     return result
 
 
