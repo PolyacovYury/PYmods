@@ -1,3 +1,5 @@
+import traceback
+
 import BigWorld
 import items.vehicles
 import random
@@ -118,8 +120,6 @@ def applyPlayerCache(outfit, vehName, seasonCache):
 
 
 def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
-    import bwpydevd
-    bwpydevd.startPyDevD('pycharm', suspend=True)
     if not g_config.camoForSeason:
         g_config.collectCamouflageData()
     if vID is not None:
@@ -204,6 +204,8 @@ def new_assembleModel(base, self, *a, **kw):
                 outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
                 self.updateCustomization(outfit)
                 return result
+    traceback.print_stack()
+    print g_config.hangarCamoCache
     if g_currentPreviewVehicle.isPresent():
         vehicle = g_currentPreviewVehicle.item
     elif g_currentVehicle.isPresent():
@@ -248,6 +250,7 @@ def new_assembleModel(base, self, *a, **kw):
     self._HangarVehicleAppearance__outfit = outfit
     self.updateCustomization(outfit)
     loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
+    print g_config.hangarCamoCache
     return result
 
 
