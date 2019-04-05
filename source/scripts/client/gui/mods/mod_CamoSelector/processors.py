@@ -4,7 +4,7 @@ import random
 from Account import Account
 from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
-from PYmodsCore import overrideMethod
+from PYmodsCore import overrideMethod, loadJson
 from gui import g_tankActiveCamouflage
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework import ViewTypes
@@ -41,7 +41,7 @@ def applyCamoCache(outfit, vehName, seasonCache):
             print g_config.ID + ': exception while reading camouflages cache for', vehName, 'in', areaName + ':', e.message
             continue
         slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
-        if not seasonCache[areaName] or seasonCache[areaName].get('0', {'id': None})['id'] is None:
+        if seasonCache[areaName]['0']['id'] is None:
             try:
                 slot.remove(0)
             except KeyError:
@@ -249,6 +249,7 @@ def new_assembleModel(base, self, *a, **kw):
                 applyCamoCache(outfit, vehicleName, seasonCache)
             self._HangarVehicleAppearance__outfit = outfit
             self.updateCustomization(outfit)
+            loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
     return result
 
 
@@ -276,6 +277,7 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
                 vehCache.get(seasonName, {}).pop(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], None)
             if not vehCache.get(seasonName, None):
                 vehCache.pop(seasonName, None)
+            loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
         if g_config.data['doRandom'] and (not applied or cleaned or g_config.data['fillEmptySlots']):
             seasonCache = g_config.arenaCamoCache.setdefault(vID, {})
             processRandomCamouflages(result, seasonName, seasonCache, vDesc, vID)
