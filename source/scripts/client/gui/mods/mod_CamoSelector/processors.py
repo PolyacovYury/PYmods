@@ -223,7 +223,7 @@ def new_startBuild(base, self, vDesc, vState):
         season = g_tankActiveCamouflage[intCD]
         outfit = None
         if vehicle:
-            outfit = vehicle.getOutfit(season)
+            outfit = vehicle.getCustomOutfit(season)
         if not outfit:
             outfit = self._HangarVehicleAppearance__outfit or self.itemsFactory.createOutfit()
         outfit = outfit.copy()
