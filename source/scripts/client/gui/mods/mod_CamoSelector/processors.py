@@ -192,8 +192,8 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
 
 @overrideMethod(HangarVehicleAppearance, '__startBuild')
 def new_startBuild(base, self, vDesc, vState):
-    if not (g_config.data['enabled'] or vDesc.name in g_config.disable or (
-            vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault'])):
+    if g_config.data['enabled'] and not (vDesc.name in g_config.disable) and not (
+            vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
         traceback.print_stack()
     return base(self, vDesc, vState)
 
@@ -220,7 +220,7 @@ def new_assembleModel(base, self, *a, **kw):
     else:
         vehicle = None
     vDesc = self._HangarVehicleAppearance__vDesc
-    if not (g_config.data['enabled'] or vDesc.name in g_config.disable or (
+    if (not g_config.data['enabled'] or vDesc.name in g_config.disable or (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault'])):
         return result
     nationName, vehicleName = vDesc.name.split(':')
