@@ -212,7 +212,6 @@ def new_assembleModel(base, self, *a, **kw):
                 outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
                 self.updateCustomization(outfit)
                 return result
-    print g_config.hangarCamoCache
     if g_currentPreviewVehicle.isPresent():
         vehicle = g_currentPreviewVehicle.item
     elif g_currentVehicle.isPresent():
@@ -223,6 +222,8 @@ def new_assembleModel(base, self, *a, **kw):
     if (not g_config.data['enabled'] or vDesc.name in g_config.disable or (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault'])):
         return result
+    traceback.print_stack()
+    print g_config.hangarCamoCache
     nationName, vehicleName = vDesc.name.split(':')
     intCD = vDesc.type.compactDescr
     if g_config.data['useBought']:
