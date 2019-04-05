@@ -190,10 +190,11 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
     random.seed()
 
 
-@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
-def new_startBuild(base, self, vDesc, vState):
-    if vState != 'undamaged' or 'HWK' in vDesc.name:
-        return base(self, vDesc, vState)
+@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__assembleModel')
+def new_assembleModel(base, self, *a, **kw):
+    result = base(self, *a, **kw)
+    if not self._HangarVehicleAppearance__isVehicleDestroyed:
+        return result
     manager = g_appLoader.getDefLobbyApp().containerManager
     if manager is not None:
         container = manager.getContainer(ViewTypes.LOBBY_SUB)
@@ -202,16 +203,17 @@ def new_startBuild(base, self, vDesc, vState):
             if c11nView is not None and hasattr(c11nView, 'getCurrentOutfit'):
                 outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
                 self.updateCustomization(outfit)
-                return base(self, vDesc, vState)
+                return result
     if g_currentPreviewVehicle.isPresent():
         vehicle = g_currentPreviewVehicle.item
     elif g_currentVehicle.isPresent():
         vehicle = g_currentVehicle.item
     else:
         vehicle = None
+    vDesc = self._HangarVehicleAppearance__vDesc
     if not (g_config.data['enabled'] or vDesc.name in g_config.disable or (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault'])):
-        return base(self, vDesc, vState)
+        return result
     nationName, vehicleName = vDesc.name.split(':')
     intCD = vDesc.type.compactDescr
     if g_config.data['useBought']:
@@ -223,7 +225,7 @@ def new_startBuild(base, self, vDesc, vState):
         season = g_tankActiveCamouflage[intCD]
         outfit = None
         if vehicle:
-            outfit = vehicle.getCustomOutfit(season)
+            outfit = vehicle.getOutfit(season)
         if not outfit:
             outfit = self._HangarVehicleAppearance__outfit or self.itemsFactory.createOutfit()
         outfit = outfit.copy()
@@ -244,8 +246,9 @@ def new_startBuild(base, self, vDesc, vState):
         processRandomCamouflages(outfit, seasonName, seasonCache, vDesc)
         applyCamoCache(outfit, vehicleName, seasonCache)
     self._HangarVehicleAppearance__outfit = outfit
+    self.updateCustomization(outfit)
     loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-    return base(self, vDesc, vState)
+    return result
 
 
 @overrideMethod(CompoundAppearance, '_CompoundAppearance__applyVehicleOutfit')
