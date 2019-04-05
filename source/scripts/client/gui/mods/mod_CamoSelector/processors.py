@@ -190,6 +190,12 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
     random.seed()
 
 
+@overrideMethod(HangarVehicleAppearance, '__startBuild')
+def new_startBuild(base, self, *a, **kw):
+    traceback.print_stack()
+    return base(self, *a, **kw)
+
+
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__assembleModel')
 def new_assembleModel(base, self, *a, **kw):
     result = base(self, *a, **kw)
@@ -204,7 +210,6 @@ def new_assembleModel(base, self, *a, **kw):
                 outfit = c11nView.getCurrentOutfit()  # fix for HangarFreeCam
                 self.updateCustomization(outfit)
                 return result
-    traceback.print_stack()
     print g_config.hangarCamoCache
     if g_currentPreviewVehicle.isPresent():
         vehicle = g_currentPreviewVehicle.item
