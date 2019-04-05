@@ -191,9 +191,11 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
 
 
 @overrideMethod(HangarVehicleAppearance, '__startBuild')
-def new_startBuild(base, self, *a, **kw):
-    traceback.print_stack()
-    return base(self, *a, **kw)
+def new_startBuild(base, self, vDesc, vState):
+    if not (g_config.data['enabled'] or vDesc.name in g_config.disable or (
+            vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault'])):
+        traceback.print_stack()
+    return base(self, vDesc, vState)
 
 
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__assembleModel')
