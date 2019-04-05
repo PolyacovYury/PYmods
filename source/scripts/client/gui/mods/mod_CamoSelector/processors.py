@@ -242,7 +242,6 @@ def new_startBuild(base, self, vDesc, vState):
                 processRandomCamouflages(outfit, seasonName, seasonCache, vDesc)
                 applyCamoCache(outfit, vehicleName, seasonCache)
             self._HangarVehicleAppearance__outfit = outfit
-            self.updateCustomization(outfit)
             loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
     return base(self, vDesc, vState)
 
