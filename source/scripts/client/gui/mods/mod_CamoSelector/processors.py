@@ -221,11 +221,11 @@ def new_startBuild(base, self, vDesc, vState):
             active = [season for season in SeasonType.SEASONS if vehicle and vehicle.hasOutfitWithItems(season)]
             g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
         season = g_tankActiveCamouflage[intCD]
-        outfit = self._HangarVehicleAppearance__outfit
-        if vehicle and not outfit:
+        outfit = None
+        if vehicle:
             outfit = vehicle.getOutfit(season)
         if not outfit:
-            outfit = self.itemsFactory.createOutfit()
+            outfit = self._HangarVehicleAppearance__outfit or self.itemsFactory.createOutfit()
         outfit = outfit.copy()
     else:
         outfit = self.itemsFactory.createOutfit()
