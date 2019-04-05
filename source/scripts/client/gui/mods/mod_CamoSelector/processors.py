@@ -192,7 +192,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
 
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
 def new_startBuild(base, self, vDesc, vState):
-    if vState != 'undamaged':
+    if vState != 'undamaged' or 'HWK' in vDesc.name:
         return base(self, vDesc, vState)
     manager = g_appLoader.getDefLobbyApp().containerManager
     if manager is not None:
