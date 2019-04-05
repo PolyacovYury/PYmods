@@ -6,7 +6,7 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import getTotalPurchase
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
-from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION as CUSTOMIZATION
 from gui.customization.shared import C11nId
 from gui.shared.formatters import getItemPricesVO, text_styles, getMoneyVO
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
@@ -64,40 +64,37 @@ class CustomizationBottomPanel(CBP):
                 'isLeft': True,
                 'rightEnabled': True}
 
-    def __setBottomPanelBillData(self, *_):  # TODO: process installed items correctly
+    def __setBottomPanelBillData(self, *_):
         purchaseItems = self.__ctx.getPurchaseItems()
         cartInfo = getTotalPurchaseInfo(purchaseItems)
         totalPriceVO = getItemPricesVO(cartInfo.totalPrice)
-        if cartInfo.totalPrice != ITEM_PRICE_EMPTY:
-            label = _ms(VEHICLE_CUSTOMIZATION.COMMIT_BUY)
-        else:
-            label = _ms(VEHICLE_CUSTOMIZATION.COMMIT_APPLY)
-        tooltip = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_BUYDISABLED_BODY
+        label = _ms(CUSTOMIZATION.COMMIT_BUY if cartInfo.totalPrice != ITEM_PRICE_EMPTY else CUSTOMIZATION.COMMIT_APPLY)
+        tooltip = CUSTOMIZATION.CUSTOMIZATION_BUYDISABLED_BODY
         fromStorageCount = 0
-        toByeCount = 0
+        toBuyCount = 0
         for item in purchaseItems:
             if item.isFromInventory:
                 fromStorageCount += 1
             if not item.isDismantling:
-                toByeCount += 1
+                toBuyCount += 1
 
-        if fromStorageCount > 0 or toByeCount > 0:
+        outfitsModified = self.__ctx.isOutfitsModified()
+        if outfitsModified:
             self.__showBill()
         else:
             self.__hideBill()
-            tooltip = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_NOTSELECTEDITEMS
+            tooltip = CUSTOMIZATION.CUSTOMIZATION_NOTSELECTEDITEMS
         fromStorageCount = text_styles.stats('({})'.format(fromStorageCount))
-        toByeCount = text_styles.stats('({})'.format(toByeCount))
-        outfitsModified = self.__ctx.isOutfitsModified()
+        toBuyCount = text_styles.stats('({})'.format(toBuyCount))
         self.as_setBottomPanelPriceStateS({
             'buyBtnEnabled': outfitsModified,
             'buyBtnLabel': label,
             'buyBtnTooltip': tooltip,
             'isHistoric': self.__ctx.currentOutfit.isHistorical(),
-            'billVO': {'title': text_styles.highlightText(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_RESULT)),
-                       'priceLbl': text_styles.main('{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_PRICE), toByeCount)),
+            'billVO': {'title': text_styles.highlightText(_ms(CUSTOMIZATION.BUYPOPOVER_RESULT)),
+                       'priceLbl': text_styles.main('{} {}'.format(_ms(CUSTOMIZATION.BUYPOPOVER_PRICE), toBuyCount)),
                        'fromStorageLbl': text_styles.main(
-                           '{} {}'.format(_ms(VEHICLE_CUSTOMIZATION.BUYPOPOVER_FROMSTORAGE), fromStorageCount)),
+                           '{} {}'.format(_ms(CUSTOMIZATION.BUYPOPOVER_FROMSTORAGE), fromStorageCount)),
                        'isEnoughStatuses': getMoneyVO(Money(True, True, True)),
                        'pricePanel': totalPriceVO[0]}})
         self.as_setItemsPopoverBtnEnabledS(not self.__ctx.currentOutfit.isEmpty())
@@ -132,7 +129,7 @@ class CustomizationBottomPanel(CBP):
                          'tooltip': makeTooltip(
                              ITEM_TYPES.customizationPlural(typeName),
                              TOOLTIPS.customizationItemTab(typeName) if itemTypeID != GUI_ITEM_TYPE.STYLE else
-                             VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL),
+                             CUSTOMIZATION.DEFAULTSTYLE_LABEL),
                          'id': tabIdx})
             pluses.append(showPlus)
         return data, pluses
