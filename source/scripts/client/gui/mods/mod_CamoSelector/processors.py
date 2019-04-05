@@ -14,6 +14,7 @@ from gui.customization.shared import __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.c11n_items import Camouflage
+from gui.shared.gui_items.customization.containers import emptyComponent
 from gui.shared.gui_items.customization.outfit import Outfit, Area
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
@@ -108,7 +109,9 @@ def applyPlayerCache(outfit, vehName, seasonCache):
                     item = itemsCache.items.getItemByCD(intCD)
                 else:
                     item = itemsCache.items.itemsFactory.createCustomization(intCD)
-                slot.set(item, int(regionIdx))
+                component = emptyComponent(itemType)
+                [setattr(component, k, v) for k, v in seasonCache[itemTypeName][areaName][regionIdx].items()]
+                slot.set(item, int(regionIdx), component)
             if not seasonCache[itemTypeName][areaName]:
                 del seasonCache[itemTypeName][areaName]
     outfit.invalidate()
