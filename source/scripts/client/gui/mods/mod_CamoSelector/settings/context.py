@@ -76,7 +76,6 @@ class CustomizationContext(WGCtx):
         self.__modifiedOutfits = {}
         self.__originalStyle = None
         self.__modifiedStyle = None
-        self._originalMode = {CSMode.BUY: C11nMode.CUSTOM, CSMode.INSTALL: C11nMode.CUSTOM}
         self._currentSettings = {'custom': {}, 'remap': {}}
 
     @property
@@ -277,6 +276,7 @@ class CustomizationContext(WGCtx):
 
     def init(self):
         super(CustomizationContext, self).init()
+        self._originalMode = {CSMode.BUY: C11nMode.CUSTOM, CSMode.INSTALL: C11nMode.CUSTOM}
         origMode = self.actualMode
         for mode in CSMode.BUY, CSMode.INSTALL:
             self.actualMode = mode
