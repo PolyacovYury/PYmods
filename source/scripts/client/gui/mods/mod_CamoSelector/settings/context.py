@@ -195,9 +195,10 @@ class CustomizationContext(WGCtx):
         else:
             self._selectedAnchor = C11nId()
         self._selectedCarouselItem = CaruselItemData()
-        self.onCustomizationTabChanged(tabIndex)
         if self._mode != mode:
             self.refreshOutfit()
+        self.onCustomizationTabChanged(tabIndex)
+        if self._mode != mode:
             self.onCustomizationModeChanged(self._mode)
 
     def isPossibleToInstallToAllTankAreas(self, season, slotType, currentSlotData):
