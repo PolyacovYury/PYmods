@@ -351,13 +351,15 @@ class CustomizationContext(WGCtx):
         if self.service.isCurrentStyleInstalled():
             self.__originalStyle = style
             self.__modifiedStyle = style
+            self._originalModdedStyle = style
+            self._modifiedModdedStyle = style
         else:
             self.__originalStyle = None
             if style and style.isHidden and style.fullInventoryCount(g_currentVehicle.item) == 0:
                 self.__modifiedStyle = None
             else:
                 self.__modifiedStyle = style
-        if self._tabIndex == C11nTabs.STYLE:
+        if self.isBuy and style:
             self._currentOutfit = style.getOutfit(self._currentSeason)
         else:
             self._currentOutfit = self._modifiedOutfits[self._currentSeason]

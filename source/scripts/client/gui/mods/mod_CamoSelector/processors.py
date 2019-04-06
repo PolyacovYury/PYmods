@@ -118,6 +118,8 @@ def applyPlayerCache(outfit, vehName, seasonCache):
 def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
     if not g_config.camoForSeason:
         g_config.collectCamouflageData()
+    if outfit.modelsSet:
+        return
     if vID is not None:
         isAlly = BigWorld.player().guiSessionProvider.getArenaDP().getVehicleInfo(vID).team == BigWorld.player().team
         teamMode = 'ally' if isAlly else 'enemy'

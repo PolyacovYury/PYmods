@@ -165,6 +165,8 @@ class ConfigInterface(PYmodsConfigInterface):
         for nat in outfitCache.values():
             for veh in nat.values():
                 for season in veh.values():
+                    if not isinstance(season, dict):  # style ID
+                        continue
                     if 'camo' in season:
                         season[GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]] = season.pop('camo')
                     for typeName, tc in season.items():
