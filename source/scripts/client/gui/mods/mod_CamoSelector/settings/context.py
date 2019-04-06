@@ -3,11 +3,14 @@ import operator
 import Event
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
+from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
 from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_NAME, C11nMode, TYPES_ORDER, \
     TABS_SLOT_TYPE_MAPPING, SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems, OutfitInfo, getItemInventoryCount, \
     getStyleInventoryCount
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
+from gui.Scaleform.locale.MESSENGER import MESSENGER
+from gui.SystemMessages import SM_TYPE
 from gui.customization.context import CustomizationContext as WGCtx, CaruselItemData
 from gui.customization.shared import C11nId, __isTurretCustomizable as isTurretCustom
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
@@ -158,12 +161,15 @@ class CustomizationContext(WGCtx):
                          g_config.configPath + 'camouflages/' + confFolderName + '/', True, False)
         if any(self._currentSettings.itervalues()):
             g_config.collectCamouflageData()
+            SystemMessages.pushI18nMessage(g_config.i18n['flashCol_serviceMessage_settings'], type=SM_TYPE.Information)
 
     def applyModdedItems(self):  # TODO: whip up style saving (and applying, for that measure)
         self.itemsCache.onSyncCompleted -= self.__onCacheResync
         nationName, vehicleName = g_currentVehicle.item.descriptor.name.split(':')
         vehConfig = g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {})
+        anything = False
         for p in (x for x in self.getModdedPurchaseItems() if x.selected):
+            anything = True
             seasonName = SEASON_TYPE_TO_NAME[p.group]
             typeName = GUI_ITEM_TYPE_NAMES[p.slot]
             area = Area.getName(p.areaID) if p.areaID != Area.MISC else 'misc'
@@ -176,6 +182,9 @@ class CustomizationContext(WGCtx):
                 conf[reg] = (({f: getattr(p.component, f) for f, fd in p.component.fields.items() if not fd.weakEqualIgnored}
                               if not isinstance(p.component, EmptyComponent) else {'id': p.item.id})
                              if not p.isDismantling else {'id': None})
+        if anything:
+            SystemMessages.pushI18nMessage(
+                MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
         self.deleteEmpty(g_config.outfitCache)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
         self.__onCacheResync()
@@ -302,6 +311,7 @@ class CustomizationContext(WGCtx):
         for actualMode in CSMode.BUY, CSMode.INSTALL:
             self.actualMode = actualMode
             self._mode = C11nMode.STYLE if self._lastTab[actualMode] == C11nTabs.STYLE else C11nMode.CUSTOM
+            self._originalMode = self.__originalMode[actualMode]
             result |= super(CustomizationContext, self).isOutfitsModified()
         self.actualMode = origActualMode
         self._mode = origMode
