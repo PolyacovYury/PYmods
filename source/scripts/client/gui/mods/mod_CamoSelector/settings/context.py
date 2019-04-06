@@ -64,6 +64,7 @@ class CustomizationContext(WGCtx):
     def __init__(self):
         self.actualMode = CSMode.BUY
         super(CustomizationContext, self).__init__()
+        self.__originalMode = {CSMode.BUY: C11nMode.CUSTOM, CSMode.INSTALL: C11nMode.CUSTOM}
         self.actualMode = CSMode.INSTALL
         self.onActualModeChanged = Event.Event(self._eventsManager)
         self.__switcherIgnored = False
@@ -276,19 +277,18 @@ class CustomizationContext(WGCtx):
 
     def init(self):
         super(CustomizationContext, self).init()
-        self._originalMode = {CSMode.BUY: C11nMode.CUSTOM, CSMode.INSTALL: C11nMode.CUSTOM}
         origMode = self.actualMode
         for mode in CSMode.BUY, CSMode.INSTALL:
             self.actualMode = mode
             notInst = all([not self._originalOutfits[season].isInstalled() for season in SeasonType.COMMON_SEASONS])
             if self._originalStyle or notInst and not self.isOutfitsEmpty(self._modifiedOutfits) and not self._modifiedStyle:
-                self._originalMode[mode] = C11nMode.STYLE
+                self.__originalMode[mode] = C11nMode.STYLE
                 self._lastTab[mode] = C11nTabs.STYLE
             else:
-                self._originalMode[mode] = C11nMode.CUSTOM
+                self.__originalMode[mode] = C11nMode.CUSTOM
                 self._lastTab[mode] = C11nTabs.PAINT
         self.actualMode = origMode
-        self._mode = self._originalMode[origMode]
+        self._mode = self.__originalMode[origMode]
         self._tabIndex = self._lastTab[origMode]
         self.refreshOutfit()
 
@@ -296,33 +296,16 @@ class CustomizationContext(WGCtx):
         self._cleanSettings()
         if any(self._currentSettings.itervalues()):
             return True
-        origMode = self.actualMode
-        try:
-            for actualMode in CSMode.BUY, CSMode.INSTALL:
-                self.actualMode = actualMode
-                mode = C11nMode.STYLE if self._lastTab[actualMode] == C11nTabs.STYLE else C11nMode.CUSTOM
-                if mode == self._originalMode[self.actualMode]:
-                    if mode == C11nMode.STYLE:
-                        if self._modifiedStyle and self._originalStyle:
-                            return (self._modifiedStyle.intCD != self._originalStyle.intCD
-                                    or self._autoRentEnabled != g_currentVehicle.item.isAutoRentStyle)
-                        return not (self._modifiedStyle is None and self._originalStyle is None)
-                    if self.numberEditModeActive and self.isOnly1ChangedNumberInEditMode() and self._numberIsEmpty:
-                        return False
-                    for season in SeasonType.COMMON_SEASONS:
-                        outfit = self._modifiedOutfits[season]
-                        currOutfit = self._originalOutfits[season]
-                        if not currOutfit.isEqual(outfit) or not outfit.isEqual(currOutfit):
-                            return True
-                    return False
-                if self._mode == C11nMode.CUSTOM:
-                    if self.isOutfitsEmpty(self._modifiedOutfits) and self._originalStyle is None:
-                        return False
-                elif self._modifiedStyle is None and self.isOutfitsEmpty(self._originalOutfits):
-                    return False
-                return True
-        finally:
-            self.actualMode = origMode
+        result = False
+        origActualMode = self.actualMode
+        origMode = self._mode
+        for actualMode in CSMode.BUY, CSMode.INSTALL:
+            self.actualMode = actualMode
+            self._mode = C11nMode.STYLE if self._lastTab[actualMode] == C11nTabs.STYLE else C11nMode.CUSTOM
+            result |= super(CustomizationContext, self).isOutfitsModified()
+        self.actualMode = origActualMode
+        self._mode = origMode
+        return result
 
     def isBuyLimitReached(self, item):
         return self.isBuy and super(CustomizationContext, self).isBuyLimitReached(item)
