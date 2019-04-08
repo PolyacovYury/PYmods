@@ -22,7 +22,7 @@ from shared_utils import first
 from .shared import CSMode
 from .. import g_config
 from ..constants import SelectionMode, SEASON_NAME_TO_TYPE
-from ..processors import deleteEmpty
+from ..processors import deleteEmpty, applyOutfitCache
 
 
 class CustomizationContext(WGCtx):
@@ -290,6 +290,11 @@ class CustomizationContext(WGCtx):
             else:
                 self.__originalMode[mode] = C11nMode.CUSTOM
                 self._lastTab[mode] = C11nTabs.PAINT
+        nation, vehName = g_currentVehicle.item.descriptor.name.split(':')
+        for season in SeasonType.COMMON_SEASONS:
+            outfit = self._modifiedModdedOutfits[season]
+            seasonName = SEASON_TYPE_TO_NAME[season]
+            applyOutfitCache(outfit, g_config.hangarCamoCache.get(nation, {}).get(vehName, {}).get(seasonName, {}))
         self.actualMode = origMode
         self._mode = self.__originalMode[origMode]
         self._tabIndex = self._lastTab[origMode]
@@ -320,17 +325,14 @@ class CustomizationContext(WGCtx):
         # noinspection PyUnresolvedReferences
         super(CustomizationContext, self)._CustomizationContext__carveUpOutfits()
         self.actualMode = origMode
-        from ..processors import applyOutfitCache
-        descriptor = g_currentVehicle.item.descriptor
-        nationName, vehName = descriptor.name.split(':')
+        nationName, vehName = g_currentVehicle.item.descriptor.name.split(':')
         for season in SeasonType.COMMON_SEASONS:
             outfit = self.service.getCustomOutfit(season).copy()
             seasonName = SEASON_TYPE_TO_NAME[season]
             seasonCache = g_config.outfitCache.get(nationName, {}).get(vehName, {}).get(seasonName, {})
-            applyOutfitCache(outfit, vehName, seasonCache)
+            applyOutfitCache(outfit, seasonCache)
             outfit._isInstalled = outfit.isInstalled() or not outfit.isEmpty()  # or not isDisabledByStyleMode
             self._originalModdedOutfits[season] = outfit.copy()
-            applyOutfitCache(outfit, vehName, g_config.hangarCamoCache.get(nationName, {}).get(vehName, {}).get(seasonName, {}))
             self._modifiedModdedOutfits[season] = outfit.copy()
         style = self.service.getCurrentStyle()
         if self.service.isCurrentStyleInstalled():
