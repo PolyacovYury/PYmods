@@ -83,8 +83,9 @@ def applyOutfitCache(outfit, vehName, seasonCache):
 def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
     if not g_config.camoForSeason:
         g_config.collectCamouflageData()
-    if outfit.modelsSet:
+    if outfit.modelsSet:  # might add a checkbox in settings to still process styled outfits, thus this will become necessary
         return
+    seasonCache = seasonCache.setdefault(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], {})
     if vID is not None:
         isAlly = BigWorld.player().guiSessionProvider.getArenaDP().getVehicleInfo(vID).team == BigWorld.player().team
         teamMode = 'ally' if isAlly else 'enemy'
@@ -199,9 +200,9 @@ def new_assembleModel(base, self, *a, **kw):
     vehCache = g_config.outfitCache.get(nation, {}).get(vehicleName, {})
     applyOutfitCache(outfit, vehicleName, vehCache.get(season, {}))
     deleteEmpty(vehCache)
-    if g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
+    if not outfit.id and g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
         seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(season, {})
-        processRandomCamouflages(outfit, season, seasonCache.get(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], {}), vDesc)
+        processRandomCamouflages(outfit, season, seasonCache, vDesc)
         applyOutfitCache(outfit, vehicleName, seasonCache)
     self._HangarVehicleAppearance__outfit = outfit
     self.updateCustomization(outfit)
@@ -227,7 +228,7 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
             applyOutfitCache(outfit, vehicleName, vehCache.get(seasonName, {}))
             deleteEmpty(vehCache)
             loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-        if g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
+        if not outfit.id and g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
             seasonCache = g_config.arenaCamoCache.setdefault(vID, {})
             processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID)
             applyOutfitCache(outfit, vehicleName, seasonCache)
