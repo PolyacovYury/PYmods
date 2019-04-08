@@ -147,10 +147,9 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, vDesc, vID=None):
             component = slot.getComponent()
             component.palette = palette
             component.patternSize = patternSize
-            seasonCache[areaName] = {GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]: {'0': {
-                'id': camoID, 'palette': palette, 'patternSize': patternSize}}}
+            seasonCache[areaName] = {'0': {'id': camoID, 'palette': palette, 'patternSize': patternSize}}
         else:
-            seasonCache[areaName] = {GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]: {'0': {'id': None}}}
+            seasonCache[areaName] = {'0': {'id': None}}
     random.seed()
 
 
@@ -196,13 +195,13 @@ def new_assembleModel(base, self, *a, **kw):
             outfit = outfit.copy()
     if not outfit:
         outfit = self.itemsFactory.createOutfit()
-    seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
+    season = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
     vehCache = g_config.outfitCache.get(nation, {}).get(vehicleName, {})
-    applyOutfitCache(outfit, vehicleName, vehCache.get(seasonName, {}))
+    applyOutfitCache(outfit, vehicleName, vehCache.get(season, {}))
     deleteEmpty(vehCache)
     if g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
-        seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(seasonName, {})
-        processRandomCamouflages(outfit, seasonName, seasonCache, vDesc)
+        seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(season, {})
+        processRandomCamouflages(outfit, season, seasonCache.get(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], {}), vDesc)
         applyOutfitCache(outfit, vehicleName, seasonCache)
     self._HangarVehicleAppearance__outfit = outfit
     self.updateCustomization(outfit)
