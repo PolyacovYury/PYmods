@@ -41,15 +41,14 @@ class CustomizationBottomPanel(CBP):
         self._carouselDP.selectItemIdx(itemIdx)
 
     def __setNotificationCounters(self):
-        vehicle = g_currentVehicle.item
+        item = g_currentVehicle.item
         proxy = g_currentVehicle.itemsCache.items
         tabsCounters = []
         for tabIdx in self.__ctx.visibleTabs:
-            tabsCounters.append(vehicle.getC11nItemsNoveltyCounter(
-                proxy, itemTypes=TABS_ITEM_TYPE_MAPPING[tabIdx], season=self.__ctx.currentSeason))
-        self.as_setNotificationCountersS({
-            'tabsCounters': tabsCounters,
-            'switchersCounter': vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes=GUI_ITEM_TYPE.CUSTOMIZATIONS)})
+            tabsCounters.append(item.getC11nItemsNoveltyCounter(
+                proxy, itemTypes=TABS_ITEM_TYPE_MAPPING[tabIdx] if self.__ctx.isBuy else (), season=self.__ctx.currentSeason))
+        self.as_setNotificationCountersS({'tabsCounters': tabsCounters, 'switchersCounter': item.getC11nItemsNoveltyCounter(
+                proxy, itemTypes=() if self.__ctx.isBuy else GUI_ITEM_TYPE.CUSTOMIZATIONS)})
 
     def __updateSetSwitcherData(self):
         self.as_setSwitchersDataS(self.__getSwitcherInitData(self.__ctx.actualMode))
