@@ -298,7 +298,9 @@ class CustomizationContext(WGCtx):
         self._mode = self.__originalMode[origMode]
         self._tabIndex = self._lastTab[origMode]
         self.refreshOutfit()
-        self.onCustomizationModeChanged(self._mode)  # because bottom_panel populates too early
+        from functools import partial
+        import BigWorld
+        BigWorld.callback(0, partial(self.onCustomizationModeChanged, self._mode))  # because bottom_panel updates too early
 
     def isOutfitsModified(self):
         self._cleanSettings()
