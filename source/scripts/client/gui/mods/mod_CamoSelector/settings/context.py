@@ -72,7 +72,7 @@ class CustomizationContext(WGCtx):
         self.actualMode = CSMode.INSTALL
         self.onActualModeChanged = Event.Event(self._eventsManager)
         self.__switcherIgnored = False
-        self._lastTab = {CSMode.BUY: C11nTabs.PAINT, CSMode.INSTALL: C11nTabs.PAINT}
+        self._lastTab = {CSMode.BUY: C11nTabs.PAINT, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
         self._originalModdedOutfits = {}
         self._modifiedModdedOutfits = {}
         self._originalModdedStyle = None
@@ -289,7 +289,6 @@ class CustomizationContext(WGCtx):
                 self._lastTab[mode] = C11nTabs.STYLE
             else:
                 self.__originalMode[mode] = C11nMode.CUSTOM
-                self._lastTab[mode] = C11nTabs.PAINT
         nation, vehName = g_currentVehicle.item.descriptor.name.split(':')
         for season in SeasonType.COMMON_SEASONS:
             outfit = self._modifiedModdedOutfits[season]
@@ -299,6 +298,7 @@ class CustomizationContext(WGCtx):
         self._mode = self.__originalMode[origMode]
         self._tabIndex = self._lastTab[origMode]
         self.refreshOutfit()
+        self.onCustomizationModeChanged(self._mode)  # because bottom_panel populates too early
 
     def isOutfitsModified(self):
         self._cleanSettings()
