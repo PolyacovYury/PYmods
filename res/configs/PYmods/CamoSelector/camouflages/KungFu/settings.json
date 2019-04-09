@@ -1,8 +1,8 @@
 ﻿{
     "KungFu": {
+        "ally": true,
+        "enemy": true,
         "random_mode": 1,
-        "season": "winter,summer,desert",
-        "useForAlly": true,
-        "useForEnemy": true
+        "season": ["winter", "summer", "desert"]
     }
 }
