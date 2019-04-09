@@ -154,17 +154,22 @@ class CustomizationContext(WGCtx):
             g_config.collectCamouflageData()
             SystemMessages.pushI18nMessage(g_config.i18n['flashCol_serviceMessage_settings'], type=SM_TYPE.Information)
 
-    def applyModdedItems(self):  # TODO: whip up style saving (and applying, for that measure)
+    def applyModdedItems(self):
         self.itemsCache.onSyncCompleted -= self.__onCacheResync
         nationName, vehicleName = g_currentVehicle.item.descriptor.name.split(':')
-        vehConfig = g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {})
+        vehCache = g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {})
         anything = False
         for p in (x for x in self.getModdedPurchaseItems() if x.selected):
             anything = True
-            seasonName = SEASON_TYPE_TO_NAME[p.group]
             typeName = GUI_ITEM_TYPE_NAMES[p.slot]
+            if p.slot == GUI_ITEM_TYPE.STYLE:
+                vehCache.setdefault('style', {'intCD': p.item.intCD if not p.isDismantling else None, 'applied': True})
+                break  # there will only ever be one, but just to make sure...
+            else:
+                vehCache.get('style', {}).update(applied=False)
+            seasonName = SEASON_TYPE_TO_NAME[p.group]
             area = Area.getName(p.areaID) if p.areaID != Area.MISC else 'misc'
-            conf = vehConfig.setdefault(seasonName, {}).setdefault(typeName, {}).setdefault(area, {})
+            conf = vehCache.setdefault(seasonName, {}).setdefault(typeName, {}).setdefault(area, {})
             origComponent = self.__originalOutfits[p.group].getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
             reg = str(p.regionID)
             if p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
@@ -177,6 +182,11 @@ class CustomizationContext(WGCtx):
                 conf[reg] = (({f: getattr(p.component, f) for f, fd in p.component.fields.items() if not fd.weakEqualIgnored}
                               if not isinstance(p.component, EmptyComponent) else {'id': p.item.id})
                              if not p.isDismantling else {'id': None})
+        if not anything and self._mode != self.__originalMode[self.actualMode]:
+            vehCache.get('style', {}).update(applied=False)  # if an "empty" style is applied - 'anything' is already true
+            anything = True
+        if vehCache.get('style', {}) == {'intCD': None, 'applied': False}:
+            vehCache.pop('style', None)
         if anything:
             SystemMessages.pushI18nMessage(
                 MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
