@@ -167,7 +167,7 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
                 outfit = Outfit()
                 outfit._id = 20000
         else:
-            if outfit.id and any(vehCache.itervalues()):
+            if outfit.id and any(v for k, v in vehCache.iteritems() if k != 'style'):
                 outfit = Outfit()
             applyOutfitCache(outfit, vehCache.get(seasonName, {}))
         deleteEmpty(vehCache)
