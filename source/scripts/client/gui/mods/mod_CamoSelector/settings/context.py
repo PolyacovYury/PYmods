@@ -7,7 +7,7 @@ from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
 from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_NAME, C11nMode, TYPES_ORDER, \
     TABS_SLOT_TYPE_MAPPING, SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems, OutfitInfo, getItemInventoryCount, \
-    getStyleInventoryCount
+    getStyleInventoryCount, AdditionalPurchaseGroups
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.SystemMessages import SM_TYPE
@@ -161,12 +161,12 @@ class CustomizationContext(WGCtx):
         anything = False
         for p in (x for x in self.getModdedPurchaseItems() if x.selected):
             anything = True
-            typeName = GUI_ITEM_TYPE_NAMES[p.slot]
-            if p.slot == GUI_ITEM_TYPE.STYLE:
+            if p.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
                 vehCache.setdefault('style', {'intCD': p.item.intCD if not p.isDismantling else None, 'applied': True})
                 break  # there will only ever be one, but just to make sure...
             else:
                 vehCache.get('style', {}).update(applied=False)
+            typeName = GUI_ITEM_TYPE_NAMES[p.slot]
             seasonName = SEASON_TYPE_TO_NAME[p.group]
             area = Area.getName(p.areaID) if p.areaID != Area.MISC else 'misc'
             conf = vehCache.setdefault(seasonName, {}).setdefault(typeName, {}).setdefault(area, {})
