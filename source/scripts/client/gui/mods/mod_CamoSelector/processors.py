@@ -181,8 +181,8 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
     return outfit
 
 
-@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__assembleModel')
-def new_assembleModel(base, self, *a, **kw):
+@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__setupModel')
+def new_setupModel(base, self, *a, **kw):
     result = base(self, *a, **kw)
     if self._HangarVehicleAppearance__isVehicleDestroyed:
         return result
@@ -227,7 +227,6 @@ def new_assembleModel(base, self, *a, **kw):
     seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(season, {})
     outfit = applyOutfitInfo(outfit, season, vDesc, seasonCache)
     self.updateCustomization(outfit)
-    self._HangarVehicleAppearance__outfit = outfit
     return result
 
 
