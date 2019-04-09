@@ -167,6 +167,8 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
                 outfit = Outfit()
                 outfit._id = 20000
         else:
+            if outfit.id and any(vehCache.itervalues()):
+                outfit = Outfit()
             applyOutfitCache(outfit, vehCache.get(seasonName, {}))
         deleteEmpty(vehCache)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
