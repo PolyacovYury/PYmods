@@ -162,7 +162,7 @@ class CustomizationContext(WGCtx):
         for p in (x for x in self.getModdedPurchaseItems() if x.selected):
             anything = True
             if p.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
-                vehCache.setdefault('style', {'intCD': p.item.intCD if not p.isDismantling else None, 'applied': True})
+                vehCache.setdefault('style', {}).update(intCD=p.item.intCD if not p.isDismantling else None, applied=True)
                 break  # there will only ever be one, but just to make sure...
             else:
                 vehCache.get('style', {}).update(applied=False)
