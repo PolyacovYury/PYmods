@@ -328,19 +328,29 @@ class CustomizationContext(WGCtx):
         super(CustomizationContext, self)._CustomizationContext__carveUpOutfits()
         self.actualMode = origMode
         nationName, vehName = g_currentVehicle.item.descriptor.name.split(':')
+        vehCache = g_config.outfitCache.get(nationName, {}).get(vehName, {})
+        styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
         for season in SeasonType.COMMON_SEASONS:
             outfit = self.service.getCustomOutfit(season).copy()
-            seasonName = SEASON_TYPE_TO_NAME[season]
-            seasonCache = g_config.outfitCache.get(nationName, {}).get(vehName, {}).get(seasonName, {})
-            applyOutfitCache(outfit, seasonCache)
-            outfit._isInstalled = outfit.isInstalled() or not outfit.isEmpty()  # or not isDisabledByStyleMode
+            applyOutfitCache(outfit, vehCache.get(SEASON_TYPE_TO_NAME[season], {}))
+            outfit._isInstalled = (outfit.isInstalled() or not outfit.isEmpty()) and not styleCache['applied']
             self._originalModdedOutfits[season] = outfit.copy()
             self._modifiedModdedOutfits[season] = outfit.copy()
-        style = self.service.getCurrentStyle()
-        if self.service.isCurrentStyleInstalled():
-            self._originalModdedStyle = style
-            self._modifiedModdedStyle = style
-        # TODO: add CamoSelector style getter
+        style = None
+        origStyle = self.service.getCurrentStyle()
+        moddedStyle = None if styleCache['intCD'] is None else self.service.getItemByCD(styleCache['intCD'])
+        if not moddedStyle and self.service.isCurrentStyleInstalled():
+            style = origStyle
+            self._originalModdedStyle = origStyle
+            self._modifiedModdedStyle = origStyle
+        elif moddedStyle:
+            style = moddedStyle
+            self._modifiedModdedStyle = moddedStyle
+            self._originalModdedStyle = moddedStyle if styleCache['applied'] else None
+        if style:
+            self._currentOutfit = style.getOutfit(self._currentSeason)
+        else:
+            self._currentOutfit = self._modifiedOutfits[self._currentSeason]
 
     # noinspection SpellCheckingInspection
     def __cancelModifiedOufits(self):
