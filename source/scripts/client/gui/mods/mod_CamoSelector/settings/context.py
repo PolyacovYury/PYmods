@@ -252,7 +252,19 @@ class CustomizationContext(WGCtx):
 
     def cancelChanges(self):
         self._currentSettings = {'custom': {}, 'remap': {}}
-        super(CustomizationContext, self).cancelChanges()
+        if self.numberEditModeActive:
+            self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_NUMBER)
+        origMode = self.actualMode
+        for actualMode in CSMode.INSTALL, CSMode.BUY:
+            self.actualMode = actualMode
+            if self._lastTab[self.actualMode] == C11nTabs.STYLE:
+                self.__cancelModifiedStyle()
+            else:
+                self.__cancelModifiedOufits()
+        self.actualMode = origMode
+        self.refreshOutfit()
+        self.clearStoredPersonalNumber()
+        self.onChangesCanceled()
 
     def isOnly1ChangedNumberInEditMode(self):
         if self.numberEditModeActive and not g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage:
@@ -362,16 +374,6 @@ class CustomizationContext(WGCtx):
             self._currentOutfit = self._modifiedStyle.getOutfit(self._currentSeason)
         else:
             self._currentOutfit = self._modifiedOutfits[self._currentSeason]
-
-    # noinspection SpellCheckingInspection
-    def __cancelModifiedOufits(self):
-        for season in SeasonType.COMMON_SEASONS:
-            self.__modifiedOutfits[season] = self.__originalOutfits[season].copy()
-            self._modifiedModdedOutfits[season] = self._originalModdedOutfits[season].copy()
-
-    def __cancelModifiedStyle(self):
-        self.__modifiedStyle = self.__originalStyle
-        self._modifiedModdedStyle = self._originalModdedStyle
 
     def __preserveState(self):
         self._state.update(
