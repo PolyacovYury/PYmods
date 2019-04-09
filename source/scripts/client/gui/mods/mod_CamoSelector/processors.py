@@ -22,6 +22,7 @@ from skeletons.gui.shared import IItemsCache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from . import g_config
+from .constants import SEASON_NAME_TO_TYPE
 
 try:
     import gui.mods.mod_statpaints  # camouflage removal should work even with CamoSelector, so it has to be imported first
@@ -146,6 +147,35 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
     random.seed()
 
 
+def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVehicle=True):
+    nationName, vehicleName = vDesc.name.split(':')
+    if isPlayerVehicle:
+        vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
+        styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
+        if styleCache['applied']:
+            styleCD = styleCache['intCD']
+            if styleCD is not None:
+                itemsCache = dependency.instance(IItemsCache)
+                style = (itemsCache.items.getItemByCD if itemsCache.items.isSynced() else
+                         itemsCache.items.itemsFactory.createCustomization)(styleCD)
+                if not style:
+                    print g_config.ID + ': style', styleCD, 'for', vehicleName, 'deleted from game client.'
+                    styleCache.update(intCD=None, applied=False)
+                else:
+                    outfit = style.getOutfit(SEASON_NAME_TO_TYPE[seasonName]).copy()
+            else:
+                outfit = Outfit()
+                outfit._id = 20000
+        else:
+            applyOutfitCache(outfit, vehCache.get(seasonName, {}))
+        deleteEmpty(vehCache)
+        loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
+    if not outfit.id and g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
+        processRandomCamouflages(outfit, seasonName, randomCache, isTurretCustom(vDesc), vID)
+        applyOutfitCache(outfit, randomCache)
+    return outfit
+
+
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__assembleModel')
 def new_assembleModel(base, self, *a, **kw):
     result = base(self, *a, **kw)
@@ -189,16 +219,10 @@ def new_assembleModel(base, self, *a, **kw):
     if not outfit:
         outfit = self.itemsFactory.createOutfit()
     season = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
-    vehCache = g_config.outfitCache.get(nation, {}).get(vehicleName, {})
-    applyOutfitCache(outfit, vehCache.get(season, {}))
-    deleteEmpty(vehCache)
-    if not outfit.id and g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
-        seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(season, {})
-        processRandomCamouflages(outfit, season, seasonCache, isTurretCustom(vDesc))
-        applyOutfitCache(outfit, seasonCache)
+    seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(season, {})
+    outfit = applyOutfitInfo(outfit, season, vDesc, seasonCache)
     self._HangarVehicleAppearance__outfit = outfit
     self.updateCustomization(outfit)
-    loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
     return result
 
 
@@ -214,16 +238,8 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
         if not g_config.data['useBought']:
             outfit = Outfit()
         seasonName = SEASON_TYPE_TO_NAME[SeasonType.fromArenaKind(BigWorld.player().arena.arenaType.vehicleCamouflageKind)]
-        nationName, vehicleName = vDesc.name.split(':')
-        if self._CompoundAppearance__vID == BigWorld.player().playerVehicleID:
-            vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
-            applyOutfitCache(outfit, vehCache.get(seasonName, {}))
-            deleteEmpty(vehCache)
-            loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-        if not outfit.id and g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
-            seasonCache = g_config.arenaCamoCache.setdefault(vID, {})
-            processRandomCamouflages(outfit, seasonName, seasonCache, isTurretCustom(vDesc), vID)
-            applyOutfitCache(outfit, seasonCache)
+        outfit = applyOutfitInfo(outfit, seasonName, vDesc, g_config.arenaCamoCache.setdefault(vID, {}),
+                                 vID, self._CompoundAppearance__vID == BigWorld.player().playerVehicleID)
     self._CompoundAppearance__outfit = outfit
     base(self, *a, **kw)
 

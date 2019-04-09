@@ -127,7 +127,7 @@ class CustomizationContext(WGCtx):
         return outfitsInfo
 
     def getModdedPurchaseItems(self):
-        if self._mode == C11nMode.CUSTOM:
+        if self._lastTab[CSMode.INSTALL] != C11nTabs.STYLE:
             currentSeason = self.currentSeason
             order = [currentSeason] + [s for s in SEASONS_ORDER if s != currentSeason]
             return getCustomPurchaseItems(self.getModdedOutfitsInfo(), order)
@@ -257,7 +257,7 @@ class CustomizationContext(WGCtx):
         import inspect
         if not self.isBuy and inspect.stack()[1][0].f_code.co_name == 'buildList':
             return self.getModdedPurchaseItems()
-        if self._mode == C11nMode.CUSTOM:
+        if self._lastTab[CSMode.BUY] != C11nTabs.STYLE:
             currentSeason = self.currentSeason
             order = [currentSeason] + [s for s in SEASONS_ORDER if s != currentSeason]
             return getCustomPurchaseItems(self.getOutfitsInfo(), order)
