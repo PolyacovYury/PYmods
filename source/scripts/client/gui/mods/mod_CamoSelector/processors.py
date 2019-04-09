@@ -167,7 +167,8 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
                 outfit = Outfit()
                 outfit._id = 20000
         else:
-            if outfit.id and any(v for k, v in vehCache.iteritems() if k != 'style'):
+            if outfit.id and any(v for k, v in vehCache.iteritems() if k != 'style') and not vehCache.get(
+                    'style', {}).get('applied', False):
                 outfit = Outfit()
             applyOutfitCache(outfit, vehCache.get(seasonName, {}))
         deleteEmpty(vehCache)
@@ -225,8 +226,8 @@ def new_assembleModel(base, self, *a, **kw):
     season = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
     seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(season, {})
     outfit = applyOutfitInfo(outfit, season, vDesc, seasonCache)
-    self._HangarVehicleAppearance__outfit = outfit
     self.updateCustomization(outfit)
+    self._HangarVehicleAppearance__outfit = outfit
     return result
 
 
