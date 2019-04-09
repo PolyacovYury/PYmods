@@ -336,19 +336,16 @@ class CustomizationContext(WGCtx):
             outfit._isInstalled = (outfit.isInstalled() or not outfit.isEmpty()) and not styleCache['applied']
             self._originalModdedOutfits[season] = outfit.copy()
             self._modifiedModdedOutfits[season] = outfit.copy()
-        style = None
         origStyle = self.service.getCurrentStyle()
         moddedStyle = None if styleCache['intCD'] is None else self.service.getItemByCD(styleCache['intCD'])
         if not moddedStyle and self.service.isCurrentStyleInstalled():
-            style = origStyle
             self._originalModdedStyle = origStyle
             self._modifiedModdedStyle = origStyle
         elif moddedStyle:
-            style = moddedStyle
             self._modifiedModdedStyle = moddedStyle
             self._originalModdedStyle = moddedStyle if styleCache['applied'] else None
-        if style:
-            self._currentOutfit = style.getOutfit(self._currentSeason)
+        if self._modifiedStyle:
+            self._currentOutfit = self._modifiedStyle.getOutfit(self._currentSeason)
         else:
             self._currentOutfit = self._modifiedOutfits[self._currentSeason]
 
