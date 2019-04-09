@@ -167,6 +167,10 @@ class CustomizationContext(WGCtx):
             conf = vehConfig.setdefault(seasonName, {}).setdefault(typeName, {}).setdefault(area, {})
             origComponent = self.__originalOutfits[p.group].getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
             reg = str(p.regionID)
+            if p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
+                seasonCache = g_config.hangarCamoCache.get(nationName, {}).get(vehicleName, {}).get(seasonName, {})
+                seasonCache.get(typeName, {}).get(area, {}).pop(reg, None)
+                deleteEmpty(seasonCache)
             if not origComponent if p.isDismantling else p.component.weak_eq(origComponent):
                 conf.pop(reg, None)
             else:
