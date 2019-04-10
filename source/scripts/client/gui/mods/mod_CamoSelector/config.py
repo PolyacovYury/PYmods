@@ -28,7 +28,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = __modID__
-        self.version = '2.1.0 (%s)' % __date__
+        self.version = '3.0.0 (%s)' % __date__
         self.author += ' (thx to tratatank, Blither!)'
         self.data = {'enabled': True, 'doRandom': True, 'useBought': True, 'hangarCamoKind': 0,
                      'fullAlpha': False, 'disableWithDefault': False, 'fillEmptySlots': True, 'uniformOutfit': False}
