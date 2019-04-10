@@ -208,7 +208,7 @@ def new_reload(base, self, vDesc, vState, outfit):
     if g_config.data['hangarCamoKind'] < 3:
         g_tankActiveCamouflage[intCD] = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
     elif season in (SeasonType.UNDEFINED, SeasonType.EVENT):
-        active = [season for season in SeasonType.SEASONS if vehicle and vehicle.hasOutfitWithItems(season)]
+        active = [s for s in SeasonType.SEASONS if vehicle and vehicle.hasOutfitWithItems(s)]
         g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
     if season not in (g_tankActiveCamouflage[intCD], SeasonType.UNDEFINED, SeasonType.EVENT):
         season = g_tankActiveCamouflage[intCD]
