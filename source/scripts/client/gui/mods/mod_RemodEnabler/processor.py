@@ -101,20 +101,16 @@ def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled']:
         modelDesc, playerName = getModelDescInfo(self._HangarVehicleAppearance__vEntity.id, vDesc, 'hangar')
         view = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOBBY_CUSTOMIZATION))
-        if view is not None:
-            if modelDesc is not None and getattr(vDesc, 'modelDesc', None) is not None:
-                SystemMessages.pushMessage(g_config.i18n['UI_install_customization'], SystemMessages.SM_TYPE.Warning)
+        if getattr(vDesc, 'modelDesc', None) is not None and modelDesc is not None and view is not None:
+            SystemMessages.pushMessage(g_config.i18n['UI_install_customization'], SystemMessages.SM_TYPE.Warning)
             vDesc.modelDesc = None
-            BigWorld.callback(1, view.service.moveHangarVehicleToCustomizationRoom)
-            BigWorld.callback(2, view.service.resumeHighlighter)
-            BigWorld.callback(2, view.service.restartHighlighter)
         else:
             applyModelDesc(vDesc, modelDesc, self._HangarVehicleAppearance__outfit.modelsSet or 'default', playerName)
     base(self, vDesc, vState)
 
 
 @overrideMethod(MainView, '_populate')
-def new_populate(base, self, *a, **kw):
+def new_populate(base, *a, **kw):
     if g_config.data['enabled']:
-        BigWorld.callback(1, lambda: (self.service.suspendHighlighter(), refreshCurrentVehicle()))
-    return base(self, *a, **kw)
+        BigWorld.callback(0, refreshCurrentVehicle)
+    return base(*a, **kw)
