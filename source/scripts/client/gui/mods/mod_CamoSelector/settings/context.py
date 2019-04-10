@@ -12,7 +12,7 @@ from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.SystemMessages import SM_TYPE
 from gui.customization.context import CustomizationContext as WGCtx, CaruselItemData
-from gui.customization.shared import C11nId
+from gui.customization.shared import C11nId, __isTurretCustomizable as isTurretCustom
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from items.components.c11n_constants import SeasonType
@@ -156,7 +156,9 @@ class CustomizationContext(WGCtx):
 
     def applyModdedItems(self):
         self.itemsCache.onSyncCompleted -= self.__onCacheResync
-        nationName, vehicleName = g_currentVehicle.item.descriptor.name.split(':')
+        vDesc = g_currentVehicle.item.descriptor
+        nationName, vehicleName = vDesc.name.split(':')
+        isTurretCustomisable = isTurretCustom(vDesc)
         vehCache = g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {})
         anything = False
         for p in (x for x in self.getModdedPurchaseItems() if x.selected):
@@ -175,7 +177,7 @@ class CustomizationContext(WGCtx):
             if p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
                 seasonCache = g_config.hangarCamoCache.get(nationName, {}).get(vehicleName, {}).get(seasonName, {})
                 seasonCache.get(typeName, {}).get(area, {}).pop(reg, None)
-                deleteEmpty(seasonCache)
+                deleteEmpty(seasonCache, isTurretCustomisable)
             if not origComponent if p.isDismantling else p.component.weak_eq(origComponent):
                 conf.pop(reg, None)
             else:
@@ -190,7 +192,7 @@ class CustomizationContext(WGCtx):
         if anything:
             SystemMessages.pushI18nMessage(
                 MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
-        deleteEmpty(g_config.outfitCache)
+        deleteEmpty(g_config.outfitCache, isTurretCustomisable)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
         self.__onCacheResync()
         self.itemsCache.onSyncCompleted += self.__onCacheResync

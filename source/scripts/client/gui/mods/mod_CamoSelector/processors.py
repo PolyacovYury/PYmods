@@ -30,12 +30,12 @@ except ImportError:
     pass
 
 
-def deleteEmpty(settings):
+def deleteEmpty(settings, isTurretCustomisable):
     for key, value in settings.items():
-        if key == GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE] and not isTurretCustom(g_currentVehicle.item.descriptor):
+        if key == GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE] and not isTurretCustomisable:
             value.pop(Area.TURRET, None)
         elif isinstance(value, dict):
-            deleteEmpty(value)
+            deleteEmpty(value, isTurretCustomisable)
             if not value:
                 del settings[key]
 
@@ -149,6 +149,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
 
 def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVehicle=True):
     nationName, vehicleName = vDesc.name.split(':')
+    isTurretCustomisable = isTurretCustom(vDesc)
     if isPlayerVehicle:
         vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
         styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
@@ -171,12 +172,12 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
                     'style', {}).get('applied', False):
                 outfit = Outfit()
             applyOutfitCache(outfit, vehCache.get(seasonName, {}))
-        deleteEmpty(vehCache)
+        deleteEmpty(vehCache, isTurretCustomisable)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
     if outfit.id:
         randomCache.clear()
     elif g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
-        processRandomCamouflages(outfit, seasonName, randomCache, isTurretCustom(vDesc), vID)
+        processRandomCamouflages(outfit, seasonName, randomCache, isTurretCustomisable, vID)
         applyOutfitCache(outfit, randomCache)
     return outfit
 
