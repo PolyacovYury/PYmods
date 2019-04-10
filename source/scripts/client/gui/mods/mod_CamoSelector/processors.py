@@ -222,22 +222,24 @@ def new_reload(base, self, vDesc, vState, outfit):
     return base(self, vDesc, vState, outfit)
 
 
-@overrideMethod(CompoundAppearance, '_CompoundAppearance__applyVehicleOutfit')
-def new_applyVehicleOutfit(base, self, *a, **kw):
-    outfit = self._CompoundAppearance__outfit.copy()
-    vID = self._CompoundAppearance__vID
-    vDesc = self._CompoundAppearance__typeDesc
+@overrideMethod(CompoundAppearance, '_CompoundAppearance__prepareOutfit')
+def new_prepareOutfit(base, self, *a, **kw):
+    hasOutfit = bool(self.outfit)
+    base(self, *a, **kw)
+    if hasOutfit:
+        return
+    outfit = self.outfit.copy()
+    vDesc = self.typeDescriptor
     if not vDesc:
-        return base(self, *a, **kw)
+        return
     if g_config.data['enabled'] and vDesc.name not in g_config.disable and not (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
         if not g_config.data['useBought']:
             outfit = Outfit()
         seasonName = SEASON_TYPE_TO_NAME[SeasonType.fromArenaKind(BigWorld.player().arena.arenaType.vehicleCamouflageKind)]
-        outfit = applyOutfitInfo(outfit, seasonName, vDesc, g_config.arenaCamoCache.setdefault(vID, {}),
-                                 vID, self._CompoundAppearance__vID == BigWorld.player().playerVehicleID)
+        outfit = applyOutfitInfo(outfit, seasonName, vDesc, g_config.arenaCamoCache.setdefault(self.id, {}),
+                                 self.id, self.id == BigWorld.player().playerVehicleID)
     self._CompoundAppearance__outfit = outfit
-    base(self, *a, **kw)
 
 
 @overrideMethod(PlayerAvatar, 'onBecomePlayer')
