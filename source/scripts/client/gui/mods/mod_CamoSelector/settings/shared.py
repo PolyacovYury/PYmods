@@ -1,62 +1,17 @@
-import os
-from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
-from gui.shared.gui_items import GUI_ITEM_TYPE
-from shared_utils import CONST_CONTAINER
+from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
+from items.components.c11n_constants import SeasonType
+from .. import g_config
+from ..constants import SEASON_NAME_TO_TYPE
 
 
-class RandMode(CONST_CONTAINER):
-    OFF, TEAM, RANDOM = range(3)
-    NAMES = {OFF: 'off', RANDOM: 'random', TEAM: 'team'}
-    INDICES = {v: k for k, v in NAMES.iteritems()}
+class CSMode(object):
+    BUY, INSTALL = range(2)
+    NAMES = {BUY: 'buy', INSTALL: 'install'}
 
 
-class TeamMode(CONST_CONTAINER):
-    ALLY, ENEMY, BOTH = range(1, 4)
-    NAMES = {ALLY: 'ally', ENEMY: 'enemy', BOTH: 'both'}
-    INDICES = {v: k for k, v in NAMES.iteritems()}
-
-
-def getCurrentDesc():
-    if g_currentPreviewVehicle.isPresent():
-        vDesc = g_currentPreviewVehicle.item.descriptor
-    elif g_currentVehicle.isPresent():
-        vDesc = g_currentVehicle.item.descriptor
-    else:
-        raise AttributeError('g_currentVehicle.item.descriptor not found')
-    return vDesc
-
-
-def getCurrentNationID():
-    return getCurrentDesc().type.customizationNationID
-
-
-def getCamoTextureName(camo):
-    return os.path.splitext(os.path.basename(camo.texture))[0]
-
-
-def isCamoGlobal(camo):
-    from . import g_config
-    return getCamoTextureName(camo) in g_config.interCamo
-
-
-class C11nMode(CONST_CONTAINER):
-    INSTALL, SETUP = range(2)
-    NAMES = {INSTALL: 'install', SETUP: 'setup'}
-
-
-class C11nTabs(CONST_CONTAINER):
-    PAINT, CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM, EMBLEM, INSCRIPTION, EFFECT = range(8)
-    AVAILABLE_REGIONS = (PAINT, CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM, EMBLEM, INSCRIPTION)
-    ALL = (PAINT, CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM, EMBLEM, INSCRIPTION, EFFECT)
-    VISIBLE = ALL  # legacy, maybe not all tabs will be visible, idk
-    CAMO = (CAMO_SHOP, CAMO_HIDDEN, CAMO_GLOBAL, CAMO_CUSTOM)
-    REGIONS = CAMO + (EFFECT, PAINT)
-
-
-ITEM_TO_TABS = {GUI_ITEM_TYPE.PAINT: (C11nTabs.PAINT,), GUI_ITEM_TYPE.CAMOUFLAGE: C11nTabs.CAMO,
-                GUI_ITEM_TYPE.EMBLEM: (C11nTabs.EMBLEM,), GUI_ITEM_TYPE.INSCRIPTION: (C11nTabs.INSCRIPTION,),
-                GUI_ITEM_TYPE.MODIFICATION: (C11nTabs.EFFECT,)}
-
-
-def tabToItem(tabIndex):
-    return next(itemType for itemType in ITEM_TO_TABS if tabIndex in ITEM_TO_TABS[itemType])
+def getItemSeason(item):
+    import operator
+    name, key = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
+    cfg = g_config.camouflages[key].get(name, {})
+    seasons = cfg.get('season', []) or [x for x in SEASONS_CONSTANTS.SEASONS if SEASON_NAME_TO_TYPE[x] & item.season]
+    return reduce(operator.ior, (SEASON_NAME_TO_TYPE[x] for x in seasons), SeasonType.UNDEFINED)

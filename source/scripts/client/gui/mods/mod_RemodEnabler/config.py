@@ -114,10 +114,11 @@ class ConfigInterface(PYmodsConfigInterface):
                 '<b>Possible modes:</b>\n • OFF\n • Model replace\n • Model add'),
             'UI_setting_SwitchRemodHotkey_text': 'Remod switch hotkey',
             'UI_setting_SwitchRemodHotkey_tooltip': 'This hotkey will cycle through all remods.',
-            'UI_collision_compare_enable': '<b>RemodEnabler:</b>\nDisabling collision comparison mode.',
-            'UI_collision_compare_disable': '<b>RemodEnabler:</b>\nEnabling collision comparison mode.',
+            'UI_collision_compare_enable': '<b>RemodEnabler:</b>\nEnabling collision comparison mode.',
+            'UI_collision_compare_disable': '<b>RemodEnabler:</b>\nDisabling collision comparison mode.',
             'UI_collision_enable': '<b>RemodEnabler:</b>\nEnabling collision mode.',
             'UI_collision_unavailable': '<b>RemodEnabler:</b>\nCollision displaying is currently not supported.',
+            'UI_install_customization': '<b>RemodEnabler:</b>\nRemods are not displayed when customization is open.',
             'UI_install_remod': '<b>RemodEnabler:</b>\nRemod installed: ',
             'UI_install_default': '<b>RemodEnabler:</b>\nDefault model applied.',
             'UI_install_wheels_unsupported':

@@ -16,12 +16,14 @@
             <group>	custom_camo	</group>
             <kind>	summer	</kind>
             <notInShop>	True	</notInShop>
-            <colors>
-                <c0>240 230 220 255</c0>
-                <c1>8 121 173 255</c1>
-                <c2>6 53 97 255</c2>
-                <c3>255 255 255 15</c3>
-            </colors>
+            <palettes>
+                <palette>
+                    <c0>240 230 220 255</c0>
+                    <c1>8 121 173 255</c1>
+                    <c2>6 53 97 255</c2>
+                    <c3>255 255 255 15</c3>
+                </palette>
+            </palettes>
             <tiling>
                 <all>2 2 0 0</all>
             </tiling>
@@ -35,12 +37,14 @@
             <group>	custom_camo	</group>
             <kind>	summer	</kind>
             <notInShop>	True	</notInShop>
-            <colors>
-                <c0>220 208 196 255</c0>
-                <c1>249 63 60 255</c1>
-                <c2>113 58 43 255</c2>
-                <c3>0 0 0 15</c3>
-            </colors>
+            <palettes>
+                <palette>
+                    <c0>220 208 196 255</c0>
+                    <c1>249 63 60 255</c1>
+                    <c2>113 58 43 255</c2>
+                    <c3>0 0 0 15</c3>
+                </palette>
+            </palettes>
             <tiling>
                 <all>2 2 1 1</all>
             </tiling>

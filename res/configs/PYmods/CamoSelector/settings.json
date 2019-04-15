@@ -1,95 +1,98 @@
 ﻿{
     "disable": ["germany:Karl", "ussr:R00_T_50_2", "usa:A00_T110E5", "france:F00_AMX_50Foch_155", "france:F77_FCM_2C_HE2017", "france:F80_FCM_F1_Mle1940_HE2017"],
     "remap": {
-        "526": {
-            "season": "summer"
-        },
-        "528": {
-            "season": "summer,desert"
-        },
-        "529": {
-            "season": "winter"
+        "1": {
+            "random_mode": 0
         },
         "15009": {
-            "season": "desert"
+            "season": ["desert"]
         },
         "15010": {
-            "season": "summer,desert"
+            "season": ["summer", "desert"]
         },
         "15011": {
-            "season": "winter"
+            "season": ["winter"]
         },
         "15109": {
-            "season": "desert"
+            "season": ["desert"]
         },
         "15110": {
-            "season": "summer,desert"
+            "season": ["summer", "desert"]
         },
         "15111": {
-            "season": "winter"
+            "season": ["winter"]
         },
         "15211": {
-            "season": "desert"
+            "season": ["desert"]
         },
         "15212": {
-            "season": "summer,desert"
+            "season": ["summer", "desert"]
         },
         "15213": {
-            "season": "summer"
+            "season": ["summer"]
         },
         "15318": {
-            "season": "summer,desert"
+            "season": ["summer", "desert"]
         },
         "15319": {
-            "season": "summer"
+            "season": ["summer"]
         },
         "15320": {
-            "season": "winter"
+            "season": ["winter"]
         },
         "15411": {
-            "season": "desert"
+            "season": ["desert"]
         },
         "15412": {
-            "season": "summer"
+            "season": ["summer"]
         },
         "15413": {
-            "season": "summer"
+            "season": ["summer"]
         },
         "15512": {
-            "season": "desert"
+            "season": ["desert"]
         },
         "15513": {
-            "season": "summer"
+            "season": ["summer"]
         },
         "15514": {
-            "season": "summer"
+            "season": ["summer"]
         },
         "15621": {
-            "season": "summer"
+            "season": ["summer"]
         },
         "15623": {
-            "season": "summer,desert"
+            "season": ["summer", "desert"]
         },
         "15624": {
-            "season": "winter"
+            "season": ["winter"]
         },
         "15720": {
-            "season": "summer"
+            "season": ["summer"]
         },
         "15722": {
-            "season": "summer,desert"
+            "season": ["summer", "desert"]
         },
         "15723": {
-            "season": "winter"
+            "season": ["winter"]
         },
         "15821": {
-            "season": "summer"
+            "season": ["summer"]
         },
         "15823": {
-            "season": "summer,desert"
+            "season": ["summer", "desert"]
         },
         "15824": {
-            "season": "winter"
+            "season": ["winter"]
+        },
+        "526": {
+            "season": ["summer"]
+        },
+        "528": {
+            "season": ["summer", "desert"]
+        },
+        "529": {
+            "season": ["winter"]
         }
     }
 }
