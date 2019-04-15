@@ -9,34 +9,24 @@ from items import makeIntCompactDescrByID as makeCD
 from items.components import shared_components
 from items.components.c11n_constants import SeasonType
 from items.readers.c11n_readers import CamouflageXmlReader, PaintXmlReader
-from .settings import g_config
+from . import g_config
 
 
-class LegacyCamouflageReader(CamouflageXmlReader):
-    def _readFromXml(self, target, xmlCtx, section):
-        super(LegacyCamouflageReader, self)._readFromXml(target, xmlCtx, section)
-        if section.has_key('colors'):
-            palette = []
-            for c_name in section['colors'].keys():
-                palette.append(iv._readColor((xmlCtx, 'colors'), section['colors'], c_name))
-            target.palettes = (palette,)
-        if g_config.data['fullAlpha']:
-            for paletteNum in xrange(len(target.palettes)):
-                for idx, color in enumerate(target.palettes[paletteNum]):
-                    rgba = []
-                    for _ in xrange(3):
-                        rgba.append(color - (color >> 8 << 8))
-                        color = color >> 8
-                    rgba.append(255)
-                    target.palettes[paletteNum][idx] = rgba[0] + (rgba[1] << 8) + (rgba[2] << 16) + (rgba[3] << 24)
+class ModdedCamouflageReader(CamouflageXmlReader):
+    def _readFromXml(self, target, xmlCtx, section, cache=None):
+        super(ModdedCamouflageReader, self)._readFromXml(target, xmlCtx, section, cache)
+        if not g_config.data['fullAlpha']:
+            return
+        for palette in target.palettes:
+            palette[:] = [color | 0xFF000000 for color in palette]
 
 
 @overrideMethod(iv.Cache, 'customization20')
 def new_customization20(base, *args, **kwargs):
     cache = base(*args, **kwargs)
-    if g_config.data['enabled'] and 'custom' not in cache.priceGroupNames:
+    if g_config.data['enabled'] and g_config.configFolders and 'custom' not in cache.priceGroupNames:
         createPriceGroup(cache)
-        groupName = g_config.i18n['UI_flashCol_camoGroup_custom']
+        groupName = g_config.i18n['flashCol_camoGroup_custom']
         for configDir in sorted(g_config.configFolders, key=lambda s: s.lower()):
             filePath = g_config.configPath + 'camouflages/' + configDir + '/'
             __readCamoFolder(groupName, cache, cc.CamouflageItem, '.' + filePath, cache.camouflages)
@@ -96,19 +86,16 @@ def __readCamoFolder(groupName, cache, itemCls, folder, storage):
 
 def __readPaintFolder(groupName, cache, itemCls, folder, storage):
     folderSection = ResMgr.openSection(folder)
-    if folderSection is not None:
-        for itemsFileName, section in folderSection.items():
-            if itemsFileName.endswith('.xml'):
-                try:
-                    _readItems(groupName, cache, itemCls, (None, itemsFileName), section, storage)
-                except StandardError:
-                    traceback.print_exc()
-                finally:
-                    ResMgr.purge(itemsFileName)
+    for name, sect in (i for i in folderSection.items() if i[0].endswith('.xml')) if folderSection is not None else ():
+        try:
+            _readItems(groupName, cache, itemCls, (None, name), sect, storage)
+        except StandardError:
+            traceback.print_exc()
+        ResMgr.purge(name)
 
 
 def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
-    reader = LegacyCamouflageReader() if itemCls == cc.CamouflageItem else PaintXmlReader()
+    reader = ModdedCamouflageReader() if itemCls == cc.CamouflageItem else PaintXmlReader()
     groupsDict = cache.priceGroups
     itemToGroup = cache.itemToPriceGroup
     group = cc.ItemGroup(itemCls)

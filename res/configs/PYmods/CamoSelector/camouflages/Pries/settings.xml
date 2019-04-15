@@ -14,12 +14,14 @@
             <id> 5114 </id>
             <kind> summer </kind>
             <group> custom_camo </group>
-            <colors>
-                <c0> 0 0 0 0 </c0>
-                <c1> 0 0 0 200 </c1>
-                <c2> 248 202 17 200 </c2>
-                <c3> 0 0 0 0 </c3>
-            </colors>
+            <palettes>
+                <palette>
+                    <c0> 0 0 0 0 </c0>
+                    <c1> 0 0 0 200 </c1>
+                    <c2> 248 202 17 200 </c2>
+                    <c3> 0 0 0 0 </c3>
+                </palette>
+            </palettes>
             <tiling>
 
                 <all>2 2 0 0</all>

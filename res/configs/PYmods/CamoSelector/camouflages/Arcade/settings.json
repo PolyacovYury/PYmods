@@ -1,8 +1,8 @@
 ﻿{
     "Arcade": {
+        "ally": true,
+        "enemy": true,
         "random_mode": 1,
-        "season": "summer,winter,desert",
-        "useForAlly": true,
-        "useForEnemy": true
+        "season": ["summer", "winter", "desert"]
     }
 }
