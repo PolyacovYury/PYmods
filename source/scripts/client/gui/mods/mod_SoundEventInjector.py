@@ -8,12 +8,18 @@ import os
 import traceback
 from Avatar import PlayerAvatar
 from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, Analytics
-from ReloadEffect import _BarrelReloadDesc
+from ReloadEffect import _SimpleReloadDesc, _BarrelReloadDesc, _AutoReloadDesc
 from debug_utils import LOG_ERROR
 from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc
 from items.components.sound_components import WWTripleSoundConfig as SoundConfig
 from items.vehicles import g_cache
 from material_kinds import EFFECT_MATERIALS
+
+reloadTypes = {'SimpleReload': _SimpleReloadDesc, 'BarrelReload': _BarrelReloadDesc, 'AutoReload': _AutoReloadDesc}
+mismatchSlots = {'soundEvent': 'sound', 'shellDt': 'loopShellDt', 'shellDtLast': 'loopShellLastDt',
+                 'clipShellLoadT': 'clipShellLoadDuration', 'almostCompleteT': 'almostCompleteDuration'}
+modifiers = {'duration': (lambda x: x * 1000.0), 'shellDuration': (lambda x: x * 1000.0),
+             'clipShellLoadT': (lambda x: x * 1000.0), 'almostCompleteT': (lambda x: x * 1000.0)}
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -23,7 +29,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.0.1 (%(file_compile_date)s)'
+        self.version = '1.1.0 (%(file_compile_date)s)'
         self.data = {'engines': {}, 'gun_reload_effects': {}, 'shot_effects': {}, 'sound_notifications': {}, 'guns': {}}
         super(ConfigInterface, self).init()
 
@@ -69,11 +75,32 @@ class ConfigInterface(PYmodsConfigInterface):
                     for itemName in itemsDict:
                         itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
         print self.ID + ': loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
-        newXmlPath = '../' + self.configPath + 'configs/gun_effects.xml'
+        newXmlPath = '../' + configPath + 'gun_effects.xml'
         if ResMgr.isFile(newXmlPath):
             g_cache._gunEffects.update(items.vehicles._readEffectGroups(newXmlPath))
-        elif self.data['guns']:
-            print self.ID + ': gun effects config not found'
+        elif any('effects' in i and i['effects'] not in g_cache._gunEffects
+                 for n in self.data['guns'].itervalues() for i in n.itervalues()):
+            print self.ID + ': WARNING:', newXmlPath.split('/', 1)[1], 'not found'
+        for sname, effData in self.data['gun_reload_effects'].iteritems():
+            if effData['type'] not in reloadTypes:
+                print self.ID + ': wrong reload effect type:', effData['type'], 'available:', sorted(reloadTypes.keys())
+                continue
+            reloadType = reloadTypes[effData['type']]
+            desc, sect = g_cache._gunReloadEffects.get(sname, None), ResMgr.DataSection()
+            if not isinstance(desc, reloadType):  # None is not an instance either
+                if desc is not None:
+                    print self.ID + ': changing type of reload effect %s. Might cause problems!' % sname
+                desc = reloadType(sect)
+            for slot in reloadType.__slots__:
+                slotName = mismatchSlots.get(slot, slot)
+                if slotName in effData:
+                    value = effData[slotName]
+                else:
+                    value = getattr(desc, slot)
+                    if slot in modifiers:
+                        value = modifiers[slot](value)
+                sect.writeString(slotName, str(value))
+            g_cache._gunReloadEffects[sname] = reloadType(sect)
         for item_type, items_storage in (('engines', g_cache._Cache__engines), ('guns', g_cache._Cache__guns)):
             for nationID, nation_items in enumerate(items_storage):
                 nationData = self.data[item_type].get(nations.NAMES[nationID])
@@ -86,26 +113,11 @@ class ConfigInterface(PYmodsConfigInterface):
                     if item_type == 'engines':
                         s = item.sounds.getEvents()
                         item.sounds = SoundConfig('', itemData.get('wwsoundPC', s[0]), itemData.get('wwsoundNPC', s[1]))
-                    elif item_type == 'guns' and 'effects' in itemData:
-                        item.effects = items.vehicles.g_cache._gunEffects.get(itemData['effects'], item.effects)
-        for sname, descr in g_cache._gunReloadEffects.iteritems():
-            effData = self.data['gun_reload_effects'].get(sname)
-            if effData is None:
-                continue
-            descr.duration = float(effData.get('duration', descr.duration * 1000.0)) / 1000.0
-            descr.soundEvent = effData.get('sound', descr.soundEvent)
-            if effData['type'] == 'BarrelReload' and isinstance(descr, _BarrelReloadDesc):
-                descr.lastShellAlert = effData.get('lastShellAlert', descr.lastShellAlert)
-                descr.shellDuration = effData.get('shellDuration', descr.shellDuration * 1000.0) / 1000.0
-                descr.startLong = effData.get('startLong', descr.startLong)
-                descr.startLoop = effData.get('startLoop', descr.startLoop)
-                descr.stopLoop = effData.get('stopLoop', descr.stopLoop)
-                descr.loopShell = effData.get('loopShell', descr.loopShell)
-                descr.loopShellLast = effData.get('loopShellLast', descr.loopShellLast)
-                descr.ammoLow = effData.get('ammoLow', descr.ammoLow)
-                descr.caliber = effData.get('caliber', descr.caliber)
-                descr.shellDt = effData.get('loopShellDt', descr.shellDt)
-                descr.shellDtLast = effData.get('loopShellLastDt', descr.shellDtLast)
+                    elif item_type == 'guns':
+                        if 'effects' in itemData:
+                            item.effects = g_cache._gunEffects.get(itemData['effects'], item.effects)
+                        if 'reloadEffect' in itemData:
+                            item.reloadEffect = g_cache._gunReloadEffects.get(itemData['reloadEffect'], item.reloadEffect)
         for sname, index in g_cache.shotEffectsIndexes.iteritems():
             effData = self.data['shot_effects'].get(sname)
             if effData is None:
@@ -134,16 +146,17 @@ class ConfigInterface(PYmodsConfigInterface):
             if itemData:
                 s = item.sounds.getEvents()
                 item.sounds = SoundConfig('', itemData.get('wwsoundPC', s[0]), itemData.get('wwsoundNPC', s[1]))
-        for turrets in vehicleType.turrets:
-            for turret in turrets:
-                for item in turret.guns:
-                    nationID = item.id[0]
-                    if vehicleType.name in self.data['guns']:
-                        itemData = self.data['guns'].get(vehicleType.name, {}).get(item.name)
-                    else:
-                        itemData = self.data['guns'].get(nations.NAMES[nationID], {}).get(item.name)
-                    if itemData and 'effects' in itemData:
-                        item.effects = items.vehicles.g_cache._gunEffects.get(itemData['effects'], item.effects)
+        for item in (i for turrets in vehicleType.turrets for turret in turrets for i in turret.guns):
+            nationID = item.id[0]
+            if vehicleType.name in self.data['guns']:
+                itemData = self.data['guns'][vehicleType.name].get(item.name)
+            else:
+                itemData = self.data['guns'].get(nations.NAMES[nationID], {}).get(item.name)
+            if itemData:
+                if 'effects' in itemData:
+                    item.effects = g_cache._gunEffects.get(itemData['effects'], item.effects)
+                if 'reloadEffect' in itemData:
+                    item.reloadEffect = g_cache._gunReloadEffects.get(itemData['reloadEffect'], item.reloadEffect)
 
 
 @overrideMethod(items.vehicles.VehicleType, '__init__')
@@ -168,8 +181,8 @@ def new_initGUI(base, self):
 
 @overrideMethod(PlayerAvatar, 'updateVehicleGunReloadTime')
 def updateVehicleGunReloadTime(base, self, vehicleID, timeLeft, baseTime):
-    if ((self._PlayerAvatar__prevGunReloadTimeLeft != timeLeft and timeLeft == 0.0) and not
-            self.guiSessionProvider.shared.vehicleState.isInPostmortem):
+    if (self._PlayerAvatar__prevGunReloadTimeLeft != timeLeft and timeLeft == 0.0
+            and not self.guiSessionProvider.shared.vehicleState.isInPostmortem):
         try:
             if 'fx' in _config.data['sound_notifications'].get('gun_reloaded', {}):
                 SoundGroups.g_instance.playSound2D(_config.data['sound_notifications']['gun_reloaded']['fx'])
