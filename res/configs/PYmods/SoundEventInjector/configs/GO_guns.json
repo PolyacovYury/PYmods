@@ -403,6 +403,9 @@
             "_90mm_Rheinmetall_90_L40A": {
                 "effects": "gun_90mm_shot_GER_1"
             },
+            "_90mm_Rheinmetall_DM1M": {
+                "effects": "gun_90mm_shot_GER_1"
+            },
             "_9cm_KwK_51_L71": {
                 "effects": "gun_90mm_shot_GER_2"
             },
@@ -987,6 +990,9 @@
             },
             "_120mm_Gun_M58": {
                 "effects": "gun_120mm_shot_US_2"
+            },
+            "_120mm_AT_Gun_M58": {
+                "effects": "gun_120mm_shot_UK"
             },
             "_120mm_Gun_T123E6": {
                 "effects": "gun_120mm_shot_US_3"
