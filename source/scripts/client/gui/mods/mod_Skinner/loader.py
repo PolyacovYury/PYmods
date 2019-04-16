@@ -30,7 +30,8 @@ from skeletons.gui.login_manager import ILoginManager
 from zipfile import ZipFile
 from . import g_config
 
-wgc_mode._g_firstEntry = False
+wgc_mode._g_firstEntry = not g_config.data['enabled']
+loadingProxy = None
 texReplaced = False
 skinsChecked = False
 clientIsNew = True
@@ -45,11 +46,12 @@ class SkinnerLoading(LoginQueueWindowMeta):
     sCore = dependency.descriptor(ISettingsCore)
 
     def __init__(self):
+        global loadingProxy
         super(self.__class__, self).__init__()
         self.lines = []
         self.curPercentage = 0
         self.doLogin = self.loginManager.checkWgcAvailability() and not self.sCore.getSetting(GAME.LOGIN_SERVER_SELECTION)
-        g_config.loadingProxy = weakref.proxy(self)
+        loadingProxy = weakref.proxy(self)
 
     def _populate(self):
         super(self.__class__, self)._populate()
@@ -110,7 +112,8 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.updateCancelLabel()
 
     def onWindowClose(self):
-        g_config.loadingProxy = None
+        global loadingProxy
+        loadingProxy = None
         if needToReReadSkinsModels:
             showConfirmDialog(
                 g_config.i18n['UI_restart_header'], g_config.i18n['UI_restart_text'],
@@ -154,12 +157,12 @@ def skinCRC32All(callback):
     dirSect = ResMgr.openSection(skinsPath)
     if dirSect is not None and dirSect.keys() and g_config.skinsData['models']:
         print g_config.ID + ': listing', skinsPath, 'for CRC32'
-        g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
+        loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
         CRC32 = 0
         resultList = []
         for skin in remDups(dirSect.keys()):
             completionPercentage = 0
-            g_config.loadingProxy.addBar(g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
+            loadingProxy.addBar(g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
             skinCRC32 = 0
             skinSect = dirSect[skin]['vehicles']
             nationsList = [] if skinSect is None else remDups(skinSect.keys())
@@ -190,8 +193,8 @@ def skinCRC32All(callback):
                     currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
                     if currentPercentage != completionPercentage:
                         completionPercentage = currentPercentage
-                        g_config.loadingProxy.updatePercentage(completionPercentage)
-            g_config.loadingProxy.onBarComplete()
+                        loadingProxy.updatePercentage(completionPercentage)
+            loadingProxy.onBarComplete()
             if skinCRC32 in resultList:
                 print g_config.ID + ': detected duplicate skins pack:', skin.replace(os.sep, '/')
                 continue
@@ -215,11 +218,11 @@ def skinCRC32All(callback):
 @async
 @process
 def rmtree(rootPath, callback):
-    g_config.loadingProxy.updateTitle(g_config.i18n['UI_loading_header_models_clean'])
-    g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins_clean'])
+    loadingProxy.updateTitle(g_config.i18n['UI_loading_header_models_clean'])
+    loadingProxy.addLine(g_config.i18n['UI_loading_skins_clean'])
     rootDirs = os.listdir(rootPath)
     for skinPack in rootDirs:
-        g_config.loadingProxy.addBar(g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
+        loadingProxy.addBar(g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
         completionPercentage = 0
         nationsList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles'))
         natLen = len(nationsList)
@@ -232,8 +235,8 @@ def rmtree(rootPath, callback):
                 currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
                 if currentPercentage != completionPercentage:
                     completionPercentage = currentPercentage
-                    g_config.loadingProxy.updatePercentage(completionPercentage)
-        g_config.loadingProxy.onBarComplete()
+                    loadingProxy.updatePercentage(completionPercentage)
+        loadingProxy.onBarComplete()
         shutil.rmtree(os.path.join(rootPath, skinPack))
     shutil.rmtree(rootPath)
     BigWorld.callback(1.0, partial(callback, True))
@@ -280,14 +283,14 @@ def modelsCheck(callback):
 @process
 def modelsProcess(callback):
     if needToReReadSkinsModels:
-        g_config.loadingProxy.updateTitle(g_config.i18n['UI_loading_header_models_unpack'])
+        loadingProxy.updateTitle(g_config.i18n['UI_loading_header_models_unpack'])
         SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
         modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
         print g_config.ID + ': unpacking vehicle packages'
         for vehPkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
             completionPercentage = 0
             filesCnt = 0
-            g_config.loadingProxy.addBar(g_config.i18n['UI_loading_package'] % os.path.basename(vehPkgPath))
+            loadingProxy.addBar(g_config.i18n['UI_loading_package'] % os.path.basename(vehPkgPath))
             vehPkg = ZipFile(vehPkgPath)
             fileNamesList = [x for x in vehPkg.namelist() if
                              x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats]
@@ -307,10 +310,10 @@ def modelsProcess(callback):
                 currentPercentage = int(100 * float(fileNum) / float(allFilesCnt))
                 if currentPercentage != completionPercentage:
                     completionPercentage = currentPercentage
-                    g_config.loadingProxy.updatePercentage(completionPercentage)
+                    loadingProxy.updatePercentage(completionPercentage)
                     yield doFuncCall()
             vehPkg.close()
-            g_config.loadingProxy.onBarComplete()
+            loadingProxy.onBarComplete()
     BigWorld.callback(0.0, partial(callback, True))
 
 
@@ -403,7 +406,7 @@ def skinLoader(loginView):
         loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
         print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
-        BigWorld.callback(2, g_config.loadingProxy.onWindowClose)
+        BigWorld.callback(2, loadingProxy.onWindowClose)
         skinsChecked = True
         loginView.update()
 

@@ -27,7 +27,6 @@ class ConfigInterface(PYmodsConfigInterface):
         self.skinsData = {
             'models': {},
             'priorities': {skinType: {'player': [], 'ally': [], 'enemy': []} for skinType in ('static', 'dynamic')}}
-        self.loadingProxy = None
         self.isModAdded = False
         self.dynamicSkinEnabled = False
         self.currentTeam = self.teams[0]
