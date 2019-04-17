@@ -309,7 +309,7 @@ def modelsProcess(callback):
         for vehPkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
             completionPercentage = 0
             filesCnt = 0
-            callLoading('addBar', g_config.i18n['UI_loading_package'] % os.path.basename(vehPkgPath))
+            callLoading('addBar', g_config.i18n['UI_loading_package'] % os.path.basename(vehPkgPath)[:-4])
             vehPkg = ZipFile(vehPkgPath)
             fileNamesList = [x for x in vehPkg.namelist() if
                              x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats]
