@@ -134,7 +134,8 @@ class SkinnerLoading(LoginQueueWindowMeta):
             yield modelsProcess()
         except AdispException:
             traceback.print_exc()
-        loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
+        else:
+            loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
         print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, self.onWindowClose)
