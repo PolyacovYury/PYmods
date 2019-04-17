@@ -47,7 +47,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
     __callMethod = lambda self, name, *a, **kw: getattr(self, name)(*a, **kw)
 
     def __init__(self, loginView):
-        super(self.__class__, self).__init__()
+        super(SkinnerLoading, self).__init__()
         self.loginView = loginView
         self.lines = []
         self.curPercentage = 0
@@ -343,7 +343,6 @@ def doFuncCall(callback):
 def processMember(memberFileName, skinName):
     skinDir = modelsDir.replace(BigWorld.curCV + '/', '') + skinName + '/'
     texDir = skinDir.replace('models', 'textures')
-    skinsSign = 'vehicles/skins/'
     newPath = ResMgr.resolveToAbsolutePath('./' + skinDir + memberFileName)
     oldSection = ResMgr.openSection(memberFileName)
     if '.vt' in memberFileName:
@@ -359,50 +358,33 @@ def processMember(memberFileName, skinName):
         dynSection = ResMgr.openSection(newPath.replace('Chassis', 'Chassis_dynamic'), True)
         dynSection.copy(oldSection)
         sections.append(dynSection)
-    if '.model' in memberFileName:
-        for idx, modelSect in enumerate(sections):
-            if modelSect is None:
-                print skinDir + memberFileName
-            if modelSect.has_key('parent') and skinsSign not in modelSect['parent'].asString:
-                curParent = skinDir + modelSect['parent'].asString
+    for idx, section in enumerate(sections):
+        if '.model' in memberFileName:
+            if section.has_key('parent'):
+                parent = skinDir + section['parent'].asString
                 if idx:
-                    curParent = curParent.replace('Chassis', 'Chassis_dynamic')
-                modelSect.writeString('parent', curParent.replace('\\', '/'))
-            if skinsSign not in modelSect['nodefullVisual'].asString:
-                curVisualPath = skinDir + modelSect['nodefullVisual'].asString
-                if idx:
-                    curVisualPath = curVisualPath.replace('Chassis', 'Chassis_dynamic')
-                modelSect.writeString('nodefullVisual', curVisualPath.replace('\\', '/'))
-            modelSect.save()
-    elif '.visual' in memberFileName:
-        for idx, visualSect in enumerate(sections):
-            for (curName, curSect), oldSect in zip(visualSect.items(), oldSection.values()):
-                if curName != 'renderSet':
-                    continue
-                for (curSubName, curSSect), oldSSect in zip(curSect['geometry'].items(), oldSect['geometry'].values()):
-                    if curSubName != 'primitiveGroup':
-                        continue
-                    hasTracks = False
-                    for (curPName, curProp), oldProp in zip(curSSect['material'].items(), oldSSect['material'].values()):
-                        if curPName != 'property' or not curProp.has_key('Texture'):
-                            continue
-                        curTexture = curProp['Texture'].asString
-                        oldTexture = oldProp['Texture'].asString
-                        if skinsSign not in curTexture:
-                            newTexture = texDir + curTexture
-                            if idx and 'tracks' in curTexture and curProp.asString == 'diffuseMap':
-                                newTexture = skinsSign + 'tracks/track_AM.dds'
-                                hasTracks = True
-                            if ResMgr.isFile(newTexture):
-                                curProp.writeString('Texture', newTexture.replace('\\', '/'))
-                        elif skinsSign in curTexture and not ResMgr.isFile(curTexture):
-                            curProp.writeString('Texture', oldTexture.replace('\\', '/'))
-                    if hasTracks:
-                        curSSect['material'].writeString('fx', 'shaders/std_effects/lightonly_alpha.fx')
-
-            if visualSect['primitivesName'] is None:
-                visualSect.writeString('primitivesName', os.path.splitext(memberFileName)[0])
-            visualSect.save()
+                    parent = parent.replace('Chassis', 'Chassis_dynamic')
+                section.writeString('parent', parent.replace('\\', '/'))
+            visualPath = skinDir + section['nodefullVisual'].asString
+            if idx:
+                visualPath = visualPath.replace('Chassis', 'Chassis_dynamic')
+            section.writeString('nodefullVisual', visualPath.replace('\\', '/'))
+        elif '.visual' in memberFileName:
+            for sub in (sub for name, sect in section.items() if name == 'renderSet'
+                        for s_name, sub in sect['geometry'].items() if s_name == 'primitiveGroup'):
+                hasTracks = False
+                for prop in (p for name, p in sub['material'].items() if name == 'property' and p.has_key('Texture')):
+                    newTexture = texDir + prop['Texture'].asString
+                    if idx and 'tracks' in newTexture and prop.asString == 'diffuseMap':
+                        newTexture = 'vehicles/skins/tracks/track_AM.dds'
+                        hasTracks = True
+                    if ResMgr.isFile(newTexture):
+                        prop.writeString('Texture', newTexture.replace('\\', '/'))
+                if hasTracks:
+                    sub['material'].writeString('fx', 'shaders/std_effects/lightonly_alpha.fx')
+            if section['primitivesName'] is None:
+                section.writeString('primitivesName', os.path.splitext(memberFileName)[0])
+        section.save()
 
 
 @events.LoginView.populate.after
