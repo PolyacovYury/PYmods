@@ -46,8 +46,9 @@ class SkinnerLoading(LoginQueueWindowMeta):
     sCore = dependency.descriptor(ISettingsCore)
     __callMethod = lambda self, name, *a, **kw: getattr(self, name)(*a, **kw)
 
-    def __init__(self):
+    def __init__(self, loginView):
         super(self.__class__, self).__init__()
+        self.loginView = loginView
         self.lines = []
         self.curPercentage = 0
         self.doLogin = self.loginManager.checkWgcAvailability() and not self.sCore.getSetting(GAME.LOGIN_SERVER_SELECTION)
@@ -56,6 +57,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         super(SkinnerLoading, self)._populate()
         callLoading.__iadd__(self.__callMethod)
         self.__initTexts()
+        BigWorld.callback(0, self.loadSkins)
 
     def __initTexts(self):
         self.updateTitle(g_config.i18n['UI_loading_header_CRC32'])
@@ -121,6 +123,23 @@ class SkinnerLoading(LoginQueueWindowMeta):
         elif self.doLogin:
             BigWorld.callback(0.1, doLogin)
         self.destroy()
+
+    @process
+    def loadSkins(self):
+        global skinsChecked
+        jobStartTime = time.time()
+        try:
+            yield skinCRC32All()
+            yield modelsCheck()
+            yield modelsProcess()
+        except AdispException:
+            traceback.print_exc()
+        loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
+        print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
+        BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
+        BigWorld.callback(2, self.onWindowClose)
+        skinsChecked = True
+        self.loginView.update()
 
 
 def doLogin():
@@ -386,37 +405,12 @@ def processMember(memberFileName, skinName):
             visualSect.save()
 
 
-@process
-def skinLoader(loginView):
-    global skinsChecked
-    if g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked:
-        lobbyApp = g_appLoader.getDefLobbyApp()
-        if lobbyApp is not None:
-            lobbyApp.loadView(SFViewLoadParams('SkinnerLoading'))
-        else:
-            return
-        jobStartTime = time.time()
-        try:
-            yield skinCRC32All()
-            yield modelsCheck()
-            yield modelsProcess()
-        except AdispException:
-            traceback.print_exc()
-        loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
-        print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
-        BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
-        BigWorld.callback(2, partial(callLoading, 'onWindowClose'))
-        skinsChecked = True
-        loginView.update()
-
-
 @events.LoginView.populate.after
 def new_Login_populate(self, *_, **__):
-    if g_config.data['enabled']:
-        if g_config.skinsData['models'] and not skinsChecked:
-            self.as_setDefaultValuesS({
-                'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
-                'memberMeVisible': self._loginMode.rememberPassVisible,
-                'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
-                'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
-        BigWorld.callback(3.0, partial(skinLoader, self))
+    if g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked:
+        self.as_setDefaultValuesS({
+            'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
+            'memberMeVisible': self._loginMode.rememberPassVisible,
+            'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
+            'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
+        BigWorld.callback(3.0, partial(self.app.loadView, SFViewLoadParams('SkinnerLoading'), self))
