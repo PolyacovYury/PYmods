@@ -303,12 +303,11 @@ def modelsProcess(callback):
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
     modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
     print g_config.ID + ': unpacking vehicle packages'
-    for vehPkgPath in glob.glob('./res/packages/shared_content*.pkg') + glob.glob('./res/packages/vehicles*.pkg'):
+    for pkgPath in glob.glob('./res/packages/shared_content*.pkg') + glob.glob('./res/packages/vehicles*.pkg'):
         completionPercentage = 0
-        pkg = os.path.basename(vehPkgPath)[:-4]
-        callLoading('addBar', g_config.i18n['UI_loading_package'] % (pkg[:28] if not pkg[28:] else (pkg[:26] + '..')))
-        vehPkg = ZipFile(vehPkgPath)
-        fileNamesList = [x for x in vehPkg.namelist()
+        callLoading('addBar', g_config.i18n['UI_loading_package'] % os.path.basename(pkgPath)[:-4].replace('sandbox', 'sb'))
+        pkg = ZipFile(pkgPath)
+        fileNamesList = [x for x in pkg.namelist()
                          if x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats]
         allFilesCnt = len(fileNamesList)
         for fileNum, memberFileName in enumerate(fileNamesList):
@@ -327,7 +326,7 @@ def modelsProcess(callback):
                 completionPercentage = currentPercentage
                 callLoading('updatePercentage', completionPercentage)
                 yield doFuncCall()
-        vehPkg.close()
+        pkg.close()
         callLoading('onBarComplete')
     BigWorld.callback(0, callback)
 
