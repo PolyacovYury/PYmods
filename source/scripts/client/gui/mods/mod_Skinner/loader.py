@@ -303,7 +303,7 @@ def modelsProcess(callback):
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
     modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
     print g_config.ID + ': unpacking vehicle packages'
-    for vehPkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
+    for vehPkgPath in glob.glob('./res/packages/shared_content*.pkg') + glob.glob('./res/packages/vehicles*.pkg'):
         completionPercentage = 0
         pkg = os.path.basename(vehPkgPath)[:-4]
         callLoading('addBar', g_config.i18n['UI_loading_package'] % (pkg[:28] if not pkg[28:] else (pkg[:26] + '..')))
