@@ -1,3 +1,4 @@
+from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui import makeHtmlString, DialogsInterface
 from gui.Scaleform.daapi.view.dialogs import PMConfirmationDialogMeta
@@ -14,7 +15,9 @@ from .. import g_config
 class CustomizationPropertiesSheet(WGPropertiesSheet):
     def onActionBtnClick(self, actionType, actionData):
         if not self.__ctx.isBuy and self._slotID == GUI_ITEM_TYPE.STYLE and actionType == CA.CUSTOMIZATION_SHEET_ACTION_EDIT:
-            if not getCustomPurchaseItems(self.__ctx.getModdedOutfitsInfo(), SEASONS_ORDER):
+            nation, vehicle = g_currentVehicle.item.descriptor.name.split(':')
+            if not (getCustomPurchaseItems(self.__ctx.getModdedOutfitsInfo(), SEASONS_ORDER)
+                    or any(v for k, v in g_config.outfitCache.get(nation, {}).get(vehicle, {}).iteritems() if k != 'style')):
                 self.__installStyleItemsToModifiedOutfits(True)
                 return
             message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
@@ -44,6 +47,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         return renderers
 
     def __makeEditRendererVO(self):
+        nation, vehicle = g_currentVehicle.item.descriptor.name.split(':')
         enabled = not bool(self._currentStyle.modelsSet)
         return {
             'iconSrc': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_OFFSET_02_NORMAL,
@@ -56,7 +60,9 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             'disableTooltip': g_config.i18n['flashCol_propertySheet_edit_disabled'],
             'notifyText': makeHtmlString('html_templates:lobby/customization/notify', 'decal', {
                 'value': g_config.i18n['flashCol_propertySheet_edit_notify']}),
-            'needNotify': enabled and bool(getCustomPurchaseItems(self.__ctx.getModdedOutfitsInfo(), SEASONS_ORDER)),
+            'needNotify': enabled and (
+                    bool(getCustomPurchaseItems(self.__ctx.getModdedOutfitsInfo(), SEASONS_ORDER))
+                    or any(v for k, v in g_config.outfitCache.get(nation, {}).get(vehicle, {}).iteritems() if k != 'style')),
             'enabled': enabled}
 
 
