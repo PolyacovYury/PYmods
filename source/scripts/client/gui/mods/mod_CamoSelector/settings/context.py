@@ -67,13 +67,8 @@ class CustomizationContext(WGCtx):
             self._modifiedModdedStyle = value
 
     def __init__(self):
-        self.actualMode = CSMode.BUY
-        super(CustomizationContext, self).__init__()
         self.__originalMode = {CSMode.BUY: C11nMode.CUSTOM, CSMode.INSTALL: C11nMode.CUSTOM}
-        self.actualMode = CSMode.INSTALL
-        self.onActualModeChanged = Event.Event(self._eventsManager)
         self.__switcherIgnored = False
-        self._lastTab = {CSMode.BUY: C11nTabs.PAINT, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
         self._originalModdedOutfits = {}
         self._modifiedModdedOutfits = {}
         self._originalModdedStyle = None
@@ -83,6 +78,11 @@ class CustomizationContext(WGCtx):
         self.__originalStyle = None
         self.__modifiedStyle = None
         self._currentSettings = {'custom': {}, 'remap': {}}
+        self.actualMode = CSMode.BUY
+        super(CustomizationContext, self).__init__()
+        self.actualMode = CSMode.INSTALL
+        self._lastTab = {CSMode.BUY: C11nTabs.PAINT, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
+        self.onActualModeChanged = Event.Event(self._eventsManager)
 
     @property
     def numberEditModeActive(self):
@@ -315,10 +315,12 @@ class CustomizationContext(WGCtx):
         super(CustomizationContext, self).prolongStyleRent(style)
 
     def applyItems(self, purchaseItems):
-        mode = self.actualMode
-        self.actualMode = CSMode.BUY
+        actualMode = self.actualMode
+        self.actualMode = mode = CSMode.BUY
+        if not purchaseItems and self.__originalMode[mode] == C11nMode.STYLE and self._lastTab[mode] == C11nTabs.STYLE:
+            purchaseItems += getStylePurchaseItems(OutfitInfo(None, self.__modifiedStyle))
         super(CustomizationContext, self).applyItems(purchaseItems)
-        self.actualMode = mode
+        self.actualMode = actualMode
         self.applyModdedStuff()
 
     def init(self):
