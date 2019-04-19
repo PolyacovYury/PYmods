@@ -28,7 +28,7 @@ def buildCustomizationItemDataVO(
     icon = customIcon if customIcon else item.icon
     noveltyCounter = 0 if not vehicle else item.getNoveltyCounter(vehicle)
     return CustomizationCarouselRendererVO(
-        item.intCD, item.itemTypeID, item.isWide(), icon, hasBonus, locked, buyPrice, count, item.isRentable,
+        item.intCD, item.itemTypeID, item.isWide() and bool(icon), icon, hasBonus, locked, buyPrice, count, item.isRentable,
         showDetailItems, isNonHistoric, isSpecial, isDarked, isAlreadyUsed, showUnsupportedAlert, extraNames=extraNames,
         showRareIcon=item.isRare(), isEquipped=isCurrentlyApplied, rentalInfoText=rentalInfoText, imageCached=imageCached,
         autoRentEnabled=autoRentEnabled, isAllSeasons=item.isAllSeason(), noveltyCounter=noveltyCounter).asDict()
