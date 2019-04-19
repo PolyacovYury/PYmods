@@ -8,7 +8,6 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import getCustomPurchas
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES as CA
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from items.components.c11n_constants import SeasonType
 from .. import g_config
 
 
@@ -32,7 +31,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
     def __installStyleItemsToModifiedOutfits(self, proceed):
         if not proceed:
             return
-        for season in SeasonType.COMMON_SEASONS:
+        for season in SEASONS_ORDER:
             outfit = self._currentStyle.getOutfit(season).copy()
             outfit._id = 0
             outfit._styleDescr = None
