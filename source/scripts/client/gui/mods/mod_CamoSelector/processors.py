@@ -33,8 +33,8 @@ except ImportError:
 def deleteEmpty(settings, isTurretCustomisable):
     for key, value in settings.items():
         if key == GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE] and not isTurretCustomisable:
-            value.pop(Area.TURRET, None)
-        elif isinstance(value, dict):
+            value.pop(TankPartNames.TURRET, None)
+        if isinstance(value, dict):
             deleteEmpty(value, isTurretCustomisable)
             if not value:
                 del settings[key]
@@ -44,7 +44,7 @@ def hasNoCamo(outfit):
     return not any(GUI_ITEM_TYPE.CAMOUFLAGE in slot.getTypes() and not slot.isEmpty() for slot in outfit.slots())
 
 
-def applyOutfitCache(outfit, seasonCache):
+def applyOutfitCache(outfit, seasonCache, clean=True):
     itemsCache = dependency.instance(IItemsCache)
     for itemTypeName, itemCache in seasonCache.items():
         itemType = GUI_ITEM_TYPE_INDICES[itemTypeName]
@@ -57,7 +57,7 @@ def applyOutfitCache(outfit, seasonCache):
                 if itemID is None:
                     if slot.getItem(int(regionIdx)) is not None:
                         slot.remove(int(regionIdx))
-                    else:  # item is being deleted while not applied at all. possible change after last cache
+                    elif clean:  # item is being deleted while not applied at all. possible change after last cache
                         del areaCache[regionIdx]  # so we remove an obsolete key
                     continue
                 if itemID not in itemDB:
