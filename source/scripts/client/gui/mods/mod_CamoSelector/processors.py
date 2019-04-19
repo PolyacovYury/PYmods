@@ -76,8 +76,6 @@ def applyOutfitCache(outfit, seasonCache):
 def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID=None):
     if not g_config.camoForSeason:
         g_config.collectCamouflageData()
-    if outfit.modelsSet:  # might add a checkbox in settings to still process styled outfits, thus this will become necessary
-        return
     seasonCache = seasonCache.setdefault(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], {})
     if vID is not None:
         isAlly = BigWorld.player().guiSessionProvider.getArenaDP().getVehicleInfo(vID).team == BigWorld.player().team
@@ -168,13 +166,12 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
                 outfit = Outfit()
                 outfit._id = 20000
         else:
-            if outfit.id and any(v for k, v in vehCache.iteritems() if k != 'style') and not vehCache.get(
-                    'style', {}).get('applied', False):
+            if outfit.modelsSet and any(v for k, v in vehCache.iteritems() if k != 'style'):
                 outfit = Outfit()
             applyOutfitCache(outfit, vehCache.get(seasonName, {}))
         deleteEmpty(vehCache, isTurretCustomisable)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-    if outfit.id:
+    if outfit.modelsSet:
         randomCache.clear()
     elif g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
         processRandomCamouflages(outfit, seasonName, randomCache, isTurretCustomisable, vID)
