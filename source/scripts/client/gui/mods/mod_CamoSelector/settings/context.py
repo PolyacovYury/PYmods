@@ -170,7 +170,6 @@ class CustomizationContext(WGCtx):
             SystemMessages.pushI18nMessage(g_config.i18n['flashCol_serviceMessage_settings'], type=SM_TYPE.Information)
 
     def applyModdedItems(self):
-        self.itemsCache.onSyncCompleted -= self.__onCacheResync
         vDesc = g_currentVehicle.item.descriptor
         nationName, vehicleName = vDesc.name.split(':')
         isTurretCustomisable = isTurretCustom(vDesc)
@@ -187,7 +186,7 @@ class CustomizationContext(WGCtx):
             seasonName = SEASON_TYPE_TO_NAME[p.group]
             area = Area.getName(p.areaID) if p.areaID != Area.MISC else 'misc'
             conf = vehCache.setdefault(seasonName, {}).setdefault(typeName, {}).setdefault(area, {})
-            origComponent = self.__originalOutfits[p.group].getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
+            origComponent = self.service.getOutfit(p.group).getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
             reg = str(p.regionID)
             if p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
                 seasonCache = g_config.hangarCamoCache.get(nationName, {}).get(vehicleName, {}).get(seasonName, {})
@@ -209,8 +208,6 @@ class CustomizationContext(WGCtx):
                 MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
         deleteEmpty(g_config.outfitCache, isTurretCustomisable)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-        self.__onCacheResync()
-        self.itemsCache.onSyncCompleted += self.__onCacheResync
 
     # noinspection PyMethodOverriding
     def tabChanged(self, tabIndex):
