@@ -13,7 +13,7 @@ from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.SystemMessages import SM_TYPE
 from gui.customization.context import CustomizationContext as WGCtx, CaruselItemData
 from gui.customization.shared import C11nId, __isTurretCustomizable as isTurretCustom, \
-    getAppliedRegionsForCurrentHangarVehicle
+    getAppliedRegionsForCurrentHangarVehicle, slotsIdsFromAppliedTo
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from items.components.c11n_constants import SeasonType
@@ -98,14 +98,11 @@ class CustomizationContext(WGCtx):
         for season in SEASONS_ORDER:
             outfit = self._modifiedStyle.getOutfit(season).copy()
             self._modifiedModdedOutfits[season] = newOutfit = self.service.getEmptyOutfit()
-            for slotType in GUI_ITEM_TYPE.CUSTOMIZATIONS_WITHOUT_STYLE:
-                for areaId in Area.ALL:
+            for item, component in outfit.itemsFull():
+                for areaId, slotType, regionIdx in slotsIdsFromAppliedTo(component.appliedTo, item.itemTypeID):
                     regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, slotType)
-                    fromSlot = outfit.getContainer(areaId).slotFor(slotType)
-                    toSlot = newOutfit.getContainer(areaId).slotFor(slotType)
-                    for regionIdx in regionsIndexes:
-                        currentSlotData = fromSlot.getSlotData(regionIdx)
-                        toSlot.set(currentSlotData.item, idx=regionIdx, component=currentSlotData.component)
+                    if regionIdx in regionsIndexes:
+                        newOutfit.getContainer(areaId).slotFor(slotType).set(item, regionIdx, component)
             newOutfit.invalidate()
         self.tabChanged(C11nTabs.CAMOUFLAGE)
 
