@@ -37,7 +37,11 @@
     "flashCol_camoGroup_multinational": "Многонациональный",
     "flashCol_camoGroup_separator": " / ",
     "flashCol_camoGroup_special": "Особый",
+    "flashCol_propertySheet_edit_disabled": "Изменение трёхмерного стиля невозможно.",
+    "flashCol_propertySheet_edit_message": "ВСЕ элементы внешнего вида для ВСЕХ сезонов будут сняты.\n Вы действительно хотите продолжить?",
+    "flashCol_propertySheet_edit_notify": "Это действие заменит пользовательский внешний вид для ВСЕХ сезонов. ВСЕ элементы будут сняты. Но вы СМОЖЕТЕ отменить эти изменения.",
     "flashCol_serviceMessage_settings": "Изменены настройки элементов внешнего вида.",
+    "flash_propertySheet_edit_action": "Изменить стиль",
     "flash_switcher_buy": "ПОКУПКА",
     "flash_switcher_install": "УСТАНОВКА"
 }
