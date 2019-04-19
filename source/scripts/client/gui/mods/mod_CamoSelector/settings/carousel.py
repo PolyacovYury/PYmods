@@ -110,7 +110,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                 lastGroup = group
                 self._customizationBookmarks.append(CustomizationBookmarkVO(groupName, self.itemCount).asDict())
             self._customizationItems.append(item.intCD)
-            self._itemSizeData.append(item.isWide())
+            self._itemSizeData.append(item.isWide() and bool(item.icon))
 
         self._proxy.setCarouselItems(self.collection)
         return
