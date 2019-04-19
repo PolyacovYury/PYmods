@@ -7,12 +7,13 @@ from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
 from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_NAME, C11nMode, TYPES_ORDER, \
     TABS_SLOT_TYPE_MAPPING, SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems, OutfitInfo, getItemInventoryCount, \
-    getStyleInventoryCount, AdditionalPurchaseGroups
+    getStyleInventoryCount, AdditionalPurchaseGroups, SEASON_TYPE_TO_IDX
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.SystemMessages import SM_TYPE
 from gui.customization.context import CustomizationContext as WGCtx, CaruselItemData
-from gui.customization.shared import C11nId, __isTurretCustomizable as isTurretCustom
+from gui.customization.shared import C11nId, __isTurretCustomizable as isTurretCustom, \
+    getAppliedRegionsForCurrentHangarVehicle
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from items.components.c11n_constants import SeasonType
@@ -90,6 +91,23 @@ class CustomizationContext(WGCtx):
     @numberEditModeActive.setter
     def numberEditModeActive(self, value):
         self._numberEditModeActive = value
+
+    def installStyleItemsToModifiedOutfits(self, proceed):
+        if not proceed:
+            return
+        for season in SEASONS_ORDER:
+            outfit = self._modifiedStyle.getOutfit(season).copy()
+            self._modifiedModdedOutfits[season] = newOutfit = self.service.getEmptyOutfit()
+            for slotType in GUI_ITEM_TYPE.CUSTOMIZATIONS_WITHOUT_STYLE:
+                for areaId in Area.ALL:
+                    regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, slotType)
+                    fromSlot = outfit.getContainer(areaId).slotFor(slotType)
+                    toSlot = newOutfit.getContainer(areaId).slotFor(slotType)
+                    for regionIdx in regionsIndexes:
+                        currentSlotData = fromSlot.getSlotData(regionIdx)
+                        toSlot.set(currentSlotData.item, idx=regionIdx, component=currentSlotData.component)
+            newOutfit.invalidate()
+        self.tabChanged(C11nTabs.CAMOUFLAGE)
 
     def getItemSettings(self, item):
         name, key = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')

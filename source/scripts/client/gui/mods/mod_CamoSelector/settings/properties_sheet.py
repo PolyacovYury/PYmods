@@ -17,26 +17,16 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             nation, vehicle = g_currentVehicle.item.descriptor.name.split(':')
             if not (getCustomPurchaseItems(self.__ctx.getModdedOutfitsInfo(), SEASONS_ORDER)
                     or any(v for k, v in g_config.outfitCache.get(nation, {}).get(vehicle, {}).iteritems() if k != 'style')):
-                self.__installStyleItemsToModifiedOutfits(True)
+                self.__ctx.installStyleItemsToModifiedOutfits(True)
                 return
             message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
                 'value': g_config.i18n['flashCol_propertySheet_edit_message']})
             DialogsInterface.showDialog(PMConfirmationDialogMeta(
                 _APPLY_TO_OTHER_SEASONS_DIALOG, messageCtx={
                     'message': message, 'icon': RES_ICONS.MAPS_ICONS_LIBRARY_ICON_ALERT_90X84}),
-                self.__installStyleItemsToModifiedOutfits)
+                self.__ctx.installStyleItemsToModifiedOutfits)
         else:
             super(CustomizationPropertiesSheet, self).onActionBtnClick(actionType, actionData)
-
-    def __installStyleItemsToModifiedOutfits(self, proceed):
-        if not proceed:
-            return
-        for season in SEASONS_ORDER:
-            outfit = self._currentStyle.getOutfit(season).copy()
-            outfit._id = 0
-            outfit._styleDescr = None
-            self.__ctx._modifiedModdedOutfits[season] = outfit
-        self.__ctx.tabChanged(C11nTabs.CAMOUFLAGE)
 
     def __makeRenderersVOs(self):
         # noinspection PyUnresolvedReferences

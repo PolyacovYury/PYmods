@@ -171,7 +171,7 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
             applyOutfitCache(outfit, vehCache.get(seasonName, {}))
         deleteEmpty(vehCache, isTurretCustomisable)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-    if outfit.modelsSet:
+    if outfit.modelsSet or outfit.id == 20000:
         randomCache.clear()
     elif g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
         processRandomCamouflages(outfit, seasonName, randomCache, isTurretCustomisable, vID)
