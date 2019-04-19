@@ -359,9 +359,11 @@ class CustomizationContext(WGCtx):
         vehCache = g_config.outfitCache.get(nationName, {}).get(vehName, {})
         styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
         for season in SeasonType.COMMON_SEASONS:
-            outfit = self.service.getOutfit(season).copy()
-            if outfit.modelsSet:
+            outfit = self.service.getOutfit(season)
+            if not outfit or outfit.modelsSet:
                 outfit = self.service.getEmptyOutfit()
+            else:
+                outfit = outfit.copy()
             applyOutfitCache(outfit, vehCache.get(SEASON_TYPE_TO_NAME[season], {}))
             outfit._isInstalled = (outfit.isInstalled() or not outfit.isEmpty()) and not styleCache['applied']
             self._originalModdedOutfits[season] = outfit.copy()
