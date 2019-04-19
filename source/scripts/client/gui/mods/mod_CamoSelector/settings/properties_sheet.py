@@ -4,7 +4,7 @@ from gui import makeHtmlString, DialogsInterface
 from gui.Scaleform.daapi.view.dialogs import PMConfirmationDialogMeta
 from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import \
     CustomizationPropertiesSheet as WGPropertiesSheet, _APPLY_TO_OTHER_SEASONS_DIALOG
-from gui.Scaleform.daapi.view.lobby.customization.shared import getCustomPurchaseItems, SEASONS_ORDER
+from gui.Scaleform.daapi.view.lobby.customization.shared import getCustomPurchaseItems, SEASONS_ORDER, C11nTabs
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES as CA
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -37,7 +37,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             outfit._id = 0
             outfit._styleDescr = None
             self.__ctx._modifiedModdedOutfits[season] = outfit
-        self.__ctx.switchToStyle()
+        self.__ctx.tabChanged(C11nTabs.CAMOUFLAGE)
 
     def __makeRenderersVOs(self):
         # noinspection PyUnresolvedReferences
