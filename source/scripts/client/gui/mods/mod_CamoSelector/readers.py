@@ -26,7 +26,7 @@ def new_customization20(base, *args, **kwargs):
     cache = base(*args, **kwargs)
     if g_config.data['enabled'] and g_config.configFolders and 'custom' not in cache.priceGroupNames:
         createPriceGroup(cache)
-        groupName = g_config.i18n['flashCol_camoGroup_custom']
+        groupName = g_config.i18n['flashCol_group_custom']
         for configDir in sorted(g_config.configFolders, key=lambda s: s.lower()):
             filePath = g_config.configPath + 'camouflages/' + configDir + '/'
             __readCamoFolder(groupName, cache, cc.CamouflageItem, '.' + filePath, cache.camouflages)

@@ -43,10 +43,9 @@ class ConfigInterface(PYmodsConfigInterface):
             'flashCol_propertySheet_edit_notify': (
                 'This action will replace the custom outfit for <b>current</b> season. <b>All</b> items will be removed. '
                 'However, you <b>will</b> be able to cancel these changes.'),
-            'flashCol_camoGroup_multinational': 'Multinational',
-            'flashCol_camoGroup_special': 'Special',
-            'flashCol_camoGroup_custom': 'Custom',
-            'flashCol_camoGroup_separator': ' / ',
+            'flashCol_group_multinational': 'Multinational',
+            'flashCol_group_custom': 'Custom',
+            'flashCol_group_separator': ' / ',
             'flashCol_serviceMessage_settings': 'Customization element settings changed.',
             'contextMenu_season_summer': 'Apply for summer',
             'contextMenu_season_summer_remove': 'Remove from summer',

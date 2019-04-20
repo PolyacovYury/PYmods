@@ -58,7 +58,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             for seasonType in SeasonType.COMMON_SEASONS:
                 if (item.season if isBuy else getItemSeason(item)) & seasonType:
                     seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
-                    for name in groupName.split(g_config.i18n['flashCol_camoGroup_separator']):
+                    for name in groupName.split(g_config.i18n['flashCol_group_separator']):
                         if name and name not in seasonAndTabData.allGroups:
                             seasonAndTabData.allGroups.append(name)
                     seasonAndTabData.itemCount += 1
@@ -130,8 +130,16 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         return self.__hasSlots(anchorsData, typeID)
 
     def CSComparisonKey(self, item):
-        return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', g_config.isCamoGlobal(item.descriptor),
-                item.isHidden, getGroupName(item, self._proxy.isBuy), item.isRare(), item.id)
+        nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
+        is3D, isVictim = False, False
+        if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
+            if item.modelsSet:
+                is3D = True
+            if any('Victim' in tag for tag in item.tags):
+                isVictim = True
+        return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', item.isHidden, isVictim,
+                not g_config.isCamoGlobal(item.descriptor), len(nationIDs) != 1, not is3D,
+                getGroupName(item, self._proxy.isBuy), item.isRare(), item.id)
 
     def getItems(self, itemTypeID, criteria):
         if self._proxy.isBuy:
@@ -150,23 +158,23 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
 
 
 def getGroupName(item, isBuy=False):
-    groupName = item.groupUserName
+    group = item.groupUserName
     if isBuy:
-        return groupName
-    nationIDs = []
-    for filterNode in getattr(item.descriptor.filter, 'include', ()):
-        nationIDs += filterNode.nations or []
+        return group
+    if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
+        if item.modelsSet:
+            group = _ms('#vehicle_customization:styles/unique_styles')
+        if any('Victim' in tag for tag in item.tags):
+            group = _ms('#vehicle_customization:victim_style/default')
+    nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
+    nation = ''
     if len(nationIDs) == 1:
         nation = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
     elif len(nationIDs) > 1:
-        nation = g_config.i18n['flashCol_camoGroup_multinational']
-    else:
-        nation = g_config.i18n['flashCol_camoGroup_special']
-    if not groupName:
-        groupName = g_config.i18n['flashCol_camoGroup_special']
-    else:  # HangarPainter support
-        groupName = re.sub(r'( [^ <>]+)(?![^ <>]*>)', '', nation) + g_config.i18n['flashCol_camoGroup_separator'] + groupName
-    return groupName
+        nation = g_config.i18n['flashCol_group_multinational']
+    if group and nation:  # HangarPainter support
+        group = re.sub(r'( [^ <>]+)(?![^ <>]*>)', '', nation) + g_config.i18n['flashCol_group_separator'] + group
+    return group
 
 
 @overrideMethod(WGCarouselDataProvider, '__new__')
