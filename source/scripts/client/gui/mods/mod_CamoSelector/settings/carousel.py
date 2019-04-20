@@ -131,15 +131,18 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
 
     def CSComparisonKey(self, item):
         nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
-        is3D, isVictim = False, False
+        is3D, isVictim, isGlobal = False, False, False
         if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
             if item.modelsSet:
                 is3D = True
             if any('Victim' in tag for tag in item.tags):
                 isVictim = True
-        return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', item.isHidden, isVictim,
-                not g_config.isCamoGlobal(item.descriptor), len(nationIDs) != 1, not is3D,
-                getGroupName(item, self._proxy.isBuy), item.isRare(), item.id)
+        if item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
+            if 'victim' in item.texture.lower():
+                isVictim = True
+            isGlobal = g_config.isCamoGlobal(item.descriptor)
+        return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', item.isHidden, isVictim, not is3D,
+                not isGlobal, len(nationIDs) != 1, getGroupName(item, self._proxy.isBuy), item.isRare(), item.id)
 
     def getItems(self, itemTypeID, criteria):
         if self._proxy.isBuy:
@@ -165,6 +168,9 @@ def getGroupName(item, isBuy=False):
         if item.modelsSet:
             group = _ms('#vehicle_customization:styles/unique_styles')
         if any('Victim' in tag for tag in item.tags):
+            group = _ms('#vehicle_customization:victim_style/default')
+    if item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
+        if 'victim' in item.texture.lower():
             group = _ms('#vehicle_customization:victim_style/default')
     nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
     nation = ''
