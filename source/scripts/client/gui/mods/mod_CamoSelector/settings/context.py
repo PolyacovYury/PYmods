@@ -98,17 +98,20 @@ class CustomizationContext(WGCtx):
         for season in SEASONS_ORDER:
             outfit = self._modifiedStyle.getOutfit(season).copy()
             self._modifiedModdedOutfits[season] = newOutfit = self.service.getEmptyOutfit()
-            for item, component in outfit.itemsFull():
-                if isinstance(component, EmptyComponent):
-                    for regionIdx in getAppliedRegionsForCurrentHangarVehicle(Area.MISC, item.itemTypeID):
-                        newOutfit.getContainer(Area.MISC).slotFor(item.itemTypeID).set(item, regionIdx, component)
-                    continue
-                for areaId, slotType, regionIdx in slotsIdsFromAppliedTo(component.appliedTo, item.itemTypeID):
-                    regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, slotType)
-                    if regionIdx in regionsIndexes:
-                        newOutfit.getContainer(areaId).slotFor(slotType).set(item, regionIdx, component)
-            newOutfit.invalidate()
+            self.updateOutfitByVehicleSlots(outfit, newOutfit)
         self.tabChanged(C11nTabs.CAMOUFLAGE)
+
+    def updateOutfitByVehicleSlots(self, fromOutfit, toOutfit):
+        for item, component in fromOutfit.itemsFull():
+            if isinstance(component, EmptyComponent):
+                for regionIdx in getAppliedRegionsForCurrentHangarVehicle(Area.MISC, item.itemTypeID):
+                    toOutfit.getContainer(Area.MISC).slotFor(item.itemTypeID).set(item, regionIdx, component)
+                continue
+            for areaId, slotType, regionIdx in slotsIdsFromAppliedTo(component.appliedTo, item.itemTypeID):
+                regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, slotType)
+                if regionIdx in regionsIndexes:
+                    toOutfit.getContainer(areaId).slotFor(slotType).set(item, regionIdx, component)
+        toOutfit.invalidate()
 
     def getItemSettings(self, item):
         name, key = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
@@ -378,25 +381,10 @@ class CustomizationContext(WGCtx):
         vehCache = g_config.outfitCache.get(nationName, {}).get(vehName, {})
         styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
         for season in SeasonType.COMMON_SEASONS:
-            outfit = self.service.getOutfit(season)
-            if not outfit or outfit.modelsSet:
-                outfit = self.service.getEmptyOutfit()
-            else:
-                outfit = outfit.copy()
-                for item, component in list(outfit.itemsFull()):
-                    if isinstance(component, EmptyComponent):
-                        if not getAppliedRegionsForCurrentHangarVehicle(Area.MISC, item.itemTypeID):
-                            area = outfit.getContainer(Area.MISC)
-                            if area:
-                                slot = area.slotFor(item.itemTypeID)
-                                if slot:
-                                    slot.clear()
-                        continue
-                    for areaId, slotType, regionIdx in slotsIdsFromAppliedTo(component.appliedTo, item.itemTypeID):
-                        regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, slotType)
-                        if regionIdx not in regionsIndexes:
-                            outfit.getContainer(areaId).slotFor(slotType).remove(regionIdx)
-                outfit.invalidate()
+            fromOutfit = self.service.getOutfit(season)
+            outfit = self.service.getEmptyOutfit()
+            if fromOutfit and not fromOutfit.modelsSet:
+                self.updateOutfitByVehicleSlots(fromOutfit, outfit)
             applyOutfitCache(outfit, vehCache.get(SEASON_TYPE_TO_NAME[season], {}), False)
             outfit._isInstalled = (outfit.isInstalled() or not outfit.isEmpty()) and not styleCache['applied']
             self._originalModdedOutfits[season] = outfit.copy()
