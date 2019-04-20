@@ -379,6 +379,12 @@ class CustomizationContext(WGCtx):
                 outfit = self.service.getEmptyOutfit()
             else:
                 outfit = outfit.copy()
+                for item, component in list(outfit.itemsFull()):
+                    for areaId, slotType, regionIdx in slotsIdsFromAppliedTo(component.appliedTo, item.itemTypeID):
+                        regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, slotType)
+                        if regionIdx not in regionsIndexes:
+                            outfit.getContainer(areaId).slotFor(slotType).remove(regionIdx)
+                outfit.invalidate()
             applyOutfitCache(outfit, vehCache.get(SEASON_TYPE_TO_NAME[season], {}), False)
             outfit._isInstalled = (outfit.isInstalled() or not outfit.isEmpty()) and not styleCache['applied']
             self._originalModdedOutfits[season] = outfit.copy()
