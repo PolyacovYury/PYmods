@@ -317,6 +317,8 @@ class CustomizationContext(WGCtx):
             self.actualMode = CSMode.BUY
             super(CustomizationContext, self).applyItems(purchaseItems)
             self.actualMode = mode
+        else:
+            self.onCustomizationItemsBought([], [])
         self.applyModdedStuff()
 
     def init(self):
