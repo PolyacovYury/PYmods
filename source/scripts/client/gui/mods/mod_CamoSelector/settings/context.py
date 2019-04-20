@@ -99,6 +99,10 @@ class CustomizationContext(WGCtx):
             outfit = self._modifiedStyle.getOutfit(season).copy()
             self._modifiedModdedOutfits[season] = newOutfit = self.service.getEmptyOutfit()
             for item, component in outfit.itemsFull():
+                if isinstance(component, EmptyComponent):
+                    for regionIdx in getAppliedRegionsForCurrentHangarVehicle(Area.MISC, item.itemTypeID):
+                        newOutfit.getContainer(Area.MISC).slotFor(item.itemTypeID).set(item, regionIdx, component)
+                    continue
                 for areaId, slotType, regionIdx in slotsIdsFromAppliedTo(component.appliedTo, item.itemTypeID):
                     regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, slotType)
                     if regionIdx in regionsIndexes:
@@ -380,6 +384,14 @@ class CustomizationContext(WGCtx):
             else:
                 outfit = outfit.copy()
                 for item, component in list(outfit.itemsFull()):
+                    if isinstance(component, EmptyComponent):
+                        if not getAppliedRegionsForCurrentHangarVehicle(Area.MISC, item.itemTypeID):
+                            area = outfit.getContainer(Area.MISC)
+                            if area:
+                                slot = area.slotFor(item.itemTypeID)
+                                if slot:
+                                    slot.clear()
+                        continue
                     for areaId, slotType, regionIdx in slotsIdsFromAppliedTo(component.appliedTo, item.itemTypeID):
                         regionsIndexes = getAppliedRegionsForCurrentHangarVehicle(areaId, slotType)
                         if regionIdx not in regionsIndexes:
