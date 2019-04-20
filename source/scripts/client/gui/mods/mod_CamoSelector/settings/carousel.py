@@ -138,7 +138,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             if any('Victim' in tag for tag in item.tags):
                 isVictim = True
         if item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
-            if 'victim' in item.texture.lower():
+            if 'victim' in item.descriptor.userKey:
                 isVictim = True
             isGlobal = g_config.isCamoGlobal(item.descriptor)
         return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', item.isHidden, isVictim, not is3D,
@@ -170,7 +170,7 @@ def getGroupName(item, isBuy=False):
         if any('Victim' in tag for tag in item.tags):
             group = _ms('#vehicle_customization:victim_style/default')
     if item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
-        if 'victim' in item.texture.lower():
+        if 'victim' in item.descriptor.userKey:
             group = _ms('#vehicle_customization:victim_style/default')
     nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
     nation = ''
