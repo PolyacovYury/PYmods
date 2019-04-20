@@ -141,7 +141,7 @@ class ConfigInterface(PYmodsConfigInterface):
             loadJson(self.ID, 'settings', settings, fileName, True)
         settings = loadJson(self.ID, 'settings', {}, self.configPath)
         self.disable = settings.setdefault('disable', self.disable)
-        self.camouflages['remap'] = settings.setdefault('remap', {})
+        self.camouflages['remap'] = {int(k): v for k, v in settings.setdefault('remap', {}).iteritems()}
         loadJson(self.ID, 'settings', settings, self.configPath, True)
 
     def load(self):
