@@ -44,7 +44,7 @@
             "season": ["desert"]
         },
         "15412": {
-            "season": ["summer"]
+            "season": ["summer", "desert"]
         },
         "15413": {
             "season": ["summer"]
@@ -53,7 +53,7 @@
             "season": ["desert"]
         },
         "15513": {
-            "season": ["summer"]
+            "season": ["summer", "desert"]
         },
         "15514": {
             "season": ["summer"]
@@ -92,6 +92,15 @@
             "season": ["summer", "desert"]
         },
         "529": {
+            "season": ["winter"]
+        },
+        "596": {
+            "season": ["desert"]
+        },
+        "597": {
+            "season": ["summer", "desert"]
+        },
+        "598": {
             "season": ["winter"]
         }
     }
