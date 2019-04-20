@@ -36,10 +36,16 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_description': 'Camouflage selector',
             'flash_switcher_buy': 'PURCHASE',
             'flash_switcher_install': 'INSTALL',
-            'flashCol_camoGroup_multinational': 'Multinational',
-            'flashCol_camoGroup_special': 'Special',
-            'flashCol_camoGroup_custom': 'Custom',
-            'flashCol_camoGroup_separator': ' / ',
+            'flash_propertySheet_edit_action': 'Edit style',
+            'flashCol_propertySheet_edit_disabled': 'Style editing is disabled for 3D styles.',
+            'flashCol_propertySheet_edit_message': (
+                '<b>All</b> installed items will be removed from <b>current</b> season.\nAre you sure you want to continue?'),
+            'flashCol_propertySheet_edit_notify': (
+                'This action will replace the custom outfit for <b>current</b> season. <b>All</b> items will be removed. '
+                'However, you <b>will</b> be able to cancel these changes.'),
+            'flashCol_group_multinational': 'Multinational',
+            'flashCol_group_custom': 'Custom',
+            'flashCol_group_separator': ' / ',
             'flashCol_serviceMessage_settings': 'Customization element settings changed.',
             'contextMenu_season_summer': 'Apply for summer',
             'contextMenu_season_summer_remove': 'Remove from summer',
@@ -135,7 +141,7 @@ class ConfigInterface(PYmodsConfigInterface):
             loadJson(self.ID, 'settings', settings, fileName, True)
         settings = loadJson(self.ID, 'settings', {}, self.configPath)
         self.disable = settings.setdefault('disable', self.disable)
-        self.camouflages['remap'] = settings.setdefault('remap', {})
+        self.camouflages['remap'] = {int(k): v for k, v in settings.setdefault('remap', {}).iteritems()}
         loadJson(self.ID, 'settings', settings, self.configPath, True)
 
     def load(self):

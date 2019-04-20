@@ -27,7 +27,6 @@ class ConfigInterface(PYmodsConfigInterface):
         self.skinsData = {
             'models': {},
             'priorities': {skinType: {'player': [], 'ally': [], 'enemy': []} for skinType in ('static', 'dynamic')}}
-        self.loadingProxy = None
         self.isModAdded = False
         self.dynamicSkinEnabled = False
         self.currentTeam = self.teams[0]
@@ -35,7 +34,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = __modID__
-        self.version = '1.1.0 (%s)' % __date__
+        self.version = '1.1.1 (%s)' % __date__
         self.defaultKeys = {'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
         self.data = {'enabled': True,

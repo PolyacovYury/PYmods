@@ -3,13 +3,13 @@ import datetime
 import time
 
 import BigWorld
+import Event
 import ResMgr
 import SoundGroups
 import glob
 import os
 import shutil
 import traceback
-import weakref
 from PYmodsCore import showConfirmDialog, remDups, loadJson, events
 from account_helpers.settings_core.settings_constants import GAME
 from adisp import AdispException, async, process
@@ -30,30 +30,35 @@ from skeletons.gui.login_manager import ILoginManager
 from zipfile import ZipFile
 from . import g_config
 
-wgc_mode._g_firstEntry = False
+wgc_mode._g_firstEntry = not g_config.data['enabled']
+empty_async = partial(async, cbwrapper=lambda x: partial(x, None))
+callLoading = Event.Event()
 texReplaced = False
 skinsChecked = False
 clientIsNew = True
 skinsModelsMissing = True
 needToReReadSkinsModels = False
 modelsDir = BigWorld.curCV + '/vehicles/skins/models/'
-skinVehNamesLDict = {}
+vehicleSkins = {}
 
 
 class SkinnerLoading(LoginQueueWindowMeta):
     loginManager = dependency.descriptor(ILoginManager)
     sCore = dependency.descriptor(ISettingsCore)
+    __callMethod = lambda self, name, *a, **kw: getattr(self, name)(*a, **kw)
 
-    def __init__(self):
-        super(self.__class__, self).__init__()
+    def __init__(self, loginView):
+        super(SkinnerLoading, self).__init__()
+        self.loginView = loginView
         self.lines = []
         self.curPercentage = 0
         self.doLogin = self.loginManager.checkWgcAvailability() and not self.sCore.getSetting(GAME.LOGIN_SERVER_SELECTION)
-        g_config.loadingProxy = weakref.proxy(self)
 
     def _populate(self):
-        super(self.__class__, self)._populate()
+        super(SkinnerLoading, self)._populate()
+        callLoading.__iadd__(self.__callMethod)
         self.__initTexts()
+        BigWorld.callback(0, self.loadSkins)
 
     def __initTexts(self):
         self.updateTitle(g_config.i18n['UI_loading_header_CRC32'])
@@ -110,7 +115,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.updateCancelLabel()
 
     def onWindowClose(self):
-        g_config.loadingProxy = None
+        callLoading.__isub__(self.__callMethod)
         if needToReReadSkinsModels:
             showConfirmDialog(
                 g_config.i18n['UI_restart_header'], g_config.i18n['UI_restart_text'],
@@ -119,6 +124,24 @@ class SkinnerLoading(LoginQueueWindowMeta):
         elif self.doLogin:
             BigWorld.callback(0.1, doLogin)
         self.destroy()
+
+    @process
+    def loadSkins(self):
+        global skinsChecked
+        jobStartTime = time.time()
+        try:
+            yield skinCRC32All()
+            yield modelsCheck()
+            yield modelsProcess()
+        except AdispException:
+            traceback.print_exc()
+        else:
+            loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
+        print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
+        BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
+        BigWorld.callback(2, self.onWindowClose)
+        skinsChecked = True
+        self.loginView.update()
 
 
 def doLogin():
@@ -140,86 +163,80 @@ g_entitiesFactories.addSettings(
 
 
 def CRC32_from_file(filename, localPath):
-    buf = str(ResMgr.openSection(filename).asBinary)
-    buf = binascii.crc32(buf) & 0xFFFFFFFF & localPath.__hash__()
-    return buf
+    return binascii.crc32(str(ResMgr.openSection(filename).asBinary)) & 0xFFFFFFFF & hash(localPath)
 
 
-@async
+@empty_async
 @process
 def skinCRC32All(callback):
-    global texReplaced, skinVehNamesLDict
+    global texReplaced, vehicleSkins
     CRC32cache = g_config.skinsCache['CRC32']
     skinsPath = 'vehicles/skins/textures/'
     dirSect = ResMgr.openSection(skinsPath)
-    if dirSect is not None and dirSect.keys() and g_config.skinsData['models']:
-        print g_config.ID + ': listing', skinsPath, 'for CRC32'
-        g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins'])
-        CRC32 = 0
-        resultList = []
-        for skin in remDups(dirSect.keys()):
-            completionPercentage = 0
-            g_config.loadingProxy.addBar(g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
-            skinCRC32 = 0
-            skinSect = dirSect[skin]['vehicles']
-            nationsList = [] if skinSect is None else remDups(skinSect.keys())
-            natLen = len(nationsList)
-            for num, nation in enumerate(nationsList):
-                nationSect = skinSect[nation]
-                vehiclesList = [] if nationSect is None else remDups(nationSect.keys())
-                vehLen = len(vehiclesList)
-                for vehNum, vehicleName in enumerate(vehiclesList):
-                    skinVehNamesLDict.setdefault(vehicleName.lower(), []).append(skin)
-                    texPrefix = 'vehicles/' + nation + '/' + vehicleName + '/'
-                    vehicleSect = nationSect[vehicleName]
-                    textures = []
-                    if vehicleSect is not None:
-                        textures = [texPrefix + texName
-                                    for texName in remDups(vehicleSect.keys()) if texName.endswith('.dds')]
-                        modelsSect = vehicleSect['_skins']
-                        if modelsSect is not None:
-                            for modelsSet in modelsSect.keys():
-                                skinVehNamesLDict.setdefault((vehicleName + '/' + modelsSet).lower(), []).append(skin)
-                                textures.extend(texPrefix + '_skins/' + modelsSet + '/' + texName for texName in
-                                                remDups(modelsSect[modelsSet].keys()) if texName.endswith('.dds'))
-                    for localPath in textures:
-                        texPath = skinsPath + skin + '/' + localPath
-                        textureCRC32 = CRC32_from_file(texPath, localPath)
-                        skinCRC32 ^= textureCRC32
-                    yield doFuncCall()
-                    currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
-                    if currentPercentage != completionPercentage:
-                        completionPercentage = currentPercentage
-                        g_config.loadingProxy.updatePercentage(completionPercentage)
-            g_config.loadingProxy.onBarComplete()
-            if skinCRC32 in resultList:
-                print g_config.ID + ': detected duplicate skins pack:', skin.replace(os.sep, '/')
-                continue
-            CRC32 ^= skinCRC32
-            resultList.append(skinCRC32)
-        if CRC32cache is not None and str(CRC32) == CRC32cache:
-            print g_config.ID + ': skins textures were not changed'
-        else:
-            if CRC32cache is None:
-                print g_config.ID + ': skins textures were reinstalled (or you deleted the CRC32 cache)'
-            else:
-                print g_config.ID + ': skins textures were changed'
-            g_config.skinsCache['CRC32'] = str(CRC32)
-            texReplaced = True
-        ResMgr.purge(skinsPath)
-    else:
+    if dirSect is None or not dirSect.keys() or not g_config.skinsData['models']:
         print g_config.ID + ': skins folder is empty'
-    BigWorld.callback(0.0, partial(callback, True))
+        BigWorld.callback(0, callback)
+        return
+    print g_config.ID + ': listing', skinsPath, 'for CRC32'
+    callLoading('addLine', g_config.i18n['UI_loading_skins'])
+    CRC32 = 0
+    resultList = []
+    for skin in remDups(dirSect.keys()):
+        completionPercentage = 0
+        callLoading('addBar', g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
+        skinCRC32 = 0
+        skinSect = dirSect[skin]['vehicles']
+        nationsList = [] if skinSect is None else remDups(skinSect.keys())
+        natLen = len(nationsList)
+        for num, nation in enumerate(nationsList):
+            nationSect = skinSect[nation]
+            vehiclesList = [] if nationSect is None else remDups(nationSect.keys())
+            vehLen = len(vehiclesList)
+            for vehNum, vehicleName in enumerate(vehiclesList):
+                vehicleSkins.setdefault(vehicleName.lower(), []).append(skin)
+                texPrefix = 'vehicles/' + nation + '/' + vehicleName + '/'
+                vehicleSect = nationSect[vehicleName]
+                textures = []
+                if vehicleSect is not None:
+                    textures = [texPrefix + texName for texName in remDups(vehicleSect.keys()) if texName.endswith('.dds')]
+                    modelsSect = vehicleSect['_skins']
+                    for modelsSet in modelsSect.keys() if modelsSect is not None else ():
+                        vehicleSkins.setdefault((vehicleName + '/' + modelsSet).lower(), []).append(skin)
+                        textures.extend(texPrefix + '_skins/' + modelsSet + '/' + texName
+                                        for texName in remDups(modelsSect[modelsSet].keys()) if texName.endswith('.dds'))
+                for localPath in textures:
+                    texPath = skinsPath + skin + '/' + localPath
+                    textureCRC32 = CRC32_from_file(texPath, localPath)
+                    skinCRC32 ^= textureCRC32
+                yield doFuncCall()
+                currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
+                if currentPercentage != completionPercentage:
+                    completionPercentage = currentPercentage
+                    callLoading('updatePercentage', completionPercentage)
+        callLoading('onBarComplete')
+        if skinCRC32 in resultList:
+            print g_config.ID + ': detected duplicate skins pack:', skin.replace(os.sep, '/')
+            continue
+        CRC32 ^= skinCRC32
+        resultList.append(skinCRC32)
+    if str(CRC32) == CRC32cache:
+        print g_config.ID + ': skins textures were not changed'
+    else:
+        print g_config.ID + ': skins textures were', ('reinstalled' if CRC32cache is None else 'changed')
+        g_config.skinsCache['CRC32'] = str(CRC32)
+        texReplaced = True
+    ResMgr.purge(skinsPath)
+    BigWorld.callback(0, callback)
 
 
-@async
+@empty_async
 @process
 def rmtree(rootPath, callback):
-    g_config.loadingProxy.updateTitle(g_config.i18n['UI_loading_header_models_clean'])
-    g_config.loadingProxy.addLine(g_config.i18n['UI_loading_skins_clean'])
+    callLoading('updateTitle', g_config.i18n['UI_loading_header_models_clean'])
+    callLoading('addLine', g_config.i18n['UI_loading_skins_clean'])
     rootDirs = os.listdir(rootPath)
     for skinPack in rootDirs:
-        g_config.loadingProxy.addBar(g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
+        callLoading('addBar', g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
         completionPercentage = 0
         nationsList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles'))
         natLen = len(nationsList)
@@ -232,14 +249,14 @@ def rmtree(rootPath, callback):
                 currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
                 if currentPercentage != completionPercentage:
                     completionPercentage = currentPercentage
-                    g_config.loadingProxy.updatePercentage(completionPercentage)
-        g_config.loadingProxy.onBarComplete()
+                    callLoading('updatePercentage', completionPercentage)
+        callLoading('onBarComplete')
         shutil.rmtree(os.path.join(rootPath, skinPack))
     shutil.rmtree(rootPath)
-    BigWorld.callback(1.0, partial(callback, True))
+    BigWorld.callback(1, callback)
 
 
-@async
+@empty_async
 @process
 def modelsCheck(callback):
     global clientIsNew, skinsModelsMissing, needToReReadSkinsModels
@@ -273,56 +290,55 @@ def modelsCheck(callback):
     elif texReplaced and os.path.isdir(modelsDir):
         yield rmtree(modelsDir)
         os.makedirs(modelsDir)
-    BigWorld.callback(0.0, partial(callback, True))
+    BigWorld.callback(0, callback)
 
 
-@async
+@empty_async
 @process
 def modelsProcess(callback):
-    if needToReReadSkinsModels:
-        g_config.loadingProxy.updateTitle(g_config.i18n['UI_loading_header_models_unpack'])
-        SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
-        modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
-        print g_config.ID + ': unpacking vehicle packages'
-        for vehPkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
-            completionPercentage = 0
-            filesCnt = 0
-            g_config.loadingProxy.addBar(g_config.i18n['UI_loading_package'] % os.path.basename(vehPkgPath))
-            vehPkg = ZipFile(vehPkgPath)
-            fileNamesList = [x for x in vehPkg.namelist() if
-                             x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats]
-            allFilesCnt = len(fileNamesList)
-            for fileNum, memberFileName in enumerate(fileNamesList):
-                attempt = memberFileName.split('/')[2]
-                if '_skins/' in memberFileName:
-                    attempt += '/' + memberFileName.split('_skins/')[1].split('/', 1)[0]
-                for skinName in skinVehNamesLDict.get(attempt.lower(), []):
-                    try:
-                        processMember(memberFileName, skinName)
-                    except ValueError as e:
-                        print g_config.ID + ':', e
-                    filesCnt += 1
-                    if not filesCnt % 25:
-                        yield doFuncCall()
-                currentPercentage = int(100 * float(fileNum) / float(allFilesCnt))
-                if currentPercentage != completionPercentage:
-                    completionPercentage = currentPercentage
-                    g_config.loadingProxy.updatePercentage(completionPercentage)
-                    yield doFuncCall()
-            vehPkg.close()
-            g_config.loadingProxy.onBarComplete()
-    BigWorld.callback(0.0, partial(callback, True))
+    if not needToReReadSkinsModels:
+        BigWorld.callback(0, callback)
+        return
+    callLoading('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
+    SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
+    modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
+    print g_config.ID + ': unpacking vehicle packages'
+    for pkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
+        completionPercentage = 0
+        callLoading('addBar', g_config.i18n['UI_loading_package'] % os.path.basename(pkgPath)[:-4].replace('sandbox', 'sb'))
+        pkg = ZipFile(pkgPath)
+        fileNamesList = [x for x in pkg.namelist()
+                         if x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats]
+        allFilesCnt = len(fileNamesList)
+        for fileNum, memberFileName in enumerate(fileNamesList):
+            attempt = memberFileName.split('/')[2]
+            if '_skins/' in memberFileName:
+                attempt += '/' + memberFileName.split('_skins/')[1].split('/', 1)[0]
+            for skinName in vehicleSkins.get(attempt.lower(), []):
+                try:
+                    processMember(memberFileName, skinName)
+                except ValueError as e:
+                    print g_config.ID + ':', e
+            if not fileNum % 25:
+                yield doFuncCall()
+            currentPercentage = int(100 * float(fileNum) / float(allFilesCnt))
+            if currentPercentage != completionPercentage:
+                completionPercentage = currentPercentage
+                callLoading('updatePercentage', completionPercentage)
+                yield doFuncCall()
+        pkg.close()
+        callLoading('onBarComplete')
+    BigWorld.callback(0, callback)
 
 
-@async
+@empty_async
 def doFuncCall(callback):
-    BigWorld.callback(0.0, partial(callback, None))
+    BigWorld.callback(0, callback)
 
 
 def processMember(memberFileName, skinName):
     skinDir = modelsDir.replace(BigWorld.curCV + '/', '') + skinName + '/'
     texDir = skinDir.replace('models', 'textures')
-    skinsSign = 'vehicles/skins/'
     newPath = ResMgr.resolveToAbsolutePath('./' + skinDir + memberFileName)
     oldSection = ResMgr.openSection(memberFileName)
     if '.vt' in memberFileName:
@@ -338,83 +354,41 @@ def processMember(memberFileName, skinName):
         dynSection = ResMgr.openSection(newPath.replace('Chassis', 'Chassis_dynamic'), True)
         dynSection.copy(oldSection)
         sections.append(dynSection)
-    if '.model' in memberFileName:
-        for idx, modelSect in enumerate(sections):
-            if modelSect is None:
-                print skinDir + memberFileName
-            if modelSect.has_key('parent') and skinsSign not in modelSect['parent'].asString:
-                curParent = skinDir + modelSect['parent'].asString
+    for idx, section in enumerate(sections):
+        if '.model' in memberFileName:
+            if section.has_key('parent'):
+                parent = skinDir + section['parent'].asString
                 if idx:
-                    curParent = curParent.replace('Chassis', 'Chassis_dynamic')
-                modelSect.writeString('parent', curParent.replace('\\', '/'))
-            if skinsSign not in modelSect['nodefullVisual'].asString:
-                curVisualPath = skinDir + modelSect['nodefullVisual'].asString
-                if idx:
-                    curVisualPath = curVisualPath.replace('Chassis', 'Chassis_dynamic')
-                modelSect.writeString('nodefullVisual', curVisualPath.replace('\\', '/'))
-            modelSect.save()
-    elif '.visual' in memberFileName:
-        for idx, visualSect in enumerate(sections):
-            for (curName, curSect), oldSect in zip(visualSect.items(), oldSection.values()):
-                if curName != 'renderSet':
-                    continue
-                for (curSubName, curSSect), oldSSect in zip(curSect['geometry'].items(), oldSect['geometry'].values()):
-                    if curSubName != 'primitiveGroup':
-                        continue
-                    hasTracks = False
-                    for (curPName, curProp), oldProp in zip(curSSect['material'].items(), oldSSect['material'].values()):
-                        if curPName != 'property' or not curProp.has_key('Texture'):
-                            continue
-                        curTexture = curProp['Texture'].asString
-                        oldTexture = oldProp['Texture'].asString
-                        if skinsSign not in curTexture:
-                            newTexture = texDir + curTexture
-                            if idx and 'tracks' in curTexture and curProp.asString == 'diffuseMap':
-                                newTexture = skinsSign + 'tracks/track_AM.dds'
-                                hasTracks = True
-                            if ResMgr.isFile(newTexture):
-                                curProp.writeString('Texture', newTexture.replace('\\', '/'))
-                        elif skinsSign in curTexture and not ResMgr.isFile(curTexture):
-                            curProp.writeString('Texture', oldTexture.replace('\\', '/'))
-                    if hasTracks:
-                        curSSect['material'].writeString('fx', 'shaders/std_effects/lightonly_alpha.fx')
-
-            if visualSect['primitivesName'] is None:
-                visualSect.writeString('primitivesName', os.path.splitext(memberFileName)[0])
-            visualSect.save()
-
-
-@process
-def skinLoader(loginView):
-    global skinsChecked
-    if g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked:
-        lobbyApp = g_appLoader.getDefLobbyApp()
-        if lobbyApp is not None:
-            lobbyApp.loadView(SFViewLoadParams('SkinnerLoading'))
-        else:
-            return
-        jobStartTime = time.time()
-        try:
-            yield skinCRC32All()
-            yield modelsCheck()
-            yield modelsProcess()
-        except AdispException:
-            traceback.print_exc()
-        loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
-        print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
-        BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
-        BigWorld.callback(2, g_config.loadingProxy.onWindowClose)
-        skinsChecked = True
-        loginView.update()
+                    parent = parent.replace('Chassis', 'Chassis_dynamic')
+                section.writeString('parent', parent.replace('\\', '/'))
+            visualPath = skinDir + section['nodefullVisual'].asString
+            if idx:
+                visualPath = visualPath.replace('Chassis', 'Chassis_dynamic')
+            section.writeString('nodefullVisual', visualPath.replace('\\', '/'))
+        elif '.visual' in memberFileName:
+            for sub in (sub for name, sect in section.items() if name == 'renderSet'
+                        for s_name, sub in sect['geometry'].items() if s_name == 'primitiveGroup'):
+                hasTracks = False
+                for prop in (p for name, p in sub['material'].items() if name == 'property' and p.has_key('Texture')):
+                    newTexture = texDir + prop['Texture'].asString
+                    if idx and 'tracks' in newTexture and prop.asString == 'diffuseMap':
+                        newTexture = 'vehicles/skins/tracks/track_AM.dds'
+                        hasTracks = True
+                    if ResMgr.isFile(newTexture):
+                        prop.writeString('Texture', newTexture.replace('\\', '/'))
+                if hasTracks:
+                    sub['material'].writeString('fx', 'shaders/std_effects/lightonly_alpha.fx')
+            if section['primitivesName'] is None:
+                section.writeString('primitivesName', os.path.splitext(memberFileName)[0])
+        section.save()
 
 
 @events.LoginView.populate.after
 def new_Login_populate(self, *_, **__):
-    if g_config.data['enabled']:
-        if g_config.skinsData['models'] and not skinsChecked:
-            self.as_setDefaultValuesS({
-                'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
-                'memberMeVisible': self._loginMode.rememberPassVisible,
-                'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
-                'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
-        BigWorld.callback(3.0, partial(skinLoader, self))
+    if g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked:
+        self.as_setDefaultValuesS({
+            'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
+            'memberMeVisible': self._loginMode.rememberPassVisible,
+            'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
+            'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
+        BigWorld.callback(3, partial(self.app.loadView, SFViewLoadParams('SkinnerLoading'), self))

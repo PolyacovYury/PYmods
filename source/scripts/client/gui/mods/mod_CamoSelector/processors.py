@@ -33,8 +33,8 @@ except ImportError:
 def deleteEmpty(settings, isTurretCustomisable):
     for key, value in settings.items():
         if key == GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE] and not isTurretCustomisable:
-            value.pop(Area.TURRET, None)
-        elif isinstance(value, dict):
+            value.pop(TankPartNames.TURRET, None)
+        if isinstance(value, dict):
             deleteEmpty(value, isTurretCustomisable)
             if not value:
                 del settings[key]
@@ -44,7 +44,7 @@ def hasNoCamo(outfit):
     return not any(GUI_ITEM_TYPE.CAMOUFLAGE in slot.getTypes() and not slot.isEmpty() for slot in outfit.slots())
 
 
-def applyOutfitCache(outfit, seasonCache):
+def applyOutfitCache(outfit, seasonCache, clean=True):
     itemsCache = dependency.instance(IItemsCache)
     for itemTypeName, itemCache in seasonCache.items():
         itemType = GUI_ITEM_TYPE_INDICES[itemTypeName]
@@ -57,7 +57,7 @@ def applyOutfitCache(outfit, seasonCache):
                 if itemID is None:
                     if slot.getItem(int(regionIdx)) is not None:
                         slot.remove(int(regionIdx))
-                    else:  # item is being deleted while not applied at all. possible change after last cache
+                    elif clean:  # item is being deleted while not applied at all. possible change after last cache
                         del areaCache[regionIdx]  # so we remove an obsolete key
                     continue
                 if itemID not in itemDB:
@@ -76,8 +76,6 @@ def applyOutfitCache(outfit, seasonCache):
 def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID=None):
     if not g_config.camoForSeason:
         g_config.collectCamouflageData()
-    if outfit.modelsSet:  # might add a checkbox in settings to still process styled outfits, thus this will become necessary
-        return
     seasonCache = seasonCache.setdefault(GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE], {})
     if vID is not None:
         isAlly = BigWorld.player().guiSessionProvider.getArenaDP().getVehicleInfo(vID).team == BigWorld.player().team
@@ -168,13 +166,12 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
                 outfit = Outfit()
                 outfit._id = 20000
         else:
-            if outfit.id and any(v for k, v in vehCache.iteritems() if k != 'style') and not vehCache.get(
-                    'style', {}).get('applied', False):
+            if outfit.modelsSet and any(v for k, v in vehCache.iteritems() if k != 'style'):
                 outfit = Outfit()
             applyOutfitCache(outfit, vehCache.get(seasonName, {}))
         deleteEmpty(vehCache, isTurretCustomisable)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-    if outfit.id:
+    if outfit.modelsSet or outfit.id == 20000:
         randomCache.clear()
     elif g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
         processRandomCamouflages(outfit, seasonName, randomCache, isTurretCustomisable, vID)
