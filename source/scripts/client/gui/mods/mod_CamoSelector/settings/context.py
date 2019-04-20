@@ -95,10 +95,9 @@ class CustomizationContext(WGCtx):
     def installStyleItemsToModifiedOutfits(self, proceed):
         if not proceed:
             return
-        for season in SEASONS_ORDER:
-            outfit = self._modifiedStyle.getOutfit(season).copy()
-            self._modifiedModdedOutfits[season] = newOutfit = self.service.getEmptyOutfit()
-            self.updateOutfitByVehicleSlots(outfit, newOutfit)
+        outfit = self._modifiedStyle.getOutfit(self.currentSeason).copy()
+        self._modifiedModdedOutfits[self.currentSeason] = newOutfit = self.service.getEmptyOutfit()
+        self.updateOutfitByVehicleSlots(outfit, newOutfit)
         self.tabChanged(C11nTabs.CAMOUFLAGE)
 
     def updateOutfitByVehicleSlots(self, fromOutfit, toOutfit):

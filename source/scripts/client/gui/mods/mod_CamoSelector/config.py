@@ -39,10 +39,10 @@ class ConfigInterface(PYmodsConfigInterface):
             'flash_propertySheet_edit_action': 'Edit style',
             'flashCol_propertySheet_edit_disabled': 'Style editing is disabled for 3D styles.',
             'flashCol_propertySheet_edit_message': (
-                'ALL installed items will be removed from ALL seasons.\nAre you sure you want to continue?'),
+                '<b>All</b> installed items will be removed from <b>current</b> season.\nAre you sure you want to continue?'),
             'flashCol_propertySheet_edit_notify': (
-                'This action will replace the custom outfits for ALL seasons. ALL items will be removed. '
-                'However, you WILL be able to cancel these changes.'),
+                'This action will replace the custom outfit for <b>current</b> season. <b>All</b> items will be removed. '
+                'However, you <b>will</b> be able to cancel these changes.'),
             'flashCol_camoGroup_multinational': 'Multinational',
             'flashCol_camoGroup_special': 'Special',
             'flashCol_camoGroup_custom': 'Custom',
