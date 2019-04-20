@@ -312,12 +312,11 @@ class CustomizationContext(WGCtx):
         super(CustomizationContext, self).prolongStyleRent(style)
 
     def applyItems(self, purchaseItems):
-        actualMode = self.actualMode
-        self.actualMode = mode = CSMode.BUY
-        if not purchaseItems and self.__originalMode[mode] == C11nMode.STYLE and self._lastTab[mode] == C11nTabs.STYLE:
-            purchaseItems += getStylePurchaseItems(OutfitInfo(None, self.__modifiedStyle))
-        super(CustomizationContext, self).applyItems(purchaseItems)
-        self.actualMode = actualMode
+        if purchaseItems:
+            mode = self.actualMode
+            self.actualMode = CSMode.BUY
+            super(CustomizationContext, self).applyItems(purchaseItems)
+            self.actualMode = mode
         self.applyModdedStuff()
 
     def init(self):
