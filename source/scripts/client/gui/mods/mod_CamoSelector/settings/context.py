@@ -177,9 +177,9 @@ class CustomizationContext(WGCtx):
 
     def applyModdedItems(self):
         vDesc = g_currentVehicle.item.descriptor
-        nationName, vehicleName = vDesc.name.split(':')
+        nation, vehicleName = vDesc.name.split(':')
         isTurretCustomisable = isTurretCustom(vDesc)
-        vehCache = g_config.outfitCache.setdefault(nationName, {}).setdefault(vehicleName, {})
+        vehCache = g_config.outfitCache.setdefault(nation, {}).setdefault(vehicleName, {})
         anything = False
         for p in (x for x in self.getModdedPurchaseItems() if x.selected):
             anything = True
@@ -195,7 +195,7 @@ class CustomizationContext(WGCtx):
             origComponent = self.service.getOutfit(p.group).getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
             reg = str(p.regionID)
             if p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
-                seasonCache = g_config.hangarCamoCache.get(nationName, {}).get(vehicleName, {}).get(seasonName, {})
+                seasonCache = g_config.hangarCamoCache.get(nation, {}).get(vehicleName, {}).get(seasonName, {})
                 seasonCache.get(typeName, {}).get(area, {}).pop(reg, None)
                 deleteEmpty(seasonCache, isTurretCustomisable)
             if not origComponent if p.isDismantling else p.component.weak_eq(origComponent):
@@ -330,15 +330,17 @@ class CustomizationContext(WGCtx):
     def init(self):
         super(CustomizationContext, self).init()
         origMode = self.actualMode
+        nation, vehName = g_currentVehicle.item.descriptor.name.split(':')
         for mode in CSMode.BUY, CSMode.INSTALL:
             self.actualMode = mode
-            notInst = all([not self._originalOutfits[season].isInstalled() for season in SeasonType.COMMON_SEASONS])
-            if self._originalStyle or notInst and not self.isOutfitsEmpty(self._modifiedOutfits) and not self._modifiedStyle:
+            notInstalled = all([not self._originalOutfits[season].isInstalled() for season in SeasonType.COMMON_SEASONS])
+            applied = g_config.outfitCache.get(nation, {}).get(vehName, {}).get('style', {}).get('applied', False)
+            if (self._originalStyle and (self.isBuy or applied)
+                    or notInstalled and not self.isOutfitsEmpty(self._modifiedOutfits) and not self._modifiedStyle):
                 self.__originalMode[mode] = C11nMode.STYLE
                 self._lastTab[mode] = C11nTabs.STYLE
             else:
                 self.__originalMode[mode] = C11nMode.CUSTOM
-        nation, vehName = g_currentVehicle.item.descriptor.name.split(':')
         for season in SeasonType.COMMON_SEASONS:
             outfit = self._modifiedModdedOutfits[season]
             seasonName = SEASON_TYPE_TO_NAME[season]
@@ -376,8 +378,8 @@ class CustomizationContext(WGCtx):
         # noinspection PyUnresolvedReferences
         super(CustomizationContext, self)._CustomizationContext__carveUpOutfits()
         self.actualMode = origMode
-        nationName, vehName = g_currentVehicle.item.descriptor.name.split(':')
-        vehCache = g_config.outfitCache.get(nationName, {}).get(vehName, {})
+        nation, vehName = g_currentVehicle.item.descriptor.name.split(':')
+        vehCache = g_config.outfitCache.get(nation, {}).get(vehName, {})
         styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
         for season in SeasonType.COMMON_SEASONS:
             fromOutfit = self.service.getOutfit(season)
@@ -391,8 +393,7 @@ class CustomizationContext(WGCtx):
         origStyle = self.service.getCurrentStyle()
         moddedStyle = None if styleCache['intCD'] is None else self.service.getItemByCD(styleCache['intCD'])
         if not moddedStyle and not styleCache['applied'] and self.service.isCurrentStyleInstalled():
-            if not any(v for k, v in vehCache.iteritems() if k != 'style'):
-                self._originalModdedStyle = origStyle
+            self._originalModdedStyle = origStyle
             self._modifiedModdedStyle = origStyle
         elif moddedStyle:
             self._modifiedModdedStyle = moddedStyle
