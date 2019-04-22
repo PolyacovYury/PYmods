@@ -1,0 +1,10 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/paints/Anthrazitgrau.xml": "res/configs/PYmods/CamoSelector/paints/Anthrazitgrau.xml",
+        "mods/configs/PYmods/CamoSelector/paints/Dunkelgelb.xml": "res/configs/PYmods/CamoSelector/paints/Dunkelgelb.xml",
+        "mods/configs/PYmods/CamoSelector/paints/Olivgrun.xml": "res/configs/PYmods/CamoSelector/paints/Olivgrun.xml",
+        "mods/configs/PYmods/CamoSelector/paints/Rotbraun.xml": "res/configs/PYmods/CamoSelector/paints/Rotbraun.xml"
+    }
+}

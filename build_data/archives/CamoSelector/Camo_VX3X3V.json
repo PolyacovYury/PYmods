@@ -1,0 +1,30 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-d/settings.json": "res/configs/PYmods/CamoSelector/camouflages/40t-d/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-d/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/40t-d/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-d/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/40t-d/texture.dds",
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-s/settings.json": "res/configs/PYmods/CamoSelector/camouflages/40t-s/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-s/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/40t-s/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-s/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/40t-s/texture.dds",
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-w/settings.json": "res/configs/PYmods/CamoSelector/camouflages/40t-w/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-w/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/40t-w/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/40t-w/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/40t-w/texture.dds",
+        "mods/configs/PYmods/CamoSelector/camouflages/PIXEL/settings.json": "res/configs/PYmods/CamoSelector/camouflages/PIXEL/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/PIXEL/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/PIXEL/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/PIXEL/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/PIXEL/texture.dds",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-01/settings.json": "res/configs/PYmods/CamoSelector/camouflages/clan-01/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-01/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/clan-01/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-01/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/clan-01/texture.dds",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-02/settings.json": "res/configs/PYmods/CamoSelector/camouflages/clan-02/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-02/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/clan-02/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-02/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/clan-02/texture.dds",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-03/settings.json": "res/configs/PYmods/CamoSelector/camouflages/clan-03/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-03/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/clan-03/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-03/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/clan-03/texture.dds",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-damaged/settings.json": "res/configs/PYmods/CamoSelector/camouflages/clan-damaged/settings.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-damaged/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/clan-damaged/settings.xml",
+        "mods/configs/PYmods/CamoSelector/camouflages/clan-damaged/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/clan-damaged/texture.dds"
+    }
+}
