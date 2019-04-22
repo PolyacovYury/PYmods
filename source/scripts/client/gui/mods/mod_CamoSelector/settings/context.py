@@ -66,6 +66,14 @@ class CustomizationContext(WGCtx):
         else:
             self._modifiedModdedStyle = value
 
+    @property
+    def _mode(self):
+        return C11nMode.STYLE if self._lastTab[self.actualMode] == C11nTabs.STYLE else C11nMode.CUSTOM
+
+    @_mode.setter
+    def _mode(self, value):
+        pass
+
     def __init__(self):
         self.__originalMode = {CSMode.BUY: C11nMode.CUSTOM, CSMode.INSTALL: C11nMode.CUSTOM}
         self.__switcherIgnored = False
@@ -177,14 +185,16 @@ class CustomizationContext(WGCtx):
 
     def applyModdedItems(self):
         vDesc = g_currentVehicle.item.descriptor
-        nation, vehicleName = vDesc.name.split(':')
+        nation, vehName = vDesc.name.split(':')
         isTurretCustomisable = isTurretCustom(vDesc)
-        vehCache = g_config.outfitCache.setdefault(nation, {}).setdefault(vehicleName, {})
+        vehCache = g_config.outfitCache.setdefault(nation, {}).setdefault(vehName, {})
         anything = False
         for p in (x for x in self.getModdedPurchaseItems() if x.selected):
             anything = True
             if p.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
                 vehCache.setdefault('style', {}).update(intCD=p.item.intCD if not p.isDismantling else None, applied=True)
+                if p.item is not None and not p.isDismantling:
+                    g_config.hangarCamoCache.get(nation, {}).get(vehName, {}).clear()
                 break  # there will only ever be one, but just to make sure...
             else:
                 vehCache.get('style', {}).update(applied=False)
@@ -198,7 +208,7 @@ class CustomizationContext(WGCtx):
                 origComponent = origOutfit.getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
             reg = str(p.regionID)
             if p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
-                seasonCache = g_config.hangarCamoCache.get(nation, {}).get(vehicleName, {}).get(seasonName, {})
+                seasonCache = g_config.hangarCamoCache.get(nation, {}).get(vehName, {}).get(seasonName, {})
                 seasonCache.get(typeName, {}).get(area, {}).pop(reg, None)
                 deleteEmpty(seasonCache, isTurretCustomisable)
             if not origComponent if p.isDismantling else p.component.weak_eq(origComponent):
@@ -224,11 +234,9 @@ class CustomizationContext(WGCtx):
             self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._tabIndex = tabIndex
         mode = self._mode
-        self._mode = C11nMode.CUSTOM
         if self._tabIndex == C11nTabs.EFFECT:
             self._selectedAnchor = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.MODIFICATION, regionIdx=0)
         elif self._tabIndex == C11nTabs.STYLE:
-            self._mode = C11nMode.STYLE
             self._selectedAnchor = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.STYLE, regionIdx=0)
         else:
             self._selectedAnchor = C11nId()
@@ -324,11 +332,26 @@ class CustomizationContext(WGCtx):
         if purchaseItems:
             mode = self.actualMode
             self.actualMode = CSMode.BUY
+            vDesc = g_currentVehicle.item.descriptor
+            nation, vehName = vDesc.name.split(':')
+            vehCache = g_config.hangarCamoCache.get(nation, {}).get(vehName, {})
+            isTurretCustomisable = isTurretCustom(vDesc)
+            for p in (p for p in purchaseItems if p.selected):
+                if p.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
+                    if p.item is not None and not p.isDismantling:
+                        vehCache.clear()
+                elif p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
+                    sCache = vehCache.get(SEASON_TYPE_TO_NAME[p.group], {})
+                    sCache.get(GUI_ITEM_TYPE_NAMES[p.slot], {}).get(Area.getName(p.areaID), {}).pop(str(p.regionID), None)
+                    deleteEmpty(sCache, isTurretCustomisable)
             super(CustomizationContext, self).applyItems(purchaseItems)
             self.actualMode = mode
         else:
             self.onCustomizationItemsBought([], [])
+        mode = self.actualMode
+        self.actualMode = CSMode.INSTALL
         self.applyModdedStuff()
+        self.actualMode = mode
 
     def init(self):
         super(CustomizationContext, self).init()
@@ -349,7 +372,6 @@ class CustomizationContext(WGCtx):
             seasonName = SEASON_TYPE_TO_NAME[season]
             applyOutfitCache(outfit, g_config.hangarCamoCache.get(nation, {}).get(vehName, {}).get(seasonName, {}))
         self.actualMode = origMode
-        self._mode = self.__originalMode[origMode]
         self._tabIndex = self._lastTab[origMode]
         self.refreshOutfit()
         from functools import partial
@@ -362,14 +384,11 @@ class CustomizationContext(WGCtx):
             return True
         result = False
         origActualMode = self.actualMode
-        origMode = self._mode
         for actualMode in CSMode.BUY, CSMode.INSTALL:
             self.actualMode = actualMode
-            self._mode = C11nMode.STYLE if self._lastTab[actualMode] == C11nTabs.STYLE else C11nMode.CUSTOM
             self._originalMode = self.__originalMode[actualMode]
             result |= super(CustomizationContext, self).isOutfitsModified()
         self.actualMode = origActualMode
-        self._mode = origMode
         return result
 
     def isBuyLimitReached(self, item):
