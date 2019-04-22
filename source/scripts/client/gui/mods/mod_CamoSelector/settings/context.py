@@ -192,7 +192,10 @@ class CustomizationContext(WGCtx):
             seasonName = SEASON_TYPE_TO_NAME[p.group]
             area = Area.getName(p.areaID) if p.areaID != Area.MISC else 'misc'
             conf = vehCache.setdefault(seasonName, {}).setdefault(typeName, {}).setdefault(area, {})
-            origComponent = self.service.getOutfit(p.group).getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
+            origComponent = None
+            origOutfit = self.service.getOutfit(p.group)
+            if origOutfit:
+                origComponent = origOutfit.getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
             reg = str(p.regionID)
             if p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
                 seasonCache = g_config.hangarCamoCache.get(nation, {}).get(vehicleName, {}).get(seasonName, {})
