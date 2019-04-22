@@ -85,6 +85,8 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
                         g_config.dynamicSkinEnabled and g_config.collisionMode != 2))
                 if g_config.dynamicSkinEnabled and not g_config.collisionMode:
                     message = g_config.i18n['UI_install_skin_dynamic'] + '<b>' + dynamicDesc['name'] + '</b>.'
+            else:
+                skins_dynamic.destroy(vehicleID)
             staticDesc = skins_find(vehName, modelsSet, currentTeam, 'static')
             if staticDesc is not None:
                 skins_static.apply(vDesc, modelsSet, staticDesc['name'])
