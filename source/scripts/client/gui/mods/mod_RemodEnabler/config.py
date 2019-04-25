@@ -298,7 +298,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if not event.isKeyDown() or self.isMSAWindowOpen:
             return
         if self.modelsData['models'] and not self.previewRemod:
-            if checkKeys(self.data['ChangeViewHotkey']):
+            if checkKeys(self.data['ChangeViewHotkey'], event.key):
                 newModeNum = (self.teams.index(self.currentTeam) + 1) % len(self.teams)
                 self.currentTeam = self.teams[newModeNum]
                 try:
@@ -312,7 +312,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     'temp_SM%s<b>%s</b>' % (self.i18n['UI_mode'], self.i18n['UI_mode_' + self.currentTeam]),
                     SystemMessages.SM_TYPE.Warning)
                 refreshCurrentVehicle()
-            if checkKeys(self.data['SwitchRemodHotkey']):
+            if checkKeys(self.data['SwitchRemodHotkey'], event.key):
                 curTankType = self.currentTeam
                 snameList = sorted(self.modelsData['models'].keys()) + ['']
                 selected = self.modelsData['selected'][curTankType]
@@ -331,7 +331,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 loadJson(self.ID, 'remodsCache', self.modelsData['selected'], self.configPath, True,
                          quiet=not self.data['isDebug'])
                 refreshCurrentVehicle()
-        if checkKeys(self.data['CollisionHotkey']):
+        if checkKeys(self.data['CollisionHotkey'], event.key):
             SystemMessages.pushMessage('temp_SM' + self.i18n['UI_collision_unavailable'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
             return

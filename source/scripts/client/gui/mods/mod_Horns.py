@@ -135,9 +135,10 @@ def inj_hkKeyEvent(event):
         if BattleApp and _config.data['enabled'] and not (
                 len(_config.data['hotkey']) == 1 and BigWorld.player().getForcedGuiControlModeFlags()):
             if avatar_getter.isVehicleAlive() and event.isKeyDown() and checkKeys(_config.data['hotkey']):
-                SoundLoop(True)
-                if _config.data['chatEnable']:
-                    calltext()
+                if not getattr(_config.hornSoundEvent, 'isPlaying', False):
+                    SoundLoop(True)
+                    if _config.data['chatEnable']:
+                        calltext()
             else:
                 SoundLoop(False)
     except StandardError:

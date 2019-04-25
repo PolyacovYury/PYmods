@@ -283,7 +283,7 @@ class SkinnerUI(AbstractWindowView):
 def lobbyKeyControl(event):
     if not event.isKeyDown() or g_config.isMSAWindowOpen or not g_config.skinsData['models']:
         return
-    if checkKeys(g_config.data['ChangeViewHotkey']):
+    if checkKeys(g_config.data['ChangeViewHotkey'], event.key):
         try:
             from gui.mods.mod_remodenabler import g_config as re_config
         except ImportError:
@@ -297,7 +297,7 @@ def lobbyKeyControl(event):
                 'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentTeam]),
                 SystemMessages.SM_TYPE.Warning)
             refreshCurrentVehicle()
-    if checkKeys(g_config.data['DynamicSkinHotkey']):
+    if checkKeys(g_config.data['DynamicSkinHotkey'], event.key):
         enabled = g_config.dynamicSkinEnabled
         g_config.dynamicSkinEnabled = not enabled
         SystemMessages.pushMessage(

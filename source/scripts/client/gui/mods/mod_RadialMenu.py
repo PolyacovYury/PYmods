@@ -223,8 +223,8 @@ class CustomMenuCommand:
     def __repr__(self):
         return '<CMC %s (%s)>' % (self.title, self.icon)
 
-    def handleKeys(self, keys):
-        return not (len(self.hotKeys) == 1 and BigWorld.player()._PlayerAvatar__forcedGuiCtrlModeFlags) and checkKeys(keys)
+    def handleKeys(self, keys, key):
+        return not (len(self.hotKeys) == 1 and BigWorld.player().getForcedGuiControlModeFlags()) and checkKeys(keys, key)
 
     def doPing(self, seqId):
         if seqId == len(self.pingList):
@@ -331,7 +331,7 @@ def inj_hkKeyEvent(event):
                 if menuConf is not None:
                     commandsList.extend(menuConf.get(state, []))
                 for command in commandsList:
-                    if command and command.handleKeys(command.hotKeys):
+                    if command and command.handleKeys(command.hotKeys, event.key):
                         BigWorld.callback(_config.data['hotDelay'] / 1000.0, partial(onCustomAction, command, target))
     except StandardError:
         print 'RadialMenu: ERROR at inj_hkKeyEvent'

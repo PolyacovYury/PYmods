@@ -645,7 +645,7 @@ def lightsDestroy(vehicleID, callPlace=''):
 
 
 def battleKeyControl(event):
-    if checkKeys(_config.data['hotkey']) and event.isKeyDown():
+    if checkKeys(_config.data['hotkey'], event.key) and event.isKeyDown():
         _config.isLampsVisible = not _config.isLampsVisible
         if _config.isLampsVisible:
             _config.readCurrentSettings(not _config.data['Debug'])

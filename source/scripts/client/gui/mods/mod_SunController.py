@@ -125,7 +125,7 @@ def new_startGUI(*_, **__):
 
 def battleKeyControl(event):
     global isSunControlled
-    if checkKeys(_config.data['hotkey']) and event.isKeyDown():
+    if checkKeys(_config.data['hotkey'], event.key) and event.isKeyDown():
         isSunControlled = not isSunControlled
         sun_controller(isSunControlled)
         if isSunControlled:

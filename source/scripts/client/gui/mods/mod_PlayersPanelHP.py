@@ -144,7 +144,7 @@ class PlayersPanelController(PYmodsConfigInterface):
     def battleKeyControl(self, event):
         if not self.data['mode']:
             return
-        if self.data['mode'] == 1 and checkKeys(self.data['toggle_key']) and event.isKeyDown():
+        if self.data['mode'] == 1 and checkKeys(self.data['toggle_key'], event.key) and event.isKeyDown():
             self.displayed = not self.displayed
         elif self.data['mode'] == 2:
             self.displayed = checkKeys(self.data['toggle_key'])

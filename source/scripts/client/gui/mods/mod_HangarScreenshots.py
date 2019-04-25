@@ -94,12 +94,12 @@ def inj_hkKeyEvent(event):
         return
     try:
         if config.data['enabled']:
-            if event.isKeyDown() and checkKeys(config.data['togglekey']):
+            if event.isKeyDown() and checkKeys(config.data['togglekey'], event.key):
                 config.data['UIVisible'] = not config.data['UIVisible']
                 toggleHangarUI(config.data['UIVisible'])
                 if not config.data['UIVisible'] and config.cameraPos and config.data['currentCamPos'] < len(config.cameraPos):
                     setCameraLocation(config.cameraPos[config.data['currentCamPos']])
-            elif event.isKeyDown() and checkKeys(config.data['camkey']) and not config.data['UIVisible'] and config.cameraPos:
+            elif event.isKeyDown() and checkKeys(config.data['camkey'], event.key) and not config.data['UIVisible'] and config.cameraPos:
                 config.data['currentCamPos'] += 1
                 if config.data['currentCamPos'] == len(config.cameraPos) and config.data[
                         'addUnlockMode'] and config.data['lockCamera']:
