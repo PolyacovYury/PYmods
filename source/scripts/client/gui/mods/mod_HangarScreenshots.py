@@ -1,6 +1,7 @@
 # coding=utf-8
 import math
 
+import BigWorld
 import Keys
 import Math
 import traceback
@@ -8,8 +9,8 @@ from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKey
 from gui import InputHandler, SystemMessages
 from gui.ClientHangarSpace import hangarCFG
 from gui.Scaleform.framework import ViewTypes
-from gui.app_loader.loader import g_appLoader
 from gui.hangar_cameras.hangar_camera_manager import HangarCameraManager
+from gui.shared.personality import ServicesLocator
 from helpers import dependency
 from skeletons.gui.shared.utils import IHangarSpace
 
@@ -66,7 +67,7 @@ config = ConfigInterface()
 
 
 def toggleHangarUI(visible):
-    lobby = g_appLoader.getApp()
+    lobby = ServicesLocator.appLoader.getApp()
     hangar = lobby.containerManager.getView(ViewTypes.LOBBY_SUB)
     hangar.flashObject.visible = visible
     lobby.graphicsOptimizationManager.switchOptimizationEnabled(visible)
@@ -89,8 +90,7 @@ def setCameraLocation(settings):
 
 
 def inj_hkKeyEvent(event):
-    LobbyApp = g_appLoader.getDefLobbyApp()
-    if not LobbyApp:
+    if not hasattr(BigWorld.player(), 'databaseID'):
         return
     try:
         if config.data['enabled']:

@@ -6,7 +6,6 @@ import traceback
 from PYmodsCore import Sound, PYmodsConfigInterface, pickRandomPart, sendChatMessage, checkKeys, Analytics
 from functools import partial
 from gui import InputHandler
-from gui.app_loader.loader import g_appLoader
 from gui.battle_control import avatar_getter
 
 
@@ -130,9 +129,8 @@ def SoundLoop(start):
 
 
 def inj_hkKeyEvent(event):
-    BattleApp = g_appLoader.getDefBattleApp()
     try:
-        if BattleApp and _config.data['enabled'] and not (
+        if hasattr(BigWorld.player(), 'arena') and _config.data['enabled'] and not (
                 len(_config.data['hotkey']) == 1 and BigWorld.player().getForcedGuiControlModeFlags()):
             if avatar_getter.isVehicleAlive() and event.isKeyDown() and checkKeys(_config.data['hotkey']):
                 if not getattr(_config.hornSoundEvent, 'isPlaying', False):

@@ -24,7 +24,6 @@ from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowM
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.app_loader.loader import g_appLoader
 from helpers import getClientVersion, dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.login_manager import ILoginManager
@@ -123,7 +122,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
                 (g_config.i18n['UI_restart_button_restart'], g_config.i18n['UI_restart_button_shutdown']),
                 lambda restart: (BigWorld.savePreferences(), (BigWorld.restartGame() if restart else BigWorld.quit())))
         elif self.doLogin:
-            BigWorld.callback(0.1, doLogin)
+            BigWorld.callback(0.1, partial(doLogin, self.app))
         self.destroy()
 
     @process
@@ -145,9 +144,9 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.loginView.update()
 
 
-def doLogin():
+def doLogin(app):
     # noinspection PyArgumentList
-    loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
+    loginView = app.containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
     if not loginView:
         return
     if loginView.loginManager.checkWgcAvailability():

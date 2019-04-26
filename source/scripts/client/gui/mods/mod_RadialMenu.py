@@ -18,7 +18,6 @@ from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared import radial_menu
 from gui.Scaleform.daapi.view.battle.shared.radial_menu import SHORTCUT_SETS, SHORTCUT_STATES, getKeyFromAction
 from gui.Scaleform.genConsts.BATTLE_ICONS_CONSTS import BATTLE_ICONS_CONSTS
-from gui.app_loader.loader import g_appLoader
 from gui.battle_control import avatar_getter
 from gui.battle_control.controllers.chat_cmd_ctrl import CHAT_COMMANDS
 from gui.shared.utils.key_mapping import getScaleformKey
@@ -312,9 +311,8 @@ def findBestFitConf(commandConf):
 
 
 def inj_hkKeyEvent(event):
-    BattleApp = g_appLoader.getDefBattleApp()
     try:
-        if BattleApp and _config.data['enabled']:
+        if hasattr(BigWorld.player(), 'arena') and _config.data['enabled']:
             isDown = checkKeys(_config.data['mapMenu_key'])
             if isDown or _config.wasAltMenuPressed:
                 _config.wasAltMenuPressed = isDown

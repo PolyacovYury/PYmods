@@ -8,7 +8,6 @@ from Vehicle import Vehicle
 from constants import ARENA_GUI_TYPE
 from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared.minimap.plugins import ArenaVehiclesPlugin
-from gui.app_loader import g_appLoader
 from gui.battle_control.arena_info import vos_collections
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -205,9 +204,8 @@ else:
 
 
     def inj_hkKeyEvent(event):
-        BattleApp = g_appLoader.getDefBattleApp()
         try:
-            if BattleApp and mod_playersHP.data['enabled']:
+            if hasattr(BigWorld.player(), 'arena') and mod_playersHP.data['enabled']:
                 mod_playersHP.battleKeyControl(event)
         except StandardError:
             print mod_playersHP.ID + ': ERROR at inj_hkKeyEvent'

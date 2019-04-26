@@ -6,7 +6,7 @@ import nations
 from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics
 from Vehicle import Vehicle
 from debug_utils import LOG_ERROR
-from gui.app_loader import g_appLoader
+from gui.shared.personality import ServicesLocator
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -63,7 +63,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if not self.setSystemValue():
             return
         self.clearPreviewSound()
-        sndMgr = g_appLoader.getDefLobbyApp().soundManager
+        sndMgr = ServicesLocator.appLoader.getDefLobbyApp().soundManager
         if sndMgr is None:
             LOG_ERROR('GUI sound manager is not found')
             return

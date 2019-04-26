@@ -9,7 +9,7 @@ from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.app_loader import g_appLoader
+from gui.shared.personality import ServicesLocator as SL
 from helpers import dependency
 from skeletons.gui.shared.utils import IHangarSpace
 from . import __date__, __modID__
@@ -229,8 +229,8 @@ class ConfigInterface(PYmodsConfigInterface):
             id='SkinnerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/Skinner.png', enabled=self.data['enabled'] and bool(self.skinsData['models']), login=True,
             lobby=True, callback=lambda: (
-                    g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
-                    or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI')))) != NotImplemented
+                    SL.appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
+                    or SL.appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI')))) != NotImplemented
 
 
 class SkinnerUI(AbstractWindowView):
@@ -297,9 +297,8 @@ def lobbyKeyControl(event):
 
 
 def inj_hkKeyEvent(event):
-    LobbyApp = g_appLoader.getDefLobbyApp()
     try:
-        if LobbyApp and g_config.data['enabled']:
+        if hasattr(BigWorld.player(), 'databaseID') and g_config.data['enabled']:
             lobbyKeyControl(event)
     except StandardError:
         print g_config.ID + ': ERROR at inj_hkKeyEvent'

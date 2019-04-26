@@ -13,7 +13,7 @@ from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.app_loader import g_appLoader
+from gui.shared.personality import ServicesLocator as SL
 from helpers import dependency
 from items.components import c11n_constants
 from items.components.chassis_components import SplineConfig
@@ -281,8 +281,8 @@ class ConfigInterface(PYmodsConfigInterface):
         self.isModAdded = g_modsListApi.addModification(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=False, lobby=True, callback=lambda: (
-                    g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
-                    or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI')))) != NotImplemented
+                    SL.appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
+                    or SL.appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI')))) != NotImplemented
 
     def lobbyKeyControl(self, event):
         if not event.isKeyDown() or self.isMSAOpen:
@@ -545,9 +545,8 @@ def _asDict(obj):
 
 
 def inj_hkKeyEvent(event):
-    LobbyApp = g_appLoader.getDefLobbyApp()
     try:
-        if LobbyApp and g_config.data['enabled']:
+        if hasattr(BigWorld.player(), 'databaseID') and g_config.data['enabled']:
             g_config.lobbyKeyControl(event)
     except StandardError:
         print g_config.ID + ': ERROR at inj_hkKeyEvent'

@@ -6,7 +6,6 @@ import Keys
 import traceback
 from PYmodsCore import PYmodsConfigInterface, checkKeys, sendMessage, Analytics, events
 from gui import InputHandler, SystemMessages
-from gui.app_loader.loader import g_appLoader
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -130,9 +129,8 @@ def battleKeyControl(event):
 
 
 def inj_hkKeyEvent(event):
-    BattleApp = g_appLoader.getDefBattleApp()
     try:
-        if BattleApp and _config.data['enabled']:
+        if hasattr(BigWorld.player(), 'arena') and _config.data['enabled']:
             battleKeyControl(event)
     except StandardError:
         print '%s: ERROR at inj_hkKeyEvent' % _config.ID

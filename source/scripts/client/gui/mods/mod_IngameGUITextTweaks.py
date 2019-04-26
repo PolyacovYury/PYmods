@@ -1,15 +1,11 @@
 import BigWorld
-from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics
+from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics, events
 from constants import ARENA_GUI_TYPE
 from functools import partial
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.shared.crosshair.plugins import VehicleStatePlugin
 from gui.Scaleform.daapi.view.battle.shared.messages import VehicleMessages
 from gui.Scaleform.daapi.view.battle.shared.messages.fading_messages import FadingMessages
 from gui.Scaleform.daapi.view.battle.shared.postmortem_panel import PostmortemPanel
-from gui.app_loader import g_appLoader
-from gui.app_loader.settings import APP_NAME_SPACE
-from gui.shared import g_eventBus, events
 from messenger import storage
 from messenger.formatters.chat_message import _BattleMessageBuilder
 from messenger.m_constants import USER_TAG
@@ -20,6 +16,7 @@ from threading import Thread
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.friends = None
+        events.LobbyView.populate.after += lambda: Thread(target=self.onHangarInit).start()
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -46,7 +43,6 @@ class ConfigInterface(PYmodsConfigInterface):
                 '%(colour)s: "green" if vehicle is ally else "red".\n'
                 '%(classTag)s: gets replaced by vehicle class tag. '
                 'Variants: "lightTank", "mediumTank", "heavyTank", "SPG", "AT-SPG" (case insensitive).'}
-        g_eventBus.addListener(events.AppLifeCycleEvent.INITIALIZED, self.onAppInitialized)
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
@@ -56,17 +52,6 @@ class ConfigInterface(PYmodsConfigInterface):
                 'column1': [self.tb.createControl('iconFormat', 'TextInputField', 400)],
                 'column2': [self.tb.createOptions(
                     'removeNicknames', [self.i18n['UI_setting_removeNicknames_' + key] for key in ('none', 'smart', 'all')])]}
-
-    def onAppInitialized(self, event):
-        if event.ns == APP_NAME_SPACE.SF_LOBBY:
-            app = g_appLoader.getDefLobbyApp()
-            app.loaderManager.onViewLoaded += self.onView
-            g_eventBus.removeListener(events.AppLifeCycleEvent.INITIALIZED, self.onAppInitialized)
-
-    def onView(self, view=None, *_, **__):
-        if view and view.uniqueName == VIEW_ALIAS.LOBBY_HANGAR:
-            if self.friends is None:
-                Thread(target=self.onHangarInit).start()
 
     def onHangarInit(self):
         if self.friends is None:

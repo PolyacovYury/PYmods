@@ -13,7 +13,6 @@ from Vehicle import Vehicle
 from debug_utils import LOG_ERROR, LOG_NOTE
 from functools import partial
 from gui import InputHandler, SystemMessages
-from gui.app_loader.loader import g_appLoader
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 
@@ -658,9 +657,8 @@ def battleKeyControl(event):
 
 
 def inj_hkKeyEvent(event):
-    BattleApp = g_appLoader.getDefBattleApp()
     try:
-        if BattleApp and _config.data['enabled']:
+        if hasattr(BigWorld.player(), 'arena') and _config.data['enabled']:
             battleKeyControl(event)
     except StandardError:
         print 'LampLights: ERROR at inj_hkKeyEvent'

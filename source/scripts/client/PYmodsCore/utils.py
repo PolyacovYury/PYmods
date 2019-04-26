@@ -105,12 +105,12 @@ def refreshCurrentVehicle():
 
 def sendMessage(text='', colour='Green', panel='Player'):
     from gui.Scaleform.framework import ViewTypes
-    from gui.app_loader import g_appLoader
+    from gui.shared.personality import ServicesLocator
     """
     panel = 'Player', 'Vehicle', 'VehicleError'
     colour = 'Red', 'Purple', 'Green', 'Gold', 'Yellow', 'Self'
     """
-    battle_page = g_appLoader.getDefBattleApp().containerManager.getContainer(ViewTypes.VIEW).getView()
+    battle_page = ServicesLocator.appLoader.getDefBattleApp().containerManager.getContainer(ViewTypes.VIEW).getView()
     if battle_page is not None:
         getattr(battle_page.components['battle%sMessages' % panel], 'as_show%sMessageS' % colour, None)(None, text)
     else:
