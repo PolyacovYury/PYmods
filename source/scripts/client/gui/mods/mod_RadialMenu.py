@@ -22,10 +22,7 @@ from gui.app_loader.loader import g_appLoader
 from gui.battle_control import avatar_getter
 from gui.battle_control.controllers.chat_cmd_ctrl import CHAT_COMMANDS
 from gui.shared.utils.key_mapping import getScaleformKey
-from helpers import dependency, isPlayerAvatar
-from skeletons.gui.battle_session import IBattleSessionProvider
-
-g_sessionProvider = dependency.instance(IBattleSessionProvider)
+from helpers import isPlayerAvatar
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -237,7 +234,7 @@ class CustomMenuCommand:
         player = BigWorld.player()
         backup_FGCM = player._PlayerAvatar__forcedGuiCtrlModeFlags
         player._PlayerAvatar__forcedGuiCtrlModeFlags = True
-        chatCommands = g_sessionProvider.shared.chatCommands
+        chatCommands = player.guiSessionProvider.shared.chatCommands
         chatCommands.sendAttentionToCell(cellId)
         player._PlayerAvatar__forcedGuiCtrlModeFlags = backup_FGCM
         BigWorld.callback(self.PING_DELAY, partial(self.doPing, seqId + 1))
@@ -251,12 +248,13 @@ class CustomMenuCommand:
     def format(self, argDict):
         try:
             BigWorld.callback(self.PING_DELAY, partial(self.doPing, 0))
+            sessionProvider = BigWorld.player().guiSessionProvider
             argDict.update({'randPart': '',
                             'viewPos': camMgr.getViewPos(),
                             'ownPos': camMgr.getOwnPos(),
-                            'reload': '%.3g' % g_sessionProvider.shared.ammo.getGunReloadingState().getTimeLeft(),
-                            'ammo': g_sessionProvider.shared.ammo.getCurrentShells()[1],
-                            'ownVehicle': g_sessionProvider.getArenaDP().getVehicleInfo().vehicleType.shortName})
+                            'reload': '%.3g' % sessionProvider.shared.ammo.getGunReloadingState().getTimeLeft(),
+                            'ammo': sessionProvider.shared.ammo.getCurrentShells()[1],
+                            'ownVehicle': sessionProvider.getArenaDP().getVehicleInfo().vehicleType.shortName})
             argDict['randPart'], self.lastRandId = pickRandomPart(self.variantList, self.lastRandId, self.randomChoice)
             argDict['randPart'] = safeFmt.format(argDict['randPart'], **argDict)
             return safeFmt.format(self.cmd, **argDict)
@@ -280,14 +278,14 @@ def getCrosshairType(player, target):
 
 def isTargetCorrect(player, target):
     if target is not None and isinstance(target, Vehicle) and target.isAlive() and player is not None and isPlayerAvatar():
-        return not g_sessionProvider.getArenaDP().getVehicleInfo(target.id).isActionsDisabled()
+        return not player.guiSessionProvider.getArenaDP().getVehicleInfo(target.id).isActionsDisabled()
     return False
 
 
 def findBestFitConf(commandConf):
     if _config.bestConf is not None:
         return _config.bestConf, _config.confType
-    vehicleTypeDescr = g_sessionProvider.getArenaDP().getVehicleInfo().vehicleType
+    vehicleTypeDescr = BigWorld.player().guiSessionProvider.getArenaDP().getVehicleInfo().vehicleType
     vehicleType = vehicleTypeDescr.classTag
     vehicleName = vehicleTypeDescr.iconName
     if '-' in vehicleName:
@@ -410,7 +408,7 @@ def onCustomAction(cmd, target):
                   'clan': targetInfo['clanAbbrev']}
     msg = cmd.format(targetDict)
     if cmd.builtinCmd:
-        chatCommands = g_sessionProvider.shared.chatCommands
+        chatCommands = player.guiSessionProvider.shared.chatCommands
         if chatCommands is not None:
             chatCommands.handleChatCommand(cmd.builtinCmd, target.id)
         BigWorld.callback(_config.data['chatDelay'] / 1000.0,
