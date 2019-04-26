@@ -4,7 +4,8 @@ import glob
 import os
 import re
 import traceback
-from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart, Analytics, overrideMethod, events
+from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart, Analytics, overrideMethod
+from PlayerEvents import g_playerEvents
 from debug_utils import LOG_ERROR, LOG_WARNING
 from functools import partial
 
@@ -151,8 +152,7 @@ def i18n_hook_makeString(key, *args, **kwargs):
     return old_makeString(key, *args, **kwargs)
 
 
-@events.PlayerAvatar.destroyGUI.after
-def new_destroyGUI(*_, **__):
+def onAvatarBecomeNonPlayer(*_, **__):
     if _config.data['enabled'] and _config.data['reReadAtEnd']:
         _config.wasReplaced = dict.fromkeys(_config.wasReplaced.keys(), False)
 
@@ -197,5 +197,6 @@ def ButtonReplacer_hooks():
     overrideMethod(LobbyHeaderMeta, 'as_setFightButtonS', new_setFightButtonS)
 
 
+g_playerEvents.onAvatarBecomeNonPlayer += onAvatarBecomeNonPlayer
 BigWorld.callback(0.0, ButtonReplacer_hooks)
 statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-1', _config.confMeta)

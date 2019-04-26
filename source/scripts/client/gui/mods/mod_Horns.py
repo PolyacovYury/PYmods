@@ -59,8 +59,8 @@ class ConfigInterface(PYmodsConfigInterface):
                 'column2': [self.tb.createHotKey('hotkey'),
                             chatCB]}
 
-    def onButtonPress(self, container, linkage, vName, value):
-        if container != self.modSettingsID or linkage != self.ID or vName != 'event':
+    def onButtonPress(self, vName, value):
+        if vName != 'event':
             return
         self.data[vName] = int(value)
         SoundLoop(False)

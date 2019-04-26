@@ -1,27 +1,26 @@
-import BigWorld
 import Event
 import traceback
 from constants import DEFAULT_LANGUAGE
-from functools import partial
-from .. import modSettingsContainers
 from ..template_builders import DummyBlockTemplateBuilder, DummyTemplateBuilder
-from ..utils import registerSettings
 
 
 class DummyConfigInterface(object):
-    isMSAWindowOpen = property(lambda self: modSettingsContainers[
-        self.modSettingsID].isMSAWindowOpen if self.modSettingsID in modSettingsContainers else False)
+    modSettingsContainers = {}
+    isMSAOpen = property(lambda self: getattr(self.modSettingsContainers.get(self.modSettingsID), 'isMSAOpen', False))
+    MSAInstance = property(lambda self: getattr(self.modSettingsContainers.get(self.modSettingsID), 'API', None))
 
     def __init__(self):
         """Declaration for attribute placeholders, all attributes should be defined in init(), getData() and loadLang()"""
         self.ID = ''
+        self.modsGroup = ''
         self.i18n = {}
         self.lang = DEFAULT_LANGUAGE
         self.modSettingsID = self.ID + '_settings'
-        self._tb = None
-        self._containerClass = None
+        self.containerClass = DummySettingContainer
         self.init()
         self.loadLang()
+        self.tb = self.createTB()
+        self.template = self.createTemplate()
         self.load()
 
     def init(self):
@@ -30,7 +29,7 @@ class DummyConfigInterface(object):
         self.modSettingsID = 'AwesomeModSettings' - mod settings container ID.
             Be careful, this will be an alias for a ViewSettings Object!
         """
-        raise NotImplementedError
+        pass
 
     def getData(self):
         """
@@ -44,11 +43,8 @@ class DummyConfigInterface(object):
         """
         pass
 
-    @property
-    def tb(self):
-        if self._tb is None:
-            self._tb = DummyTemplateBuilder(self.i18n)
-        return self._tb
+    def createTB(self):
+        return DummyTemplateBuilder(self.i18n)
 
     def createTemplate(self):
         """
@@ -62,12 +58,12 @@ class DummyConfigInterface(object):
         Loading config data from files should be placed here.
         :param quiet: optional, if you have debug mode in your mod - this will be useful
         """
-        raise NotImplementedError
+        pass
 
     def onApplySettings(self, settings):
         """
         Is called when user clicks the "Apply" button in settings window.
-        And also upon mod loading because vxSettings thinks that API is the only place to store mod settings.
+        And also upon mod loading because settings API thinks that it is the only place to store mod settings.
         :param settings: new setting values.
         """
         raise NotImplementedError
@@ -76,9 +72,8 @@ class DummyConfigInterface(object):
         """
         A function to update mod template after config actions are complete.
         """
-        # noinspection PyUnresolvedReferences
-        from gui.vxSettingsApi import vxSettingsApi
-        vxSettingsApi.updateMod(self.modSettingsID, self.ID, self.createTemplate)
+        if self.MSAInstance is not None:
+            self.MSAInstance.updateModSettings(self.ID, self.getData())
 
     def onMSAPopulate(self):
         """
@@ -94,33 +89,16 @@ class DummyConfigInterface(object):
         """
         pass
 
-    def onButtonPress(self, modSettingsID, ID, vName, value):
+    def onButtonPress(self, vName, value):
         """
         Is called when a "preview' button for corresponding setting is pressed.
-        :param modSettingsID: settings container ID.
-        :param ID: mod ID
         :param vName: settings value name
         :param value: currently selected setting value (may differ from currently applied. As said, used for settings preview)
         """
         pass
 
-    def onDataChanged(self, modSettingsID, ID, vName, value):
-        """
-        Is called when something in settings window is changed. May be used to dynamically disable some controls, for example.
-        :param modSettingsID: settings container ID.
-        :param ID: mod ID
-        :param vName: settings value name
-        :param value: new setting value (this one is not yet applied!)
-        """
-        pass
-
-    @property
-    def containerClass(self):
-        if self._containerClass is None:
-            self._containerClass = DummySettingContainer
-        return self._containerClass
-
     def registerSettings(self):
+        from ...gui.api import registerSettings
         registerSettings(self)
 
     def load(self):
@@ -131,158 +109,79 @@ class DummyConfigInterface(object):
         self.registerSettings()
 
 
-class DummyConfBlockInterface(object):
-    isMSAWindowOpen = property(lambda self: modSettingsContainers[self.modSettingsID].isMSAWindowOpen)
-
+class DummyConfBlockInterface(DummyConfigInterface):
     def __init__(self):
-        self.ID = ''
-        self.modsGroup = ''
-        self.i18n = {}
         self._blockIDs = []  # overwrite in init() of derived class
-        self.lang = DEFAULT_LANGUAGE
-        self.modSettingsID = self.ID + '_settings'
-        self._tb = None
-        self._containerClass = None
-        self.init()
-        self.configPath = './mods/configs/%s/%s/' % (self.modsGroup, self.ID)
-        self.langPath = '%si18n/' % self.configPath
-        self.loadLang()
-        self.load()
+        super(DummyConfBlockInterface, self).__init__()
 
-    def init(self):
-        raise NotImplementedError
-
-    def getDataBlock(self, blockID):
+    def getData(self, blockID=None):
         raise NotImplementedError('Data block for block %s is not defined' % blockID)
-
-    def loadLang(self):
-        pass
 
     @property
     def blockIDs(self):
         return self._blockIDs
 
-    @property
-    def tb(self):
-        if self._tb is None:
-            self._tb = DummyBlockTemplateBuilder(self.i18n)
-        return self._tb
+    def createTB(self):
+        return DummyBlockTemplateBuilder(self.i18n)
 
-    def createTemplate(self, blockID):
+    def createTemplate(self, blockID=None):
         raise NotImplementedError('Template for block %s is not created' % blockID)
 
-    def readCurrentSettings(self, quiet=True):
+    def onApplySettings(self, settings, blockID=None):
         raise NotImplementedError
 
-    def onApplySettings(self, blockID, settings):
-        raise NotImplementedError
-
-    def updateMod(self, blockID):
-        # noinspection PyUnresolvedReferences
-        from gui.vxSettingsApi import vxSettingsApi
-        vxSettingsApi.updateMod(self.modSettingsID, self.ID + blockID, partial(self.createTemplate, blockID))
+    def updateMod(self, blockID=''):
+        if self.MSAInstance is not None:
+            self.MSAInstance.updateModSettings(self.ID + blockID, self.getData(blockID))
 
     def onMSAPopulate(self):
         self.readCurrentSettings()
         for blockID in self.blockIDs:
             self.updateMod(blockID)
 
-    def onMSADestroy(self):
+    def onButtonPress(self, vName, value, blockID=None):
         pass
-
-    def onButtonPress(self, modSettingsID, ID, vName, value):
-        pass
-
-    def onDataChanged(self, modSettingsID, ID, vName, value):
-        pass
-
-    def load(self):
-        self.readCurrentSettings(False)
-        self.registerSettings()
-
-    @property
-    def containerClass(self):
-        if self._containerClass is None:
-            self._containerClass = DummySettingContainer
-        return self._containerClass
-
-    def registerSettings(self):
-        registerSettings(self, 'block')
 
 
 class DummySettingContainer(object):
-    def __init__(self, ID, configPath):
-        self.configPath = configPath
+    def __init__(self, ID, modsGroup):
+        self.modsGroup = modsGroup
         self.ID = ID
-        self.version = '2.0.3 (%(file_compile_date)s)'
-        self.author = 'by spoter, satel1te (fork by Polyacov_Yury)'
+        self.langPath = ''
+        self.iconPath = 'scripts/client/%s.png' % self.ID
         self.lang = DEFAULT_LANGUAGE
-        self.i18n = {'gui_name': "Mods settings",
-                     'gui_description': "Modifications enabling and settings",
-                     'gui_windowTitle': "Mods settings",
-                     'gui_buttonOK': 'OK',
-                     'gui_buttonCancel': 'Cancel',
-                     'gui_buttonApply': 'Apply',
-                     'gui_enableButtonTooltip': '{HEADER}ON/OFF{/HEADER}{BODY}Enable/disable this mod{/BODY}'}
+        self.i18n = {}
         self.onMSAPopulate = Event.Event()
         self.onMSADestroy = Event.Event()
         self.isMSAWindowOpen = False
-        self.load()
-
-    def loadLang(self):
-        pass
-
-    def feedbackHandler(self, container, eventType, *_):
-        if container != self.ID:
-            return
-        # noinspection PyUnresolvedReferences
-        from gui.vxSettingsApi import vxSettingsApiEvents
-        if eventType == vxSettingsApiEvents.WINDOW_CLOSED:
-            self.isMSAWindowOpen = False
-            self.onMSADestroy()
-
-    def MSAPopulate(self):
-        # noinspection PyUnresolvedReferences
-        from gui.vxSettingsApi import vxSettingsApi
-        self.isMSAWindowOpen = True
-        self.onMSAPopulate()
-        vxSettingsApi.loadWindow(self.ID)
-
-    def modsListRegister(self):
-        kwargs = dict(
-            id=self.ID, name=self.i18n['gui_name'], description=self.i18n['gui_description'],
-            icon='scripts/client/%s.png' % self.ID, enabled=True, login=True, lobby=True, callback=self.MSAPopulate)
-        try:
-            BigWorld.g_modsListApi.addModification(**kwargs)
-        except AttributeError:
-            BigWorld.g_modsListApi.addMod(**kwargs)
-
-    def load(self):
-        self.loadLang()
-        self.registerContainer()
-
-    def registerContainer(self):
+        self.MSAHandlers = {}
+        self.init()
         try:
             from helpers import getClientLanguage
             newLang = str(getClientLanguage()).lower()
             if newLang != self.lang:
                 self.lang = newLang
-                self.loadLang()
         except StandardError:
             traceback.print_exc()
-        try:
-            # noinspection PyUnresolvedReferences
-            from gui.modsListApi import g_modsListApi
-            if not hasattr(BigWorld, 'g_modsListApi'):
-                BigWorld.g_modsListApi = g_modsListApi
-            # noinspection PyUnresolvedReferences
-            from gui.vxSettingsApi import vxSettingsApi
-            keys = ('windowTitle', 'buttonOK', 'buttonCancel', 'buttonApply', 'enableButtonTooltip')
-            userSettings = {key: self.i18n['gui_%s' % key] for key in keys}
-            vxSettingsApi.addContainer(self.ID, userSettings)
-            vxSettingsApi.onFeedbackReceived += self.feedbackHandler
-            BigWorld.callback(0.0, self.modsListRegister)
-        except ImportError:
-            print '%s: no-GUI mode activated' % self.ID
-        except StandardError:
-            traceback.print_exc()
+        self.loadLang()
+
+    def init(self):
+        pass
+
+    def loadLang(self):
+        pass
+
+    def MSAPopulate(self, callback):
+        self.isMSAWindowOpen = True
+        self.onMSAPopulate()
+        callback()
+
+    def MSADispose(self):
+        self.isMSAWindowOpen = False
+        self.onMSADestroy()
+
+    def MSAApply(self, alias, *a, **kw):
+        self.MSAHandlers[alias]['apply'](*a, **kw)
+
+    def MSAButton(self, alias, *a, **kw):
+        self.MSAHandlers[alias]['button'](*a, **kw)

@@ -57,7 +57,7 @@ class PlayersPanelController(PYmodsConfigInterface):
 
     def readCurrentSettings(self, quiet=True):
         super(PlayersPanelController, self).readCurrentSettings(quiet)
-        self.data['textFields'].update(self.loadJsonData().get('textFields', {}))
+        self.data['textFields'].update(self.loadDataJson().get('textFields', {}))
         self.displayed = not self.data['mode']
 
     def onApplySettings(self, settings):

@@ -5,7 +5,8 @@ import Math
 import fnmatch
 import os
 import traceback
-from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, showI18nDialog, remDups, objToDict
+from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, objToDict
+from PYmodsCore.gui import showI18nDialog, g_modsListApi
 from collections import OrderedDict
 from functools import partial
 from gui import InputHandler, SystemMessages
@@ -145,11 +146,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
         if self.isModAdded:
-            kwargs = dict(id='RemodEnablerUI', enabled=self.data['enabled'])
-            try:
-                BigWorld.g_modsListApi.updateModification(**kwargs)
-            except AttributeError:
-                BigWorld.g_modsListApi.updateMod(**kwargs)
+            g_modsListApi.updateModification(id='RemodEnablerUI', enabled=self.data['enabled'])
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings(quiet)
@@ -277,25 +274,18 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def registerSettings(self):
         super(ConfigInterface, self).registerSettings()
-        if not hasattr(BigWorld, 'g_modsListApi'):
-            return
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
                          ScopeTemplates.GLOBAL_SCOPE, False))
-        kwargs = dict(
+        self.isModAdded = g_modsListApi.addModification(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=False, lobby=True, callback=lambda: (
                     g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
-                    or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI'))))
-        try:
-            BigWorld.g_modsListApi.addModification(**kwargs)
-        except AttributeError:
-            BigWorld.g_modsListApi.addMod(**kwargs)
-        self.isModAdded = True
+                    or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI')))) != NotImplemented
 
     def lobbyKeyControl(self, event):
-        if not event.isKeyDown() or self.isMSAWindowOpen:
+        if not event.isKeyDown() or self.isMSAOpen:
             return
         if self.modelsData['models'] and not self.previewRemod:
             if checkKeys(self.data['ChangeViewHotkey'], event.key):

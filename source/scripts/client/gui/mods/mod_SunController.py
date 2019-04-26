@@ -66,12 +66,7 @@ if _config.data['enableMessage']:
     def new_Lobby_populate(*_, **__):
         LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAll'].format(
             author='<font color="#DD7700">Polyacov_Yury</font>')
-        try:
-            # noinspection PyUnresolvedReferences
-            from gui.vxSettingsApi import vxSettingsApi
-            isRegistered = vxSettingsApi.isRegistered(_config.modSettingsID)
-        except ImportError:
-            isRegistered = False
+        isRegistered = _config.ID in getattr(_config.MSAInstance, 'activeMods', ())
         try:
             from gui.mods import mod_lamplights
             if not isRegistered and mod_lamplights._config.data['enableMessage']:

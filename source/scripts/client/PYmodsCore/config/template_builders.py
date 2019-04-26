@@ -1,3 +1,6 @@
+import copy
+
+
 class DummyTemplateBuilder(object):
     def __init__(self, i18n):
         self.i18n = i18n
@@ -62,7 +65,7 @@ class DummyTemplateBuilder(object):
 class TemplateBuilder(object):
     def __init__(self, data, i18n, defaultKeys):
         self.dummy = DummyTemplateBuilder(i18n)
-        self.data = data
+        self.data = copy.deepcopy(data)
         self.defaultKeys = defaultKeys
 
     def createEmpty(self):
@@ -153,7 +156,7 @@ class DummyBlockTemplateBuilder(DummyTemplateBuilder):
 class BlockTemplateBuilder(object):
     def __init__(self, data, i18n, defaultKeys):
         self.dummy = DummyBlockTemplateBuilder(i18n)
-        self.data = data
+        self.data = copy.deepcopy(data)
         self.defaultKeys = defaultKeys
 
     def createEmpty(self):

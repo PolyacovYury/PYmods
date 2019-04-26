@@ -2,7 +2,6 @@
 import BigWorld
 import inspect
 import random
-import re
 import threading
 import urllib
 import urllib2
@@ -12,7 +11,7 @@ from functools import partial, update_wrapper
 
 MAX_CHAT_MESSAGE_LENGTH = 220
 __all__ = ['pickRandomPart', 'sendMessage', 'sendChatMessage', 'remDups', 'checkKeys', 'refreshCurrentVehicle', 'Analytics',
-           'Sound', 'showConfirmDialog', 'showI18nDialog', 'showInfoDialog', 'objToDict', 'overrideMethod']
+           'Sound', 'objToDict', 'overrideMethod']
 
 
 def checkKeys(keys, key=None):  # thx to P0LIR0ID
@@ -148,90 +147,6 @@ def __splitMsg(msg):
     if splitPos == -1:
         splitPos = MAX_CHAT_MESSAGE_LENGTH
     return msg[:splitPos], msg[splitPos:]
-
-
-def new_addItem(base, self, item):
-    if 'temp_SM' not in item._vo['message']['message']:
-        return base(self, item)
-    item._vo['message']['message'] = item._vo['message']['message'].replace('temp_SM', '')
-    item._vo['notify'] = False
-    if item._settings:
-        item._settings.isNotify = False
-    return True
-
-
-def new_handleAction(base, self, model, typeID, entityID, actionName):
-    from notification.settings import NOTIFICATION_TYPE
-    if typeID == NOTIFICATION_TYPE.MESSAGE and re.match('https?://', actionName, re.I):
-        BigWorld.wg_openWebBrowser(actionName)
-    else:
-        base(self, model, typeID, entityID, actionName)
-
-
-def new_callHandler(base, self, buttonID):
-    if len(self._SimpleDialog__buttons) != 3:
-        return base(self, buttonID)
-    self._SimpleDialog__handler(buttonID)
-    self._SimpleDialog__isProcessed = True
-
-
-def new_Dialog_dispose(base, self):
-    if len(self._SimpleDialog__buttons) == 3:
-        self._SimpleDialog__isProcessed = True  # don't call the handler upon window destruction, onWindowClose is fine
-    return base(self)
-
-
-def showSimpleDialog(header, text, buttons, callback):
-    from gui import DialogsInterface
-    from gui.Scaleform.daapi.view.dialogs import SimpleDialogMeta
-    DialogsInterface.showDialog(SimpleDialogMeta(header, text, buttons, None), callback)
-
-
-def showConfirmDialog(header, text, buttons, callback):
-    showSimpleDialog(header, text, (Confirm if len(buttons) == 2 else Restart)(*buttons), callback)
-
-
-def showI18nDialog(header, text, key, callback):
-    from gui.Scaleform.daapi.view.dialogs import I18nConfirmDialogButtons
-    showSimpleDialog(header, text, I18nConfirmDialogButtons(key), callback)
-
-
-def showInfoDialog(header, text, button, callback):
-    from gui.Scaleform.daapi.view.dialogs import InfoDialogButtons
-    showSimpleDialog(header, text, InfoDialogButtons(button), callback)
-
-
-# noinspection PyGlobalUndefined
-def delayedCalls():
-    global new_addItem, new_handleAction, new_callHandler, new_Dialog_dispose, Confirm, Restart
-    from notification.actions_handlers import NotificationsActionsHandlers
-    from notification.NotificationsCollection import NotificationsCollection
-    from gui.Scaleform.daapi.view.dialogs.SimpleDialog import SimpleDialog
-    from gui.Scaleform.daapi.view.dialogs import ConfirmDialogButtons, DIALOG_BUTTON_ID
-    new_addItem = overrideMethod(NotificationsCollection, 'addItem', new_addItem)
-    new_handleAction = overrideMethod(NotificationsActionsHandlers, 'handleAction', new_handleAction)
-    new_callHandler = overrideMethod(SimpleDialog, '_SimpleDialog__callHandler', new_callHandler)
-    new_Dialog_dispose = overrideMethod(SimpleDialog, '_dispose', new_Dialog_dispose)
-
-    class ConfirmButtons(ConfirmDialogButtons):
-        def getLabels(self):
-            return ({'id': DIALOG_BUTTON_ID.SUBMIT, 'label': self._submit, 'focused': True},
-                    {'id': DIALOG_BUTTON_ID.CLOSE, 'label': self._close, 'focused': False})
-
-    class RestartButtons(ConfirmButtons):
-        def __init__(self, submit, shutdown, close):
-            self._shutdown = shutdown
-            super(RestartButtons, self).__init__(submit, close)
-
-        def getLabels(self):
-            return ({'id': DIALOG_BUTTON_ID.SUBMIT, 'label': self._submit, 'focused': True},
-                    {'id': 'shutdown', 'label': self._shutdown, 'focused': False},
-                    {'id': DIALOG_BUTTON_ID.CLOSE, 'label': self._close, 'focused': False})
-
-    Confirm, Restart = ConfirmButtons, RestartButtons
-
-
-BigWorld.callback(0, delayedCalls)
 
 
 class Analytics(object):

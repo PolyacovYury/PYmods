@@ -254,12 +254,7 @@ if _config.data['enableMessage']:
     @events.LobbyView.populate.after
     def new_Lobby_populate(*_, **__):
         global isLogin
-        try:
-            # noinspection PyUnresolvedReferences
-            from gui.vxSettingsApi import vxSettingsApi
-            isRegistered = vxSettingsApi.isRegistered(_config.modSettingsID)
-        except ImportError:
-            isRegistered = False
+        isRegistered = _config.ID in getattr(_config.MSAInstance, 'activeMods', ())
         if isLogin and not isRegistered:
             SystemMessages.pushMessage(LOGIN_TEXT_MESSAGE, type=SystemMessages.SM_TYPE.Information)
             isLogin = False

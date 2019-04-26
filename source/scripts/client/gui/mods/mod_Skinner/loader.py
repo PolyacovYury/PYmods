@@ -10,7 +10,8 @@ import glob
 import os
 import shutil
 import traceback
-from PYmodsCore import showConfirmDialog, remDups, loadJson, events
+from PYmodsCore import remDups, loadJson, events, curCV
+from PYmodsCore.gui import showConfirmDialog
 from account_helpers.settings_core.settings_constants import GAME
 from adisp import AdispException, async, process
 from functools import partial
@@ -38,7 +39,7 @@ skinsChecked = False
 clientIsNew = True
 skinsModelsMissing = True
 needToReReadSkinsModels = False
-modelsDir = BigWorld.curCV + '/vehicles/skins/models/'
+modelsDir = curCV + '/vehicles/skins/models/'
 vehicleSkins = {}
 
 
@@ -337,7 +338,7 @@ def doFuncCall(callback):
 
 
 def processMember(memberFileName, skinName):
-    skinDir = modelsDir.replace(BigWorld.curCV + '/', '') + skinName + '/'
+    skinDir = modelsDir.replace(curCV + '/', '') + skinName + '/'
     texDir = skinDir.replace('models', 'textures')
     newPath = ResMgr.resolveToAbsolutePath('./' + skinDir + memberFileName)
     oldSection = ResMgr.openSection(memberFileName)

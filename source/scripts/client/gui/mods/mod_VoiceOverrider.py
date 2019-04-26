@@ -49,8 +49,8 @@ class ConfigInterface(PYmodsConfigInterface):
                     button={'iconSource': '../maps/icons/buttons/sound.png'})],
                 'column2': []}
 
-    def onButtonPress(self, container, linkage, vName, value):
-        if container != self.modSettingsID or linkage != self.ID or vName != 'mode':
+    def onButtonPress(self, vName, value):
+        if vName != 'mode':
             return
         self.data[vName] = int(value)
         self.playPreviewSound()
