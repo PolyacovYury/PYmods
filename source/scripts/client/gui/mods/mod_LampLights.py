@@ -241,6 +241,7 @@ class ConfigInterface(PYmodsConfigInterface):
             LOG_NOTE('LampLights mod fully disabled via main config.')
             self.isLampsVisible = False
         self.isTickRequired = any(self.modes[key] for key in ('stop', 'turn_left', 'turn_right', 'back'))
+        self.updateMod()
 
 
 _config = ConfigInterface()

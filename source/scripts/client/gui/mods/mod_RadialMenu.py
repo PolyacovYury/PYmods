@@ -73,6 +73,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def readCurrentSettings(self, quiet=True):
         super(self.__class__, self).readCurrentSettings(quiet)
         self.updateCommandData()
+        self.updateMod()
 
     def updateCommandData(self):
         self.activeConfigs[:] = ['default']

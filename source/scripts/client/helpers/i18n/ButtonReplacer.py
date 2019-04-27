@@ -50,7 +50,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 'column2': [self.tb.createControl('reReadAtEnd')]}
 
     def readCurrentSettings(self, quiet=True):
-        super(self.__class__, self).readCurrentSettings(quiet)
+        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.configsList = []
         self.confMeta.clear()
         self.sectDict = {}
@@ -94,6 +94,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
         for key in self.sectDict:
             self.sectDict[key]['textList'] = remDups(self.sectDict[key]['textList'])
+        self.updateMod()
 
     def registerSettings(self):
         BigWorld.callback(0, partial(BigWorld.callback, 0, super(ConfigInterface, self).registerSettings))

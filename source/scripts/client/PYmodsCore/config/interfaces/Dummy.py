@@ -76,6 +76,7 @@ class DummyConfigInterface(object):
         A function to update mod template after config actions are complete.
         """
         if self.MSAInstance is not None:
+            self.MSAInstance.config['templates'][self.ID] = self.template
             self.MSAInstance.updateModSettings(self.ID, self.getData())
 
     def onMSAPopulate(self):

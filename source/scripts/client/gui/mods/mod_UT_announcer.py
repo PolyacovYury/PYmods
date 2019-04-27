@@ -202,8 +202,7 @@ class ConfigInterface(PYmodsConfigInterface):
         colours = self.colours.values()
         self.data['textColour'] = colours.index(colour) if colour in colours else 10
         self.data['textStyle']['colour'] = self.colours.values()[self.data['textColour']]
-        if quiet:
-            super(self.__class__, self).onApplySettings(self.data)
+        self.updateMod()
 
     def formatText(self, newText, isPlayer, isAlly, isSquadMan, names):
         colors = dict(
