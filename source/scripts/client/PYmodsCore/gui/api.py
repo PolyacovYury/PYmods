@@ -41,8 +41,9 @@ else:
                     g_controller.modifications['modsSettingsApi_PYmods'] = g_controller.modifications.pop('modsSettingsApi')
                     g_controller.updateModification('modsSettingsApi_PYmods')
                 super(ModsSettings, self).__init__()
-                g_controller.modifications[modsSettingsID] = g_controller.modifications.pop('modsSettingsApi')
-                g_controller.updateModification(modsSettingsID)
+                mod = g_controller.modifications[modsSettingsID] = g_controller.modifications.pop('modsSettingsApi')
+                orig = mod._ModificationItem__callback
+                g_controller.updateModification(modsSettingsID, callback=lambda: (container.MSAPopulate(), orig()))
                 self.onWindowClosed += container.MSADispose
 
             def settingsLoad(self):
