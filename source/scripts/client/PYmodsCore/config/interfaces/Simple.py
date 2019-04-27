@@ -1,6 +1,6 @@
 from .Dummy import DummyConfigInterface, DummyConfBlockInterface, DummySettingContainer
 from ..json_reader import loadJson
-from ..template_builders import TemplateBuilder, BlockTemplateBuilder
+from ..template_builders import TemplateBuilder
 from ..utils import smart_update, processHotKeys
 
 __all__ = ['ConfigInterface', 'ConfBlockInterface', 'SettingContainer']
@@ -31,6 +31,9 @@ class Base(object):
     def loadLang(self):
         smart_update(self.i18n, self.loadLangJson())
 
+    def createTB(self):
+        return TemplateBuilder(self.data, self.i18n)
+
     def message(self):
         return '%s v.%s %s' % (self.ID, self.version, self.author)
 
@@ -60,9 +63,6 @@ class ConfigInterface(Base, DummyConfigInterface):
         self.writeDataJson()
         processHotKeys(self.data, self.defaultKeys, 'read')
         self.updateMod()
-
-    def createTB(self):
-        return TemplateBuilder(self.data, self.i18n, self.defaultKeys)
 
     def load(self):
         DummyConfigInterface.load(self)
@@ -99,9 +99,6 @@ class ConfBlockInterface(Base, DummyConfBlockInterface):
         self.writeDataJson()
         processHotKeys(self.data[blockID], self.defaultKeys, 'read')
         self.updateMod(blockID)
-
-    def createTB(self):
-        return BlockTemplateBuilder(self.data, self.i18n, self.defaultKeys)
 
     def load(self):
         DummyConfBlockInterface.load(self)

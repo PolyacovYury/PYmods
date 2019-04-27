@@ -1,7 +1,7 @@
 import Event
 import traceback
 from constants import DEFAULT_LANGUAGE
-from ..template_builders import DummyBlockTemplateBuilder, DummyTemplateBuilder
+from ..template_builders import DummyTemplateBuilder
 
 
 class DummyConfigInterface(object):
@@ -120,9 +120,6 @@ class DummyConfBlockInterface(DummyConfigInterface):
     @property
     def blockIDs(self):
         return self._blockIDs
-
-    def createTB(self):
-        return DummyBlockTemplateBuilder(self.i18n)
 
     def createTemplate(self, blockID=None):
         raise NotImplementedError('Template for block %s is not created' % blockID)
