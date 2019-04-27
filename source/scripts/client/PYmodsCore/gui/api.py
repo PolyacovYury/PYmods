@@ -7,7 +7,7 @@ __all__ = ['g_modsListApi']
 try:
     from gui.modsListApi import g_modsListApi
 except ImportError:
-    print 'PYmodsCore: ModsListApi package not found'
+    print 'PYmodsCore: ModsListApi package not found, ModsSettingsApi check skipped'
 
 
     class ModsList(object):
@@ -29,42 +29,35 @@ except ImportError:
 
 
     g_modsListApi = ModsList()
+else:
+    try:
+        from gui.modsSettingsApi.api import ModsSettingsApi as MSA_Orig
+        from gui.modsListApi import g_controller
 
-try:
-    from gui.modsSettingsApi.api import ModsSettingsApi as MSA_Orig
+        class ModsSettings(MSA_Orig):
+            def __init__(self, modsSettingsID, container):
+                self.container = container
+                if 'modsSettingsApi' in g_controller.modifications:
+                    g_controller.modifications['modsSettingsApi_PYmods'] = g_controller.modifications.pop('modsSettingsApi')
+                    g_controller.updateModification('modsSettingsApi_PYmods')
+                super(ModsSettings, self).__init__()
+                g_controller.modifications[modsSettingsID] = g_controller.modifications.pop('modsSettingsApi')
+                g_controller.updateModification(modsSettingsID)
+                self.onWindowClosed += container.MSADispose
 
+            def settingsLoad(self):
+                self.userSettings.update(self.container.i18n)
+                self.userSettings['modsListApiIcon'] = self.container.iconPath
 
-    def overrideAddMod(
-            base, container, modsSettingsID, id, name=None, description=None, icon=None, enabled=None, login=None,
-            lobby=None, callback=None):
-        if id == 'modsSettingsApi':
-            id = modsSettingsID
-            callback = partial(container.MSAPopulate, callback)
-        return base(id, name, description, icon, enabled, login, lobby, callback)
+            def configLoad(self):
+                pass
 
+            def configSave(self):
+                pass
 
-    class ModsSettings(MSA_Orig):
-        def __init__(self, modsSettingsID, container):
-            self.container = container
-            orig = g_modsListApi.__class__.addModification
-            g_modsListApi.__class__.addModification = partial(overrideAddMod, orig, container, modsSettingsID)
-            super(ModsSettings, self).__init__()
-            self.onWindowClosed += container.MSADispose
-            g_modsListApi.__class__.addModification = orig
-
-        def settingsLoad(self):
-            self.userSettings.update(self.container.i18n)
-            self.userSettings['modsListApiIcon'] = self.container.iconPath
-
-        def configLoad(self):
-            pass
-
-        def configSave(self):
-            pass
-
-except ImportError:
-    print 'PYmodsCore: ModsSettingsApi package not found'
-    MSA_Orig = ModsSettings = None
+    except ImportError:
+        print 'PYmodsCore: ModsSettingsApi package not found'
+        MSA_Orig = g_controller = None
 
 
 def registerSettings(config):
@@ -81,7 +74,7 @@ def registerSettings(config):
         traceback.print_exc()
     if config.modSettingsID not in config.modSettingsContainers:
         c = config.modSettingsContainers[config.modSettingsID] = config.containerClass(config.modSettingsID, config.modsGroup)
-        if ModsSettings is None:
+        if MSA_Orig is None:
             print config.ID + ': no-GUI mode activated'
             return
         c.API = ModsSettings(config.modSettingsID, c)
