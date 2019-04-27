@@ -8,7 +8,6 @@ from Vehicle import Vehicle
 from constants import ARENA_GUI_TYPE
 from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared.minimap.plugins import ArenaVehiclesPlugin
-from gui.app_loader import g_appLoader
 from gui.battle_control.arena_info import vos_collections
 from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
@@ -57,7 +56,7 @@ class PlayersPanelController(PYmodsConfigInterface):
 
     def readCurrentSettings(self, quiet=True):
         super(PlayersPanelController, self).readCurrentSettings(quiet)
-        self.data['textFields'].update(self.loadJsonData().get('textFields', {}))
+        self.data['textFields'].update(self.loadDataJson().get('textFields', {}))
         self.displayed = not self.data['mode']
 
     def onApplySettings(self, settings):
@@ -144,7 +143,7 @@ class PlayersPanelController(PYmodsConfigInterface):
     def battleKeyControl(self, event):
         if not self.data['mode']:
             return
-        if self.data['mode'] == 1 and checkKeys(self.data['toggle_key']) and event.isKeyDown():
+        if self.data['mode'] == 1 and checkKeys(self.data['toggle_key'], event.key) and event.isKeyDown():
             self.displayed = not self.displayed
         elif self.data['mode'] == 2:
             self.displayed = checkKeys(self.data['toggle_key'])
@@ -205,9 +204,8 @@ else:
 
 
     def inj_hkKeyEvent(event):
-        BattleApp = g_appLoader.getDefBattleApp()
         try:
-            if BattleApp and mod_playersHP.data['enabled']:
+            if hasattr(BigWorld.player(), 'arena') and mod_playersHP.data['enabled']:
                 mod_playersHP.battleKeyControl(event)
         except StandardError:
             print mod_playersHP.ID + ': ERROR at inj_hkKeyEvent'

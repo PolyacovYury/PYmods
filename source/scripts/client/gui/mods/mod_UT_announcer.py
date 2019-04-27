@@ -24,8 +24,8 @@ from functools import partial
 from gui import IngameSoundNotifications
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import BattleEndWarningPanel
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
-from gui.app_loader import g_appLoader
-from gui.app_loader.settings import GUI_GLOBAL_SPACE_ID
+from gui.shared.personality import ServicesLocator
+from skeletons.gui.app_loader import GuiGlobalSpaceID
 from string import Template
 
 
@@ -463,7 +463,7 @@ def callTextInit(newText, targetID, attackerID, squadManID):
         names = {}
         traceback.print_exc()
     text = _config.formatText(newText, isPlayer, isAlly, isSquadMan, names)
-    battle = g_appLoader.getDefBattleApp()
+    battle = ServicesLocator.appLoader.getDefBattleApp()
     if battle is not None and _gui_flash is not None:
         _gui_flash.addText(text)
 
@@ -650,7 +650,7 @@ def startBattleL(SpaceID):
             PlayerAvatar.sounds[soundEventName].stop()
             del PlayerAvatar.sounds[soundEventName]
     PlayerAvatar.sounds = {}
-    if SpaceID == GUI_GLOBAL_SPACE_ID.BATTLE:
+    if SpaceID == GuiGlobalSpaceID.BATTLE:
         for soundEventName in _config.data['sounds'].keys():
             if _config.data['sounds'][soundEventName] and (
                             soundEventName not in _config.timerSounds or _config.data['battleTimer']):
@@ -658,7 +658,7 @@ def startBattleL(SpaceID):
                     _config.data['sounds'][soundEventName])
 
 
-g_appLoader.onGUISpaceEntered += startBattleL
+ServicesLocator.appLoader.onGUISpaceEntered += startBattleL
 
 
 @overrideMethod(BattleEndWarningPanel, 'setTotalTime')

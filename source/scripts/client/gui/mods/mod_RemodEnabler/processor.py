@@ -5,9 +5,9 @@ from gui import SystemMessages
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.framework.entities.View import ViewKey
-from gui.app_loader import g_appLoader
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items.customization.outfit import Outfit
+from gui.shared.personality import ServicesLocator as SL
 from items.vehicles import CompositeVehicleDescriptor as CompVDesc
 from vehicle_systems import appearance_cache, camouflages
 from vehicle_systems.tankStructure import TankPartNames
@@ -100,7 +100,7 @@ def new_cacheAppearance(base, self, vId, info, *args, **kwargs):
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled']:
         modelDesc, playerName = getModelDescInfo(self._HangarVehicleAppearance__vEntity.id, vDesc, 'hangar')
-        view = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOBBY_CUSTOMIZATION))
+        view = SL.appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOBBY_CUSTOMIZATION))
         if view is not None:
             if modelDesc is not None and getattr(vDesc, 'modelDesc', None) is not None:
                 SystemMessages.pushMessage(g_config.i18n['UI_install_customization'], SystemMessages.SM_TYPE.Warning)

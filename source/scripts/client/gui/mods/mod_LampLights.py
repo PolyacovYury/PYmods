@@ -13,7 +13,6 @@ from Vehicle import Vehicle
 from debug_utils import LOG_ERROR, LOG_NOTE
 from functools import partial
 from gui import InputHandler, SystemMessages
-from gui.app_loader.loader import g_appLoader
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 
@@ -254,12 +253,7 @@ if _config.data['enableMessage']:
     @events.LobbyView.populate.after
     def new_Lobby_populate(*_, **__):
         global isLogin
-        try:
-            # noinspection PyUnresolvedReferences
-            from gui.vxSettingsApi import vxSettingsApi
-            isRegistered = vxSettingsApi.isRegistered(_config.modSettingsID)
-        except ImportError:
-            isRegistered = False
+        isRegistered = _config.ID in getattr(_config.MSAInstance, 'activeMods', ())
         if isLogin and not isRegistered:
             SystemMessages.pushMessage(LOGIN_TEXT_MESSAGE, type=SystemMessages.SM_TYPE.Information)
             isLogin = False
@@ -645,7 +639,7 @@ def lightsDestroy(vehicleID, callPlace=''):
 
 
 def battleKeyControl(event):
-    if checkKeys(_config.data['hotkey']) and event.isKeyDown():
+    if checkKeys(_config.data['hotkey'], event.key) and event.isKeyDown():
         _config.isLampsVisible = not _config.isLampsVisible
         if _config.isLampsVisible:
             _config.readCurrentSettings(not _config.data['Debug'])
@@ -663,9 +657,8 @@ def battleKeyControl(event):
 
 
 def inj_hkKeyEvent(event):
-    BattleApp = g_appLoader.getDefBattleApp()
     try:
-        if BattleApp and _config.data['enabled']:
+        if hasattr(BigWorld.player(), 'arena') and _config.data['enabled']:
             battleKeyControl(event)
     except StandardError:
         print 'LampLights: ERROR at inj_hkKeyEvent'

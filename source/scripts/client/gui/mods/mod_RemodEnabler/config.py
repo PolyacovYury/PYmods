@@ -5,14 +5,15 @@ import Math
 import fnmatch
 import os
 import traceback
-from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, showI18nDialog, remDups, objToDict
+from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, objToDict
+from PYmodsCore.gui import showI18nDialog, g_modsListApi
 from collections import OrderedDict
 from functools import partial
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.app_loader import g_appLoader
+from gui.shared.personality import ServicesLocator as SL
 from helpers import dependency
 from items.components import c11n_constants
 from items.components.chassis_components import SplineConfig
@@ -145,11 +146,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
         if self.isModAdded:
-            kwargs = dict(id='RemodEnablerUI', enabled=self.data['enabled'])
-            try:
-                BigWorld.g_modsListApi.updateModification(**kwargs)
-            except AttributeError:
-                BigWorld.g_modsListApi.updateMod(**kwargs)
+            g_modsListApi.updateModification(id='RemodEnablerUI', enabled=self.data['enabled'])
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings(quiet)
@@ -277,28 +274,21 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def registerSettings(self):
         super(ConfigInterface, self).registerSettings()
-        if not hasattr(BigWorld, 'g_modsListApi'):
-            return
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
                          ScopeTemplates.GLOBAL_SCOPE, False))
-        kwargs = dict(
+        self.isModAdded = g_modsListApi.addModification(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=False, lobby=True, callback=lambda: (
-                    g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
-                    or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI'))))
-        try:
-            BigWorld.g_modsListApi.addModification(**kwargs)
-        except AttributeError:
-            BigWorld.g_modsListApi.addMod(**kwargs)
-        self.isModAdded = True
+                    SL.appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
+                    or SL.appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI')))) != NotImplemented
 
     def lobbyKeyControl(self, event):
-        if not event.isKeyDown() or self.isMSAWindowOpen:
+        if not event.isKeyDown() or self.isMSAOpen:
             return
         if self.modelsData['models'] and not self.previewRemod:
-            if checkKeys(self.data['ChangeViewHotkey']):
+            if checkKeys(self.data['ChangeViewHotkey'], event.key):
                 newModeNum = (self.teams.index(self.currentTeam) + 1) % len(self.teams)
                 self.currentTeam = self.teams[newModeNum]
                 try:
@@ -312,7 +302,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     'temp_SM%s<b>%s</b>' % (self.i18n['UI_mode'], self.i18n['UI_mode_' + self.currentTeam]),
                     SystemMessages.SM_TYPE.Warning)
                 refreshCurrentVehicle()
-            if checkKeys(self.data['SwitchRemodHotkey']):
+            if checkKeys(self.data['SwitchRemodHotkey'], event.key):
                 curTankType = self.currentTeam
                 snameList = sorted(self.modelsData['models'].keys()) + ['']
                 selected = self.modelsData['selected'][curTankType]
@@ -331,7 +321,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 loadJson(self.ID, 'remodsCache', self.modelsData['selected'], self.configPath, True,
                          quiet=not self.data['isDebug'])
                 refreshCurrentVehicle()
-        if checkKeys(self.data['CollisionHotkey']):
+        if checkKeys(self.data['CollisionHotkey'], event.key):
             SystemMessages.pushMessage('temp_SM' + self.i18n['UI_collision_unavailable'],
                                        SystemMessages.SM_TYPE.CustomizationForGold)
             return
@@ -555,9 +545,8 @@ def _asDict(obj):
 
 
 def inj_hkKeyEvent(event):
-    LobbyApp = g_appLoader.getDefLobbyApp()
     try:
-        if LobbyApp and g_config.data['enabled']:
+        if hasattr(BigWorld.player(), 'databaseID') and g_config.data['enabled']:
             g_config.lobbyKeyControl(event)
     except StandardError:
         print g_config.ID + ': ERROR at inj_hkKeyEvent'

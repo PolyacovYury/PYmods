@@ -6,7 +6,7 @@ import nations
 from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics
 from Vehicle import Vehicle
 from debug_utils import LOG_ERROR
-from gui.app_loader import g_appLoader
+from gui.shared.personality import ServicesLocator
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -49,8 +49,8 @@ class ConfigInterface(PYmodsConfigInterface):
                     button={'iconSource': '../maps/icons/buttons/sound.png'})],
                 'column2': []}
 
-    def onButtonPress(self, container, linkage, vName, value):
-        if container != self.modSettingsID or linkage != self.ID or vName != 'mode':
+    def onButtonPress(self, vName, value):
+        if vName != 'mode':
             return
         self.data[vName] = int(value)
         self.playPreviewSound()
@@ -63,7 +63,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if not self.setSystemValue():
             return
         self.clearPreviewSound()
-        sndMgr = g_appLoader.getDefLobbyApp().soundManager
+        sndMgr = ServicesLocator.appLoader.getDefLobbyApp().soundManager
         if sndMgr is None:
             LOG_ERROR('GUI sound manager is not found')
             return

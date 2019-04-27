@@ -6,7 +6,6 @@ import traceback
 from PYmodsCore import Sound, PYmodsConfigInterface, pickRandomPart, sendChatMessage, checkKeys, Analytics
 from functools import partial
 from gui import InputHandler
-from gui.app_loader.loader import g_appLoader
 from gui.battle_control import avatar_getter
 
 
@@ -59,8 +58,8 @@ class ConfigInterface(PYmodsConfigInterface):
                 'column2': [self.tb.createHotKey('hotkey'),
                             chatCB]}
 
-    def onButtonPress(self, container, linkage, vName, value):
-        if container != self.modSettingsID or linkage != self.ID or vName != 'event':
+    def onButtonPress(self, vName, value):
+        if vName != 'event':
             return
         self.data[vName] = int(value)
         SoundLoop(False)
@@ -130,14 +129,14 @@ def SoundLoop(start):
 
 
 def inj_hkKeyEvent(event):
-    BattleApp = g_appLoader.getDefBattleApp()
     try:
-        if BattleApp and _config.data['enabled'] and not (
+        if hasattr(BigWorld.player(), 'arena') and _config.data['enabled'] and not (
                 len(_config.data['hotkey']) == 1 and BigWorld.player().getForcedGuiControlModeFlags()):
             if avatar_getter.isVehicleAlive() and event.isKeyDown() and checkKeys(_config.data['hotkey']):
-                SoundLoop(True)
-                if _config.data['chatEnable']:
-                    calltext()
+                if not getattr(_config.hornSoundEvent, 'isPlaying', False):
+                    SoundLoop(True)
+                    if _config.data['chatEnable']:
+                        calltext()
             else:
                 SoundLoop(False)
     except StandardError:

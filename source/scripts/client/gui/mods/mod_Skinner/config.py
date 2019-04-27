@@ -3,12 +3,13 @@ import BigWorld
 import Keys
 import ResMgr
 import traceback
-from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, showI18nDialog, objToDict
+from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, objToDict
+from PYmodsCore.gui import showI18nDialog, g_modsListApi
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.app_loader import g_appLoader
+from gui.shared.personality import ServicesLocator as SL
 from helpers import dependency
 from skeletons.gui.shared.utils import IHangarSpace
 from . import __date__, __modID__
@@ -119,11 +120,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
         if self.isModAdded:
-            kwargs = dict(id='SkinnerUI', enabled=self.data['enabled'] and bool(self.skinsData['models']))
-            try:
-                BigWorld.g_modsListApi.updateModification(**kwargs)
-            except AttributeError:
-                BigWorld.g_modsListApi.updateMod(**kwargs)
+            g_modsListApi.updateModification(id='SkinnerUI', enabled=self.data['enabled'] and bool(self.skinsData['models']))
 
     def migrateConfigs(self):
         settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
@@ -224,23 +221,16 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def registerSettings(self):
         super(ConfigInterface, self).registerSettings()
-        if not hasattr(BigWorld, 'g_modsListApi'):
-            return
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
             ViewSettings('SkinnerUI', SkinnerUI, 'Skinner.swf', ViewTypes.WINDOW, None,
                          ScopeTemplates.GLOBAL_SCOPE, False))
-        kwargs = dict(
+        self.isModAdded = g_modsListApi.addModification(
             id='SkinnerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/Skinner.png', enabled=self.data['enabled'] and bool(self.skinsData['models']), login=True,
             lobby=True, callback=lambda: (
-                    g_appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
-                    or g_appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI'))))
-        try:
-            BigWorld.g_modsListApi.addModification(**kwargs)
-        except AttributeError:
-            BigWorld.g_modsListApi.addMod(**kwargs)
-        self.isModAdded = True
+                    SL.appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
+                    or SL.appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI')))) != NotImplemented
 
 
 class SkinnerUI(AbstractWindowView):
@@ -281,9 +271,9 @@ class SkinnerUI(AbstractWindowView):
 
 
 def lobbyKeyControl(event):
-    if not event.isKeyDown() or g_config.isMSAWindowOpen or not g_config.skinsData['models']:
+    if not event.isKeyDown() or g_config.isMSAOpen or not g_config.skinsData['models']:
         return
-    if checkKeys(g_config.data['ChangeViewHotkey']):
+    if checkKeys(g_config.data['ChangeViewHotkey'], event.key):
         try:
             from gui.mods.mod_remodenabler import g_config as re_config
         except ImportError:
@@ -297,7 +287,7 @@ def lobbyKeyControl(event):
                 'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentTeam]),
                 SystemMessages.SM_TYPE.Warning)
             refreshCurrentVehicle()
-    if checkKeys(g_config.data['DynamicSkinHotkey']):
+    if checkKeys(g_config.data['DynamicSkinHotkey'], event.key):
         enabled = g_config.dynamicSkinEnabled
         g_config.dynamicSkinEnabled = not enabled
         SystemMessages.pushMessage(
@@ -307,9 +297,8 @@ def lobbyKeyControl(event):
 
 
 def inj_hkKeyEvent(event):
-    LobbyApp = g_appLoader.getDefLobbyApp()
     try:
-        if LobbyApp and g_config.data['enabled']:
+        if hasattr(BigWorld.player(), 'databaseID') and g_config.data['enabled']:
             lobbyKeyControl(event)
     except StandardError:
         print g_config.ID + ': ERROR at inj_hkKeyEvent'
