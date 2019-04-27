@@ -90,10 +90,10 @@ def registerSettings(config):
     msc.onMSAPopulate += config.onMSAPopulate
     msc.onMSADestroy += config.onMSADestroy
     if hasattr(config, 'blockIDs'):
-        for blockID in config.blockIDs:
-            msc.MSAHandlers[config.ID + blockID] = {
-                'apply': partial(config.onApplySettings, blockID), 'button': partial(config.onButtonPress, blockID)}
-            msc.API.setModTemplate(config.ID + blockID, config.template[blockID], msc.MSAApply, msc.MSAButton)
+        for ID in config.blockIDs:
+            msc.MSAHandlers[config.ID + ID] = {
+                'apply': partial(config.onApplySettings, blockID=ID), 'button': partial(config.onButtonPress, blockID=ID)}
+            msc.API.setModTemplate(config.ID + ID, config.template[ID], msc.MSAApply, msc.MSAButton)
     else:
         msc.MSAHandlers[config.ID] = {'apply': config.onApplySettings, 'button': config.onButtonPress}
         msc.API.setModTemplate(config.ID, config.template, msc.MSAApply, msc.MSAButton)

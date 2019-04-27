@@ -56,13 +56,13 @@ class ConfigInterface(Base, DummyConfigInterface):
         processHotKeys(self.data, self.defaultKeys, 'write')
         smart_update(self.data, self.loadDataJson())
         processHotKeys(self.data, self.defaultKeys, 'read')
+        self.updateMod()
 
     def onApplySettings(self, settings):
         smart_update(self.data, settings)
         processHotKeys(self.data, self.defaultKeys, 'write')
         self.writeDataJson()
         processHotKeys(self.data, self.defaultKeys, 'read')
-        self.updateMod()
 
     def load(self):
         DummyConfigInterface.load(self)
@@ -86,19 +86,19 @@ class ConfBlockInterface(Base, DummyConfBlockInterface):
 
     def readCurrentSettings(self, quiet=True):
         for blockID in self.data:
-            processHotKeys(self.data[blockID], self.defaultKeys, 'write')
+            processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'write')
         data = self.loadDataJson(quiet=quiet)
         for blockID in self.data:
             if blockID in data:
                 smart_update(self.data[blockID], data[blockID])
-            processHotKeys(self.data[blockID], self.defaultKeys, 'read')
+            processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'read')
+            self.updateMod(blockID)
 
     def onApplySettings(self, settings, blockID=None):
         smart_update(self.data[blockID], settings)
-        processHotKeys(self.data[blockID], self.defaultKeys, 'write')
+        processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'write')
         self.writeDataJson()
-        processHotKeys(self.data[blockID], self.defaultKeys, 'read')
-        self.updateMod(blockID)
+        processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'read')
 
     def load(self):
         DummyConfBlockInterface.load(self)
