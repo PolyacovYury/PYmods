@@ -34,6 +34,12 @@ class Base(object):
     def createTB(self):
         return TemplateBuilder(self.data, self.i18n)
 
+    def readCurrentSettings(self):
+        pass
+
+    def onMSAPopulate(self):
+        self.readCurrentSettings()
+
     def message(self):
         return '%s v.%s %s' % (self.ID, self.version, self.author)
 
