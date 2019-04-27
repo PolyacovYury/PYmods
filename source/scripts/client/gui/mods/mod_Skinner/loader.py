@@ -383,6 +383,11 @@ def processMember(memberFileName, skinName):
         section.save()
 
 
+@events.LoginView.populate.before
+def before_Login_populate(*_, **__):
+    wgc_mode._g_firstEntry = not (g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked)
+
+
 @events.LoginView.populate.after
 def new_Login_populate(self, *_, **__):
     if g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked:
