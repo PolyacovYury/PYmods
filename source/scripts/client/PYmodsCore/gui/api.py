@@ -35,16 +35,15 @@ else:
         from gui.modsListApi import g_controller
 
         class ModsSettings(MSA_Orig):
-            def __init__(self, modsSettingsID, container):
-                self.container = container
+            def __init__(self, ID, cont):
+                self.container = cont
                 if 'modsSettingsApi' in g_controller.modifications:
                     g_controller.modifications['modsSettingsApi_PYmods'] = g_controller.modifications.pop('modsSettingsApi')
                     g_controller.updateModification('modsSettingsApi_PYmods')
                 super(ModsSettings, self).__init__()
-                mod = g_controller.modifications[modsSettingsID] = g_controller.modifications.pop('modsSettingsApi')
-                orig = mod._ModificationItem__callback
-                g_controller.updateModification(modsSettingsID, callback=lambda: (container.MSAPopulate(), orig()))
-                self.onWindowClosed += container.MSADispose
+                mod = g_controller.modifications[ID] = g_controller.modifications.pop('modsSettingsApi')
+                g_controller.updateModification(ID, callback=partial(cont.MSAPopulate, mod._ModificationItem__callback))
+                self.onWindowClosed += cont.MSADispose
 
             def settingsLoad(self):
                 self.userSettings.update(self.container.i18n)
