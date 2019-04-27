@@ -319,9 +319,9 @@ class FlashController(object):
         g_guiFlash.animateComponent(self.ID + '.text0', 0.5, {'alpha': 0.0})
         g_guiFlash.animateComponent(self.ID + '.image0', 0.5, {'alpha': 0.0})
         for idx in xrange(1, _config.data['textLength']):
-            g_guiFlash.animateComponent(self.ID + '.text%s' % idx, 0.5, {'y': -1 * bgConf['height']})
+            g_guiFlash.animateComponent(self.ID + '.text%s' % idx, 0.5, {'y': bgConf['height'] * (idx - 1)})
             if bgConf['enabled']:
-                g_guiFlash.animateComponent(self.ID + '.image%s' % idx, 0.5, {'y': -1 * bgConf['height']})
+                g_guiFlash.animateComponent(self.ID + '.image%s' % idx, 0.5, {'y': bgConf['height'] * (idx - 1)})
         BigWorld.callback(0.5, self.onTextRemovalComplete)
 
 
