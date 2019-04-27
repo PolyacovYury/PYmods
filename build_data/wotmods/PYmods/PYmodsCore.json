@@ -17,6 +17,9 @@
         "res/scripts/client/PYmodsCore/events/LobbyView.pyc": "build/scripts/client/PYmodsCore/events/LobbyView.pyc",
         "res/scripts/client/PYmodsCore/events/LoginView.pyc": "build/scripts/client/PYmodsCore/events/LoginView.pyc",
         "res/scripts/client/PYmodsCore/events/PlayerAvatar.pyc": "build/scripts/client/PYmodsCore/events/PlayerAvatar.pyc",
+        "res/scripts/client/PYmodsCore/gui/__init__.pyc": "build/scripts/client/PYmodsCore/gui/__init__.pyc",
+        "res/scripts/client/PYmodsCore/gui/api.pyc": "build/scripts/client/PYmodsCore/gui/api.pyc",
+        "res/scripts/client/PYmodsCore/gui/utils.pyc": "build/scripts/client/PYmodsCore/gui/utils.pyc",
         "res/scripts/client/PYmodsCore/utils.pyc": "build/scripts/client/PYmodsCore/utils.pyc",
         "res/scripts/client/PYmodsGUI.png": "res/res/scripts/client/PYmodsGUI.png"
     }
