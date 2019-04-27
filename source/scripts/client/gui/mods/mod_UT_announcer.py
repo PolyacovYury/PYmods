@@ -258,7 +258,7 @@ class FlashController(object):
             shadow = _config.data['textShadow']
             if shadow['enabled']:
                 g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'shadow': shadow})
-            g_guiFlash.createComponent(self.ID + '.image%s' % idx, {
+            g_guiFlash.createComponent(self.ID + '.image%s' % idx, COMPONENT_TYPE.IMAGE, {
                 'image': bgPath, 'imageAlt': bgAltPath, 'width': width, 'height': height, 'alpha': 0.0,
                 'x': 0, 'y': y + 2, 'alignX': COMPONENT_ALIGN.CENTER, 'alignY': COMPONENT_ALIGN.TOP})
 
