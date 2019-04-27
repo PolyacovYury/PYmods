@@ -34,20 +34,20 @@ try:
     from gui.modsSettingsApi.api import ModsSettingsApi as MSA_Orig
 
 
-    def overrideAddModification(base, container, modsSettingsID, self, id, name=None, description=None, icon=None,
-                                enabled=None,
-                                login=None, lobby=None, callback=None):
+    def overrideAddMod(
+            base, container, modsSettingsID, id, name=None, description=None, icon=None, enabled=None, login=None,
+            lobby=None, callback=None):
         if id == 'modsSettingsApi':
             id = modsSettingsID
             callback = partial(container.MSAPopulate, callback)
-        return base(self, id, name, description, icon, enabled, login, lobby, callback)
+        return base(id, name, description, icon, enabled, login, lobby, callback)
 
 
     class ModsSettings(MSA_Orig):
         def __init__(self, modsSettingsID, container):
             self.container = container
             orig = g_modsListApi.__class__.addModification
-            g_modsListApi.__class__.addModification = partial(overrideAddModification, orig, container, modsSettingsID)
+            g_modsListApi.__class__.addModification = partial(overrideAddMod, orig, container, modsSettingsID)
             super(ModsSettings, self).__init__()
             self.onWindowClosed += container.MSADispose
             g_modsListApi.__class__.addModification = orig
