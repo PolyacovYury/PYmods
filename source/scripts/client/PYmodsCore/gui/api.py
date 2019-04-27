@@ -46,8 +46,6 @@ try:
     class ModsSettings(MSA_Orig):
         def __init__(self, modsSettingsID, container):
             self.container = container
-            self.userSettings.update(container.i18n)
-            self.userSettings['modsListApiIcon'] = container.iconPath
             orig = g_modsListApi.__class__.addModification
             g_modsListApi.__class__.addModification = partial(overrideAddModification, orig, container, modsSettingsID)
             super(ModsSettings, self).__init__()
@@ -55,7 +53,8 @@ try:
             g_modsListApi.__class__.addModification = orig
 
         def settingsLoad(self):
-            pass
+            self.userSettings.update(self.container.i18n)
+            self.userSettings['modsListApiIcon'] = self.container.iconPath
 
         def configLoad(self):
             pass
