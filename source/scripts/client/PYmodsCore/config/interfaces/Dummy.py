@@ -20,7 +20,6 @@ class DummyConfigInterface(object):
         self.init()
         self.loadLang()
         self.tb = self.createTB()
-        self.template = self.createTemplate()
         self.load()
 
     def init(self):
@@ -51,6 +50,10 @@ class DummyConfigInterface(object):
         :return: dict representing your mod's settings template.
         """
         raise NotImplementedError
+
+    @property
+    def template(self):
+        return self.createTemplate()
 
     def readCurrentSettings(self, quiet=True):
         """
