@@ -42,7 +42,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['name'],
-                'settingsVersion': 1,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createOptions(
                     'mode', [self.i18n['UI_setting_mode_%s' % mode] for mode in self.modes],

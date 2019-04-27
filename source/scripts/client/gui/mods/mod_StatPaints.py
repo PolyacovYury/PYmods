@@ -52,8 +52,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': sum(int(x) * (10 ** i) for i, x in enumerate(reversed(self.version.split(' ')[0].split(
-                    '.')))),
                 'enabled': self.data['enabled'],
                 'column1': [
                     self.tb.createControl('ignorePresentPaints'),

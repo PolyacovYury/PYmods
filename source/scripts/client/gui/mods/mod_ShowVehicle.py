@@ -35,11 +35,10 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['name'],
-                'settingsVersion': 1,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createControl('changeZoom'),
                             self.tb.createStepper('zoomValue', 0.1, 1.0, 0.1, True),
-                            self.tb.createControl('blacklist', 'TextInputField', 800)],
+                            self.tb.createControl('blacklist', self.tb.types.TextInput, 800)],
                 'column2': [self.tb.createHotKey('hotkey'),
                             self.tb.createControl('isEnabled')]}
 

@@ -104,7 +104,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         template = {'modDisplayName': self.i18n['UI_description'],
-                    'settingsVersion': 200,
                     'enabled': self.data['enabled'],
                     'column1': [self.tb.createHotKey('DynamicSkinHotkey')],
                     'column2': [self.tb.createHotKey('ChangeViewHotkey'),

@@ -52,7 +52,6 @@ class ConfigInterface(PYmodsConfigInterface):
         chatCB = self.tb.createControl('chatEnable')
         chatCB['tooltip'] %= tooltipVariants
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createSlider('event', 1, 8, 1, button={'iconSource': '../maps/icons/buttons/sound.png'})],
                 'column2': [self.tb.createHotKey('hotkey'),

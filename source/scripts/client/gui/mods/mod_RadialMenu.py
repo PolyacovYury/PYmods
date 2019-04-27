@@ -61,7 +61,6 @@ class ConfigInterface(PYmodsConfigInterface):
         infoLabel = self.tb.createLabel('info')
         infoLabel['text'] += 'wotspeak.ru'
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createOptions('selectedConfig', optionsList)],
                 'column2': [self.tb.createHotKey('mapMenu_key'),

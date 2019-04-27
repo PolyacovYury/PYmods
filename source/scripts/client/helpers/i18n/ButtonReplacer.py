@@ -45,7 +45,6 @@ class ConfigInterface(PYmodsConfigInterface):
         capLabel['text'] = self.tb.getLabel('caps').format(totalCfg=len(self.configsList), keys=len(self.sectDict))
         capLabel['tooltip'] %= {'meta': metaStr}
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [capLabel],
                 'column2': [self.tb.createControl('reReadAtEnd')]}

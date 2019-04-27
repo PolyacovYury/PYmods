@@ -179,7 +179,6 @@ class ConfigInterface(PYmodsConfigInterface):
         allKey = 'UI_setting_allKill_'
         allList = ('none', 'bigger', 'every')
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createStepper('textLength', 0, 5, 1),
                             colourDropdown,

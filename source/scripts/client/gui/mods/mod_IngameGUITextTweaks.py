@@ -47,9 +47,8 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['name'],
-                'settingsVersion': 2,
                 'enabled': self.data['enabled'],
-                'column1': [self.tb.createControl('iconFormat', 'TextInputField', 400)],
+                'column1': [self.tb.createControl('iconFormat', self.tb.types.TextInput, 400)],
                 'column2': [self.tb.createOptions(
                     'removeNicknames', [self.i18n['UI_setting_removeNicknames_' + key] for key in ('none', 'smart', 'all')])]}
 

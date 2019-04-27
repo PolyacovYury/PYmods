@@ -45,11 +45,10 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
-        colourLabel = self.tb.createControl('colour', 'TextInputColor')
+        colourLabel = self.tb.createControl('colour', self.tb.types.ColorChoice)
         colourLabel['text'] = self.tb.getLabel('colourCheck')
         colourLabel['tooltip'] %= {'colour': self.data['colour']}
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [colourLabel],
                 'column2': [self.tb.createControl('crewColour')]}

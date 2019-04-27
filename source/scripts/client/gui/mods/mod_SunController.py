@@ -43,7 +43,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createSlider('time', 0, 24, 1, '{{value}}:00'),
                             self.tb.createControl('enableMessage')],

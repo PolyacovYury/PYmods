@@ -77,7 +77,6 @@ def registerSettings(config):
         if newLang != config.lang:
             config.lang = newLang
             config.loadLang()
-            config.template = config.createTemplate()
     except StandardError:
         traceback.print_exc()
     if config.modSettingsID not in config.modSettingsContainers:
