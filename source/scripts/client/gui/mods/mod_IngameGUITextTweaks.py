@@ -16,7 +16,7 @@ from threading import Thread
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.friends = None
-        events.LobbyView.populate.after += lambda: Thread(target=self.onHangarInit).start()
+        events.LobbyView.populate.after(lambda: Thread(target=self.onHangarInit).start())
         super(ConfigInterface, self).__init__()
 
     def init(self):
