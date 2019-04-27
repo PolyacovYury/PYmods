@@ -108,8 +108,8 @@ class DummyConfigInterface(object):
         """
         Called after mod __init__() is complete.
         """
-        self.readCurrentSettings(False)
         self.registerSettings()
+        self.readCurrentSettings(False)
 
 
 class DummyConfBlockInterface(DummyConfigInterface):
