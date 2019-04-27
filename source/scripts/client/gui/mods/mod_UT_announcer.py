@@ -65,8 +65,8 @@ class ConfigInterface(PYmodsConfigInterface):
                      'textPosition': {'alignX': 'center', 'alignY': 'top', 'x': 0, 'y': 120},
                      'textBackground': {'enabled': True, 'width': 530, 'height': 32,
                                         'image': '../../scripts/client/gui/mods/mod_UT_announcer.png'},
-                     'textShadow': {'enabled': True, 'alpha': 100, 'angle': 90, 'color': '#000000',
-                                    'distance': 0, 'size': 2, 'strength': 200}}
+                     'textShadow': {'enabled': True, 'alpha': 1, 'angle': 90, 'color': '#000000',
+                                    'distance': 0, 'blurX': 2, 'blurY': 2, 'strength': 2, 'quality': 2}}
         self.i18n = {
             'UI_description': 'Time and frags announcer',
             'UI_setting_textColour_text': 'Battle text messages colour',
