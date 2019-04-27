@@ -68,10 +68,13 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def onApplySettings(self, settings):
         super(self.__class__, self).onApplySettings(settings)
-        self.readCurrentSettings()
+        self.updateCommandData()
 
     def readCurrentSettings(self, quiet=True):
-        super(self.__class__, self).readCurrentSettings()
+        super(self.__class__, self).readCurrentSettings(quiet)
+        self.updateCommandData()
+
+    def updateCommandData(self):
         self.activeConfigs[:] = ['default']
         self.configsMeta = {'default': self.i18n['UI_setting_selectedConfig_defaultMeta']}
         # noinspection SpellCheckingInspection
