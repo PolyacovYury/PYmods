@@ -68,7 +68,7 @@ config = ConfigInterface()
 def toggleHangarUI(visible):
     lobby = ServicesLocator.appLoader.getApp()
     hangar = lobby.containerManager.getView(ViewTypes.LOBBY_SUB)
-    hangar.flashObject.visible = visible
+    hangar.as_setVisibleS(visible)
     lobby.graphicsOptimizationManager.switchOptimizationEnabled(visible)
 
 
