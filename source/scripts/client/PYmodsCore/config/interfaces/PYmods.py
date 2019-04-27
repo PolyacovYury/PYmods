@@ -7,13 +7,17 @@ def init(self):
     self.author = 'by Polyacov_Yury'
     self.modsGroup = 'PYmods'
     self.modSettingsID = 'PYmodsGUI'
+
+
+def postInit(self):
     self.containerClass = PYmodsSettingContainer
 
 
 class PYmodsConfigInterface(ConfigInterface):
     def init(self):
-        super(PYmodsConfigInterface, self).init()
         init(self)
+        super(PYmodsConfigInterface, self).init()
+        postInit(self)
 
     def createTemplate(self):
         raise NotImplementedError
@@ -21,8 +25,9 @@ class PYmodsConfigInterface(ConfigInterface):
 
 class PYmodsConfBlockInterface(ConfBlockInterface):
     def init(self):
-        super(PYmodsConfBlockInterface, self).init()
         init(self)
+        super(PYmodsConfBlockInterface, self).init()
+        postInit(self)
 
     def createTemplate(self, blockID=None):
         raise NotImplementedError('Template for block %s is not created' % blockID)
