@@ -1,5 +1,4 @@
 # coding=utf-8
-import BigWorld
 import ResMgr
 import items.vehicles
 import nations
