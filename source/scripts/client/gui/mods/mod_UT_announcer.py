@@ -236,7 +236,7 @@ class FlashController(object):
     def __updatePosition(self, alias, data):
         if alias != self.ID:
             return
-        _config.onApplySettings({'textPosition': data})
+        _config.onApplySettings({'textPosition': data, 'textColour': _config.data['textColour']})
 
     def setup(self):
         bgConf = _config.data['textBackground']
