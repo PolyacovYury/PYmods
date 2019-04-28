@@ -103,14 +103,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def getAccessorsPaths(self):
         from gui.impl.gen import R
-        import time
-        from datetime import timedelta
-        start = time.time()
-        print self.ID + ': started'
         self.buildPaths([], R.strings)
-        print self.ID + ': done in', timedelta(seconds=time.time() - start)
-        from pprint import pprint
-        pprint(self.accessorPaths)
 
     def buildPaths(self, path, cls):
         for k in cls.keys():
@@ -212,11 +205,17 @@ def new_setFightButtonS(base, self, label):
 
 
 @overrideMethod(ResourceManager, 'getTranslatedText')
-def getTranslatedText(base, *a, **kw):
-    result = base(*a, **kw)
-    print 'ButtonReplacer: test'
-    print a, kw, result
-    return result
+def getTranslatedText(base, self, resourceID):
+    path = _config.accessorPaths.get(resourceID)
+    if not path:
+        return base(self, resourceID)
+    from helpers import i18n
+    if path[0] == 'tips':
+        if (len(path) == 2 and 'sandbox' not in path[1] and 'tip' not in path[1]) or 'title' in path:
+            pass
+        else:
+            pass
+    return i18n.makeString('#' + path[0] + ':' + '/'.join(path[1:]))
 
 
 def ButtonReplacer_hooks():
