@@ -210,12 +210,13 @@ def getTranslatedText(base, self, resourceID):
     if not path:
         return base(self, resourceID)
     from helpers import i18n
+    key = ''
+    result = ''
     if path[0] == 'tips':
-        if (len(path) == 2 and 'sandbox' not in path[1] and 'tip' not in path[1]) or 'title' in path:
-            pass
-        else:
-            pass
-    return i18n.makeString('#' + path[0] + ':' + '/'.join(path[1:]))
+        key = 'override/' + (
+            'title' if (len(path) == 2 and 'sandbox' not in path[1] and 'tip' not in path[1]) or 'title' in path else 'body')
+        result = i18n.makeString('#tips:' + key)
+    return result if result != key else i18n.makeString('#' + path[0] + ':' + '/'.join(path[1:]))
 
 
 def ButtonReplacer_hooks():
@@ -229,5 +230,5 @@ def ButtonReplacer_hooks():
 
 
 g_playerEvents.onAvatarBecomeNonPlayer += onAvatarBecomeNonPlayer
-BigWorld.callback(0.0, ButtonReplacer_hooks)
+BigWorld.callback(0, ButtonReplacer_hooks)
 statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-1', _config.confMeta)
