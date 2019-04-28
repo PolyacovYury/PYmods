@@ -19,6 +19,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.configsList = []
         self.confMeta = {}
         self.sectDict = {}
+        self.accessorPaths = {}
         super(self.__class__, self).__init__()
 
     def init(self):
@@ -99,6 +100,27 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def registerSettings(self):
         BigWorld.callback(0, partial(BigWorld.callback, 0, super(ConfigInterface, self).registerSettings))
+
+    def getAccessorsPaths(self):
+        from gui.impl.gen import R
+        import time
+        from datetime import timedelta
+        start = time.time()
+        print self.ID + ': started'
+        self.buildPaths([], R.strings)
+        print self.ID + ': done in', timedelta(seconds=time.time() - start)
+        from pprint import pprint
+        pprint(self.accessorPaths)
+
+    def buildPaths(self, path, cls):
+        for k in cls.keys():
+            v = cls.dyn(k)
+            if k.startswith('c_'):
+                k = k[2:]
+            if not v.exists():
+                self.buildPaths(path + [k], v)
+            else:
+                self.accessorPaths[v()] = path + [k]
 
 
 _config = ConfigInterface()
@@ -204,6 +226,7 @@ def ButtonReplacer_hooks():
     overrideMethod(ModuleInfoMeta, 'as_setModuleInfoS', new_setModuleInfoS)
     overrideMethod(EffectsBlockConstructor, 'construct', new_construct)
     overrideMethod(LobbyHeaderMeta, 'as_setFightButtonS', new_setFightButtonS)
+    _config.getAccessorsPaths()
 
 
 g_playerEvents.onAvatarBecomeNonPlayer += onAvatarBecomeNonPlayer
