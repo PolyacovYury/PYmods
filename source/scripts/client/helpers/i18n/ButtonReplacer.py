@@ -7,6 +7,7 @@ import traceback
 from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart, Analytics, overrideMethod
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_ERROR, LOG_WARNING
+from frameworks.wulf.resource_manager import ResourceManager
 from functools import partial
 
 
@@ -186,6 +187,14 @@ def new_setModuleInfoS(base, self, moduleInfo):
 def new_setFightButtonS(base, self, label):
     from helpers import i18n
     base(self, i18n.makeString(label))
+
+
+@overrideMethod(ResourceManager, 'getTranslatedText')
+def getTranslatedText(base, *a, **kw):
+    result = base(*a, **kw)
+    print 'ButtonReplacer: test'
+    print a, kw, result
+    return result
 
 
 def ButtonReplacer_hooks():
