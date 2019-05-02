@@ -4,7 +4,7 @@ import Keys
 import ResMgr
 import traceback
 from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, objToDict
-from PYmodsCore.gui import showI18nDialog, g_modsListApi
+from PYmodsCore.delayed import showI18nDialog, g_modsListApi
 from gui import InputHandler, SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView

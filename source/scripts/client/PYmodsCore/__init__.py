@@ -6,12 +6,13 @@ from .utils import *
 
 curCV = ResMgr.openSection('../paths.xml')['Paths'].values()[0].asString
 print 'Current PYmodsCore version: 2.6.0 (%(file_compile_date)s)'
-gui = None
+delayed = None
 
 
-def delayedImport():
-    global gui
-    from . import gui
+def __import_delayed():
+    global delayed
+    from . import delayed
 
 
-BigWorld.callback(0, delayedImport)
+BigWorld.callback(0, __import_delayed)
+del __import_delayed

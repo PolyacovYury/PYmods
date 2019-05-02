@@ -6,7 +6,7 @@ import os
 import traceback
 import zipfile
 from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, events, curCV
-from PYmodsCore.gui import showConfirmDialog
+from PYmodsCore.delayed import showConfirmDialog
 from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
 

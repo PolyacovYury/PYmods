@@ -102,7 +102,7 @@ class DummyConfigInterface(object):
         pass
 
     def registerSettings(self):
-        from ...gui.api import registerSettings
+        from ...delayed.api import registerSettings
         registerSettings(self)
 
     def load(self):

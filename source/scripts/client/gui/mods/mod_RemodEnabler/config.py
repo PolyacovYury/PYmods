@@ -6,7 +6,7 @@ import fnmatch
 import os
 import traceback
 from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, objToDict
-from PYmodsCore.gui import showI18nDialog, g_modsListApi
+from PYmodsCore.delayed import showI18nDialog, g_modsListApi
 from collections import OrderedDict
 from functools import partial
 from gui import InputHandler, SystemMessages

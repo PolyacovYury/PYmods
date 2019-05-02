@@ -11,7 +11,7 @@ import os
 import shutil
 import traceback
 from PYmodsCore import remDups, loadJson, events, curCV
-from PYmodsCore.gui import showConfirmDialog
+from PYmodsCore.delayed import showConfirmDialog
 from account_helpers.settings_core.settings_constants import GAME
 from adisp import AdispException, async, process
 from functools import partial
