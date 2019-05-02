@@ -94,7 +94,7 @@ class PlayersPanelController(PYmodsConfigInterface):
         maxHP = self.__hpCache[vehicleID]['max']
         for fieldName, fieldData in sorted(self.data['textFields'].iteritems()):
             barWidth = currentHP
-            if ['width'] in fieldData[panelSide]:
+            if 'width' in fieldData[panelSide]:
                 barWidth = fieldData[panelSide]['width'] * (float(currentHP) / maxHP)
             g_playerPanelsAPI.update(self.ID + fieldName, {'vehicleID': vehicleID, 'text': (
                     fieldData[panelSide]['text'] % {'curHealth': currentHP, 'maxHealth': maxHP, 'barWidth': barWidth}
