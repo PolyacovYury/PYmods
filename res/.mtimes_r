@@ -391,9 +391,9 @@
 1527196334|configs/PYmods/VoiceOverrider/i18n/en.json
 1527196350|configs/PYmods/VoiceOverrider/i18n/ru.json
 1471690378|configs/PYmods/i18nDebugger/i18nDebugger.xml
-1556804611|flash/PlayerPanelsAPI.swf
+1556808194|flash/PlayerPanelsAPI.swf
 1556803349|flash/PlayerPanelsAPI/PlayerPanelsAPI.as3proj
-1556803233|flash/PlayerPanelsAPI/src/polyacov_yury/views/battle/PlayerPanels.as
+1556808183|flash/PlayerPanelsAPI/src/polyacov_yury/views/battle/PlayerPanels.as
 1546897868|flash/RemodEnabler.swf
 1546896235|flash/RemodEnablerUI/RemodEnablerUI.as
 1546896278|flash/RemodEnablerUI/RemodEnablerUI.as3proj

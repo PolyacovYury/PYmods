@@ -3,13 +3,15 @@
 	
 	import flash.filters.DropShadowFilter;
 	import flash.text.TextField;
+	
+	import net.wg.data.constants.generated.APP_CONTAINERS_NAMES;
+	import net.wg.gui.battle.random.views.BattlePage;
 	import net.wg.gui.battle.views.BaseBattlePage;
 	import net.wg.gui.components.containers.MainViewContainer;
 	import net.wg.infrastructure.managers.impl.ContainerManagerBase;
-	
-	import net.wg.gui.battle.random.views.BattlePage;
 	import net.wg.infrastructure.base.AbstractView;
-	import net.wg.data.constants.generated.APP_CONTAINERS_NAMES;
+	
+	import scaleform.gfx.TextFieldEx;
 	
 	public class PlayerPanels extends AbstractView
 	{
@@ -109,6 +111,7 @@
 			var playersPanelHolder:* = null;
 			var movieIndex:Number = 0;
 			var config:Object = null;
+			var shadow:Object = null;
 			
 			var playersPanel:* = (viewPage as BattlePage).playersPanel;
 			
@@ -120,14 +123,16 @@
 			}
 			
 			config = configs[linkage][isRight ? "right" : "left"];
+			shadow = configs[linkage]["shadow"];
 			
 			textField = new TextField();
 			textField.visible = true
 			textField.height = config.height;
 			textField.width = config.width;
+			textField.autoSize = config.align;
 			textField.selectable = false;
-			textField.filters = [new DropShadowFilter(config.distance, config.angle, config.color, config.alpha, config.blurX, config.blurY, config.strength, config.quality)]
-			
+			textField.filters = [new DropShadowFilter(shadow.distance, shadow.angle, shadow.color, shadow.alpha, shadow.blurX, shadow.blurY, shadow.strength, shadow.quality)]
+			TextFieldEx.setNoTranslate(textField,true);
 			
 			textField.x = playersPanelHolder._listItem.vehicleIcon.x + config.x;
 			textField.y = playersPanelHolder._listItem.vehicleIcon.y + config.y;
