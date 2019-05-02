@@ -42,6 +42,7 @@ class PlayersPanelController(PYmodsConfigInterface):
             'UI_setting_mode_holding': 'Holding',
             'UI_setting_toggle_key_text': 'Toggle hotkey',
             'UI_setting_toggle_key_tooltip': 'Pressing this button in-battle toggles HP markers displaying.'}
+        g_playerPanelsAPI.events.onUIReady += self.onStartBattle
         super(PlayersPanelController, self).init()
 
     def createTemplate(self):

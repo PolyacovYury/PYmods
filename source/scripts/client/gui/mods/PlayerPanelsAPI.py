@@ -33,6 +33,7 @@ class Events(object):
         self.create = Event.Event()
         self.update = Event.Event()
         self.delete = Event.Event()
+        self.onUIReady = Event.Event()
         self.onBattleLoaded = Event.Event()
         ServicesLocator.appLoader.onGUISpaceEntered += self.__onGUISpaceEntered
 
@@ -54,6 +55,8 @@ class PlayerPanelsUI(View):
         g_events.create += self.as_createS
         g_events.update += self.as_updateS
         g_events.delete += self.as_deleteS
+
+        g_events.onUIReady()
 
     def _dispose(self):
         g_events.create -= self.as_createS
@@ -107,6 +110,8 @@ LABEL_CONFIG = {
 
 
 class PlayerPanelsAPI(object):
+    events = g_events
+
     def create(self, linkage, config):
         conf = copy.deepcopy(LABEL_CONFIG)
         smart_update(conf, config)
