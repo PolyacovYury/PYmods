@@ -24,7 +24,7 @@ class ModEvent(object):
         return result
 
 
-from . import game, PlayerAvatar, LobbyView, LoginView
+from . import game, PlayerAvatar, LobbyView, LoginView  # noqa: E402
 
 
 @game.fini.after

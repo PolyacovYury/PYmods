@@ -100,7 +100,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
-        self.isLampsVisible = self.data['enabled'] and self.data['enableAtStartup'] and self.isLampsVisible 
+        self.isLampsVisible = self.data['enabled'] and self.data['enableAtStartup'] and self.isLampsVisible
 
     def readConfDict(self, quiet, confdict, confPath, sourceModel=None, upperName=''):
         for confKey, configDict in confdict.items():
@@ -572,6 +572,7 @@ def lightsCreate(vehicleID, callPlace=''):
                                     lightDBDict[vehicleID][curName.rsplit('.', 1)[0]].node(node).attach(fakeDict[curName])
                                 fakeNode = fakeDict[curName].node('', computeTransform(confDict))
                             if 'model' not in confDict['type']:
+                                # noinspection PyUnboundLocalVariable
                                 LightSource.source = fakeNode
                             elif not LightSource.attached:
                                 fakeNode.attach(LightSource)

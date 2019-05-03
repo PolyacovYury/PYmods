@@ -1,6 +1,6 @@
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import CustomizationCarouselRendererVO, \
     _ICON_ALPHA_BY_GUI_ITEM_TYPE
-from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
+from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION as CUSTOMIZATION
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
@@ -25,12 +25,12 @@ def buildCustomizationItemDataVO(
     imageCached = item.itemTypeID is not GUI_ITEM_TYPE.PROJECTION_DECAL
     rentalInfoText = ''
     if isBuy and item.isRentable and count <= 0:
-        rentalInfoText = text_styles.main(_ms(VEHICLE_CUSTOMIZATION.CAROUSEL_RENTALBATTLES, battlesNum=item.rentCount))
+        rentalInfoText = text_styles.main(_ms(CUSTOMIZATION.CAROUSEL_RENTALBATTLES, battlesNum=item.rentCount))
     icon = customIcon if customIcon else item.icon
     noveltyCounter = 0 if not vehicle else item.getNoveltyCounter(vehicle)
     formIconSource = ''
     iconAlpha = _ICON_ALPHA_BY_GUI_ITEM_TYPE.get(item.itemTypeID, 1)
-    lockText = VEHICLE_CUSTOMIZATION.CUSTOMIZATION_LIMITED_ONOTHER if isAlreadyUsed else VEHICLE_CUSTOMIZATION.CUSTOMIZATION_UNSUPPORTEDFORM
+    lockText = CUSTOMIZATION.CUSTOMIZATION_LIMITED_ONOTHER if isAlreadyUsed else CUSTOMIZATION.CUSTOMIZATION_UNSUPPORTEDFORM
     return CustomizationCarouselRendererVO(
         item.intCD, item.itemTypeID, item.isWide(), icon, hasBonus, locked, buyPrice, count, item.isRentable,
         showDetailItems, isNonHistoric, isSpecial, isDarked, isAlreadyUsed, showUnsupportedAlert, extraNames=extraNames,

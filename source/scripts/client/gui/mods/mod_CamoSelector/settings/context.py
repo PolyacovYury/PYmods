@@ -240,7 +240,7 @@ class CustomizationContext(WGCtx):
             self._selectedAnchor = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.STYLE, regionIdx=0)
         else:
             self._selectedAnchor = C11nId()
-        self._selectedCarouselItem = CaruselItemData()
+        self._selectedCarouselItem = CaruselItemData()  # noqa
         self._lastTab[self.actualMode] = self._tabIndex
         if self._mode != mode:
             self.refreshOutfit()

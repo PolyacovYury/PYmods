@@ -28,6 +28,7 @@ from .remods import chassis_params
 
 class ConfigInterface(PYmodsConfigInterface):
     hangarSpace = dependency.descriptor(IHangarSpace)
+    # noinspection PyUnusedLocal
     modelDescriptor = property(lambda self: {
         'name': '', 'message': '', 'whitelist': [],
         'chassis': {'undamaged': '', 'emblemSlots': [], 'AODecals': [], 'hullPosition': [], 'soundID': ''},
@@ -147,6 +148,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if self.isModAdded:
             g_modsListApi.updateModification(id='RemodEnablerUI', enabled=self.data['enabled'])
 
+    # noinspection PyTypeChecker
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings(quiet)
         self.settings = loadJson(self.ID, 'settings', self.settings, self.configPath)

@@ -77,6 +77,7 @@ class PlayerPanelsUI(View):
             self.flashObject.as_delete(linkage)
 
 
+# noinspection PyArgumentList
 g_entitiesFactories.addSettings(ViewSettings(
     'PlayerPanelsUI', PlayerPanelsUI, 'PlayerPanelsAPI.swf', ViewTypes.WINDOW, None, ScopeTemplates.GLOBAL_SCOPE))
 

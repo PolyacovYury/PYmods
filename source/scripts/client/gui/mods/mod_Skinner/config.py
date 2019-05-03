@@ -17,6 +17,7 @@ from . import __date__, __modID__
 
 class ConfigInterface(PYmodsConfigInterface):
     hangarSpace = dependency.descriptor(IHangarSpace)
+    # noinspection PyUnusedLocal
     defaultSkinConfig = property(lambda self: {
         'static': {'player': True, 'ally': True, 'enemy': True},
         'dynamic': {'player': False, 'ally': True, 'enemy': True}})
