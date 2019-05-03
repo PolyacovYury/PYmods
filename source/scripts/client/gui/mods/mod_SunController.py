@@ -51,7 +51,7 @@ class ConfigInterface(PYmodsConfigInterface):
                             self.tb.createControl('enableAtStartup')]}
 
     def onApplySettings(self, settings):
-        super(self.__class__, self).onApplySettings(settings)
+        super(ConfigInterface, self).onApplySettings(settings)
         self.isSunControlled = self.data['enabled'] and self.data['enableAtStartup'] and self.isSunControlled
 
 

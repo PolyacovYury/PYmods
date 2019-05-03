@@ -115,7 +115,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if 'fullAlpha' in settings and settings['fullAlpha'] != self.data['fullAlpha']:
             items.vehicles.g_cache._Cache__customization20 = None
             items.vehicles.g_cache.customization20()
-        super(self.__class__, self).onApplySettings(settings)
+        super(ConfigInterface, self).onApplySettings(settings)
         self.hangarCamoCache.clear()
 
     def readCurrentSettings(self, quiet=True):

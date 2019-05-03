@@ -99,7 +99,7 @@ class ConfigInterface(PYmodsConfigInterface):
                             self.tb.createControl('enableMessage')]}
 
     def onApplySettings(self, settings):
-        super(self.__class__, self).onApplySettings(settings)
+        super(ConfigInterface, self).onApplySettings(settings)
         self.isLampsVisible = self.data['enabled'] and self.data['enableAtStartup'] and self.isLampsVisible 
 
     def readConfDict(self, quiet, confdict, confPath, sourceModel=None, upperName=''):
@@ -162,7 +162,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def readCurrentSettings(self, quiet=True):
         self.configsDict.clear()
         self.modes = {'constant': [], 'stop': [], 'turn_left': [], 'turn_right': [], 'back': [], 'target': [], 'spot': []}
-        super(self.__class__, self).readCurrentSettings(quiet)
+        super(ConfigInterface, self).readCurrentSettings(quiet)
 
         if self.data['DebugModel']:
             if self.data['DebugPath']:

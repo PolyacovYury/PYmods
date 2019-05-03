@@ -347,7 +347,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
 class RemodEnablerUI(AbstractWindowView):
     def _populate(self):
-        super(self.__class__, self)._populate()
+        super(RemodEnablerUI, self)._populate()
         g_config.hangarSpace.onVehicleChanged += self.onVehicleReloaded
         self.newRemodData = OrderedDict()
 

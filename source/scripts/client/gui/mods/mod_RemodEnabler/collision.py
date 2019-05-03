@@ -127,7 +127,7 @@ class GUIBox(object):
 
 class TextBox(GUIBox):
     def __init__(self, text='', position=(0, 0.6, 1), colour=(255, 255, 255, 255), size=(0, 0.04)):
-        super(self.__class__, self).__init__(GUI.Text(''), position, colour, size)
+        super(TextBox, self).__init__(GUI.Text(''), position, colour, size)
         self.GUIComponent.explicitSize = True
         self.GUIComponent.font = 'system_small'
         self.GUIComponent.text = text
@@ -135,7 +135,7 @@ class TextBox(GUIBox):
 
 class TexBox(GUIBox):
     def __init__(self, texturePath='', position=(0, 0, 1), size=(0.09, 0.045)):
-        super(self.__class__, self).__init__(GUI.Simple(''), position, (255, 255, 255, 255), size)
+        super(TexBox, self).__init__(GUI.Simple(''), position, (255, 255, 255, 255), size)
         self.GUIComponent.widthMode = 'CLIP'
         self.GUIComponent.textureName = texturePath
         self.GUIComponent.mapping = ((0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (1.0, 0.0))

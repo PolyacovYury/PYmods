@@ -58,7 +58,7 @@ class ConfigInterface(PYmodsConfigInterface):
             if setting in ('colour', 'enabled') and setting not in self.backupData:
                 self.backupData[setting] = self.data[setting]
 
-        super(self.__class__, self).onApplySettings(settings)
+        super(ConfigInterface, self).onApplySettings(settings)
 
     def onMSADestroy(self):
         if any(self.data[setting] != self.backupData[setting] for setting in self.backupData):
@@ -66,7 +66,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.backupData = {}
 
     def readCurrentSettings(self, quiet=True):
-        super(self.__class__, self).readCurrentSettings(quiet)
+        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.blacklists = loadJson(self.ID, 'blacklist', self.blacklists, self.configPath)
 
     @staticmethod
@@ -99,7 +99,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 print self.ID + ': blacklists config download failed:', e.reason
             elif hasattr(e, 'code'):
                 print self.ID + ': GitHub internal error:', e.code
-        super(self.__class__, self).load()
+        super(ConfigInterface, self).load()
 
     def registerSettings(self):
         BigWorld.callback(0, partial(BigWorld.callback, 0, super(ConfigInterface, self).registerSettings))

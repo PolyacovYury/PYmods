@@ -192,10 +192,10 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def onApplySettings(self, settings):
         self.data['textStyle']['colour'] = self.colours.values()[settings['textColour']]
-        super(self.__class__, self).onApplySettings(settings)
+        super(ConfigInterface, self).onApplySettings(settings)
 
     def readCurrentSettings(self, quiet=True):
-        super(self.__class__, self).readCurrentSettings(quiet)
+        super(ConfigInterface, self).readCurrentSettings(quiet)
         colour = self.data['textStyle']['colour']
         colours = self.colours.values()
         self.data['textColour'] = colours.index(colour) if colour in colours else 10

@@ -67,11 +67,11 @@ class ConfigInterface(PYmodsConfigInterface):
                             infoLabel]}
 
     def onApplySettings(self, settings):
-        super(self.__class__, self).onApplySettings(settings)
+        super(ConfigInterface, self).onApplySettings(settings)
         self.updateCommandData()
 
     def readCurrentSettings(self, quiet=True):
-        super(self.__class__, self).readCurrentSettings(quiet)
+        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.updateCommandData()
         self.updateMod()
 
@@ -174,7 +174,7 @@ class SafeFormatter(string.Formatter):
             except KeyError:
                 return '{%s}' % key
         else:
-            super(self.__class__, self).get_value(key, args, kwargs)
+            super(SafeFormatter, self).get_value(key, args, kwargs)
 
 
 camMgr = CameraManager()

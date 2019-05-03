@@ -20,7 +20,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.confMeta = {}
         self.sectDict = {}
         self.accessorPaths = {}
-        super(self.__class__, self).__init__()
+        super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
