@@ -4,7 +4,7 @@ import json
 import re
 import traceback
 import urllib2
-from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, overrideMethod, showConfirmDialog
+from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, overrideMethod
 from debug_utils import LOG_ERROR
 from functools import partial
 
@@ -45,11 +45,10 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
-        colourLabel = self.tb.createControl('colour', 'TextInputColor')
+        colourLabel = self.tb.createControl('colour', self.tb.types.ColorChoice)
         colourLabel['text'] = self.tb.getLabel('colourCheck')
         colourLabel['tooltip'] %= {'colour': self.data['colour']}
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [colourLabel],
                 'column2': [self.tb.createControl('crewColour')]}
@@ -86,6 +85,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if toggled:
             reasons.append(self.i18n['UI_restart_reason_mod' + ('Enabled' if self.data['enabled'] else 'Disabled')])
         dialogText = self.i18n['UI_restart_text'].format(reason='; '.join(reasons))
+        from PYmodsCore.delayed import showConfirmDialog
         showConfirmDialog(self.i18n['UI_restart_header'], dialogText,
                           [self.i18n['UI_restart_%s' % act] for act in ('restart', 'shutdown')], self.onRestartConfirmed)
 

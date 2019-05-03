@@ -10,7 +10,8 @@ import glob
 import os
 import shutil
 import traceback
-from PYmodsCore import showConfirmDialog, remDups, loadJson, events
+from PYmodsCore import remDups, loadJson, events, curCV
+from PYmodsCore.delayed import showConfirmDialog
 from account_helpers.settings_core.settings_constants import GAME
 from adisp import AdispException, async, process
 from functools import partial
@@ -23,7 +24,6 @@ from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowM
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.app_loader.loader import g_appLoader
 from helpers import getClientVersion, dependency
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.login_manager import ILoginManager
@@ -38,7 +38,7 @@ skinsChecked = False
 clientIsNew = True
 skinsModelsMissing = True
 needToReReadSkinsModels = False
-modelsDir = BigWorld.curCV + '/vehicles/skins/models/'
+modelsDir = curCV + '/vehicles/skins/models/'
 vehicleSkins = {}
 
 
@@ -122,7 +122,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
                 (g_config.i18n['UI_restart_button_restart'], g_config.i18n['UI_restart_button_shutdown']),
                 lambda restart: (BigWorld.savePreferences(), (BigWorld.restartGame() if restart else BigWorld.quit())))
         elif self.doLogin:
-            BigWorld.callback(0.1, doLogin)
+            BigWorld.callback(0.1, partial(doLogin, self.app))
         self.destroy()
 
     @process
@@ -144,9 +144,9 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.loginView.update()
 
 
-def doLogin():
+def doLogin(app):
     # noinspection PyArgumentList
-    loginView = g_appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
+    loginView = app.containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
     if not loginView:
         return
     if loginView.loginManager.checkWgcAvailability():
@@ -337,7 +337,7 @@ def doFuncCall(callback):
 
 
 def processMember(memberFileName, skinName):
-    skinDir = modelsDir.replace(BigWorld.curCV + '/', '') + skinName + '/'
+    skinDir = modelsDir.replace(curCV + '/', '') + skinName + '/'
     texDir = skinDir.replace('models', 'textures')
     newPath = ResMgr.resolveToAbsolutePath('./' + skinDir + memberFileName)
     oldSection = ResMgr.openSection(memberFileName)
@@ -381,6 +381,11 @@ def processMember(memberFileName, skinName):
             if section['primitivesName'] is None:
                 section.writeString('primitivesName', os.path.splitext(memberFileName)[0])
         section.save()
+
+
+@events.LoginView.populate.before
+def before_Login_populate(*_, **__):
+    wgc_mode._g_firstEntry = not (g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked)
 
 
 @events.LoginView.populate.after

@@ -1,6 +1,7 @@
 # coding=utf-8
 import math
 
+import BigWorld
 import Keys
 import Math
 import traceback
@@ -8,8 +9,8 @@ from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKey
 from gui import InputHandler, SystemMessages
 from gui.ClientHangarSpace import hangarCFG
 from gui.Scaleform.framework import ViewTypes
-from gui.app_loader.loader import g_appLoader
 from gui.hangar_cameras.hangar_camera_manager import HangarCameraManager
+from gui.shared.personality import ServicesLocator
 from helpers import dependency
 from skeletons.gui.shared.utils import IHangarSpace
 
@@ -50,7 +51,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createHotKey('togglekey'),
                             self.tb.createControl('lockCamera')],
@@ -66,9 +66,9 @@ config = ConfigInterface()
 
 
 def toggleHangarUI(visible):
-    lobby = g_appLoader.getApp()
+    lobby = ServicesLocator.appLoader.getApp()
     hangar = lobby.containerManager.getView(ViewTypes.LOBBY_SUB)
-    hangar.flashObject.visible = visible
+    hangar.as_setVisibleS(visible)
     lobby.graphicsOptimizationManager.switchOptimizationEnabled(visible)
 
 
@@ -89,17 +89,16 @@ def setCameraLocation(settings):
 
 
 def inj_hkKeyEvent(event):
-    LobbyApp = g_appLoader.getDefLobbyApp()
-    if not LobbyApp:
+    if not hasattr(BigWorld.player(), 'databaseID'):
         return
     try:
         if config.data['enabled']:
-            if event.isKeyDown() and checkKeys(config.data['togglekey']):
+            if event.isKeyDown() and checkKeys(config.data['togglekey'], event.key):
                 config.data['UIVisible'] = not config.data['UIVisible']
                 toggleHangarUI(config.data['UIVisible'])
                 if not config.data['UIVisible'] and config.cameraPos and config.data['currentCamPos'] < len(config.cameraPos):
                     setCameraLocation(config.cameraPos[config.data['currentCamPos']])
-            elif event.isKeyDown() and checkKeys(config.data['camkey']) and not config.data['UIVisible'] and config.cameraPos:
+            elif event.isKeyDown() and checkKeys(config.data['camkey'], event.key) and not config.data['UIVisible'] and config.cameraPos:
                 config.data['currentCamPos'] += 1
                 if config.data['currentCamPos'] == len(config.cameraPos) and config.data[
                         'addUnlockMode'] and config.data['lockCamera']:

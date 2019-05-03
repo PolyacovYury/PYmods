@@ -1,5 +1,5 @@
-import BigWorld
 import os
+from PYmodsCore import curCV
 from items.components.shared_components import ModelStatesPaths
 from items.vehicles import CompositeVehicleDescriptor
 from vehicle_systems.tankStructure import TankPartNames
@@ -13,7 +13,7 @@ def apply(vDesc, modelsSet, sname):
             part = getattr(descr, partName)
             models = part.modelsSets[modelsSet]
             path = models.undamaged.replace('vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
-            if os.path.isfile(BigWorld.curCV + '/' + path):
+            if os.path.isfile(curCV + '/' + path):
                 part.modelsSets[modelsSet] = ModelStatesPaths(path, models.destroyed, models.exploded)
             else:
                 print g_config.ID + ': skin model not found:', path

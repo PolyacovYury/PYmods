@@ -87,7 +87,7 @@ def compute_names(fp, paths, v_str, quiet):
                         mismatched.append(mismatch)
                         ch_print(fp, quiet, 'Updating versioned folder:', mismatch)
                 new = folder_ix_all.sub('mods/{GAME_VERSION}/', filename)
-            for api_type in ('vxSettingsApi', 'vxBattleFlash', 'modslistapi'):
+            for api_type in ('modsettingsapi', 'guiflash', 'modslistapi'):
                 if api_type in os.path.basename(filename):
                     file_names['%s/*%s*' % (os.path.dirname(new or filename), api_type)] = filename
                     break

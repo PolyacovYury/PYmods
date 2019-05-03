@@ -76,7 +76,7 @@
     "UI_setting_firstOption_text": "First Blood notification mode",
     "UI_setting_firstOption_tooltip": " • <b>First</b> - only the first First Blood on arena will be notified.\n • <b>Player</b> - text message only appears if you drew the First Blood.\n • <b>Ally</b> - only the First Blood drown by allies and player will be notified.\n • <b>Enemy</b> - only the First Blood drown by enemies will be notified.\n • <b>All</b> - both ally and enemy First Bloods will be notified.",
     "UI_setting_logging_text": "Enable full logging",
-    "UI_setting_logging_tooltip": "Allow the mod to oveflow your python.log with debug information.",
+    "UI_setting_logging_tooltip": "Allow the mod to overflow your python.log with debug information.",
     "UI_setting_textColour_text": "Battle text messages colour",
     "UI_setting_textColour_tooltip": "This colour will be applied to all mod's text messages.\nText examples:\n",
     "UI_setting_textLength_text": "Number of lines of in-battle text messages",

@@ -1,9 +1,5 @@
 import BigWorld
 import Keys
-import traceback
-from functools import partial
-
-modSettingsContainers = {}
 
 
 def smart_update(dict1, dict2):
@@ -20,12 +16,19 @@ def smart_update(dict1, dict2):
     return changed
 
 
+KEY_ALT, KEY_CONTROL, KEY_SHIFT = range(-1, -4, -1)
+SPECIAL_TO_KEYS = {
+    KEY_ALT: ['KEY_LALT', 'KEY_RALT'],
+    KEY_CONTROL: ['KEY_LCONTROL', 'KEY_RCONTROL'],
+    KEY_SHIFT: ['KEY_LSHIFT', 'KEY_RSHIFT']}
+
+
 def processHotKeys(data, keys, mode):
     add = lambda key: key if 'KEY_' in key else 'KEY_' + key
     if mode == 'read':
         process = lambda key: getattr(Keys, add(key))
     elif mode == 'write':
-        process = lambda key: add(BigWorld.keyToString(key))
+        process = lambda key: SPECIAL_TO_KEYS.get(key) or add(BigWorld.keyToString(key))
     else:
         assert False, 'unknown hotkey conversion mode'
     make = lambda keySet: [make(key) if isinstance(key, list) else process(key) for key in keySet]
@@ -34,38 +37,3 @@ def processHotKeys(data, keys, mode):
         if (newKey if mode == 'read' else dataKey) not in data:
             continue
         data[(dataKey if mode == 'read' else newKey)] = make(data.pop((newKey if mode == 'read' else dataKey)))
-
-
-def registerSettings(config, mode='full'):
-    """
-    Register a settings block in this mod's settings window.
-    """
-    try:
-        from helpers import getClientLanguage
-        newLang = str(getClientLanguage()).lower()
-        if newLang != config.lang:
-            config.lang = newLang
-            config.loadLang()
-    except StandardError:
-        traceback.print_exc()
-    try:
-        # noinspection PyUnresolvedReferences
-        from gui.vxSettingsApi import vxSettingsApi
-        if config.modSettingsID not in modSettingsContainers:
-            modSettingsContainers[config.modSettingsID] = config.containerClass(config.modSettingsID, config.configPath)
-        msc = modSettingsContainers[config.modSettingsID]
-        msc.onMSAPopulate += config.onMSAPopulate
-        msc.onMSADestroy += config.onMSADestroy
-        vxSettingsApi.onDataChanged += config.onDataChanged
-        if mode == 'block':
-            for blockID in config.blockIDs:
-                vxSettingsApi.addMod(
-                    config.modSettingsID, config.ID + blockID, partial(config.createTemplate, blockID),
-                    config.getDataBlock(blockID), partial(config.onApplySettings, blockID), config.onButtonPress)
-        else:
-            vxSettingsApi.addMod(config.modSettingsID, config.ID, config.createTemplate, config.getData(),
-                                 config.onApplySettings, config.onButtonPress)
-    except ImportError:
-        print '%s: no-GUI mode activated' % config.ID
-    except StandardError:
-        traceback.print_exc()

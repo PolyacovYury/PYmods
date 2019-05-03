@@ -10,7 +10,7 @@ from Avatar import PlayerAvatar
 from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, Analytics
 from ReloadEffect import _SimpleReloadDesc, _BarrelReloadDesc, _AutoReloadDesc
 from debug_utils import LOG_ERROR
-from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc
+from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc, ImpactNames
 from items.components.sound_components import WWTripleSoundConfig as SoundConfig
 from items.vehicles import g_cache
 from material_kinds import EFFECT_MATERIALS
@@ -134,8 +134,9 @@ class ConfigInterface(PYmodsConfigInterface):
                 typeData = effData[effType]
                 for effectDesc in res[effType].effectsList._EffectsList__effectDescList:
                     if isinstance(effectDesc, _SoundEffectDesc):
-                        effectDesc._impactNames = tuple(typeData.get(key, effectDesc._impactNames[idx]) for idx, key in
-                                                        enumerate(('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC')))
+                        effectDesc._impactNames = ImpactNames(*(
+                            typeData.get(key, getattr(effectDesc._impactNames, key))
+                            for key in ('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC', 'impactFNPC_PC')))
         for vehicleType in g_cache._Cache__vehicles.itervalues():
             self.inject_vehicleType(vehicleType)
 

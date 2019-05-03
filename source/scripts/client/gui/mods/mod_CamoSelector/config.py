@@ -1,5 +1,4 @@
 # coding=utf-8
-import BigWorld
 import ResMgr
 import items.vehicles
 import nations
@@ -96,7 +95,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createOptions('hangarCamoKind', [
                     self.i18n['UI_setting_hangarCamo_' + x] for x in ('winter', 'summer', 'desert', 'random')]),
@@ -119,12 +117,6 @@ class ConfigInterface(PYmodsConfigInterface):
             items.vehicles.g_cache.customization20()
         super(self.__class__, self).onApplySettings(settings)
         self.hangarCamoCache.clear()
-        if self.isModAdded:
-            kwargs = dict(id='CamoSelectorUI', enabled=self.data['enabled'])
-            try:
-                BigWorld.g_modsListApi.updateModification(**kwargs)
-            except AttributeError:
-                BigWorld.g_modsListApi.updateMod(**kwargs)
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings(quiet)

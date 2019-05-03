@@ -1,31 +1,56 @@
-from ..template_builders import TemplateBuilder, BlockTemplateBuilder
-from ..utils import smart_update, processHotKeys
 from .Dummy import DummyConfigInterface, DummyConfBlockInterface, DummySettingContainer
-
+from ..json_reader import loadJson
+from ..template_builders import TemplateBuilder
+from ..utils import smart_update, processHotKeys
 
 __all__ = ['ConfigInterface', 'ConfBlockInterface', 'SettingContainer']
 
 
-class ConfigInterface(DummyConfigInterface):
+class Base(object):
     def __init__(self):
+        self.containerClass = None
+        self.ID = ''
         self.defaultKeys = {}
+        self.i18n = {}
         self.data = {}
         self.author = ''
         self.version = ''
         self.modsGroup = ''
-        self.loadJsonData = lambda *args, **kwargs: {}
-        self.loadJsonLang = lambda *args, **kwargs: {}
-        self.writeJsonData = lambda *args, **kwargs: None
         self.configPath = ''
         self.langPath = ''
-        super(ConfigInterface, self).__init__()
+
+    loadDataJson = lambda self, *a, **kw: loadJson(self.ID, self.ID, self.data, self.configPath, *a, **kw)
+    writeDataJson = lambda self, *a, **kw: loadJson(self.ID, self.ID, self.data, self.configPath, True, False, *a, **kw)
+    loadLangJson = lambda self, *a, **kw: loadJson(self.ID, self.lang, self.i18n, self.langPath, *a, **kw)
 
     def init(self):
+        self.containerClass = SettingContainer
         self.configPath = './mods/configs/%s/%s/' % (self.modsGroup, self.ID)
         self.langPath = '%si18n/' % self.configPath
 
     def loadLang(self):
-        smart_update(self.i18n, self.loadJsonLang())
+        smart_update(self.i18n, self.loadLangJson())
+
+    def createTB(self):
+        return TemplateBuilder(self.data, self.i18n)
+
+    def readCurrentSettings(self):
+        pass
+
+    def onMSAPopulate(self):
+        self.readCurrentSettings()
+
+    def message(self):
+        return '%s v.%s %s' % (self.ID, self.version, self.author)
+
+    def load(self):
+        print self.message() + ': initialised.'
+
+
+class ConfigInterface(Base, DummyConfigInterface):
+    def __init__(self):
+        Base.__init__(self)
+        DummyConfigInterface.__init__(self)
 
     def getData(self):
         return self.data
@@ -35,110 +60,58 @@ class ConfigInterface(DummyConfigInterface):
 
     def readCurrentSettings(self, quiet=True):
         processHotKeys(self.data, self.defaultKeys, 'write')
-        smart_update(self.data, self.loadJsonData())
+        smart_update(self.data, self.loadDataJson())
         processHotKeys(self.data, self.defaultKeys, 'read')
+        self.updateMod()
 
     def onApplySettings(self, settings):
         smart_update(self.data, settings)
         processHotKeys(self.data, self.defaultKeys, 'write')
-        self.writeJsonData()
+        self.writeDataJson()
         processHotKeys(self.data, self.defaultKeys, 'read')
-        self.updateMod()
-
-    @property
-    def tb(self):
-        if self._tb is None:
-            self._tb = TemplateBuilder(self.data, self.i18n, self.defaultKeys)
-        return self._tb
-
-    @property
-    def containerClass(self):
-        if self._containerClass is None:
-            self._containerClass = SettingContainer
-        return self._containerClass
-
-    def message(self):
-        return '%s v.%s %s' % (self.ID, self.version, self.author)
 
     def load(self):
-        super(ConfigInterface, self).load()
-        print self.message() + ': initialised.'
+        DummyConfigInterface.load(self)
+        Base.load(self)
 
 
-class ConfBlockInterface(DummyConfBlockInterface):
+class ConfBlockInterface(Base, DummyConfBlockInterface):
     def __init__(self):
-        self.defaultKeys = {}
-        self.data = {}
-        self.author = ''
-        self.version = ''
-        self.modsGroup = ''
-        self.loadJsonData = lambda *args, **kwargs: {}
-        self.loadJsonLang = lambda *args, **kwargs: {}
-        self.writeJsonData = lambda *args, **kwargs: None
-        self.configPath = ''
-        self.langPath = ''
-        super(ConfBlockInterface, self).__init__()
-
-    def init(self):
-        self.configPath = './mods/configs/%s/%s/' % (self.modsGroup, self.ID)
-        self.langPath = '%si18n/' % self.configPath
-
-    def loadLang(self):
-        smart_update(self.i18n, self.loadJsonLang())
+        Base.__init__(self)
+        DummyConfBlockInterface.__init__(self)
 
     @property
     def blockIDs(self):
-        return self.data
+        return self.data.keys()
 
-    def getDataBlock(self, blockID):
+    def getData(self, blockID=None):
         return self.data[blockID]
 
-    def createTemplate(self, blockID):
+    def createTemplate(self, blockID=None):
         raise NotImplementedError('Template for block %s is not created' % blockID)
 
     def readCurrentSettings(self, quiet=True):
         for blockID in self.data:
-            processHotKeys(self.data[blockID], self.defaultKeys, 'write')
-        data = self.loadJsonData(quiet=quiet)
+            processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'write')
+        data = self.loadDataJson(quiet=quiet)
         for blockID in self.data:
             if blockID in data:
                 smart_update(self.data[blockID], data[blockID])
-            processHotKeys(self.data[blockID], self.defaultKeys, 'read')
+            processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'read')
+            self.updateMod(blockID)
 
-    def onApplySettings(self, blockID, settings):
+    def onApplySettings(self, settings, blockID=None):
         smart_update(self.data[blockID], settings)
-        processHotKeys(self.data[blockID], self.defaultKeys, 'write')
-        self.writeJsonData()
-        processHotKeys(self.data[blockID], self.defaultKeys, 'read')
-        self.updateMod(blockID)
-
-    @property
-    def tb(self):
-        if self._tb is None:
-            self._tb = BlockTemplateBuilder(self.data, self.i18n, self.defaultKeys)
-        return self._tb
-
-    @property
-    def containerClass(self):
-        if self._containerClass is None:
-            self._containerClass = SettingContainer
-        return self._containerClass
-
-    def message(self):
-        return '%s v.%s %s' % (self.ID, self.version, self.author)
+        processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'write')
+        self.writeDataJson()
+        processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'read')
 
     def load(self):
-        super(ConfBlockInterface, self).load()
-        print self.message() + ': initialised.'
+        DummyConfBlockInterface.load(self)
+        Base.load(self)
 
 
 class SettingContainer(DummySettingContainer):
-    def __init__(self, ID, configPath):
-        self.langPath = ''
-        self.loadJsonLang = lambda *args, **kwargs: {}
-        super(SettingContainer, self).__init__(ID, configPath)
-
     def loadLang(self):
-        self.configPath = self.configPath.rsplit('/', 2)[0] + '/%s/' % self.ID
-        self.langPath = '%si18n/' % self.configPath
-        smart_update(self.i18n, self.loadJsonLang())
+        smart_update(self.i18n, loadJson(
+            self.ID, self.lang, self.i18n, 'mods/configs/%s/%s/i18n/' % (self.modsGroup, self.ID)))

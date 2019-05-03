@@ -15,8 +15,7 @@ import ResMgr
 import SoundGroups
 import os
 import traceback
-from Avatar import PlayerAvatar
-from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod
+from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod, events
 from collections import OrderedDict
 from constants import ARENA_PERIOD, ARENA_GUI_TYPE
 from debug_utils import LOG_ERROR
@@ -24,8 +23,7 @@ from functools import partial
 from gui import IngameSoundNotifications
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import BattleEndWarningPanel
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
-from gui.app_loader import g_appLoader
-from gui.app_loader.settings import GUI_GLOBAL_SPACE_ID
+from gui.shared.personality import ServicesLocator
 from string import Template
 
 
@@ -43,6 +41,7 @@ class ConfigInterface(PYmodsConfigInterface):
             ('UI_color_brown', '#A52A2B'),
             ('UI_color_wg_colorBlind', '#8378FC'), ('UI_color_wg_enemy', '#DB0400'), ('UI_color_wg_ally', '#80D639'),
             ('UI_color_wg_squadMan', '#FFB964'), ('UI_color_wg_player', '#FFE041')])
+        self.sounds = {}
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -66,9 +65,8 @@ class ConfigInterface(PYmodsConfigInterface):
                      'textPosition': {'alignX': 'center', 'alignY': 'top', 'x': 0, 'y': 120},
                      'textBackground': {'enabled': True, 'width': 530, 'height': 32,
                                         'image': '../../scripts/client/gui/mods/mod_UT_announcer.png'},
-                     'textShadow': {'enabled': True, 'alpha': 100, 'angle': 90, 'color': '#000000',
-                                    'distance': 0, 'size': 2, 'strength': 200}}
-        # noinspection SpellCheckingInspection
+                     'textShadow': {'enabled': True, 'alpha': 1, 'angle': 90, 'color': '#000000',
+                                    'distance': 0, 'blurX': 2, 'blurY': 2, 'strength': 2, 'quality': 2}}
         self.i18n = {
             'UI_description': 'Time and frags announcer',
             'UI_setting_textColour_text': 'Battle text messages colour',
@@ -83,7 +81,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_textLock_tooltip': (
                 'This setting controls whether you are able to move text window with a mouse or not.'),
             'UI_setting_logging_text': 'Enable full logging',
-            'UI_setting_logging_tooltip': 'Allow the mod to oveflow your python.log with debug information.',
+            'UI_setting_logging_tooltip': 'Allow the mod to overflow your python.log with debug information.',
             'UI_setting_battleTimer_text': 'Enable voice notifications about battle time',
             'UI_setting_battleTimer_tooltip': (
                 'Enables voice notification about remaining time in battle:'
@@ -179,7 +177,6 @@ class ConfigInterface(PYmodsConfigInterface):
         allKey = 'UI_setting_allKill_'
         allList = ('none', 'bigger', 'every')
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createStepper('textLength', 0, 5, 1),
                             colourDropdown,
@@ -203,8 +200,7 @@ class ConfigInterface(PYmodsConfigInterface):
         colours = self.colours.values()
         self.data['textColour'] = colours.index(colour) if colour in colours else 10
         self.data['textStyle']['colour'] = self.colours.values()[self.data['textColour']]
-        if quiet:
-            super(self.__class__, self).onApplySettings(self.data)
+        self.updateMod()
 
     def formatText(self, newText, isPlayer, isAlly, isSquadMan, names):
         colors = dict(
@@ -227,70 +223,47 @@ class ConfigInterface(PYmodsConfigInterface):
         return result
 
 
-class _Flash(object):
-    def __init__(self, container):
-        self.uiFlash = None
-        self.container = container
+class FlashController(object):
+    def __init__(self, ID):
+        self.ID = ID
         self.texts = []
         self.callbacks = []
         self.isTextAdding = False
         self.isTextRemoving = False
-        vxEvents.onStateChanged += self.__onStateChanged
-        vxEvents.onUpdatePosition += self.__updatePosition
+        self.setup()
+        COMPONENT_EVENT.UPDATED += self.__updatePosition
 
-    def __onStateChanged(self, eventType, parentUI, componentUI):
-        if parentUI != FLASH.COMPONENT_CORE_UI:
+    def __updatePosition(self, alias, data):
+        if alias != self.ID:
             return
-        if eventType == BATTLE_FLASH_EVENT_ID.COMPONENT_READY:
-            self.uiFlash = componentUI
-            self.setup()
-        if eventType == BATTLE_FLASH_EVENT_ID.COMPONENT_DISPOSE:
-            self.uiFlash = None
-
-    def __updatePosition(self, parentUI, componentUI, x, y):
-        if parentUI != FLASH.COMPONENT_CORE_UI or componentUI != self.container:
-            return
-        pos = vxBattleFlash.convertCoords(vxBattleFlashAliases.RELATIVE, x, y, _config.data['textPosition']['alignX'],
-                                          _config.data['textPosition']['alignY'])
-        _config.data['textPosition']['x'] = int(pos[0] + _config.data['textBackground']['width'] / 2)
-        _config.data['textPosition']['y'] = int(pos[1])
-        _config.onApplySettings(_config.data)
+        _config.onApplySettings({'textPosition': data, 'textColour': _config.data['textColour']})
 
     def setup(self):
-        if not (_config.data['enabled'] and _config.data['textLength'] and self.uiFlash):
-            return
         bgConf = _config.data['textBackground']
-        backPath = os.path.normpath('gui/flash/' + bgConf['image']).replace(os.sep, '/')
-        bgSect = ResMgr.openSection(backPath)
-        if bgSect is not None:
-            backgroundPath = bgConf['image']
-        else:
-            LOG_ERROR('Battle text background file not found: ' + backPath)
-            backgroundPath = '../maps/bg.png'
+        bgAltPath = '../maps/bg.png'
+        bgPath = bgConf['image']
+        width, height = bgConf['width'], bgConf['height']
+        bgNormPath = os.path.normpath('gui/flash/' + bgPath).replace(os.sep, '/')
+        bgSect = ResMgr.openSection(bgNormPath)
+        if bgSect is None:
+            LOG_ERROR('Battle text background file not found: ' + bgNormPath)
         self.texts = []
-        posConfig = _config.data['textPosition']
-        posX, posY = vxBattleFlash.convertCoords(vxBattleFlashAliases.GLOBAL, posConfig['x'], posConfig['y'],
-                                                 posConfig['alignX'], posConfig['alignY'])
-        self.uiFlash.as_setPositionS(self.container, '', [posX - int(bgConf['width'] / 2), posY])
-        self.uiFlash.as_setSettingsS(self.container, [not _config.data['textLock'], True])
-        for idx in xrange(_config.data['textLength']):
-            self.uiFlash.as_setTextS(self.container, 'text%s' % idx, '')
-            self.uiFlash.as_setSizeS(self.container, 'text%s' % idx, [bgConf['width'], bgConf['height']])
-            self.uiFlash.as_setAlphaS(self.container, 'text%s' % idx, 0)
-            self.uiFlash.as_setPositionS(self.container, 'text%s' % idx, [0, bgConf['height'] * idx])
+        g_guiFlash.createComponent(self.ID, COMPONENT_TYPE.PANEL, dict(
+            _config.data['textPosition'], drag=not _config.data['textLock'], border=not _config.data['textLock'], limit=True))
+        for idx in xrange(5):
+            y = height * idx
+            g_guiFlash.createComponent(self.ID + '.text%s' % idx, COMPONENT_TYPE.LABEL, {
+                'text': '', 'width': width, 'height': height, 'alpha': 0.0, 'x': 0, 'y': y,
+                'alignX': COMPONENT_ALIGN.CENTER, 'alignY': COMPONENT_ALIGN.TOP})
             shadow = _config.data['textShadow']
             if shadow['enabled']:
-                self.uiFlash.as_setShadowS(self.container, 'text%s' % idx, [shadow['distance'], shadow['angle'],
-                                                                            shadow['color'], shadow['alpha'],
-                                                                            shadow['size'], shadow['strength']])
-            if bgConf['enabled']:
-                self.uiFlash.as_setImageS(self.container, 'image%s' % idx, backgroundPath)
-                self.uiFlash.as_setSizeS(self.container, 'image%s' % idx, [bgConf['width'], bgConf['height']])
-                self.uiFlash.as_setAlphaS(self.container, 'image%s' % idx, 0)
-                self.uiFlash.as_setPositionS(self.container, 'image%s' % idx, [0, bgConf['height'] * idx + 2])
+                g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'shadow': shadow})
+            g_guiFlash.createComponent(self.ID + '.image%s' % idx, COMPONENT_TYPE.IMAGE, {
+                'image': bgPath, 'imageAlt': bgAltPath, 'width': width, 'height': height, 'alpha': 0.0,
+                'x': 0, 'y': y + 2, 'alignX': COMPONENT_ALIGN.CENTER, 'alignY': COMPONENT_ALIGN.TOP})
 
     def addText(self, text):
-        if not (_config.data['enabled'] and _config.data['textLength'] and self.uiFlash):
+        if not (_config.data['enabled'] and _config.data['textLength']):
             return
         if self.isTextAdding:
             BigWorld.callback(0.1, partial(self.addText, text))
@@ -303,10 +276,10 @@ class _Flash(object):
             self.removeFirstText()
         self.texts.append(text)
         idx = len(self.texts) - 1
-        self.uiFlash.as_setTextS(self.container, 'text%s' % idx, text)
-        self.uiFlash.as_setTweenS(self.container, {'target': 'text%s' % idx, 'delay': 0.5, 'alpha': 100})
+        g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'text': text})
+        g_guiFlash.animateComponent(self.ID + '.text%s' % idx, 0.5, {'alpha': 1.0})
         if _config.data['textBackground']['enabled']:
-            self.uiFlash.as_setTweenS(self.container, {'target': 'image%s' % idx, 'delay': 0.5, 'alpha': 100})
+            g_guiFlash.animateComponent(self.ID + '.image%s' % idx, 0.5, {'alpha': 1.0})
         self.isTextAdding = True
         BigWorld.callback(0.5, self.onTextAddingComplete)
         self.callbacks.append(BigWorld.callback(_config.data['delay'] + 0.5, self.removeFirstText))
@@ -317,24 +290,16 @@ class _Flash(object):
     def onTextRemovalComplete(self):
         self.isTextRemoving = False
         bgConf = _config.data['textBackground']
-        for idx, text in enumerate(self.texts):
-            self.uiFlash.as_setTextS(self.container, 'text%s' % idx, text)
-            self.uiFlash.as_setAlphaS(self.container, 'text%s' % idx, 100)
-            self.uiFlash.as_setPositionS(self.container, 'text%s' % idx, [0, bgConf['height'] * idx])
+        height = bgConf['height']
+        for idx in xrange(_config.data['textLength']):
+            isText = idx < len(self.texts)
+            y = height * idx
+            g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {
+                'text': '' if not isText else self.texts[idx], 'alpha': float(isText), 'y': y})
             if bgConf['enabled']:
-                self.uiFlash.as_setAlphaS(self.container, 'image%s' % idx, 100)
-                self.uiFlash.as_setPositionS(self.container, 'image%s' % idx, [0, bgConf['height'] * idx + 2])
-        for idx in xrange(len(self.texts), _config.data['textLength']):
-            self.uiFlash.as_setTextS(self.container, 'text%s' % idx, '')
-            self.uiFlash.as_setAlphaS(self.container, 'text%s' % idx, 0)
-            self.uiFlash.as_setPositionS(self.container, 'text%s' % idx, [0, bgConf['height'] * idx])
-            if bgConf['enabled']:
-                self.uiFlash.as_setAlphaS(self.container, 'image%s' % idx, 0)
-                self.uiFlash.as_setPositionS(self.container, 'image%s' % idx, [0, bgConf['height'] * idx + 2])
+                g_guiFlash.updateComponent(self.ID + '.image%s' % idx, {'alpha': float(isText), 'y': y + 2})
 
     def removeFirstText(self):
-        if not self.uiFlash:
-            return
         if self.isTextRemoving:
             BigWorld.callback(0.1, self.removeFirstText)
             return
@@ -351,30 +316,28 @@ class _Flash(object):
             del self.callbacks[0]
         self.isTextRemoving = True
         bgConf = _config.data['textBackground']
-        self.uiFlash.as_setTweenS(self.container, {'target': 'text0', 'delay': 0.5, 'alpha': 0})
-        self.uiFlash.as_setTweenS(self.container, {'target': 'image0', 'delay': 0.5, 'alpha': 0})
+        g_guiFlash.animateComponent(self.ID + '.text0', 0.5, {'alpha': 0.0})
+        g_guiFlash.animateComponent(self.ID + '.image0', 0.5, {'alpha': 0.0})
         for idx in xrange(1, _config.data['textLength']):
-            self.uiFlash.as_setTweenS(self.container,
-                                      {'target': 'text%s' % idx, 'delay': 0.5, 'y': '-%s' % bgConf['height']})
+            g_guiFlash.animateComponent(self.ID + '.text%s' % idx, 0.5, {'y': bgConf['height'] * (idx - 1)})
             if bgConf['enabled']:
-                self.uiFlash.as_setTweenS(self.container,
-                                          {'target': 'image%s' % idx, 'delay': 0.5, 'y': '-%s' % bgConf['height']})
+                g_guiFlash.animateComponent(self.ID + '.image%s' % idx, 0.5, {'y': bgConf['height'] * (idx - 1)})
         BigWorld.callback(0.5, self.onTextRemovalComplete)
 
 
 _config = ConfigInterface()
 statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-8')
-PlayerAvatar.sounds = None
+flashController = None
 try:
-    from gui.vxBattleFlash import vxBattleFlash, vxBattleFlashAliases
-    from gui.vxBattleFlash.events import vxEvents, BATTLE_FLASH_EVENT_ID
-    from gui.vxBattleFlash.constants import FLASH
-    _gui_flash = _Flash(_config.ID)
+    from gambiter import g_guiFlash
+    from gambiter.flash import COMPONENT_TYPE, COMPONENT_ALIGN, COMPONENT_EVENT
+
+    flashController = FlashController(_config.ID)
 except ImportError:
-    vxBattleFlash = vxBattleFlashAliases = vxEvents = BATTLE_FLASH_EVENT_ID = FLASH = _gui_flash = None
-    LOG_ERROR('Battle Flash API (vxBattleFlash) not found. Text viewing disabled.')
+    g_guiFlash = COMPONENT_TYPE = COMPONENT_ALIGN = COMPONENT_EVENT = None
+    LOG_ERROR('gambiter.GUIFlash not found. Text viewing disabled.')
 except StandardError:
-    vxBattleFlash = vxBattleFlashAliases = vxEvents = BATTLE_FLASH_EVENT_ID = FLASH = _gui_flash = None
+    g_guiFlash = COMPONENT_TYPE = COMPONENT_ALIGN = COMPONENT_EVENT = None
     traceback.print_exc()
 
 
@@ -394,13 +357,13 @@ class SoundManager(object):
             BigWorld.callback(0.1, self.playFirstEvent)
             return
         eventName = self.queue.pop(0)
-        if eventName not in PlayerAvatar.sounds:
+        if eventName not in _config.sounds:
             self.playFirstEvent()
             return
-        if PlayerAvatar.sounds[eventName].isPlaying:
-            PlayerAvatar.sounds[eventName].stop()
+        if _config.sounds[eventName].isPlaying:
+            _config.sounds[eventName].stop()
         LOG_NOTE(eventName + ' playing')
-        PlayerAvatar.sounds[eventName].play()
+        _config.sounds[eventName].play()
         self.isPlayingSound = True
         BigWorld.callback(0.6, self.onSoundPlayed)
 
@@ -463,9 +426,9 @@ def callTextInit(newText, targetID, attackerID, squadManID):
         names = {}
         traceback.print_exc()
     text = _config.formatText(newText, isPlayer, isAlly, isSquadMan, names)
-    battle = g_appLoader.getDefBattleApp()
-    if battle is not None and _gui_flash is not None:
-        _gui_flash.addText(text)
+    battle = ServicesLocator.appLoader.getDefBattleApp()
+    if battle is not None and flashController is not None:
+        flashController.addText(text)
 
 
 def checkSquadKills(targetID, attackerID, reason):
@@ -514,8 +477,8 @@ def firstCheck(targetID, attackerID, reason, squadChecked, killerID):
     if not hasattr(arena, 'firstBloods'):
         arena.firstBloods = {'notFirst': False, 'player': False, 'ally': False, 'enemy': False}
     if attackerID not in arena.vehicles:
-        if targetID == player.playerVehicleID:
-            _gui_flash.addText(_config.i18n['UI_message_vehicleDestroyed'])
+        if targetID == player.playerVehicleID and flashController is not None:
+            flashController.addText(_config.i18n['UI_message_vehicleDestroyed'])
         return
     attacker = {'vehicle': arena.vehicles[attackerID], 'isPlayer': attackerID == player.playerVehicleID,
                 'isSquadMan': attackerID in arena.UT['squadMan']}
@@ -641,24 +604,17 @@ def checkOwnKiller():
     firstCheck(targetID, killerID, 0, True, killerID)
 
 
-def startBattleL(SpaceID):
+@events.PlayerAvatar.startGUI.after
+def startBattleL(*_, **__):
     if not _config.data['enabled']:
         return
     LOG_NOTE('startBattleL')
-    if PlayerAvatar.sounds is not None:
-        for soundEventName in PlayerAvatar.sounds.keys():
-            PlayerAvatar.sounds[soundEventName].stop()
-            del PlayerAvatar.sounds[soundEventName]
-    PlayerAvatar.sounds = {}
-    if SpaceID == GUI_GLOBAL_SPACE_ID.BATTLE:
-        for soundEventName in _config.data['sounds'].keys():
-            if _config.data['sounds'][soundEventName] and (
-                            soundEventName not in _config.timerSounds or _config.data['battleTimer']):
-                PlayerAvatar.sounds[soundEventName] = SoundGroups.g_instance.getSound2D(
-                    _config.data['sounds'][soundEventName])
-
-
-g_appLoader.onGUISpaceEntered += startBattleL
+    for soundName in _config.sounds.keys():
+        _config.sounds[soundName].stop()
+        del _config.sounds[soundName]
+    for soundName in _config.data['sounds'].keys():
+        if _config.data['sounds'][soundName] and (soundName not in _config.timerSounds or _config.data['battleTimer']):
+            _config.sounds[soundName] = SoundGroups.g_instance.getSound2D(_config.data['sounds'][soundName])
 
 
 @overrideMethod(BattleEndWarningPanel, 'setTotalTime')
@@ -682,8 +638,7 @@ def new_AVK(base, self, argStr):
             initial()
         LOG_NOTE('A Vehicle got Killed (targetID, attackerID, reason):', victimID, killerID, reason)
         checkSquadMan()
-        if PlayerAvatar.sounds is not None:
-            firstCheck(victimID, killerID, reason, False, None)
+        firstCheck(victimID, killerID, reason, False, None)
     base(self, argStr)
 
 
@@ -700,10 +655,10 @@ def new_onVehicleDestroyed(base, self):
 def new_readConfig(base, self):
     base(self)
     if _config.data['enabled'] and _config.data['disStand']:
-        events = self._IngameSoundNotifications__events
-        for eventName, event in events.iteritems():
+        eventsData = self._IngameSoundNotifications__events
+        for eventName, event in eventsData.iteritems():
             if eventName in ('enemy_killed_by_player', 'enemy_killed'):
                 for category in event:
                     event[category]['sound'] = ''
 
-        self._IngameSoundNotifications__events = events
+        self._IngameSoundNotifications__events = eventsData
