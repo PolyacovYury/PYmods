@@ -1,10 +1,11 @@
 import ResMgr
 import os
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from PYmodsCore import overrideMethod, remDups, Analytics
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
 from gui.battle_results.components import style
 from gui.battle_results.components.vehicles import RegularVehicleStatsBlock
+from gui.doc_loaders.badges_loader import getSelectedByLayout, getAvailableBadges
 from gui.prb_control.invites import PrbInviteWrapper
 from gui.prb_control.items import PlayerPrbInfo, PlayerUnitInfo
 from gui.prb_control.items.prb_seqs import PrbListItem
@@ -12,6 +13,7 @@ from gui.prb_control.items.prb_seqs import PrbListItem
 badges_dir = ResMgr.openSection('gui/AppreciationBadges/')
 if badges_dir is not None:
     g_badges = {}
+    badges_data = getAvailableBadges()
     message = 'initialised.'
     badges = remDups(os.path.splitext(x)[0] for x in badges_dir.keys())
     for badge_name in badges:
@@ -29,6 +31,7 @@ if badges_dir is not None:
         except ValueError:
             print 'AppreciationBadges: wrong battle badge ID:', strBadgeID
             continue
+        badges_data[badge_name] = dict(badges_data[badgeID], id=badge_name)
         g_badges[accID] = {'battle': badgeID, 'lobby': badge_name}
 
 
@@ -67,6 +70,8 @@ if badges_dir is not None:
         base(self, *a, **kw)
         if self.player.accountDBID in g_badges:
             self.ranked.badges += (g_badges[self.player.accountDBID]['battle'],)
+            self.ranked._PlayerRankedInfoVO__prefixBadge, self.ranked._PlayerRankedInfoVO__suffixBadge = getSelectedByLayout(
+                self.ranked.badges)
 
 
     @overrideMethod(RegularVehicleStatsBlock, 'setRecord')
@@ -101,5 +106,5 @@ if badges_dir is not None:
 else:
     message = 'folder not found!'
     badges = []
-print 'AppreciationBadges v.1.0.0 by Polyacov_Yury:', message
-analytics = Analytics('AppreciationBadges', 'v.1.0.0', 'UA-76792179-17', badges)
+print 'AppreciationBadges v.1.0.1 by Polyacov_Yury:', message
+analytics = Analytics('AppreciationBadges', 'v.1.0.1', 'UA-76792179-17', badges)
