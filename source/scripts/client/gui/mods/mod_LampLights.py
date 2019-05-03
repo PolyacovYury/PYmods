@@ -100,10 +100,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def onApplySettings(self, settings):
         super(self.__class__, self).onApplySettings(settings)
-        if self.data['enabled']:
-            self.isLampsVisible = self.data['enableAtStartup'] and self.isLampsVisible
-        else:
-            self.isLampsVisible = False
+        self.isLampsVisible = self.data['enabled'] and self.data['enableAtStartup'] and self.isLampsVisible 
 
     def readConfDict(self, quiet, confdict, confPath, sourceModel=None, upperName=''):
         for confKey, configDict in confdict.items():
