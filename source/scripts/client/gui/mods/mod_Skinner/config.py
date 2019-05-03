@@ -204,6 +204,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         self.skinsData['priorities'][skinType][key].remove(sname)
         loadJson(self.ID, 'skinsPriority', self.skinsData['priorities'], self.configPath, True, quiet=quiet)
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
+        self.updateMod()
 
     def load(self):
         self.migrateConfigs()
