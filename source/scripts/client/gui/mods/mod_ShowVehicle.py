@@ -35,11 +35,10 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['name'],
-                'settingsVersion': 1,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createControl('changeZoom'),
                             self.tb.createStepper('zoomValue', 0.1, 1.0, 0.1, True),
-                            self.tb.createControl('blacklist', 'TextInputField', 800)],
+                            self.tb.createControl('blacklist', self.tb.types.TextInput, 800)],
                 'column2': [self.tb.createHotKey('hotkey'),
                             self.tb.createControl('isEnabled')]}
 
@@ -90,7 +89,7 @@ def hide_hull(hide):
 
 @overrideMethod(SniperControlMode, 'handleKeyEvent')
 def new_SniperControlMode_handleKeyEvent(base, self, isDown, key, mods, event=None):
-    if config.data['enabled'] and isDown and checkKeys(config.data['hotkey']):
+    if config.data['enabled'] and isDown and checkKeys(config.data['hotkey'], key):
         config.data['isEnabled'] = not config.data['isEnabled']
         hide_hull(config.data['isEnabled'])
         addValues(self._cam._SniperCamera__cfg['zooms'], self._cam._SniperCamera__dynamicCfg['zoomExposure'])

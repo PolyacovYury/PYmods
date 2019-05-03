@@ -5,7 +5,8 @@ import glob
 import os
 import traceback
 import zipfile
-from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, showConfirmDialog, events
+from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, events, curCV
+from PYmodsCore.delayed import showConfirmDialog
 from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
 
@@ -84,7 +85,7 @@ class ConfigInterface(PYmodsConfigInterface):
     @staticmethod
     def suppress_old_mod():
         # noinspection SpellCheckingInspection
-        oldModName = BigWorld.curCV + '/scripts/client/gui/mods/mod_wg_load_custom_ekspont_banks.pyc'
+        oldModName = curCV + '/scripts/client/gui/mods/mod_wg_load_custom_ekspont_banks.pyc'
         if os.path.isfile(oldModName) and os.path.isfile(oldModName + '1'):
             try:
                 os.remove(oldModName + '1')
@@ -94,7 +95,7 @@ class ConfigInterface(PYmodsConfigInterface):
             os.rename(oldModName, oldModName + '1')
 
     def check_wotmods(self, mediaPath):
-        modsRoot = BigWorld.curCV.replace('res_', '') + '/'
+        modsRoot = curCV.replace('res_', '') + '/'
         load_order_xml = '.' + modsRoot + 'load_order.xml'
         BLMarker = '_BanksLoaded'
         order_changed = False
@@ -327,7 +328,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
         if any(self.editedBanks[key] for key in ('delete', 'move', 'create', 'memory')):
             new_engine.save()
-            xmlOrig = BigWorld.curCV + '/engine_config.xml'
+            xmlOrig = curCV + '/engine_config.xml'
             if os.path.isfile(xmlOrig):
                 try:
                     os.remove(xmlOrig)
@@ -337,13 +338,13 @@ class ConfigInterface(PYmodsConfigInterface):
             if os.path.isfile(newXml):
                 os.rename(newXml, xmlOrig)
             else:
-                newXml = BigWorld.curCV + '/engine_config_edited.xml'
+                newXml = curCV + '/engine_config_edited.xml'
                 if os.path.isfile(newXml):
                     os.rename(newXml, xmlOrig)
         else:
             ResMgr.purge('engine_config_edited.xml')
         if any(self.editedBanks[key] for key in ('delete', 'move', 'remap')):
-            dirName = BigWorld.curCV + '/' + mediaPath
+            dirName = curCV + '/' + mediaPath
             if not os.path.exists(dirName):
                 os.makedirs(dirName)
             audio_mods_new.save()

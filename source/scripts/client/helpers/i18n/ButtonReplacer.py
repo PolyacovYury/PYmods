@@ -4,8 +4,10 @@ import glob
 import os
 import re
 import traceback
-from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart, Analytics, overrideMethod, events
+from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart, Analytics, overrideMethod
+from PlayerEvents import g_playerEvents
 from debug_utils import LOG_ERROR, LOG_WARNING
+from frameworks.wulf.resource_manager import ResourceManager
 from functools import partial
 
 
@@ -17,7 +19,8 @@ class ConfigInterface(PYmodsConfigInterface):
         self.configsList = []
         self.confMeta = {}
         self.sectDict = {}
-        super(self.__class__, self).__init__()
+        self.accessorPaths = {}
+        super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
@@ -44,13 +47,12 @@ class ConfigInterface(PYmodsConfigInterface):
         capLabel['text'] = self.tb.getLabel('caps').format(totalCfg=len(self.configsList), keys=len(self.sectDict))
         capLabel['tooltip'] %= {'meta': metaStr}
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [capLabel],
                 'column2': [self.tb.createControl('reReadAtEnd')]}
 
     def readCurrentSettings(self, quiet=True):
-        super(self.__class__, self).readCurrentSettings(quiet)
+        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.configsList = []
         self.confMeta.clear()
         self.sectDict = {}
@@ -94,9 +96,24 @@ class ConfigInterface(PYmodsConfigInterface):
 
         for key in self.sectDict:
             self.sectDict[key]['textList'] = remDups(self.sectDict[key]['textList'])
+        self.updateMod()
 
     def registerSettings(self):
         BigWorld.callback(0, partial(BigWorld.callback, 0, super(ConfigInterface, self).registerSettings))
+
+    def getAccessorsPaths(self):
+        from gui.impl.gen import R
+        self.buildPaths([], R.strings)
+
+    def buildPaths(self, path, cls):
+        for k in cls.keys():
+            v = cls.dyn(k)
+            if k.startswith('c_'):
+                k = k[2:]
+            if not v.exists():
+                self.buildPaths(path + [k], v)
+            else:
+                self.accessorPaths[v()] = path + [k]
 
 
 _config = ConfigInterface()
@@ -151,8 +168,7 @@ def i18n_hook_makeString(key, *args, **kwargs):
     return old_makeString(key, *args, **kwargs)
 
 
-@events.PlayerAvatar.destroyGUI.after
-def new_destroyGUI(*_, **__):
+def onAvatarBecomeNonPlayer(*_, **__):
     if _config.data['enabled'] and _config.data['reReadAtEnd']:
         _config.wasReplaced = dict.fromkeys(_config.wasReplaced.keys(), False)
 
@@ -188,6 +204,21 @@ def new_setFightButtonS(base, self, label):
     base(self, i18n.makeString(label))
 
 
+@overrideMethod(ResourceManager, 'getTranslatedText')
+def getTranslatedText(base, self, resourceID):
+    path = _config.accessorPaths.get(resourceID)
+    if not path:
+        return base(self, resourceID)
+    from helpers import i18n
+    key = ''
+    result = ''
+    if path[0] == 'tips':
+        key = 'override/' + (
+            'title' if (len(path) == 2 and 'sandbox' not in path[1] and 'tip' not in path[1]) or 'title' in path else 'body')
+        result = i18n.makeString('#tips:' + key)
+    return result if result != key else i18n.makeString('#' + path[0] + ':' + '/'.join(path[1:]))
+
+
 def ButtonReplacer_hooks():
     from gui.Scaleform.daapi.view.meta.LobbyHeaderMeta import LobbyHeaderMeta
     from gui.Scaleform.daapi.view.meta.ModuleInfoMeta import ModuleInfoMeta
@@ -195,7 +226,9 @@ def ButtonReplacer_hooks():
     overrideMethod(ModuleInfoMeta, 'as_setModuleInfoS', new_setModuleInfoS)
     overrideMethod(EffectsBlockConstructor, 'construct', new_construct)
     overrideMethod(LobbyHeaderMeta, 'as_setFightButtonS', new_setFightButtonS)
+    _config.getAccessorsPaths()
 
 
-BigWorld.callback(0.0, ButtonReplacer_hooks)
+g_playerEvents.onAvatarBecomeNonPlayer += onAvatarBecomeNonPlayer
+BigWorld.callback(0, ButtonReplacer_hooks)
 statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-1', _config.confMeta)

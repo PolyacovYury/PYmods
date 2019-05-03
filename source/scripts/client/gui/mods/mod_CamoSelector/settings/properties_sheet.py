@@ -13,25 +13,25 @@ from .. import g_config
 
 class CustomizationPropertiesSheet(WGPropertiesSheet):
     def onActionBtnClick(self, actionType, actionData):
-        if not self.__ctx.isBuy and self._slotID == GUI_ITEM_TYPE.STYLE and actionType == CA.CUSTOMIZATION_SHEET_ACTION_EDIT:
-            nat, veh = g_currentVehicle.item.descriptor.name.split(':')
-            if not (getCustomPurchaseItems(self.__ctx.getModdedOutfitsInfo(), (self.__ctx.currentSeason,))
-                    or g_config.outfitCache.get(nat, {}).get(veh, {}).get(SEASON_TYPE_TO_NAME[self.__ctx.currentSeason])):
-                self.__ctx.installStyleItemsToModifiedOutfits(True)
-                return
-            message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
-                'value': g_config.i18n['flashCol_propertySheet_edit_message']})
-            DialogsInterface.showDialog(PMConfirmationDialogMeta(
-                _APPLY_TO_OTHER_SEASONS_DIALOG, messageCtx={
-                    'message': message, 'icon': RES_ICONS.MAPS_ICONS_LIBRARY_ICON_ALERT_90X84}),
-                self.__ctx.installStyleItemsToModifiedOutfits)
-        else:
-            super(CustomizationPropertiesSheet, self).onActionBtnClick(actionType, actionData)
+        if (self.__ctx.isBuy or self._attachedAnchor.slotType != GUI_ITEM_TYPE.STYLE
+                or actionType != CA.CUSTOMIZATION_SHEET_ACTION_EDIT):
+            return super(CustomizationPropertiesSheet, self).onActionBtnClick(actionType, actionData)
+        nat, veh = g_currentVehicle.item.descriptor.name.split(':')
+        if not (getCustomPurchaseItems(self.__ctx.getModdedOutfitsInfo(), (self.__ctx.currentSeason,))
+                or g_config.outfitCache.get(nat, {}).get(veh, {}).get(SEASON_TYPE_TO_NAME[self.__ctx.currentSeason])):
+            self.__ctx.installStyleItemsToModifiedOutfits(True)
+            return
+        message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
+            'value': g_config.i18n['flashCol_propertySheet_edit_message']})
+        DialogsInterface.showDialog(
+            PMConfirmationDialogMeta(_APPLY_TO_OTHER_SEASONS_DIALOG, messageCtx={
+                'message': message, 'icon': RES_ICONS.MAPS_ICONS_LIBRARY_ICON_ALERT_90X84}),
+            self.__ctx.installStyleItemsToModifiedOutfits)
 
     def __makeRenderersVOs(self):
         # noinspection PyUnresolvedReferences
         renderers = super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makeRenderersVOs()
-        if not self.__ctx.isBuy and self._slotID == GUI_ITEM_TYPE.STYLE:
+        if not self.__ctx.isBuy and self._attachedAnchor.slotType == GUI_ITEM_TYPE.STYLE:
             renderers.insert(0, self.__makeEditRendererVO())
         return renderers
 

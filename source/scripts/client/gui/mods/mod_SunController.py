@@ -6,11 +6,11 @@ import Keys
 import traceback
 from PYmodsCore import PYmodsConfigInterface, checkKeys, sendMessage, Analytics, events
 from gui import InputHandler, SystemMessages
-from gui.app_loader.loader import g_appLoader
 
 
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
+        self.isSunControlled = False
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -44,7 +44,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createSlider('time', 0, 24, 1, '{{value}}:00'),
                             self.tb.createControl('enableMessage')],
@@ -52,40 +51,33 @@ class ConfigInterface(PYmodsConfigInterface):
                             self.tb.createControl('enableAtStartup')]}
 
     def onApplySettings(self, settings):
-        global isSunControlled
-        super(self.__class__, self).onApplySettings(settings)
-        isSunControlled = self.data['enableAtStartup']
+        super(ConfigInterface, self).onApplySettings(settings)
+        self.isSunControlled = self.data['enabled'] and self.data['enableAtStartup'] and self.isSunControlled
 
 
-_config = ConfigInterface()
-if _config.data['enableMessage']:
-    isLogin = True
-
-
-    @events.LobbyView.populate.after
-    def new_Lobby_populate(*_, **__):
-        LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAll'].format(
-            author='<font color="#DD7700">Polyacov_Yury</font>')
-        try:
-            # noinspection PyUnresolvedReferences
-            from gui.vxSettingsApi import vxSettingsApi
-            isRegistered = vxSettingsApi.isRegistered(_config.modSettingsID)
-        except ImportError:
-            isRegistered = False
-        try:
-            from gui.mods import mod_lamplights
-            if not isRegistered and mod_lamplights._config.data['enableMessage']:
-                LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUpAnd']
-        except StandardError:
-            pass
-        global isLogin
-        if isLogin and not isRegistered:
-            SystemMessages.pushMessage(LOGIN_TEXT_MESSAGE, type=SystemMessages.SM_TYPE.Information)
-            isLogin = False
-
-isSunControlled = _config.data['enableAtStartup']
+g_config = ConfigInterface()
+isLogin = True
 wasSunControlled = False
 timeBackup = '12:00'
+
+
+@events.LobbyView.populate.after
+def new_Lobby_populate(*_, **__):
+    if not g_config.data['enableMessage']:
+        return
+    LOGIN_TEXT_MESSAGE = g_config.i18n['UI_serviceChannelPopUpAll'].format(
+        author='<font color="#DD7700">Polyacov_Yury</font>')
+    isRegistered = g_config.ID in getattr(g_config.MSAInstance, 'activeMods', ())
+    try:
+        from gui.mods import mod_lamplights
+        if not isRegistered and mod_lamplights._config.data['enableMessage']:
+            LOGIN_TEXT_MESSAGE = g_config.i18n['UI_serviceChannelPopUpAnd']
+    except StandardError:
+        pass
+    global isLogin
+    if isLogin and not isRegistered:
+        SystemMessages.pushMessage(LOGIN_TEXT_MESSAGE, type=SystemMessages.SM_TYPE.Information)
+        isLogin = False
 
 
 def sun_controller(isControlled=True):
@@ -93,16 +85,16 @@ def sun_controller(isControlled=True):
     global wasSunControlled
     if isControlled:
         timeBackup = BigWorld.timeOfDay('GetTime')
-        if _config.data['time'] != 24:
-            BigWorld.timeOfDay('%s:0' % _config.data['time'])
+        if g_config.data['time'] != 24:
+            BigWorld.timeOfDay('%s:0' % g_config.data['time'])
         else:
             BigWorld.timeOfDay(time.strftime('%H:%M'))
-            _config.sunCallback = BigWorld.callback(60.0, sun_controller)
+            g_config.sunCallback = BigWorld.callback(60.0, sun_controller)
         wasSunControlled = True
     elif wasSunControlled:
         BigWorld.timeOfDay(timeBackup)
         try:
-            _config.sunCallback = BigWorld.cancelCallback(getattr(_config, 'sunCallback', None))
+            g_config.sunCallback = BigWorld.cancelCallback(getattr(g_config, 'sunCallback', None))
         except StandardError:
             pass
 
@@ -117,33 +109,31 @@ def new_startGUI(*_, **__):
             BigWorld.callback(0.2, _clear_loop)
         else:
             wasSunControlled = False
-            sun_controller(isSunControlled)
+            sun_controller(g_config.isSunControlled)
 
-    if _config.data['enabled']:
+    if g_config.data['enabled']:
         _clear_loop()
 
 
 def battleKeyControl(event):
-    global isSunControlled
-    if checkKeys(_config.data['hotkey']) and event.isKeyDown():
-        isSunControlled = not isSunControlled
-        sun_controller(isSunControlled)
-        if isSunControlled:
-            sendMessage(_config.i18n['UI_activSunMod'])
+    if checkKeys(g_config.data['hotkey'], event.key) and event.isKeyDown():
+        g_config.isSunControlled = not g_config.isSunControlled
+        sun_controller(g_config.isSunControlled)
+        if g_config.isSunControlled:
+            sendMessage(g_config.i18n['UI_activSunMod'])
         else:
-            sendMessage(_config.i18n['UI_deactivSunMod'], 'Red')
+            sendMessage(g_config.i18n['UI_deactivSunMod'], 'Red')
 
 
 def inj_hkKeyEvent(event):
-    BattleApp = g_appLoader.getDefBattleApp()
     try:
-        if BattleApp and _config.data['enabled']:
+        if hasattr(BigWorld.player(), 'arena') and g_config.data['enabled']:
             battleKeyControl(event)
     except StandardError:
-        print '%s: ERROR at inj_hkKeyEvent' % _config.ID
+        print '%s: ERROR at inj_hkKeyEvent' % g_config.ID
         traceback.print_exc()
 
 
 InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
 InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
-statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-3')
+statistic_mod = Analytics(g_config.ID, g_config.version, 'UA-76792179-3')

@@ -4,7 +4,7 @@ import json
 import re
 import traceback
 import urllib2
-from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, overrideMethod, showConfirmDialog
+from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, overrideMethod
 from debug_utils import LOG_ERROR
 from functools import partial
 
@@ -45,11 +45,10 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
-        colourLabel = self.tb.createControl('colour', 'TextInputColor')
+        colourLabel = self.tb.createControl('colour', self.tb.types.ColorChoice)
         colourLabel['text'] = self.tb.getLabel('colourCheck')
         colourLabel['tooltip'] %= {'colour': self.data['colour']}
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [colourLabel],
                 'column2': [self.tb.createControl('crewColour')]}
@@ -59,7 +58,7 @@ class ConfigInterface(PYmodsConfigInterface):
             if setting in ('colour', 'enabled') and setting not in self.backupData:
                 self.backupData[setting] = self.data[setting]
 
-        super(self.__class__, self).onApplySettings(settings)
+        super(ConfigInterface, self).onApplySettings(settings)
 
     def onMSADestroy(self):
         if any(self.data[setting] != self.backupData[setting] for setting in self.backupData):
@@ -67,7 +66,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.backupData = {}
 
     def readCurrentSettings(self, quiet=True):
-        super(self.__class__, self).readCurrentSettings(quiet)
+        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.blacklists = loadJson(self.ID, 'blacklist', self.blacklists, self.configPath)
 
     @staticmethod
@@ -86,6 +85,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if toggled:
             reasons.append(self.i18n['UI_restart_reason_mod' + ('Enabled' if self.data['enabled'] else 'Disabled')])
         dialogText = self.i18n['UI_restart_text'].format(reason='; '.join(reasons))
+        from PYmodsCore.delayed import showConfirmDialog
         showConfirmDialog(self.i18n['UI_restart_header'], dialogText,
                           [self.i18n['UI_restart_%s' % act] for act in ('restart', 'shutdown')], self.onRestartConfirmed)
 
@@ -99,7 +99,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 print self.ID + ': blacklists config download failed:', e.reason
             elif hasattr(e, 'code'):
                 print self.ID + ': GitHub internal error:', e.code
-        super(self.__class__, self).load()
+        super(ConfigInterface, self).load()
 
     def registerSettings(self):
         BigWorld.callback(0, partial(BigWorld.callback, 0, super(ConfigInterface, self).registerSettings))

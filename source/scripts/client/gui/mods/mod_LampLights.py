@@ -13,7 +13,6 @@ from Vehicle import Vehicle
 from debug_utils import LOG_ERROR, LOG_NOTE
 from functools import partial
 from gui import InputHandler, SystemMessages
-from gui.app_loader.loader import g_appLoader
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 
@@ -93,7 +92,6 @@ class ConfigInterface(PYmodsConfigInterface):
         capLabel['text'] = self.tb.getLabel('caps').format(totalCfg=len(self.configsDict), totalSrc=sources, models=models)
         capLabel['tooltip'] %= {'meta': metaStr}
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createControl('enableAtStartup'),
                             capLabel],
@@ -101,11 +99,8 @@ class ConfigInterface(PYmodsConfigInterface):
                             self.tb.createControl('enableMessage')]}
 
     def onApplySettings(self, settings):
-        super(self.__class__, self).onApplySettings(settings)
-        if self.data['enabled']:
-            self.isLampsVisible = self.data['enableAtStartup'] and self.isLampsVisible
-        else:
-            self.isLampsVisible = False
+        super(ConfigInterface, self).onApplySettings(settings)
+        self.isLampsVisible = self.data['enabled'] and self.data['enableAtStartup'] and self.isLampsVisible
 
     def readConfDict(self, quiet, confdict, confPath, sourceModel=None, upperName=''):
         for confKey, configDict in confdict.items():
@@ -167,7 +162,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def readCurrentSettings(self, quiet=True):
         self.configsDict.clear()
         self.modes = {'constant': [], 'stop': [], 'turn_left': [], 'turn_right': [], 'back': [], 'target': [], 'spot': []}
-        super(self.__class__, self).readCurrentSettings(quiet)
+        super(ConfigInterface, self).readCurrentSettings(quiet)
 
         if self.data['DebugModel']:
             if self.data['DebugPath']:
@@ -243,6 +238,7 @@ class ConfigInterface(PYmodsConfigInterface):
             LOG_NOTE('LampLights mod fully disabled via main config.')
             self.isLampsVisible = False
         self.isTickRequired = any(self.modes[key] for key in ('stop', 'turn_left', 'turn_right', 'back'))
+        self.updateMod()
 
 
 _config = ConfigInterface()
@@ -254,12 +250,7 @@ if _config.data['enableMessage']:
     @events.LobbyView.populate.after
     def new_Lobby_populate(*_, **__):
         global isLogin
-        try:
-            # noinspection PyUnresolvedReferences
-            from gui.vxSettingsApi import vxSettingsApi
-            isRegistered = vxSettingsApi.isRegistered(_config.modSettingsID)
-        except ImportError:
-            isRegistered = False
+        isRegistered = _config.ID in getattr(_config.MSAInstance, 'activeMods', ())
         if isLogin and not isRegistered:
             SystemMessages.pushMessage(LOGIN_TEXT_MESSAGE, type=SystemMessages.SM_TYPE.Information)
             isLogin = False
@@ -581,6 +572,7 @@ def lightsCreate(vehicleID, callPlace=''):
                                     lightDBDict[vehicleID][curName.rsplit('.', 1)[0]].node(node).attach(fakeDict[curName])
                                 fakeNode = fakeDict[curName].node('', computeTransform(confDict))
                             if 'model' not in confDict['type']:
+                                # noinspection PyUnboundLocalVariable
                                 LightSource.source = fakeNode
                             elif not LightSource.attached:
                                 fakeNode.attach(LightSource)
@@ -645,7 +637,7 @@ def lightsDestroy(vehicleID, callPlace=''):
 
 
 def battleKeyControl(event):
-    if checkKeys(_config.data['hotkey']) and event.isKeyDown():
+    if checkKeys(_config.data['hotkey'], event.key) and event.isKeyDown():
         _config.isLampsVisible = not _config.isLampsVisible
         if _config.isLampsVisible:
             _config.readCurrentSettings(not _config.data['Debug'])
@@ -663,9 +655,8 @@ def battleKeyControl(event):
 
 
 def inj_hkKeyEvent(event):
-    BattleApp = g_appLoader.getDefBattleApp()
     try:
-        if BattleApp and _config.data['enabled']:
+        if hasattr(BigWorld.player(), 'arena') and _config.data['enabled']:
             battleKeyControl(event)
     except StandardError:
         print 'LampLights: ERROR at inj_hkKeyEvent'

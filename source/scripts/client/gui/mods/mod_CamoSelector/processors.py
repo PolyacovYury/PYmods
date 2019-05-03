@@ -8,7 +8,6 @@ from PYmodsCore import overrideMethod, loadJson
 from gui import g_tankActiveCamouflage
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework import ViewTypes
-from gui.app_loader import g_appLoader
 from gui.customization.shared import C11N_ITEM_TYPE_MAP
 from gui.customization.shared import __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
@@ -16,6 +15,7 @@ from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_
 from gui.shared.gui_items.customization.c11n_items import Camouflage
 from gui.shared.gui_items.customization.containers import emptyComponent
 from gui.shared.gui_items.customization.outfit import Outfit, Area
+from gui.shared.personality import ServicesLocator
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
 from skeletons.gui.shared import IItemsCache
@@ -183,7 +183,7 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
 def new_reload(base, self, vDesc, vState, outfit):
     if vState != 'undamaged':
         return base(self, vDesc, vState, outfit)
-    manager = g_appLoader.getDefLobbyApp().containerManager
+    manager = ServicesLocator.appLoader.getDefLobbyApp().containerManager
     if manager is not None:
         container = manager.getContainer(ViewTypes.LOBBY_SUB)
         if container is not None:

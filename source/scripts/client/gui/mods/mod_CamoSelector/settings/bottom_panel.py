@@ -7,7 +7,6 @@ from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION as CUSTOMIZATION
-from gui.customization.shared import C11nId
 from gui.shared.formatters import getItemPricesVO, text_styles, getMoneyVO
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
@@ -32,13 +31,6 @@ class CustomizationBottomPanel(CBP):
     def __onActualModeChanged(self):
         self._carouselDP.updateTabGroups()
         self.__updatePopoverBtnIcon()
-
-    def __onSlotSelected(self, areaId, slotType, regionIdx):
-        item = self.__ctx.getItemFromRegion(C11nId(areaId, slotType, regionIdx))
-        itemIdx = -1
-        if item is not None and item.intCD in self._carouselDP.collection:
-            itemIdx = self._carouselDP.collection.index(item.intCD)
-        self._carouselDP.selectItemIdx(itemIdx)
 
     def __setNotificationCounters(self):
         item = g_currentVehicle.item
@@ -107,11 +99,17 @@ class CustomizationBottomPanel(CBP):
         noPrice = isBuy and item.buyCount <= 0
         isDarked = isBuy and purchaseLimit == 0 and itemInventoryCount == 0
         isAlreadyUsed = isDarked and not isCurrentlyApplied
+        forceLocked = isAlreadyUsed
+        isUnsupportedForm = False
         autoRentEnabled = self.__ctx.autoRentEnabled()
+        if item.itemTypeID == GUI_ITEM_TYPE.PROJECTION_DECAL and self._currentParentSlot is not None and (
+                not self.__ctx.isSlotFilled(self.__ctx.selectedAnchor) or self._propertySheetShow):
+            isUnsupportedForm = item.formfactor in self._currentParentSlot.getUnsupportedForms(g_currentVehicle.item)
+            forceLocked = forceLocked or isUnsupportedForm
         return buildCustomizationItemDataVO(
             isBuy, item, itemInventoryCount, showUnsupportedAlert=showUnsupportedAlert, isCurrentlyApplied=isCurrentlyApplied,
-            isAlreadyUsed=isAlreadyUsed, forceLocked=isAlreadyUsed, isDarked=isDarked, noPrice=noPrice,
-            autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item)
+            isAlreadyUsed=isAlreadyUsed, forceLocked=forceLocked, isDarked=isDarked, noPrice=noPrice,
+            autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item, isUnsupportedForm=isUnsupportedForm)
 
     def __getItemTabsData(self):
         data = []

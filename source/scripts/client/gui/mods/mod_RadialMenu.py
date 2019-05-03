@@ -10,7 +10,7 @@ import os
 import string
 import traceback
 from PYmodsCore import PYmodsConfigInterface, loadJson, config, checkKeys, pickRandomPart, Analytics, overrideMethod, \
-    sendChatMessage, events
+    sendChatMessage, events, curCV
 from Vehicle import Vehicle
 from constants import ARENA_BONUS_TYPE
 from functools import partial
@@ -18,14 +18,10 @@ from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared import radial_menu
 from gui.Scaleform.daapi.view.battle.shared.radial_menu import SHORTCUT_SETS, SHORTCUT_STATES, getKeyFromAction
 from gui.Scaleform.genConsts.BATTLE_ICONS_CONSTS import BATTLE_ICONS_CONSTS
-from gui.app_loader.loader import g_appLoader
 from gui.battle_control import avatar_getter
 from gui.battle_control.controllers.chat_cmd_ctrl import CHAT_COMMANDS
 from gui.shared.utils.key_mapping import getScaleformKey
-from helpers import dependency, isPlayerAvatar
-from skeletons.gui.battle_session import IBattleSessionProvider
-
-g_sessionProvider = dependency.instance(IBattleSessionProvider)
+from helpers import isPlayerAvatar
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -65,18 +61,21 @@ class ConfigInterface(PYmodsConfigInterface):
         infoLabel = self.tb.createLabel('info')
         infoLabel['text'] += 'wotspeak.ru'
         return {'modDisplayName': self.i18n['UI_description'],
-                'settingsVersion': 200,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createOptions('selectedConfig', optionsList)],
                 'column2': [self.tb.createHotKey('mapMenu_key'),
                             infoLabel]}
 
     def onApplySettings(self, settings):
-        super(self.__class__, self).onApplySettings(settings)
-        self.readCurrentSettings()
+        super(ConfigInterface, self).onApplySettings(settings)
+        self.updateCommandData()
 
     def readCurrentSettings(self, quiet=True):
-        super(self.__class__, self).readCurrentSettings()
+        super(ConfigInterface, self).readCurrentSettings(quiet)
+        self.updateCommandData()
+        self.updateMod()
+
+    def updateCommandData(self):
         self.activeConfigs[:] = ['default']
         self.configsMeta = {'default': self.i18n['UI_setting_selectedConfig_defaultMeta']}
         # noinspection SpellCheckingInspection
@@ -175,7 +174,7 @@ class SafeFormatter(string.Formatter):
             except KeyError:
                 return '{%s}' % key
         else:
-            super(self.__class__, self).get_value(key, args, kwargs)
+            super(SafeFormatter, self).get_value(key, args, kwargs)
 
 
 camMgr = CameraManager()
@@ -223,8 +222,8 @@ class CustomMenuCommand:
     def __repr__(self):
         return '<CMC %s (%s)>' % (self.title, self.icon)
 
-    def handleKeys(self, keys):
-        return not (len(self.hotKeys) == 1 and BigWorld.player()._PlayerAvatar__forcedGuiCtrlModeFlags) and checkKeys(keys)
+    def handleKeys(self, keys, key):
+        return not (len(self.hotKeys) == 1 and BigWorld.player().getForcedGuiControlModeFlags()) and checkKeys(keys, key)
 
     def doPing(self, seqId):
         if seqId == len(self.pingList):
@@ -237,7 +236,7 @@ class CustomMenuCommand:
         player = BigWorld.player()
         backup_FGCM = player._PlayerAvatar__forcedGuiCtrlModeFlags
         player._PlayerAvatar__forcedGuiCtrlModeFlags = True
-        chatCommands = g_sessionProvider.shared.chatCommands
+        chatCommands = player.guiSessionProvider.shared.chatCommands
         chatCommands.sendAttentionToCell(cellId)
         player._PlayerAvatar__forcedGuiCtrlModeFlags = backup_FGCM
         BigWorld.callback(self.PING_DELAY, partial(self.doPing, seqId + 1))
@@ -251,12 +250,13 @@ class CustomMenuCommand:
     def format(self, argDict):
         try:
             BigWorld.callback(self.PING_DELAY, partial(self.doPing, 0))
+            sessionProvider = BigWorld.player().guiSessionProvider
             argDict.update({'randPart': '',
                             'viewPos': camMgr.getViewPos(),
                             'ownPos': camMgr.getOwnPos(),
-                            'reload': '%.3g' % g_sessionProvider.shared.ammo.getGunReloadingState().getTimeLeft(),
-                            'ammo': g_sessionProvider.shared.ammo.getCurrentShells()[1],
-                            'ownVehicle': g_sessionProvider.getArenaDP().getVehicleInfo().vehicleType.shortName})
+                            'reload': '%.3g' % sessionProvider.shared.ammo.getGunReloadingState().getTimeLeft(),
+                            'ammo': sessionProvider.shared.ammo.getCurrentShells()[1],
+                            'ownVehicle': sessionProvider.getArenaDP().getVehicleInfo().vehicleType.shortName})
             argDict['randPart'], self.lastRandId = pickRandomPart(self.variantList, self.lastRandId, self.randomChoice)
             argDict['randPart'] = safeFmt.format(argDict['randPart'], **argDict)
             return safeFmt.format(self.cmd, **argDict)
@@ -280,14 +280,14 @@ def getCrosshairType(player, target):
 
 def isTargetCorrect(player, target):
     if target is not None and isinstance(target, Vehicle) and target.isAlive() and player is not None and isPlayerAvatar():
-        return not g_sessionProvider.getArenaDP().getVehicleInfo(target.id).isActionsDisabled()
+        return not player.guiSessionProvider.getArenaDP().getVehicleInfo(target.id).isActionsDisabled()
     return False
 
 
 def findBestFitConf(commandConf):
     if _config.bestConf is not None:
         return _config.bestConf, _config.confType
-    vehicleTypeDescr = g_sessionProvider.getArenaDP().getVehicleInfo().vehicleType
+    vehicleTypeDescr = BigWorld.player().guiSessionProvider.getArenaDP().getVehicleInfo().vehicleType
     vehicleType = vehicleTypeDescr.classTag
     vehicleName = vehicleTypeDescr.iconName
     if '-' in vehicleName:
@@ -314,9 +314,8 @@ def findBestFitConf(commandConf):
 
 
 def inj_hkKeyEvent(event):
-    BattleApp = g_appLoader.getDefBattleApp()
     try:
-        if BattleApp and _config.data['enabled']:
+        if hasattr(BigWorld.player(), 'arena') and _config.data['enabled']:
             isDown = checkKeys(_config.data['mapMenu_key'])
             if isDown or _config.wasAltMenuPressed:
                 _config.wasAltMenuPressed = isDown
@@ -331,7 +330,7 @@ def inj_hkKeyEvent(event):
                 if menuConf is not None:
                     commandsList.extend(menuConf.get(state, []))
                 for command in commandsList:
-                    if command and command.handleKeys(command.hotKeys):
+                    if command and command.handleKeys(command.hotKeys, event.key):
                         BigWorld.callback(_config.data['hotDelay'] / 1000.0, partial(onCustomAction, command, target))
     except StandardError:
         print 'RadialMenu: ERROR at inj_hkKeyEvent'
@@ -367,7 +366,7 @@ def new_updateMenu(_, self):
         stateData = map(lambda x: {'title': x.title,
                                    'action': x.action,
                                    'icon': x.icon,
-                                   'key': getKeyFromAction(*((x.action,) + (() if '16' in BigWorld.curCV else (state,))))},
+                                   'key': getKeyFromAction(*((x.action,) + (() if '16' in curCV else (state,))))},
                         SHORTCUT_SETS[state])
         if menuConf is not None:
             menuState = state.replace('_spg', '')
@@ -410,7 +409,7 @@ def onCustomAction(cmd, target):
                   'clan': targetInfo['clanAbbrev']}
     msg = cmd.format(targetDict)
     if cmd.builtinCmd:
-        chatCommands = g_sessionProvider.shared.chatCommands
+        chatCommands = player.guiSessionProvider.shared.chatCommands
         if chatCommands is not None:
             chatCommands.handleChatCommand(cmd.builtinCmd, target.id)
         BigWorld.callback(_config.data['chatDelay'] / 1000.0,

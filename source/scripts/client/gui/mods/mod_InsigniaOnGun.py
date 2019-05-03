@@ -45,7 +45,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['name'],
-                'settingsVersion': 1,
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createControl('enableHangar'),
                             self.tb.createControl('replaceHangar'),

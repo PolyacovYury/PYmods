@@ -29,7 +29,7 @@
         "mods/configs/PYmods/RadialMenu/skins/nagibator_dna.json": "res/configs/PYmods/RadialMenu/skins/nagibator_dna.json",
         "mods/configs/PYmods/RadialMenu/skins/tehHedger.json": "res/configs/PYmods/RadialMenu/skins/tehHedger.json",
         "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
-        "mods/{GAME_VERSION}/*vxSettingsApi*": "res/wotmods/*vxSettingsApi*",
+        "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/PYSupport.wotmod": "build/wotmods/PYmods/PYSupport.wotmod",
         "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",

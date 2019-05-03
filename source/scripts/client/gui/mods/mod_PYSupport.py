@@ -8,8 +8,8 @@ from skeletons.connection_mgr import IConnectionManager
 
 @process
 def openBrowser(_):
-    from gui.app_loader import g_appLoader
-    app = g_appLoader.getDefLobbyApp()
+    from gui.shared.personality import ServicesLocator
+    app = ServicesLocator.appLoader.getDefLobbyApp()
     if app:
         from helpers import dependency
         from skeletons.gui.game_control import IBrowserController
