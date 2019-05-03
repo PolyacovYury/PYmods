@@ -390,6 +390,7 @@ def before_Login_populate(*_, **__):
 
 @events.LoginView.populate.after
 def new_Login_populate(self, *_, **__):
+    global skinsChecked
     if g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked:
         self.as_setDefaultValuesS({
             'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
@@ -397,3 +398,5 @@ def new_Login_populate(self, *_, **__):
             'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
             'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
         BigWorld.callback(3, partial(self.app.loadView, SFViewLoadParams('SkinnerLoading'), self))
+    else:
+        skinsChecked = True
