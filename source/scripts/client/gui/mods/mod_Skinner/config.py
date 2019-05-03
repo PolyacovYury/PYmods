@@ -150,7 +150,7 @@ class ConfigInterface(PYmodsConfigInterface):
         loadJson(self.ID, 'skinsPriority', priorities, self.configPath, True)
 
     def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings()
+        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
         self.skinsCache.update(loadJson(self.ID, 'skinsCache', self.skinsCache, self.configPath))
         self.skinsData['priorities'] = loadJson(self.ID, 'skinsPriority', self.skinsData['priorities'], self.configPath)

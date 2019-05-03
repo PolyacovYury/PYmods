@@ -60,7 +60,7 @@ class ConfigInterface(Base, DummyConfigInterface):
 
     def readCurrentSettings(self, quiet=True):
         processHotKeys(self.data, self.defaultKeys, 'write')
-        smart_update(self.data, self.loadDataJson())
+        smart_update(self.data, self.loadDataJson(quiet=quiet))
         processHotKeys(self.data, self.defaultKeys, 'read')
         self.updateMod()
 
