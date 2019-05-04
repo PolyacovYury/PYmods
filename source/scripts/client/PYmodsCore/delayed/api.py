@@ -29,6 +29,7 @@ except ImportError:
 
 
     g_modsListApi = ModsList()
+    MSA_Orig = None
 else:
     try:
         from gui.modsSettingsApi.api import ModsSettingsApi as MSA_Orig
