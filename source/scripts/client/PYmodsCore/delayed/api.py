@@ -73,11 +73,11 @@ def registerSettings(config):
             config.loadLang()
     except StandardError:
         traceback.print_exc()
+    if MSA_Orig is None:
+        print config.ID + ': no-GUI mode activated'
+        return
     if config.modSettingsID not in config.modSettingsContainers:
         c = config.modSettingsContainers[config.modSettingsID] = config.containerClass(config.modSettingsID, config.modsGroup)
-        if MSA_Orig is None:
-            print config.ID + ': no-GUI mode activated'
-            return
         c.API = ModsSettings(config.modSettingsID, c)
     msc = config.modSettingsContainers[config.modSettingsID]
     msc.onMSAPopulate += config.onMSAPopulate
