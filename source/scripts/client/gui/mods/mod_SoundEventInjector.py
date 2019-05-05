@@ -100,7 +100,11 @@ class ConfigInterface(PYmodsConfigInterface):
                     if slot in modifiers:
                         value = modifiers[slot](value)
                 sect.writeString(slotName, str(value))
-            g_cache._gunReloadEffects[sname] = reloadType(sect)
+            new_desc = reloadType(sect)
+            if not isinstance(desc, reloadType):  # again, None is not an instance either
+                g_cache._gunReloadEffects[sname] = new_desc
+            else:  # set new attributes to existing descriptors, otherwise they don't update
+                [setattr(desc, slot, getattr(new_desc, slot)) for slot in reloadType.__slots__]
         for item_type, items_storage in (('engines', g_cache._Cache__engines), ('guns', g_cache._Cache__guns)):
             for nationID, nation_items in enumerate(items_storage):
                 nationData = self.data[item_type].get(nations.NAMES[nationID])

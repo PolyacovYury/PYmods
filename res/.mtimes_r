@@ -377,10 +377,10 @@
 1502714717|configs/PYmods/SoundEventInjector/configs/GO_surface_hits.json
 1502710108|configs/PYmods/SoundEventInjector/configs/GO_tracer.json
 1535546774|configs/PYmods/SoundEventInjector/configs/GO_voice.json
-1521584476|configs/PYmods/SoundEventInjector/configs/gun_effects.xml
-1517225483|configs/PYmods/StatPaints/StatPaints.json
-1514302325|configs/PYmods/StatPaints/i18n/en.json
-1514302402|configs/PYmods/StatPaints/i18n/ru.json
+1557072039|configs/PYmods/SoundEventInjector/configs/gun_effects.xml
+1557082562|configs/PYmods/StatPaints/StatPaints.json
+1557081535|configs/PYmods/StatPaints/i18n/en.json
+1557081665|configs/PYmods/StatPaints/i18n/ru.json
 1521449989|configs/PYmods/SunController/SunController.json
 1482142459|configs/PYmods/SunController/i18n/en.json
 1482142550|configs/PYmods/SunController/i18n/ru.json
