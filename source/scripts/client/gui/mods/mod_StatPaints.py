@@ -25,8 +25,11 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.0.1 (%(file_compile_date)s)'
+        self.version = '1.1.0 (%(file_compile_date)s)'
         self.data = {'enabled': True,
+                     'player': True,
+                     'ally': True,
+                     'enemy': True,
                      'ignorePresentPaints': False,
                      'removeCamouflages': True,
                      'paint_chassis': False,
@@ -43,6 +46,10 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_colorScales_text': 'Color scales are edited via config file.',
             'UI_setting_removeCamouflages_text': 'Remove camouflages before repainting',
             'UI_setting_removeCamouflages_tooltip': 'Remove camouflages from the parts which will be recolored.',
+            'UI_setting_teams_text': 'These vehicles will be painted:',
+            'UI_setting_player_text': 'Player',
+            'UI_setting_ally_text': 'Allies',
+            'UI_setting_enemy_text': 'Enemies',
             'UI_setting_parts_text': 'These vehicle parts will be painted:',
             'UI_setting_paint_chassis_text': 'Chassis',
             'UI_setting_paint_hull_text': 'Hulls',
@@ -56,14 +63,18 @@ class ConfigInterface(PYmodsConfigInterface):
                 'column1': [
                     self.tb.createControl('ignorePresentPaints'),
                     self.tb.createControl('removeCamouflages'),
-                    self.tb.createLabel('colorScales')
+                    self.tb.createLabel('teams'),
+                    self.tb.createControl('player'),
+                    self.tb.createControl('ally'),
+                    self.tb.createControl('enemy')
                 ],
                 'column2': [
                     self.tb.createLabel('parts'),
                     self.tb.createControl('paint_chassis'),
                     self.tb.createControl('paint_hull'),
                     self.tb.createControl('paint_turret'),
-                    self.tb.createControl('paint_gun')
+                    self.tb.createControl('paint_gun'),
+                    self.tb.createLabel('colorScales')
                 ]}
 
     def loadPlayerStats(self, databaseIDs):
@@ -159,10 +170,15 @@ def new_BattleEntry_beforeDelete(base, self, *args, **kwargs):
 
 @overrideMethod(CompoundAppearance, '_CompoundAppearance__applyVehicleOutfit')
 def new_applyVehicleOutfit(base, self, *a, **kw):
-    outfit = self._CompoundAppearance__outfit
-    vID = self._CompoundAppearance__vID
-    vDesc = self._CompoundAppearance__typeDesc
-    if not vDesc:
+    outfit = self.outfit
+    vID = self.id
+    vDesc = self.typeDescriptor
+    if not vDesc or not g_config.data['enabled']:
+        return base(self, *a, **kw)
+    player = BigWorld.player()
+    isPlayer = vID == player.playerVehicleID
+    isAlly = player.arena.vehicles[vID]['team'] == player.team
+    if not (g_config.data['player'] if isPlayer else g_config.data['ally'] if isAlly else g_config.data['enemy']):
         return base(self, *a, **kw)
     fashions = self._CompoundAppearance__fashions
     paintItems = {}
@@ -172,7 +188,7 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
         if not paintItem.descriptor.matchVehicleType(vDesc.type):
             return base(self, *a, **kw)
         paintItems[paintID] = paintItem
-    accountID = str(BigWorld.player().arena.vehicles[vID]['accountDBID'])
+    accountID = str(player.arena.vehicles[vID]['accountDBID'])
     if accountID not in g_config.dossier:
         if accountID not in g_config.pending:
             g_config.thread([accountID])

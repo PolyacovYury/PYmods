@@ -1,5 +1,8 @@
 ﻿{
     "enabled": true,
+    "player": true,
+    "ally": true,
+    "enemy": true,
     "ignorePresentPaints": true,
     "removeCamouflages": true,
     "paint_chassis": false,
