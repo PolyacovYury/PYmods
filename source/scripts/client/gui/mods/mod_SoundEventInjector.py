@@ -29,7 +29,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.1.0 (%(file_compile_date)s)'
+        self.version = '1.1.1 (%(file_compile_date)s)'
         self.data = {'engines': {}, 'gun_reload_effects': {}, 'shot_effects': {}, 'sound_notifications': {}, 'guns': {}}
         super(ConfigInterface, self).init()
 
@@ -70,7 +70,8 @@ class ConfigInterface(PYmodsConfigInterface):
                         if nationName.split(':')[0] not in nations.NAMES:
                             print self.ID + ': unknown nation in', itemType, 'data:', nationName
                             continue
-                        itemsData.setdefault(nationName, {}).update(nationData)
+                        for itemName in nationData:
+                            itemsData.setdefault(nationName, {}).setdefault(itemName, {}).update(nationData[itemName])
                 if itemType in ('gun_reload_effects', 'shot_effects', 'sound_notifications'):
                     for itemName in itemsDict:
                         itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
