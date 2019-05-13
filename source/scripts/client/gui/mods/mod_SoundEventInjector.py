@@ -29,7 +29,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.1.0 (%(file_compile_date)s)'
+        self.version = '1.1.1 (%(file_compile_date)s)'
         self.data = {'engines': {}, 'gun_reload_effects': {}, 'shot_effects': {}, 'sound_notifications': {}, 'guns': {}}
         super(ConfigInterface, self).init()
 
@@ -70,7 +70,8 @@ class ConfigInterface(PYmodsConfigInterface):
                         if nationName.split(':')[0] not in nations.NAMES:
                             print self.ID + ': unknown nation in', itemType, 'data:', nationName
                             continue
-                        itemsData.setdefault(nationName, {}).update(nationData)
+                        for itemName in nationData:
+                            itemsData.setdefault(nationName, {}).setdefault(itemName, {}).update(nationData[itemName])
                 if itemType in ('gun_reload_effects', 'shot_effects', 'sound_notifications'):
                     for itemName in itemsDict:
                         itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
@@ -86,25 +87,25 @@ class ConfigInterface(PYmodsConfigInterface):
                 print self.ID + ': wrong reload effect type:', effData['type'], 'available:', sorted(reloadTypes.keys())
                 continue
             reloadType = reloadTypes[effData['type']]
-            desc, sect = g_cache._gunReloadEffects.get(sname, None), ResMgr.DataSection()
-            if not isinstance(desc, reloadType):  # None is not an instance either
-                if desc is not None:
+            orig, desc, sect = g_cache._gunReloadEffects.get(sname, None), None, ResMgr.DataSection()
+            if not isinstance(orig, reloadType):  # None is not an instance too
+                if orig is not None:
                     print self.ID + ': changing type of reload effect %s. Might cause problems!' % sname
-                desc = reloadType(sect)
+                orig, desc = None, reloadType(sect)
             for slot in reloadType.__slots__:
                 slotName = mismatchSlots.get(slot, slot)
                 if slotName in effData:
                     value = effData[slotName]
                 else:
-                    value = getattr(desc, slot)
+                    value = getattr(orig or desc, slot)
                     if slot in modifiers:
                         value = modifiers[slot](value)
                 sect.writeString(slotName, str(value))
             new_desc = reloadType(sect)
-            if not isinstance(desc, reloadType):  # again, None is not an instance either
+            if orig is None:
                 g_cache._gunReloadEffects[sname] = new_desc
             else:  # set new attributes to existing descriptors, otherwise they don't update
-                [setattr(desc, slot, getattr(new_desc, slot)) for slot in reloadType.__slots__]
+                [setattr(orig, slot, getattr(new_desc, slot)) for slot in reloadType.__slots__]
         for item_type, items_storage in (('engines', g_cache._Cache__engines), ('guns', g_cache._Cache__guns)):
             for nationID, nation_items in enumerate(items_storage):
                 nationData = self.data[item_type].get(nations.NAMES[nationID])
