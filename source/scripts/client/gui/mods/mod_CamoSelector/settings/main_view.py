@@ -3,19 +3,18 @@ from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView as WGMainView
 from gui.Scaleform.daapi.view.lobby.customization.shared import SEASONS_ORDER
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from items.components.c11n_constants import SeasonType
 from .. import g_config
 
 
 class MainView(WGMainView):
     def __setNotificationCounters(self):
         currentSeason = self.__ctx.currentSeason
-        newItems = g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items)
         seasonCounters = {season: 0 for season in SEASONS_ORDER}
         itemTypes = GUI_ITEM_TYPE.CUSTOMIZATIONS if self.__ctx.isBuy else ()
-        for item in newItems:
-            if item.season != SeasonType.ALL and item.itemTypeID in itemTypes and not item.season & currentSeason:
-                seasonCounters[item.season] += 1
+        for season in SEASONS_ORDER:
+            seasonCounters[season] = (
+                0 if not itemTypes or currentSeason == season else g_currentVehicle.item.getC11nItemsNoveltyCounter(
+                    g_currentVehicle.itemsCache.items, itemTypes, season))
 
         self.as_setNotificationCountersS([seasonCounters[season] for season in SEASONS_ORDER])
 
