@@ -193,6 +193,8 @@ class ConfigInterface(PYmodsConfigInterface):
     def onApplySettings(self, settings):
         self.data['textStyle']['colour'] = self.colours.values()[settings['textColour']]
         super(ConfigInterface, self).onApplySettings(settings)
+        if flashController is not None:
+            flashController.onApplySettings()
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings(quiet)
@@ -238,11 +240,12 @@ class FlashController(object):
             return
         _config.onApplySettings({'textPosition': data, 'textColour': _config.data['textColour']})
 
+    def onApplySettings(self):
+        g_guiFlash.updateComponent(self.ID, dict(
+            _config.data['textPosition'], drag=not _config.data['textLock'], border=not _config.data['textLock']))
+
     def setup(self):
-        bgConf = _config.data['textBackground']
-        bgAltPath = '../maps/bg.png'
-        bgPath = bgConf['image']
-        width, height = bgConf['width'], bgConf['height']
+        bgPath = _config.data['textBackground']['image']
         bgNormPath = os.path.normpath('gui/flash/' + bgPath).replace(os.sep, '/')
         bgSect = ResMgr.openSection(bgNormPath)
         if bgSect is None:
@@ -250,17 +253,27 @@ class FlashController(object):
         self.texts = []
         g_guiFlash.createComponent(self.ID, COMPONENT_TYPE.PANEL, dict(
             _config.data['textPosition'], drag=not _config.data['textLock'], border=not _config.data['textLock'], limit=True))
-        for idx in xrange(5):
-            y = height * idx
-            g_guiFlash.createComponent(self.ID + '.text%s' % idx, COMPONENT_TYPE.LABEL, {
-                'text': '', 'width': width, 'height': height, 'alpha': 0.0, 'x': 0, 'y': y,
-                'alignX': COMPONENT_ALIGN.CENTER, 'alignY': COMPONENT_ALIGN.TOP})
-            shadow = _config.data['textShadow']
-            if shadow['enabled']:
-                g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'shadow': shadow})
-            g_guiFlash.createComponent(self.ID + '.image%s' % idx, COMPONENT_TYPE.IMAGE, {
-                'image': bgPath, 'imageAlt': bgAltPath, 'width': width, 'height': height, 'alpha': 0.0,
-                'x': 0, 'y': y + 2, 'alignX': COMPONENT_ALIGN.CENTER, 'alignY': COMPONENT_ALIGN.TOP})
+        self.createBox(0)
+
+    def createBox(self, idx):
+        bgConf = _config.data['textBackground']
+        bgAltPath = '../maps/bg.png'
+        bgPath = bgConf['image']
+        width, height = bgConf['width'], bgConf['height']
+        y = height * idx
+        g_guiFlash.createComponent(self.ID + '.text%s' % idx, COMPONENT_TYPE.LABEL, {
+            'text': '', 'width': width, 'height': height, 'alpha': 0.0, 'x': 0, 'y': y,
+            'alignX': COMPONENT_ALIGN.CENTER, 'alignY': COMPONENT_ALIGN.TOP})
+        shadow = _config.data['textShadow']
+        if shadow['enabled']:
+            g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'shadow': shadow})
+        g_guiFlash.createComponent(self.ID + '.image%s' % idx, COMPONENT_TYPE.IMAGE, {
+            'image': bgPath, 'imageAlt': bgAltPath, 'width': width, 'height': height, 'alpha': 0.0,
+            'x': 0, 'y': y + 2, 'alignX': COMPONENT_ALIGN.CENTER, 'alignY': COMPONENT_ALIGN.TOP})
+
+    def removeBox(self, idx):
+        g_guiFlash.deleteComponent(self.ID + '.text%s' % idx)
+        g_guiFlash.deleteComponent(self.ID + '.image%s' % idx)
 
     def addText(self, text):
         if not (_config.data['enabled'] and _config.data['textLength']):
@@ -274,9 +287,12 @@ class FlashController(object):
             styleConf['size'], styleConf['font'], styleConf['colour'], text)
         if len(self.texts) == _config.data['textLength']:
             self.removeFirstText()
+        idx = len(self.texts)
         self.texts.append(text)
-        idx = len(self.texts) - 1
-        g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'text': text, 'alpha': 1.0}, {'duration': 0.5})
+        if idx:
+            self.createBox(idx)
+        g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'text': text})
+        g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'alpha': 1.0}, {'duration': 0.5})
         if _config.data['textBackground']['enabled']:
             g_guiFlash.updateComponent(self.ID + '.image%s' % idx, {'alpha': 1.0}, {'duration': 0.5})
         self.isTextAdding = True
@@ -290,13 +306,14 @@ class FlashController(object):
         self.isTextRemoving = False
         bgConf = _config.data['textBackground']
         height = bgConf['height']
-        for idx in xrange(_config.data['textLength']):
-            isText = idx < len(self.texts)
+        for idx in xrange(len(self.texts)):
             y = height * idx
-            g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {
-                'text': '' if not isText else self.texts[idx], 'alpha': float(isText), 'y': y})
+            g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'text': self.texts[idx], 'alpha': 1.0, 'y': y})
             if bgConf['enabled']:
-                g_guiFlash.updateComponent(self.ID + '.image%s' % idx, {'alpha': float(isText), 'y': y + 2})
+                g_guiFlash.updateComponent(self.ID + '.image%s' % idx, {'alpha': 1.0, 'y': y + 2})
+        idx = len(self.texts)
+        if idx:
+            self.removeBox(idx)
 
     def removeFirstText(self):
         if self.isTextRemoving:
@@ -317,16 +334,16 @@ class FlashController(object):
         bgConf = _config.data['textBackground']
         g_guiFlash.updateComponent(self.ID + '.text0', {'alpha': 0.0}, {'duration': 0.5})
         g_guiFlash.updateComponent(self.ID + '.image0', {'alpha': 0.0}, {'duration': 0.5})
-        for idx in xrange(1, _config.data['textLength']):
+        for idx in xrange(1, len(self.texts) + 1):
             g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'y': bgConf['height'] * (idx - 1)}, {'duration': 0.5})
             if bgConf['enabled']:
                 g_guiFlash.updateComponent(self.ID + '.image%s' % idx, {'y': bgConf['height'] * (idx - 1)}, {'duration': 0.5})
         BigWorld.callback(0.5, self.onTextRemovalComplete)
 
 
+flashController = None
 _config = ConfigInterface()
 statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-8')
-flashController = None
 try:
     from gambiter import g_guiFlash
     from gambiter.flash import COMPONENT_TYPE, COMPONENT_ALIGN, COMPONENT_EVENT
