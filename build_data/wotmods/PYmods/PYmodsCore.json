@@ -14,6 +14,7 @@
         "res/scripts/client/PYmodsCore/config/utils.pyc": "build/scripts/client/PYmodsCore/config/utils.pyc",
         "res/scripts/client/PYmodsCore/delayed/__init__.pyc": "build/scripts/client/PYmodsCore/delayed/__init__.pyc",
         "res/scripts/client/PYmodsCore/delayed/api.pyc": "build/scripts/client/PYmodsCore/delayed/api.pyc",
+        "res/scripts/client/PYmodsCore/delayed/patreon.pyc": "build/scripts/client/PYmodsCore/delayed/patreon.pyc",
         "res/scripts/client/PYmodsCore/delayed/utils.pyc": "build/scripts/client/PYmodsCore/delayed/utils.pyc",
         "res/scripts/client/PYmodsCore/events/__init__.pyc": "build/scripts/client/PYmodsCore/events/__init__.pyc",
         "res/scripts/client/PYmodsCore/events/game.pyc": "build/scripts/client/PYmodsCore/events/game.pyc",

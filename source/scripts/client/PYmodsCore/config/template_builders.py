@@ -87,7 +87,6 @@ class TemplateBuilder(DummyTemplateBuilder):
     def __init__(self, data, i18n):
         super(TemplateBuilder, self).__init__(i18n)
         self.data = copy.deepcopy(data)
-        self._s = super(TemplateBuilder, self)
 
     def getValue(self, varName, value):
         return value if value is not None else (
