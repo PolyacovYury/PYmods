@@ -21,7 +21,6 @@ source/scripts:
       mod_LogSwapper.py - because placing log for received damage on the top of the screen was a smart move by WG
       mod_PlayerHPAnnouncer.py - plays a sound when your HP drops below 50, 25 or 10%
       mod_PlayersPanelHP.py - well, the name is self-explanatory
-      mod_PYSupport.py - I deserve some income, don't you think?
       mod_RadialMenu.py - custom battle commands menu maker
       mod_RemodEnabler.py - mod loader stub file for RemodEnabler
       mod_ShowVehicle.py - displays your vehicle's hull and turret in sniper mode
