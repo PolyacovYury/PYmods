@@ -15,7 +15,6 @@
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/BanksLoader.wotmod": "build/wotmods/PYmods/BanksLoader.wotmod",
         "mods/{GAME_VERSION}/PYmods/Horns.wotmod": "build/wotmods/PYmods/Horns.wotmod",
-        "mods/{GAME_VERSION}/PYmods/PYSupport.wotmod": "build/wotmods/PYmods/PYSupport.wotmod",
         "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
         "mods/{GAME_VERSION}/_aaa_BanksLoader_audioMods.wotmod": "build/wotmods/_aaa_BanksLoader_audioMods.wotmod"
     }

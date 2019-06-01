@@ -4,7 +4,6 @@
     "files": {
         "mods/configs/PYmods/i18nDebugger/i18nDebugger.xml": "res/configs/PYmods/i18nDebugger/i18nDebugger.xml",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
-        "mods/{GAME_VERSION}/PYmods/PYSupport.wotmod": "build/wotmods/PYmods/PYSupport.wotmod",
         "mods/{GAME_VERSION}/PYmods/i18n_Debugger.wotmod": "build/wotmods/PYmods/i18n_Debugger.wotmod",
         "mods/{GAME_VERSION}/PYmods/i18n_Loader.wotmod": "build/wotmods/PYmods/i18n_Loader.wotmod"
     }
