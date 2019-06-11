@@ -9,12 +9,10 @@ from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import 
 from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_TYPE_MAPPING, TYPE_TO_TAB_IDX, TYPES_ORDER, \
     C11nTabs, TABS_SLOT_TYPE_MAPPING, getAllParentProjectionSlots
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.customization.shared import createCustomizationBaseRequestCriteria, C11N_ITEM_TYPE_MAP
-from gui.shared.gui_items import GUI_ITEM_TYPE, ItemsCollection
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType, ProjectionDecalFormTags
-from items.vehicles import g_cache
 from .shared import getItemSeason
 from .. import g_config
 
@@ -29,8 +27,9 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         self._formfactorGroupsFilterByTabIndex.clear()
         availableTabs = set()
         visibleTabs = defaultdict(set)
+        isBuy = self._proxy.isBuy
         requirement = self._createBaseRequestCriteriaBySeason(None)
-        allItems = self.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, requirement)
+        allItems = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, requirement, onlyWithPrices=isBuy)
         for tabIndex in C11nTabs.ALL:
             self._allSeasonAndTabFilterData[tabIndex] = {}
             if tabIndex == C11nTabs.PROJECTION_DECAL:
@@ -44,7 +43,6 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             if self.__hasSlots(slotType):
                 availableTabs.add(tabIndex)
 
-        isBuy = self._proxy.isBuy
         for item in sorted(allItems.itervalues(), key=self.CSComparisonKey):
             if isBuy and item.isHiddenInUI():
                 continue
@@ -112,7 +110,8 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             self._allCustomizationItems = {}
         else:
             self._allCustomizationItems.clear()
-        self._allCustomizationItems.update(self.getItems(TABS_ITEM_TYPE_MAPPING[self._tabIndex], requirement))
+        self._allCustomizationItems.update(self.itemsCache.items.getItems(
+            TABS_ITEM_TYPE_MAPPING[self._tabIndex], requirement, onlyWithPrices=self._proxy.isBuy))
 
         self._updateCustomizationItems()
 
@@ -145,8 +144,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
 
     def _createBaseRequestCriteriaBySeason(self, season):
         if self._proxy.isBuy:
-            return createCustomizationBaseRequestCriteria(
-                self._currentVehicle.item, self.eventsCache.questsProgress, self._proxy.getAppliedItems(), season)
+            return super(CustomizationCarouselDataProvider, self)._createBaseRequestCriteriaBySeason(season)
         return REQ_CRITERIA.CUSTOM(lambda item: getItemSeason(item) & (season or SeasonType.ALL))
 
     def isItemSuitableForTab(self, tabIndex, item):
@@ -175,21 +173,6 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             isGlobal = g_config.isCamoGlobal(item.descriptor)
         return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', item.isHidden, isVictim, not is3D,
                 not isGlobal, len(nationIDs) != 1, getGroupName(item, self._proxy.isBuy), item.isRare(), item.id)
-
-    def getItems(self, itemTypeID, criteria):
-        if self._proxy.isBuy:
-            return self.itemsCache.items.getItems(itemTypeID, criteria)
-        if not isinstance(itemTypeID, tuple):
-            itemTypeID = (itemTypeID,)
-        result = ItemsCollection()
-        itemGetter = self.itemsCache.items.getItemByCD
-        itemTypes = g_cache.customization20().itemTypes
-        for typeID in itemTypeID:
-            for item in itemTypes[C11N_ITEM_TYPE_MAP[typeID]].itervalues():
-                guiItem = itemGetter(item.compactDescr)
-                if criteria(guiItem):
-                    result[guiItem.intCD] = guiItem
-        return result
 
 
 def getGroupName(item, isBuy=False):
