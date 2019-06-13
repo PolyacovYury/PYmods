@@ -377,7 +377,9 @@ def processMember(memberFileName, skinName):
                     if ResMgr.isFile(newTexture):
                         prop.writeString('Texture', newTexture.replace('\\', '/'))
                 if hasTracks:
-                    sub['material'].writeString('fx', 'shaders/std_effects/lightonly_alpha.fx')
+                    for prop in (p for name, p in sub['material'].items() if name == 'property'
+                                 and p.asString == 'g_useNormalPackDXT1'):
+                        prop.writeString('Bool', 'true')
             if section['primitivesName'] is None:
                 section.writeString('primitivesName', os.path.splitext(memberFileName)[0])
         section.save()
