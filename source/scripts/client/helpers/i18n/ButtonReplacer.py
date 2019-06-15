@@ -8,7 +8,6 @@ from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart,
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_ERROR, LOG_WARNING
 from frameworks.wulf.resource_manager import ResourceManager
-from functools import partial
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -99,7 +98,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.updateMod()
 
     def registerSettings(self):
-        BigWorld.callback(0, partial(BigWorld.callback, 0, super(ConfigInterface, self).registerSettings))
+        BigWorld.callback(0, super(ConfigInterface, self).registerSettings)
 
     def getAccessorsPaths(self):
         from gui.impl.gen import R

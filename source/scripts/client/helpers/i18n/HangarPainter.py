@@ -6,7 +6,6 @@ import traceback
 import urllib2
 from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, overrideMethod
 from debug_utils import LOG_ERROR
-from functools import partial
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -102,7 +101,7 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).load()
 
     def registerSettings(self):
-        BigWorld.callback(0, partial(BigWorld.callback, 0, super(ConfigInterface, self).registerSettings))
+        BigWorld.callback(0, super(ConfigInterface, self).registerSettings)
 
 
 _config = ConfigInterface()
@@ -180,7 +179,7 @@ def new_tankmanAttr_getValue(base, self):
     result = base(self)
     return ("<font color='#%s'>%s</font>" % (_config.data['colour'], result)
             if _config.data['enabled'] and
-            self._name in ('name', 'rank', 'role', 'efficiencyRoleLevel', 'currentVehicleName') else result)
+               self._name in ('name', 'rank', 'role', 'efficiencyRoleLevel', 'currentVehicleName') else result)
 
 
 def new_I18nDialog_init(base, self, *args, **kwargs):

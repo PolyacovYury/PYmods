@@ -38,5 +38,5 @@ class ConfigInterface(DummyConfigInterface):
 
 
 g_config = None
-if api.MSA_Orig is not None:
+if api.MSA_Orig is not None and 'PYmodsGUI' in ConfigInterface.modSettingsContainers:
     g_config = ConfigInterface()
