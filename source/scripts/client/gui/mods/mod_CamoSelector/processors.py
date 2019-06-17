@@ -212,8 +212,7 @@ def new_reload(base, self, vDesc, vState, outfit):
         season = g_tankActiveCamouflage[intCD]
         if vehicle:
             outfit = vehicle.getOutfit(season)
-    if outfit:
-        outfit = outfit.copy()
+    outfit = outfit.copy() if outfit else Outfit()
     seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
     seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(seasonName, {})
     outfit = applyOutfitInfo(outfit, seasonName, vDesc, seasonCache)
