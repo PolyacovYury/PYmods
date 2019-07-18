@@ -99,10 +99,10 @@ class ConfigInterface(PYmodsConfigInterface):
                         itemsData.setdefault(itemName, {}).update(itemData)                        
         print self.ID + ': loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
         for sname, effData in self.data['gun_effects'].iteritems():
-            if sname in g_cache._gunEffects:
-                effectDesc = g_cache._gunEffects[sname]
-            else:
-                effectDesc = readEffectsTimeLine(((None, effectsXmlPath), effData['origin']), effectsXml[effData['origin']])
+            if sname not in g_cache._gunEffects:
+                g_cache._gunEffects[sname] = readEffectsTimeLine(
+                    ((None, effectsXmlPath), effData['origin']), effectsXml[effData['origin']])
+            effectDesc = g_cache._gunEffects[sname]
             if 'timeline' in effData:
                 for keyPointName, timePoint in effData['timeline'].iteritems():
                     for keyPoint in effectDesc.keyPoints:
