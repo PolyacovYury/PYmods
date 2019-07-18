@@ -371,13 +371,13 @@
 1546006801|configs/PYmods/Skinner/i18n/en.json
 1546529120|configs/PYmods/Skinner/i18n/ru.json
 1539857823|configs/PYmods/SoundEventInjector/configs/GO_engines.json
+1563464385|configs/PYmods/SoundEventInjector/configs/GO_gun_effects.json
 1555406303|configs/PYmods/SoundEventInjector/configs/GO_guns.json
 1502712925|configs/PYmods/SoundEventInjector/configs/GO_hits.json
 1502710182|configs/PYmods/SoundEventInjector/configs/GO_reload.json
 1502714717|configs/PYmods/SoundEventInjector/configs/GO_surface_hits.json
 1502710108|configs/PYmods/SoundEventInjector/configs/GO_tracer.json
 1535546774|configs/PYmods/SoundEventInjector/configs/GO_voice.json
-1557072039|configs/PYmods/SoundEventInjector/configs/gun_effects.xml
 1557082562|configs/PYmods/StatPaints/StatPaints.json
 1557081535|configs/PYmods/StatPaints/i18n/en.json
 1557081665|configs/PYmods/StatPaints/i18n/ru.json

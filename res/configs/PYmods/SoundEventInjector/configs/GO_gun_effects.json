@@ -1,0 +1,1768 @@
+{
+    "gun_effects": {
+        "gun_100mm_shot_RU_4" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_RU_4"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_RU_4"]
+                }
+            }
+        },
+        "gun_100mm_shot_RU_5" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_RU_5"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_RU_5"]
+                }
+            }
+        },
+        "gun_100mm_shot_RU_6" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_RU_6"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_RU_6"]
+                }
+            }
+        },
+        "gun_100mm_shot_RU_7" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_RU_7"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_RU_7"]
+                }
+            }
+        },
+        "gun_100mm_shot_RU_8" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_RU_8"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_RU_8"]
+                }
+            }
+        },
+        "gun_100mm_shot_RU_9" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_RU_9"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_RU_9"]
+                }
+            }
+        },
+        "gun_100mm_shot_RU_10" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_RU_10"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_RU_10"]
+                }
+            }
+        },
+        "gun_155mm_shot_FR" : {
+            "origin": "shot_huge",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_155mm_shot_FR"],
+                    "wwsoundNPC": ["nps_gun_155mm_shot_FR"]
+                }
+            }
+        },
+        "gun_120mm_shot_FR" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_120mm_shot_FR"],
+                    "wwsoundNPC": ["nps_gun_120mm_shot_FR"]
+                }
+            }
+        },
+        "gun_120mm_shot_FR_2" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_120mm_shot_FR_2"],
+                    "wwsoundNPC": ["nps_gun_120mm_shot_FR_2"]
+                }
+            }
+        },
+        "gun_105mm_shot_FR" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_FR"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_FR"]
+                }
+            }
+        },
+        "gun_105mm_shot_FR_1" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_FR_1"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_FR_1"]
+                }
+            }
+        },
+        "gun_105mm_shot_FR_2" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_FR_2"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_FR_2"]
+                }
+            }
+        },
+        "gun_105mm_shot_FR_3" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_FR_3"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_FR_3"]
+                }
+            }
+        },
+        "gun_100mm_shot_FR" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_FR"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_FR"]
+                }
+            }
+        },
+        "gun_100mm_shot_FR_2" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_FR_2"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_FR_2"]
+                }
+            }
+        },
+        "gun_100mm_shot_FR_3" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_FR_3"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_FR_3"]
+                }
+            }
+        },
+        "gun_90mm_shot_FR" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_FR"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_FR"]
+                }
+            }
+        },
+        "gun_90mm_shot_FR_1" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_FR_1"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_FR_1"]
+                }
+            }
+        },
+        "gun_90mm_shot_FR_2" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_FR_2"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_FR_2"]
+                }
+            }
+        },
+        "gun_90mm_shot_FR_3" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_FR_3"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_FR_3"]
+                }
+            }
+        },
+        "gun_75mm_shot_FR" : {
+            "origin": "shot_medium_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_75mm_shot_FR"],
+                    "wwsoundNPC": ["nps_gun_75mm_shot_FR"]
+                }
+            }
+        },
+        "gun_57mm_shot_FR" : {
+            "origin": "shot_medium_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_57mm_shot_FR"],
+                    "wwsoundNPC": ["nps_gun_57mm_shot_FR"]
+                }
+            }
+        },
+        "gun_152mm_shot_RU" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_152mm_shot_RU"],
+                    "wwsoundNPC": ["nps_gun_152mm_shot_RU"]
+                }
+            }
+        },
+        "gun_152mm_shot_RU_1" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_152mm_shot_RU_1"],
+                    "wwsoundNPC": ["nps_gun_152mm_shot_RU_1"]
+                }
+            }
+        },
+        "gun_152mm_shot_RU_2" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_152mm_shot_RU_2"],
+                    "wwsoundNPC": ["nps_gun_152mm_shot_RU_2"]
+                }
+            }
+        },
+        "gun_152mm_shot_RU_3" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_152mm_shot_RU_3"],
+                    "wwsoundNPC": ["nps_gun_152mm_shot_RU_3"]
+                }
+            }
+        },
+        "gun_130mm_shot_RU" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_130mm_shot_RU"],
+                    "wwsoundNPC": ["nps_gun_130mm_shot_RU"]
+                }
+            }
+        },
+        "gun_130mm_shot_RU_1" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_130mm_shot_RU_1"],
+                    "wwsoundNPC": ["nps_gun_130mm_shot_RU_1"]
+                }
+            }
+        },
+        "gun_130mm_shot_RU_2" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_130mm_shot_RU_2"],
+                    "wwsoundNPC": ["nps_gun_130mm_shot_RU_2"]
+                }
+            }
+        },
+        "gun_130mm_shot_RU_3" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_130mm_shot_RU_3"],
+                    "wwsoundNPC": ["nps_gun_130mm_shot_RU_3"]
+                }
+            }
+        },
+        "gun_122mm_shot_RU" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_122mm_shot_RU"],
+                    "wwsoundNPC": ["nps_gun_122mm_shot_RU"]
+                }
+            }
+        },
+        "gun_122mm_shot_RU_1" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_122mm_shot_RU_1"],
+                    "wwsoundNPC": ["nps_gun_122mm_shot_RU_1"]
+                }
+            }
+        },
+        "gun_122mm_shot_RU_2" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_122mm_shot_RU_2"],
+                    "wwsoundNPC": ["nps_gun_122mm_shot_RU_2"]
+                }
+            }
+        },
+        "gun_122mm_shot_RU_3" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_122mm_shot_RU_3"],
+                    "wwsoundNPC": ["nps_gun_122mm_shot_RU_3"]
+                }
+            }
+        },
+        "gun_107mm_shot_RU" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_107mm_shot_RU"],
+                    "wwsoundNPC": ["nps_gun_107mm_shot_RU"]
+                }
+            }
+        },
+        "gun_107mm_shot_RU_1" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_107mm_shot_RU_1"],
+                    "wwsoundNPC": ["nps_gun_107mm_shot_RU_1"]
+                }
+            }
+        },
+        "gun_107mm_shot_RU_2" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_107mm_shot_RU_2"],
+                    "wwsoundNPC": ["nps_gun_107mm_shot_RU_2"]
+                }
+            }
+        },
+        "gun_107mm_shot_RU_3" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_107mm_shot_RU_3"],
+                    "wwsoundNPC": ["nps_gun_107mm_shot_RU_3"]
+                }
+            }
+        },
+        "gun_100mm_shot_RU" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_RU"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_RU"]
+                }
+            }
+        },
+        "gun_100mm_shot_RU_1" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_RU_1"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_RU_1"]
+                }
+            }
+        },
+        "gun_100mm_shot_RU_2" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_RU_2"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_RU_2"]
+                }
+            }
+        },
+        "gun_100mm_shot_RU_3" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_RU_3"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_RU_3"]
+                }
+            }
+        },
+        "gun_85mm_shot_RU" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85mm_shot_RU"],
+                    "wwsoundNPC": ["nps_gun_85mm_shot_RU"]
+                }
+            }
+        },
+        "gun_85mm_shot_RU_1" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85mm_shot_RU_1"],
+                    "wwsoundNPC": ["nps_gun_85mm_shot_RU_1"]
+                }
+            }
+        },
+        "gun_85mm_shot_RU_2" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85mm_shot_RU_2"],
+                    "wwsoundNPC": ["nps_gun_85mm_shot_RU_2"]
+                }
+            }
+        },
+        "gun_85mm_shot_RU_3" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85mm_shot_RU_3"],
+                    "wwsoundNPC": ["nps_gun_85mm_shot_RU_3"]
+                }
+            }
+        },
+        "gun_120mm_shot_US" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_120mm_shot_US"],
+                    "wwsoundNPC": ["nps_gun_120mm_shot_US"]
+                }
+            }
+        },
+        "gun_120mm_shot_US_1" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_120mm_shot_US_1"],
+                    "wwsoundNPC": ["nps_gun_120mm_shot_US_1"]
+                }
+            }
+        },
+        "gun_120mm_shot_US_2" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_120mm_shot_US_2"],
+                    "wwsoundNPC": ["nps_gun_120mm_shot_US_2"]
+                }
+            }
+        },
+        "gun_120mm_shot_US_3" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_120mm_shot_US_3"],
+                    "wwsoundNPC": ["nps_gun_120mm_shot_US_3"]
+                }
+            }
+        },
+        "gun_105mm_shot_US" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_US"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_US"]
+                }
+            }
+        },
+        "gun_105mm_shot_US_1" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_US_1"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_US_1"]
+                }
+            }
+        },
+        "gun_105mm_shot_US_2" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_US_2"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_US_2"]
+                }
+            }
+        },
+        "gun_105mm_shot_US_3" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_US_3"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_US_3"]
+                }
+            }
+        },
+        "gun_90mm_shot_US" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_US"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_US"]
+                }
+            }
+        },
+        "gun_90mm_shot_US_1" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_US_1"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_US_1"]
+                }
+            }
+        },
+        "gun_90mm_shot_US_2" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_US_2"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_US_2"]
+                }
+            }
+        },
+        "gun_90mm_shot_US_3" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_US_3"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_US_3"]
+                }
+            }
+        },
+        "gun_76mm_shot_US" : {
+            "origin": "shot_medium_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_76mm_shot_US"],
+                    "wwsoundNPC": ["nps_gun_76mm_shot_US"]
+                }
+            }
+        },
+        "gun_120mm_shot_UK" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_120mm_shot_UK"],
+                    "wwsoundNPC": ["nps_gun_120mm_shot_UK"]
+                }
+            }
+        },
+        "gun_120mm_shot_UK_1" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_120mm_shot_UK_1"],
+                    "wwsoundNPC": ["nps_gun_120mm_shot_UK_1"]
+                }
+            }
+        },
+        "gun_120mm_shot_UK_2" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_120mm_shot_UK_2"],
+                    "wwsoundNPC": ["nps_gun_120mm_shot_UK_2"]
+                }
+            }
+        },
+        "gun_105mm_shot_UK" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_UK"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_UK"]
+                }
+            }
+        },
+        "gun_105mm_shot_UK_1" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_UK_1"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_UK_1"]
+                }
+            }
+        },
+        "gun_105mm_shot_UK_2" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_UK_2"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_UK_2"]
+                }
+            }
+        },
+        "gun_90mm_shot_UK" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_UK"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_UK"]
+                }
+            }
+        },
+        "gun_32pdr_shot_UK" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_32pdr_shot_UK"],
+                    "wwsoundNPC": ["nps_gun_32pdr_shot_UK"]
+                }
+            }
+        },
+        "gun_20pdr_shot_UK" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_20pdr_shot_UK"],
+                    "wwsoundNPC": ["nps_gun_20pdr_shot_UK"]
+                }
+            }
+        },
+        "gun_20pdr_shot_UK_1" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_20pdr_shot_UK_1"],
+                    "wwsoundNPC": ["nps_gun_20pdr_shot_UK_1"]
+                }
+            }
+        },
+        "gun_20pdr_shot_UK_2" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_20pdr_shot_UK_2"],
+                    "wwsoundNPC": ["nps_gun_20pdr_shot_UK_2"]
+                }
+            }
+        },
+        "gun_20pdr_shot_UK_3" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_20pdr_shot_UK_3"],
+                    "wwsoundNPC": ["nps_gun_20pdr_shot_UK_3"]
+                }
+            }
+        },
+        "gun_17pdr_shot_UK" : {
+            "origin": "shot_medium_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_17pdr_shot_UK"],
+                    "wwsoundNPC": ["nps_gun_17pdr_shot_UK"]
+                }
+            }
+        },
+        "gun_140mm_shot_JAP" : {
+            "origin": "shot_superhuge_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_140mm_shot_JAP"],
+                    "wwsoundNPC": ["nps_gun_140mm_shot_JAP"]
+                }
+            }
+        },
+        "gun_127mm_shot_JAP" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_127mm_shot_JAP"],
+                    "wwsoundNPC": ["nps_gun_127mm_shot_JAP"]
+                }
+            }
+        },
+        "gun_105mm_shot_JAP" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_JAP"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_JAP"]
+                }
+            }
+        },
+        "gun_105mm_shot_JAP_1" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_JAP_1"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_JAP_1"]
+                }
+            }
+        },
+        "gun_105mm_shot_JAP_2" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_JAP_2"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_JAP_2"]
+                }
+            }
+        },
+        "gun_105mm_shot_JAP_3" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_JAP_3"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_JAP_3"]
+                }
+            }
+        },
+        "gun_90mm_shot_JAP" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_JAP"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_JAP"]
+                }
+            }
+        },
+        "gun_90mm_shot_JAP_1" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_JAP_1"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_JAP_1"]
+                }
+            }
+        },
+        "gun_90mm_shot_JAP_2" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_JAP_2"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_JAP_2"]
+                }
+            }
+        },
+        "gun_75mm_shot_JAP" : {
+            "origin": "shot_medium",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_75mm_shot_JAP"],
+                    "wwsoundNPC": ["nps_gun_75mm_shot_JAP"]
+                }
+            }
+        },
+        "gun_150mm_shot_GER" : {
+            "origin": "shot_huge",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_150mm_shot_GER"],
+                    "wwsoundNPC": ["nps_gun_150mm_shot_GER"]
+                }
+            }
+        },
+        "gun_128mm_shot_GER" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_128mm_shot_GER"],
+                    "wwsoundNPC": ["nps_gun_128mm_shot_GER"]
+                }
+            }
+        },
+        "gun_128mm_shot_GER_1" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_128mm_shot_GER_1"],
+                    "wwsoundNPC": ["nps_gun_128mm_shot_GER_1"]
+                }
+            }
+        },
+        "gun_128mm_shot_GER_2" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_128mm_shot_GER_2"],
+                    "wwsoundNPC": ["nps_gun_128mm_shot_GER_2"]
+                }
+            }
+        },
+        "gun_128mm_shot_GER_3" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_128mm_shot_GER_3"],
+                    "wwsoundNPC": ["nps_gun_128mm_shot_GER_3"]
+                }
+            }
+        },
+        "gun_105mm_shot_GER" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_GER"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_GER"]
+                }
+            }
+        },
+        "gun_105mm_shot_GER_1" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_GER_1"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_GER_1"]
+                }
+            }
+        },
+        "gun_105mm_shot_GER_2" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_GER_2"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_GER_2"]
+                }
+            }
+        },
+        "gun_105mm_shot_GER_3" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_GER_3"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_GER_3"]
+                }
+            }
+        },
+        "gun_90mm_shot_GER" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_GER"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_GER"]
+                }
+            }
+        },
+        "gun_90mm_shot_GER_1" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_GER_1"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_GER_1"]
+                }
+            }
+        },
+        "gun_90mm_shot_GER_2" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_GER_2"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_GER_2"]
+                }
+            }
+        },
+        "gun_90mm_shot_GER_3" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_90mm_shot_GER_3"],
+                    "wwsoundNPC": ["nps_gun_90mm_shot_GER_3"]
+                }
+            }
+        },
+        "gun_88mm_shot_GER" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_88mm_shot_GER"],
+                    "wwsoundNPC": ["nps_gun_88mm_shot_GER"]
+                }
+            }
+        },
+        "gun_88mm_shot_GER_1" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_88mm_shot_GER_1"],
+                    "wwsoundNPC": ["nps_gun_88mm_shot_GER_1"]
+                }
+            }
+        },
+        "gun_88mm_shot_GER_2" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_88mm_shot_GER_2"],
+                    "wwsoundNPC": ["nps_gun_88mm_shot_GER_2"]
+                }
+            }
+        },
+        "gun_88mm_shot_GER_3" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_88mm_shot_GER_3"],
+                    "wwsoundNPC": ["nps_gun_88mm_shot_GER_3"]
+                }
+            }
+        },
+        "gun_75mm_shot_GER" : {
+            "origin": "shot_medium",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_75mm_shot_GER"],
+                    "wwsoundNPC": ["nps_gun_75mm_shot_GER"]
+                }
+            }
+        },
+        "gun_105mm_shot_CZ" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_105mm_shot_CZ"],
+                    "wwsoundNPC": ["nps_gun_105mm_shot_CZ"]
+                }
+            }
+        },
+        "gun_100mm_shot_CZ" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_CZ"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_CZ"]
+                }
+            }
+        },
+        "gun_100mm_shot_CZ_1" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_CZ_1"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_CZ_1"]
+                }
+            }
+        },
+        "gun_100mm_shot_CZ_2" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_CZ_2"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_CZ_2"]
+                }
+            }
+        },
+        "gun_88mm_shot_CZ" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_88mm_shot_CZ"],
+                    "wwsoundNPC": ["nps_gun_88mm_shot_CZ"]
+                }
+            }
+        },
+        "gun_88mm_shot_CZ_1" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_88mm_shot_CZ_1"],
+                    "wwsoundNPC": ["nps_gun_88mm_shot_CZ_1"]
+                }
+            }
+        },
+        "gun_88mm_shot_CZ_2" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_88mm_shot_CZ_2"],
+                    "wwsoundNPC": ["nps_gun_88mm_shot_CZ_2"]
+                }
+            }
+        },
+        "gun_130mm_shot_CH" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_130mm_shot_CH"],
+                    "wwsoundNPC": ["nps_gun_130mm_shot_CH"]
+                }
+            }
+        },
+        "gun_122mm_shot_CH" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_122mm_shot_CH"],
+                    "wwsoundNPC": ["nps_gun_122mm_shot_CH"]
+                }
+            }
+        },
+        "gun_122mm_shot_CH_1" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_122mm_shot_CH_1"],
+                    "wwsoundNPC": ["nps_gun_122mm_shot_CH_1"]
+                }
+            }
+        },
+        "gun_122mm_shot_CH_2" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_122mm_shot_CH_2"],
+                    "wwsoundNPC": ["nps_gun_122mm_shot_CH_2"]
+                }
+            }
+        },
+        "gun_122mm_shot_CH_3" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_122mm_shot_CH_3"],
+                    "wwsoundNPC": ["nps_gun_122mm_shot_CH_3"]
+                }
+            }
+        },
+        "gun_100mm_shot_CH" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_CH"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_CH"]
+                }
+            }
+        },
+        "gun_100mm_shot_CH_1" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_CH_1"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_CH_1"]
+                }
+            }
+        },
+        "gun_100mm_shot_CH_2" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_CH_2"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_CH_2"]
+                }
+            }
+        },
+        "gun_100mm_shot_CH_3" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_100mm_shot_CH_3"],
+                    "wwsoundNPC": ["nps_gun_100mm_shot_CH_3"]
+                }
+            }
+        },
+        "gun_85mm_shot_CH" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85mm_shot_CH"],
+                    "wwsoundNPC": ["nps_gun_85mm_shot_CH"]
+                }
+            }
+        },
+        "gun_85mm_shot_CH_1" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85mm_shot_CH_1"],
+                    "wwsoundNPC": ["nps_gun_85mm_shot_CH_1"]
+                }
+            }
+        },
+        "gun_85mm_shot_CH_2" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85mm_shot_CH_2"],
+                    "wwsoundNPC": ["nps_gun_85mm_shot_CH_2"]
+                }
+            }
+        },
+        "gun_85mm_shot_CH_3" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85mm_shot_CH_3"],
+                    "wwsoundNPC": ["nps_gun_85mm_shot_CH_3"]
+                }
+            }
+        },
+        "gun_76mm_shot_CH" : {
+            "origin": "shot_medium_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_76mm_shot_CH"],
+                    "wwsoundNPC": ["nps_gun_76mm_shot_CH"]
+                }
+            }
+        },
+        "shot_auto" : {
+            "origin": "shot_auto",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_12_25mm_GO"],
+                    "wwsoundNPC": ["nps_gun_12_25mm"]
+                }
+            }
+        },
+        "shot_Breda_auto" : {
+            "origin": "shot_Breda_auto",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_12_25mm_GO"],
+                    "wwsoundNPC": ["nps_gun_12_25mm"]
+                }
+            }
+        },
+        "shot_MTLS_auto" : {
+            "origin": "shot_MTLS_auto",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_12_25mm_GO"],
+                    "wwsoundNPC": ["nps_gun_12_25mm"]
+                }
+            }
+        },
+        "shot_TNSH_auto" : {
+            "origin": "shot_TNSH_auto",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_12_25mm_GO"],
+                    "wwsoundNPC": ["nps_gun_12_25mm"]
+                }
+            }
+        },
+        "shot_Gochkins_auto" : {
+            "origin": "shot_Gochkins_auto",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_12_25mm_GO"],
+                    "wwsoundNPC": ["nps_gun_12_25mm"]
+                }
+            }
+        },
+        "shot_small" : {
+            "origin": "shot_small",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_20_45mm_GO"],
+                    "wwsoundNPC": ["nps_gun_20_45mm"]
+                }
+            }
+        },
+        "shot_small_mb" : {
+            "origin": "shot_small_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_20_45mm_GO"],
+                    "wwsoundNPC": ["nps_gun_20_45mm"]
+                }
+            }
+        },
+        "shot_KwK_L46" : {
+            "origin": "shot_KwK_L46",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_50_75mm_GO"],
+                    "wwsoundNPC": ["nps_gun_50_75mm"]
+                }
+            }
+        },
+        "shot_medium" : {
+            "origin": "shot_medium",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_50_75mm_GO"],
+                    "wwsoundNPC": ["nps_gun_50_75mm"]
+                }
+            }
+        },
+        "shot_medium_mb" : {
+            "origin": "shot_medium_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_50_75mm_GO"],
+                    "wwsoundNPC": ["nps_gun_50_75mm"]
+                }
+            }
+        },
+        "shot_main" : {
+            "origin": "shot_main",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85_107mm_GO"],
+                    "wwsoundNPC": ["nps_gun_85_107mm"]
+                }
+            }
+        },
+        "shot_main_mb" : {
+            "origin": "shot_main_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85_107mm_GO"],
+                    "wwsoundNPC": ["nps_gun_85_107mm"]
+                }
+            }
+        },
+        "shot_mainext" : {
+            "origin": "shot_mainext",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85_107mm_GO"],
+                    "wwsoundNPC": ["nps_gun_85_107mm"]
+                }
+            }
+        },
+        "shot_mainext_mb" : {
+            "origin": "shot_mainext_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_85_107mm_GO"],
+                    "wwsoundNPC": ["nps_gun_85_107mm"]
+                }
+            }
+        },
+        "shot_large" : {
+            "origin": "shot_large",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_115_152mm_GO"],
+                    "wwsoundNPC": ["nps_gun_115_152mm"]
+                }
+            }
+        },
+        "shot_large_mb" : {
+            "origin": "shot_large_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_115_152mm_GO"],
+                    "wwsoundNPC": ["nps_gun_115_152mm"]
+                }
+            }
+        },
+        "shot_largeext" : {
+            "origin": "shot_largeext",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_115_152mm_GO"],
+                    "wwsoundNPC": ["nps_gun_115_152mm"]
+                }
+            }
+        },
+        "shot_largeext_mb" : {
+            "origin": "shot_largeext_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_115_152mm_GO"],
+                    "wwsoundNPC": ["nps_gun_115_152mm"]
+                }
+            }
+        },
+        "shot_ch41" : {
+            "origin": "shot_ch41",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_115_152mm_GO"],
+                    "wwsoundNPC": ["nps_gun_115_152mm"]
+                }
+            }
+        },
+        "shot_huge" : {
+            "origin": "shot_huge",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_155_170mm_GO"],
+                    "wwsoundNPC": ["nps_gun_155_170mm"]
+                }
+            }
+        },
+        "shot_huge_mb" : {
+            "origin": "shot_huge_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_155_170mm_GO"],
+                    "wwsoundNPC": ["nps_gun_155_170mm"]
+                }
+            }
+        },
+        "shot_huge2" : {
+            "origin": "shot_huge2",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_175_380mm_GO"],
+                    "wwsoundNPC": ["nps_gun_175_380mm"]
+                }
+            }
+        },
+        "shot_superhuge" : {
+            "origin": "shot_superhuge",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_175_380mm_GO"],
+                    "wwsoundNPC": ["nps_gun_175_380mm"]
+                }
+            }
+        },
+        "shot_superhuge_mb" : {
+            "origin": "shot_superhuge_mb",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_175_380mm_GO"],
+                    "wwsoundNPC": ["nps_gun_175_380mm"]
+                }
+            }
+        },
+        "shot_env_artillery" : {
+            "origin": "shot_env_artillery",
+            "timeline": {
+                "soundplaystop": 20.0
+            },
+            "effects": {
+                "shotEffect": {
+                    "wwsoundPC": ["gun_175_380mm_GO"],
+                    "wwsoundNPC": ["nps_gun_175_380mm"]
+                }
+            }
+        }
+    }
+}
