@@ -2,7 +2,6 @@
 import ResMgr
 import SoundGroups
 import glob
-import items.vehicles
 import nations
 import os
 import traceback
@@ -10,9 +9,9 @@ from Avatar import PlayerAvatar
 from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, Analytics
 from ReloadEffect import _SimpleReloadDesc, _BarrelReloadDesc, _AutoReloadDesc
 from debug_utils import LOG_ERROR
-from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc, ImpactNames
+from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc, ImpactNames, KeyPoint
 from items.components.sound_components import WWTripleSoundConfig as SoundConfig
-from items.vehicles import g_cache
+from items.vehicles import g_cache, VehicleType, __readEffectsTimeLine as readEffectsTimeLine, _VEHICLE_TYPE_XML_PATH
 from material_kinds import EFFECT_MATERIALS
 
 reloadTypes = {'SimpleReload': _SimpleReloadDesc, 'BarrelReload': _BarrelReloadDesc, 'AutoReload': _AutoReloadDesc}
@@ -29,8 +28,9 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.1.1 (%(file_compile_date)s)'
-        self.data = {'engines': {}, 'gun_reload_effects': {}, 'shot_effects': {}, 'sound_notifications': {}, 'guns': {}}
+        self.version = '1.2.0 (%(file_compile_date)s)'
+        self.data = {'engines': {}, 'guns': {}, 'gun_effects': {}, 'gun_reload_effects': {}, 'shot_effects': {},
+                     'sound_notifications': {}}
         super(ConfigInterface, self).init()
 
     def loadLang(self):
@@ -50,6 +50,8 @@ class ConfigInterface(PYmodsConfigInterface):
         if not os.path.exists(configPath):
             LOG_ERROR('config folder not found: ' + configPath)
             os.makedirs(configPath)
+        effectsXmlPath = _VEHICLE_TYPE_XML_PATH + 'common/gun_effects.xml'
+        effectsXml = ResMgr.openSection(effectsXmlPath)
         for confPath in glob.iglob(configPath + '*.json'):
             confName = os.path.basename(confPath).split('.')[0]
             try:
@@ -68,20 +70,56 @@ class ConfigInterface(PYmodsConfigInterface):
                 if itemType in ('engines', 'guns'):
                     for nationName, nationData in itemsDict.iteritems():
                         if nationName.split(':')[0] not in nations.NAMES:
-                            print self.ID + ': unknown nation in', itemType, 'data:', nationName
+                            print self.ID + ': unknown nation in', itemType, 'in', confName + ':', nationName
                             continue
                         for itemName in nationData:
                             itemsData.setdefault(nationName, {}).setdefault(itemName, {}).update(nationData[itemName])
                 if itemType in ('gun_reload_effects', 'shot_effects', 'sound_notifications'):
                     for itemName in itemsDict:
                         itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
+                if itemType == 'gun_effects':
+                    for itemName, itemData in itemsDict.iteritems():
+                        if 'origin' not in itemData:
+                            print self.ID + ':', confName + ':', itemName, 'has no origin'
+                            continue
+                        origin = itemData['origin']
+                        if origin not in effectsXml.keys():
+                            print self.ID + ':', confName + ':', itemName, 'has unknown origin:', origin
+                            continue
+                        itemName = intern(itemName)
+                        for key in itemData.keys():
+                            if key not in ('origin', 'timeline', 'effects'):
+                                print self.ID + ':', confName + ': incorrect key', key, 'in', itemName, 'ignored'
+                                itemData.pop(key, None)
+                        if 'effects' in itemData:
+                            for key in itemData['effects'].keys():
+                                if key != 'shotSound':
+                                    print self.ID + ':', confName + ': only shotSound effects are supported,', key, 'ignored'
+                                    itemData['effects'].pop(key)
+                        itemsData.setdefault(itemName, {}).update(itemData)                        
         print self.ID + ': loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
-        newXmlPath = '../' + configPath + 'gun_effects.xml'
-        if ResMgr.isFile(newXmlPath):
-            g_cache._gunEffects.update(items.vehicles._readEffectGroups(newXmlPath))
-        elif any('effects' in i and i['effects'] not in g_cache._gunEffects
-                 for n in self.data['guns'].itervalues() for i in n.itervalues()):
-            print self.ID + ': WARNING:', newXmlPath.split('/', 1)[1], 'not found'
+        for sname, effData in self.data['gun_effects'].iteritems():
+            if sname not in g_cache._gunEffects:
+                g_cache._gunEffects[sname] = readEffectsTimeLine(
+                    ((None, effectsXmlPath), effData['origin']), effectsXml[effData['origin']])
+            effectDesc = g_cache._gunEffects[sname]
+            if 'timeline' in effData:
+                for keyPointName, timePoint in effData['timeline'].iteritems():
+                    for keyPoint in effectDesc.keyPoints:
+                        if keyPoint.name == keyPointName:
+                            effectDesc.keyPoints.remove(keyPoint)
+                            effectDesc.keyPoints.append(keyPoint._replace(time=float(timePoint)))
+                            break
+                    else:
+                        effectDesc.keyPoints.append(KeyPoint(keyPointName, timePoint))
+                effectDesc.keyPoints.sort(key=lambda i: i.time)
+            if 'effects' in effData and 'shotSound' in effData['effects']:
+                data = effData['effects']['shotSound']
+                for effect in effectDesc.effectsList._EffectsList__effectDescList:
+                    if effect.TYPE == '_ShotSoundEffectDesc':
+                        effect._soundName = tuple(
+                            (tuple(data[key]) if key in data else effectDesc._soundName[idx])
+                            for idx, key in enumerate(('wwsoundPC', 'wwsoundNPC')))
         for sname, effData in self.data['gun_reload_effects'].iteritems():
             if effData['type'] not in reloadTypes:
                 print self.ID + ': wrong reload effect type:', effData['type'], 'available:', sorted(reloadTypes.keys())
@@ -165,7 +203,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     item.reloadEffect = g_cache._gunReloadEffects.get(itemData['reloadEffect'], item.reloadEffect)
 
 
-@overrideMethod(items.vehicles.VehicleType, '__init__')
+@overrideMethod(VehicleType, '__init__')
 def new_vehicleType_init(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
     _config.inject_vehicleType(self)
