@@ -4,10 +4,10 @@ import Keys
 import Math
 import ResMgr
 import glob
+import math_utils
 import os
 import traceback
 from Avatar import PlayerAvatar
-from AvatarInputHandler import mathUtils
 from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKeys, sendMessage, Analytics, events
 from Vehicle import Vehicle
 from debug_utils import LOG_ERROR, LOG_NOTE
@@ -256,7 +256,7 @@ if _config.data['enableMessage']:
             isLogin = False
 
 
-def nodeWatcher(section, nodeName, upperMat=mathUtils.createIdentityMatrix()):
+def nodeWatcher(section, nodeName, upperMat=math_utils.createIdentityMatrix()):
     retMat = None
     for curName, curSect in section.items():
         if curName == 'node':
@@ -319,9 +319,9 @@ def findWheelNodes(vehicleID, place):
 
 
 def computeTransform(confDict):
-    matDict = {'preRotate': mathUtils.createIdentityMatrix(),
-               'postRotate': mathUtils.createIdentityMatrix(),
-               'vect': mathUtils.createIdentityMatrix()}
+    matDict = {'preRotate': math_utils.createIdentityMatrix(),
+               'postRotate': math_utils.createIdentityMatrix(),
+               'vect': math_utils.createIdentityMatrix()}
     if any(isinstance(confDict[confKey][0], tuple) for confKey in matDict.keys()):
         for confKey in matDict.keys():
             if isinstance(confDict[confKey][0], tuple):
@@ -329,26 +329,26 @@ def computeTransform(confDict):
                 for keyframe in confDict[confKey]:
                     timeStamp, value = keyframe
                     if 'vect' in confKey:
-                        Mat = mathUtils.createTranslationMatrix(value)
+                        Mat = math_utils.createTranslationMatrix(value)
                     else:
-                        Mat = mathUtils.createRotationMatrix(value)
+                        Mat = math_utils.createRotationMatrix(value)
                     keyframes.append((timeStamp, Mat))
                 MatAn = Math.MatrixAnimation()
                 MatAn.keyframes = keyframes
                 MatAn.time = 0.0
                 MatAn.loop = True
             elif 'vect' in confKey:
-                MatAn = mathUtils.createTranslationMatrix(confDict[confKey])
+                MatAn = math_utils.createTranslationMatrix(confDict[confKey])
             else:
-                MatAn = mathUtils.createRotationMatrix(confDict[confKey])
+                MatAn = math_utils.createRotationMatrix(confDict[confKey])
             matDict[confKey] = MatAn
 
-        matProd = mathUtils.MatrixProviders.product(matDict['vect'], matDict['postRotate'])
-        LightMat = mathUtils.MatrixProviders.product(matDict['preRotate'], matProd)
+        matProd = math_utils.MatrixProviders.product(matDict['vect'], matDict['postRotate'])
+        LightMat = math_utils.MatrixProviders.product(matDict['preRotate'], matProd)
     else:
-        preRotate = mathUtils.createRotationMatrix(confDict['preRotate'])
-        postRotate = mathUtils.createRotationMatrix(confDict['postRotate'])
-        LightMat = mathUtils.createTranslationMatrix(confDict['vect'])
+        preRotate = math_utils.createRotationMatrix(confDict['preRotate'])
+        postRotate = math_utils.createRotationMatrix(confDict['postRotate'])
+        LightMat = math_utils.createTranslationMatrix(confDict['vect'])
         LightMat.postMultiply(postRotate)
         LightMat.preMultiply(preRotate)
     return LightMat
@@ -394,8 +394,8 @@ def lightsCreate(vehicleID, callPlace=''):
                 print callPlace
             else:
                 sourcesDict[tankPartName] = sourceSec
-        HullMat = mathUtils.createIdentityMatrix()
-        deHullMat = mathUtils.createIdentityMatrix()
+        HullMat = math_utils.createIdentityMatrix()
+        deHullMat = math_utils.createIdentityMatrix()
         if sourcesDict[TankPartNames.CHASSIS] is not None:
             deHullMat = nodeWatcher(sourcesDict[TankPartNames.CHASSIS], 'V')
             deHullMat.invert()
@@ -419,7 +419,7 @@ def lightsCreate(vehicleID, callPlace=''):
 
         for node in constNodesList:
             fakeDict[node] = BigWorld.Model('objects/fake_model.model')
-            restoreMat = mathUtils.createIdentityMatrix()
+            restoreMat = math_utils.createIdentityMatrix()
             transMat = None
             isChassis = False
             if sourcesDict[TankPartNames.HULL] is not None:
@@ -484,7 +484,7 @@ def lightsCreate(vehicleID, callPlace=''):
                  'hullGunLocal': gun_pos_on_hull}
         for node in nodes:
             fakeDict[node] = BigWorld.Model('objects/fake_model.model')
-            fakeDict[TankPartNames.HULL].node('', mathUtils.createTranslationMatrix(nodes[node])).attach(fakeDict[node])
+            fakeDict[TankPartNames.HULL].node('', math_utils.createTranslationMatrix(nodes[node])).attach(fakeDict[node])
 
         lightDBDict.setdefault(vehicleID, {})
         for configDict in _config.configsDict.values():

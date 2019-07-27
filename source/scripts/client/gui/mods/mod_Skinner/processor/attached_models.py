@@ -1,7 +1,7 @@
 import BigWorld
 import Math
+import math_utils
 import traceback
-from AvatarInputHandler import mathUtils
 from PYmodsCore import overrideMethod, events
 from Vehicle import Vehicle
 from functools import partial
@@ -86,7 +86,7 @@ def attach(vehicleID, modID=None, visible=False):
         if vEntity is None:
             return
         compoundModel = vEntity.model
-        scaleMat = mathUtils.createIdentityMatrix()
+        scaleMat = math_utils.createIdentityMatrix()
         attachMode = dyn['mode']
         if 'scale' in attachMode:
             scaleMat.setScale(Math.Vector3(1.025))
@@ -102,7 +102,7 @@ def attach(vehicleID, modID=None, visible=False):
                 elif 'motor' in attachMode:
                     if model not in BigWorld.models():
                         modelDict['motor'] = motor = BigWorld.Servo(
-                            mathUtils.MatrixProviders.product(compoundModel.node(modelDict['nodeName']), scaleMat))
+                            math_utils.MatrixProviders.product(compoundModel.node(modelDict['nodeName']), scaleMat))
                         model.addMotor(motor)
                         BigWorld.addModel(model)
                 model.visible = visible and dyn['visible']

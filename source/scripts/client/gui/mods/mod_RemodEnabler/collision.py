@@ -2,7 +2,7 @@ import BigWorld
 import GUI
 import Math
 import material_kinds
-from AvatarInputHandler import mathUtils
+import math_utils
 from PYmodsCore import overrideMethod
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems.tankStructure import TankPartNames
@@ -60,28 +60,28 @@ def new_setupModel(base, self, buildIdx):
         if not self.collisionLoaded:
             return
         # Getting offset matrices
-        hullOffset = mathUtils.createTranslationMatrix(vDesc.chassis.hullPosition)
-        self.modifiedModelsDesc[TankPartNames.CHASSIS]['matrix'] = fullChassisMP = mathUtils.createIdentityMatrix()
-        hullMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), hullOffset)
-        self.modifiedModelsDesc[TankPartNames.HULL]['matrix'] = fullHullMP = mathUtils.MatrixProviders.product(
+        hullOffset = math_utils.createTranslationMatrix(vDesc.chassis.hullPosition)
+        self.modifiedModelsDesc[TankPartNames.CHASSIS]['matrix'] = fullChassisMP = math_utils.createIdentityMatrix()
+        hullMP = math_utils.MatrixProviders.product(math_utils.createIdentityMatrix(), hullOffset)
+        self.modifiedModelsDesc[TankPartNames.HULL]['matrix'] = fullHullMP = math_utils.MatrixProviders.product(
             hullMP, fullChassisMP)
         for idx in xrange(len(vDesc.hull.turretPositions)):
             if idx:
                 print g_config.ID + ': WARNING: multiple turrets are present!', vDesc.name
                 break
-            turretOffset = mathUtils.createTranslationMatrix(vDesc.hull.turretPositions[idx])
-            gunOffset = mathUtils.createTranslationMatrix(vDesc.turret.gunPosition)
-        # Getting local transform matrices
-            turretMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), turretOffset)
-            gunMP = mathUtils.MatrixProviders.product(mathUtils.createIdentityMatrix(), gunOffset)
-            # turretMP = mathUtils.MatrixProviders.product(vEntity.appearance.turretMatrix, turretOffset)
-            # gunMP = mathUtils.MatrixProviders.product(vEntity.appearance.gunMatrix, gunOffset)
-        # Getting full transform matrices relative to vehicle coordinate system
-            self.modifiedModelsDesc[TankPartNames.TURRET]['matrix'] = fullTurretMP = mathUtils.MatrixProviders.product(
+            turretOffset = math_utils.createTranslationMatrix(vDesc.hull.turretPositions[idx])
+            gunOffset = math_utils.createTranslationMatrix(vDesc.turret.gunPosition)
+            # Getting local transform matrices
+            turretMP = math_utils.MatrixProviders.product(math_utils.createIdentityMatrix(), turretOffset)
+            gunMP = math_utils.MatrixProviders.product(math_utils.createIdentityMatrix(), gunOffset)
+            # turretMP = math_utils.MatrixProviders.product(vEntity.appearance.turretMatrix, turretOffset)
+            # gunMP = math_utils.MatrixProviders.product(vEntity.appearance.gunMatrix, gunOffset)
+            # Getting full transform matrices relative to vehicle coordinate system
+            self.modifiedModelsDesc[TankPartNames.TURRET]['matrix'] = fullTurretMP = math_utils.MatrixProviders.product(
                 turretMP, fullHullMP)
-            self.modifiedModelsDesc[TankPartNames.GUN]['matrix'] = mathUtils.MatrixProviders.product(gunMP, fullTurretMP)
+            self.modifiedModelsDesc[TankPartNames.GUN]['matrix'] = math_utils.MatrixProviders.product(gunMP, fullTurretMP)
         for moduleDict in self.modifiedModelsDesc.itervalues():
-            motor = BigWorld.Servo(mathUtils.MatrixProviders.product(moduleDict['matrix'], vEntity.matrix))
+            motor = BigWorld.Servo(math_utils.MatrixProviders.product(moduleDict['matrix'], vEntity.matrix))
             moduleDict['model'].addMotor(motor)
             if moduleDict['model'] not in tuple(vEntity.models):
                 try:
@@ -168,7 +168,7 @@ def addCollisionGUI(self):
                 colWidth = 0.09
                 colPad = colWidth / 2.0
                 x = (6 + moduleIdx) / 10.0 + 0.025 - colPad + colPad / float(kindsCap) + (
-                    colWidth / float(kindsCap) * float(matIdx))
+                        colWidth / float(kindsCap) * float(matIdx))
                 y = (-1 - Idx) / 20.0
                 texBox = TexBox(texName, (x, y, 0.8), (0.09 / float(kindsCap), 0.045))
                 texBox.addRoot()
