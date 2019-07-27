@@ -15,10 +15,10 @@ from gui.Scaleform.framework.entities.abstract.AbstractWindowView import Abstrac
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared.personality import ServicesLocator as SL
 from helpers import dependency
-from items.components import c11n_constants
 from items.components.chassis_components import SplineConfig
 from items.components.component_constants import ALLOWED_EMBLEM_SLOTS as AES
 from items.components.shared_components import EmblemSlot
+from items.readers import shared_readers
 from items.vehicles import g_cache
 from skeletons.gui.shared.utils import IHangarSpace
 from vehicle_systems.tankStructure import TankPartNames
@@ -220,7 +220,7 @@ class ConfigInterface(PYmodsConfigInterface):
                                 subDict.get('hideIfDamaged', False), subDict['type'],
                                 subDict.get('isMirrored', False),
                                 subDict.get('isUVProportional', True), subDict.get('emblemId', None),
-                                subDict.get('slotId', c11n_constants.customizationSlotIds[key][subDict['type']][0]),
+                                subDict.get('slotId', shared_readers.__customizationSlotIdRanges[key][subDict['type']][0]),
                                 subDict.get('applyToFabric', True))
                             slots.append(descr)
                     if 'exhaust' in data and 'exhaust' in confSubDict:
