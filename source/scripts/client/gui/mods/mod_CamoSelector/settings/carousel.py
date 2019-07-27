@@ -7,7 +7,7 @@ from functools import partial
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationBookmarkVO, \
     CustomizationCarouselDataProvider as WGCarouselDataProvider, CustomizationSeasonAndTypeFilterData
 from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_TYPE_MAPPING, TYPE_TO_TAB_IDX, TYPES_ORDER, \
-    C11nTabs, TABS_SLOT_TYPE_MAPPING, getAllParentProjectionSlots
+    C11nTabs, TABS_SLOT_TYPE_MAPPING
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
@@ -23,6 +23,8 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         self._selectedIdx = -1
 
     def updateTabGroups(self):
+        self.invalidateCache()
+        self.invalidateFiltered()
         self._allSeasonAndTabFilterData.clear()
         self._formfactorGroupsFilterByTabIndex.clear()
         availableTabs = set()
@@ -33,7 +35,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         for tabIndex in C11nTabs.ALL:
             self._allSeasonAndTabFilterData[tabIndex] = {}
             if tabIndex == C11nTabs.PROJECTION_DECAL:
-                self._formfactorGroupsFilterByTabIndex[tabIndex] = dict.fromkeys(ProjectionDecalFormTags.ALL_FACTORS, False)
+                self._formfactorGroupsFilterByTabIndex[tabIndex] = dict.fromkeys(ProjectionDecalFormTags.ALL, False)
             else:
                 self._formfactorGroupsFilterByTabIndex[tabIndex] = {}
             for season in SeasonType.COMMON_SEASONS:
@@ -64,10 +66,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                 seasonAndTabData.allGroups.append(_ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_FILTER_ALLGROUPS))
                 seasonAndTabData.selectedGroupIndex = len(seasonAndTabData.allGroups) - 1
 
-        del self._customizationItems[:]
-        del self._itemSizeData[:]
-        del self._customizationBookmarks[:]
-        self._selectedIdx = -1
+        self.clear()
         self._proxy.updateVisibleTabsList(visibleTabs)
 
     def _applyFilter(self, items, season):
@@ -91,56 +90,60 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             formfactors = [formfactorGroup for formfactorGroup, value in
                            self._formfactorGroupsFilterByTabIndex[self._tabIndex].iteritems() if value]
             requirement |= REQ_CRITERIA.CUSTOM(lambda item: not hasattr(item, 'formfactor') or item.formfactor in formfactors)
-        if self.service.getCtx().currentTab == C11nTabs.PROJECTION_DECAL:
-            allFormsSet = set(ProjectionDecalFormTags.ALL_FACTORS)
-            denyForms = [slot.getUnsupportedForms(self._currentVehicle.item) for slot in
-                         getAllParentProjectionSlots(self._currentVehicle)]
-            for form in denyForms:
-                allFormsSet.intersection_update(form)
-
-            requirement |= REQ_CRITERIA.CUSTOM(lambda x: not hasattr(x, 'formfactor') or x.formfactor not in allFormsSet)
+        if self._propertySheetShow:
+            currentSlot = self.__ctx.selectedAnchor
+            if currentSlot.slotType == GUI_ITEM_TYPE.PROJECTION_DECAL:
+                currentAnchor = self._currentVehicle.item.getAnchorBySlotId(currentSlot.slotType, currentSlot.areaId,
+                                                                            currentSlot.regionIdx)
+                allSupportedForms = currentAnchor.formfactors
+                requirement |= REQ_CRITERIA.CUSTOM(
+                    lambda item: not hasattr(item, 'formfactor') or item.formfactor in allSupportedForms)
+        requirement |= REQ_CRITERIA.CUSTOM(lambda item: not self._proxy.isBuy or not item.isHiddenInUI())
         filteredItems = {k: v for k, v in items.iteritems() if requirement(v)}
         return filteredItems
 
     def _buildCustomizationItems(self):
-        requirement = self._createBaseRequestCriteriaBySeason(self._seasonID)
-        if not self._proxy.isBuy:
-            requirement |= REQ_CRITERIA.CUSTOM(partial(self.isItemSuitableForTab, self._tabIndex))
-        if self._allCustomizationItems is None:
-            self._allCustomizationItems = {}
+        seasonID = self._seasonID
+        tabIndex = self._tabIndex
+        builtAllCustomizationItems = self._builtAllCustomizationItems
+        if seasonID not in builtAllCustomizationItems or tabIndex not in builtAllCustomizationItems[seasonID]:
+            allCustomizationItems = {}
+            builtAllCustomizationItems.setdefault(seasonID, {})[tabIndex] = allCustomizationItems
+            requirement = self._createBaseRequestCriteriaBySeason(seasonID)
+            if not self._proxy.isBuy:
+                requirement |= REQ_CRITERIA.CUSTOM(partial(self.isItemSuitableForTab, self._tabIndex))
+            allCustomizationItems.update(self.itemsCache.items.getItems(
+                TABS_ITEM_TYPE_MAPPING[tabIndex], requirement, onlyWithPrices=self._proxy.isBuy))
+
+        builtCustomizationItems = self._builtCustomizationItems
+        if seasonID not in builtCustomizationItems or tabIndex not in builtCustomizationItems[seasonID]:
+            filteredItems = self._applyFilter(builtAllCustomizationItems[seasonID][tabIndex], self._seasonID)
+            customizationItems = []
+            customizationBookmarks = []
+            itemSizeData = []
+            isBuy = self._proxy.isBuy
+            lastGroup = None
+            for item in sorted(filteredItems.itervalues(), key=self.CSComparisonKey):
+                groupName = getGroupName(item, isBuy)
+                group = item.groupID if isBuy else groupName
+                if group != lastGroup:
+                    lastGroup = group
+                    customizationBookmarks.append(CustomizationBookmarkVO(groupName, self.itemCount).asDict())
+                customizationItems.append(item.intCD)
+                itemSizeData.append(item.isWide())
+
+            self._customizationItems = customizationItems
+            self._customizationBookmarks = customizationBookmarks
+            self._itemSizeData = itemSizeData
+            builtCustomizationItems.setdefault(self._seasonID, {})[self._tabIndex] = (
+                customizationItems, customizationBookmarks, itemSizeData)
         else:
-            self._allCustomizationItems.clear()
-        self._allCustomizationItems.update(self.itemsCache.items.getItems(
-            TABS_ITEM_TYPE_MAPPING[self._tabIndex], requirement, onlyWithPrices=self._proxy.isBuy))
-
-        self._updateCustomizationItems()
-
-    def _updateCustomizationItems(self):
-        if self._allCustomizationItems is None:
-            self._buildCustomizationItems()
-            return
-        filteredItems = self._applyFilter(self._allCustomizationItems, self._seasonID)
-        del self._customizationItems[:]
-        del self._customizationBookmarks[:]
-        del self._itemSizeData[:]
-        isBuy = self._proxy.isBuy
-        lastGroup = None
-        for item in sorted(filteredItems.itervalues(), key=self.CSComparisonKey):
-            if isBuy and item.isHiddenInUI():
-                continue
-            groupName = getGroupName(item, isBuy)
-            group = item.groupID if isBuy else groupName
-            if item.intCD == self._selectIntCD:
-                self._selectedIdx = self.itemCount
-                self._selectIntCD = None
-            if group != lastGroup:
-                lastGroup = group
-                self._customizationBookmarks.append(CustomizationBookmarkVO(groupName, self.itemCount).asDict())
-            self._customizationItems.append(item.intCD)
-            self._itemSizeData.append(item.isWide())
-
+            self._customizationItems, self._customizationBookmarks, self._itemSizeData = \
+                builtCustomizationItems[self._seasonID][self._tabIndex]
+        self._selectedIdx = -1
+        if self._selectIntCD in self._customizationItems:
+            self._selectedIdx = self._customizationItems.index(self._selectIntCD)
         self._proxy.setCarouselItems(self.collection)
-        return
 
     def _createBaseRequestCriteriaBySeason(self, season):
         if self._proxy.isBuy:

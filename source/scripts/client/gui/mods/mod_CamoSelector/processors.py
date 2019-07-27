@@ -6,9 +6,8 @@ from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PYmodsCore import overrideMethod, loadJson
 from gui import g_tankActiveCamouflage
-from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework import ViewTypes
-from gui.customization.shared import C11N_ITEM_TYPE_MAP
+from gui.customization.shared import C11N_ITEM_TYPE_MAP, SEASON_TYPE_TO_NAME
 from gui.customization.shared import __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
