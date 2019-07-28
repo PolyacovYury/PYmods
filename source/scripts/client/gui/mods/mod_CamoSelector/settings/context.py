@@ -290,7 +290,7 @@ class CustomizationContext(WGCtx):
 
     def getPurchaseItems(self):
         import inspect
-        if not self.isBuy and any(inspect.stack()[1][0].f_code.co_name in i for i in ('buildList', '__makeButtonVO')):
+        if not self.isBuy and inspect.stack()[1][0].f_code.co_name == 'buildList':
             return self.getModdedPurchaseItems()
         if self._lastTab[CSMode.BUY] != C11nTabs.STYLE:
             currentSeason = self.currentSeason
