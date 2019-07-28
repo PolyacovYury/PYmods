@@ -149,11 +149,8 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
     def isItemSuitableForTab(self, tabIndex, item):
         if item is None or tabIndex != TYPE_TO_TAB_IDX[item.itemTypeID]:
             return False
-        typeID = item.itemTypeID
-        if typeID == GUI_ITEM_TYPE.STYLE:
-            return item.mayInstall(g_currentVehicle.item) if item.modelsSet else all(
-                self.__hasSlots(TABS_SLOT_TYPE_MAPPING[TYPE_TO_TAB_IDX[x.itemTypeID]]) for season in
-                SeasonType.COMMON_SEASONS for x in item.getOutfit(season).items())
+        if item.itemTypeID == GUI_ITEM_TYPE.STYLE and item.modelsSet:
+            return item.mayInstall(g_currentVehicle.item)
         return True
 
     def CSComparisonKey(self, item):
