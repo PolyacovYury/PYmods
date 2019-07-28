@@ -4,10 +4,13 @@ from gui.customization.shared import getPurchaseMoneyState, isTransactionValid
 from gui.impl import backport
 from gui.impl.gen import R
 from shared_utils import first
+from .. import g_config
 
 
 @overrideMethod(CustomizationStyleInfo, '__makeButtonVO')
 def new_makeButtonVO(base, self, style):
+    if not g_config.data['enabled']:
+        return base(self, style)
     buttonVO = None
     ctx = self._CustomizationStyleInfo__ctx
     if ctx.isOutfitsModified():
