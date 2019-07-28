@@ -31,6 +31,7 @@ def apply(vDesc, modelDesc, modelsSet):
                                   **{k: v for k, v in obj.items() if k != 'segmentModelSets'})
         elif key == 'trackParams':
             obj = cc.TrackSplineParams(**obj)
+            key = 'trackSplineParams'
         elif key == 'leveredSuspension':
             if obj is not None:
                 obj = cc.LeveredSuspensionConfig(([cc.SuspensionLever(**d) for d in obj['levers']] or None),
