@@ -183,5 +183,8 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
                     ('secondRight', obj.pop('segment2ModelRight', ''))))
             elif 'default' in obj['segmentModelSets']:
                 obj['segmentModelSets'] = obj['segmentModelSets']['default']
+        if key == 'tracks':
+            if 'pairsCount' not in obj:
+                obj['pairsCount'] = 1
     new_config.setdefault('leveredSuspension')
     return new_config
