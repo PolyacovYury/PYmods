@@ -87,7 +87,7 @@ def migrateConfigs(g_config):
                     for data in val['emblemSlots']:
                         slotData = OrderedDict()
                         emblemSlots.append(slotData)
-                        for k, v in OrderedDict(zip(defaultEmblemSlot._fields, defaultEmblemSlot)):
+                        for k, v in zip(defaultEmblemSlot._fields, defaultEmblemSlot):
                             if k in data:
                                 v = data[k]
                             elif k == 'slotId':
