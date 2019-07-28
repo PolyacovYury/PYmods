@@ -174,7 +174,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             if 'victim' in item.descriptor.userKey:
                 isVictim = True
             isGlobal = g_config.isCamoGlobal(item.descriptor)
-        return (TYPES_ORDER.index(item.itemTypeID), item.priceGroup == 'custom', item.isHidden, isVictim, not is3D,
+        return (TYPES_ORDER.index(item.itemTypeID), not is3D, item.priceGroup == 'custom', item.isHidden, isVictim,
                 not isGlobal, len(nationIDs) != 1, getGroupName(item, self._proxy.isBuy), item.isRare(), item.id)
 
 
