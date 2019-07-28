@@ -128,7 +128,7 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                 group = item.groupID if isBuy else groupName
                 if group != lastGroup:
                     lastGroup = group
-                    customizationBookmarks.append(CustomizationBookmarkVO(groupName, self.itemCount).asDict())
+                    customizationBookmarks.append(CustomizationBookmarkVO(groupName, len(customizationItems)).asDict())
                 customizationItems.append(item.intCD)
                 itemSizeData.append(item.isWide())
 
