@@ -9,13 +9,14 @@ from shared_utils import first
 @overrideMethod(CustomizationStyleInfo, '__makeButtonVO')
 def new_makeButtonVO(base, self, style):
     buttonVO = None
-    if self.__ctx.isOutfitsModified():
+    ctx = self._CustomizationStyleInfo__ctx
+    if ctx.isOutfitsModified():
         label = backport.text(R.strings.vehicle_customization.commit.apply())
         enabled = True
-        if self.__ctx.isBuy:
+        if ctx.isBuy:
             stylePrice = style.getBuyPrice().price
             moneyState = getPurchaseMoneyState(stylePrice)
-            purchaseItem = first(self.__ctx.getPurchaseItems())
+            purchaseItem = first(ctx.getPurchaseItems())
             if purchaseItem is not None and not purchaseItem.isFromInventory:
                 label = backport.text(R.strings.vehicle_customization.commit.buy())
                 enabled = isTransactionValid(moneyState, stylePrice)
