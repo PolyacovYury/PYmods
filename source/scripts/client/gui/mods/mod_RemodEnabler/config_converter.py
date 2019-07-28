@@ -3,6 +3,9 @@ import os
 from PYmodsCore import remDups, loadJson
 from PYmodsCore.config.json_reader import JSONLoader
 from collections import namedtuple, OrderedDict
+from items.components.shared_components import EmblemSlot
+from items.readers.shared_readers import __customizationSlotIdRanges as customizationSlotIdRanges
+from vehicle_systems.tankStructure import TankPartNames
 
 Wheel = namedtuple('Wheel', ('isLeft', 'radius', 'nodeName', 'isLeading', 'leadingSyncAngle'))
 WheelGroup = namedtuple('WheelGroup', ('isLeft', 'template', 'count', 'startIndex', 'radius'))
@@ -19,6 +22,8 @@ SplineConfig = namedtuple('SplineConfig', (
     'segment2ModelLeft', 'segment2ModelRight', 'segment2Offset', 'atlasUTiles', 'atlasVTiles'))
 NodesAndGroups = namedtuple('NodesAndGroups', ('nodes', 'groups'))
 chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams')
+defaultEmblemSlot = EmblemSlot(
+    [0, 0, 0], [0, 0, 0], [0, 0, 0], 0.0, False, 'clan', False, True, None, 0, True)
 
 
 def readOrdered(new_path):
@@ -77,16 +82,28 @@ def migrateConfigs(g_config):
             for key, val in old_conf.items():
                 if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key:
                     continue
-                elif key == 'engine':
+                if key in TankPartNames.ALL and 'emblemSlots' in val:
+                    emblemSlots = []
+                    for data in val['emblemSlots']:
+                        slotData = OrderedDict()
+                        emblemSlots.append(slotData)
+                        for k, v in OrderedDict(zip(defaultEmblemSlot._fields, defaultEmblemSlot)):
+                            if k in data:
+                                v = data[k]
+                            elif k == 'slotId':
+                                v = customizationSlotIdRanges[key][data['type']][0]
+                            slotData[k] = v
+                    val['emblemSlots'][:] = emblemSlots
+                if key == 'engine':
                     val = OrderedDict((k, v) for k, v in val.iteritems() if 'wwsound' not in k)
-                elif key == 'gun':
+                if key == 'gun':
                     val = OrderedDict((k, v) for k, v in val.iteritems() if 'ffect' not in k)
                     if 'drivenJoints' not in val:
                         val['drivenJoints'] = None
-                elif key == 'hull':
+                if key == 'hull':
                     if 'exhaust' in val and 'nodes' in val['exhaust'] and isinstance(val['exhaust']['nodes'], basestring):
                         val['exhaust']['nodes'] = val['exhaust']['nodes'].split()
-                elif key == 'chassis':
+                if key == 'chassis':
                     val = migrate_chassis_config(val)
                 new_conf[key] = val
             loadJson(g_config.ID, sname, new_conf, root, True, sort_keys=False)
