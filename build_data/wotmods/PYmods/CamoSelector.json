@@ -20,6 +20,7 @@
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/style_info.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/style_info.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/tooltips.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/tooltips.pyc"
     }
 }
