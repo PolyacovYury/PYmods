@@ -10,7 +10,7 @@ chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'sp
 
 def apply(vDesc, modelDesc, modelsSet):
     for key in chassis_params:
-        obj = modelDesc['chassis'][key]
+        obj = copy.deepcopy(modelDesc['chassis'][key])
         if key == 'traces':
             obj['size'] = tuple(obj['size'])
             obj = cc.Traces(**obj)
