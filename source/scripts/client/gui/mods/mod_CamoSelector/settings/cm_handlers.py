@@ -28,8 +28,10 @@ class CustomizationItemCMHandler(WGCMHandler):
         result = super(CustomizationItemCMHandler, self)._generateOptions(ctx)
         if self.__ctx.isBuy:
             return result
-        result = result[-1:]
         item = self.itemsCache.items.getItemByCD(self._intCD)
+        if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
+            return [result[0], result[-1]]
+        result = result[-1:]
         if item.itemTypeID != GUI_ITEM_TYPE.CAMOUFLAGE:
             return result
         getOptionLabel = lambda option: g_config.i18n['contextMenu_' + option]
