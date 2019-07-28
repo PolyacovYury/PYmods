@@ -91,13 +91,11 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
                            self._formfactorGroupsFilterByTabIndex[self._tabIndex].iteritems() if value]
             requirement |= REQ_CRITERIA.CUSTOM(lambda item: not hasattr(item, 'formfactor') or item.formfactor in formfactors)
         if self._propertySheetShow:
-            currentSlot = self.__ctx.selectedAnchor
-            if currentSlot.slotType == GUI_ITEM_TYPE.PROJECTION_DECAL:
-                currentAnchor = self._currentVehicle.item.getAnchorBySlotId(currentSlot.slotType, currentSlot.areaId,
-                                                                            currentSlot.regionIdx)
-                allSupportedForms = currentAnchor.formfactors
+            slot = self.__ctx.selectedAnchor
+            if slot.slotType == GUI_ITEM_TYPE.PROJECTION_DECAL:
+                anchor = self._currentVehicle.item.getAnchorBySlotId(slot.slotType, slot.areaId, slot.regionIdx)
                 requirement |= REQ_CRITERIA.CUSTOM(
-                    lambda item: not hasattr(item, 'formfactor') or item.formfactor in allSupportedForms)
+                    lambda item: not hasattr(item, 'formfactor') or item.formfactor in anchor.formfactors)
         requirement |= REQ_CRITERIA.CUSTOM(lambda item: not self._proxy.isBuy or not item.isHiddenInUI())
         filteredItems = {k: v for k, v in items.iteritems() if requirement(v)}
         return filteredItems
@@ -115,8 +113,8 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             allCustomizationItems.update(self.itemsCache.items.getItems(
                 TABS_ITEM_TYPE_MAPPING[tabIndex], requirement, onlyWithPrices=self._proxy.isBuy))
 
-        builtCustomizationItems = self._builtCustomizationItems
-        if seasonID not in builtCustomizationItems or tabIndex not in builtCustomizationItems[seasonID]:
+        items = self._builtCustomizationItems
+        if seasonID not in items or tabIndex not in items[seasonID]:
             filteredItems = self._applyFilter(builtAllCustomizationItems[seasonID][tabIndex], self._seasonID)
             customizationItems = []
             customizationBookmarks = []
@@ -135,11 +133,9 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             self._customizationItems = customizationItems
             self._customizationBookmarks = customizationBookmarks
             self._itemSizeData = itemSizeData
-            builtCustomizationItems.setdefault(self._seasonID, {})[self._tabIndex] = (
-                customizationItems, customizationBookmarks, itemSizeData)
+            items.setdefault(self._seasonID, {})[self._tabIndex] = (customizationItems, customizationBookmarks, itemSizeData)
         else:
-            self._customizationItems, self._customizationBookmarks, self._itemSizeData = \
-                builtCustomizationItems[self._seasonID][self._tabIndex]
+            self._customizationItems, self._customizationBookmarks, self._itemSizeData = items[self._seasonID][self._tabIndex]
         self._selectedIdx = -1
         if self._selectIntCD in self._customizationItems:
             self._selectedIdx = self._customizationItems.index(self._selectIntCD)
@@ -156,10 +152,8 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
         typeID = item.itemTypeID
         if typeID == GUI_ITEM_TYPE.STYLE:
             return item.mayInstall(g_currentVehicle.item) if item.modelsSet else all(
-                self.isItemSuitableForTab(TYPE_TO_TAB_IDX[x.itemTypeID], x) for season in
+                self.__hasSlots(TABS_SLOT_TYPE_MAPPING[TYPE_TO_TAB_IDX[x.itemTypeID]]) for season in
                 SeasonType.COMMON_SEASONS for x in item.getOutfit(season).items())
-        if typeID == GUI_ITEM_TYPE.MODIFICATION:
-            return item.mayInstall(g_currentVehicle.item)
         return True
 
     def CSComparisonKey(self, item):
