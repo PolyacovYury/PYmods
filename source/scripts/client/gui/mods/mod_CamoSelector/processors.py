@@ -218,13 +218,9 @@ def new_reload(base, self, vDesc, vState, outfit):
     return base(self, vDesc, vState, outfit)
 
 
-@overrideMethod(CompoundAppearance, '_CompoundAppearance__prepareOutfit')
+@overrideMethod(CompoundAppearance, '_prepareOutfit')
 def new_prepareOutfit(base, self, *a, **kw):
-    hasOutfit = bool(self.outfit)
-    base(self, *a, **kw)
-    if hasOutfit:
-        return
-    outfit = self.outfit.copy()
+    outfit = base(self, *a, **kw).copy()
     vDesc = self.typeDescriptor
     if not vDesc:
         return
@@ -235,7 +231,7 @@ def new_prepareOutfit(base, self, *a, **kw):
         seasonName = SEASON_TYPE_TO_NAME[SeasonType.fromArenaKind(BigWorld.player().arena.arenaType.vehicleCamouflageKind)]
         outfit = applyOutfitInfo(outfit, seasonName, vDesc, g_config.arenaCamoCache.setdefault(self.id, {}),
                                  self.id, self.id == BigWorld.player().playerVehicleID)
-    self._CompoundAppearance__outfit = outfit
+    return outfit
 
 
 @overrideMethod(PlayerAvatar, 'onBecomePlayer')
