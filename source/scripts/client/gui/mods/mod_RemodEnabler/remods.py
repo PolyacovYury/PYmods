@@ -10,12 +10,12 @@ chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'sp
 
 def apply(vDesc, modelDesc, modelsSet):
     for key in chassis_params:
-        obj = modelDesc['chassis'][key]
+        obj = copy.deepcopy(modelDesc['chassis'][key])
         if key == 'traces':
             obj['size'] = tuple(obj['size'])
             obj = cc.Traces(**obj)
         elif key == 'tracks':
-            obj = cc.TrackMaterials(**obj)
+            obj = cc.TrackBasicParams(**obj)
         elif key == 'wheels':
             obj = cc.WheelsConfig(groups=tuple(cc.WheelGroup(**d) for d in obj['groups']),
                                   wheels=tuple(cc.Wheel(**d) for d in obj['wheels']))
@@ -30,7 +30,8 @@ def apply(vDesc, modelDesc, modelsSet):
             obj = cc.SplineConfig(({modelsSet: cc.SplineSegmentModelSet(**obj['segmentModelSets'])} or None),
                                   **{k: v for k, v in obj.items() if k != 'segmentModelSets'})
         elif key == 'trackParams':
-            obj = cc.TrackParams(**obj)
+            obj = cc.TrackSplineParams(**obj)
+            key = 'trackSplineParams'
         elif key == 'leveredSuspension':
             if obj is not None:
                 obj = cc.LeveredSuspensionConfig(([cc.SuspensionLever(**d) for d in obj['levers']] or None),
@@ -44,7 +45,7 @@ def apply(vDesc, modelDesc, modelsSet):
         vDesc.chassis.AODecals[0].setElement(3, 1, AODecalsOffset.y)
     exclMask = modelDesc['common']['camouflage']['exclusionMask']
     vDesc.type.camouflage = Camouflage(
-        modelDesc['common']['camouflage']['tiling'] if exclMask else vDesc.type.camouflage.tiling, exclMask)
+        modelDesc['common']['camouflage']['tiling'] if exclMask else vDesc.type.camouflage.tiling, exclMask, None, None)
     for partName in TankPartNames.ALL:
         part = getattr(vDesc, partName)
         models = part.modelsSets[modelsSet]
@@ -56,7 +57,7 @@ def apply(vDesc, modelDesc, modelsSet):
         camoData = modelDesc[partName]['camouflage']
         exclMask = camoData['exclusionMask']
         if exclMask:
-            part.camouflage = Camouflage(camoData['tiling'], exclMask)
+            part.camouflage = Camouflage(camoData['tiling'], exclMask, None, None)
     vDesc.gun.drivenJoints = modelDesc['gun']['drivenJoints']
     exhaust = modelDesc['hull']['exhaust']
     for effectDesc in vDesc.hull.customEffects:

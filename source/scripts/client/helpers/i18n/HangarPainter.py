@@ -178,8 +178,8 @@ def new_tankmanSkill_getValue(base, self):
 def new_tankmanAttr_getValue(base, self):
     result = base(self)
     return ("<font color='#%s'>%s</font>" % (_config.data['colour'], result)
-            if _config.data['enabled'] and
-               self._name in ('name', 'rank', 'role', 'efficiencyRoleLevel', 'currentVehicleName') else result)
+            if _config.data['enabled'] and self._name in ('name', 'rank', 'role', 'efficiencyRoleLevel', 'currentVehicleName')
+            else result)
 
 
 def new_I18nDialog_init(base, self, *args, **kwargs):

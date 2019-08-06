@@ -52,7 +52,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.loginView = loginView
         self.lines = []
         self.curPercentage = 0
-        self.doLogin = self.loginManager.checkWgcAvailability() and not self.sCore.getSetting(GAME.LOGIN_SERVER_SELECTION)
+        self.doLogin = self.loginManager.wgcAvailable and not self.sCore.getSetting(GAME.LOGIN_SERVER_SELECTION)
 
     def _populate(self):
         super(SkinnerLoading, self)._populate()
@@ -149,7 +149,7 @@ def doLogin(app):
     loginView = app.containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOGIN))
     if not loginView:
         return
-    if loginView.loginManager.checkWgcAvailability():
+    if loginView.loginManager.wgcAvailable:
         loginView.loginManager.tryWgcLogin()
     elif loginView.loginManager.getPreference('remember_user'):
         password = '*' * loginView.loginManager.getPreference('password_length')

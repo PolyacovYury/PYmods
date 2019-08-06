@@ -1,12 +1,12 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
-from gui.Scaleform.daapi.view.lobby.customization.shared import getTotalPurchaseInfo, TABS_ITEM_TYPE_MAPPING, \
-    TABS_SLOT_TYPE_MAPPING, C11nMode
+from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_TYPE_MAPPING, TABS_SLOT_TYPE_MAPPING
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION as CUSTOMIZATION
+from gui.customization.shared import getTotalPurchaseInfo
 from gui.shared.formatters import getItemPricesVO, text_styles, getMoneyVO
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
@@ -14,6 +14,7 @@ from gui.shared.money import Money
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.graphics import isRendererPipelineDeferred
 from helpers.i18n import makeString as _ms
+from items.components.c11n_constants import SeasonType
 from .item_vo import buildCustomizationItemDataVO
 from .shared import CSMode, getItemSeason
 from .. import g_config
@@ -30,7 +31,7 @@ class CustomizationBottomPanel(CBP):
 
     def __onActualModeChanged(self):
         self._carouselDP.updateTabGroups()
-        self.__updatePopoverBtnIcon()
+        self.__onModeChanged(None)
 
     def __setNotificationCounters(self):
         item = g_currentVehicle.item
@@ -58,7 +59,7 @@ class CustomizationBottomPanel(CBP):
         purchaseItems = self.__ctx.getPurchaseItems()
         cartInfo = getTotalPurchaseInfo(purchaseItems)
         totalPriceVO = getItemPricesVO(cartInfo.totalPrice)
-        label = _ms(CUSTOMIZATION.COMMIT_BUY if cartInfo.totalPrice != ITEM_PRICE_EMPTY else CUSTOMIZATION.COMMIT_APPLY)
+        label = _ms(CUSTOMIZATION.COMMIT_APPLY)
         tooltip = CUSTOMIZATION.CUSTOMIZATION_BUYDISABLED_BODY
         fromStorageCount = 0
         toBuyCount = 0
@@ -71,6 +72,8 @@ class CustomizationBottomPanel(CBP):
         outfitsModified = self.__ctx.isOutfitsModified()
         if outfitsModified:
             self.__showBill()
+            if cartInfo.totalPrice != ITEM_PRICE_EMPTY:
+                label = _ms(CUSTOMIZATION.COMMIT_BUY)
         else:
             self.__hideBill()
             tooltip = CUSTOMIZATION.CUSTOMIZATION_NOTSELECTEDITEMS
@@ -87,7 +90,7 @@ class CustomizationBottomPanel(CBP):
                            '{} {}'.format(_ms(CUSTOMIZATION.BUYPOPOVER_FROMSTORAGE), fromStorageCount)),
                        'isEnoughStatuses': getMoneyVO(Money(True, True, True)),
                        'pricePanel': totalPriceVO[0]}})
-        self.as_setItemsPopoverBtnEnabledS(not self.__ctx.currentOutfit.isEmpty())
+        self.as_setItemsPopoverBtnEnabledS(any(i[1].isFilled() for i in self.__ctx.currentOutfit.itemsFull()))
 
     def _carouseItemWrapper(self, itemCD):
         isBuy = self.__ctx.isBuy
@@ -96,20 +99,19 @@ class CustomizationBottomPanel(CBP):
         purchaseLimit = self.__ctx.getPurchaseLimit(item)
         showUnsupportedAlert = item.itemTypeID == GUI_ITEM_TYPE.MODIFICATION and not isRendererPipelineDeferred()
         isCurrentlyApplied = itemCD in self._carouselDP.getCurrentlyApplied()
+        if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
+            isApplied = self.__ctx.modifiedStyle == item
+        else:
+            isApplied = any((self.__ctx.getModifiedOutfit(season).has(item) for season in SeasonType.COMMON_SEASONS))
         noPrice = isBuy and item.buyCount <= 0
         isDarked = isBuy and purchaseLimit == 0 and itemInventoryCount == 0
-        isAlreadyUsed = isDarked and not isCurrentlyApplied
+        isAlreadyUsed = isDarked and not isApplied
         forceLocked = isAlreadyUsed
-        isUnsupportedForm = False
         autoRentEnabled = self.__ctx.autoRentEnabled()
-        if item.itemTypeID == GUI_ITEM_TYPE.PROJECTION_DECAL and self._currentParentSlot is not None and (
-                not self.__ctx.isSlotFilled(self.__ctx.selectedAnchor) or self._propertySheetShow):
-            isUnsupportedForm = item.formfactor in self._currentParentSlot.getUnsupportedForms(g_currentVehicle.item)
-            forceLocked = forceLocked or isUnsupportedForm
         return buildCustomizationItemDataVO(
             isBuy, item, itemInventoryCount, showUnsupportedAlert=showUnsupportedAlert, isCurrentlyApplied=isCurrentlyApplied,
             isAlreadyUsed=isAlreadyUsed, forceLocked=forceLocked, isDarked=isDarked, noPrice=noPrice,
-            autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item, isUnsupportedForm=isUnsupportedForm)
+            autoRentEnabled=autoRentEnabled, vehicle=g_currentVehicle.item)
 
     def __getItemTabsData(self):
         data = []
@@ -131,7 +133,6 @@ class CustomizationBottomPanel(CBP):
         return data, pluses
 
     def __onModeChanged(self, mode):
-        self._carouselDP.selectItem(self.__ctx.modifiedStyle if mode == C11nMode.STYLE else None)
         self.__setBottomPanelBillData()
         self.__setFooterInitData()
         self.__scrollToNewItem()
