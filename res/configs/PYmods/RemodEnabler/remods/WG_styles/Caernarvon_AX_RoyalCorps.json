@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -1.5499999523162842
+            "textureScale": -1.5499999523162842,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -295,12 +296,9 @@
                 "secondLeft": null,
                 "secondRight": null
             },
-            "segmentLength": 0.13600000739097595,
-            "leftDesc": "vehicles/british/GB93_Caernarvon_AX/track/left.track",
-            "rightDesc": "vehicles/british/GB93_Caernarvon_AX/track/right.track",
+            "leftDesc": [["vehicles/british/GB93_Caernarvon_AX/track/left.track", 0, 0.13600000739097595, 0.2160000056028366, 0.0]],
+            "rightDesc": [["vehicles/british/GB93_Caernarvon_AX/track/right.track", 0, 0.13600000739097595, 0.2160000056028366, 0.0]],
             "lodDist": 50.0,
-            "segmentOffset": 0.2160000056028366,
-            "segment2Offset": 0.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },

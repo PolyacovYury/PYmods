@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -2.5
+            "textureScale": -2.5,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -339,12 +340,9 @@
                 "secondLeft": "vehicles/american/A67_T57_58/track/segment2.model",
                 "secondRight": "vehicles/american/A67_T57_58/track/segment2.model"
             },
-            "segmentLength": 0.17800000309944153,
-            "leftDesc": "vehicles/american/A67_T57_58/track/left.track",
-            "rightDesc": "vehicles/american/A67_T57_58/track/right.track",
+            "leftDesc": [["vehicles/american/A67_T57_58/track/left.track", 0, 0.17800000309944153, 0.32100000977516174, 0.08100000023841858]],
+            "rightDesc": [["vehicles/american/A67_T57_58/track/right.track", 0, 0.17800000309944153, 0.32100000977516174, 0.08100000023841858]],
             "lodDist": 50.0,
-            "segmentOffset": 0.32100000977516174,
-            "segment2Offset": 0.08100000023841858,
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },

@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -2.1500000953674316
+            "textureScale": -2.1500000953674316,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -273,12 +274,9 @@
                 "secondLeft": "vehicles/german/G112_KanonenJagdPanzer_105/track/segment_2.model",
                 "secondRight": "vehicles/german/G112_KanonenJagdPanzer_105/track/segment_2.model"
             },
-            "segmentLength": 0.14300000667572021,
-            "leftDesc": "vehicles/german/G112_KanonenJagdPanzer_105/track/left.track",
-            "rightDesc": "vehicles/german/G112_KanonenJagdPanzer_105/track/right.track",
+            "leftDesc": [["vehicles/german/G112_KanonenJagdPanzer_105/track/left.track", 0, 0.14300000667572021, 0.257999986410141, 0.06700000166893005]],
+            "rightDesc": [["vehicles/german/G112_KanonenJagdPanzer_105/track/right.track", 0, 0.14300000667572021, 0.257999986410141, 0.06700000166893005]],
             "lodDist": 50.0,
-            "segmentOffset": 0.257999986410141,
-            "segment2Offset": 0.06700000166893005,
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },

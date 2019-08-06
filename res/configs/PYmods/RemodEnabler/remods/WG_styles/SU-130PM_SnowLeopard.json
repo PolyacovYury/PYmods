@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -3.0
+            "textureScale": -3.0,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -273,12 +274,9 @@
                 "secondLeft": null,
                 "secondRight": null
             },
-            "segmentLength": 0.10543099790811539,
-            "leftDesc": "vehicles/russian/R159_SU_130PM/track/left.track",
-            "rightDesc": "vehicles/russian/R159_SU_130PM/track/right.track",
+            "leftDesc": [["vehicles/russian/R159_SU_130PM/track/left.track", 0, 0.10543099790811539, 0.3651689887046814, 0.0]],
+            "rightDesc": [["vehicles/russian/R159_SU_130PM/track/right.track", 0, 0.10543099790811539, 0.3651689887046814, 0.0]],
             "lodDist": 50.0,
-            "segmentOffset": 0.3651689887046814,
-            "segment2Offset": 0.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },

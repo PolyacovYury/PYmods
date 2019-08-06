@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -1.7000000476837158
+            "textureScale": -1.7000000476837158,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -369,12 +370,9 @@
                 "secondLeft": null,
                 "secondRight": null
             },
-            "segmentLength": 0.14900000393390656,
-            "leftDesc": "vehicles/german/G121_Grille_15_L63/track/left.track",
-            "rightDesc": "vehicles/german/G121_Grille_15_L63/track/right.track",
+            "leftDesc": [["vehicles/german/G121_Grille_15_L63/track/left.track", 0, 0.14900000393390656, 0.06499999761581421, 0.0]],
+            "rightDesc": [["vehicles/german/G121_Grille_15_L63/track/right.track", 0, 0.14900000393390656, 0.06499999761581421, 0.0]],
             "lodDist": 50.0,
-            "segmentOffset": 0.06499999761581421,
-            "segment2Offset": 0.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },

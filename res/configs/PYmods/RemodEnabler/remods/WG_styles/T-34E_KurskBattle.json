@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -2.75
+            "textureScale": -2.75,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -413,12 +414,9 @@
                 "secondLeft": "vehicles/russian/R154_T_34E_1943/track/segment_2.model",
                 "secondRight": "vehicles/russian/R154_T_34E_1943/track/segment_2.model"
             },
-            "segmentLength": 0.3374919891357422,
-            "leftDesc": "vehicles/russian/R154_T_34E_1943/track/left.track",
-            "rightDesc": "vehicles/russian/R154_T_34E_1943/track/right.track",
+            "leftDesc": [["vehicles/russian/R154_T_34E_1943/track/left.track", 0, 0.3374919891357422, 0.10262899845838547, 0.1723960041999817]],
+            "rightDesc": [["vehicles/russian/R154_T_34E_1943/track/right.track", 0, 0.3374919891357422, 0.10262899845838547, 0.1723960041999817]],
             "lodDist": 50.0,
-            "segmentOffset": 0.10262899845838547,
-            "segment2Offset": 0.1723960041999817,
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },
