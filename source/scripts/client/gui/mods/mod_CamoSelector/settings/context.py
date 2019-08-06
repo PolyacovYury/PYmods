@@ -4,16 +4,15 @@ import Event
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
 from gui import SystemMessages
-from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import PersonalNumEditCommands
-from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, SEASON_TYPE_TO_NAME, C11nMode, TYPES_ORDER, \
-    TABS_SLOT_TYPE_MAPPING, SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems, OutfitInfo, getItemInventoryCount, \
-    getStyleInventoryCount, AdditionalPurchaseGroups
+from gui.Scaleform.daapi.view.lobby.customization.shared import C11nTabs, C11nMode, TYPES_ORDER, TABS_SLOT_TYPE_MAPPING, \
+    SEASONS_ORDER, getCustomPurchaseItems, getStylePurchaseItems, OutfitInfo, getItemInventoryCount, getStyleInventoryCount, \
+    AdditionalPurchaseGroups
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.SystemMessages import SM_TYPE
 from gui.customization.context import CustomizationContext as WGCtx, CaruselItemData
 from gui.customization.shared import C11nId, __isTurretCustomizable as isTurretCustom, \
-    getAppliedRegionsForCurrentHangarVehicle, slotsIdsFromAppliedTo
+    getAppliedRegionsForCurrentHangarVehicle, slotsIdsFromAppliedTo, SEASON_TYPE_TO_NAME
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.outfit import Area
 from items.components.c11n_constants import SeasonType
@@ -91,14 +90,6 @@ class CustomizationContext(WGCtx):
         self.actualMode = CSMode.INSTALL
         self._lastTab = {CSMode.BUY: C11nTabs.PAINT, CSMode.INSTALL: C11nTabs.CAMOUFLAGE}
         self.onActualModeChanged = Event.Event(self._eventsManager)
-
-    @property
-    def numberEditModeActive(self):
-        return self._numberEditModeActive
-
-    @numberEditModeActive.setter
-    def numberEditModeActive(self, value):
-        self._numberEditModeActive = value
 
     def installStyleItemsToModifiedOutfits(self, proceed):
         if not proceed:
@@ -230,8 +221,6 @@ class CustomizationContext(WGCtx):
 
     # noinspection PyMethodOverriding
     def tabChanged(self, tabIndex):
-        if self.numberEditModeActive:
-            self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._tabIndex = tabIndex
         mode = self._mode
         if self._tabIndex == C11nTabs.EFFECT:
@@ -274,8 +263,6 @@ class CustomizationContext(WGCtx):
             self.__switcherIgnored = False
             return
         self.__switcherIgnored = True
-        if self.numberEditModeActive:
-            self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_EDIT_MODE)
         self._lastTab[self.actualMode] = self._tabIndex
         self.actualMode = (self.actualMode + 1) % len(CSMode.NAMES)
         self.onActualModeChanged()  # this will cause the carousel to update, which will call onTabChanged anyway
@@ -283,8 +270,6 @@ class CustomizationContext(WGCtx):
 
     def cancelChanges(self):
         self._currentSettings = {'custom': {}, 'remap': {}}
-        if self.numberEditModeActive:
-            self.sendNumberEditModeCommand(PersonalNumEditCommands.CANCEL_NUMBER)
         origMode = self.actualMode
         for actualMode in CSMode.INSTALL, CSMode.BUY:
             self.actualMode = actualMode
@@ -296,13 +281,6 @@ class CustomizationContext(WGCtx):
         self.refreshOutfit()
         self.clearStoredPersonalNumber()
         self.onChangesCanceled()
-
-    def isOnly1ChangedNumberInEditMode(self):
-        if self.numberEditModeActive and not g_currentVehicle.item.descriptor.type.hasCustomDefaultCamouflage:
-            purchaseItems = [it for it in (self.getPurchaseItems() if self.isBuy else self.getModdedPurchaseItems())
-                             if not it.isDismantling and it.group == self.currentSeason]
-            return len(purchaseItems) == 1 and purchaseItems[0].item.itemTypeID == GUI_ITEM_TYPE.PERSONAL_NUMBER
-        return False
 
     def getOutfitsInfo(self):
         outfitsInfo = {}

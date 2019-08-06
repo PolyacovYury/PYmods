@@ -15,7 +15,6 @@ from gui.Scaleform.framework.entities.abstract.AbstractWindowView import Abstrac
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared.personality import ServicesLocator as SL
 from helpers import dependency
-from items.components import c11n_constants
 from items.components.chassis_components import SplineConfig
 from items.components.component_constants import ALLOWED_EMBLEM_SLOTS as AES
 from items.components.shared_components import EmblemSlot
@@ -210,19 +209,12 @@ class ConfigInterface(PYmodsConfigInterface):
                         print self.ID + ': default camomask not found for', sName
                     if 'emblemSlots' in data:
                         data['emblemSlots'] = slots = []
-                        for subDict in confSubDict.get('emblemSlots', []):
+                        for subDict in confSubDict.get('emblemSlots', ()):
                             if subDict['type'] not in AES:
                                 print g_config.ID + ': not supported emblem slot type:', subDict['type'] + ', expected:', AES
                                 continue
-                            descr = EmblemSlot(
-                                Math.Vector3(tuple(subDict['rayStart'])), Math.Vector3(tuple(subDict['rayEnd'])),
-                                Math.Vector3(tuple(subDict['rayUp'])), subDict['size'],
-                                subDict.get('hideIfDamaged', False), subDict['type'],
-                                subDict.get('isMirrored', False),
-                                subDict.get('isUVProportional', True), subDict.get('emblemId', None),
-                                subDict.get('slotId', c11n_constants.customizationSlotIds[key][subDict['type']][0]),
-                                subDict.get('applyToFabric', True))
-                            slots.append(descr)
+                            subDict.update({k: Math.Vector3(subDict[k]) for k in ('rayStart', 'rayEnd', 'rayUp')})
+                            slots.append(EmblemSlot(**subDict))
                     if 'exhaust' in data and 'exhaust' in confSubDict:
                         if 'nodes' in confSubDict['exhaust']:
                             data['exhaust']['nodes'] = confSubDict['exhaust']['nodes']
@@ -427,15 +419,7 @@ class RemodEnablerUI(AbstractWindowView):
                         camouflage['tiling'] = part.camouflage.tiling
                 for partName in TankPartNames.ALL:
                     part = getattr(vDesc, partName)
-                    data[partName]['emblemSlots'] = []
-                    for slot in part.emblemSlots:
-                        slotDict = OrderedDict()
-                        for key in ('rayStart', 'rayEnd', 'rayUp'):
-                            slotDict[key] = getattr(slot, key).list()
-                        for key in ('size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId', 'slotId',
-                                    'applyToFabric'):
-                            slotDict[key] = getattr(slot, key)
-                        data[partName]['emblemSlots'].append(slotDict)
+                    data[partName]['emblemSlots'] = [_asDict(slot) for slot in part.emblemSlots]
             except StandardError:
                 SystemMessages.pushMessage(
                     'temp_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)

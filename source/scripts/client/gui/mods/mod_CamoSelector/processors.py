@@ -6,9 +6,8 @@ from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PYmodsCore import overrideMethod, loadJson
 from gui import g_tankActiveCamouflage
-from gui.Scaleform.daapi.view.lobby.customization.shared import SEASON_TYPE_TO_NAME
 from gui.Scaleform.framework import ViewTypes
-from gui.customization.shared import C11N_ITEM_TYPE_MAP
+from gui.customization.shared import C11N_ITEM_TYPE_MAP, SEASON_TYPE_TO_NAME
 from gui.customization.shared import __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
@@ -219,13 +218,9 @@ def new_reload(base, self, vDesc, vState, outfit):
     return base(self, vDesc, vState, outfit)
 
 
-@overrideMethod(CompoundAppearance, '_CompoundAppearance__prepareOutfit')
+@overrideMethod(CompoundAppearance, '_prepareOutfit')
 def new_prepareOutfit(base, self, *a, **kw):
-    hasOutfit = bool(self.outfit)
-    base(self, *a, **kw)
-    if hasOutfit:
-        return
-    outfit = self.outfit.copy()
+    outfit = base(self, *a, **kw).copy()
     vDesc = self.typeDescriptor
     if not vDesc:
         return
@@ -236,7 +231,7 @@ def new_prepareOutfit(base, self, *a, **kw):
         seasonName = SEASON_TYPE_TO_NAME[SeasonType.fromArenaKind(BigWorld.player().arena.arenaType.vehicleCamouflageKind)]
         outfit = applyOutfitInfo(outfit, seasonName, vDesc, g_config.arenaCamoCache.setdefault(self.id, {}),
                                  self.id, self.id == BigWorld.player().playerVehicleID)
-    self._CompoundAppearance__outfit = outfit
+    return outfit
 
 
 @overrideMethod(PlayerAvatar, 'onBecomePlayer')

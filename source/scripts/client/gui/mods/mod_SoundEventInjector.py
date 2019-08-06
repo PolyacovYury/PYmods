@@ -96,7 +96,7 @@ class ConfigInterface(PYmodsConfigInterface):
                                 if key != 'shotSound':
                                     print self.ID + ':', confName + ': only shotSound effects are supported,', key, 'ignored'
                                     itemData['effects'].pop(key)
-                        itemsData.setdefault(itemName, {}).update(itemData)                        
+                        itemsData.setdefault(itemName, {}).update(itemData)
         print self.ID + ': loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
         for sname, effData in self.data['gun_effects'].iteritems():
             if sname not in g_cache._gunEffects:
