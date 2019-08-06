@@ -268,6 +268,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.editedBanks['delete'] = remDups(self.editedBanks['delete'])
         bankFiles['orig'] = set(map(str.lower, bankFiles['orig']))
         poolKeys = {'memoryManager': ('defaultPool', 'lowEnginePool', 'streamingPool', 'IOPoolSize'),
+                    'memoryManager_64bit': ('defaultPool', 'lowEnginePool', 'streamingPool', 'IOPoolSize'),
                     'soundRender': ('max_voices',)}
         for mgrKey in ('memoryLimit',):  # in case they add something later
             value = soundMgr[mgrKey]
