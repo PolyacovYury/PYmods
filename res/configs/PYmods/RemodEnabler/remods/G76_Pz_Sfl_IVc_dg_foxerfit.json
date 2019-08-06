@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -2.0999999046325684
+            "textureScale": -2.0999999046325684,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -540,12 +541,9 @@
             "lodSettings": null
         },
         "splineDesc": {
-            "segmentLength": 0.11699999868869781,
-            "leftDesc": "vehicles/german/G76_Pz_Sfl_IVc/track/left.track",
-            "rightDesc": "vehicles/german/G76_Pz_Sfl_IVc/track/right.track",
+            "leftDesc": [["vehicles/german/G76_Pz_Sfl_IVc/track/left.track", 0, 0.11699999868869781, 0.2540000081062317, 0.0]],
+            "rightDesc": [["vehicles/german/G76_Pz_Sfl_IVc/track/right.track", 0, 0.11699999868869781, 0.2540000081062317, 0.0]],
             "lodDist": 70.0,
-            "segmentOffset": 0.2540000081062317,
-            "segment2Offset": 0.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1,
             "segmentModelSets": {
@@ -581,7 +579,9 @@
                 "type": "clan",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 10000,
+                "applyToFabric": true
             },
             {
                 "rayStart": [-1.6921499967575073, 0.8635889887809753, -1.5402100086212158],
@@ -592,7 +592,9 @@
                 "type": "player",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 13000,
+                "applyToFabric": true
             },
             {
                 "rayStart": [-1.6921499967575073, 0.8774250149726868, -0.4046359956264496],
@@ -603,7 +605,9 @@
                 "type": "inscription",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 14000,
+                "applyToFabric": true
             },
             {
                 "rayStart": [1.6921499967575073, 0.8774250149726868, -0.4046359956264496],
@@ -614,7 +618,9 @@
                 "type": "inscription",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 14000,
+                "applyToFabric": true
             },
             {
                 "rayStart": [1.6921499967575073, 0.8635889887809753, -1.5402100086212158],
@@ -625,7 +631,9 @@
                 "type": "player",
                 "isMirrored": true,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 13000,
+                "applyToFabric": true
             }
         ]
     },
@@ -645,7 +653,9 @@
                 "type": "insigniaOnGun",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 49000,
+                "applyToFabric": true
             }
         ],
         "drivenJoints": null

@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -2.3499999046325684
+            "textureScale": -2.3499999046325684,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -273,12 +274,9 @@
                 "secondLeft": null,
                 "secondRight": null
             },
-            "segmentLength": 0.09749999642372131,
-            "leftDesc": "vehicles/sweden/S26_Lansen_C/track/left.track",
-            "rightDesc": "vehicles/sweden/S26_Lansen_C/track/right.track",
+            "leftDesc": [["vehicles/sweden/S26_Lansen_C/track/left.track", 0, 0.09749999642372131, 0.07453420013189316, 0.0]],
+            "rightDesc": [["vehicles/sweden/S26_Lansen_C/track/right.track", 0, 0.09749999642372131, 0.07453420013189316, 0.0]],
             "lodDist": 50.0,
-            "segmentOffset": 0.07453420013189316,
-            "segment2Offset": 0.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },

@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -1.5
+            "textureScale": -1.5,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -273,12 +274,9 @@
                 "secondLeft": "vehicles/russian/R77_KV2/track/segment.model",
                 "secondRight": "vehicles/russian/R77_KV2/track/segment.model"
             },
-            "segmentLength": 0.15299999713897705,
-            "leftDesc": "vehicles/russian/R77_KV2/track/left.track",
-            "rightDesc": "vehicles/russian/R77_KV2/track/right.track",
+            "leftDesc": [["vehicles/russian/R77_KV2/track/left.track", 0, 0.15299999713897705, 0.10999999940395355, 0.0]],
+            "rightDesc": [["vehicles/russian/R77_KV2/track/right.track", 0, 0.15299999713897705, 0.10999999940395355, 0.0]],
             "lodDist": 50.0,
-            "segmentOffset": 0.10999999940395355,
-            "segment2Offset": 0.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },
@@ -387,7 +385,9 @@
                 "type": "insigniaOnGun",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 49000,
+                "applyToFabric": true
             }
         ],
         "drivenJoints": null

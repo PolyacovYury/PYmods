@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -3.5
+            "textureScale": -3.5,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -320,12 +321,9 @@
             "lodSettings": null
         },
         "splineDesc": {
-            "segmentLength": 0.08500000089406967,
-            "leftDesc": "vehicles/german/G63_PzI_ausf_C/track/left.track",
-            "rightDesc": "vehicles/german/G63_PzI_ausf_C/track/right.track",
+            "leftDesc": [["vehicles/german/G63_PzI_ausf_C/track/left.track", 0, 0.08500000089406967, 0.19300000369548798, 0.0]],
+            "rightDesc": [["vehicles/german/G63_PzI_ausf_C/track/right.track", 0, 0.08500000089406967, 0.19300000369548798, 0.0]],
             "lodDist": 70.0,
-            "segmentOffset": 0.19300000369548798,
-            "segment2Offset": 0.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1,
             "segmentModelSets": {
@@ -361,7 +359,9 @@
                 "type": "clan",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 10000,
+                "applyToFabric": true
             },
             {
                 "rayStart": [-0.011148699559271336, 0.28352999687194824, 1.6721299886703491],
@@ -372,7 +372,9 @@
                 "type": "inscription",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 14000,
+                "applyToFabric": true
             }
         ]
     },
@@ -388,7 +390,9 @@
                 "type": "player",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 33000,
+                "applyToFabric": true
             },
             {
                 "rayStart": [0.6024580001831055, 0.24883100390434265, 0.28115400671958923],
@@ -399,7 +403,9 @@
                 "type": "player",
                 "isMirrored": true,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 33000,
+                "applyToFabric": true
             }
         ]
     },

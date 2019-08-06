@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -1.899999976158142
+            "textureScale": -1.899999976158142,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -391,12 +392,9 @@
                 "secondLeft": null,
                 "secondRight": null
             },
-            "segmentLength": 0.17951999604701996,
-            "leftDesc": "vehicles/poland/Pl08_50TP_prototyp/track/left.track",
-            "rightDesc": "vehicles/poland/Pl08_50TP_prototyp/track/right.track",
+            "leftDesc": [["vehicles/poland/Pl08_50TP_prototyp/track/left.track", 0, 0.17951999604701996, 0.22474700212478638, 0.0]],
+            "rightDesc": [["vehicles/poland/Pl08_50TP_prototyp/track/right.track", 0, 0.17951999604701996, 0.22474700212478638, 0.0]],
             "lodDist": 50.0,
-            "segmentOffset": 0.22474700212478638,
-            "segment2Offset": 0.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },

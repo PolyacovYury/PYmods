@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -2.0
+            "textureScale": -2.0,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -339,12 +340,9 @@
                 "secondLeft": null,
                 "secondRight": null
             },
-            "segmentLength": 0.08900000154972076,
-            "leftDesc": "vehicles/french/F05_BDR_G1B/track/left.track",
-            "rightDesc": "vehicles/french/F05_BDR_G1B/track/right.track",
+            "leftDesc": [["vehicles/french/F05_BDR_G1B/track/left.track", 0, 0.08900000154972076, 0.09700000286102295, 0.0]],
+            "rightDesc": [["vehicles/french/F05_BDR_G1B/track/right.track", 0, 0.08900000154972076, 0.09700000286102295, 0.0]],
             "lodDist": 50.0,
-            "segmentOffset": 0.09700000286102295,
-            "segment2Offset": 0.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },

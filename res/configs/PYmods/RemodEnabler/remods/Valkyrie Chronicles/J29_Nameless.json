@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -1.100000023841858
+            "textureScale": -1.100000023841858,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -298,12 +299,9 @@
             "lodSettings": null
         },
         "splineDesc": {
-            "segmentLength": 0.19300000369548798,
-            "leftDesc": "vehicles/japan/J29_Nameless/track/left.track",
-            "rightDesc": "vehicles/japan/J29_Nameless/track/right.track",
+            "leftDesc": [["vehicles/japan/J29_Nameless/track/left.track", 0, 0.19300000369548798, 0.33500000834465027, 0.0]],
+            "rightDesc": [["vehicles/japan/J29_Nameless/track/right.track", 0, 0.19300000369548798, 0.33500000834465027, 0.0]],
             "lodDist": 50.0,
-            "segmentOffset": 0.33500000834465027,
-            "segment2Offset": 0.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1,
             "segmentModelSets": {
@@ -339,7 +337,9 @@
                 "type": "clan",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 10000,
+                "applyToFabric": true
             }
         ]
     },
@@ -355,7 +355,9 @@
                 "type": "fixedEmblem",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": 3601
+                "emblemId": 3601,
+                "slotId": 37000,
+                "applyToFabric": true
             }
         ]
     },
@@ -371,7 +373,9 @@
                 "type": "insigniaOnGun",
                 "isMirrored": false,
                 "isUVProportional": true,
-                "emblemId": null
+                "emblemId": null,
+                "slotId": 49000,
+                "applyToFabric": true
             }
         ],
         "drivenJoints": null

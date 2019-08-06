@@ -18,7 +18,8 @@
             "lodDist": 90.0,
             "leftMaterial": "track_mat_L_skinned",
             "rightMaterial": "track_mat_R_skinned",
-            "textureScale": -1.5
+            "textureScale": -1.5,
+            "pairsCount": 1
         },
         "wheels": {
             "groups": [
@@ -501,12 +502,9 @@
                 "secondLeft": null,
                 "secondRight": null
             },
-            "segmentLength": 0.15000000596046448,
-            "leftDesc": "vehicles/russian/R45_IS-7/track/left.track",
-            "rightDesc": "vehicles/russian/R45_IS-7/track/right.track",
+            "leftDesc": [["vehicles/russian/R45_IS-7/track/left.track", 0, 0.15000000596046448, 0.13500000536441803, 0.0]],
+            "rightDesc": [["vehicles/russian/R45_IS-7/track/right.track", 0, 0.15000000596046448, 0.13500000536441803, 0.0]],
             "lodDist": 50.0,
-            "segmentOffset": 0.13500000536441803,
-            "segment2Offset": 0.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },
