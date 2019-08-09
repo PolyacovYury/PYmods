@@ -21,7 +21,7 @@ SplineConfig = namedtuple('SplineConfig', (
     'segmentModelLeft', 'segmentModelRight', 'segmentLength', 'leftDesc', 'rightDesc', 'lodDist', 'segmentOffset',
     'segment2ModelLeft', 'segment2ModelRight', 'segment2Offset', 'atlasUTiles', 'atlasVTiles'))
 NodesAndGroups = namedtuple('NodesAndGroups', ('nodes', 'groups'))
-chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams')
+chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams', 'trackSplineParams')
 defaultEmblemSlot = EmblemSlot(
     [0, 0, 0], [0, 0, 0], [0, 0, 0], 0.0, False, 'clan', False, True, None, 0, True)
 
@@ -207,5 +207,9 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
         if key == 'tracks':
             if 'pairsCount' not in obj:
                 obj['pairsCount'] = 1
+        if key == 'trackParams':
+            new_config.pop(key, None)
+            key = 'trackSplineParams'
+            new_config[key] = obj
     new_config.setdefault('leveredSuspension')
     return new_config

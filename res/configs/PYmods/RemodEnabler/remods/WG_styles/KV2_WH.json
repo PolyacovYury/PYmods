@@ -280,7 +280,7 @@
             "atlasUTiles": 1,
             "atlasVTiles": 1
         },
-        "trackParams": {
+        "trackSplineParams": {
             "thickness": 0.0,
             "maxAmplitude": 0.09000000357627869,
             "maxOffset": 0.09000000357627869,

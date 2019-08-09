@@ -281,7 +281,7 @@
                 "secondRight": "vehicles/russian/R77_KV2/track/segment.model"
             }
         },
-        "trackParams": {
+        "trackSplineParams": {
             "thickness": 0.0,
             "maxAmplitude": 0.09000000357627869,
             "maxOffset": 0.09000000357627869,

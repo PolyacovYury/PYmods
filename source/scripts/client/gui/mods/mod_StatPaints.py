@@ -180,7 +180,7 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
     isAlly = player.arena.vehicles[vID]['team'] == player.team
     if not (g_config.data['player'] if isPlayer else g_config.data['ally'] if isAlly else g_config.data['enemy']):
         return base(self, *a, **kw)
-    fashions = self._CompoundAppearance__fashions
+    fashions = self._CommonTankAppearance__fashions
     paintItems = {}
     paints = g_cache.customization20().paints
     for paintID in g_config.data['scale'].itervalues():
@@ -218,5 +218,5 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
                 if fashion is None:
                     continue
                 fashion.removeCamouflage()
-    self._CompoundAppearance__outfit = outfit
+    self._CommonTankAppearance__outfit = outfit
     base(self, *a, **kw)

@@ -281,7 +281,7 @@
                 "secondRight": "vehicles/russian/R19_IS-3/track/segment2.model"
             }
         },
-        "trackParams": {
+        "trackSplineParams": {
             "thickness": -0.02449999935925007,
             "maxAmplitude": 0.009999999776482582,
             "maxOffset": 0.009999999776482582,

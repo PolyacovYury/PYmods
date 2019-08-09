@@ -237,7 +237,7 @@
                 "secondRight": "vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment2_R.model"
             }
         },
-        "trackParams": {
+        "trackSplineParams": {
             "thickness": 0.002099999925121665,
             "maxAmplitude": 0.10000000149011612,
             "maxOffset": 0.10000000149011612,
