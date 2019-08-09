@@ -5,7 +5,8 @@ from items.components.shared_components import Camouflage, ModelStatesPaths, Nod
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
 
-chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams', 'leveredSuspension')
+chassis_params = (
+    'traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackSplineParams', 'leveredSuspension')
 
 
 def apply(vDesc, modelDesc, modelsSet):
@@ -29,9 +30,8 @@ def apply(vDesc, modelDesc, modelsSet):
         elif key == 'splineDesc':
             obj = cc.SplineConfig(({modelsSet: cc.SplineSegmentModelSet(**obj['segmentModelSets'])} or None),
                                   **{k: v for k, v in obj.items() if k != 'segmentModelSets'})
-        elif key == 'trackParams':
+        elif key == 'trackSplineParams':
             obj = cc.TrackSplineParams(**obj)
-            key = 'trackSplineParams'
         elif key == 'leveredSuspension':
             if obj is not None:
                 obj = cc.LeveredSuspensionConfig(([cc.SuspensionLever(**d) for d in obj['levers']] or None),
