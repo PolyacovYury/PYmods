@@ -399,7 +399,7 @@
                 "secondRight": "vehicles/german/G56_E-100/track/segment.model"
             }
         },
-        "trackParams": {
+        "trackSplineParams": {
             "thickness": -0.020899999886751175,
             "maxAmplitude": 0.09000000357627869,
             "maxOffset": 0.07999999821186066,

@@ -333,7 +333,7 @@
                 "secondRight": null
             }
         },
-        "trackParams": {
+        "trackSplineParams": {
             "thickness": -0.003800000064074993,
             "maxAmplitude": 0.05000000074505806,
             "maxOffset": 0.05000000074505806,

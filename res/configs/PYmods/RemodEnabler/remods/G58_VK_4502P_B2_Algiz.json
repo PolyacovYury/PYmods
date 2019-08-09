@@ -465,7 +465,7 @@
                 "secondRight": "vehicles/remods/G58_VK4502P/track/segment2.model"
             }
         },
-        "trackParams": {
+        "trackSplineParams": {
             "thickness": 0.0,
             "maxAmplitude": 0.05000000074505806,
             "maxOffset": 0.05000000074505806,

@@ -1,7 +1,7 @@
 ﻿{
     "defaultPool": 36,
     "lowEnginePool": 10,
-    "memoryLimit": 250,
+    "memoryLimit": 300,
     "streamingPool": 8,
     "IOPoolSize": 8,
     "max_voices": 110,

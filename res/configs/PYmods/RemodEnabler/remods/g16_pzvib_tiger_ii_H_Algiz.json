@@ -377,7 +377,7 @@
                 "secondRight": "vehicles/remods/G16_PzVIB_Tiger_II_H/track/segment2_R.model"
             }
         },
-        "trackParams": {
+        "trackSplineParams": {
             "thickness": -0.02879999950528145,
             "maxAmplitude": 0.10000000149011612,
             "maxOffset": 0.10000000149011612,
