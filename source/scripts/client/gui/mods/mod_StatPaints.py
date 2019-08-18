@@ -9,8 +9,6 @@ from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod
 from functools import partial
 from gui.Scaleform.battle_entry import BattleEntry
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.customization.c11n_items import Paint
-from items.vehicles import g_cache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 
@@ -210,7 +208,7 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
     if not vDesc or not g_config.data['enabled']:
         return base(self, *a, **kw)
     player = BigWorld.player()
-    team = 'player' if vID == player.playerVehicleID else\
+    team = 'player' if vID == player.playerVehicleID else \
         'ally' if player.arena.vehicles[vID]['team'] == player.team else 'enemy'
     if not (any(g_config.data['paint_' + team + '_' + part] for part in TankPartNames.ALL)):
         return base(self, *a, **kw)
