@@ -1,17 +1,15 @@
 ﻿{
     "UI_description": "Statistics vehicle painter",
-    "UI_setting_ally_text": "Allies",
     "UI_setting_colorScales_text": "Color scales are edited via config file.",
-    "UI_setting_enemy_text": "Enemies",
     "UI_setting_ignorePresentPaints_text": "Ignore present paints",
     "UI_setting_ignorePresentPaints_tooltip": "Enable - vehicles will be coloured into stat colors ignoring present paints or styles.\nDisable - if a vehicle has a paint or style applied to it - it will be kept.",
     "UI_setting_paint_chassis_text": "Chassis",
-    "UI_setting_paint_gun_text": "Guns",
-    "UI_setting_paint_hull_text": "Hulls",
-    "UI_setting_paint_turret_text": "Turrets",
-    "UI_setting_parts_text": "These vehicle parts will be painted:",
-    "UI_setting_player_text": "Player",
+    "UI_setting_paint_gun_text": "Gun",
+    "UI_setting_paint_hull_text": "Hull",
+    "UI_setting_paint_turret_text": "Turret",
+    "UI_setting_parts_ally_text": "Painted ally vehicle parts:",
+    "UI_setting_parts_enemy_text": "Painted enemy vehicle parts:",
+    "UI_setting_parts_player_text": "Painted player vehicle parts:",
     "UI_setting_removeCamouflages_text": "Remove camouflages before repainting",
-    "UI_setting_removeCamouflages_tooltip": "Remove camouflages from the parts which will be recolored.",
-    "UI_setting_teams_text": "These vehicles will be painted:"
+    "UI_setting_removeCamouflages_tooltip": "Remove camouflages from the parts which will be recolored."
 }

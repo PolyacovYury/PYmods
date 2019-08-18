@@ -1,17 +1,15 @@
 ﻿{
     "UI_description": "Стат-Покрасчик",
-    "UI_setting_ally_text": "Союзники",
     "UI_setting_colorScales_text": "Шкала цветов редактируется через конфиг-файл.",
-    "UI_setting_enemy_text": "Противники",
     "UI_setting_ignorePresentPaints_text": "Игнорировать купленные краски",
     "UI_setting_ignorePresentPaints_tooltip": "Включено - машины будут перекрашены в соответствии со статистикой вне зависимости от установленной на нее раскраски или стилей.\nВыключено - если на машину установлена раскраска или стиль - она будет сохранена.",
     "UI_setting_paint_chassis_text": "Шасси",
-    "UI_setting_paint_gun_text": "Орудия",
-    "UI_setting_paint_hull_text": "Корпуса",
-    "UI_setting_paint_turret_text": "Башни",
-    "UI_setting_parts_text": "Эти части машин будут перекрашены:",
-    "UI_setting_player_text": "Игрок",
+    "UI_setting_paint_gun_text": "Орудие",
+    "UI_setting_paint_hull_text": "Корпус",
+    "UI_setting_paint_turret_text": "Башня",
+    "UI_setting_parts_ally_text": "Перекрашиваемые части машин союзников:",
+    "UI_setting_parts_enemy_text": "Перекрашиваемые части машин противников:",
+    "UI_setting_parts_player_text": "Перекрашиваемые части машины игрока:",
     "UI_setting_removeCamouflages_text": "Удалять камуфляжи с перекрашиваемых частей",
-    "UI_setting_removeCamouflages_tooltip": "Удалять камуфляжи с частей машин, которые будут перекрашены.",
-    "UI_setting_teams_text": "Эти машины будут перекрашены:"
+    "UI_setting_removeCamouflages_tooltip": "Удалять камуфляжи с частей машин, которые будут перекрашены."
 }

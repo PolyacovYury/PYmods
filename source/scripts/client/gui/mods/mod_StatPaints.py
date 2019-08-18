@@ -27,7 +27,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.ID = '%(mod_ID)s'
         self.version = '1.2.0 (%(file_compile_date)s)'
         self.data = {'enabled': True,
-                     'ignorePresentPaints': False,
+                     'ignorePresentPaints': True,
                      'removeCamouflages': True,
                      'paint_player_chassis': False,
                      'paint_player_hull': False,
