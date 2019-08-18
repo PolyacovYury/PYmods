@@ -15,8 +15,29 @@ from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 
 
+class CustomPaint(Paint):
+    def __init__(self, color, gloss, metallic):
+        super(CustomPaint, self).__init__(0)
+        self.__color = color[0] + (color[1] << 8) + (color[2] << 16) + (color[3] << 24)
+        self.__gloss = gloss
+        self.__metallic = metallic
+
+    @property
+    def color(self):
+        return self.__color
+
+    @property
+    def gloss(self):
+        return self.__gloss
+
+    @property
+    def metallic(self):
+        return self.__metallic
+
+
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
+        self.paintItems = {}
         self.dossier = {}
         self.pending = set()
         self.attempts = {}
@@ -41,7 +62,12 @@ class ConfigInterface(PYmodsConfigInterface):
                      'paint_enemy_hull': False,
                      'paint_enemy_turret': True,
                      'paint_enemy_gun': True,
-                     'scale': {'2020': 264, '4185': 225, '6340': 203, '8525': 224, '9930': 204, '99999': 200}}
+                     'scale': {'2020': {'color': [133, 30, 27, 255], 'gloss': 0.509, 'metallic': 0.203},
+                               '4185': {'color': [119, 84, 19, 255], 'gloss': 0.509, 'metallic': 0.23},
+                               '6340': {'color': [118, 106, 20, 255], 'gloss': 0.509, 'metallic': 0.23},
+                               '8525': {'color': [51, 111, 51, 255], 'gloss': 0.509, 'metallic': 0.23},
+                               '9930': {'color': [51, 94, 94, 255], 'gloss': 0.509, 'metallic': 0.23},
+                               '99999': {'color': [75, 47, 79, 255], 'gloss': 0.509, 'metallic': 0.23}}}
         self.i18n = {
             'UI_description': 'Statistics vehicle painter',
             'UI_setting_empty_text': '',
@@ -78,6 +104,12 @@ class ConfigInterface(PYmodsConfigInterface):
                 'column2': [
                 ] + self.createPartsTemplate('ally')
                   + self.createPartsTemplate('enemy')}
+
+    def readCurrentSettings(self, quiet=True):
+        super(ConfigInterface, self).readCurrentSettings(quiet)
+        self.paintItems.clear()
+        for value, data in self.data['scale'].iteritems():
+            self.paintItems[int(value)] = CustomPaint(**data)
 
     def loadPlayerStats(self, databaseIDs):
         regions = {}
@@ -182,24 +214,16 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
         'ally' if player.arena.vehicles[vID]['team'] == player.team else 'enemy'
     if not (any(g_config.data['paint_' + team + '_' + part] for part in TankPartNames.ALL)):
         return base(self, *a, **kw)
-    fashions = self._CommonTankAppearance__fashions
-    paintItems = {}
-    paints = g_cache.customization20().paints
-    for paintID in g_config.data['scale'].itervalues():
-        paintItem = Paint(paints[paintID].compactDescr)
-        if not paintItem.descriptor.matchVehicleType(vDesc.type):
-            return base(self, *a, **kw)
-        paintItems[paintID] = paintItem
     accountID = str(player.arena.vehicles[vID]['accountDBID'])
     if accountID not in g_config.dossier:
         if accountID not in g_config.pending:
             g_config.thread([accountID])
         return base(self, *a, **kw)
-    paintID = None
+    paintItem = None
     rating = g_config.dossier[accountID]['wgr']
-    for value in sorted(int(x) for x in g_config.data['scale']):
+    for value in sorted(g_config.paintItems):
         if rating < value:
-            paintID = g_config.data['scale'][str(value)]
+            paintItem = g_config.paintItems[value]
             break
     for fashionIdx, part in enumerate(TankPartNames.ALL):
         if not g_config.data['paint_' + team + '_' + part]:
@@ -211,14 +235,13 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
         if paintSlot is not None:
             for idx in xrange(paintSlot.capacity()):
                 if g_config.data['ignorePresentPaints'] or paintSlot.getItem(idx) is None:
-                    paintSlot.set(paintItems[paintID], idx)
+                    paintSlot.set(paintItem, idx)
                     removeCamo = True
-        if camoSlot is not None:
-            if g_config.data['removeCamouflages'] and removeCamo:
-                camoSlot.clear()
-                fashion = fashions[fashionIdx]
-                if fashion is None:
-                    continue
-                fashion.removeCamouflage()
+        if camoSlot is not None and g_config.data['removeCamouflages'] and removeCamo:
+            camoSlot.clear()
+            fashion = self.fashions[fashionIdx]
+            if fashion is None:
+                continue
+            fashion.removeCamouflage()
     self._CommonTankAppearance__outfit = outfit
-    base(self, *a, **kw)
+    return base(self, *a, **kw)
