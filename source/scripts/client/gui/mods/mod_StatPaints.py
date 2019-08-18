@@ -15,9 +15,9 @@ from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 
 
-class CustomPaint(Paint):
+class CustomPaint(object):
     def __init__(self, color, gloss, metallic):
-        super(CustomPaint, self).__init__(0)
+        self.itemTypeID = GUI_ITEM_TYPE.PAINT
         self.__color = color[0] + (color[1] << 8) + (color[2] << 16) + (color[3] << 24)
         self.__gloss = gloss
         self.__metallic = metallic
