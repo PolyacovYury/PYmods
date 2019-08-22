@@ -10,7 +10,6 @@ russian version by Polyacov_Yury, multiple fixes by Andre_V/Ekspoint
 final version by Polyacov_Yury
 """
 import BigWorld
-import ClientArena
 import ResMgr
 import SoundGroups
 import os
@@ -621,16 +620,22 @@ def checkOwnKiller():
 
 
 @events.PlayerAvatar.startGUI.after
-def startBattleL(*_, **__):
+def startBattle(self, *_, **__):
+    self.arena.onVehicleKilled += onArenaVehicleKilled
     if not _config.data['enabled']:
         return
-    LOG_NOTE('startBattleL')
+    LOG_NOTE('startBattle')
     for soundName in _config.sounds.keys():
         _config.sounds[soundName].stop()
         del _config.sounds[soundName]
     for soundName in _config.data['sounds'].keys():
         if _config.data['sounds'][soundName] and (soundName not in _config.timerSounds or _config.data['battleTimer']):
             _config.sounds[soundName] = SoundGroups.g_instance.getSound2D(_config.data['sounds'][soundName])
+
+
+@events.PlayerAvatar.destroyGUI.before
+def destroyBattle(self, *_, **__):
+    self.arena.onVehicleKilled -= onArenaVehicleKilled
 
 
 @overrideMethod(BattleEndWarningPanel, 'setTotalTime')
@@ -645,17 +650,14 @@ def new_setCurrentTimeLeft(base, self, totalTime):
         soundMgr.addToQueue(events_by_time[totalTime])
 
 
-@overrideMethod(ClientArena.ClientArena, '_ClientArena__onVehicleKilled')
-def new_AVK(base, self, argStr):
-    if _config.data['enabled'] and BigWorld.player().arena is not None:
-        import cPickle
-        victimID, killerID, _, reason = cPickle.loads(argStr)
-        if not hasattr(BigWorld.player().arena, 'UT'):
-            initial()
-        LOG_NOTE('A Vehicle got Killed (targetID, attackerID, reason):', victimID, killerID, reason)
-        checkSquadMan()
-        firstCheck(victimID, killerID, reason, False, None)
-    base(self, argStr)
+def onArenaVehicleKilled(victimID, killerID, _, reason):
+    if not _config.data['enabled']:
+        return
+    if not hasattr(BigWorld.player().arena, 'UT'):
+        initial()
+    LOG_NOTE('A Vehicle got Killed (targetID, attackerID, reason):', victimID, killerID, reason)
+    checkSquadMan()
+    firstCheck(victimID, killerID, reason, False, None)
 
 
 @overrideMethod(DamagePanelMeta.DamagePanelMeta, 'as_setVehicleDestroyedS')
