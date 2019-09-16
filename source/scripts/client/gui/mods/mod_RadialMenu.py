@@ -10,7 +10,7 @@ import os
 import string
 import traceback
 from PYmodsCore import PYmodsConfigInterface, loadJson, config, checkKeys, pickRandomPart, Analytics, overrideMethod, \
-    sendChatMessage, events, curCV
+    sendChatMessage, events
 from Vehicle import Vehicle
 from constants import ARENA_BONUS_TYPE
 from functools import partial
@@ -366,7 +366,7 @@ def new_updateMenu(_, self):
         stateData = map(lambda x: {'title': x.title,
                                    'action': x.action,
                                    'icon': x.icon,
-                                   'key': getKeyFromAction(*((x.action,) + (() if '16' in curCV else (state,))))},
+                                   'key': getKeyFromAction(x.action, state)},
                         SHORTCUT_SETS[state])
         if menuConf is not None:
             menuState = state.replace('_spg', '')
