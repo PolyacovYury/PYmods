@@ -25,7 +25,7 @@ class Base(object):
 
     def init(self):
         self.containerClass = SettingContainer
-        self.configPath = './mods/configs/%s/%s/' % (self.modsGroup, self.ID)
+        self.configPath = '../mods/configs/%s/%s/' % (self.modsGroup, self.ID)
         self.langPath = '%si18n/' % self.configPath
 
     def loadLang(self):

@@ -123,7 +123,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.configFolders.clear()
         self.camouflages = {'remap': {}, 'custom': {}}
         self.outfitCache = loadJson(self.ID, 'outfitCache', self.outfitCache, self.configPath)
-        camoDirPath = '../' + self.configPath + 'camouflages'
+        camoDirPath = self.configPath + 'camouflages'
         camoDirKeys = getattr(ResMgr.openSection(camoDirPath), 'keys', lambda: [])()
         for camoName in remDups(x for x in camoDirKeys if ResMgr.isDir(camoDirPath + '/' + x)):
             fileName = self.configPath + 'camouflages/' + camoName + '/'
@@ -182,7 +182,7 @@ class ConfigInterface(PYmodsConfigInterface):
                                     if tc[part][region] is None:
                                         tc[part][region] = {'id': None}
         loadJson(self.ID, 'outfitCache', outfitCache, self.configPath, True)
-        camoDirPath = '../' + self.configPath + 'camouflages'
+        camoDirPath = self.configPath + 'camouflages'
         camoDirKeys = getattr(ResMgr.openSection(camoDirPath), 'keys', lambda: [])()
         for camoID in remDups(x for x in camoDirKeys if ResMgr.isDir(camoDirPath + '/' + x)):
             fileName = self.configPath + 'camouflages/' + camoID + '/'
