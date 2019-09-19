@@ -1,5 +1,6 @@
 import ResMgr
 import os
+import traceback
 from PYmodsCore import overrideMethod, remDups, Analytics
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
@@ -101,6 +102,7 @@ if badges_dir is not None:
         normOutcome = os.path.normpath('gui/flash/' + outcome).replace(os.sep, '/')
         if ResMgr.openSection(normOutcome) is None:
             print 'WARNING: not found icon:', normOutcome
+            traceback.print_stack()
             return ''
         return outcome
 else:
