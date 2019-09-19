@@ -85,14 +85,14 @@ if badges_dir is not None:
 
     @overrideMethod(RES_ICONS, 'getBadgeIcon')
     def new_getBadgeIcon(base, _, size, value):
-        if isinstance(value, int):
+        if isinstance(value, int) or '_' not in value:
             return base(size, value)
         return getBadgePath(value)
 
 
     @overrideMethod(RES_ICONS, 'getBadgeIconBySize')
     def new_getBadgeIconBySize(base, _, w, h, value):
-        if isinstance(value, int):
+        if isinstance(value, int) or '_' not in value:
             return base(w, h, value)
         return getBadgePath(value)
 
