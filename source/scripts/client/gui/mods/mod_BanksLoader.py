@@ -20,7 +20,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.9.7 (%(file_compile_date)s)'
+        self.version = '1.4.0 (%(file_compile_date)s)'
         self.author += ' and Ekspoint'
         self.data = {'defaultPool': 36,
                      'lowEnginePool': 10,
@@ -84,7 +84,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     @staticmethod
     def suppress_old_mod():
-        # noinspection SpellCheckingInspection
         oldModName = curCV + '/scripts/client/gui/mods/mod_wg_load_custom_ekspont_banks.pyc'
         if os.path.isfile(oldModName) and os.path.isfile(oldModName + '1'):
             try:
@@ -175,191 +174,170 @@ class ConfigInterface(PYmodsConfigInterface):
         self.check_wotmods(mediaPath)
         if self.editedBanks['wotmod']:
             return
+        bankFiles = self.collectBankFiles(mediaPath)
+        audio_mods_new = self.merge_audio_mods(mediaPath, bankFiles)
+        self.manageMemorySettings(soundMgr)
+        for profile_name in ('WWISE_active_profile', 'WWISE_emergency_profile'):
+            profile_type = profile_name.split('_')[1]
+            profile = soundMgr[soundMgr[profile_name].asString]
+            self.manageProfileMemorySettings(profile_type, profile)
+            self.manageProfileBanks(profile_type, profile, bankFiles)
+        self.saveNewFile(audio_mods_new, mediaPath + '/', 'audio_mods_edited.xml', mediaPath + '/audio_mods.xml',
+                         ('delete', 'move', 'remap'))
+        self.saveNewFile(new_engine, '', 'engine_config_edited.xml', 'engine_config.xml',
+                         ('delete', 'move', 'create', 'memory'))
+
+    def collectBankFiles(self, mediaPath):
         bankFiles = {'mods': set(), 'pkg': set(), 'ignore': set(),
-                     'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')
-                             if (path.endswith('.bnk') or path.endswith('.pck'))}}
-        for pkgPath in glob.iglob('./res/packages/audioww*.pkg'):
+                     'res': {os.path.basename(path) for path in glob.iglob('../res/' + mediaPath + '/*')
+                             if os.path.splitext(path)[1] in ('.bnk', '.pck')}}
+        for pkgPath in glob.iglob('../res/packages/audioww*.pkg'):
             with zipfile.ZipFile(pkgPath) as pkg:
                 bankFiles['pkg'].update({os.path.basename(name) for name in pkg.namelist()})
         bankFiles['orig'] = bankFiles['res'] | bankFiles['pkg']
         bankFiles['mods'] = set(x for x in ResMgr.openSection(mediaPath).keys()
-                                if (x.endswith('.bnk') or x.endswith('.pck')) and x not in bankFiles['orig'])
+                                if os.path.splitext(x)[1] in ('.bnk', '.pck') and not any(y in bankFiles['orig'] for y in (x, x.lower())))
         bankFiles['all'] = bankFiles['orig'] | bankFiles['mods']
+        return bankFiles
+
+    def check_and_collect_data(self, key, section, struct, is_orig):
+        result = []
+        for name, sect in section.items():
+            if name != struct['key'] or not all(sect.has_key(x) for x in struct['keys']):
+                if is_orig:
+                    self.editedBanks['remap'].add(key)
+                    print self.ID + ': cleaned wrong section for setting', key
+                continue
+            data = {x: sect[x].asString for x in struct['keys']}
+            if struct['data']:
+                sub_name = struct['data']['name']
+                if sect.has_key(sub_name):
+                    data[sub_name] = self.check_and_collect_data(key, sect[sub_name], struct['data'], is_orig)
+            result.append(data)
+        return result
+
+    def create_sect_from_data(self, sect, data, struct):
+        for data in data:
+            new_sect = sect.createSection(struct['key'])
+            for key in struct['keys']:
+                new_sect.writeString(key, data[key])
+            if struct['data']:
+                sub_name = struct['data']['name']
+                self.create_sect_from_data(new_sect.createSection(sub_name), data[sub_name], struct['data'])
+
+    def merge_audio_mods(self, mediaPath, bankFiles):
         audio_mods = ResMgr.openSection(mediaPath + '/audio_mods.xml')
         audio_mods_new = ResMgr.openSection(mediaPath + '/audio_mods_edited.xml', True)
         if audio_mods is None:
             LOG_NOTE('audio_mods.xml not found, will be created if needed')
-        else:
-            audio_mods_new.copy(audio_mods)
-            ResMgr.purge(mediaPath + '/audio_mods.xml')
-        modsKeys = ('events', 'switches', 'RTPCs', 'states')
-        confList = [x for x in ResMgr.openSection(mediaPath).keys()
-                    if x.endswith('.xml') and x.replace('.xml', '.bnk') in bankFiles['mods'] | bankFiles['orig']]
-        for key in ('loadBanks',) + modsKeys:
-            if not audio_mods_new.has_key(key):
-                audio_mods_new.createSection(key)
-        confData_old = {key: [] for key in modsKeys}
-        key_to_sub = {'events': 'event', 'RTPCs': 'RTPC', 'switches': 'switch', 'states': 'stateGroup'}
-        subList = {'switches': 'states', 'states': 'stateNames'}
-        for key in modsKeys:
-            conf = audio_mods_new[key]
-            for sectName, confSect in conf.items():
-                if sectName != key_to_sub[key] or not confSect.has_key('name') or not confSect.has_key('mod'):
-                    conf.deleteSection(confSect)
-                    self.editedBanks['remap'].add(key)
-                    print self.ID + ': cleaned wrong section for setting', key
-                    continue
-                result = {'name': confSect['name'].asString, 'mod': confSect['mod'].asString}
-                if key in subList:
-                    stateList = []
-                    for confSubName, confSubSect in confSect[subList[key]].items():
-                        if confSubName != 'state' or not confSubSect.has_key('name') or not confSubSect.has_key('mod'):
-                            confSect.deleteSection(confSubSect)
-                            self.editedBanks['remap'].add(key)
-                            print self.ID + ': cleaned wrong section for setting', key
-                            continue
-                        stateList.append({'name': confSubSect['name'].asString, 'mod': confSubSect['mod'].asString})
-                    result[subList[key]] = stateList
-                confData_old[key].append(result)
-        confData = {key: [] for key in modsKeys}
-        bankConfData = {}
-        for confPath in confList:
-            confSect = ResMgr.openSection(mediaPath + '/' + confPath)
-            bankName = confPath.replace('.xml', '.bnk')
-            bankData = bankConfData[bankName] = {}
-            if confSect is None:
-                bankFiles['ignore'].add(bankName)
-                print self.ID + ': error while reading', confPath
+        data_structure = [
+            {'name': 'events', 'key': 'event', 'keys': ('name', 'mod'), 'data': ()},
+            {'name': 'switches', 'key': 'switch', 'keys': ('name', 'mod'),
+             'data': {'name': 'states', 'key': 'state', 'keys': ('name', 'mod'), 'data': ()}},
+            {'name': 'RTPCs', 'key': 'RTPC', 'keys': ('name', 'mod'), 'data': ()},
+            {'name': 'states', 'key': 'stateGroup', 'keys': ('name', 'mod'),
+             'data': {'name': 'stateNames', 'key': 'state', 'keys': ('name', 'mod'), 'data': ()}}]
+        data_old, data_new = {}, {}
+        for struct in data_structure:
+            key = struct['name']
+            data_old[key] = self.check_and_collect_data(key, audio_mods[key], struct, True)
+        banksData = {}
+        for path in ResMgr.openSection(mediaPath).keys():
+            if not path.endswith('.xml') or path.replace('.xml', '.bnk') not in bankFiles['all']:
                 continue
-            for key in modsKeys:
-                if confSect.has_key(key):
-                    existingNames = [x['name'] for x in confData[key]]
-                    existingMods = [x['mod'] for x in confData[key]]
-                    bankEvents = bankData[key] = []
-                    for sectName, subSect in confSect[key].items():
-                        if sectName != key_to_sub[key] or not subSect.has_key('name') or not subSect.has_key('mod'):
-                            continue
-                        name = subSect['name'].asString
-                        mod = subSect['mod'].asString
-                        if name in existingNames or mod in existingMods:
-                            bankFiles['ignore'].add(bankName)
-                            print self.ID + ': duplicate events in', confPath + ': name:', name + ', mod:', mod
-                            break
-                        result = {'name': name, 'mod': mod}
-                        if key in subList:
-                            stateList = []
-                            for subSectName, stateSect in subSect[subList[key]].items():
-                                if subSectName != 'state' or not stateSect.has_key('name') or not stateSect.has_key('mod'):
-                                    continue
-                                stateList.append({'name': stateSect['name'].asString, 'mod': stateSect['mod'].asString})
-                            result[subList[key]] = stateList
-                        bankEvents.append(result)
-                if bankName in bankFiles['ignore']:
-                    del bankConfData[bankName]
-                    break
-            for key in confData:
-                if bankName not in bankFiles['ignore'] and key in bankData:
-                    confData[key].extend(bankData[key])
-        for bankSect in audio_mods_new['loadBanks'].values():
+            sect = ResMgr.openSection(mediaPath + '/' + path)
+            bankName = path.replace('.xml', '.bnk')
+            if sect is None:
+                bankFiles['ignore'].add(bankName)
+                print self.ID + ': error while reading', path
+                continue
+            bankData = banksData[bankName] = {}
+            for struct in data_structure:
+                key = struct['name']
+                if sect.has_key(key):
+                    bankData[key] = self.check_and_collect_data(key, sect[key], struct, False)
+                data_new.setdefault(key, []).extend(bankData.get(key, []))
+        for bankSect in audio_mods['loadBanks'].values():
             bankName = bankSect.asString
             print self.ID + ': clearing audio_mods section for bank', bankName
             self.editedBanks['delete'].append(bankName)
-            audio_mods_new['loadBanks'].deleteSection(bankSect)
         self.editedBanks['delete'] = remDups(self.editedBanks['delete'])
-        bankFiles['orig'] = set(map(str.lower, bankFiles['orig']))
-        poolKeys = {'memoryManager': ('defaultPool', 'lowEnginePool', 'streamingPool', 'IOPoolSize'),
-                    'memoryManager_64bit': ('defaultPool', 'lowEnginePool', 'streamingPool', 'IOPoolSize'),
-                    'soundRender': ('max_voices',)}
+        for key in ['loadBanks'] + [struct['name'] for struct in data_structure]:
+            audio_mods_new.createSection(key)
+        for struct in data_structure:
+            key = struct['name']
+            if data_old[key] != data_new.setdefault(key, []):
+                self.editedBanks['remap'].add(key)
+            if key in self.editedBanks['remap']:
+                print self.ID + ': creating section for setting', key
+            self.create_sect_from_data(audio_mods_new[key], data_new[key], struct)
+        return audio_mods_new
+
+    def manageMemorySettings(self, soundMgr):
         for mgrKey in ('memoryLimit',):  # in case they add something later
             value = soundMgr[mgrKey]
             if value is not None and value.asInt != int(self.data[mgrKey]):
                 self.editedBanks['memory'].append(mgrKey)
                 soundMgr.writeInt(mgrKey, self.data[mgrKey])
                 print self.ID + ': changing value for memory setting:', mgrKey
-        for profile_name in ('WWISE_active_profile', 'WWISE_emergency_profile'):
-            moddedExist = set()
-            profile_type = profile_name.split('_')[1]
-            profile = soundMgr[soundMgr[profile_name].asString]
-            for poolKey, poolValuesList in poolKeys.iteritems():
-                for poolValue in poolValuesList:
-                    value = profile[poolKey][poolValue]
-                    if value is not None and value.asInt != int(self.data[poolValue]):
-                        self.editedBanks['memory'].append(poolValue)
-                        profile[poolKey].writeInt(poolValue, self.data[poolValue])
-                        print self.ID + ': changing value for', profile_type, 'memory setting:', poolValue
-            for name, section in profile.items():
-                if 'soundbanks' not in name:
-                    continue
-                for sectName, project in section.items():
-                    if sectName != 'project':
-                        continue
-                    bankName = project['name'].asString
-                    if bankName not in bankFiles['all']:
-                        print self.ID + ': clearing engine_config', profile_type, 'section for bank', bankName
-                        self.editedBanks['delete'].append(bankName)
-                        section.deleteSection(project)
-                    elif bankName not in moddedExist:
-                        moddedExist.add(bankName)
-            for bankName in sorted(bankFiles['mods']):
-                if bankName not in bankFiles['orig'] and bankName not in moddedExist and bankName not in bankFiles['ignore']:
-                    print self.ID + ': creating', profile_type, 'sections for bank', bankName
-                    if bankName in self.editedBanks['delete']:
-                        self.editedBanks['delete'].remove(bankName)
-                        self.editedBanks['move'].append(bankName)
-                    else:
-                        self.editedBanks['create'].append(bankName)
-                    profile.createSection('SFX_soundbanks_loadonce/project').writeString('name', bankName)
-        for key in modsKeys:
-            if confData_old[key] != confData[key]:
-                self.editedBanks['remap'].add(key)
-            if key in self.editedBanks['remap']:
-                print self.ID + ': creating section for setting', key
-                audio_mods_new.deleteSection(audio_mods_new[key])
-                newSect = audio_mods_new.createSection(key)
-                for data in confData[key]:
-                    newSubSect = newSect.createSection(key_to_sub[key])
-                    for subKey in ('name', 'mod'):
-                        newSubSect.createSection(subKey).asString = data[subKey]
-                    if key in subList:
-                        newSubLSect = newSubSect.createSection(subList[key])
-                        for subData in data[subList[key]]:
-                            newSubSSect = newSubLSect.createSection('state')
-                            for subKey in subData:
-                                newSubSSect.createSection(subKey).asString = subData[subKey]
 
-        if any(self.editedBanks[key] for key in ('delete', 'move', 'create', 'memory')):
-            new_engine.save()
-            xmlOrig = curCV + '/engine_config.xml'
-            if os.path.isfile(xmlOrig):
-                try:
-                    os.remove(xmlOrig)
-                except StandardError:
-                    traceback.print_exc()
-            newXml = './engine_config_edited.xml'
-            if os.path.isfile(newXml):
-                os.rename(newXml, xmlOrig)
-            else:
-                newXml = curCV + '/engine_config_edited.xml'
-                if os.path.isfile(newXml):
-                    os.rename(newXml, xmlOrig)
-        else:
-            ResMgr.purge('engine_config_edited.xml')
-        if any(self.editedBanks[key] for key in ('delete', 'move', 'remap')):
-            dirName = curCV + '/' + mediaPath
-            if not os.path.exists(dirName):
-                os.makedirs(dirName)
-            audio_mods_new.save()
-            origXml = dirName + '/audio_mods.xml'
-            if os.path.isfile(origXml):
-                try:
-                    os.remove(origXml)
-                except StandardError:
-                    traceback.print_exc()
-            newXml = dirName + '/audio_mods_edited.xml'
-            if os.path.isfile(newXml):
-                os.rename(newXml, origXml)
-        else:
-            ResMgr.purge('audio_mods_edited.xml')
+    def manageProfileMemorySettings(self, profile_type, profile):
+        poolKeys = {'memoryManager': ('defaultPool', 'lowEnginePool', 'streamingPool', 'IOPoolSize'),
+                    'memoryManager_64bit': ('defaultPool', 'lowEnginePool', 'streamingPool', 'IOPoolSize'),
+                    'soundRender': ('max_voices',)}
+        for poolKey, poolValuesList in poolKeys.iteritems():
+            for poolValue in poolValuesList:
+                value = profile[poolKey][poolValue]
+                if value is not None and value.asInt != int(self.data[poolValue]):
+                    self.editedBanks['memory'].append(poolValue)
+                    profile[poolKey].writeInt(poolValue, self.data[poolValue])
+                    print self.ID + ': changing value for', profile_type, 'memory setting:', poolValue
+
+    def manageProfileBanks(self, profile_type, profile, bankFiles):
+        moddedExist = set()
+        for name, section in profile.items():
+            if 'soundbanks' not in name:
+                continue
+            for sectName, project in section.items():
+                if sectName != 'project':
+                    continue
+                bankName = project['name'].asString
+                if bankName not in bankFiles['all']:
+                    print self.ID + ': clearing engine_config', profile_type, 'section for bank', bankName
+                    self.editedBanks['delete'].append(bankName)
+                    section.deleteSection(project)
+                elif bankName not in moddedExist:
+                    moddedExist.add(bankName)
+        bankFiles['orig'] = [x.lower() for x in bankFiles['orig']]
+        for bankName in sorted(bankFiles['mods']):
+            if bankName not in bankFiles['orig'] and bankName not in moddedExist and bankName not in bankFiles['ignore']:
+                print self.ID + ': creating', profile_type, 'sections for bank', bankName
+                if bankName in self.editedBanks['delete']:
+                    self.editedBanks['delete'].remove(bankName)
+                    self.editedBanks['move'].append(bankName)
+                else:
+                    self.editedBanks['create'].append(bankName)
+                profile.createSection('SFX_soundbanks_loadonce/project').writeString('name', bankName)
+
+    def saveNewFile(self, new_file, new_dir, new_name, orig_path, keys):
+        if not any(self.editedBanks[key] for key in keys):
+            ResMgr.purge(new_dir + new_name)
+            return
+        orig_path = '.' + curCV + '/' + orig_path
+        new_path = new_dir + new_name
+        new_dir = '.' + curCV + '/' + new_dir
+        if not os.path.exists(new_dir):
+            os.makedirs(new_dir)
+        new_file.save()
+        if os.path.isfile(orig_path):
+            try:
+                os.remove(orig_path)
+            except StandardError:
+                traceback.print_exc()
+        for new_path in (new_dir + new_name, '../res/' + new_path, './' + new_path):
+            if os.path.isfile(new_path):
+                os.rename(new_path, orig_path)
+                break
 
     def load(self):
         self.suppress_old_mod()
