@@ -114,4 +114,4 @@ class ConfBlockInterface(Base, DummyConfBlockInterface):
 class SettingContainer(DummySettingContainer):
     def loadLang(self):
         smart_update(self.i18n, loadJson(
-            self.ID, self.lang, self.i18n, 'mods/configs/%s/%s/i18n/' % (self.modsGroup, self.ID)))
+            self.ID, self.lang, self.i18n, '../mods/configs/%s/%s/i18n/' % (self.modsGroup, self.ID)))
