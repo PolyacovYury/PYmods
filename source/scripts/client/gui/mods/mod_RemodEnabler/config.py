@@ -249,10 +249,9 @@ class ConfigInterface(PYmodsConfigInterface):
         loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True, quiet=quiet)
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
 
-    def load(self):
+    def migrateConfigs(self):
         from .config_converter import migrateConfigs
         migrateConfigs(self)
-        super(ConfigInterface, self).load()
 
     def findModelDesc(self, xmlName, currentTeam, notForPreview=True):
         if not self.modelsData['models']:

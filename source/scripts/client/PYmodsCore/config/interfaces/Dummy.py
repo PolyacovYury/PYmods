@@ -55,6 +55,12 @@ class DummyConfigInterface(object):
     def template(self):
         return self.createTemplate()
 
+    def migrateConfigs(self):
+        """
+        Called before initial config load. Should contain code that updates configs from old version
+        """
+        pass
+
     def readCurrentSettings(self, quiet=True):
         """
         Is called upon mod loading and every time settings window is opened.
@@ -95,7 +101,7 @@ class DummyConfigInterface(object):
 
     def onButtonPress(self, vName, value):
         """
-        Is called when a "preview' button for corresponding setting is pressed.
+        Called when a "preview' button for corresponding setting is pressed.
         :param vName: settings value name
         :param value: currently selected setting value (may differ from currently applied. As said, used for settings preview)
         """
@@ -109,6 +115,7 @@ class DummyConfigInterface(object):
         """
         Called after mod __init__() is complete.
         """
+        self.migrateConfigs()
         self.registerSettings()
         self.readCurrentSettings(False)
 

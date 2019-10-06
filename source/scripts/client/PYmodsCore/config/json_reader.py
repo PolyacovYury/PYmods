@@ -10,7 +10,7 @@ import traceback
 from collections import OrderedDict
 from .utils import smart_update
 
-__all__ = ['loadJson']
+__all__ = ['loadJson', 'loadJsonOrdered']
 
 
 class JSONObjectEncoder(json.JSONEncoder):
@@ -115,9 +115,9 @@ class JSONLoader:
                 if not isEncrypted and encrypted:
                     read_contents = read_contents.decode('utf-8-sig')
                 read_contents, read_excluded = cls.json_comments(read_contents)
-        except StandardError as e:
+        except StandardError:
             print new_path
-            print e
+            traceback.print_exc()
             if not encrypted:
                 print read_contents.replace('\r', '')
             success = False
@@ -171,13 +171,32 @@ class JSONLoader:
             if success:
                 try:
                     config_new = cls.byte_ify(json.loads(data, object_hook=cls.byte_ify), ignore_dicts=True)
-                except StandardError as e:
+                except StandardError:
                     print new_path
-                    print e
+                    traceback.print_exc()
         else:
             cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
             print '%s: ERROR: Config not found, creating default: %s' % (ID, new_path)
         return config_new
 
+    @classmethod
+    def loadJsonOrdered(cls, path, name):
+        config_new = None
+        if not os.path.exists(path):
+            os.makedirs(path)
+        if not path.endswith('/'):
+            path += '/'
+        new_path = '%s%s.json' % (path, name)
+        if os.path.isfile(new_path):
+            data, _, success = cls.json_file_read(new_path, False)
+            if success:
+                try:
+                    config_new = cls.byte_ify(json.loads(data, object_pairs_hook=OrderedDict))
+                except StandardError:
+                    print new_path
+                    traceback.print_exc()
+        return config_new
+
 
 loadJson = JSONLoader.loadJson
+loadJsonOrdered = JSONLoader.loadJsonOrdered

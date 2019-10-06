@@ -207,10 +207,6 @@ class ConfigInterface(PYmodsConfigInterface):
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
         self.updateMod()
 
-    def load(self):
-        self.migrateConfigs()
-        super(ConfigInterface, self).load()
-
     @property
     def collisionMode(self):
         try:

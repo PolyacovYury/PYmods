@@ -136,7 +136,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.camouflages['remap'] = {int(k): v for k, v in settings.setdefault('remap', {}).iteritems()}
         loadJson(self.ID, 'settings', settings, self.configPath, True)
 
-    def load(self):
+    def migrateConfigs(self):
         camouflages = items.vehicles.g_cache.customization20().camouflages
         camoData = {}
         for camoID, x in camouflages.iteritems():
@@ -148,7 +148,6 @@ class ConfigInterface(PYmodsConfigInterface):
             if set(data['nations']) >= set(idx for idx, name in enumerate(nations.NAMES) if name != 'italy'):
                 self.internationalCamoIDs += data['ids']
         self.migrateSettings(camoData)
-        super(ConfigInterface, self).load()
 
     def migrateSettings(self, camoData):
         outfitCache = loadJson(self.ID, 'outfitCache', {}, self.configPath)
