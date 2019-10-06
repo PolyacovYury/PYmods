@@ -162,7 +162,7 @@ class JSONLoader:
                         else:
                             write_lines[lineNum] += comment
                     if not quiet:
-                        print '%s: updating config: %s' % (ID, new_path)
+                        print ID + ': updating config:', new_path
                     cls.json_file_write(new_path, '\n'.join(write_lines), encrypted)
             else:
                 cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
@@ -176,11 +176,11 @@ class JSONLoader:
                     traceback.print_exc()
         else:
             cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
-            print '%s: ERROR: Config not found, creating default: %s' % (ID, new_path)
+            print ID + ': ERROR: Config not found, creating default:', new_path
         return config_new
 
     @classmethod
-    def loadJsonOrdered(cls, path, name):
+    def loadJsonOrdered(cls, ID, path, name):
         config_new = None
         if not os.path.exists(path):
             os.makedirs(path)
@@ -195,6 +195,8 @@ class JSONLoader:
                 except StandardError:
                     print new_path
                     traceback.print_exc()
+        else:
+            print ID + ': ERROR: Config not found:', new_path
         return config_new
 
 

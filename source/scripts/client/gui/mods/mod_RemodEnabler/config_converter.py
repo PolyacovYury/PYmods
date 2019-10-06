@@ -57,7 +57,7 @@ def migrateConfigs(g_config):
     for root, _, fNames in os.walk(g_config.configPath + 'remods/'):
         for fName in fnmatch.filter(fNames, '*.json'):
             sname = fName.split('.')[0]
-            old_conf = loadJsonOrdered(root, fName)
+            old_conf = loadJsonOrdered(g_config.ID, root, fName)
             if not old_conf:
                 print g_config.ID + ': error while reading', fName + '.'
                 continue
