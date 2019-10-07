@@ -2,6 +2,7 @@
 import BigWorld
 import CommandMapping
 import Keys
+import Math
 import glob
 import math_utils
 import os
@@ -206,8 +207,8 @@ class CellHelper(object):
         if point is None:
             return -1
         box = BigWorld.player().arena.arenaType.boundingBox
-        point.x, point.z = math_utils.clamp(box[0][0], box[0][1], point.x), math_utils.clamp(box[1][0], box[1][1], point.z)
-        return int(minimap_utils.getCellIdxFromPosition(point, box))
+        p = math_utils.clampVector3(Math.Vector3(box[0][0], 0, box[0][1]), Math.Vector3(box[1][0], 0, box[1][1]), point)
+        return int(minimap_utils.getCellIdxFromPosition(p, box))
 
 
 class SafeFormatter(string.Formatter):
@@ -257,7 +258,7 @@ class CustomMenuCommand(object):
         self.lastRandId = -1
         self.nextUseStamp = 0
         self.randomChoice = not confDict.get('sequentChoice')
-        self.cmd = confDict.get('text', '')
+        self.text = confDict.get('text', '')
         self.title = confDict.get('title', 'NO CONFIG')
         self.inPostmortem = confDict.get('inPostmortem', False)
         self.command = confDict.get('command', '').strip()
@@ -303,7 +304,7 @@ class CustomMenuCommand(object):
                             'ownVehicle': sessionProvider.getArenaDP().getVehicleInfo().vehicleType.shortName})
             argDict['randPart'], self.lastRandId = pickRandomPart(self.variantList, self.lastRandId, self.randomChoice)
             argDict['randPart'] = safeFmt.vformat(argDict['randPart'], (), argDict)
-            return safeFmt.vformat(self.cmd, (), argDict)
+            return safeFmt.vformat(self.text, (), argDict)
         except StandardError:
             traceback.print_exc()
             return ''
