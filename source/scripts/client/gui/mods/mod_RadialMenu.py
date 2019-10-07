@@ -145,7 +145,7 @@ class ConfigInterface(PYmodsConfigInterface):
             commandsList.extend(menuConf.get(state, []))
         for command in commandsList:
             if command and command.handleKeys(command.hotKeys, event.key):
-                command.onCustomAction(target.id, True)
+                command.onCustomAction(target.id if target is not None else None, True)
 
     def findBestFitConf(self, mapName=None):
         commandConf = self.selectedCommands
