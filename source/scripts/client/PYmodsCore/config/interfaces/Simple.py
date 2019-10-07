@@ -1,5 +1,4 @@
 import traceback
-from gui import InputHandler
 from .Dummy import DummyConfigInterface, DummyConfBlockInterface, DummySettingContainer
 from ..json_reader import loadJson
 from ..template_builders import TemplateBuilder
@@ -49,15 +48,18 @@ class Base(object):
         try:
             self.onHotkeyPressed(event)
         except StandardError:
-            print self.ID + ': ERROR at inj_hkKeyEvent'
+            print self.ID + ': ERROR at onHotkeyPressed'
             traceback.print_exc()
 
     def onHotkeyPressed(self, event):
         pass
 
-    def load(self):
+    def registerSettings(self):
+        from gui import InputHandler
         InputHandler.g_instance.onKeyDown += self.__hotKeyPressed
         InputHandler.g_instance.onKeyUp += self.__hotKeyPressed
+
+    def load(self):
         print self.message() + ': initialised.'
 
 
@@ -83,6 +85,10 @@ class ConfigInterface(Base, DummyConfigInterface):
         processHotKeys(self.data, self.defaultKeys, 'write')
         self.writeDataJson()
         processHotKeys(self.data, self.defaultKeys, 'read')
+
+    def registerSettings(self):
+        DummyConfigInterface.registerSettings(self)
+        Base.registerSettings(self)
 
     def load(self):
         DummyConfigInterface.load(self)
@@ -119,6 +125,10 @@ class ConfBlockInterface(Base, DummyConfBlockInterface):
         processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'write')
         self.writeDataJson()
         processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'read')
+
+    def registerSettings(self):
+        DummyConfBlockInterface.registerSettings(self)
+        Base.registerSettings(self)
 
     def load(self):
         DummyConfBlockInterface.load(self)
