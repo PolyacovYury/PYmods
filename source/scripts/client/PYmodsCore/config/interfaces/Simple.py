@@ -1,3 +1,5 @@
+import traceback
+from gui import InputHandler
 from .Dummy import DummyConfigInterface, DummyConfBlockInterface, DummySettingContainer
 from ..json_reader import loadJson
 from ..template_builders import TemplateBuilder
@@ -43,7 +45,19 @@ class Base(object):
     def message(self):
         return '%s v.%s %s' % (self.ID, self.version, self.author)
 
+    def __hotKeyPressed(self, event):
+        try:
+            self.onHotkeyPressed(event)
+        except StandardError:
+            print self.ID + ': ERROR at inj_hkKeyEvent'
+            traceback.print_exc()
+
+    def onHotkeyPressed(self, event):
+        pass
+
     def load(self):
+        InputHandler.g_instance.onKeyDown += self.__hotKeyPressed
+        InputHandler.g_instance.onKeyUp += self.__hotKeyPressed
         print self.message() + ': initialised.'
 
 

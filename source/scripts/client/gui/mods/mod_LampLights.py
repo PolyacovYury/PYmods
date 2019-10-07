@@ -12,7 +12,7 @@ from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKey
 from Vehicle import Vehicle
 from debug_utils import LOG_ERROR, LOG_NOTE
 from functools import partial
-from gui import InputHandler, SystemMessages
+from gui import SystemMessages
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
 
@@ -109,7 +109,7 @@ class ConfigInterface(PYmodsConfigInterface):
             if confKey in ('enable', 'meta', 'attachToPlayer', 'attachToAlly', 'attachToEnemy'):
                 continue
             if any(confKey in curConfigsDict for curConfigsDict in self.configsDict.values()):
-                print _config.ID + ':', confPath + ': overlap detected:', confKey, 'already exists.'
+                print self.ID + ':', confPath + ': overlap detected:', confKey, 'already exists.'
                 continue
             model = None
             if 'model' in configDict['type']:
@@ -239,6 +239,25 @@ class ConfigInterface(PYmodsConfigInterface):
             self.isLampsVisible = False
         self.isTickRequired = any(self.modes[key] for key in ('stop', 'turn_left', 'turn_right', 'back'))
         self.updateMod()
+
+    def onHotkeyPressed(self, event):
+        if (not hasattr(BigWorld.player(), 'arena') or not self.data['enabled']
+                or not checkKeys(self.data['hotkey'], event.key) or not event.isKeyDown()):
+            return
+        self.isLampsVisible = not self.isLampsVisible
+        if self.isLampsVisible:
+            self.readCurrentSettings(not self.data['Debug'])
+            for vehicleID in BigWorld.player().arena.vehicles:
+                curVehicle = BigWorld.entity(vehicleID)
+                if curVehicle is not None and curVehicle.isAlive():
+                    lightsCreate(vehicleID, 'keyPress')
+
+            sendMessage(self.i18n['UI_activLamps'])
+        else:
+            for vehicleID in lightDBDict.keys():
+                lightsDestroy(vehicleID, 'keyPress')
+
+            sendMessage(self.i18n['UI_deactivLamps'], 'Red')
 
 
 _config = ConfigInterface()
@@ -636,35 +655,6 @@ def lightsDestroy(vehicleID, callPlace=''):
         print callPlace
 
 
-def battleKeyControl(event):
-    if checkKeys(_config.data['hotkey'], event.key) and event.isKeyDown():
-        _config.isLampsVisible = not _config.isLampsVisible
-        if _config.isLampsVisible:
-            _config.readCurrentSettings(not _config.data['Debug'])
-            for vehicleID in BigWorld.player().arena.vehicles:
-                curVehicle = BigWorld.entity(vehicleID)
-                if curVehicle is not None and curVehicle.isAlive():
-                    lightsCreate(vehicleID, 'keyPress')
-
-            sendMessage(_config.i18n['UI_activLamps'])
-        else:
-            for vehicleID in lightDBDict.keys():
-                lightsDestroy(vehicleID, 'keyPress')
-
-            sendMessage(_config.i18n['UI_deactivLamps'], 'Red')
-
-
-def inj_hkKeyEvent(event):
-    try:
-        if hasattr(BigWorld.player(), 'arena') and _config.data['enabled']:
-            battleKeyControl(event)
-    except StandardError:
-        print 'LampLights: ERROR at inj_hkKeyEvent'
-        traceback.print_exc()
-
-
-InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
-InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-2', _config.configsDict)
 curSpeedsDict = {}
 

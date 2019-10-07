@@ -14,7 +14,6 @@ from PYmodsCore import PYmodsConfigInterface, loadJson, config, checkKeys, pickR
 from Vehicle import Vehicle
 from constants import ARENA_BONUS_TYPE
 from functools import partial
-from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared import radial_menu
 from gui.Scaleform.daapi.view.battle.shared.radial_menu import SHORTCUT_SETS, SHORTCUT_STATES, getKeyFromAction
 from gui.Scaleform.genConsts.BATTLE_ICONS_CONSTS import BATTLE_ICONS_CONSTS
@@ -112,6 +111,27 @@ class ConfigInterface(PYmodsConfigInterface):
                                      for menuType, menuConf in confSect.iteritems()}
 
         self.data['selectedConfig'] = min(self.data['selectedConfig'], len(self.activeConfigs) - 1)
+
+    def onHotkeyPressed(self, event):
+        if not hasattr(BigWorld.player(), 'arena') or not self.data['enabled']:
+            return
+        isDown = checkKeys(self.data['mapMenu_key'])
+        if isDown or self.wasAltMenuPressed:
+            self.wasAltMenuPressed = isDown
+            CommandMapping.g_instance.onMappingChanged()
+        if not event.isKeyDown():
+            return
+        target = BigWorld.target()
+        player = BigWorld.player()
+        commandsData = self.commands.get(self.activeConfigs[self.data['selectedConfig']], {})
+        state = getCrosshairType(player, target)
+        menuConf, _ = findBestFitConf(commandsData)
+        commandsList = commandsData.get('hotkeyOnly', [])
+        if menuConf is not None:
+            commandsList.extend(menuConf.get(state, []))
+        for command in commandsList:
+            if command and command.handleKeys(command.hotKeys, event.key):
+                BigWorld.callback(self.data['hotDelay'] / 1000.0, partial(onCustomAction, command, target))
 
 
 class CameraManager:
@@ -313,38 +333,10 @@ def findBestFitConf(commandConf):
     return menuConf, menuType
 
 
-def inj_hkKeyEvent(event):
-    try:
-        if hasattr(BigWorld.player(), 'arena') and _config.data['enabled']:
-            isDown = checkKeys(_config.data['mapMenu_key'])
-            if isDown or _config.wasAltMenuPressed:
-                _config.wasAltMenuPressed = isDown
-                CommandMapping.g_instance.onMappingChanged()
-            if event.isKeyDown():
-                target = BigWorld.target()
-                player = BigWorld.player()
-                commandsData = _config.commands.get(_config.activeConfigs[_config.data['selectedConfig']], {})
-                state = getCrosshairType(player, target)
-                menuConf, _ = findBestFitConf(commandsData)
-                commandsList = commandsData.get('hotkeyOnly', [])
-                if menuConf is not None:
-                    commandsList.extend(menuConf.get(state, []))
-                for command in commandsList:
-                    if command and command.handleKeys(command.hotKeys, event.key):
-                        BigWorld.callback(_config.data['hotDelay'] / 1000.0, partial(onCustomAction, command, target))
-    except StandardError:
-        print 'RadialMenu: ERROR at inj_hkKeyEvent'
-        traceback.print_exc()
-
-
 @events.PlayerAvatar.destroyGUI.before
 def new_destroyGUI(*_, **__):
     _config.bestConf = None
     _config.confType = ''
-
-
-InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
-InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 
 
 @overrideMethod(radial_menu.RadialMenu, '_RadialMenu__updateMenu')

@@ -9,7 +9,7 @@ from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, 
 from PYmodsCore.delayed import showI18nDialog, g_modsListApi
 from collections import OrderedDict
 from functools import partial
-from gui import InputHandler, SystemMessages
+from gui import SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
@@ -276,8 +276,9 @@ class ConfigInterface(PYmodsConfigInterface):
                     SL.appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
                     or SL.appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI')))) != NotImplemented
 
-    def lobbyKeyControl(self, event):
-        if not event.isKeyDown() or self.isMSAOpen:
+    def onHotkeyPressed(self, event):
+        if (not hasattr(BigWorld.player(), 'databaseID') or not self.data['enabled']
+                or not event.isKeyDown() or self.isMSAOpen):
             return
         if self.modelsData['models'] and not self.previewRemod:
             if checkKeys(self.data['ChangeViewHotkey'], event.key):
@@ -528,15 +529,4 @@ def _asDict(obj):
         return obj
 
 
-def inj_hkKeyEvent(event):
-    try:
-        if hasattr(BigWorld.player(), 'databaseID') and g_config.data['enabled']:
-            g_config.lobbyKeyControl(event)
-    except StandardError:
-        print g_config.ID + ': ERROR at inj_hkKeyEvent'
-        traceback.print_exc()
-
-
-InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
-InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 g_config = ConfigInterface()
