@@ -139,7 +139,7 @@ class ConfigInterface(PYmodsConfigInterface):
         target = BigWorld.target()
         player = BigWorld.player()
         state = getCrosshairType(player, target)
-        commandsList = self.selectedCommands.get('hotkeyOnly', [])
+        commandsList = self.selectedCommands.get('hotkeyOnly', [])[:]
         menuConf, _ = self.findBestFitConf()
         if menuConf is not None:
             commandsList.extend(menuConf.get(state, []))
