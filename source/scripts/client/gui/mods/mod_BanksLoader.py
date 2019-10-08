@@ -203,7 +203,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def check_and_collect_data(self, key, section, struct, is_orig):
         result = []
-        for name, sect in section.items():
+        for name, sect in section.items() if section is not None else ():
             if name != struct['key'] or not all(sect.has_key(x) for x in struct['keys']):
                 if is_orig:
                     self.editedBanks['remap'].add(key)
