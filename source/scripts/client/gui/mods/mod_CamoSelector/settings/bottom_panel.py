@@ -1,3 +1,4 @@
+import BigWorld
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
@@ -60,7 +61,7 @@ class CustomizationBottomPanel(CBP):
         cartInfo = getTotalPurchaseInfo(purchaseItems)
         totalPriceVO = getItemPricesVO(cartInfo.totalPrice)
         label = _ms(CUSTOMIZATION.COMMIT_APPLY)
-        tooltip = CUSTOMIZATION.CUSTOMIZATION_BUYDISABLED_BODY
+        tooltip = CUSTOMIZATION.CUSTOMIZATION_NOTSELECTEDITEMS
         fromStorageCount = 0
         toBuyCount = 0
         for item in purchaseItems:
@@ -69,14 +70,9 @@ class CustomizationBottomPanel(CBP):
             if not item.isDismantling:
                 toBuyCount += 1
 
+        if cartInfo.totalPrice != ITEM_PRICE_EMPTY:
+            label = _ms(CUSTOMIZATION.COMMIT_BUY)
         outfitsModified = self.__ctx.isOutfitsModified()
-        if outfitsModified:
-            self.__showBill()
-            if cartInfo.totalPrice != ITEM_PRICE_EMPTY:
-                label = _ms(CUSTOMIZATION.COMMIT_BUY)
-        else:
-            self.__hideBill()
-            tooltip = CUSTOMIZATION.CUSTOMIZATION_NOTSELECTEDITEMS
         fromStorageCount = text_styles.stats('({})'.format(fromStorageCount))
         toBuyCount = text_styles.stats('({})'.format(toBuyCount))
         self.as_setBottomPanelPriceStateS({
@@ -91,6 +87,10 @@ class CustomizationBottomPanel(CBP):
                        'isEnoughStatuses': getMoneyVO(Money(True, True, True)),
                        'pricePanel': totalPriceVO[0]}})
         self.as_setItemsPopoverBtnEnabledS(any(i[1].isFilled() for i in self.__ctx.currentOutfit.itemsFull()))
+        if outfitsModified:
+            BigWorld.callback(0, self.__showBill)
+        else:
+            self.__hideBill()
 
     def _carouseItemWrapper(self, itemCD):
         isBuy = self.__ctx.isBuy

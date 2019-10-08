@@ -10,18 +10,19 @@ import traceback
 from collections import OrderedDict
 from .utils import smart_update
 
-__all__ = ['loadJson']
+__all__ = ['loadJson', 'loadJsonOrdered']
 
 
 class JSONObjectEncoder(json.JSONEncoder):
     def encode(self, o, i=0):
         try:  # Special Processing for lists
             if isinstance(o, (list, tuple)):
-                if not any(isinstance(x, dict) for x in o):
-                    return '[%s]' % ', '.join(self.encode(x) for x in o)
-                else:
-                    i += self.indent
-                    return '[\n%s\n%s]' % (',\n'.join((' ' * i + self.encode(x, i)) for x in o), ' ' * (i - self.indent))
+                if not any(isinstance(x, (dict, list, tuple)) for x in o):
+                    result = '[%s]' % ', '.join(self.encode(x) for x in o)
+                    if len(result) <= 128:
+                        return result
+                i += self.indent
+                return '[\n%s\n%s]' % (',\n'.join((' ' * i + self.encode(x, i)) for x in o), ' ' * (i - self.indent))
             elif isinstance(o, dict):
                 if not o:
                     return '{}'
@@ -115,9 +116,9 @@ class JSONLoader:
                 if not isEncrypted and encrypted:
                     read_contents = read_contents.decode('utf-8-sig')
                 read_contents, read_excluded = cls.json_comments(read_contents)
-        except StandardError as e:
+        except StandardError:
             print new_path
-            print e
+            traceback.print_exc()
             if not encrypted:
                 print read_contents.replace('\r', '')
             success = False
@@ -162,7 +163,7 @@ class JSONLoader:
                         else:
                             write_lines[lineNum] += comment
                     if not quiet:
-                        print '%s: updating config: %s' % (ID, new_path)
+                        print ID + ': updating config:', new_path
                     cls.json_file_write(new_path, '\n'.join(write_lines), encrypted)
             else:
                 cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
@@ -171,13 +172,34 @@ class JSONLoader:
             if success:
                 try:
                     config_new = cls.byte_ify(json.loads(data, object_hook=cls.byte_ify), ignore_dicts=True)
-                except StandardError as e:
+                except StandardError:
                     print new_path
-                    print e
+                    traceback.print_exc()
         else:
             cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
-            print '%s: ERROR: Config not found, creating default: %s' % (ID, new_path)
+            print ID + ': ERROR: Config not found, creating default:', new_path
+        return config_new
+
+    @classmethod
+    def loadJsonOrdered(cls, ID, path, name):
+        config_new = None
+        if not os.path.exists(path):
+            os.makedirs(path)
+        if not path.endswith('/'):
+            path += '/'
+        new_path = '%s%s.json' % (path, name)
+        if os.path.isfile(new_path):
+            data, _, success = cls.json_file_read(new_path, False)
+            if success:
+                try:
+                    config_new = cls.byte_ify(json.loads(data, object_pairs_hook=OrderedDict))
+                except StandardError:
+                    print new_path
+                    traceback.print_exc()
+        else:
+            print ID + ': ERROR: Config not found:', new_path
         return config_new
 
 
 loadJson = JSONLoader.loadJson
+loadJsonOrdered = JSONLoader.loadJsonOrdered

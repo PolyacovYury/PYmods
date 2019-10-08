@@ -2,10 +2,9 @@
 import BigWorld
 import Keys
 import ResMgr
-import traceback
 from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, objToDict
 from PYmodsCore.delayed import showI18nDialog, g_modsListApi
-from gui import InputHandler, SystemMessages
+from gui import SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
@@ -36,7 +35,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = __modID__
-        self.version = '1.1.1 (%s)' % __date__
+        self.version = '1.1.2 (%s)' % __date__
         self.defaultKeys = {'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
         self.data = {'enabled': True,
@@ -207,10 +206,6 @@ class ConfigInterface(PYmodsConfigInterface):
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
         self.updateMod()
 
-    def load(self):
-        self.migrateConfigs()
-        super(ConfigInterface, self).load()
-
     @property
     def collisionMode(self):
         try:
@@ -231,6 +226,32 @@ class ConfigInterface(PYmodsConfigInterface):
             lobby=True, callback=lambda: (
                     SL.appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
                     or SL.appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI')))) != NotImplemented
+
+    def onHotkeyPressed(self, event):
+        if (not hasattr(BigWorld.player(), 'databaseID') or not self.data['enabled'] or not event.isKeyDown()
+                or self.isMSAOpen or not self.skinsData['models']):
+            return
+        if checkKeys(self.data['ChangeViewHotkey'], event.key):
+            try:
+                from gui.mods.mod_remodenabler import g_config as re_config
+            except ImportError:
+                re_config = None
+            if re_config is None:
+                newModeNum = (self.teams.index(self.currentTeam) + 1) % len(self.teams)
+                self.currentTeam = self.teams[newModeNum]
+                if self.data['isDebug']:
+                    print self.ID + ': changing display mode to', self.currentTeam
+                SystemMessages.pushMessage(
+                    'temp_SM%s<b>%s</b>' % (self.i18n['UI_mode'], self.i18n['UI_mode_' + self.currentTeam]),
+                    SystemMessages.SM_TYPE.Warning)
+                refreshCurrentVehicle()
+        if checkKeys(self.data['DynamicSkinHotkey'], event.key):
+            enabled = self.dynamicSkinEnabled
+            self.dynamicSkinEnabled = not enabled
+            SystemMessages.pushMessage(
+                'temp_SM' + self.i18n['UI_%sableDynamicSkin' % ('en' if not enabled else 'dis')],
+                SystemMessages.SM_TYPE.CustomizationForGold)
+            refreshCurrentVehicle()
 
 
 class SkinnerUI(AbstractWindowView):
@@ -270,41 +291,4 @@ class SkinnerUI(AbstractWindowView):
             print arg
 
 
-def lobbyKeyControl(event):
-    if not event.isKeyDown() or g_config.isMSAOpen or not g_config.skinsData['models']:
-        return
-    if checkKeys(g_config.data['ChangeViewHotkey'], event.key):
-        try:
-            from gui.mods.mod_remodenabler import g_config as re_config
-        except ImportError:
-            re_config = None
-        if re_config is None:
-            newModeNum = (g_config.teams.index(g_config.currentTeam) + 1) % len(g_config.teams)
-            g_config.currentTeam = g_config.teams[newModeNum]
-            if g_config.data['isDebug']:
-                print g_config.ID + ': changing display mode to', g_config.currentTeam
-            SystemMessages.pushMessage(
-                'temp_SM%s<b>%s</b>' % (g_config.i18n['UI_mode'], g_config.i18n['UI_mode_' + g_config.currentTeam]),
-                SystemMessages.SM_TYPE.Warning)
-            refreshCurrentVehicle()
-    if checkKeys(g_config.data['DynamicSkinHotkey'], event.key):
-        enabled = g_config.dynamicSkinEnabled
-        g_config.dynamicSkinEnabled = not enabled
-        SystemMessages.pushMessage(
-            'temp_SM' + g_config.i18n['UI_%sableDynamicSkin' % ('en' if not enabled else 'dis')],
-            SystemMessages.SM_TYPE.CustomizationForGold)
-        refreshCurrentVehicle()
-
-
-def inj_hkKeyEvent(event):
-    try:
-        if hasattr(BigWorld.player(), 'databaseID') and g_config.data['enabled']:
-            lobbyKeyControl(event)
-    except StandardError:
-        print g_config.ID + ': ERROR at inj_hkKeyEvent'
-        traceback.print_exc()
-
-
-InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
-InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 g_config = ConfigInterface()

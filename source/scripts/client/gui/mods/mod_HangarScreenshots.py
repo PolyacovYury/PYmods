@@ -4,9 +4,8 @@ import math
 import BigWorld
 import Keys
 import Math
-import traceback
 from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKeys, Analytics
-from gui import InputHandler, SystemMessages
+from gui import SystemMessages
 from gui.ClientHangarSpace import hangarCFG
 from gui.Scaleform.framework import ViewTypes
 from gui.hangar_cameras.hangar_camera_manager import HangarCameraManager
@@ -61,6 +60,32 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).readCurrentSettings(quiet)
         self.cameraPos = loadJson(self.ID, 'cameraPositions', self.cameraPos, self.configPath, quiet=quiet)
 
+    def onHotkeyPressed(self, event):
+        if not hasattr(BigWorld.player(), 'databaseID'):
+            return
+        if self.data['enabled']:
+            if event.isKeyDown() and checkKeys(self.data['togglekey'], event.key):
+                self.data['UIVisible'] = not self.data['UIVisible']
+                toggleHangarUI(self.data['UIVisible'])
+                if not self.data['UIVisible'] and self.cameraPos and self.data['currentCamPos'] < len(self.cameraPos):
+                    setCameraLocation(self.cameraPos[self.data['currentCamPos']])
+            elif event.isKeyDown() and checkKeys(
+                    self.data['camkey'], event.key) and not self.data['UIVisible'] and self.cameraPos:
+                self.data['currentCamPos'] += 1
+                if self.data['currentCamPos'] == len(self.cameraPos) and self.data[
+                        'addUnlockMode'] and self.data['lockCamera']:
+                    SystemMessages.pushMessage(
+                        'temp_SM' + self.i18n['UI_message_cameraUnlocked'], SystemMessages.SM_TYPE.Warning)
+                else:
+                    if self.data['currentCamPos'] >= len(self.cameraPos) + (self.data[
+                            'addUnlockMode'] and self.data['lockCamera']):
+                        self.data['currentCamPos'] = 0
+                    setCameraLocation(self.cameraPos[self.data['currentCamPos']])
+        elif not self.data['UIVisible']:
+            self.data['currentCamPos'] = 0
+            self.data['UIVisible'] = True
+            toggleHangarUI(True)
+
 
 config = ConfigInterface()
 
@@ -88,37 +113,4 @@ def setCameraLocation(settings):
         None, True)
 
 
-def inj_hkKeyEvent(event):
-    if not hasattr(BigWorld.player(), 'databaseID'):
-        return
-    try:
-        if config.data['enabled']:
-            if event.isKeyDown() and checkKeys(config.data['togglekey'], event.key):
-                config.data['UIVisible'] = not config.data['UIVisible']
-                toggleHangarUI(config.data['UIVisible'])
-                if not config.data['UIVisible'] and config.cameraPos and config.data['currentCamPos'] < len(config.cameraPos):
-                    setCameraLocation(config.cameraPos[config.data['currentCamPos']])
-            elif event.isKeyDown() and checkKeys(
-                    config.data['camkey'], event.key) and not config.data['UIVisible'] and config.cameraPos:
-                config.data['currentCamPos'] += 1
-                if config.data['currentCamPos'] == len(config.cameraPos) and config.data[
-                        'addUnlockMode'] and config.data['lockCamera']:
-                    SystemMessages.pushMessage(
-                        'temp_SM' + config.i18n['UI_message_cameraUnlocked'], SystemMessages.SM_TYPE.Warning)
-                else:
-                    if config.data['currentCamPos'] >= len(config.cameraPos) + (config.data[
-                            'addUnlockMode'] and config.data['lockCamera']):
-                        config.data['currentCamPos'] = 0
-                    setCameraLocation(config.cameraPos[config.data['currentCamPos']])
-        elif not config.data['UIVisible']:
-            config.data['currentCamPos'] = 0
-            config.data['UIVisible'] = True
-            toggleHangarUI(True)
-    except StandardError:
-        print config.ID + ': ERROR at inj_hkKeyEvent'
-        traceback.print_exc()
-
-
-InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
-InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 analytics = Analytics(config.ID, config.version, 'UA-76792179-14')

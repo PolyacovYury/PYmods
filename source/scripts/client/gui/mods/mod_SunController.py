@@ -3,9 +3,8 @@ import time
 
 import BigWorld
 import Keys
-import traceback
 from PYmodsCore import PYmodsConfigInterface, checkKeys, sendMessage, Analytics, events
-from gui import InputHandler, SystemMessages
+from gui import SystemMessages
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -53,6 +52,17 @@ class ConfigInterface(PYmodsConfigInterface):
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
         self.isSunControlled = self.data['enabled'] and self.data['enableAtStartup'] and self.isSunControlled
+
+    def onHotkeyPressed(self, event):
+        if (not hasattr(BigWorld.player(), 'arena') or not self.data['enabled']
+                or not checkKeys(self.data['hotkey'], event.key) or not event.isKeyDown()):
+            return
+        self.isSunControlled = not self.isSunControlled
+        sun_controller(self.isSunControlled)
+        if self.isSunControlled:
+            sendMessage(self.i18n['UI_activSunMod'])
+        else:
+            sendMessage(self.i18n['UI_deactivSunMod'], 'Red')
 
 
 g_config = ConfigInterface()
@@ -115,25 +125,4 @@ def new_startGUI(*_, **__):
         _clear_loop()
 
 
-def battleKeyControl(event):
-    if checkKeys(g_config.data['hotkey'], event.key) and event.isKeyDown():
-        g_config.isSunControlled = not g_config.isSunControlled
-        sun_controller(g_config.isSunControlled)
-        if g_config.isSunControlled:
-            sendMessage(g_config.i18n['UI_activSunMod'])
-        else:
-            sendMessage(g_config.i18n['UI_deactivSunMod'], 'Red')
-
-
-def inj_hkKeyEvent(event):
-    try:
-        if hasattr(BigWorld.player(), 'arena') and g_config.data['enabled']:
-            battleKeyControl(event)
-    except StandardError:
-        print '%s: ERROR at inj_hkKeyEvent' % g_config.ID
-        traceback.print_exc()
-
-
-InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
-InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 statistic_mod = Analytics(g_config.ID, g_config.version, 'UA-76792179-3')

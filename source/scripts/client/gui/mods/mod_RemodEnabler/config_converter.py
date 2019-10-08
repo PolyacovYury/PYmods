@@ -1,7 +1,6 @@
 import fnmatch
 import os
-from PYmodsCore import remDups, loadJson
-from PYmodsCore.config.json_reader import JSONLoader
+from PYmodsCore import remDups, loadJson, loadJsonOrdered
 from collections import namedtuple, OrderedDict
 from items.components.shared_components import EmblemSlot
 from items.readers.shared_readers import __customizationSlotIdRanges as customizationSlotIdRanges
@@ -24,20 +23,6 @@ NodesAndGroups = namedtuple('NodesAndGroups', ('nodes', 'groups'))
 chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams', 'trackSplineParams')
 defaultEmblemSlot = EmblemSlot(
     [0, 0, 0], [0, 0, 0], [0, 0, 0], 0.0, False, 'clan', False, True, None, 0, True)
-
-
-def readOrdered(new_path):
-    import json
-    config_new = None
-    if os.path.isfile(new_path):
-        data, _, success = JSONLoader.json_file_read(new_path, False)
-        if success:
-            try:
-                config_new = JSONLoader.byte_ify(json.loads(data, object_pairs_hook=OrderedDict))
-            except StandardError as e:
-                print new_path
-                print e
-    return config_new
 
 
 def migrateSettings(g_config, old_data, new_data):
@@ -71,8 +56,8 @@ def migrateConfigs(g_config):
 
     for root, _, fNames in os.walk(g_config.configPath + 'remods/'):
         for fName in fnmatch.filter(fNames, '*.json'):
-            sname = fName.split('.')[0]
-            old_conf = readOrdered(root + '/' + fName)
+            sname = os.path.splitext(fName)[0]
+            old_conf = loadJsonOrdered(g_config.ID, root, sname)
             if not old_conf:
                 print g_config.ID + ': error while reading', fName + '.'
                 continue

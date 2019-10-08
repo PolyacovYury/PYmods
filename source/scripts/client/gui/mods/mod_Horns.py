@@ -5,7 +5,6 @@ import Vehicle
 import traceback
 from PYmodsCore import Sound, PYmodsConfigInterface, pickRandomPart, sendChatMessage, checkKeys, Analytics
 from functools import partial
-from gui import InputHandler
 from gui.battle_control import avatar_getter
 
 
@@ -69,6 +68,18 @@ class ConfigInterface(PYmodsConfigInterface):
         SoundLoop(False)
         self.readCurrentSettings()
 
+    def onHotkeyPressed(self, event):
+        if (not hasattr(BigWorld.player(), 'arena') or not self.data['enabled'] or (
+                len(self.data['hotkey']) == 1 and BigWorld.player().getForcedGuiControlModeFlags())):
+            return
+        if avatar_getter.isVehicleAlive() and event.isKeyDown() and checkKeys(self.data['hotkey']):
+            if not getattr(self.hornSoundEvent, 'isPlaying', False):
+                SoundLoop(True)
+                if self.data['chatEnable']:
+                    calltext()
+        else:
+            SoundLoop(False)
+
 
 _config = ConfigInterface()
 
@@ -127,22 +138,4 @@ def SoundLoop(start):
             _config.soundCallback = None
 
 
-def inj_hkKeyEvent(event):
-    try:
-        if hasattr(BigWorld.player(), 'arena') and _config.data['enabled'] and not (
-                len(_config.data['hotkey']) == 1 and BigWorld.player().getForcedGuiControlModeFlags()):
-            if avatar_getter.isVehicleAlive() and event.isKeyDown() and checkKeys(_config.data['hotkey']):
-                if not getattr(_config.hornSoundEvent, 'isPlaying', False):
-                    SoundLoop(True)
-                    if _config.data['chatEnable']:
-                        calltext()
-            else:
-                SoundLoop(False)
-    except StandardError:
-        print 'Horns: ERROR at inj_hkKeyEvent'
-        traceback.print_exc()
-
-
-InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
-InputHandler.g_instance.onKeyUp += inj_hkKeyEvent
 statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-5')
