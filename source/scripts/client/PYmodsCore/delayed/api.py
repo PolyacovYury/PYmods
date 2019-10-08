@@ -1,3 +1,4 @@
+import Event
 import traceback
 
 from functools import partial
@@ -33,17 +34,35 @@ except ImportError:
 else:
     try:
         from gui.modsSettingsApi.api import ModsSettingsApi as MSA_Orig
-        from gui.modsListApi import g_controller
+        from gui.modsSettingsApi.hotkeys import HotkeysContoller
+        from gui.modsSettingsApi.view import loadView
+        from gui.modsSettingsApi._constants import MOD_ICON, MOD_NAME, MOD_DESCRIPTION
+
 
         class ModsSettings(MSA_Orig):
             def __init__(self, ID, cont):
                 self.container = cont
-                if 'modsSettingsApi' in g_controller.modifications:
-                    g_controller.modifications['modsSettingsApi_PYmods'] = g_controller.modifications.pop('modsSettingsApi')
-                    g_controller.updateModification('modsSettingsApi_PYmods')
-                super(ModsSettings, self).__init__()
-                mod = g_controller.modifications[ID] = g_controller.modifications.pop('modsSettingsApi')
-                g_controller.updateModification(ID, callback=partial(cont.MSAPopulate, mod._ModificationItem__callback))
+                self.activeMods = set()
+                self.config = {'templates': {}, 'settings': {}}
+                self.onSettingsChanged = Event.Event()
+                self.onButtonClicked = Event.Event()
+                self.onWindowClosed = Event.Event()
+                self.updateHotKeys = Event.Event()
+                self.hotkeys = HotkeysContoller(self)
+                self.hotkeys.onUpdated += self.updateHotKeys
+                self.userSettings = {}
+                self.settingsLoad()
+                self.configLoad()
+                g_modsListApi.addModification(
+                    id=ID,
+                    name=self.userSettings.get('modsListApiName') or MOD_NAME,
+                    description=self.userSettings.get('modsListApiDescription') or MOD_DESCRIPTION,
+                    icon=self.userSettings.get('modsListApiIcon') or MOD_ICON,
+                    enabled=True,
+                    login=True,
+                    lobby=True,
+                    callback=partial(cont.MSAPopulate, partial(loadView, self))
+                )
                 self.onWindowClosed += cont.MSADispose
 
             def settingsLoad(self):
@@ -58,7 +77,7 @@ else:
 
     except ImportError:
         print 'PYmodsCore: ModsSettingsApi package not found'
-        MSA_Orig = g_controller = None
+        MSA_Orig = None
 
 
 def registerSettings(config):
