@@ -1,40 +1,47 @@
-{
-    "TankMenu": {
+﻿{
+    "default": {
         "default": [
-            {"title": "Так точно!",
+            {
+                "title": "Так точно!",
                 "icon": "Yes",
                 "command": "POSITIVE",
                 "text": "Спасибо за бой!",
                 "chatMode": "Team"
             },
-            {"title": "Защищайте базу!",
+            {
+                "title": "Защищайте базу!",
                 "icon": "Backtobase",
                 "command": "BACKTOBASE",
                 "chatMode": "Team"
             },
-            {"title": "Перезаряжаюсь!",
+            {
+                "title": "Перезаряжаюсь!",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team",
                 "hotKey": ["KEY_C"]
             },
-            {"title": "Нужна помощь!",
+            {
+                "title": "Нужна помощь!",
                 "icon": "Helpme",
                 "command": "HELPME",
                 "chatMode": "Team",
                 "ping": "{ownPos}"
             },
-            {"title": "В атаку!",
+            {
+                "title": "В атаку!",
                 "icon": "Attack",
                 "command": "ATTACK",
                 "chatMode": "Team"
             },
-            {"title": "Словите свет!",
+            {
+                "title": "Словите свет!",
                 "icon": "No",
                 "text": "Словите свет!",
                 "chatMode": "Team"
             },
-            {"title": "Статистика!",
+            {
+                "title": "Статистика!",
                 "icon": "No",
                 "text": "Статистика {name} {vehicle} недоступна.",
                 "chatMode": "Team",
@@ -42,84 +49,99 @@
             }
         ],
         "ally": [
-            {"title": "Спасибо!",
+            {
+                "title": "Спасибо!",
                 "icon": "Yes",
                 "text": "{name} ({vehicle}) , спасибо!",
                 "chatMode": "Team"
             },
-            {"title": "Назад!",
+            {
+                "title": "Назад!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
                 "chatMode": "Team"
             },
-            {"title": "Стой!",
+            {
+                "title": "Стой!",
                 "icon": "Stop",
                 "command": "STOP",
                 "chatMode": "Team"
             },
-            {"title": "Помоги!",
+            {
+                "title": "Помоги!",
                 "icon": "Helpmeex",
                 "command": "HELPMEEX",
                 "chatMode": "Team"
             },
-            {"title": "Не подпирай!",
+            {
+                "title": "Не подпирай!",
                 "icon": "Turnback",
                 "text": "{name} ({vehicle}) , не подпирай!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_V"]
             },
-            {"title": "Извини!",
+            {
+                "title": "Извини!",
                 "text": "{name} ({vehicle}) , извини!",
                 "chatMode": "Team"
             },
-            {"title": "Го!",
+            {
+                "title": "Го!",
                 "icon": "No",
-                "text": "{name} {vehicle},едь. Прийми дамаг я за тобой, прикрою!",
+                "text": "{name} {vehicle}, дь. Прийми дамаг я за тобой, прикрою!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_I"]
             },
-            {"title": "Из прицела!",
+            {
+                "title": "Из прицела!",
                 "icon": "No",
-                "text": "{name} {vehicle},из прицела!",
+                "text": "{name} {vehicle}, з прицела!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_G"]
             }
         ],
         "enemy": [
-            {"title": "Так точно!",
+            {
+                "title": "Так точно!",
                 "icon": "Yes",
                 "command": "POSITIVE",
                 "text": "Спасибо за бой!",
                 "chatMode": "Team"
             },
-            {"title": "Защищайте базу!",
+            {
+                "title": "Защищайте базу!",
                 "icon": "Backtobase",
                 "command": "BACKTOBASE",
                 "chatMode": "Team"
             },
-            {"title": "Перезаряжаюсь!",
+            {
+                "title": "Перезаряжаюсь!",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team",
                 "hotKey": ["KEY_C"]
             },
-            {"title": "Нужна помощь!",
+            {
+                "title": "Нужна помощь!",
                 "icon": "Helpme",
                 "command": "HELPME",
                 "chatMode": "Team",
                 "ping": "{ownPos}"
             },
-            {"title": "Поддержите огнём!",
+            {
+                "title": "Поддержите огнём!",
                 "icon": "Support",
                 "command": "SUPPORTMEWITHFIRE",
                 "chatMode": "Team"
             },
-            {"title": "Добейте его!",
+            {
+                "title": "Добейте его!",
                 "icon": "No",
                 "text": "{name} ({vehicle}) , добейте его!",
                 "chatMode": "Team"
             },
-            {"title": "Статистика игрока!",
+            {
+                "title": "Статистика игрока!",
                 "icon": "No",
                 "text": "Статистика игрока {name} {vehicle} недоступна.",
                 "chatMode": "Team",
@@ -127,43 +149,50 @@
             }
         ]
     },
-    "SPGMenu": {
+    "SPG": {
         "default": [
-            {"title": "Свелся на квадрат!",
+            {
+                "title": "Свелся на квадрат!",
                 "icon": "Yes",
-                "text": "Свелся на квадрат {viewPos},помогу!",
+                "text": "Свелся на квадрат {viewPos}, омогу!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
-            {"title": "Подсветите!",
+            {
+                "title": "Подсветите!",
                 "icon": "Backtobase",
-                "text": "Подсветите пожалуйста квадрат {viewPos},помогу! ",
+                "text": "Подсветите пожалуйста квадрат {viewPos}, омогу! ",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
-            {"title": "Перезаряжаюсь!",
+            {
+                "title": "Перезаряжаюсь!",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team",
                 "hotKey": ["KEY_C"]
             },
-            {"title": "Нужна помощь!",
+            {
+                "title": "Нужна помощь!",
                 "icon": "Helpme",
                 "command": "HELPME",
                 "chatMode": "Team",
                 "ping": "{ownPos}"
             },
-            {"title": "В атаку!",
+            {
+                "title": "В атаку!",
                 "icon": "Attack",
                 "command": "ATTACK",
                 "chatMode": "Team"
             },
-            {"title": "Словите свет!",
+            {
+                "title": "Словите свет!",
                 "icon": "No",
                 "text": "Словите свет!",
                 "chatMode": "Team"
             },
-            {"title": "Статистика!",
+            {
+                "title": "Статистика!",
                 "icon": "No",
                 "text": "Статистика {name} {vehicle} недоступна.",
                 "chatMode": "Team",
@@ -171,38 +200,45 @@
             }
         ],
         "ally": [
-            {"title": "Спасибо!",
+            {
+                "title": "Спасибо!",
                 "icon": "Yes",
                 "command": "POSITIVE",
                 "text": "{name} ({vehicle}) , спасибо! ",
                 "chatMode": "Team"
             },
-            {"title": "Назад!",
+            {
+                "title": "Назад!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
                 "chatMode": "Team"
             },
-            {"title": "Стой!",
+            {
+                "title": "Стой!",
                 "icon": "Stop",
                 "command": "STOP",
                 "chatMode": "Team"
             },
-            {"title": "Помоги!",
+            {
+                "title": "Помоги!",
                 "icon": "Helpmeex",
                 "command": "HELPMEEX",
                 "chatMode": "Team"
             },
-            {"title": "За мной!",
+            {
+                "title": "За мной!",
                 "icon": "Followme",
-                "command": "FOLLOWME", 
+                "command": "FOLLOWME",
                 "chatMode": "Team"
             },
-            {"title": "Извини!",
+            {
+                "title": "Извини!",
                 "icon": "No",
                 "text": "{name} ({vehicle}) , извини!",
                 "chatMode": "Team"
             },
-            {"title": "Статистика игрока!",
+            {
+                "title": "Статистика игрока!",
                 "icon": "No",
                 "text": "Статистика игрока {name} {vehicle} недоступна.",
                 "chatMode": "Team",
@@ -210,42 +246,49 @@
             }
         ],
         "enemy": [
-            {"title": "Так точно!",
+            {
+                "title": "Так точно!",
                 "icon": "Yes",
                 "command": "POSITIVE",
                 "text": "Спасибо за бой!",
                 "chatMode": "Team"
             },
-            {"title": "Защищайте базу!",
+            {
+                "title": "Защищайте базу!",
                 "icon": "Backtobase",
                 "command": "BACKTOBASE",
                 "chatMode": "Team"
             },
-            {"title": "Перезаряжаюсь!",
+            {
+                "title": "Перезаряжаюсь!",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team",
                 "hotKey": ["KEY_C"]
             },
-            {"title": "Нужна помощь!",
+            {
+                "title": "Нужна помощь!",
                 "icon": "Helpme",
                 "command": "HELPME",
                 "chatMode": "Team",
                 "ping": "{ownPos}"
             },
-            {"title": "Атакую! Отойдите от него!",
+            {
+                "title": "Атакую! Отойдите от него!",
                 "icon": "AttackSPG",
                 "command": "ATTACKENEMY",
                 "text": "ОТОЙДИТЕ ОТ НЕГО!!",
                 "chatMode": "Team"
             },
-            {"title": "Ща прилетит!",
+            {
+                "title": "Ща прилетит!",
                 "icon": "AttackSPG",
                 "command": "ATTACKENEMY",
                 "text": "Через {reload} сек в {vehicle} прилетит чемодан! Прошу подсвета.",
                 "chatMode": "Team"
             },
-            {"title": "Статистика игрока!",
+            {
+                "title": "Статистика игрока!",
                 "icon": "No",
                 "text": "Статистика игрока {name} {vehicle} недоступна.",
                 "chatMode": "Team",
@@ -255,696 +298,794 @@
     },
     "Map_01_karelia": {
         "default": [
-           {"title": "Помогите с плато!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите с плато!",
-            "chatMode": "Team",
-            "ping": "B3 C2"
-           },
-           {"title": "Помогите на центре!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите на центре!",
-            "chatMode": "Team",
-            "ping": "E6 F5"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "В атаку!",
-            "icon": "Attack",
-            "command": "ATTACK",
-            "chatMode": "Team"
-           },
-           {"title": "Помогите взять гору!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите взять гору!",
-            "chatMode": "Team",
-            "ping": "G7 H8"
-           }
+            {
+                "title": "Помогите с плато!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите с плато!",
+                "chatMode": "Team",
+                "ping": "B3 C2"
+            },
+            {
+                "title": "Помогите на центре!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите на центре!",
+                "chatMode": "Team",
+                "ping": "E6 F5"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите взять гору!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите взять гору!",
+                "chatMode": "Team",
+                "ping": "G7 H8"
+            }
         ]
     },
     "Map_02_malinovka": {
         "default": [
-           {"title": "Не стойте на базе!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Не стойте на базе!",
-            "chatMode": "Team"
-           },
-           {"title": "Гоу по центру!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Гоу по центру!",
-            "chatMode": "Team",
-            "ping": "H3 G4"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "Светляк сюда!",
-            "icon": "Helpme",
-            "text": "Светляк, стань в куст здесь, если ты знаешь как. Если нет, лучше не лезь туда!",
-            "chatMode": "Team",
-            "ping": "F5"
-           },
-           {"title": "Помогите взять гору!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите взять гору!",
-            "chatMode": "Team",
-            "ping": "A0 B9"
-           }
+            {
+                "title": "Не стойте на базе!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Не стойте на базе!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Гоу по центру!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Гоу по центру!",
+                "chatMode": "Team",
+                "ping": "H3 G4"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "Светляк сюда!",
+                "icon": "Helpme",
+                "text": "Светляк, стань в куст здесь, если ты знаешь как. Если нет, лучше не лезь туда!",
+                "chatMode": "Team",
+                "ping": "F5"
+            },
+            {
+                "title": "Помогите взять гору!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите взять гору!",
+                "chatMode": "Team",
+                "ping": "A0 B9"
+            }
         ]
     },
     "Map_04_himmelsdorf": {
         "default": [
-           {"title": "Помогите удержать банан!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите удержать банан!",
-            "chatMode": "Team",
-            "ping": "D8 F7 E7"
-           },
-           {"title": "Помогите взять ценр!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите взять ценрт!",
-            "chatMode": "Team",
-            "ping": "E5 F5"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "Помогите на железке!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите на железке!",
-            "chatMode": "Team",
-            "ping": "E2 F2"
-           },
-           {"title": "Помогите взять гору!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите взять гору!",
-            "chatMode": "Team",
-            "ping": "E9 F9"
-           }
+            {
+                "title": "Помогите удержать банан!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите удержать банан!",
+                "chatMode": "Team",
+                "ping": "D8 F7 E7"
+            },
+            {
+                "title": "Помогите взять ценр!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите взять ценрт!",
+                "chatMode": "Team",
+                "ping": "E5 F5"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "Помогите на железке!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите на железке!",
+                "chatMode": "Team",
+                "ping": "E2 F2"
+            },
+            {
+                "title": "Помогите взять гору!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите взять гору!",
+                "chatMode": "Team",
+                "ping": "E9 F9"
+            }
         ]
     },
     "Map_06_ensk": {
         "default": [
-           {"title": "Помогите в городе!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите в городе!",
-            "chatMode": "Team",
-            "ping": "E2 F2"
-           },
-           {"title": "Помогите удержать железку!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите удержать железку!",
-            "chatMode": "Team",
-            "ping": "E6 F6"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "В атаку!",
-            "icon": "Attack",
-            "command": "ATTACK",
-            "chatMode": "Team"
-           },
-           {"title": "Помогите на зеленке!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите на зеленке!",
-            "chatMode": "Team",
-            "ping": "F9 E9"
-           }
+            {
+                "title": "Помогите в городе!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите в городе!",
+                "chatMode": "Team",
+                "ping": "E2 F2"
+            },
+            {
+                "title": "Помогите удержать железку!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите удержать железку!",
+                "chatMode": "Team",
+                "ping": "E6 F6"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите на зеленке!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите на зеленке!",
+                "chatMode": "Team",
+                "ping": "F9 E9"
+            }
         ]
     },
     "Map_07_lakeville": {
         "default": [
-           {"title": "Помогите в ущелье!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите в ущелье!",
-            "chatMode": "Team",
-            "ping": "E2 F2"
-           },
-           {"title": "Помогите на  центре!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите на центре!",
-            "chatMode": "Team",
-            "ping": "E4 F4"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "В атаку!",
-            "icon": "Attack",
-            "command": "ATTACK",
-            "chatMode": "Team"
-           },
-           {"title": "Помогите взять город!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите взять город!",
-            "chatMode": "Team",
-            "ping": "E9 F9"
-           }
+            {
+                "title": "Помогите в ущелье!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите в ущелье!",
+                "chatMode": "Team",
+                "ping": "E2 F2"
+            },
+            {
+                "title": "Помогите на  центре!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите на центре!",
+                "chatMode": "Team",
+                "ping": "E4 F4"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите взять город!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите взять город!",
+                "chatMode": "Team",
+                "ping": "E9 F9"
+            }
         ]
     },
     "Map_08_ruinberg": {
         "default": [
-           {"title": "Помогите в городе!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите в городе!",
-            "chatMode": "Team",
-            "ping": "E3 F3 "
-           },
-           {"title": "Так точно!",
-            "icon": "Yes",
-            "command": "POSITIVE",
-            "chatMode": "Team"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "В атаку!",
-            "icon": "Attack",
-            "command": "ATTACK",
-            "chatMode": "Team"
-           },
-           {"title": "Помогите на зеленке!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите на зеленке!",
-            "chatMode": "Team",
-            "ping": "E0 F0"
-           }
+            {
+                "title": "Помогите в городе!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите в городе!",
+                "chatMode": "Team",
+                "ping": "E3 F3 "
+            },
+            {
+                "title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите на зеленке!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите на зеленке!",
+                "chatMode": "Team",
+                "ping": "E0 F0"
+            }
         ]
     },
     "Map_11_murovanka": {
         "default": [
-           {"title": "Помогите на зеленке!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите на зеленке!",
-            "chatMode": "Team",
-            "ping": "E1 D1"
-           },
-           {"title": "Поддержите огнем на центре!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Поддержите огнем на центре!",
-            "chatMode": "Team",
-            "ping": "E5 F5"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "В атаку!",
-            "icon": "Attack",
-            "command": "ATTACK",
-            "chatMode": "Team"
-           },
-           {"title": "Помогите в лесу!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите в лесу!",
-            "chatMode": "Team",
-            "ping": "D9 E9"
-           }
+            {
+                "title": "Помогите на зеленке!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите на зеленке!",
+                "chatMode": "Team",
+                "ping": "E1 D1"
+            },
+            {
+                "title": "Поддержите огнем на центре!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Поддержите огнем на центре!",
+                "chatMode": "Team",
+                "ping": "E5 F5"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите в лесу!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите в лесу!",
+                "chatMode": "Team",
+                "ping": "D9 E9"
+            }
         ]
     },
     "Map_14_siegfried_line": {
         "default": [
-           {"title": "Помогите в городе!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите в городе!",
-            "chatMode": "Team",
-            "ping": "E7 F8 E9"
-           },
-           {"title": "Защищайте базу!",
-            "icon": "Backtobase",
-            "command": "BACKTOBASE",
-            "chatMode": "Team"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "В атаку!",
-            "icon": "Attack",
-            "command": "ATTACK",
-            "chatMode": "Team"
-           },
-           {"title": "Пoмогите на зеленке!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите на зеленке!",
-            "chatMode": "Team",
-            "ping": "F1 E2 F3"
-           }
+            {
+                "title": "Помогите в городе!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите в городе!",
+                "chatMode": "Team",
+                "ping": "E7 F8 E9"
+            },
+            {
+                "title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "command": "BACKTOBASE",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Пoмогите на зеленке!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите на зеленке!",
+                "chatMode": "Team",
+                "ping": "F1 E2 F3"
+            }
         ]
     },
     "Map_19_monastery": {
         "default": [
-           {"title": "Помогите удержать кишку!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите удержать кишку!",
-            "chatMode": "Team",
-            "ping": "F7 E7"
-           },
-           {"title": "Помогите в ухе!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите в ухе!",
-            "chatMode": "Team",
-            "ping": "E2 F1"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "В атаку!",
-            "icon": "Attack",
-            "command": "ATTACK",
-            "chatMode": "Team"
-           },
-           {"title": "Плмогите занять монастырь!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите занять монастырь!",
-            "chatMode": "Team",
-            "ping": "E5 F5"
-           }
+            {
+                "title": "Помогите удержать кишку!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите удержать кишку!",
+                "chatMode": "Team",
+                "ping": "F7 E7"
+            },
+            {
+                "title": "Помогите в ухе!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите в ухе!",
+                "chatMode": "Team",
+                "ping": "E2 F1"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Плмогите занять монастырь!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите занять монастырь!",
+                "chatMode": "Team",
+                "ping": "E5 F5"
+            }
         ]
     },
     "Map_29_el_hallouf": {
         "default": [
-           {"title": "Помогите взять воду!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите взять воду!",
-            "chatMode": "Team",
-            "ping": "H7 H8"
-           },
-           {"title": "Стойте у базы!",
-            "icon": "Helpme",
-            "text": "Стойте у базы!",
-            "chatMode": "Team"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "В атаку!",
-            "icon": "Attack",
-            "command": "ATTACK",
-            "chatMode": "Team"
-           },
-           {"title": "Помогите взять гору!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите взять гору!",
-            "chatMode": "Team",
-            "ping": "A3 A2"
-           }
+            {
+                "title": "Помогите взять воду!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите взять воду!",
+                "chatMode": "Team",
+                "ping": "H7 H8"
+            },
+            {
+                "title": "Стойте у базы!",
+                "icon": "Helpme",
+                "text": "Стойте у базы!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите взять гору!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите взять гору!",
+                "chatMode": "Team",
+                "ping": "A3 A2"
+            }
         ]
     },
     "Map_36_fishing_bay": {
         "default": [
-           {"title": "Помогите в городе!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите в городе!",
-            "chatMode": "Team",
-            "ping": "E8 F8"
-           },
-           {"title": "Помогите на центре!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите на центре!",
-            "chatMode": "Team",
-            "ping": "E4 F5"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "В атаку!",
-            "icon": "Attack",
-            "command": "ATTACK",
-            "chatMode": "Team"
-           },
-           {"title": "Помогите на зеленке!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите на зеленке!",
-            "chatMode": "Team",
-            "ping": "E1 F1"
-           }
+            {
+                "title": "Помогите в городе!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите в городе!",
+                "chatMode": "Team",
+                "ping": "E8 F8"
+            },
+            {
+                "title": "Помогите на центре!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите на центре!",
+                "chatMode": "Team",
+                "ping": "E4 F5"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите на зеленке!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите на зеленке!",
+                "chatMode": "Team",
+                "ping": "E1 F1"
+            }
         ]
     },
     "Map_38_mannerheim_line": {
         "default": [
-           {"title": "Вниз не спускайтесь!",
-            "icon": "Helpme",
-            "text": "Вниз не спускайтесь!",
-            "chatMode": "Team",
-            "ping": "F9"
-           },
-           {"title": "Стойте здесь, наверх не лезьте!",
-            "icon": "Helpme",
-            "text": "Стойте здесь, наверх не лезьте!!",
-            "chatMode": "Team",
-            "ping": "H8"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "Помогите взять гору!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите взять гору!",
-            "chatMode": "Team"
-           },
-           {"title": "Помогите с зеленкой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите с зеленкой!",
-            "chatMode": "Team"
-           }
+            {
+                "title": "Вниз не спускайтесь!",
+                "icon": "Helpme",
+                "text": "Вниз не спускайтесь!",
+                "chatMode": "Team",
+                "ping": "F9"
+            },
+            {
+                "title": "Стойте здесь, наверх не лезьте!",
+                "icon": "Helpme",
+                "text": "Стойте здесь, наверх не лезьте!!",
+                "chatMode": "Team",
+                "ping": "H8"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "Помогите взять гору!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите взять гору!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите с зеленкой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите с зеленкой!",
+                "chatMode": "Team"
+            }
         ]
     },
     "Map_default": {
         "default": [
-           {"title": "Помогите с кишкой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите с кишкой!",
-            "chatMode": "Team"
-           },
-           {"title": "Помогите железку!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите железку!",
-            "chatMode": "Team"
-           },
-           {"title": "Я за артой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
-            "chatMode": "Team"
-           },
-           {"title": "Арта прикрой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Арта прикрой!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "Помогите взять гору!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите взять гору!",
-            "chatMode": "Team"
-           },
-           {"title": "Помогите с зеленкой!",
-            "icon": "Helpme",
-            "command": "HELPME",
-            "text": "Помогите с зеленкой!",
-            "chatMode": "Team"
-           }
+            {
+                "title": "Помогите с кишкой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите с кишкой!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите железку!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите железку!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Я за артой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Арта прикрой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Арта прикрой!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "Помогите взять гору!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите взять гору!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите с зеленкой!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Помогите с зеленкой!",
+                "chatMode": "Team"
+            }
         ]
     },
     "hotkeyOnly": [
-        {"title": "Молодца!",
+        {
+            "title": "Молодца!",
             "icon": "Yes",
             "text": "{name} ({vehicle}) , молодца!",
             "chatMode": "Team",
             "hotKey": ["KEY_NUMPAD6"]
         }
     ],
-    "tankSpecific": {
-        "AMX_50_100": "AutoloaderTank",   
-        "AMX_13_90": "AutoloaderTank", 
-        "T71": "AutoloaderTank", 
-        "T69": "AutoloaderTank", 
-        "T54E1": "AutoloaderTank", 
-        "T57_58": "AutoloaderTank", 
-        "F10_AMX_50B": "AutoloaderTank", 
-        "AMX_50_120": "AutoloaderTank",
-        "Bat_Chatillon25t": "AutoloaderTank",
-        "Lorraine40t": "AutoloaderTank",
-        "AMX_50Fosh_155": "AutoloaderTank",
-        "AutoloaderTank": {
-            "default": [
-                {"title": "Так точно!",
-                    "icon": "Yes",
-                    "command": "POSITIVE",
-                    "text": "Спасибо за бой!",
-                    "chatMode": "Team"
-                },
-                {"title": "Оcталось снарядов барабане...",
-                    "icon": "Yes",
-                    "text": " снарядов в барабане {ammo} ",
-                    "chatMode": "Team"
-                },
-                {"title": "Перезаряжаюсь!",
-                    "icon": "Reload",
-                    "command": "RELOADINGGUN",
-                    "chatMode": "Team",
-                    "hotKey": ["KEY_C"]
-                },
-                {"title": "Нужна помощь!",
-                    "icon": "Helpme",
-                    "command": "HELPME",
-                    "chatMode": "Team",
-                    "ping": "{ownPos}"
-                },
-                {"title": "В атаку!",
-                    "icon": "Attack",
-                    "command": "ATTACK",
-                    "chatMode": "Team"
-                },
-                {"title": "Никак нет!",
-                    "icon": "No",
-                    "command": "NEGATIVE",
-                    "chatMode": "Team"
-                }
-            ],
-            "ally": [
-                {"title": "Спасибо!",
-                    "icon": "Yes",
-                    "text": "{name} ({vehicle}) , спасибо!",
-                    "chatMode": "Team"
-                },
-                {"title": "Назад!",
-                    "icon": "Turnback",
-                    "command": "TURNBACK",
-                    "chatMode": "Team"
-                },
-                {"title": "Стой!",
-                    "icon": "Stop",
-                    "command": "STOP",
-                    "chatMode": "Team"
-                },
-                {"title": "Помоги!",
-                    "icon": "Helpmeex",
-                    "command": "HELPMEEX",
-                    "chatMode": "Team"
-                },
-                {"title": "Не подпирай!",
-                    "icon": "Turnback",
-                    "text": "{name} ({vehicle}) , не подпирай!",
-                    "chatMode": "Team",
-                    "hotKey": ["KEY_V"]
-                },
-                {"title": "Стой, я заряжаюсь!",
-                    "icon": "Stop",
-                    "command": "STOP",
-                    "text": "Подожди, я заряжаюсь! {reload} секунд!",
-                    "chatMode": "Team"
-                },
-                {"title": "Го!",
-                    "icon": "No",
-                    "text": "{name} {vehicle},едь. Прийми дамаг я за тобой, прикрою!",
-                    "chatMode": "Team",
-                    "hotKey": ["KEY_T"]
-                },
-                {"title": "Из прицела!",
-                    "icon": "No",
-                    "text": "{name} {vehicle},уйди из прицела!",
-                    "chatMode": "Team",
-                    "hotKey": ["KEY_G"]
-                }
-            ],
-            "enemy": [
-                {"title": "Так точно!!",
-                    "icon": "Yes",
-                    "command": "POSITIVE",
-                    "chatMode": "Team"
-                },
-                {"title": "Защищайте базу!",
-                    "icon": "Backtobase",
-                    "command": "BACKTOBASE",
-                    "chatMode": "Team"
-                },
-                {"title": "Перезаряжаюсь!",
-                    "icon": "Reload",
-                    "command": "RELOADINGGUN",
-                    "chatMode": "Team"
-                },
-                {"title": "Нужна помощь!",
-                    "icon": "Helpme",
-                    "command": "HELPME",
-                    "chatMode": "Team",
-                    "ping": "{ownPos}"
-                },
-                {"title": "Поддержите огнём!",
-                    "icon": "Support",
-                    "command": "SUPPORTMEWITHFIRE",
-                    "chatMode": "Team"
-                },
-                {"title": "Никак нет!",
-                    "icon": "No",
-                    "command": "NEGATIVE",
-                    "chatMode": "Team"
-                },
-                {"title": "Статистика игрока!",
-                    "icon": "No",
-                    "text": "Статистика игрока {name} {vehicle} недоступна.",
-                    "chatMode": "Team",
-                    "hotKey": ["KEY_U"]
-                }
-            ]
-        }
+    "AMX_50_100": "AutoloaderTank",
+    "AMX_13_90": "AutoloaderTank",
+    "T71": "AutoloaderTank",
+    "T69": "AutoloaderTank",
+    "T54E1": "AutoloaderTank",
+    "T57_58": "AutoloaderTank",
+    "F10_AMX_50B": "AutoloaderTank",
+    "AMX_50_120": "AutoloaderTank",
+    "Bat_Chatillon25t": "AutoloaderTank",
+    "Lorraine40t": "AutoloaderTank",
+    "AMX_50Fosh_155": "AutoloaderTank",
+    "AutoloaderTank": {
+        "default": [
+            {
+                "title": "Так точно!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "text": "Спасибо за бой!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Оcталось снарядов барабане...",
+                "icon": "Yes",
+                "text": " снарядов в барабане {ammo} ",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team",
+                "hotKey": ["KEY_C"]
+            },
+            {
+                "title": "Нужна помощь!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "В атаку!",
+                "icon": "Attack",
+                "command": "ATTACK",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "chatMode": "Team"
+            }
+        ],
+        "ally": [
+            {
+                "title": "Спасибо!",
+                "icon": "Yes",
+                "text": "{name} ({vehicle}) , спасибо!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Назад!",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помоги!",
+                "icon": "Helpmeex",
+                "command": "HELPMEEX",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Не подпирай!",
+                "icon": "Turnback",
+                "text": "{name} ({vehicle}) , не подпирай!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_V"]
+            },
+            {
+                "title": "Стой, я заряжаюсь!",
+                "icon": "Stop",
+                "command": "STOP",
+                "text": "Подожди, я заряжаюсь! {reload} секунд!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Го!",
+                "icon": "No",
+                "text": "{name} {vehicle}, дь. Прийми дамаг я за тобой, прикрою!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_T"]
+            },
+            {
+                "title": "Из прицела!",
+                "icon": "No",
+                "text": "{name} {vehicle}, йди из прицела!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_G"]
+            }
+        ],
+        "enemy": [
+            {
+                "title": "Так точно!!",
+                "icon": "Yes",
+                "command": "POSITIVE",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Защищайте базу!",
+                "icon": "Backtobase",
+                "command": "BACKTOBASE",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Перезаряжаюсь!",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Нужна помощь!",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "Поддержите огнём!",
+                "icon": "Support",
+                "command": "SUPPORTMEWITHFIRE",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Никак нет!",
+                "icon": "No",
+                "command": "NEGATIVE",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Статистика игрока!",
+                "icon": "No",
+                "text": "Статистика игрока {name} {vehicle} недоступна.",
+                "chatMode": "Team",
+                "hotKey": ["KEY_U"]
+            }
+        ]
     }
 }

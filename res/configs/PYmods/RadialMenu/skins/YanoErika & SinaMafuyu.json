@@ -1,12 +1,14 @@
-{
-    "TankMenu": {
+﻿{
+    "default": {
         "default": [
-            {"title": "Greetings",
+            {
+                "title": "Greetings",
                 "icon": "Yes",
                 "text": "Hello, good luck and have fun, fellow tankers. :)",
                 "chatMode": "All"
             },
-            {"title": "Clan spam",
+            {
+                "title": "Clan spam",
                 "icon": "Support",
                 "text": "{randPart}",
                 "chatMode": "All",
@@ -18,7 +20,8 @@
                     "Oh look! Its a CLAN! Such novel approach to recruiting...much wow."
                 ]
             },
-            {"title": "Wake up!",
+            {
+                "title": "Wake up!",
                 "icon": "Attack",
                 "text": "{randPart}",
                 "chatMode": "Team",
@@ -30,20 +33,23 @@
                 ],
                 "hotKey": ["KEY_LALT", "KEY_C"]
             },
-            {"title": "Back to base",
+            {
+                "title": "Back to base",
                 "icon": "Backtobase",
                 "text": "Back to base, please hurry!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_LALT", "KEY_F"]
             },
-            {"title": "Reloading",
+            {
+                "title": "Reloading",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "text": "Reloading at {ownPos}, for {reload} seconds.",
                 "chatMode": "Team",
                 "hotKey": ["KEY_LALT", "KEY_R"]
             },
-            {"title": "Support Plz!",
+            {
+                "title": "Support Plz!",
                 "icon": "Helpme",
                 "text": "I desperately need support on {ownPos}! Is anyone caring?",
                 "chatMode": "Team",
@@ -51,32 +57,38 @@
             }
         ],
         "ally": [
-            {"title": "Don't rush!",
+            {
+                "title": "Don't rush!",
                 "icon": "Stop",
                 "text": "{name}, take your time, slow down and wait for backup.",
                 "chatMode": "Team"
             },
-            {"title": "Go!",
+            {
+                "title": "Go!",
                 "icon": "Followme",
                 "text": "{name}, drive forward please.",
                 "chatMode": "Team"
             },
-            {"title": "Blocking!",
+            {
+                "title": "Blocking!",
                 "icon": "Stop",
                 "text": "{name}, move your {vehicle} out of my line of fire!",
                 "chatMode": "Team"
             },
-            {"title": "Reloaded?",
+            {
+                "title": "Reloaded?",
                 "icon": "Reload",
                 "text": "{name}, is your {vehicle} reloaded?",
                 "chatMode": "Team"
             },
-            {"title": "Platoon?",
+            {
+                "title": "Platoon?",
                 "icon": "Yes",
                 "text": "{name}, you want to platoon with me after this?",
                 "chatMode": "Team"
             },
-            {"title": "Too far!",
+            {
+                "title": "Too far!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
                 "text": "{name}, noone can help you! Fall back, plz!",
@@ -84,71 +96,83 @@
             }
         ],
         "enemy": [
-            {"title": "Taunt",
+            {
+                "title": "Taunt",
                 "icon": "Followme",
                 "text": "{name}, come here and fight me!",
                 "chatMode": "All"
             },
-            {"title": "Focus",
+            {
+                "title": "Focus",
                 "icon": "Support",
                 "text": "Focus fire on - {vehicle} - {name}, please!",
                 "chatMode": "Team"
             },
-            {"title": "Behind you",
+            {
+                "title": "Behind you",
                 "icon": "Turnback",
                 "text": "{name}, look behind you...",
                 "chatMode": "All"
             },
-            {"title": "Well done",
+            {
+                "title": "Well done",
                 "icon": "Yes",
                 "text": "Well done {name}. I salute you.",
                 "chatMode": "All"
             },
-            {"title": "Bright idea?",
+            {
+                "title": "Bright idea?",
                 "icon": "Yes",
                 "text": "You have more of those bright ideas, {name}?",
                 "chatMode": "All"
             },
-            {"title": "Say Goodbye!",
+            {
+                "title": "Say Goodbye!",
                 "icon": "Turnback",
                 "text": "Time to say goodbye, {name}!",
                 "chatMode": "All"
             }
         ]
     },
-    "SPGMenu": {
+    "SPG": {
         "default": [
-            {"title": "Aiming at..",
+            {
+                "title": "Aiming at..",
                 "icon": "Attack",
                 "text": "Aiming on {viewPos}.",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
-            {"title": "Providing support!",
+            {
+                "title": "Providing support!",
                 "icon": "Yes",
                 "text": "Providing support fire on {viewPos}!",
                 "chatMode": "Team"
             },
-            {"title": "Help!",
+            {
+                "title": "Help!",
                 "icon": "Helpme",
                 "text": "I need a little help here!",
                 "command": "HELPME",
                 "chatMode": "Team",
                 "ping": "{ownPos}"
             },
-            {"title": "Reloading!",
+            {
+                "title": "Reloading!",
                 "icon": "Reload",
                 "text": "Reloading for {reload} seconds.",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team"
             },
-            {"title": "Fire at...",
+            {
+                "title": "Fire at...",
                 "icon": "AttackSPG",
                 "text": "Shooting at {viewPos}, please take care!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
-            {"title": "Out of Reach",
+            {
+                "title": "Out of Reach",
                 "icon": "No",
                 "text": "I cannot reach them there.",
                 "command": "NEGATIVE",
@@ -156,111 +180,125 @@
             }
         ],
         "ally": [
-            {"title": "Scout!",
+            {
+                "title": "Scout!",
                 "icon": "Followme",
                 "text": "{name} ({vehicle}), please provide some targets.",
                 "chatMode": "Team"
             },
-            {"title": "Stop!",
+            {
+                "title": "Stop!",
                 "icon": "Stop",
                 "text": "{name} ({vehicle}), do not go out of my range, survive!",
                 "command": "STOP",
                 "chatMode": "Team"
             },
-            {"title": "Stand back!",
+            {
+                "title": "Stand back!",
                 "icon": "Turnback",
                 "text": "{name} ({vehicle}), stand back a bit!",
                 "chatMode": "Team",
                 "command": "TURNBACK"
             },
-            {"title": "Help him!",
+            {
+                "title": "Help him!",
                 "icon": "Support",
                 "text": "Teammate {name} ({vehicle}) is ambushed at {viewPos}, go and help him!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
-            {"title": "Reloaded?",
+            {
+                "title": "Reloaded?",
                 "icon": "Reload",
                 "text": "{name}, is your {vehicle} reloaded?",
                 "chatMode": "Team"
             },
-            {"title": "Bombs away!",
+            {
+                "title": "Bombs away!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
                 "text": "{name}, {randPart}!",
-                "variants": [
-                        "a package is on its way",
-                        "watch out for incoming shell",
-                        "try to avoid the splash"
-                ],
+                "variants": ["a package is on its way", "watch out for incoming shell", "try to avoid the splash"],
                 "chatMode": "Team"
             }
         ],
         "enemy": [
-            {"title": "Targeting",
+            {
+                "title": "Targeting",
                 "icon": "Yes",
                 "text": "Targeting {vehicle} at {viewPos}.",
                 "chatMode": "Team"
             },
-            {"title": "Catch",
+            {
+                "title": "Catch",
                 "icon": "Support",
                 "text": "{name}, catch this.",
                 "chatMode": "All"
             },
-            {"title": "Caught it?",
+            {
+                "title": "Caught it?",
                 "icon": "Followme",
                 "text": "You caught it, {name}? Why so silent? ;)",
                 "chatMode": "All"
             },
-            {"title": "Goodbye",
+            {
+                "title": "Goodbye",
                 "icon": "Turnback",
                 "text": "Say goodbye, {name}.",
                 "chatMode": "All"
             },
-            {"title": "Attacking",
+            {
+                "title": "Attacking",
                 "icon": "Attack",
                 "text": "Attacking {vehicle} ({name}). Hold some distance, please.",
                 "chatMode": "Team"
             },
-            {"title": "Behind you",
+            {
+                "title": "Behind you",
                 "icon": "Turnback",
                 "text": "Look behind you, {name}...",
                 "chatMode": "All"
             }
         ]
     },
-    "lightTankMenu": {
+    "lightTank": {
         "ally": [
-            {"title": "Cover!",
+            {
+                "title": "Cover!",
                 "icon": "Helpme",
                 "text": "{vehicle}, needs some cover fire!",
                 "command": "HELPME",
                 "chatMode": "Team"
             },
-            {"title": "Stop!",
+            {
+                "title": "Stop!",
                 "icon": "Stop",
                 "text": "{name}, do not go out!",
                 "command": "STOP",
                 "chatMode": "Team"
             },
-            {"title": "Come back!",
+            {
+                "title": "Come back!",
                 "icon": "Turnback",
                 "text": "{name}, please come back!",
                 "chatMode": "Team",
                 "command": "TURNBACK"
             },
-            {"title": "Concentrate fire...",
+            {
+                "title": "Concentrate fire...",
                 "icon": "Support",
                 "text": "Concentrate fire on {name} in ({vehicle}) at {viewPos}!!!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
-            {"title": "Reloaded?",
+            {
+                "title": "Reloaded?",
                 "icon": "Reload",
                 "text": "{name}, is your {vehicle} reloaded?",
                 "chatMode": "Team"
             },
-            {"title": "Help!",
+            {
+                "title": "Help!",
                 "icon": "Helpme",
                 "text": "{name} ({vehicle}), needs some help!",
                 "command": "HELPME",
@@ -268,101 +306,99 @@
             }
         ],
         "enemy": [
-            {"title": "Kill!",
+            {
+                "title": "Kill!",
                 "icon": "Support",
                 "text": "Kill {name} ({vehicle}), please!",
                 "chatMode": "Team",
                 "command": "SUPPORTMEWITHFIRE"
             },
-            {"title": "Going for arty!",
+            {
+                "title": "Going for arty!",
                 "icon": "Support",
                 "text": "Stop {name} ({vehicle}), he is going for arty!",
                 "chatMode": "Team",
                 "command": "SUPPORTMEWITHFIRE"
             },
-            {"title": "Priority Target!",
+            {
+                "title": "Priority Target!",
                 "icon": "Support",
                 "text": "{name} ({vehicle}) - is a dangerous player!",
                 "chatMode": "Team",
                 "command": "SUPPORTMEWITHFIRE"
             },
-            {"title": "RIP!",
+            {
+                "title": "RIP!",
                 "icon": "Yes",
                 "text": "{name}, {randPart}",
                 "chatMode": "All",
-                "variants": [
-                        "rest in pieces.",
-                        "was sent back to garage...",
-                        "went back to factory for refunds.",
-                        "will not kill any more of us."
-                ]
+                "variants": ["rest in pieces.", "was sent back to garage...", "went back to factory for refunds.", "will not kill any more of us."]
             },
-            {"title": "I'll eat you!",
+            {
+                "title": "I'll eat you!",
                 "icon": "Attack",
                 "text": "{name}, {randPart}",
                 "chatMode": "All",
-                "variants": [
-                        "here I come!",
-                        "I am gonna chew on your behind!",
-                        "I wonder if you taste like chicken...",
-                        "it's soo on, biatch!"
-                ]
+                "variants": ["here I come!", "I am gonna chew on your behind!", "I wonder if you taste like chicken...", "it's soo on, biatch!"]
             },
-            {"title": "I can see you!",
+            {
+                "title": "I can see you!",
                 "icon": "Yes",
                 "text": "{name}, {randPart}",
                 "chatMode": "All",
-                "variants": [
-                        "I can see you!",
-                        "Hellooo!",
-                        "smile for the incoming arty shell!",
-                        "be very, very quiet. Listen..."
-                ]
+                "variants": ["I can see you!", "Hellooo!", "smile for the incoming arty shell!", "be very, very quiet. Listen..."]
             }
         ],
         "default": [
-            {"title": "Take aim!",
+            {
+                "title": "Take aim!",
                 "icon": "AttackSPG",
                 "text": "Will spot the square {viewPos}, take aim gentlemen.",
                 "command": "HELPME",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
-            {"title": "Running!",
+            {
+                "title": "Running!",
                 "icon": "Turnback",
                 "text": "I am getting out, this is too hot for me!",
                 "chatMode": "Team"
             },
-            {"title": "Got a Tail!",
+            {
+                "title": "Got a Tail!",
                 "icon": "Helpme",
                 "text": "I got a tail behind me, shoot it off!",
                 "command": "HELPME",
                 "chatMode": "Team"
             },
-            {"title": "Reloading",
+            {
+                "title": "Reloading",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "text": "Reloading at {ownPos}, for {reload} seconds.",
                 "chatMode": "Team",
                 "hotKey": ["KEY_LALT", "KEY_R"]
             },
-            {"title": "Surrencer?",
+            {
+                "title": "Surrencer?",
                 "icon": "Turnback",
                 "text": "You guys want to surrender now?",
                 "chatMode": "All"
             },
-            {"title": "Spotted in bush",
+            {
+                "title": "Spotted in bush",
                 "icon": "Support",
                 "text": "{randPart}",
                 "chatMode": "All",
                 "variants": [
-                        "Come here for Cookies! Cookies!",
-                        "I am taking a dump here, look away!",
-                        "The eye is watching!",
-                        "Now, who of you gents spotted me?"
+                    "Come here for Cookies! Cookies!",
+                    "I am taking a dump here, look away!",
+                    "The eye is watching!",
+                    "Now, who of you gents spotted me?"
                 ]
             },
-            {"title": "Refilling clip",
+            {
+                "title": "Refilling clip",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "text": "Refilling my clip at {ownPos}, it will take {reload} seconds.",
@@ -371,93 +407,99 @@
             }
         ]
     },
-    "tankSpecific": {
-        "AMX_12t": "AutoloaderTank",
-        "AMX_13_75": "AutoloaderTank",
-        "AMX_13_90": "AutoloaderTank",
-        "AMX_13_90": "AutoloaderTank",
-        "AMX_50Fosh_155": "AutoloaderTank",
-        "AMX_50_100": "AutoloaderTank",
-        "AMX_50_120": "AutoloaderTank",
-        "Lorraine40t": "AutoloaderTank",
-        "Bat_Chatillon25t": "AutoloaderTank",
-        "t71": "AutoloaderTank",
-        "t69": "AutoloaderTank",
-        "t54e1": "AutoloaderTank",
-        "t57_58": "AutoloaderTank",
-        "AutoloaderTank": {
-            "default": [
-                {"title": "Clip",
-                    "icon": "Support",
-                    "text": "{randPart}",
-                    "chatMode": "Team",
-                    "variants": [
-                            "Clip loaded! Shells: {ammo}",
-                            "Shells: {ammo}. Clip loaded!"
-                    ]
-                },
-                {"title": "Reset counter!",
-                    "icon": "Backtobase",
-                    "text": "PLEASE go back to base to reset the cap!",
-                    "command": "BACKTOBASE",
-                    "chatMode": "Team"
-                },
-                {"title": "Help Reload!",
-                    "icon": "Helpme",
-                    "text": "I need some help at {ownPos}, I am reloading!",
-                    "chatMode": "Team",
-                    "ping": "{ownPos}"
-                },
-                {"title": "Reloading",
-                    "icon": "Reload",
-                    "text": "Reloading for {reload} seconds.",
-                    "chatMode": "Team",
-                    "hotKey": ["KEY_LALT", "KEY_R"]
-                },
-                {"title": "Thanks!",
-                    "icon": "Yes",
-                    "text": "Thank you!",
-                    "chatMode": "Team"
-                },
-                {"title": "Refilling clip",
-                    "icon": "Reload",
-                    "command": "RELOADINGGUN",
-                    "text": "Refilling my clip at {ownPos}, it will take {reload} seconds.",
-                    "chatMode": "Team",
-                    "hotKey": ["KEY_C"]
-                }
-            ]
-        }
+    "AMX_12t": "AutoloaderTank",
+    "AMX_13_75": "AutoloaderTank",
+    "AMX_13_90": "AutoloaderTank",
+    "AMX_50Fosh_155": "AutoloaderTank",
+    "AMX_50_100": "AutoloaderTank",
+    "AMX_50_120": "AutoloaderTank",
+    "Lorraine40t": "AutoloaderTank",
+    "Bat_Chatillon25t": "AutoloaderTank",
+    "t71": "AutoloaderTank",
+    "t69": "AutoloaderTank",
+    "t54e1": "AutoloaderTank",
+    "t57_58": "AutoloaderTank",
+    "AutoloaderTank": {
+        "default": [
+            {
+                "title": "Clip",
+                "icon": "Support",
+                "text": "{randPart}",
+                "chatMode": "Team",
+                "variants": ["Clip loaded! Shells: {ammo}", "Shells: {ammo}. Clip loaded!"]
+            },
+            {
+                "title": "Reset counter!",
+                "icon": "Backtobase",
+                "text": "PLEASE go back to base to reset the cap!",
+                "command": "BACKTOBASE",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Help Reload!",
+                "icon": "Helpme",
+                "text": "I need some help at {ownPos}, I am reloading!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "Reloading",
+                "icon": "Reload",
+                "text": "Reloading for {reload} seconds.",
+                "chatMode": "Team",
+                "hotKey": ["KEY_LALT", "KEY_R"]
+            },
+            {
+                "title": "Thanks!",
+                "icon": "Yes",
+                "text": "Thank you!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Refilling clip",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "text": "Refilling my clip at {ownPos}, it will take {reload} seconds.",
+                "chatMode": "Team",
+                "hotKey": ["KEY_C"]
+            }
+        ]
     },
     "Map_02_malinovka": {
         "default": [
-            {"title": "Meds 2 Hill",
+            {
+                "title": "Meds 2 Hill",
                 "icon": "Attack",
                 "text": "Mediums to hill, please.",
                 "chatMode": "Team"
             },
-            {"title": "Burn da bush",
+            {
+                "title": "Burn da bush",
                 "icon": "Support",
                 "text": "Arty, burn out the bush at {viewPos}, please.",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
-            {"title": "Field rush",
+            {
+                "title": "Field rush",
                 "icon": "Followme",
                 "text": "Let's rush the field path gentlemen.",
                 "chatMode": "Team"
             },
-            {"title": "Forest defense",
+            {
+                "title": "Forest defense",
                 "icon": "Helpme",
                 "text": "Occupy the forest and wait for \"guests\".",
                 "chatMode": "Team"
             },
-            {"title": "To church",
+            {
+                "title": "To church",
                 "icon": "Helpme",
                 "text": "Go to the church, we meet up there.",
                 "chatMode": "Team"
             },
-            {"title": "Spotted!",
+            {
+                "title": "Spotted!",
                 "icon": "Turnback",
                 "text": "We are spotted, it's not safe to climb.",
                 "chatMode": "Team"
@@ -466,32 +508,38 @@
     },
     "Map_Default": {
         "default": [
-            {"title": "To Hill!",
+            {
+                "title": "To Hill!",
                 "icon": "Attack",
                 "text": "Mediums to hill, please.",
                 "chatMode": "Team"
             },
-            {"title": "Attention to..",
+            {
+                "title": "Attention to..",
                 "icon": "Support",
                 "text": "Attention at {viewPos}, please.",
                 "chatMode": "Team"
             },
-            {"title": "Field rush",
+            {
+                "title": "Field rush",
                 "icon": "Followme",
                 "text": "Let's rush the field path gentlemen.",
                 "chatMode": "Team"
             },
-            {"title": "Forest defense",
+            {
+                "title": "Forest defense",
                 "icon": "Helpme",
                 "text": "Let's occupy the forest and wait for \"guests\".",
                 "chatMode": "Team"
             },
-            {"title": "Cap later",
+            {
+                "title": "Cap later",
                 "icon": "Helpme",
                 "text": "Defend first, cap later.",
                 "chatMode": "Team"
             },
-            {"title": "Spotted!",
+            {
+                "title": "Spotted!",
                 "icon": "Turnback",
                 "text": "I am spotted!",
                 "chatMode": "Team"
@@ -499,26 +547,30 @@
         ]
     },
     "hotkeyOnly": [
-        {"title": "Attack!",
+        {
+            "title": "Attack!",
             "icon": "Attack",
             "text": "Lets go and kill more of them than us!",
             "chatMode": "Team",
             "hotKey": ["KEY_LALT", "KEY_1"]
         },
-        {"title": "Don't do it!",
+        {
+            "title": "Don't do it!",
             "icon": "Stop",
             "text": "Dont go out to mess with them!",
             "chatMode": "Team",
             "hotKey": ["KEY_LALT", "KEY_2"]
         },
-        {"title": "Refilling clip",
+        {
+            "title": "Refilling clip",
             "icon": "Reload",
             "command": "RELOADINGGUN",
             "text": "Refilling my clip at {ownPos}, it will take {reload} seconds.",
             "chatMode": "Team",
             "hotKey": ["KEY_C"]
         },
-        {"title": "Cat like tread!",
+        {
+            "title": "Cat like tread!",
             "icon": "Attack",
             "text": "{randPart}",
             "chatMode": "Team",
@@ -531,7 +583,8 @@
             "sequentChoice": true,
             "hotKey": ["KEY_N"]
         },
-        {"title": "CHOO-CHOO!",
+        {
+            "title": "CHOO-CHOO!",
             "icon": "Attack",
             "text": "{randPart}",
             "chatMode": "Team",

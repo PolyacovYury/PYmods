@@ -1,31 +1,31 @@
-{
-    "TankMenu": {
+﻿{
+    "default": {
         "default": [
-            {"title": "Так точно!",
+            {
+                "title": "Так точно!",
                 "icon": "Yes",
                 "command": "POSITIVE",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F5"]
             },
-            {"title": "Защищайте базу!",
+            {
+                "title": "Защищайте базу!",
                 "icon": "Backtobase",
                 "text": "{randpart}",
-                "variants": [
-                    "Защищайте базу!",
-                    "Все на базу!",
-                    "Светите, помогу с базой!"
-                ],
+                "variants": ["Защищайте базу!", "Все на базу!", "Светите, помогу с базой!"],
                 "chatMode": "Team",
                 "hotKey": ["KEY_F4"]
             },
-            {"title": "Перезаряжаюсь!",
+            {
+                "title": "Перезаряжаюсь!",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team",
                 "ping": "{ownPos}",
                 "hotKey": ["KEY_F8"]
             },
-            {"title": "Нужна помощь!",
+            {
+                "title": "Нужна помощь!",
                 "icon": "Helpme",
                 "command": "HELPME",
                 "text": "{randpart}",
@@ -38,7 +38,8 @@
                 "chatMode": "Team",
                 "hotKey": ["KEY_F7"]
             },
-            {"title": "В атаку!",
+            {
+                "title": "В атаку!",
                 "icon": "Attack",
                 "command": "ATTACK",
                 "text": "{randpart}",
@@ -50,7 +51,8 @@
                 "chatMode": "Team",
                 "ping": "{ownPos}"
             },
-            {"title": "Никак нет!",
+            {
+                "title": "Никак нет!",
                 "icon": "No",
                 "command": "NEGATIVE",
                 "chatMode": "Team",
@@ -58,39 +60,45 @@
             }
         ],
         "ally": [
-            {"title": "Так точно!",
+            {
+                "title": "Так точно!",
                 "icon": "Yes",
                 "command": "POSITIVE",
                 "text": "{name} ({vehicle})",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F5"]
             },
-            {"title": "Назад!",
+            {
+                "title": "Назад!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F4"]
             },
-            {"title": "Стой!",
+            {
+                "title": "Стой!",
                 "icon": "Stop",
                 "command": "STOP",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F8"]
             },
-            {"title": "Помоги!",
+            {
+                "title": "Помоги!",
                 "icon": "Helpmeex",
                 "command": "HELPMEEX",
                 "chatMode": "Team",
                 "ping": "{ownPos}",
                 "hotKey": ["KEY_F7"]
             },
-            {"title": "За мной!",
+            {
+                "title": "За мной!",
                 "icon": "Followme",
                 "command": "FOLLOWME",
                 "chatMode": "Team",
                 "hotKey": ["KEY_T"]
             },
-            {"title": "Никак нет!",
+            {
+                "title": "Никак нет!",
                 "icon": "No",
                 "command": "NEGATIVE",
                 "text": "{name} ({vehicle})",
@@ -99,40 +107,46 @@
             }
         ],
         "enemy": [
-            {"title": "Так точно!",
+            {
+                "title": "Так точно!",
                 "icon": "Yes",
                 "command": "POSITIVE",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F5"]
             },
-            {"title": "Защищайте базу!",
+            {
+                "title": "Защищайте базу!",
                 "icon": "Backtobase",
                 "command": "BACKTOBASE",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F4"]
             },
-            {"title": "Перезаряжаюсь!",
+            {
+                "title": "Перезаряжаюсь!",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team",
                 "ping": "{ownPos}",
                 "hotKey": ["KEY_F8"]
             },
-            {"title": "Нужна помощь!",
+            {
+                "title": "Нужна помощь!",
                 "icon": "Helpme",
                 "command": "HELPME",
                 "text": "Один не справлюсь.",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F7"]
             },
-            {"title": "Поддержите огнём!",
+            {
+                "title": "Поддержите огнём!",
                 "icon": "Support",
                 "command": "SUPPORTMEWITHFIRE",
                 "text": "Фокус на {name} ({vehicle}) Квадрат {viewPos}!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_T"]
             },
-            {"title": "Никак нет!",
+            {
+                "title": "Никак нет!",
                 "icon": "No",
                 "command": "NEGATIVE",
                 "text": "{randpart} ",
@@ -146,9 +160,10 @@
             }
         ]
     },
-    "SPGMenu": {
+    "SPG": {
         "default": [
-            {"title": "Свелся на квадрат!",
+            {
+                "title": "Свелся на квадрат!",
                 "icon": "AttackSPG",
                 "text": "{randpart}",
                 "variants": [
@@ -160,25 +175,24 @@
                 "ping": "{viewPos}",
                 "hotKey": ["KEY_F5"]
             },
-            {"title": "Защищайте базу!",
+            {
+                "title": "Защищайте базу!",
                 "icon": "Backtobase",
                 "text": "{randpart}",
-                "variants": [
-                    "Защищайте базу!",
-                    "Все на базу!",
-                    "Светите, помогу с базой!"
-                ],
+                "variants": ["Защищайте базу!", "Все на базу!", "Светите, помогу с базой!"],
                 "chatMode": "Team",
                 "hotKey": ["KEY_F4"]
             },
-            {"title": "Перезаряжаюсь!",
+            {
+                "title": "Перезаряжаюсь!",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team",
                 "ping": "{ownPos}",
                 "hotKey": ["KEY_F8"]
             },
-            {"title": "Нужна помощь!",
+            {
+                "title": "Нужна помощь!",
                 "icon": "Helpme",
                 "command": "HELPME",
                 "text": "{randpart}",
@@ -191,17 +205,16 @@
                 "chatMode": "Team",
                 "hotKey": ["KEY_F7"]
             },
-            {"title": "В атаку!",
+            {
+                "title": "В атаку!",
                 "icon": "Attack",
                 "command": "ATTACK",
                 "text": "{randpart}",
-                "variants": [
-                    "Настало наше время!",
-                    "Пора продавливать направление!"
-                ],
+                "variants": ["Настало наше время!", "Пора продавливать направление!"],
                 "chatMode": "Team"
             },
-            {"title": "Свет сюда!",
+            {
+                "title": "Свет сюда!",
                 "icon": "Attack",
                 "text": "{randpart}",
                 "variants": [
@@ -215,39 +228,45 @@
             }
         ],
         "ally": [
-            {"title": "Так точно!",
+            {
+                "title": "Так точно!",
                 "icon": "Yes",
                 "command": "POSITIVE",
                 "text": "{name} ({vehicle})",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F5"]
             },
-            {"title": "Назад!",
+            {
+                "title": "Назад!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F4"]
             },
-            {"title": "Стой!",
+            {
+                "title": "Стой!",
                 "icon": "Stop",
                 "command": "STOP",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F8"]
             },
-            {"title": "Помоги!",
+            {
+                "title": "Помоги!",
                 "icon": "Helpmeex",
                 "command": "HELPMEEX",
                 "chatMode": "Team",
                 "ping": "{ownPos}",
                 "hotKey": ["KEY_F7"]
             },
-            {"title": "За мной!",
+            {
+                "title": "За мной!",
                 "icon": "Followme",
                 "command": "FOLLOWME",
                 "chatMode": "Team",
                 "hotKey": ["KEY_T"]
             },
-            {"title": "Никак нет!",
+            {
+                "title": "Никак нет!",
                 "icon": "No",
                 "command": "NEGATIVE",
                 "text": "{name} ({vehicle})",
@@ -256,33 +275,38 @@
             }
         ],
         "enemy": [
-            {"title": "Так точно!",
+            {
+                "title": "Так точно!",
                 "icon": "Yes",
                 "command": "POSITIVE",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F5"]
             },
-            {"title": "Защищайте базу!",
+            {
+                "title": "Защищайте базу!",
                 "icon": "Backtobase",
                 "command": "BACKTOBASE",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F4"]
             },
-            {"title": "Перезаряжаюсь!",
+            {
+                "title": "Перезаряжаюсь!",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team",
                 "ping": "{ownPos}",
                 "hotKey": ["KEY_F8"]
             },
-            {"title": "Нужна помощь!",
+            {
+                "title": "Нужна помощь!",
                 "icon": "Helpme",
                 "command": "HELPME",
                 "text": "Один не справлюсь!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F7"]
             },
-            {"title": "Атакую!",
+            {
+                "title": "Атакую!",
                 "icon": "AttackSPG",
                 "text": "{randpart}",
                 "chatMode": "Team",
@@ -300,7 +324,8 @@
                 "ping": "{viewPos}",
                 "hotKey": ["KEY_T"]
             },
-            {"title": "Никак нет!",
+            {
+                "title": "Никак нет!",
                 "icon": "No",
                 "text": "{randpart} ",
                 "chatMode": "Team",
@@ -315,7 +340,8 @@
     },
     "Map_default": {
         "default": [
-            {"title": "Сбейте захват!",
+            {
+                "title": "Сбейте захват!",
                 "icon": "Helpme",
                 "text": "{randpart}",
                 "variants": [
@@ -326,7 +352,8 @@
                 ],
                 "chatMode": "Team"
             },
-            {"title": "Не бери!",
+            {
+                "title": "Не бери!",
                 "icon": "Backtobase",
                 "text": "{randpart}",
                 "variants": [
@@ -336,24 +363,28 @@
                 ],
                 "chatMode": "Team"
             },
-            {"title": "Арта прикрой!",
+            {
+                "title": "Арта прикрой!",
                 "icon": "Support",
                 "text": "Арта прикрой!",
                 "chatMode": "Team",
                 "ping": "{ownPos}"
             },
-            {"title": "Я за артой!",
+            {
+                "title": "Я за артой!",
                 "icon": "Attack",
                 "text": "Я за вражеской артой! Прошу поддержки от союзной артилерии!",
                 "chatMode": "Team",
                 "ping": "{ownPos}"
             },
-            {"title": "Помогите на центре!",
+            {
+                "title": "Помогите на центре!",
                 "icon": "Helpme",
                 "text": "Помогите на центре!",
                 "chatMode": "Team"
             },
-            {"title": "Переверните меня!",
+            {
+                "title": "Переверните меня!",
                 "icon": "Helpme",
                 "text": "{randpart}",
                 "variants": [
@@ -366,14 +397,16 @@
         ]
     },
     "hotkeyOnly": [
-        {"title": "На захват!",
+        {
+            "title": "На захват!",
             "icon": "Backtobase",
             "text": "Все кто рядом, встаем на захват!",
             "chatMode": "Team",
             "ping": "{ownPos}",
             "hotKey": ["KEY_LALT", "KEY_1"]
         },
-        {"title": "OK!",
+        {
+            "title": "OK!",
             "icon": "Yes",
             "text": "{name} ({vehicle}) {viewPos} {randpart}!",
             "chatMode": "All",
@@ -400,7 +433,8 @@
             "ping": "{viewPos}",
             "hotKey": ["KEY_LALT", "KEY_2"]
         },
-        {"title": "Приветствие",
+        {
+            "title": "Приветствие",
             "icon": "Yes",
             "text": "{randpart}",
             "chatMode": "Team",
@@ -415,7 +449,8 @@
             "noRandomChoice": "1",
             "hotKey": ["KEY_LALT", "KEY_3"]
         },
-        {"title": "Из кустов",
+        {
+            "title": "Из кустов",
             "icon": "Support",
             "text": "{randpart}",
             "chatMode": "All",
