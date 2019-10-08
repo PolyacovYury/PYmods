@@ -44,7 +44,7 @@ else:
 
         @overrideMethod(ModsSettingsApiWindow, '__init__')
         def new_init(base, self, ctx):
-            self.api = ctx
+            self.__dict__['api'] = ctx
             return base(self, ctx)
 
 
@@ -52,7 +52,7 @@ else:
         def new_requestOptions(base, self, handlerType, ctx):
             base(self, handlerType, ctx)
             if handlerType == 'modsSettingsHotkeyContextHandler':
-                self._ContextMenuManager__currentHandler.api = SL.appLoader.getDefLobbyApp(
+                self._ContextMenuManager__currentHandler.__dict__['api'] = SL.appLoader.getDefLobbyApp(
                 ).containerManager.getViewByKey(ViewKey(VIEW_ALIAS)).api
 
 
