@@ -1,7 +1,7 @@
 ﻿{
     "enabled": true,
     "mode": 0,
-    "toggle_key": [["KEY_LALT", "KEY_RALT"]],
+    "toggle_Key": [["KEY_LALT", "KEY_RALT"]],
     "textFields": {
         "1text": {
             "left": {

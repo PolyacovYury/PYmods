@@ -17,9 +17,9 @@ class JSONObjectEncoder(json.JSONEncoder):
     def encode(self, o, i=0):
         try:  # Special Processing for lists
             if isinstance(o, (list, tuple)):
-                if not any(isinstance(x, (dict, list, tuple)) for x in o):
+                if not any(isinstance(x, dict) for x in o):
                     result = '[%s]' % ', '.join(self.encode(x) for x in o)
-                    if len(result) <= 128:
+                    if len(result) <= 80:
                         return result
                 i += self.indent
                 return '[\n%s\n%s]' % (',\n'.join((' ' * i + self.encode(x, i)) for x in o), ' ' * (i - self.indent))
