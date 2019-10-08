@@ -240,7 +240,7 @@ class CommandQueue(object):
         if self.__queue:
             self.__callbackID = BigWorld.callback(self.__queue[0][0], self.onQueueCalled)
 
-    def cancel(self):
+    def cancel(self, *_, **__):
         if self.__callbackID is not None:
             BigWorld.cancelCallback(self.__callbackID)
             self.__callbackID = None
