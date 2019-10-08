@@ -1,7 +1,7 @@
 import Event
 import traceback
-
 from functools import partial
+from .. import overrideMethod
 
 __all__ = ['g_modsListApi']
 
@@ -35,8 +35,25 @@ else:
     try:
         from gui.modsSettingsApi.api import ModsSettingsApi as MSA_Orig
         from gui.modsSettingsApi.hotkeys import HotkeysContoller
-        from gui.modsSettingsApi.view import loadView
-        from gui.modsSettingsApi._constants import MOD_ICON, MOD_NAME, MOD_DESCRIPTION
+        from gui.modsSettingsApi.view import loadView, ModsSettingsApiWindow, HotkeyContextHandler
+        from gui.modsSettingsApi._constants import MOD_ICON, MOD_NAME, MOD_DESCRIPTION, VIEW_ALIAS
+        from gui.Scaleform.framework.managers.context_menu import ContextMenuManager
+        from gui.shared.personality import ServicesLocator as SL
+        from gui.Scaleform.framework.entities.View import ViewKey
+
+
+        @overrideMethod(ModsSettingsApiWindow, '__init__')
+        def new_init(base, self, ctx):
+            self.api = ctx
+            return base(self, ctx)
+
+
+        @overrideMethod(ContextMenuManager, 'requestOptions')
+        def new_requestOptions(base, self, handlerType, ctx):
+            base(self, handlerType, ctx)
+            if handlerType == 'modsSettingsHotkeyContextHandler':
+                self._ContextMenuManager__currentHandler.api = SL.appLoader.getDefLobbyApp(
+                ).containerManager.getViewByKey(ViewKey(VIEW_ALIAS)).api
 
 
         class ModsSettings(MSA_Orig):
