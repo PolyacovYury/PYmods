@@ -1,34 +1,37 @@
-{
-    "TankMenu": {
+﻿{
+    "default": {
         "default": [
-            {"title": "GODNO",
+            {
+                "title": "GODNO",
                 "icon": "YES",
                 "text": "{randPart}",
                 "chatMode": "Team",
-                "variants": [
-                    "Молодцы парни! Нагнули так нагнули!"
-                ],
-                "hotKey": ["KEY_LALT", "KEY_P"]
+                "variants": ["Молодцы парни! Нагнули так нагнули!"],
+                "hotKey": ["KEY_P", "KEY_LALT"]
             },
-            {"title": "Все на захват!",
+            {
+                "title": "Все на захват!",
                 "icon": "Attack",
                 "text": "Все на захват!",
                 "chatMode": "Team"
             },
-            {"title": "Олени",
+            {
+                "title": "Олени",
                 "icon": "Attack",
                 "text": "Олени, чо вы на базе сидите, яйца рогами чешете? Вперед, воевать!!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_O"]
             },
-            {"title": "Перезаряжаюсь",
+            {
+                "title": "Перезаряжаюсь",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team",
                 "ping": "{ownPos}",
                 "hotKey": ["KEY_C"]
             },
-            {"title": "Деф",
+            {
+                "title": "Деф",
                 "icon": "Attack",
                 "text": "{randPart}",
                 "chatMode": "Team",
@@ -39,45 +42,42 @@
                 ],
                 "hotKey": ["KEY_B"]
             },
-            {"title": "Олешеньки",
+            {
+                "title": "Олешеньки",
                 "icon": "NO",
                 "text": "{randPart}",
                 "chatMode": "Team",
-                "variants": [
-                    "Эх, опять олешек в команду насыпало!.. Как жить?!"
-                ],
-                "hotKey": ["KEY_LALT", "KEY_O"]
+                "variants": ["Эх, опять олешек в команду насыпало!.. Как жить?!"],
+                "hotKey": ["KEY_O", "KEY_LALT"]
             }
         ],
         "ally": [
-            {"title": "Пойдет",
+            {
+                "title": "Пойдет",
                 "icon": "Yes",
                 "command": "POSITIVE",
                 "text": "{name}, {randPart}",
                 "chatMode": "Team",
-                "variants": [
-                    "да, давай попробуем.",
-                    "говно-вопрос, ебашим!",
-                    "да ок, чо!.."
-                ]
+                "variants": ["да, давай попробуем.", "говно-вопрос, ебашим!", "да ок, чо!.."]
             },
-            {"title": "Вперед!",
+            {
+                "title": "Вперед!",
                 "icon": "Followme",
                 "command": "HELPMEEX",
                 "text": "{name}, {randPart}",
                 "chatMode": "Team",
-                "variants": [
-                    "давай, погнал, вперед!"
-                ],
+                "variants": ["давай, погнал, вперед!"],
                 "hotKey": ["KEY_MOUSE1"]
             },
-            {"title": "Не подпирай",
+            {
+                "title": "Не подпирай",
                 "icon": "Stop",
                 "command": "STOP",
-                "text": "{name},не подпирай, идиот!",
+                "text": "{name}, е подпирай, идиот!",
                 "chatMode": "Team"
             },
-            {"title": "Из прицела!",
+            {
+                "title": "Из прицела!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
                 "text": "{name}, {randPart}",
@@ -90,7 +90,8 @@
                     "очень рад силуэту твоего танка в моем прицеле. Исчезни!"
                 ]
             },
-            {"title": "Не спеши",
+            {
+                "title": "Не спеши",
                 "icon": "Stop",
                 "command": "STOP",
                 "text": "{name}, {randPart}",
@@ -103,7 +104,8 @@
                 ],
                 "hotKey": ["KEY_LALT", "KEY_S"]
             },
-            {"title": "Нее, нахер",
+            {
+                "title": "Нее, нахер",
                 "icon": "NO",
                 "command": "NEGATIVE",
                 "text": "{name}, {randPart}",
@@ -116,7 +118,8 @@
             }
         ],
         "enemy": [
-            {"title": "Сюда подошёл",
+            {
+                "title": "Сюда подошёл",
                 "icon": "Followme",
                 "text": "{name}, {randPart}",
                 "chatMode": "All",
@@ -129,112 +132,127 @@
                     "не прячься, ссыкло штоле?",
                     "обернись, сзади, С ЗАДУ ПОДХОДЮТ!!11"
                 ],
-                "cooldown": "4"
+                "cooldown": 4
             },
-            {"title": "Профокусить",
+            {
+                "title": "Профокусить",
                 "icon": "Support",
                 "command": "ATTACKENEMY",
                 "text": "Фокусим - {vehicle} - {name}!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_T"]
             },
-            {"title": "Лох",
+            {
+                "title": "Лох",
                 "icon": "Yes",
                 "text": "{randPart}!",
                 "chatMode": "All",
                 "variants": [
                     "поражён твоей неудачей, {name}",
                     "петух {name} повержен!",
-                    "фу, {name},какое-же ты дно"
+                    "фу, {name}, акое-же ты дно"
                 ]
             },
-            {"title": "Давай досвиданья!",
+            {
+                "title": "Давай досвиданья!",
                 "icon": "Turnback",
-                "text": "{name},давай досвиданья!",
+                "text": "{name}, авай досвиданья!",
                 "chatMode": "All"
             },
-            {"title": "Обернись",
+            {
+                "title": "Обернись",
                 "icon": "Attack",
-                "text": "{name},обернись, сзади!",
+                "text": "{name}, бернись, сзади!",
                 "chatMode": "All"
             },
-            {"title": "Горит!",
+            {
+                "title": "Горит!",
                 "icon": "Yes",
                 "text": "- Дед, гляди, {vehicle} горит...\n- Лол.",
                 "chatMode": "All",
                 "hotKey": ["KEY_LALT", "KEY_E"]
             },
-            {"title": "Доебаться",
+            {
+                "title": "Доебаться",
                 "icon": "Support",
                 "text": "{randPart}!",
                 "chatMode": "All",
                 "variants": [
                     "Кто не вмазал по чухану {name} на {vehicle} тот лох",
-                    "Въеби по {name} на {vehicle},будь мужЫком блеать",
+                    "Въеби по {name} на {vehicle}, удь мужЫком блеать",
                     "Все дно , а я угнетаю {name} на {vehicle}",
                     "Настало время мочить {vehicle} - {vehicle} сам себя не замочит",
                     "Ломай {vehicle}! Ломай его полностью",
                     "{name} на {vehicle} просил передать ему пенделя",
-                    "Больной {name},вам прописаны свечи. Приготовьте ваш канделябр!"
+                    "Больной {name}, ам прописаны свечи. Приготовьте ваш канделябр!"
                 ],
                 "hotKey": ["KEY_LALT", "KEY_MOUSE0"],
-                "cooldown": "4"
+                "cooldown": 4
             }
         ]
     },
-    "SPGMenu": {
+    "SPG": {
         "default": [
-            {"title": "Фадин",
+            {
+                "title": "Фадин",
                 "icon": "Yes",
                 "text": "Посоны, простите, я всего 3 снаряда взял, буду Фадина фармить.",
                 "chatMode": "All"
             },
-            {"title": "Поддержите",
+            {
+                "title": "Поддержите",
                 "icon": "Helpme",
                 "command": "HELPME",
                 "text": "Поддержите в квадрате {viewPos}!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
-            {"title": "Олени",
+            {
+                "title": "Олени",
                 "icon": "Attack",
                 "text": "Олени, чо вы на базе сидите, яйца рогами чешете? Вперед, воевать!!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_O"]
             },
-            {"title": "Перезаряжаюсь",
+            {
+                "title": "Перезаряжаюсь",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team",
                 "hotKey": ["KEY_C"]
             },
-            {"title": "Свелся",
+            {
+                "title": "Свелся",
                 "icon": "AttackSPG",
                 "command": "HELPME",
-                "text": "Свелся на квадрат {viewPos},помогу!",
+                "text": "Свелся на квадрат {viewPos}, омогу!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
-            {"title": "Все на захват!",
+            {
+                "title": "Все на захват!",
                 "icon": "Attack",
                 "text": "Все на захват!",
                 "chatMode": "Team"
             }
         ],
         "ally": [
-            {"title": "Вперед!",
+            {
+                "title": "Вперед!",
                 "icon": "Followme",
                 "command": "HELPMEEX",
-                "text": "{name},вперед, погнал, давай!",
+                "text": "{name}, перед, погнал, давай!",
                 "chatMode": "Team"
             },
-            {"title": "Стой!",
+            {
+                "title": "Стой!",
                 "icon": "Stop",
                 "command": "STOP",
-                "text": "{name},не лезь, просто свети, живи.",
+                "text": "{name}, е лезь, просто свети, живи.",
                 "chatMode": "Team"
             },
-            {"title": "Атакую клинч",
+            {
+                "title": "Атакую клинч",
                 "icon": "Turnback",
                 "command": "TURNBACK",
                 "text": "{name}, {randPart}!",
@@ -245,29 +263,34 @@
                     "отъедь от врага, свелся на него, стреляю"
                 ]
             },
-            {"title": "Как танк?",
+            {
+                "title": "Как танк?",
                 "icon": "Reload",
                 "text": "{name}, как танк {vehicle}?",
                 "chatMode": "Team"
             },
-            {"title": "Помогите ему",
+            {
+                "title": "Помогите ему",
                 "icon": "AttackSPG",
                 "text": "Помогите \"{name}\" на \"{vehicle}\" в квадрате {viewPos}!!!",
                 "chatMode": "Team"
             },
-            {"title": "Из прицела!",
+            {
+                "title": "Из прицела!",
                 "icon": "Turnback",
-                "text": "{name},ИЗ ПРИЦЕЛА!",
+                "text": "{name}, З ПРИЦЕЛА!",
                 "chatMode": "Team"
             }
         ],
         "enemy": [
-            {"title": "Я тебя вижу",
+            {
+                "title": "Я тебя вижу",
                 "icon": "Yes",
-                "text": "{name},а я тебя вижу!",
+                "text": "{name},  я тебя вижу!",
                 "chatMode": "All"
             },
-            {"title": "Лови",
+            {
+                "title": "Лови",
                 "icon": "Support",
                 "text": "{name}, {randPart}",
                 "chatMode": "All",
@@ -285,7 +308,8 @@
                     "лови копьё!"
                 ]
             },
-            {"title": "Поймал?",
+            {
+                "title": "Поймал?",
                 "icon": "Followme",
                 "text": "{name}, {randPart}",
                 "chatMode": "All",
@@ -308,25 +332,24 @@
                 ],
                 "hotKey": ["KEY_MOUSE2"]
             },
-            {"title": "До свидания",
+            {
+                "title": "До свидания",
                 "icon": "Turnback",
-                "text": "{name},давай досвидания!",
+                "text": "{name}, авай досвидания!",
                 "chatMode": "All"
             },
-            {"title": "Атакую",
+            {
+                "title": "Атакую",
                 "icon": "Attack",
                 "command": "ATTACKENEMY",
                 "text": "Стреляю в {vehicle} - ({name}),  {randPart}",
                 "chatMode": "Team",
-                "variants": [
-                    "отойдите от него!",
-                    "отваливайте от него!",
-                    "отъезжайте от него!"
-                ],
+                "variants": ["отойдите от него!", "отваливайте от него!", "отъезжайте от него!"],
                 "ping": "{viewPos}",
                 "hotKey": ["KEY_T"]
             },
-            {"title": "Поймайте свет",
+            {
+                "title": "Поймайте свет",
                 "icon": "Helpme",
                 "command": "HELPME",
                 "text": "Поймайте свет в {viewPos} - {vehicle}!",
@@ -334,1414 +357,1609 @@
             }
         ]
     },
-    "tankSpecific": {
-        "GW_Tiger_P": "Bat_Chatillon155_58",
-        "G_Tiger": "Bat_Chatillon155_58",
-        "T71": {
-            "default": [
-                {"title": "Фадин",
-                    "icon": "Yes",
-                    "text": "Посоны, простите, я всего 3 снаряда взял, буду Фадина фармить.",
-                    "chatMode": "All"
-                },
-                {"title": "Поддержите",
-                    "icon": "Helpme",
-                    "command": "HELPME",
-                    "text": "Поддержите в квадрате {viewPos}!",
-                    "chatMode": "Team",
-                    "ping": "{viewPos}"
-                },
-                {"title": "Олени",
-                    "icon": "Attack",
-                    "text": "Олени, чо вы на базе сидите, яйца рогами чешете? Вперед, воевать!!",
-                    "chatMode": "Team",
-                    "hotKey": ["KEY_O"]
-                },
-                {"title": "Перезаряжаюсь",
-                    "icon": "Reload",
-                    "command": "RELOADINGGUN",
-                    "text": "Прикройте!",
-                    "chatMode": "Team",
-                    "ping": "{ownPos}",
-                    "hotKey": ["KEY_C"]
-                },
-                {"title": "Свелся",
-                    "icon": "AttackSPG",
-                    "command": "HELPME",
-                    "text": "Свелся на квадрат {viewPos},помогу!",
-                    "chatMode": "Team",
-                    "ping": "{viewPos}"
-                },
-                {"title": "остаток",
-                    "icon": "AttackSPG",
-                    "text": "Смотрю на {viewPos}, осталось {ammo} в барабане!",
-                    "chatMode": "Team",
-                    "ping": "{viewPos}"
-                }
-            ],
-            "ally": [
-                {"title": "Вперед!",
-                    "icon": "Followme",
-                    "command": "HELPMEEX",
-                    "text": "{name},вперед, погнал, давай!",
-                    "chatMode": "Team"
-                },
-                {"title": "Стой!",
-                    "icon": "Stop",
-                    "command": "STOP",
-                    "text": "{name},не лезь, просто свети, живи.",
-                    "chatMode": "Team"
-                },
-                {"title": "Атакую клинч",
-                    "icon": "Turnback",
-                    "command": "TURNBACK",
-                    "text": "{name}, {randPart}!",
-                    "chatMode": "Team",
-                    "variants": [
-                        "сейчас прилетит снаряд, отойди",
-                        "назад откатись, помогу",
-                        "отъедь от врага, свелся на него, стреляю"
-                    ]
-                },
-                {"title": "Как танк?",
-                    "icon": "Reload",
-                    "text": "{name}, как танк {vehicle}?",
-                    "chatMode": "Team"
-                },
-                {"title": "Помогите ему",
-                    "icon": "AttackSPG",
-                    "text": "Помогите \"{name}\" на \"{vehicle}\" в квадрате {viewPos}!!!",
-                    "chatMode": "Team"
-                },
-                {"title": "Из прицела!",
-                    "icon": "Turnback",
-                    "text": "{name},ИЗ ПРИЦЕЛА!",
-                    "chatMode": "Team"
-                }
-            ],
-            "enemy": [
-                {"title": "Я тебя вижу",
-                    "icon": "Yes",
-                    "text": "{name},а я тебя вижу!",
-                    "chatMode": "All"
-                },
-                {"title": "Лови",
-                    "icon": "Support",
-                    "text": "{name}, {randPart}",
-                    "chatMode": "All",
-                    "variants": [
-                        "лови топор!",
-                        "вот так и стой!..",
-                        "ты забыл свой чемодан!",
-                        "неспеша свожусь на тебя...",
-                        "навожу плазмаган!",
-                        "orbital ION cannon activated!"
-                    ]
-                },
-                {"title": "Поймал?",
-                    "icon": "Followme",
-                    "text": "{name}, {randPart}",
-                    "chatMode": "All",
-                    "variants": [
-                        "чемодан отправлен!",
-                        "багаж отправлен!",
-                        "пакет отправлен!",
-                        "саквояж отправлен!",
-                        "топор отправлен!",
-                        "кирпич отправлен!",
-                        "сейчас прилетит птичка",
-                        "чемодан доставлен!",
-                        "багаж доставлен!",
-                        "пакет доставлен!",
-                        "саквояж доставлен!",
-                        "топор доставлен!",
-                        "кирпич доставлен!",
-                        "топор поймал? Чего молчишь?",
-                        "вот это бабах, да?"
-                    ],
-                    "hotKey": ["KEY_MOUSE2"]
-                },
-                {"title": "До свидания",
-                    "icon": "Turnback",
-                    "text": "{name},давай досвидания!",
-                    "chatMode": "All"
-                },
-                {"title": "Атакую",
-                    "icon": "Attack",
-                    "command": "ATTACKENEMY",
-                    "text": "Стреляю в {vehicle} - ({name}),  {randPart}",
-                    "chatMode": "Team",
-                    "variants": [
-                        "отойдите от него!",
-                        "отваливайте от него!",
-                        "отъезжайте от него!"
-                    ],
-                    "ping": "{viewPos}",
-                    "hotKey": ["KEY_T"]
-                },
-                {"title": "Поймайте свет",
-                    "icon": "Helpme",
-                    "command": "HELPME",
-                    "text": "Поймайте свет в {viewPos} - {vehicle}!",
-                    "chatMode": "Team"
-                }
-            ]
-        },
-        "Bat_Chatillon155_58": {
-            "default": [
-                {"title": "Фадин",
-                    "icon": "Yes",
-                    "text": "Посоны, простите, я всего 3 снаряда взял, буду Фадина фармить.",
-                    "chatMode": "All"
-                },
-                {"title": "Поддержите",
-                    "icon": "Helpme",
-                    "command": "HELPME",
-                    "text": "Поддержите в квадрате {viewPos}!",
-                    "chatMode": "Team",
-                    "ping": "{viewPos}"
-                },
-                {"title": "Олени",
-                    "icon": "Attack",
-                    "text": "Олени, чо вы на базе сидите, яйца рогами чешете? Вперед, воевать!!",
-                    "chatMode": "Team",
-                    "hotKey": ["KEY_O"]
-                },
-                {"title": "Перезаряжаюсь",
-                    "icon": "Reload",
-                    "command": "RELOADINGGUN",
-                    "text": "Прикройте!",
-                    "chatMode": "Team",
-                    "ping": "{ownPos}",
-                    "hotKey": ["KEY_C"]
-                },
-                {"title": "Свелся",
-                    "icon": "AttackSPG",
-                    "command": "HELPME",
-                    "text": "Свелся на квадрат {viewPos},помогу!",
-                    "chatMode": "Team",
-                    "ping": "{viewPos}"
-                },
-                {"title": "остаток",
-                    "icon": "AttackSPG",
-                    "text": "Смотрю на {viewPos}, осталось {ammo} в барабане!",
-                    "chatMode": "Team",
-                    "ping": "{viewPos}"
-                }
-            ],
-            "ally": [
-                {"title": "Вперед!",
-                    "icon": "Followme",
-                    "command": "HELPMEEX",
-                    "text": "{name},вперед, погнал, давай!",
-                    "chatMode": "Team"
-                },
-                {"title": "Стой!",
-                    "icon": "Stop",
-                    "command": "STOP",
-                    "text": "{name},не лезь, просто свети, живи.",
-                    "chatMode": "Team"
-                },
-                {"title": "Атакую клинч",
-                    "icon": "Turnback",
-                    "command": "TURNBACK",
-                    "text": "{name}, {randPart}!",
-                    "chatMode": "Team",
-                    "variants": [
-                        "сейчас прилетит снаряд, отойди",
-                        "назад откатись, помогу",
-                        "отъедь от врага, свелся на него, стреляю"
-                    ]
-                },
-                {"title": "Как танк?",
-                    "icon": "Reload",
-                    "text": "{name}, как танк {vehicle}?",
-                    "chatMode": "Team"
-                },
-                {"title": "Помогите ему",
-                    "icon": "AttackSPG",
-                    "text": "Помогите \"{name}\" на \"{vehicle}\" в квадрате {viewPos}!!!",
-                    "chatMode": "Team"
-                },
-                {"title": "Из прицела!",
-                    "icon": "Turnback",
-                    "text": "{name},ИЗ ПРИЦЕЛА!",
-                    "chatMode": "Team"
-                }
-            ],
-            "enemy": [
-                {"title": "Я тебя вижу",
-                    "icon": "Yes",
-                    "text": "{name},а я тебя вижу!",
-                    "chatMode": "All"
-                },
-                {"title": "Лови",
-                    "icon": "Support",
-                    "text": "{name}, {randPart}",
-                    "chatMode": "All",
-                    "variants": [
-                        "лови топор!",
-                        "вот так и стой!..",
-                        "ты забыл свой чемодан!",
-                        "неспеша свожусь на тебя...",
-                        "навожу плазмаган!",
-                        "orbital ION cannon activated!"
-                    ]
-                },
-                {"title": "Поймал?",
-                    "icon": "Followme",
-                    "text": "{name}, {randPart}",
-                    "chatMode": "All",
-                    "variants": [
-                        "чемодан отправлен!",
-                        "багаж отправлен!",
-                        "пакет отправлен!",
-                        "саквояж отправлен!",
-                        "топор отправлен!",
-                        "кирпич отправлен!",
-                        "сейчас прилетит птичка",
-                        "чемодан доставлен!",
-                        "багаж доставлен!",
-                        "пакет доставлен!",
-                        "саквояж доставлен!",
-                        "топор доставлен!",
-                        "кирпич доставлен!",
-                        "топор поймал? Чего молчишь?",
-                        "вот это бабах, да?"
-                    ],
-                    "hotKey": ["KEY_MOUSE2"]
-                },
-                {"title": "До свидания",
-                    "icon": "Turnback",
-                    "text": "{name},давай досвидания!",
-                    "chatMode": "All"
-                },
-                {"title": "Атакую",
-                    "icon": "Attack",
-                    "command": "ATTACKENEMY",
-                    "text": "Стреляю в {vehicle} - ({name}),  {randPart}",
-                    "chatMode": "Team",
-                    "variants": [
-                        "отойдите от него!",
-                        "отваливайте от него!",
-                        "отъезжайте от него!"
-                    ],
-                    "ping": "{viewPos}",
-                    "hotKey": ["KEY_T"]
-                },
-                {"title": "Поймайте свет",
-                    "icon": "Helpme",
-                    "command": "HELPME",
-                    "text": "Поймайте свет в {viewPos} - {vehicle}!",
-                    "chatMode": "Team"
-                }
-            ]
-        }
+    "GW_Tiger_P": "Bat_Chatillon155_58",
+    "G_Tiger": "Bat_Chatillon155_58",
+    "T71": {
+        "default": [
+            {
+                "title": "Фадин",
+                "icon": "Yes",
+                "text": "Посоны, простите, я всего 3 снаряда взял, буду Фадина фармить.",
+                "chatMode": "All"
+            },
+            {
+                "title": "Поддержите",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Поддержите в квадрате {viewPos}!",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            },
+            {
+                "title": "Олени",
+                "icon": "Attack",
+                "text": "Олени, чо вы на базе сидите, яйца рогами чешете? Вперед, воевать!!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_O"]
+            },
+            {
+                "title": "Перезаряжаюсь",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "text": "Прикройте!",
+                "chatMode": "Team",
+                "ping": "{ownPos}",
+                "hotKey": ["KEY_C"]
+            },
+            {
+                "title": "Свелся",
+                "icon": "AttackSPG",
+                "command": "HELPME",
+                "text": "Свелся на квадрат {viewPos}, омогу!",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            },
+            {
+                "title": "остаток",
+                "icon": "AttackSPG",
+                "text": "Смотрю на {viewPos}, осталось {ammo} в барабане!",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            }
+        ],
+        "ally": [
+            {
+                "title": "Вперед!",
+                "icon": "Followme",
+                "command": "HELPMEEX",
+                "text": "{name}, перед, погнал, давай!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "text": "{name}, е лезь, просто свети, живи.",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Атакую клинч",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "text": "{name}, {randPart}!",
+                "chatMode": "Team",
+                "variants": [
+                    "сейчас прилетит снаряд, отойди",
+                    "назад откатись, помогу",
+                    "отъедь от врага, свелся на него, стреляю"
+                ]
+            },
+            {
+                "title": "Как танк?",
+                "icon": "Reload",
+                "text": "{name}, как танк {vehicle}?",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите ему",
+                "icon": "AttackSPG",
+                "text": "Помогите \"{name}\" на \"{vehicle}\" в квадрате {viewPos}!!!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Из прицела!",
+                "icon": "Turnback",
+                "text": "{name}, З ПРИЦЕЛА!",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {
+                "title": "Я тебя вижу",
+                "icon": "Yes",
+                "text": "{name},  я тебя вижу!",
+                "chatMode": "All"
+            },
+            {
+                "title": "Лови",
+                "icon": "Support",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "лови топор!",
+                    "вот так и стой!..",
+                    "ты забыл свой чемодан!",
+                    "неспеша свожусь на тебя...",
+                    "навожу плазмаган!",
+                    "orbital ION cannon activated!"
+                ]
+            },
+            {
+                "title": "Поймал?",
+                "icon": "Followme",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "чемодан отправлен!",
+                    "багаж отправлен!",
+                    "пакет отправлен!",
+                    "саквояж отправлен!",
+                    "топор отправлен!",
+                    "кирпич отправлен!",
+                    "сейчас прилетит птичка",
+                    "чемодан доставлен!",
+                    "багаж доставлен!",
+                    "пакет доставлен!",
+                    "саквояж доставлен!",
+                    "топор доставлен!",
+                    "кирпич доставлен!",
+                    "топор поймал? Чего молчишь?",
+                    "вот это бабах, да?"
+                ],
+                "hotKey": ["KEY_MOUSE2"]
+            },
+            {
+                "title": "До свидания",
+                "icon": "Turnback",
+                "text": "{name}, авай досвидания!",
+                "chatMode": "All"
+            },
+            {
+                "title": "Атакую",
+                "icon": "Attack",
+                "command": "ATTACKENEMY",
+                "text": "Стреляю в {vehicle} - ({name}),  {randPart}",
+                "chatMode": "Team",
+                "variants": ["отойдите от него!", "отваливайте от него!", "отъезжайте от него!"],
+                "ping": "{viewPos}",
+                "hotKey": ["KEY_T"]
+            },
+            {
+                "title": "Поймайте свет",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Поймайте свет в {viewPos} - {vehicle}!",
+                "chatMode": "Team"
+            }
+        ]
+    },
+    "Bat_Chatillon155_58": {
+        "default": [
+            {
+                "title": "Фадин",
+                "icon": "Yes",
+                "text": "Посоны, простите, я всего 3 снаряда взял, буду Фадина фармить.",
+                "chatMode": "All"
+            },
+            {
+                "title": "Поддержите",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Поддержите в квадрате {viewPos}!",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            },
+            {
+                "title": "Олени",
+                "icon": "Attack",
+                "text": "Олени, чо вы на базе сидите, яйца рогами чешете? Вперед, воевать!!",
+                "chatMode": "Team",
+                "hotKey": ["KEY_O"]
+            },
+            {
+                "title": "Перезаряжаюсь",
+                "icon": "Reload",
+                "command": "RELOADINGGUN",
+                "text": "Прикройте!",
+                "chatMode": "Team",
+                "ping": "{ownPos}",
+                "hotKey": ["KEY_C"]
+            },
+            {
+                "title": "Свелся",
+                "icon": "AttackSPG",
+                "command": "HELPME",
+                "text": "Свелся на квадрат {viewPos}, омогу!",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            },
+            {
+                "title": "остаток",
+                "icon": "AttackSPG",
+                "text": "Смотрю на {viewPos}, осталось {ammo} в барабане!",
+                "chatMode": "Team",
+                "ping": "{viewPos}"
+            }
+        ],
+        "ally": [
+            {
+                "title": "Вперед!",
+                "icon": "Followme",
+                "command": "HELPMEEX",
+                "text": "{name}, перед, погнал, давай!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Стой!",
+                "icon": "Stop",
+                "command": "STOP",
+                "text": "{name}, е лезь, просто свети, живи.",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Атакую клинч",
+                "icon": "Turnback",
+                "command": "TURNBACK",
+                "text": "{name}, {randPart}!",
+                "chatMode": "Team",
+                "variants": [
+                    "сейчас прилетит снаряд, отойди",
+                    "назад откатись, помогу",
+                    "отъедь от врага, свелся на него, стреляю"
+                ]
+            },
+            {
+                "title": "Как танк?",
+                "icon": "Reload",
+                "text": "{name}, как танк {vehicle}?",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Помогите ему",
+                "icon": "AttackSPG",
+                "text": "Помогите \"{name}\" на \"{vehicle}\" в квадрате {viewPos}!!!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Из прицела!",
+                "icon": "Turnback",
+                "text": "{name}, З ПРИЦЕЛА!",
+                "chatMode": "Team"
+            }
+        ],
+        "enemy": [
+            {
+                "title": "Я тебя вижу",
+                "icon": "Yes",
+                "text": "{name},  я тебя вижу!",
+                "chatMode": "All"
+            },
+            {
+                "title": "Лови",
+                "icon": "Support",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "лови топор!",
+                    "вот так и стой!..",
+                    "ты забыл свой чемодан!",
+                    "неспеша свожусь на тебя...",
+                    "навожу плазмаган!",
+                    "orbital ION cannon activated!"
+                ]
+            },
+            {
+                "title": "Поймал?",
+                "icon": "Followme",
+                "text": "{name}, {randPart}",
+                "chatMode": "All",
+                "variants": [
+                    "чемодан отправлен!",
+                    "багаж отправлен!",
+                    "пакет отправлен!",
+                    "саквояж отправлен!",
+                    "топор отправлен!",
+                    "кирпич отправлен!",
+                    "сейчас прилетит птичка",
+                    "чемодан доставлен!",
+                    "багаж доставлен!",
+                    "пакет доставлен!",
+                    "саквояж доставлен!",
+                    "топор доставлен!",
+                    "кирпич доставлен!",
+                    "топор поймал? Чего молчишь?",
+                    "вот это бабах, да?"
+                ],
+                "hotKey": ["KEY_MOUSE2"]
+            },
+            {
+                "title": "До свидания",
+                "icon": "Turnback",
+                "text": "{name}, авай досвидания!",
+                "chatMode": "All"
+            },
+            {
+                "title": "Атакую",
+                "icon": "Attack",
+                "command": "ATTACKENEMY",
+                "text": "Стреляю в {vehicle} - ({name}),  {randPart}",
+                "chatMode": "Team",
+                "variants": ["отойдите от него!", "отваливайте от него!", "отъезжайте от него!"],
+                "ping": "{viewPos}",
+                "hotKey": ["KEY_T"]
+            },
+            {
+                "title": "Поймайте свет",
+                "icon": "Helpme",
+                "command": "HELPME",
+                "text": "Поймайте свет в {viewPos} - {vehicle}!",
+                "chatMode": "Team"
+            }
+        ]
     },
     "Map_01_karelia": {
         "default": [
-           {"title": "Берём Штаны",
-            "icon": "Attack",
-            "text": "Быстрые занимаем штаны",
-            "chatMode": "Team",
-            "ping": "H7 G8"
-           },
-           {"title": "Слезайте с балкона",
-            "icon": "Stop",
-            "text": "Команда, слезайте с балкона, займитесь делом",
-            "chatMode": "Team",
-            "ping": "G6 F7"
-           },
-           {"title": "Внимание на болото",
-            "icon": "Helpme",
-            "text": "Внимание на болото",
-            "chatMode": "Team",
-            "ping": "F5 E6 D7"
-           },
-           {"title": "Свет, встань в карман",
-            "icon": "Turnback",
-            "text": "Свет, займи карман для подсвета",
-            "chatMode": "Team",
-            "ping": "D4 F7"
-           },
-           {"title": "Внимание на плато",
-            "icon": "Helpme",
-            "text": "Плато не бросайте",
-            "chatMode": "Team",
-            "ping": "D3 C4"
-           },
-           {"title": "Арта, переедь в горы",
-            "icon": "Support",
-            "text": "Арта, переедь, чтобы по горе доставать",
-            "chatMode": "Team",
-            "ping": "F0 K6"
-           }
+            {
+                "title": "Берём Штаны",
+                "icon": "Attack",
+                "text": "Быстрые занимаем штаны",
+                "chatMode": "Team",
+                "ping": "H7 G8"
+            },
+            {
+                "title": "Слезайте с балкона",
+                "icon": "Stop",
+                "text": "Команда, слезайте с балкона, займитесь делом",
+                "chatMode": "Team",
+                "ping": "G6 F7"
+            },
+            {
+                "title": "Внимание на болото",
+                "icon": "Helpme",
+                "text": "Внимание на болото",
+                "chatMode": "Team",
+                "ping": "F5 E6 D7"
+            },
+            {
+                "title": "Свет, встань в карман",
+                "icon": "Turnback",
+                "text": "Свет, займи карман для подсвета",
+                "chatMode": "Team",
+                "ping": "D4 F7"
+            },
+            {
+                "title": "Внимание на плато",
+                "icon": "Helpme",
+                "text": "Плато не бросайте",
+                "chatMode": "Team",
+                "ping": "D3 C4"
+            },
+            {
+                "title": "Арта, переедь в горы",
+                "icon": "Support",
+                "text": "Арта, переедь, чтобы по горе доставать",
+                "chatMode": "Team",
+                "ping": "F0 K6"
+            }
         ]
     },
     "Map_02_malinovka": {
         "default": [
-           {"title": "Берём гору",
-            "icon": "Attack",
-            "text": "Шустро берём горку",
-            "chatMode": "Team",
-            "ping": "A0"
-           },
-           {"title": "Отработать кусты",
-            "icon": "Support",
-            "text": "Арта, отработайте световые кусты",
-            "chatMode": "Team",
-            "ping": "E7 D6"
-           },
-           {"title": "Рашим поле",
-            "icon": "Followme",
-            "text": "Рашим поле, поехали",
-            "chatMode": "Team",
-            "ping": "G1 J3 K4"
-           },
-           {"title": "В лес",
-            "icon": "Helpme",
-            "text": "Занимаем лес, встечаем гостей",
-            "chatMode": "Team",
-            "ping": "E9 F0"
-           },
-           {"title": "К церкви",
-            "icon": "Helpme",
-            "text": "Идём к церкви, встречаем",
-            "chatMode": "Team",
-            "ping": "A4 B4"
-           },
-           {"title": "Свет арте",
-            "icon": "Turnback",
-            "text": "Даём засвет арте, не лезем",
-            "chatMode": "Team"
-           }
+            {
+                "title": "Берём гору",
+                "icon": "Attack",
+                "text": "Шустро берём горку",
+                "chatMode": "Team",
+                "ping": "A0"
+            },
+            {
+                "title": "Отработать кусты",
+                "icon": "Support",
+                "text": "Арта, отработайте световые кусты",
+                "chatMode": "Team",
+                "ping": "E7 D6"
+            },
+            {
+                "title": "Рашим поле",
+                "icon": "Followme",
+                "text": "Рашим поле, поехали",
+                "chatMode": "Team",
+                "ping": "G1 J3 K4"
+            },
+            {
+                "title": "В лес",
+                "icon": "Helpme",
+                "text": "Занимаем лес, встечаем гостей",
+                "chatMode": "Team",
+                "ping": "E9 F0"
+            },
+            {
+                "title": "К церкви",
+                "icon": "Helpme",
+                "text": "Идём к церкви, встречаем",
+                "chatMode": "Team",
+                "ping": "A4 B4"
+            },
+            {
+                "title": "Свет арте",
+                "icon": "Turnback",
+                "text": "Даём засвет арте, не лезем",
+                "chatMode": "Team"
+            }
         ]
     },
     "Map_03_campania": {
         "default": [
-           {"title": "Не подставляйтесь на подъеме",
-            "icon": "Stop",
-            "text": "Команда, не сливайся на подъеме, его простреливают",
-            "chatMode": "Team",
-            "ping": "D4 C4"
-           },
-           {"title": "Занять левый камень",
-            "icon": "Attack",
-            "text": "Глазастые с опускающейся башней, займите камень для контроля подъема",
-            "chatMode": "Team",
-            "ping": "C3"
-           },
-           {"title": "Занять правый камень",
-            "icon": "Attack",
-            "text": "У кого обзор лучше и модули стоят - займите камень для просвета той стороны",
-            "chatMode": "Team",
-            "ping": "J8"
-           },
-           {"title": "Резерв",
-            "icon": "Support",
-            "chatMode": "Team"
-           },
-           {"title": "Резерв",
-            "icon": "Helpme",
-            "chatMode": "Team"
-           },
-           {"title": "Резерв",
-            "icon": "Turnback",
-            "chatMode": "Team"
-           }
+            {
+                "title": "Не подставляйтесь на подъеме",
+                "icon": "Stop",
+                "text": "Команда, не сливайся на подъеме, его простреливают",
+                "chatMode": "Team",
+                "ping": "D4 C4"
+            },
+            {
+                "title": "Занять левый камень",
+                "icon": "Attack",
+                "text": "Глазастые с опускающейся башней, займите камень для контроля подъема",
+                "chatMode": "Team",
+                "ping": "C3"
+            },
+            {
+                "title": "Занять правый камень",
+                "icon": "Attack",
+                "text": "У кого обзор лучше и модули стоят - займите камень для просвета той стороны",
+                "chatMode": "Team",
+                "ping": "J8"
+            },
+            {
+                "title": "Резерв",
+                "icon": "Support",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Резерв",
+                "icon": "Helpme",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Резерв",
+                "icon": "Turnback",
+                "chatMode": "Team"
+            }
         ]
     },
     "Map_04_himmelsdorf": {
         "default": [
-           {"title": "Берём гору (Встречка)",
-            "icon": "Attack",
-            "text": "Команда, все на гору!!",
-            "chatMode": "Team",
-            "ping": "E0 F0"
-           },
-           {"title": "Берём гору (Стандарт)",
-            "icon": "Attack",
-            "text": "СТ, берите гору",
-            "chatMode": "Team",
-            "ping": "E0 F0"
-           },
-           {"title": "Держите банан",
-            "icon": "Stop",
-            "text": "Тяжи, ПТ, удержите банан",
-            "chatMode": "Team",
-            "ping": "E7 F7"
-           },
-           {"title": "Раш банана",
-            "icon": "Attack",
-            "text": "Рашьте банан толпой",
-            "chatMode": "Team",
-            "ping": "E7 F7"
-           },
-           {"title": "Свет по центру",
-            "icon": "Turnback",
-            "text": "Свет, дай засвет центра, арта, сведись сразу",
-            "chatMode": "Team",
-            "ping": "E5 F5"
-           },
-           {"title": "СТ на железку",
-            "icon": "Followme",
-            "text": "СТ, пройдите на железке",
-            "chatMode": "Team",
-            "ping": "G2 E2 D4"
-           }
+            {
+                "title": "Берём гору (Встречка)",
+                "icon": "Attack",
+                "text": "Команда, все на гору!!",
+                "chatMode": "Team",
+                "ping": "E0 F0"
+            },
+            {
+                "title": "Берём гору (Стандарт)",
+                "icon": "Attack",
+                "text": "СТ, берите гору",
+                "chatMode": "Team",
+                "ping": "E0 F0"
+            },
+            {
+                "title": "Держите банан",
+                "icon": "Stop",
+                "text": "Тяжи, ПТ, удержите банан",
+                "chatMode": "Team",
+                "ping": "E7 F7"
+            },
+            {
+                "title": "Раш банана",
+                "icon": "Attack",
+                "text": "Рашьте банан толпой",
+                "chatMode": "Team",
+                "ping": "E7 F7"
+            },
+            {
+                "title": "Свет по центру",
+                "icon": "Turnback",
+                "text": "Свет, дай засвет центра, арта, сведись сразу",
+                "chatMode": "Team",
+                "ping": "E5 F5"
+            },
+            {
+                "title": "СТ на железку",
+                "icon": "Followme",
+                "text": "СТ, пройдите на железке",
+                "chatMode": "Team",
+                "ping": "G2 E2 D4"
+            }
         ]
     },
     "Map_05_prohorovka": {
         "default": [
-           {"title": "Держите аллею",
-            "icon": "Helpme",
-            "text": "ПТ и тяжи, держите аллею",
-            "chatMode": "Team",
-            "ping": "C2 G2"
-           },
-           {"title": "Берём гору",
-            "icon": "Attack",
-            "text": "СТ, берите гору",
-            "chatMode": "Team",
-            "ping": "F0 G0"
-           },
-           {"title": "Свет по центру",
-            "icon": "Turnback",
-            "text": "Свет, катайся по центру по гребню, давай засвет",
-            "chatMode": "Team",
-            "ping": "F3 F5"
-           },
-           {"title": "Не бросайте деревню",
-            "icon": "Helpme",
-            "text": "Деревню не оставляйте",
-            "chatMode": "Team",
-            "ping": "E7 F7"
-           },
-           {"title": "Внимание на остров",
-            "icon": "Helpme",
-            "text": "Внимание на остров",
-            "chatMode": "Team",
-            "ping": "B9"
-           },
-           {"title": "Не подставляйтесь на подъеме",
-            "icon": "Turnback",
-            "text": "На подъеме не подставляйтесь, просто светите",
-            "chatMode": "Team",
-            "ping": "B6 J7"
-           }
+            {
+                "title": "Держите аллею",
+                "icon": "Helpme",
+                "text": "ПТ и тяжи, держите аллею",
+                "chatMode": "Team",
+                "ping": "C2 G2"
+            },
+            {
+                "title": "Берём гору",
+                "icon": "Attack",
+                "text": "СТ, берите гору",
+                "chatMode": "Team",
+                "ping": "F0 G0"
+            },
+            {
+                "title": "Свет по центру",
+                "icon": "Turnback",
+                "text": "Свет, катайся по центру по гребню, давай засвет",
+                "chatMode": "Team",
+                "ping": "F3 F5"
+            },
+            {
+                "title": "Не бросайте деревню",
+                "icon": "Helpme",
+                "text": "Деревню не оставляйте",
+                "chatMode": "Team",
+                "ping": "E7 F7"
+            },
+            {
+                "title": "Внимание на остров",
+                "icon": "Helpme",
+                "text": "Внимание на остров",
+                "chatMode": "Team",
+                "ping": "B9"
+            },
+            {
+                "title": "Не подставляйтесь на подъеме",
+                "icon": "Turnback",
+                "text": "На подъеме не подставляйтесь, просто светите",
+                "chatMode": "Team",
+                "ping": "B6 J7"
+            }
         ]
     },
     "Map_06_ensk": {
         "default": [
-           {"title": "Свет, на зеленку",
-            "icon": "Turnback",
-            "text": "Свет, аккуратно свети на зелёнке до середины, не сливайся",
-            "chatMode": "Team",
-            "ping": "E9 F9"
-           },
-           {"title": "Рашим склады (встречка)",
-            "icon": "Attack",
-            "text": "Команда, рашим толпой склады, на базу только пару танков для охраны!!",
-            "chatMode": "Team",
-            "ping": "E8 F8"
-           },
-           {"title": "Не бросайте город",
-            "icon": "Stop",
-            "text": "Команда, город не бросаем",
-            "chatMode": "Team",
-            "ping": "E2 F2"
-           },
-           {"title": "Внимание на ЖД",
-            "icon": "Helpme",
-            "text": "Внимание на ЖД",
-            "chatMode": "Team",
-            "ping": "E6 F6"
-           },
-           {"title": "Фланг не бросайте (склады)",
-            "icon": "Stop",
-            "text": "Фланг не бросайте!! СТ на фланг",
-            "chatMode": "Team",
-            "ping": "E8 F8"
-           },
-           {"title": "Базу не бросайте (встречка)",
-            "icon": "Stop",
-            "text": "Базу не бросайте совсем",
-            "chatMode": "Team",
-            "ping": "F5"
-           }
+            {
+                "title": "Свет, на зеленку",
+                "icon": "Turnback",
+                "text": "Свет, аккуратно свети на зелёнке до середины, не сливайся",
+                "chatMode": "Team",
+                "ping": "E9 F9"
+            },
+            {
+                "title": "Рашим склады (встречка)",
+                "icon": "Attack",
+                "text": "Команда, рашим толпой склады, на базу только пару танков для охраны!!",
+                "chatMode": "Team",
+                "ping": "E8 F8"
+            },
+            {
+                "title": "Не бросайте город",
+                "icon": "Stop",
+                "text": "Команда, город не бросаем",
+                "chatMode": "Team",
+                "ping": "E2 F2"
+            },
+            {
+                "title": "Внимание на ЖД",
+                "icon": "Helpme",
+                "text": "Внимание на ЖД",
+                "chatMode": "Team",
+                "ping": "E6 F6"
+            },
+            {
+                "title": "Фланг не бросайте (склады)",
+                "icon": "Stop",
+                "text": "Фланг не бросайте!! СТ на фланг",
+                "chatMode": "Team",
+                "ping": "E8 F8"
+            },
+            {
+                "title": "Базу не бросайте (встречка)",
+                "icon": "Stop",
+                "text": "Базу не бросайте совсем",
+                "chatMode": "Team",
+                "ping": "F5"
+            }
         ]
     },
     "Map_07_lakeville": {
         "default": [
-           {"title": "Перекройте кишку",
-            "icon": "Stop",
-            "text": "Кто-нибудь кишку перекройте",
-            "chatMode": "Team",
-            "ping": "E4"
-           },
-           {"title": "Город не бросайте",
-            "icon": "Helpme",
-            "text": "Команда, не бросайте город",
-            "chatMode": "Team",
-            "ping": "E9 F9"
-           },
-           {"title": "СТ, не лезьте в болото",
-            "icon": "Stop",
-            "text": "СТ, нечего вам в болоте делать, едьте в город",
-            "chatMode": "Team",
-            "ping": "E2"
-           },
-           {"title": "Арта, помоги в городе",
-            "icon": "Helpme",
-            "text": "Арта, помоги в городе",
-            "chatMode": "Team",
-            "ping": "E9 F9"
-           },
-           {"title": "Свет на берег",
-            "icon": "Turnback",
-            "text": "Свет, по берегу просвети до середины и обратно",
-            "chatMode": "Team",
-            "ping": "E7 F7"
-           },
-           {"title": "Оборона в болоте",
-            "icon": "Stop",
-            "text": "В болоте устройте оборону, не лезьте на них",
-            "chatMode": "Team",
-            "ping": "E2 F2"
-           }
+            {
+                "title": "Перекройте кишку",
+                "icon": "Stop",
+                "text": "Кто-нибудь кишку перекройте",
+                "chatMode": "Team",
+                "ping": "E4"
+            },
+            {
+                "title": "Город не бросайте",
+                "icon": "Helpme",
+                "text": "Команда, не бросайте город",
+                "chatMode": "Team",
+                "ping": "E9 F9"
+            },
+            {
+                "title": "СТ, не лезьте в болото",
+                "icon": "Stop",
+                "text": "СТ, нечего вам в болоте делать, едьте в город",
+                "chatMode": "Team",
+                "ping": "E2"
+            },
+            {
+                "title": "Арта, помоги в городе",
+                "icon": "Helpme",
+                "text": "Арта, помоги в городе",
+                "chatMode": "Team",
+                "ping": "E9 F9"
+            },
+            {
+                "title": "Свет на берег",
+                "icon": "Turnback",
+                "text": "Свет, по берегу просвети до середины и обратно",
+                "chatMode": "Team",
+                "ping": "E7 F7"
+            },
+            {
+                "title": "Оборона в болоте",
+                "icon": "Stop",
+                "text": "В болоте устройте оборону, не лезьте на них",
+                "chatMode": "Team",
+                "ping": "E2 F2"
+            }
         ]
     },
     "Map_08_ruinberg": {
         "default": [
-           {"title": "ТТ в город",
-            "icon": "Attack",
-            "text": "ТТ в город",
-            "chatMode": "Team",
-            "ping": "E3 F3"
-           },
-           {"title": "СТ в деревню",
-            "icon": "Attack",
-            "text": "СТ в деревню",
-            "chatMode": "Team",
-            "ping": "E0 F0"
-           },
-           {"title": "Свет по деревне",
-            "icon": "Turnback",
-            "text": "ЛТ, светаните деревню и центральную аллею, доезжайте до серединки и обратно, не сливайтесь",
-            "chatMode": "Team",
-            "ping": "E7 E8 E9"
-           },
-           {"title": "Займите центральную улицу (встречка)",
-            "icon": "Attack",
-            "text": "Шустрые СТ и ТТ, займите центральную улицу",
-            "chatMode": "Team",
-            "ping": "E6"
-           },
-           {"title": "Деревню не бросайте (встречка)",
-            "icon": "Helpme",
-            "text": "Не бросайте деревню, нечего на базе бодаться",
-            "chatMode": "Team",
-            "ping": "E0 F0"
-           },
-           {"title": "Не подставляйтесь на площади",
-            "icon": "Stop",
-            "text": "Не подставляйтесь на площади, там простреливается",
-            "chatMode": "Team",
-            "ping": "E1 F1"
-           }
+            {
+                "title": "ТТ в город",
+                "icon": "Attack",
+                "text": "ТТ в город",
+                "chatMode": "Team",
+                "ping": "E3 F3"
+            },
+            {
+                "title": "СТ в деревню",
+                "icon": "Attack",
+                "text": "СТ в деревню",
+                "chatMode": "Team",
+                "ping": "E0 F0"
+            },
+            {
+                "title": "Свет по деревне",
+                "icon": "Turnback",
+                "text": "ЛТ, светаните деревню и центральную аллею, доезжайте до серединки и обратно, не сливайтесь",
+                "chatMode": "Team",
+                "ping": "E7 E8 E9"
+            },
+            {
+                "title": "Займите центральную улицу (встречка)",
+                "icon": "Attack",
+                "text": "Шустрые СТ и ТТ, займите центральную улицу",
+                "chatMode": "Team",
+                "ping": "E6"
+            },
+            {
+                "title": "Деревню не бросайте (встречка)",
+                "icon": "Helpme",
+                "text": "Не бросайте деревню, нечего на базе бодаться",
+                "chatMode": "Team",
+                "ping": "E0 F0"
+            },
+            {
+                "title": "Не подставляйтесь на площади",
+                "icon": "Stop",
+                "text": "Не подставляйтесь на площади, там простреливается",
+                "chatMode": "Team",
+                "ping": "E1 F1"
+            }
         ]
     },
     "Map_10_hills": {
         "default": [
-           {"title": "Берем гору!!",
-            "icon": "Attack",
-            "text": "Берем гору!!",
-            "chatMode": "Team",
-            "ping": "E6"
-           },
-           {"title": "Арта, поддержи на горе",
-            "icon": "Attack",
-            "text": "Арта, сводись на горе, помоги гору взять!",
-            "chatMode": "Team",
-            "ping": "E6"
-           },
-           {"title": "Деревню не бросаем",
-            "icon": "Stop",
-            "text": "Не бросаем деревню, пара ТТ устройте оборону. Сами не лезьте!",
-            "chatMode": "Team",
-            "ping": "D7 E8"
-           },
-           {"title": "Внимание на остров",
-            "icon": "Helpme",
-            "text": "Внимание на остров",
-            "chatMode": "Team",
-            "ping": "E1 F1"
-           },
-           {"title": "Внимание на холм",
-            "icon": "Helpme",
-            "text": "Внимание на холм",
-            "chatMode": "Team",
-            "ping": "A4"
-           },
-           {"title": "Контролируйте камень",
-            "icon": "Support",
-            "text": "Кто на гору не успел - встаньте под камнем, контролируйте подъём на гору",
-            "chatMode": "Team",
-            "ping": "E5"
-           }
+            {
+                "title": "Берем гору!!",
+                "icon": "Attack",
+                "text": "Берем гору!!",
+                "chatMode": "Team",
+                "ping": "E6"
+            },
+            {
+                "title": "Арта, поддержи на горе",
+                "icon": "Attack",
+                "text": "Арта, сводись на горе, помоги гору взять!",
+                "chatMode": "Team",
+                "ping": "E6"
+            },
+            {
+                "title": "Деревню не бросаем",
+                "icon": "Stop",
+                "text": "Не бросаем деревню, пара ТТ устройте оборону. Сами не лезьте!",
+                "chatMode": "Team",
+                "ping": "D7 E8"
+            },
+            {
+                "title": "Внимание на остров",
+                "icon": "Helpme",
+                "text": "Внимание на остров",
+                "chatMode": "Team",
+                "ping": "E1 F1"
+            },
+            {
+                "title": "Внимание на холм",
+                "icon": "Helpme",
+                "text": "Внимание на холм",
+                "chatMode": "Team",
+                "ping": "A4"
+            },
+            {
+                "title": "Контролируйте камень",
+                "icon": "Support",
+                "text": "Кто на гору не успел - встаньте под камнем, контролируйте подъём на гору",
+                "chatMode": "Team",
+                "ping": "E5"
+            }
         ]
     },
     "Map_11_murovanka": {
         "default": [
-           {"title": "Свет по центру",
-            "icon": "Turnback",
-            "text": "ЛТ, просветите до центра и уходите обратно, не сливайтесь",
-            "chatMode": "Team",
-            "ping": "E5"
-           },
-           {"title": "Светаните лес",
-            "icon": "Turnback",
-            "text": "Просветите лес, все свелись для тира",
-            "chatMode": "Team",
-            "ping": "D9 E9"
-           },
-           {"title": "Свет, займи холм",
-            "icon": "Turnback",
-            "text": "Быстрый свет, займите верхний левый холм для подсвета!!",
-            "chatMode": "Team",
-            "ping": "A1 B1"
-           },
-           {"title": "Рашим объезд",
-            "icon": "Attack",
-            "text": "ТТ, в объезд, рашим, торгуем башней",
-            "chatMode": "Team",
-            "ping": "D1 E1 F1"
-           },
-           {"title": "Оборона в лесу",
-            "icon": "Stop",
-            "text": "ПТ, займите лес",
-            "chatMode": "Team",
-            "ping": "D8"
-           },
-           {"title": "Внимание на берег",
-            "icon": "Helpme",
-            "text": "Внимание на берег",
-            "chatMode": "Team",
-            "ping": "H9"
-           }
+            {
+                "title": "Свет по центру",
+                "icon": "Turnback",
+                "text": "ЛТ, просветите до центра и уходите обратно, не сливайтесь",
+                "chatMode": "Team",
+                "ping": "E5"
+            },
+            {
+                "title": "Светаните лес",
+                "icon": "Turnback",
+                "text": "Просветите лес, все свелись для тира",
+                "chatMode": "Team",
+                "ping": "D9 E9"
+            },
+            {
+                "title": "Свет, займи холм",
+                "icon": "Turnback",
+                "text": "Быстрый свет, займите верхний левый холм для подсвета!!",
+                "chatMode": "Team",
+                "ping": "A1 B1"
+            },
+            {
+                "title": "Рашим объезд",
+                "icon": "Attack",
+                "text": "ТТ, в объезд, рашим, торгуем башней",
+                "chatMode": "Team",
+                "ping": "D1 E1 F1"
+            },
+            {
+                "title": "Оборона в лесу",
+                "icon": "Stop",
+                "text": "ПТ, займите лес",
+                "chatMode": "Team",
+                "ping": "D8"
+            },
+            {
+                "title": "Внимание на берег",
+                "icon": "Helpme",
+                "text": "Внимание на берег",
+                "chatMode": "Team",
+                "ping": "H9"
+            }
         ]
     },
     "Map_13_erlenberg": {
         "default": [
-           {"title": "Держите мост у базы",
-            "icon": "Stop",
-            "text": "Организуйте оборону ближнего моста",
-            "chatMode": "Team"
-           },
-           {"title": "Не стойте в замке",
-            "icon": "Attack",
-            "text": "Команда, не стойте все в замке, едьте дальше",
-            "chatMode": "Team"
-           },
-           {"title": "Свет, на поле",
-            "icon": "Turnback",
-            "text": "Свет, подсвети поле со своего респа до середины и едь обратно, не сливайся",
-            "chatMode": "Team"
-           },
-           {"title": "Не лезьте",
-            "icon": "Stop",
-            "text": "Не лезьте сливаться, выманивайте их под арту и пт",
-            "chatMode": "Team"
-           },
-           {"title": "Внимание на центральный мост",
-            "icon": "Helpme",
-            "text": "Внимание на центральный мост",
-            "chatMode": "Team",
-            "ping": "F5"
-           },
-           {"title": "Рашьте свою гору",
-            "icon": "Attack",
-            "text": "Команда, рашьте свою гору толпой, не ждите. Играйте через горку от башни",
-            "chatMode": "Team"
-           }
+            {
+                "title": "Держите мост у базы",
+                "icon": "Stop",
+                "text": "Организуйте оборону ближнего моста",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Не стойте в замке",
+                "icon": "Attack",
+                "text": "Команда, не стойте все в замке, едьте дальше",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Свет, на поле",
+                "icon": "Turnback",
+                "text": "Свет, подсвети поле со своего респа до середины и едь обратно, не сливайся",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Не лезьте",
+                "icon": "Stop",
+                "text": "Не лезьте сливаться, выманивайте их под арту и пт",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Внимание на центральный мост",
+                "icon": "Helpme",
+                "text": "Внимание на центральный мост",
+                "chatMode": "Team",
+                "ping": "F5"
+            },
+            {
+                "title": "Рашьте свою гору",
+                "icon": "Attack",
+                "text": "Команда, рашьте свою гору толпой, не ждите. Играйте через горку от башни",
+                "chatMode": "Team"
+            }
         ]
     },
     "Map_14_siegfried_line": {
         "default": [
-           {"title": "Свет по центру поля",
-            "icon": "Turnback",
-            "text": "ЛТ, просветите поле до центра и уходите обратно, не сливайтесь",
-            "chatMode": "Team",
-            "ping": "E4"
-           },
-           {"title": "Свет по аллее",
-            "icon": "Turnback",
-            "text": "ЛТ, пройдите по дальней аллее до арты",
-            "chatMode": "Team",
-            "ping": "F0 E0"
-           },
-           {"title": "Продавите банан",
-            "icon": "Attack",
-            "text": "Толстые тяжи, продавите банан в городе",
-            "chatMode": "Team",
-            "ping": "E6 F6"
-           },
-           {"title": "СТ, поле",
-            "icon": "Attack",
-            "text": "СТ, пройдите полем",
-            "chatMode": "Team",
-            "ping": "E2 G2"
-           },
-           {"title": "Оборона арты (Штурм)",
-            "icon": "Stop",
-            "text": "Не бросайте арту, займите оборону на холме",
-            "chatMode": "Team",
-            "ping": "B9"
-           },
-           {"title": "Свет по гребню (Штурм)",
-            "icon": "Turnback",
-            "text": "Дайте свет по гребню, катайтесь туда-сюда",
-            "chatMode": "Team",
-            "ping": "C6"
-           }
+            {
+                "title": "Свет по центру поля",
+                "icon": "Turnback",
+                "text": "ЛТ, просветите поле до центра и уходите обратно, не сливайтесь",
+                "chatMode": "Team",
+                "ping": "E4"
+            },
+            {
+                "title": "Свет по аллее",
+                "icon": "Turnback",
+                "text": "ЛТ, пройдите по дальней аллее до арты",
+                "chatMode": "Team",
+                "ping": "F0 E0"
+            },
+            {
+                "title": "Продавите банан",
+                "icon": "Attack",
+                "text": "Толстые тяжи, продавите банан в городе",
+                "chatMode": "Team",
+                "ping": "E6 F6"
+            },
+            {
+                "title": "СТ, поле",
+                "icon": "Attack",
+                "text": "СТ, пройдите полем",
+                "chatMode": "Team",
+                "ping": "E2 G2"
+            },
+            {
+                "title": "Оборона арты (Штурм)",
+                "icon": "Stop",
+                "text": "Не бросайте арту, займите оборону на холме",
+                "chatMode": "Team",
+                "ping": "B9"
+            },
+            {
+                "title": "Свет по гребню (Штурм)",
+                "icon": "Turnback",
+                "text": "Дайте свет по гребню, катайтесь туда-сюда",
+                "chatMode": "Team",
+                "ping": "C6"
+            }
         ]
     },
     "Map_17_munchen": {
         "default": [
-           {"title": "Насыпь",
-            "icon": "Turnback",
-            "text": "Просвечивайте насыпь, торгуйте башней",
-            "chatMode": "Team",
-            "ping": "E5 F7"
-           },
-           {"title": "ЖД не бросайте",
-            "icon": "Helpme",
-            "text": "Не бросайте ЖД",
-            "chatMode": "Team",
-            "ping": "H0"
-           },
-           {"title": "Продавите ЖД",
-            "icon": "Attack",
-            "text": "Команда, продавите массой ЖД",
-            "chatMode": "Team",
-            "ping": "H0"
-           },
-           {"title": "Продавите арку",
-            "icon": "Attack",
-            "text": "Толстые тяжи, продавите арку под мостом",
-            "chatMode": "Team",
-            "ping": "D2"
-           },
-           {"title": "Защищайте арку",
-            "icon": "Stop",
-            "text": "Через арку не лезьте, стойте в обороне",
-            "chatMode": "Team",
-            "ping": "D2"
-           },
-           {"title": "Займите холм, ПТ",
-            "icon": "Helpme",
-            "text": "Займите холм, ПТ, обороняйте ЖД",
-            "chatMode": "Team",
-            "ping": "J9"
-           }
+            {
+                "title": "Насыпь",
+                "icon": "Turnback",
+                "text": "Просвечивайте насыпь, торгуйте башней",
+                "chatMode": "Team",
+                "ping": "E5 F7"
+            },
+            {
+                "title": "ЖД не бросайте",
+                "icon": "Helpme",
+                "text": "Не бросайте ЖД",
+                "chatMode": "Team",
+                "ping": "H0"
+            },
+            {
+                "title": "Продавите ЖД",
+                "icon": "Attack",
+                "text": "Команда, продавите массой ЖД",
+                "chatMode": "Team",
+                "ping": "H0"
+            },
+            {
+                "title": "Продавите арку",
+                "icon": "Attack",
+                "text": "Толстые тяжи, продавите арку под мостом",
+                "chatMode": "Team",
+                "ping": "D2"
+            },
+            {
+                "title": "Защищайте арку",
+                "icon": "Stop",
+                "text": "Через арку не лезьте, стойте в обороне",
+                "chatMode": "Team",
+                "ping": "D2"
+            },
+            {
+                "title": "Займите холм, ПТ",
+                "icon": "Helpme",
+                "text": "Займите холм, ПТ, обороняйте ЖД",
+                "chatMode": "Team",
+                "ping": "J9"
+            }
         ]
     },
     "Map_18_cliff": {
         "default": [
-           {"title": "СТ на балкон",
-            "icon": "Attack",
-            "text": "СТ, берите балконы",
-            "chatMode": "Team",
-            "ping": "E3 F3"
-           },
-           {"title": "Свет на гору",
-            "icon": "Turnback",
-            "text": "Свет, займи гору",
-            "chatMode": "Team",
-            "ping": "E7 F7"
-           },
-           {"title": "ТТ за утёс",
-            "icon": "Attack",
-            "text": "ТТ, едьте за утёс",
-            "chatMode": "Team",
-            "ping": "E9 F9"
-           },
-           {"title": "Арта, поддержи на горе",
-            "icon": "Support",
-            "text": "Арта, сведись на гору, помоги отбиться",
-            "chatMode": "Team",
-            "ping": "E6 F6"
-           },
-           {"title": "Быстрые, займите зелень",
-            "icon": "Attack",
-            "text": "Быстрые, займите зелень на горе, светите подъём, держите горку",
-            "chatMode": "Team",
-            "ping": "E6 F6"
-           },
-           {"title": "Не лезьте по центру",
-            "icon": "Stop",
-            "text": "Не лезьте всей толпой по центру. Пару танков в оборону, остальные на гору!",
-            "chatMode": "Team"
-           }
+            {
+                "title": "СТ на балкон",
+                "icon": "Attack",
+                "text": "СТ, берите балконы",
+                "chatMode": "Team",
+                "ping": "E3 F3"
+            },
+            {
+                "title": "Свет на гору",
+                "icon": "Turnback",
+                "text": "Свет, займи гору",
+                "chatMode": "Team",
+                "ping": "E7 F7"
+            },
+            {
+                "title": "ТТ за утёс",
+                "icon": "Attack",
+                "text": "ТТ, едьте за утёс",
+                "chatMode": "Team",
+                "ping": "E9 F9"
+            },
+            {
+                "title": "Арта, поддержи на горе",
+                "icon": "Support",
+                "text": "Арта, сведись на гору, помоги отбиться",
+                "chatMode": "Team",
+                "ping": "E6 F6"
+            },
+            {
+                "title": "Быстрые, займите зелень",
+                "icon": "Attack",
+                "text": "Быстрые, займите зелень на горе, светите подъём, держите горку",
+                "chatMode": "Team",
+                "ping": "E6 F6"
+            },
+            {
+                "title": "Не лезьте по центру",
+                "icon": "Stop",
+                "text": "Не лезьте всей толпой по центру. Пару танков в оборону, остальные на гору!",
+                "chatMode": "Team"
+            }
         ]
     },
     "Map_19_monastery": {
         "default": [
-           {"title": "Тяжи в кишку",
-            "icon": "Attack",
-            "text": "ТТ, займите кишку",
-            "chatMode": "Team",
-            "ping": "E8 F8"
-           },
-           {"title": "Арта, поддержи кишку",
-            "icon": "Attack",
-            "text": "Арта, поддержи раш тяжей в кишке",
-            "chatMode": "Team",
-            "ping": "E8 F8"
-           },
-           {"title": "СТ в уши",
-            "icon": "Attack",
-            "text": "СТ, едьте в уши!",
-            "chatMode": "Team",
-            "ping": "E2 F2"
-           },
-           {"title": "Свет в монастырь",
-            "icon": "Turnback",
-            "text": "ЛТ, просветите центр монастыря. Если там врага больше чем вас - возвращайтесь",
-            "chatMode": "Team",
-            "ping": "E5 F5"
-           },
-           {"title": "Закройте центральный проход",
-            "icon": "Stop",
-            "text": "Кто-нибудь, блокируйте центральный проход, не дайте свету пройти",
-            "chatMode": "Team",
-            "ping": "E6 F6"
-           },
-           {"title": "Не бросайте фланги!!!",
-            "icon": "Helpme",
-            "text": "Не бросайте фланги!!!",
-            "chatMode": "Team"
-           }
+            {
+                "title": "Тяжи в кишку",
+                "icon": "Attack",
+                "text": "ТТ, займите кишку",
+                "chatMode": "Team",
+                "ping": "E8 F8"
+            },
+            {
+                "title": "Арта, поддержи кишку",
+                "icon": "Attack",
+                "text": "Арта, поддержи раш тяжей в кишке",
+                "chatMode": "Team",
+                "ping": "E8 F8"
+            },
+            {
+                "title": "СТ в уши",
+                "icon": "Attack",
+                "text": "СТ, едьте в уши!",
+                "chatMode": "Team",
+                "ping": "E2 F2"
+            },
+            {
+                "title": "Свет в монастырь",
+                "icon": "Turnback",
+                "text": "ЛТ, просветите центр монастыря. Если там врага больше чем вас - возвращайтесь",
+                "chatMode": "Team",
+                "ping": "E5 F5"
+            },
+            {
+                "title": "Закройте центральный проход",
+                "icon": "Stop",
+                "text": "Кто-нибудь, блокируйте центральный проход, не дайте свету пройти",
+                "chatMode": "Team",
+                "ping": "E6 F6"
+            },
+            {
+                "title": "Не бросайте фланги!!!",
+                "icon": "Helpme",
+                "text": "Не бросайте фланги!!!",
+                "chatMode": "Team"
+            }
         ]
     },
     "Map_23_westfeld": {
         "default": [
-           {"title": "Не бросайте город",
-            "icon": "Helpme",
-            "text": "Город не бросайте",
-            "chatMode": "Team",
-            "ping": "E5"
-           },
-           {"title": "СТ по флангу",
-            "icon": "Attack",
-            "text": "СТ, идите по флангу",
-            "chatMode": "Team",
-            "ping": "J9"
-           },
-           {"title": "Займите куст в лощине",
-            "icon": "Turnback",
-            "text": "ЛТ или СТ, займите куст для обзора на склоне!",
-            "chatMode": "Team",
-            "ping": "G7"
-           },
-           {"title": "СТ,помогите тяжам в городе",
-            "icon": "Support",
-            "text": "СТ, помогите тяжам в городе, нападите с фланга",
-            "chatMode": "Team",
-            "ping": "F6"
-           },
-           {"title": "Арта, внимание на холмы",
-            "icon": "Support",
-            "text": "Арта, прикрывай тяжей на холмах и в городе",
-            "chatMode": "Team",
-            "ping": "B2 D4"
-           },
-           {"title": "Светаните арту",
-            "icon": "Turnback",
-            "text": "ЛТ, прорвитесь к арте",
-            "chatMode": "Team"
-           }
+            {
+                "title": "Не бросайте город",
+                "icon": "Helpme",
+                "text": "Город не бросайте",
+                "chatMode": "Team",
+                "ping": "E5"
+            },
+            {
+                "title": "СТ по флангу",
+                "icon": "Attack",
+                "text": "СТ, идите по флангу",
+                "chatMode": "Team",
+                "ping": "J9"
+            },
+            {
+                "title": "Займите куст в лощине",
+                "icon": "Turnback",
+                "text": "ЛТ или СТ, займите куст для обзора на склоне!",
+                "chatMode": "Team",
+                "ping": "G7"
+            },
+            {
+                "title": "СТ, омогите тяжам в городе",
+                "icon": "Support",
+                "text": "СТ, помогите тяжам в городе, нападите с фланга",
+                "chatMode": "Team",
+                "ping": "F6"
+            },
+            {
+                "title": "Арта, внимание на холмы",
+                "icon": "Support",
+                "text": "Арта, прикрывай тяжей на холмах и в городе",
+                "chatMode": "Team",
+                "ping": "B2 D4"
+            },
+            {
+                "title": "Светаните арту",
+                "icon": "Turnback",
+                "text": "ЛТ, прорвитесь к арте",
+                "chatMode": "Team"
+            }
         ]
     },
     "Map_28_desert": {
         "default": [
-           {"title": "Дайте свет на хребте",
-            "icon": "Turnback",
-            "text": "Дайте свет через хребет, арта, работай",
-            "chatMode": "Team",
-            "ping": "C7"
-           },
-           {"title": "Дайте свет на гребне (Штурм, оборона)",
-            "icon": "Turnback",
-            "text": "Светите гребень, арта, работай по засвеченным!",
-            "chatMode": "Team",
-            "ping": "F5"
-           },
-           {"title": "Свет, встань в низину (Штурм, атака)",
-            "icon": "Turnback",
-            "text": "Свет, встань под гребнем в ямку и подсвечивай аккуратно",
-            "chatMode": "Team",
-            "ping": "E3"
-           },
-           {"title": "СТ в гору",
-            "icon": "Attack",
-            "text": "Быстрые СТ, займите гору, ударьте во фланг",
-            "chatMode": "Team",
-            "ping": "B9"
-           },
-           {"title": "Не бросайте низ (Штурм)",
-            "icon": "Helpme",
-            "text": "Низ не бросайте, команда",
-            "chatMode": "Team",
-            "ping": "K0"
-           },
-           {"title": "Не бросайте верх (Штурм)",
-            "icon": "Helpme",
-            "text": "Верх не бросайте, команда",
-            "chatMode": "Team",
-            "ping": "B1"
-           }
+            {
+                "title": "Дайте свет на хребте",
+                "icon": "Turnback",
+                "text": "Дайте свет через хребет, арта, работай",
+                "chatMode": "Team",
+                "ping": "C7"
+            },
+            {
+                "title": "Дайте свет на гребне (Штурм, оборона)",
+                "icon": "Turnback",
+                "text": "Светите гребень, арта, работай по засвеченным!",
+                "chatMode": "Team",
+                "ping": "F5"
+            },
+            {
+                "title": "Свет, встань в низину (Штурм, атака)",
+                "icon": "Turnback",
+                "text": "Свет, встань под гребнем в ямку и подсвечивай аккуратно",
+                "chatMode": "Team",
+                "ping": "E3"
+            },
+            {
+                "title": "СТ в гору",
+                "icon": "Attack",
+                "text": "Быстрые СТ, займите гору, ударьте во фланг",
+                "chatMode": "Team",
+                "ping": "B9"
+            },
+            {
+                "title": "Не бросайте низ (Штурм)",
+                "icon": "Helpme",
+                "text": "Низ не бросайте, команда",
+                "chatMode": "Team",
+                "ping": "K0"
+            },
+            {
+                "title": "Не бросайте верх (Штурм)",
+                "icon": "Helpme",
+                "text": "Верх не бросайте, команда",
+                "chatMode": "Team",
+                "ping": "B1"
+            }
         ]
     },
     "Map_29_el_hallouf": {
         "default": [
-           {"title": "Берите воду!!!",
-            "icon": "Attack",
-            "text": "Команда, берите воду!!",
-            "chatMode": "Team",
-            "ping": "H8"
-           },
-           {"title": "Поддержите на воде",
-            "icon": "Attack",
-            "text": "Точные ПТ и ТТ, поддержите спуск на воду!!",
-            "chatMode": "Team",
-            "ping": "H8"
-           },
-           {"title": "Арта, бей по горке",
-            "icon": "Support",
-            "text": "Арта, встань так, чтобы бить по горке",
-            "chatMode": "Team",
-            "ping": "A2"
-           },
-           {"title": "Отбейте базу (встречка)",
-            "icon": "Stop",
-            "text": "Сбейте захват с базы!!!",
-            "chatMode": "Team",
-            "ping": "C3"
-           },
-           {"title": "Воду слили",
-            "icon": "Stop",
-            "text": "Воду слили, встречайте подъём!!!",
-            "chatMode": "Team"
-           },
-           {"title": "Не бросайте фланг",
-            "icon": "Stop",
-            "text": "Команда, не играйте все в тир, едьте на фланг",
-            "chatMode": "Team",
-            "ping": "B2"
-           }
+            {
+                "title": "Берите воду!!!",
+                "icon": "Attack",
+                "text": "Команда, берите воду!!",
+                "chatMode": "Team",
+                "ping": "H8"
+            },
+            {
+                "title": "Поддержите на воде",
+                "icon": "Attack",
+                "text": "Точные ПТ и ТТ, поддержите спуск на воду!!",
+                "chatMode": "Team",
+                "ping": "H8"
+            },
+            {
+                "title": "Арта, бей по горке",
+                "icon": "Support",
+                "text": "Арта, встань так, чтобы бить по горке",
+                "chatMode": "Team",
+                "ping": "A2"
+            },
+            {
+                "title": "Отбейте базу (встречка)",
+                "icon": "Stop",
+                "text": "Сбейте захват с базы!!!",
+                "chatMode": "Team",
+                "ping": "C3"
+            },
+            {
+                "title": "Воду слили",
+                "icon": "Stop",
+                "text": "Воду слили, встречайте подъём!!!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Не бросайте фланг",
+                "icon": "Stop",
+                "text": "Команда, не играйте все в тир, едьте на фланг",
+                "chatMode": "Team",
+                "ping": "B2"
+            }
         ]
     },
     "Map_31_airfield": {
         "default": [
-           {"title": "Свет на горку",
-            "icon": "Turnback",
-            "text": "ЛТ, светите горку по гребню, не сливайтесь",
-            "chatMode": "Team",
-            "ping": "H5 H6"
-           },
-           {"title": "Арта, работай по засвету с горки",
-            "icon": "Attack",
-            "text": "Арта, работай по засвету с горки",
-            "chatMode": "Team"
-           },
-           {"title": "Низ не бросайте",
-            "icon": "Stop",
-            "text": "Низ не бросайте, встанье в оборону кто-нибудь",
-            "chatMode": "Team",
-            "ping": "J5 J6"
-           },
-           {"title": "Прикрывайте камни и полосу",
-            "icon": "Support",
-            "text": "СТ и ТТ, прикрывайте камни и полосу, помогайте друг другу, не лезьте под арту",
-            "chatMode": "Team",
-            "ping": "D6 E6"
-           },
-           {"title": "Внимание на ущелье",
-            "icon": "Helpme",
-            "text": "Внимание на ущелье",
-            "chatMode": "Team",
-            "ping": "F5 F6"
-           },
-           {"title": "Внимание на взлётную полосу",
-            "icon": "Helpme",
-            "text": "Внимание на взлётно-посадочную полосу",
-            "chatMode": "Team",
-            "ping": "B5 B6"
-           }
+            {
+                "title": "Свет на горку",
+                "icon": "Turnback",
+                "text": "ЛТ, светите горку по гребню, не сливайтесь",
+                "chatMode": "Team",
+                "ping": "H5 H6"
+            },
+            {
+                "title": "Арта, работай по засвету с горки",
+                "icon": "Attack",
+                "text": "Арта, работай по засвету с горки",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Низ не бросайте",
+                "icon": "Stop",
+                "text": "Низ не бросайте, встанье в оборону кто-нибудь",
+                "chatMode": "Team",
+                "ping": "J5 J6"
+            },
+            {
+                "title": "Прикрывайте камни и полосу",
+                "icon": "Support",
+                "text": "СТ и ТТ, прикрывайте камни и полосу, помогайте друг другу, не лезьте под арту",
+                "chatMode": "Team",
+                "ping": "D6 E6"
+            },
+            {
+                "title": "Внимание на ущелье",
+                "icon": "Helpme",
+                "text": "Внимание на ущелье",
+                "chatMode": "Team",
+                "ping": "F5 F6"
+            },
+            {
+                "title": "Внимание на взлётную полосу",
+                "icon": "Helpme",
+                "text": "Внимание на взлётно-посадочную полосу",
+                "chatMode": "Team",
+                "ping": "B5 B6"
+            }
         ]
     },
     "Map_33_fjord": {
         "default": [
-           {"title": "Внимание на горку",
-            "icon": "Helpme",
-            "text": "Команда, внимание на горку",
-            "chatMode": "Team",
-            "ping": "A8"
-           },
-           {"title": "Внимание на балкон",
-            "icon": "Helpme",
-            "text": "Команда, внимание на балкон",
-            "chatMode": "Team",
-            "ping": "E5"
-           },
-           {"title": "Не лезьте под арту",
-            "icon": "Stop",
-            "text": "Не лезьте под арту под горой",
-            "chatMode": "Team",
-            "ping": "F4 J5"
-           },
-           {"title": "Не бросайте город и горы",
-            "icon": "Support",
-            "text": "Не бросайте город и горы",
-            "chatMode": "Team",
-            "ping": "G5 J5"
-           },
-           {"title": "Свет, кусты на склоне",
-            "icon": "Turnback",
-            "text": "ЛТ, попробуй занять кусты на склоне",
-            "chatMode": "Team",
-            "ping": "C7 D7"
-           },
-           {"title": "Внимание на склоны",
-            "icon": "Helpme",
-            "text": "Внимание на склоны. Арта, бей если достаёшь",
-            "chatMode": "Team",
-            "ping": "E7 B6"
-           }
+            {
+                "title": "Внимание на горку",
+                "icon": "Helpme",
+                "text": "Команда, внимание на горку",
+                "chatMode": "Team",
+                "ping": "A8"
+            },
+            {
+                "title": "Внимание на балкон",
+                "icon": "Helpme",
+                "text": "Команда, внимание на балкон",
+                "chatMode": "Team",
+                "ping": "E5"
+            },
+            {
+                "title": "Не лезьте под арту",
+                "icon": "Stop",
+                "text": "Не лезьте под арту под горой",
+                "chatMode": "Team",
+                "ping": "F4 J5"
+            },
+            {
+                "title": "Не бросайте город и горы",
+                "icon": "Support",
+                "text": "Не бросайте город и горы",
+                "chatMode": "Team",
+                "ping": "G5 J5"
+            },
+            {
+                "title": "Свет, кусты на склоне",
+                "icon": "Turnback",
+                "text": "ЛТ, попробуй занять кусты на склоне",
+                "chatMode": "Team",
+                "ping": "C7 D7"
+            },
+            {
+                "title": "Внимание на склоны",
+                "icon": "Helpme",
+                "text": "Внимание на склоны. Арта, бей если достаёшь",
+                "chatMode": "Team",
+                "ping": "E7 B6"
+            }
         ]
     },
     "Map_35_steppes": {
         "default": [
-           {"title": "Свет за камень",
-            "icon": "Turnback",
-            "text": "Глазастый ЛТ или СТ, займи камень для засвета",
-            "chatMode": "Team",
-            "ping": "E7"
-           },
-           {"title": "Выбейте свет за камнем",
-            "icon": "Attack",
-            "text": "Выбейте свет из-за камня, ЛТ, Арта",
-            "chatMode": "Team",
-            "ping": "E7"
-           },
-           {"title": "Остановите центр",
-            "icon": "Stop",
-            "text": "Внимание на центральный окоп!!",
-            "chatMode": "Team",
-            "ping": "E5 F6"
-           },
-           {"title": "Внимание на камни",
-            "icon": "Helpme",
-            "text": "Внимание на камни",
-            "chatMode": "Team",
-            "ping": "G1"
-           },
-           {"title": "Внимание на аллею",
-            "icon": "Helpme",
-            "text": "Внимание на аллею",
-            "chatMode": "Team",
-            "ping": "C0"
-           },
-           {"title": "Свет, гора на аллее",
-            "icon": "Turnback",
-            "text": "ЛТ, попробуй подняться на гору на аллее",
-            "chatMode": "Team",
-            "ping": "A0"
-           }
+            {
+                "title": "Свет за камень",
+                "icon": "Turnback",
+                "text": "Глазастый ЛТ или СТ, займи камень для засвета",
+                "chatMode": "Team",
+                "ping": "E7"
+            },
+            {
+                "title": "Выбейте свет за камнем",
+                "icon": "Attack",
+                "text": "Выбейте свет из-за камня, ЛТ, Арта",
+                "chatMode": "Team",
+                "ping": "E7"
+            },
+            {
+                "title": "Остановите центр",
+                "icon": "Stop",
+                "text": "Внимание на центральный окоп!!",
+                "chatMode": "Team",
+                "ping": "E5 F6"
+            },
+            {
+                "title": "Внимание на камни",
+                "icon": "Helpme",
+                "text": "Внимание на камни",
+                "chatMode": "Team",
+                "ping": "G1"
+            },
+            {
+                "title": "Внимание на аллею",
+                "icon": "Helpme",
+                "text": "Внимание на аллею",
+                "chatMode": "Team",
+                "ping": "C0"
+            },
+            {
+                "title": "Свет, гора на аллее",
+                "icon": "Turnback",
+                "text": "ЛТ, попробуй подняться на гору на аллее",
+                "chatMode": "Team",
+                "ping": "A0"
+            }
         ]
     },
     "Map_36_fishing_bay": {
         "default": [
-           {"title": "Свет по центру",
-            "icon": "Turnback",
-            "text": "Свет, катайся вдоль центра, свети, не сливайся",
-            "chatMode": "Team",
-            "ping": "E4 E6"
-           },
-           {"title": "СТ на центр",
-            "icon": "Attack",
-            "text": "СТ, контролируйте центр",
-            "chatMode": "Team",
-            "ping": "E4 E6"
-           },
-           {"title": "ТТ в город раш",
-            "icon": "Attack",
-            "text": "ТТ, рашьте город массой",
-            "chatMode": "Team",
-            "ping": "E8"
-           },
-           {"title": "ТТ в городе не лезьте",
-            "icon": "Stop",
-            "text": "В городе не лезьте под стволы, выманивайте их",
-            "chatMode": "Team",
-            "ping": "E8"
-           },
-           {"title": "Внимание на аллею",
-            "icon": "Helpme",
-            "text": "Внимание на аллею",
-            "chatMode": "Team",
-            "ping": "E1 F1"
-           },
-           {"title": "Рашьте аллею массой",
-            "icon": "Attack",
-            "text": "Рашьте аллею массой на скорости, вас больше",
-            "chatMode": "Team",
-            "ping": "E1 F1"
-           }
+            {
+                "title": "Свет по центру",
+                "icon": "Turnback",
+                "text": "Свет, катайся вдоль центра, свети, не сливайся",
+                "chatMode": "Team",
+                "ping": "E4 E6"
+            },
+            {
+                "title": "СТ на центр",
+                "icon": "Attack",
+                "text": "СТ, контролируйте центр",
+                "chatMode": "Team",
+                "ping": "E4 E6"
+            },
+            {
+                "title": "ТТ в город раш",
+                "icon": "Attack",
+                "text": "ТТ, рашьте город массой",
+                "chatMode": "Team",
+                "ping": "E8"
+            },
+            {
+                "title": "ТТ в городе не лезьте",
+                "icon": "Stop",
+                "text": "В городе не лезьте под стволы, выманивайте их",
+                "chatMode": "Team",
+                "ping": "E8"
+            },
+            {
+                "title": "Внимание на аллею",
+                "icon": "Helpme",
+                "text": "Внимание на аллею",
+                "chatMode": "Team",
+                "ping": "E1 F1"
+            },
+            {
+                "title": "Рашьте аллею массой",
+                "icon": "Attack",
+                "text": "Рашьте аллею массой на скорости, вас больше",
+                "chatMode": "Team",
+                "ping": "E1 F1"
+            }
         ]
     },
     "Map_37_caucasus": {
         "default": [
-           {"title": "Свет, займи куст для просвета озера",
-            "icon": "Turnback",
-            "text": "ЛТ или глазастый СТ, займи куст для просвета озера",
-            "chatMode": "Team",
-            "ping": "E4"
-           },
-           {"title": "Займите озеро",
-            "icon": "Attack",
-            "text": "Займите озеро",
-            "chatMode": "Team",
-            "ping": "F4 G5"
-           },
-           {"title": "СТ на балкон",
-            "icon": "Attack",
-            "text": "СТ, займите балкон для контроля озера",
-            "chatMode": "Team",
-            "ping": "H3"
-           },
-           {"title": "Ледник не бросайте",
-            "icon": "Support",
-            "text": "Ледник не бросайте",
-            "chatMode": "Team",
-            "ping": "D7"
-           },
-           {"title": "Внимание на мост",
-            "icon": "Helpme",
-            "text": "Внимание на мост",
-            "chatMode": "Team",
-            "ping": "D5 E6"
-           },
-           {"title": "Внимание на обход",
-            "icon": "Helpme",
-            "text": "Внимание на фланг!!",
-            "chatMode": "Team",
-            "ping": "H1 J3"
-           }
+            {
+                "title": "Свет, займи куст для просвета озера",
+                "icon": "Turnback",
+                "text": "ЛТ или глазастый СТ, займи куст для просвета озера",
+                "chatMode": "Team",
+                "ping": "E4"
+            },
+            {
+                "title": "Займите озеро",
+                "icon": "Attack",
+                "text": "Займите озеро",
+                "chatMode": "Team",
+                "ping": "F4 G5"
+            },
+            {
+                "title": "СТ на балкон",
+                "icon": "Attack",
+                "text": "СТ, займите балкон для контроля озера",
+                "chatMode": "Team",
+                "ping": "H3"
+            },
+            {
+                "title": "Ледник не бросайте",
+                "icon": "Support",
+                "text": "Ледник не бросайте",
+                "chatMode": "Team",
+                "ping": "D7"
+            },
+            {
+                "title": "Внимание на мост",
+                "icon": "Helpme",
+                "text": "Внимание на мост",
+                "chatMode": "Team",
+                "ping": "D5 E6"
+            },
+            {
+                "title": "Внимание на обход",
+                "icon": "Helpme",
+                "text": "Внимание на фланг!!",
+                "chatMode": "Team",
+                "ping": "H1 J3"
+            }
         ]
     },
     "Map_38_mannerheim_line": {
         "default": [
-           {"title": "Свет, займи куст на балконе",
-            "icon": "Turnback",
-            "text": "ЛТ с трубой, займи куст на балконе",
-            "chatMode": "Team",
-            "ping": "F4"
-           },
-           {"title": "Арта, бей по балкону",
-            "icon": "Attack",
-            "text": "Арта, обстреляй кусты на балконе",
-            "chatMode": "Team",
-            "ping": "F4"
-           },
-           {"title": "СТ на центр",
-            "icon": "Attack",
-            "text": "СТ, займи подъем на центре. Арта, прикрывай",
-            "chatMode": "Team",
-            "ping": "E3"
-           },
-           {"title": "Банан, не сливайся",
-            "icon": "Stop",
-            "text": "Не сливайтесь в банане, не лезьте!! Выманивайте их под стволы",
-            "chatMode": "Team",
-            "ping": "G9"
-           },
-           {"title": "Внимание на полку",
-            "icon": "Helpme",
-            "text": "Внимание на верхний фланг и полку",
-            "chatMode": "Team",
-            "ping": "B2"
-           },
-           {"title": "Внимание на плато",
-            "icon": "Helpme",
-            "text": "Внимание на плато",
-            "chatMode": "Team",
-            "ping": "E8"
-           }
+            {
+                "title": "Свет, займи куст на балконе",
+                "icon": "Turnback",
+                "text": "ЛТ с трубой, займи куст на балконе",
+                "chatMode": "Team",
+                "ping": "F4"
+            },
+            {
+                "title": "Арта, бей по балкону",
+                "icon": "Attack",
+                "text": "Арта, обстреляй кусты на балконе",
+                "chatMode": "Team",
+                "ping": "F4"
+            },
+            {
+                "title": "СТ на центр",
+                "icon": "Attack",
+                "text": "СТ, займи подъем на центре. Арта, прикрывай",
+                "chatMode": "Team",
+                "ping": "E3"
+            },
+            {
+                "title": "Банан, не сливайся",
+                "icon": "Stop",
+                "text": "Не сливайтесь в банане, не лезьте!! Выманивайте их под стволы",
+                "chatMode": "Team",
+                "ping": "G9"
+            },
+            {
+                "title": "Внимание на полку",
+                "icon": "Helpme",
+                "text": "Внимание на верхний фланг и полку",
+                "chatMode": "Team",
+                "ping": "B2"
+            },
+            {
+                "title": "Внимание на плато",
+                "icon": "Helpme",
+                "text": "Внимание на плато",
+                "chatMode": "Team",
+                "ping": "E8"
+            }
         ]
     },
     "Map_39_crimea": {
         "default": [
-           {"title": "Внимание на берег",
-            "icon": "Helpme",
-            "text": "Внимание на берег",
-            "chatMode": "Team",
-            "ping": "D2 F2"
-           },
-           {"title": "Внимание на балконы",
-            "icon": "Turnback",
-            "text": "Глазастые, займите балконы. Арта, контролируй вражеские балконы, бей по кустам!",
-            "chatMode": "Team"
-           },
-           {"title": "Внимание на деревню",
-            "icon": "Helpme",
-            "text": "Внимание на деревню",
-            "chatMode": "Team",
-            "ping": "F0"
-           },
-           {"title": "Займите центр",
-            "icon": "Attack",
-            "text": "Займите центр, контролируйте город, торгуйте башней, подсвечивайте",
-            "chatMode": "Team",
-            "ping": "E6"
-           },
-           {"title": "Внимание на ущелье",
-            "icon": "Helpme",
-            "text": "Внимание на ущелье",
-            "chatMode": "Team",
-            "ping": "D8 G8"
-           },
-           {"title": "Внимание на город",
-            "icon": "Helpme",
-            "text": "Внимание на город",
-            "chatMode": "Team",
-            "ping": "E4"
-           }
+            {
+                "title": "Внимание на берег",
+                "icon": "Helpme",
+                "text": "Внимание на берег",
+                "chatMode": "Team",
+                "ping": "D2 F2"
+            },
+            {
+                "title": "Внимание на балконы",
+                "icon": "Turnback",
+                "text": "Глазастые, займите балконы. Арта, контролируй вражеские балконы, бей по кустам!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Внимание на деревню",
+                "icon": "Helpme",
+                "text": "Внимание на деревню",
+                "chatMode": "Team",
+                "ping": "F0"
+            },
+            {
+                "title": "Займите центр",
+                "icon": "Attack",
+                "text": "Займите центр, контролируйте город, торгуйте башней, подсвечивайте",
+                "chatMode": "Team",
+                "ping": "E6"
+            },
+            {
+                "title": "Внимание на ущелье",
+                "icon": "Helpme",
+                "text": "Внимание на ущелье",
+                "chatMode": "Team",
+                "ping": "D8 G8"
+            },
+            {
+                "title": "Внимание на город",
+                "icon": "Helpme",
+                "text": "Внимание на город",
+                "chatMode": "Team",
+                "ping": "E4"
+            }
         ]
     },
     "Map_42_north_america": {
         "default": [
-           {"title": "ЛТ на мост",
-            "icon": "Turnback",
-            "text": "ЛТ, попробуйте подняться на мост для засвета и тут же съехать обратно, не сливайтесь",
-            "chatMode": "Team",
-            "ping": "C2 D6"
-           },
-           {"title": "Оборона мостов",
-            "icon": "Stop",
-            "text": "У кого пушка опускается - контролируйте мосты",
-            "chatMode": "Team",
-            "ping": "C2 D6"
-           },
-           {"title": "ЛТ вдоль ЖД",
-            "icon": "Turnback",
-            "text": "ЛТ, светите противника вдоль рельсов",
-            "chatMode": "Team",
-            "ping": "D5"
-           },
-           {"title": "Левый фланг!",
-            "icon": "Helpme",
-            "text": "Внимание на фланг!!",
-            "chatMode": "Team",
-            "ping": "D1"
-           },
-           {"title": "Правый фланг!",
-            "icon": "Helpme",
-            "text": "Внимание на фланг!!",
-            "chatMode": "Team",
-            "ping": "F9"
-           },
-           {"title": "Контролируйте свет на ЖД",
-            "icon": "Support",
-            "text": "Кто-нибудь, контролируйте ЖД из-под моста",
-            "chatMode": "Team",
-            "ping": "E7"
-           }
+            {
+                "title": "ЛТ на мост",
+                "icon": "Turnback",
+                "text": "ЛТ, попробуйте подняться на мост для засвета и тут же съехать обратно, не сливайтесь",
+                "chatMode": "Team",
+                "ping": "C2 D6"
+            },
+            {
+                "title": "Оборона мостов",
+                "icon": "Stop",
+                "text": "У кого пушка опускается - контролируйте мосты",
+                "chatMode": "Team",
+                "ping": "C2 D6"
+            },
+            {
+                "title": "ЛТ вдоль ЖД",
+                "icon": "Turnback",
+                "text": "ЛТ, светите противника вдоль рельсов",
+                "chatMode": "Team",
+                "ping": "D5"
+            },
+            {
+                "title": "Левый фланг!",
+                "icon": "Helpme",
+                "text": "Внимание на фланг!!",
+                "chatMode": "Team",
+                "ping": "D1"
+            },
+            {
+                "title": "Правый фланг!",
+                "icon": "Helpme",
+                "text": "Внимание на фланг!!",
+                "chatMode": "Team",
+                "ping": "F9"
+            },
+            {
+                "title": "Контролируйте свет на ЖД",
+                "icon": "Support",
+                "text": "Кто-нибудь, контролируйте ЖД из-под моста",
+                "chatMode": "Team",
+                "ping": "E7"
+            }
         ]
     },
     "Map_44_north_america": {
         "default": [
-           {"title": "ЛТ в низину",
-            "icon": "Turnback",
-            "text": "ЛТ, светаните низину и въезд в город, и сразу назад. Не сливайтесь",
-            "chatMode": "Team",
-            "ping": "E4 D5"
-           },
-           {"title": "Антисвет в низину",
-            "icon": "Stop",
-            "text": "Внимание на низину, перехватите свет",
-            "chatMode": "Team",
-            "ping": "E4 D5"
-           },
-           {"title": "ЛТ на мост",
-            "icon": "Turnback",
-            "text": "ЛТ, светаните мост из-за складок местности",
-            "chatMode": "Team",
-            "ping": "H8"
-           },
-           {"title": "СТ под мост",
-            "icon": "Attack",
-            "text": "СТ, успейте занять место под мостом",
-            "chatMode": "Team",
-            "ping": "H8"
-           },
-           {"title": "Внимание на мост",
-            "icon": "Helpme",
-            "text": "Внимание на мост",
-            "chatMode": "Team",
-            "ping": "H8"
-           },
-           {"title": "Внимание на город",
-            "icon": "Helpme",
-            "text": "Внимание на город",
-            "chatMode": "Team",
-            "ping": "B2"
-           }
+            {
+                "title": "ЛТ в низину",
+                "icon": "Turnback",
+                "text": "ЛТ, светаните низину и въезд в город, и сразу назад. Не сливайтесь",
+                "chatMode": "Team",
+                "ping": "E4 D5"
+            },
+            {
+                "title": "Антисвет в низину",
+                "icon": "Stop",
+                "text": "Внимание на низину, перехватите свет",
+                "chatMode": "Team",
+                "ping": "E4 D5"
+            },
+            {
+                "title": "ЛТ на мост",
+                "icon": "Turnback",
+                "text": "ЛТ, светаните мост из-за складок местности",
+                "chatMode": "Team",
+                "ping": "H8"
+            },
+            {
+                "title": "СТ под мост",
+                "icon": "Attack",
+                "text": "СТ, успейте занять место под мостом",
+                "chatMode": "Team",
+                "ping": "H8"
+            },
+            {
+                "title": "Внимание на мост",
+                "icon": "Helpme",
+                "text": "Внимание на мост",
+                "chatMode": "Team",
+                "ping": "H8"
+            },
+            {
+                "title": "Внимание на город",
+                "icon": "Helpme",
+                "text": "Внимание на город",
+                "chatMode": "Team",
+                "ping": "B2"
+            }
         ]
     },
     "Map_45_north_america": {
         "default": [
-           {"title": "ЛТ, засвет города",
-            "icon": "Turnback",
-            "text": "Дайте засвет на город и поле",
-            "chatMode": "Team",
-            "ping": "G8 E8"
-           },
-           {"title": "ЛТ, куст на D7",
-            "icon": "Turnback",
-            "text": "ЛТ с трубой, займите кусты",
-            "chatMode": "Team",
-            "ping": "C6 D7"
-           },
-           {"title": "ЛТ на поле",
-            "icon": "Turnback",
-            "text": "ЛТ, дайте свет на поле",
-            "chatMode": "Team",
-            "ping": "C2"
-           },
-           {"title": "ТТ в город",
-            "icon": "Attack",
-            "text": "ТТ, займите город",
-            "chatMode": "Team",
-            "ping": "J0"
-           },
-           {"title": "Левый фланг",
-            "icon": "Helpme",
-            "text": "Внимание на фланг",
-            "chatMode": "Team",
-            "ping": "E2"
-           },
-           {"title": "Оборона от кустов",
-            "icon": "Stop",
-            "text": "ПТ, устройте оборону от кустов",
-            "chatMode": "Team",
-            "ping": "B7"
-           }
+            {
+                "title": "ЛТ, засвет города",
+                "icon": "Turnback",
+                "text": "Дайте засвет на город и поле",
+                "chatMode": "Team",
+                "ping": "G8 E8"
+            },
+            {
+                "title": "ЛТ, куст на D7",
+                "icon": "Turnback",
+                "text": "ЛТ с трубой, займите кусты",
+                "chatMode": "Team",
+                "ping": "C6 D7"
+            },
+            {
+                "title": "ЛТ на поле",
+                "icon": "Turnback",
+                "text": "ЛТ, дайте свет на поле",
+                "chatMode": "Team",
+                "ping": "C2"
+            },
+            {
+                "title": "ТТ в город",
+                "icon": "Attack",
+                "text": "ТТ, займите город",
+                "chatMode": "Team",
+                "ping": "J0"
+            },
+            {
+                "title": "Левый фланг",
+                "icon": "Helpme",
+                "text": "Внимание на фланг",
+                "chatMode": "Team",
+                "ping": "E2"
+            },
+            {
+                "title": "Оборона от кустов",
+                "icon": "Stop",
+                "text": "ПТ, устройте оборону от кустов",
+                "chatMode": "Team",
+                "ping": "B7"
+            }
         ]
     },
     "hotkeyOnly": [
-        {"title": "Победа!",
+        {
+            "title": "Победа!",
             "icon": "Support",
             "text": "{randPart}",
             "chatMode": "All",
@@ -1781,7 +1999,8 @@
             ],
             "hotKey": ["KEY_NUMPAD7"]
         },
-        {"title": "Команда оленей!",
+        {
+            "title": "Команда оленей!",
             "icon": "No",
             "text": "{randPart}",
             "chatMode": "Team",
@@ -1807,19 +2026,22 @@
             ],
             "hotKey": ["KEY_NUMPAD9"]
         },
-        {"title": "Статочка всем",
+        {
+            "title": "Статочка всем",
             "icon": "Attack",
-            "text": "Статистика {name}: побед: {winrate}%, эфф.: {eff}, боёв: {kbattles}К, ср. уровень: {avglvl}, винрейт: {twr}, дамаг: {tankDamage},винрейт танка: {tankWinrate}%",
+            "text": "Статистика {name}: побед: {winrate}%, эфф.: {eff}, боёв: {kbattles}К, ср. уровень: {avglvl}, винрейт: {twr}, дамаг: {tankDamage}, инрейт танка: {tankWinrate}%",
             "chatMode": "All",
             "hotKey": ["KEY_9"]
         },
-        {"title": "маму ебал",
+        {
+            "title": "маму ебал",
             "icon": "Attack",
             "text": "Когда мы всем составом твою мамашу ебали она говорила что мы охуенные, так что ты не прав.",
             "chatMode": "All",
             "hotKey": ["KEY_LALT", "KEY_4"]
         },
-        {"title": "интим",
+        {
+            "title": "интим",
             "icon": "Attack",
             "text": "{randPart}",
             "chatMode": "All",
@@ -1832,25 +2054,29 @@
             ],
             "hotKey": ["KEY_LALT", "KEY_5"]
         },
-        {"title": "статочка вопрос",
+        {
+            "title": "статочка вопрос",
             "icon": "Attack",
             "text": "{name}, Как ты с {winrate}% и {eff} по РЭ играешь-то еще ваще, а, днищще?",
             "chatMode": "All",
             "hotKey": ["KEY_0"]
         },
-        {"title": "crebs",
+        {
+            "title": "crebs",
             "icon": "Attack",
             "text": "(У)_(o_o)_(У) Ну что, крабы, клешни почистили? (Y)_(o_o)_(Y)",
             "chatMode": "All",
             "hotKey": ["KEY_F11"]
         },
-        {"title": "Жаловаца",
+        {
+            "title": "Жаловаца",
             "icon": "Attack",
             "text": "Вы хотите на меня пожаловаться? Жаловаться на меня можно на клановом форуме www.nadno.ru в разделе \"Жалобы\" - жалуйтесь!",
             "chatMode": "All",
             "hotKey": ["KEY_J"]
         },
-        {"title": "трепология",
+        {
+            "title": "трепология",
             "icon": "Attack",
             "text": "{randPart}",
             "chatMode": "All",
@@ -1870,7 +2096,8 @@
             "sequentChoice": true,
             "hotKey": ["KEY_LALT", "KEY_3"]
         },
-        {"title": "трепология рандома",
+        {
+            "title": "трепология рандома",
             "icon": "Attack",
             "text": "{randPart}",
             "chatMode": "All",
@@ -1889,7 +2116,8 @@
             ],
             "hotKey": ["KEY_RALT", "KEY_3"]
         },
-        {"title": "invite",
+        {
+            "title": "invite",
             "icon": "YES",
             "text": "{randPart}",
             "chatMode": "All",
@@ -1899,7 +2127,8 @@
             ],
             "hotKey": ["KEY_K"]
         },
-        {"title": "Закукарекал",
+        {
+            "title": "Закукарекал",
             "icon": "Stop",
             "text": "{randPart}",
             "chatMode": "All",
@@ -1970,7 +2199,8 @@
             ],
             "hotKey": ["KEY_LALT", "KEY_1"]
         },
-        {"title": "ownVehicle",
+        {
+            "title": "ownVehicle",
             "icon": "Attack",
             "text": "{randPart}",
             "chatMode": "All",
@@ -1983,7 +2213,8 @@
             ],
             "hotKey": ["KEY_LALT", "KEY_2"]
         },
-        {"title": "shortiki",
+        {
+            "title": "shortiki",
             "text": "{randPart}",
             "chatMode": "All",
             "variants": [
@@ -2011,7 +2242,7 @@
                 "«Ну, все, можно трогать» сказал таксист, но нимфоманка Олеся как-то неправильно все поняла.",
                 "«От винта!» — радостно вскричал патологоанатом, наконец-то установив, от чего скончалась наркоманка Вера.",
                 "«От винта!» — радостно вскричал патологоанатом, наконец-то установив, от чего скончалась наркоманка Вера",
-                "«Пятиклассник Анатолий совсем не умеет пользоваться циркулем,» — сообщают круги, близкие к овалам.",
+                "«Пятиклассник Анатолий совсем не умеет пользоваться циркулем,  — сообщают круги, близкие к овалам.",
                 "«Работать» — это когда в конце рабочего дня на вашем смартфоне 95% зарядки.",
                 "«Сдам квартиру для съемок фильмов, в которых я тоже хотел бы поучаствовать!»",
                 "…и именно поэтому я начинаю предложения с середины.",
@@ -2078,7 +2309,7 @@
                 "Бомжи вышли на демонстрацию против новых технологий. По их словам, в коробке из-под плоского телевизора вообще жить невозможно.",
                 "Борода Вассермана проросла в зубы!",
                 "Боюсь что-то написать... А то опять скажут, что я неадекватная... лучше посижу тихонечко в углу на раковине... поем радугу...",
-                "бразильский полузащитник Кака приходит в бешенство,когда его называют ласково по имени.",
+                "бразильский полузащитник Кака приходит в бешенство, огда его называют ласково по имени.",
                 "Бред всему голова",
                 "Британские ученые установили: люди приходят в недоумение, когда предложение заканчивается не так как они борщ.",
                 "Бронетёмкин паносец... матросы бунтовали из за плохого качества пищи...",
@@ -2423,7 +2654,7 @@
                 "Если запить шпроты молоком, то клубнику уже можно не мыть.",
                 "Если из сауны идёт белый дым, это значит, проститутки выбрали нового папика.",
                 "Если купить китайскую синюю простынь, то к утру можно проснуться аватаром",
-                "Если лежать вниз головой и плакать,то можно помыть голову.",
+                "Если лежать вниз головой и плакать, о можно помыть голову.",
                 "Если меня спросят: \"Что в жизни главное, карьера или любовь?\" - я задумчиво откинусь в кресле и засуну в нос фисташку.",
                 "Если муж не идет к жене, то жена идет к Магомеду.",
                 "Если муж пришёл домой трезвым, это уже считается предварительными ласками.",
@@ -2638,7 +2869,7 @@
                 "Куда мне до вас? Придется очень долго опускаться!",
                 "Культурист-пенсионер ходит в кресло-качалку.",
                 "Лежит Емеля на печи. Год лежит… Два лежит… Пора бы и похоронить.",
-                "Лена была такая страшная,что во \"ВКонтакте\" ее удаляли из друзей даже интернет-магазины.",
+                "Лена была такая страшная, то во \"ВКонтакте\" ее удаляли из друзей даже интернет-магазины.",
                 "Лена ждала своего парня из армии, а что ещё делать в тюрьме?",
                 "Леонид Якубович на приёме у окулиста может назвать всё слово целиком",
                 "Лесоруб так сильно потел, что от капающей влаги дерево только росло и укреплялось.",
@@ -2670,7 +2901,7 @@
                 "Люк, я - твой отец! Мама! Хватит! Сними кастрюлю с башки и не трогай больше мои таблетки.",
                 "Люся увидела падающую звезду. Она успела загадать желание, но не успела отойти...",
                 "Маленький Леша нашел заначку родителей и на все деньги купил барбарисок - теперь сосет вся семья.",
-                "Мало иметь высшее образование,нужно ещё иметь хотя бы среднее соображение",
+                "Мало иметь высшее образование, ужно ещё иметь хотя бы среднее соображение",
                 "Мало кто знает, но самых верных и преданных армян называют Хачико.",
                 "Мало кто знает, что 95% психологов работают со своими клиентами ещё и на Аск.фм.",
                 "Мало кто знает, что Джордж Буш младший попал в политику через постель Джорджа Буша старшего.",
@@ -2744,11 +2975,11 @@
                 "Мужик должен уметь делать всё. Но делать не обязан.",
                 "Мужик из Удмуртии помыл Якубовичу машину, потому что приехал на поле чудес без подарка.",
                 "Мужик, который десять лет проработал в шахте с отбойным молотком, укачивает сына за четыре секунды.",
-                "Мужчина - каменная стена, твердая опора и несокрушимая защита! До тех пор, пока не увидит на градуснике 37,2.",
+                "Мужчина - каменная стена, твердая опора и несокрушимая защита! До тех пор, пока не увидит на градуснике 37, .",
                 "Мужчина с очень маленьким лицом уснул в жюльене.",
-                "Мужчина с утонченным вкусом ищет девушку 92,97 x 61,75 x 93,45. Не зануда!",
+                "Мужчина с утонченным вкусом ищет девушку 92, 7 x 61, 5 x 93, 5. Не зануда!",
                 "Мужчина, работающий Дедом Морозом, не верит в себя.",
-                "Мужчинам легче, они сразу видят какая грудь,... а вот женщин ждёт сюрприз...",
+                "Мужчинам легче, они сразу видят какая грудь, .. а вот женщин ждёт сюрприз...",
                 "Мужчины любят красивых и недоступных.....пойду накрашусь и запрусь в сейфе.",
                 "Муму, чувствуя с вечера неладное, наелась пенопласта",
                 "Мы полюбили друг друга с первого взгляда и живем душа в душу. Видит бог, затасканые идиомы стали нашим коньком.",
@@ -2934,7 +3165,7 @@
                 "Он был настолько занимательным, что еле успевал раздавать долги.",
                 "Он был настолько невезучим, что проигрывал все свои деньги в кофейном автомате.",
                 "Он был таким нудным, что я плюнула на все и подсыпала клофелин в свой бокал",
-                "Он держал её за талию,а она его за дурака.Так сидели и болтали: он о любви,а она ногами.",
+                "Он держал её за талию,  она его за дурака.Так сидели и болтали: он о любви,  она ногами.",
                 "Он каждое утро приносил ей кофе в постель. Ей оставалось только помолоть и заварить.",
                 "Он настолько неумело обращался с ножом и вилкой, что уже три раза сидел.",
                 "Он не считал себя говном, но мухи ошибаться не могли",
@@ -3169,7 +3400,7 @@
                 "Сила загара определяется белизной задницы, относительно других частей тел.",
                 "Сильно провинившийся мальчик состарился в углу.",
                 "Синоптики не ошибаются - они просто часто путают время и место.",
-                "Синоптики, как и саперы,ошибаются только один раз. Но каждый день.",
+                "Синоптики, как и саперы, шибаются только один раз. Но каждый день.",
                 "Скажи мне, сколько языков программирования ты знаешь, и я скажу, носишь ли ты сандали с носками.",
                 "Скандал в секс-шопе – покупателей обвешивают.",
                 "Скандал в Эрмитаже. Злоумышленники воровали произведения искусств без бахил.",
@@ -3273,7 +3504,7 @@
                 "Только в русском языке предложение может состоять из пяти глаголов: Решили послать сходить купить выпить.",
                 "Только водитель маршрутки может закрыть дверь в ванную не вылезая из ванной.",
                 "Только накануне 23 февраля можно увидеть в автобусе улыбающуюся девушку с только что купленной дрелью.",
-                "Только русские люди,чтобы не платить штраф за ложный вызов пожарным жгут мебель в прихожей.",
+                "Только русские люди, тобы не платить штраф за ложный вызов пожарным жгут мебель в прихожей.",
                 "Только у нас! Обереги от суеверий!",
                 "Только у программиста фразы \"Все повисло\" и \"Все встало\" означают одно и то же.",
                 "Только это весной! Организуй 7 майданов и собери СССР.",
@@ -3476,7 +3707,7 @@
                 "Я самый плохой. Я всегда во всем виноват. Я никого не ценю. Я плохо отношусь. Я делаю все не так. Я слышу только себя. Да пошел я.",
                 "Я сегодня заработался, и осознал, что сегодня 31 декабря только тогда, когда в 22 часа с криком \"Кто последний - тот лох!\" сбежал директор.",
                 "Я сегодня опоздал, так что уйду пораньше.",
-                "Я такой же обычный человек,как и вы - Кричал разъяренный Прохоров и кидался омарами в толпу.",
+                "Я такой же обычный человек, ак и вы - Кричал разъяренный Прохоров и кидался омарами в толпу.",
                 "Я уже целые сутки ничего не спал.",
                 "Я умею четко и ясно донести свою мысль, если вы понимаете, о чем я.",
                 "Я ушел из семьи, бросив жену и ребенка, купил картошки и вернулся. Всё заняло примерно 15 минут. Никто ничего даже не заметил. Рекомендую.",
@@ -3484,7 +3715,8 @@
             ],
             "hotKey": ["KEY_LALT", "KEY_Q"]
         },
-        {"title": "eye_click",
+        {
+            "title": "eye_click",
             "icon": "Yes",
             "text": "{randPart}!..",
             "chatMode": "Team",
@@ -3498,19 +3730,22 @@
             ],
             "hotKey": ["KEY_RALT", "KEY_4"]
         },
-        {"title": "Статочка_all",
+        {
+            "title": "Статочка_all",
             "icon": "Attack",
-            "text": "Статистика {name}: побед: {winrate}%, эфф.: {eff}, боёв: {kbattles}К, ср. уровень: {avglvl}, винрейт: {twr}, дамаг: {tankDamage},винрейт танка: {tankWinrate}%",
+            "text": "Статистика {name}: побед: {winrate}%, эфф.: {eff}, боёв: {kbattles}К, ср. уровень: {avglvl}, винрейт: {twr}, дамаг: {tankDamage}, инрейт танка: {tankWinrate}%",
             "chatMode": "All",
             "hotKey": ["KEY_LEFTARROW"]
         },
-        {"title": "stat_test2_all",
+        {
+            "title": "stat_test2_all",
             "icon": "Attack",
             "text": "{name}, Как ты с {winrate}% и {eff} по РЭ играешь-то еще ваще, а, днищще?",
             "chatMode": "All",
             "hotKey": ["KEY_RIGHTARROW"]
         },
-        {"title": "Рыба бля!",
+        {
+            "title": "Рыба бля!",
             "icon": "Attack",
             "text": "{randPart}!",
             "chatMode": "All",
@@ -3546,21 +3781,24 @@
                 "Поцаны, у меня завтра днюха, 13 лет, батя обещал прем подарить, какой лутше попрасить, Леву или Супер Першинга?",
                 "Пацаны подскажити, повестка пришла, что лутше откупится или пойти отслужить?! Говарят армия мозги убивает и делать там нечего! Как быть?!",
                 "посоны, чо лучши, виндовс 7, 8  или линупс или угунту?",
-                "Хлопцi, оцьо у мене гра вилiтає при стрильбi,мабуть то моди виновати, тому я не стрiлятиму, вибачайте друзi."
+                "Хлопцi, оцьо у мене гра вилiтає при стрильбi, абуть то моди виновати, тому я не стрiлятиму, вибачайте друзi."
             ],
             "hotKey": ["KEY_Y"]
         },
-        {"title": "majors",
+        {
+            "title": "majors",
             "text": "Взвод Мажоров-Коллекционеров имени \"10 тысяч рублей\" на забабловом говнищще приветствует вас, нищеброды, недонатеры и слоупоки!",
             "chatMode": "All",
             "hotKey": ["KEY_LCONTROL", "KEY_N"]
         },
-        {"title": "bonus_code",
+        {
+            "title": "bonus_code",
             "text": "Бонус код на тип 59 посоны, работает!! - 5О5I-4LIN-L3HA",
             "chatMode": "All",
             "hotKey": ["KEY_LCONTROL", "KEY_B"]
         },
-        {"title": "stat",
+        {
+            "title": "stat",
             "text": "{randPart}!",
             "chatMode": "All",
             "variants": [
@@ -3577,7 +3815,8 @@
             ],
             "hotKey": ["KEY_LCONTROL", "KEY_Q"]
         },
-        {"title": "хохлосрач",
+        {
+            "title": "хохлосрач",
             "text": "{randPart} ",
             "chatMode": "All",
             "variants": [
@@ -3588,7 +3827,8 @@
             ],
             "hotKey": ["KEY_U"]
         },
-        {"title": "ося бендер",
+        {
+            "title": "ося бендер",
             "icon": "Helpme",
             "text": "{randPart}",
             "chatMode": "All",

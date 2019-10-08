@@ -1,218 +1,238 @@
-{
-    "TankMenu": {
+﻿{
+    "default": {
         "default": [
-            {"title": "В атаку!",
+            {
+                "title": "В атаку!",
                 "icon": "Attack",
                 "command": "ATTACK",
-                "text": "В атаку,парни!",
+                "text": "В атаку, арни!",
                 "chatMode": "Team"
             },
-            {"title": "Свет!",
+            {
+                "title": "Свет!",
                 "icon": "Helpme",
-                "text": "Светаните аккуратно,пожалуйста,помогу!",
+                "text": "Светаните аккуратно, ожалуйста, омогу!",
                 "chatMode": "Team",
                 "ping": "{ownPos}"
             },
-            {"title": "Перезаряжаюсь!",
+            {
+                "title": "Перезаряжаюсь!",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team"
             },
-            {"title": "Назад!",
-                "text": "Назад,не лезьте!",
+            {
+                "title": "Назад!",
+                "text": "Назад, е лезьте!",
                 "chatMode": "Team"
             },
-            {"title": "Уйдите с захвата!",
+            {
+                "title": "Уйдите с захвата!",
                 "icon": "No",
-                "text": "Уйдите с захвата,давайте добьем!Пожалуйста:)",
+                "text": "Уйдите с захвата, авайте добьем!Пожалуйста:)",
                 "chatMode": "Team"
             },
-            {"title": "Спасибо! :) ",
+            {
+                "title": "Спасибо! :) ",
                 "icon": "Yes",
                 "text": "Спасибо! :) ",
                 "chatMode": "Team"
             }
         ],
         "ally": [
-            {"title": "Подсвети, я прикрою!",
+            {
+                "title": "Подсвети, я прикрою!",
                 "icon": "Attack",
                 "text": "{name} Подсвети, я прикрою!",
                 "chatMode": "Team"
             },
-            {"title": "Назад!",
+            {
+                "title": "Назад!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
-                "text": "{name} назад,не лезь,вытягивай на прострел!",
+                "text": "{name} назад, е лезь, ытягивай на прострел!",
                 "chatMode": "Team"
             },
-            {"title": "Свет!",
+            {
+                "title": "Свет!",
                 "icon": "Attack",
-                "text": "{name} подсвети в {ownPos},я его пригрею!",
+                "text": "{name} подсвети в {ownPos},  его пригрею!",
                 "chatMode": "Team"
             },
-            {"title": "Поддержи огнем!",
+            {
+                "title": "Поддержи огнем!",
                 "icon": "Support",
                 "text": "{name} Поддержи огнем!",
                 "chatMode": "Team"
             },
-            {"title": "Вперед, Атакуем вместе!",
+            {
+                "title": "Вперед, Атакуем вместе!",
                 "icon": "Followme",
                 "text": "{name} Вперед, Атакуем вместе!",
                 "chatMode": "Team"
             },
-            {"title": "Не подпирай!",
+            {
+                "title": "Не подпирай!",
                 "icon": "Stop",
                 "text": "{name} Не подпирай!",
                 "chatMode": "Team"
             }
         ],
         "enemy": [
-            {"title": "Фокус!",
+            {
+                "title": "Фокус!",
                 "icon": "Attack",
-                "text": "Фокус по {vehicle},({name})!",
+                "text": "Фокус по {vehicle}, {name})!",
                 "chatMode": "Team"
             },
-            {"title": "Ты просто дно! (разное)",
+            {
+                "title": "Ты просто дно! (разное)",
                 "icon": "Yes",
                 "text": "{name} {randPart}",
                 "chatMode": "All",
-                "variants": [
-                    "Ты просто дно!",
-                    "Ну ты и криворукий!",
-                    "Тебе клешни ездить не мешают?"
-                ]
+                "variants": ["Ты просто дно!", "Ну ты и криворукий!", "Тебе клешни ездить не мешают?"]
             },
-            {"title": "Отправляйся в ангар! (разное)",
+            {
+                "title": "Отправляйся в ангар! (разное)",
                 "icon": "Yes",
                 "text": "{name} {randPart}",
                 "chatMode": "All",
-                "variants": [
-                    "Отправляйся в Ангар!",
-                    "Готовь саркофаг!",
-                    "Тебе кранты!"
-                ]
+                "variants": ["Отправляйся в Ангар!", "Готовь саркофаг!", "Тебе кранты!"]
             },
-            {"title": "Добейте его!",
+            {
+                "title": "Добейте его!",
                 "icon": "Support",
                 "text": "Добейте {name} ({vehicle}) !",
                 "chatMode": "Team"
             },
-            {"title": "Загуслил его, Поддержите огнём! ",
+            {
+                "title": "Загуслил его, Поддержите огнём! ",
                 "icon": "Support",
                 "text": "Загуслил ({vehicle}) Поддержите огнём!",
                 "chatMode": "Team"
             },
-            {"title": "Стой, от меня не уйдёшь!",
+            {
+                "title": "Стой, от меня не уйдёшь!",
                 "icon": "Attack",
                 "text": "{name} Стой, от меня не уйдёшь!",
                 "chatMode": "All"
             }
         ]
     },
-    "SPGMenu": {
+    "SPG": {
         "default": [
-            {"title": "Свелся на -- Дайте свет!",
+            {
+                "title": "Свелся на -- Дайте свет!",
                 "icon": "AttackSPG",
-                "text": "Свелся на квадрат {viewPos},Дайте свет!",
+                "text": "Свелся на квадрат {viewPos}, айте свет!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
-            {"title": "В атаку!",
+            {
+                "title": "В атаку!",
                 "icon": "Attack",
                 "command": "ATTACK",
-                "text": "В атаку,парни!",
+                "text": "В атаку, арни!",
                 "chatMode": "Team"
             },
-            {"title": "Перезаряжаюсь!",
+            {
+                "title": "Перезаряжаюсь!",
                 "icon": "Reload",
                 "command": "RELOADINGGUN",
                 "chatMode": "Team"
             },
-            {"title": "Подождите,перееду!",
+            {
+                "title": "Подождите, ерееду!",
                 "icon": "Stop",
-                "text": "Подождите,перееду!",
+                "text": "Подождите, ерееду!",
                 "chatMode": "Team"
             },
-            {"title": "Назад!",
+            {
+                "title": "Назад!",
                 "icon": "Attack",
-                "text": "Назад,не лезьте!",
+                "text": "Назад, е лезьте!",
                 "chatMode": "Team"
             },
-            {"title": "Фокус по --!",
+            {
+                "title": "Фокус по --!",
                 "icon": "Attack",
-                "text": "Все огонь по {vehicle},({name})!",
+                "text": "Все огонь по {vehicle}, {name})!",
                 "chatMode": "Team"
             }
         ],
         "ally": [
-            {"title": "Подсвети, я прикрою!",
+            {
+                "title": "Подсвети, я прикрою!",
                 "icon": "Attack",
                 "text": "{name} Подсвети, я прикрою!",
                 "chatMode": "Team"
             },
-            {"title": "Поддержи огнем!",
+            {
+                "title": "Поддержи огнем!",
                 "icon": "Support",
                 "text": "{name} Поддержи огнем!",
                 "chatMode": "Team"
             },
-            {"title": "Назад!",
+            {
+                "title": "Назад!",
                 "icon": "Helpmeex",
-                "text": "{name} назад,не лезь!На прострел вытягивай.",
+                "text": "{name} назад, е лезь!На прострел вытягивай.",
                 "chatMode": "Team"
             },
-            {"title": "Стой на месте!",
+            {
+                "title": "Стой на месте!",
                 "icon": "Stop",
                 "text": "{name} стой на месте, боюсь задеть!",
                 "chatMode": "Team"
             },
-            {"title": "Вперед, Атакуем вместе!",
+            {
+                "title": "Вперед, Атакуем вместе!",
                 "icon": "Followme",
                 "text": "{name} Вперед, Атакуем вместе!",
                 "chatMode": "Team"
             },
-            {"title": "Не подпирай!",
+            {
+                "title": "Не подпирай!",
                 "icon": "Stop",
                 "text": "{name} Не подпирай!",
                 "chatMode": "Team"
             }
         ],
         "enemy": [
-            {"title": "Фокус!",
+            {
+                "title": "Фокус!",
                 "icon": "Attack",
-                "text": "Фокус по {vehicle},({name})!",
+                "text": "Фокус по {vehicle}, {name})!",
                 "chatMode": "Team"
             },
-            {"title": "Ты просто дно! (разное)",
+            {
+                "title": "Ты просто дно! (разное)",
                 "icon": "Yes",
                 "text": "{name} {randPart}",
                 "chatMode": "All",
-                "variants": [
-                    "Ты просто дно!",
-                    "Ну ты и криворукий!",
-                    "Тебе клешни ездить не мешают?"
-                ]
+                "variants": ["Ты просто дно!", "Ну ты и криворукий!", "Тебе клешни ездить не мешают?"]
             },
-            {"title": "Отправляйся в ангар! (разное)",
+            {
+                "title": "Отправляйся в ангар! (разное)",
                 "icon": "Yes",
                 "text": "{name} {randPart}",
                 "chatMode": "All",
-                "variants": [
-                    "Отправляйся в Ангар!",
-                    "Готовь саркофаг!",
-                    "Тебе кранты!"
-                ]
+                "variants": ["Отправляйся в Ангар!", "Готовь саркофаг!", "Тебе кранты!"]
             },
-            {"title": "Добейте его!",
+            {
+                "title": "Добейте его!",
                 "icon": "Support",
                 "text": "Добейте {name} ({vehicle}) !",
                 "chatMode": "Team"
             },
-            {"title": "Загуслил его, Поддержите огнём! ",
+            {
+                "title": "Загуслил его, Поддержите огнём! ",
                 "icon": "Support",
                 "text": "Загуслил ({vehicle}) Поддержите огнём!",
                 "chatMode": "Team"
             },
-            {"title": "Стой, от меня не уйдёшь!",
+            {
+                "title": "Стой, от меня не уйдёшь!",
                 "icon": "Attack",
                 "text": "{name} Стой, от меня не уйдёшь!",
                 "chatMode": "All"
@@ -221,107 +241,126 @@
     },
     "Map_default": {
         "default": [
-           {"title": "Я на гусле, Прикройте!",
-            "icon": "Support",
-            "text": "Я на гусле, Прикройте!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "У них светят в квадрате --",
-            "icon": "Reload",
-            "text": "У них светят в квадрате {ownPos}",
-            "chatMode": "Team"
-           },
-           {"title": "Стоим, сами приедут",
-            "icon": "Stop",
-            "text": "Стоим, сами приедут!",
-            "chatMode": "Team",
-            "ping": "{ownPos}"
-           },
-           {"title": "Не лезем, Дефим!",
-            "icon": "Stop",
-            "text": "Не лезем, Дефим!",
-            "chatMode": "Team"
-           },
-           {"title": "Быстро, Все на захват!",
-            "icon": "Backtobase",
-            "text": "Быстро, Все на захват!",
-            "chatMode": "Team"
-           },
-           {"title": "В атаку!",
-            "icon": "Attack",
-            "text": "В атаку!",
-            "chatMode": "Team"
-           }
+            {
+                "title": "Я на гусле, Прикройте!",
+                "icon": "Support",
+                "text": "Я на гусле, Прикройте!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "У них светят в квадрате --",
+                "icon": "Reload",
+                "text": "У них светят в квадрате {ownPos}",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Стоим, сами приедут",
+                "icon": "Stop",
+                "text": "Стоим, сами приедут!",
+                "chatMode": "Team",
+                "ping": "{ownPos}"
+            },
+            {
+                "title": "Не лезем, Дефим!",
+                "icon": "Stop",
+                "text": "Не лезем, Дефим!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "Быстро, Все на захват!",
+                "icon": "Backtobase",
+                "text": "Быстро, Все на захват!",
+                "chatMode": "Team"
+            },
+            {
+                "title": "В атаку!",
+                "icon": "Attack",
+                "text": "В атаку!",
+                "chatMode": "Team"
+            }
         ]
     },
     "hotkeyOnly": [
-        {"title": "Я на гусле, Прикройте!",
+        {
+            "title": "Я на гусле, Прикройте!",
             "icon": "Support",
             "text": "Я на гусле, Прикройте!",
             "chatMode": "Team",
             "ping": "{ownPos}"
         },
-        {"title": "У них светят в квадрате --",
+        {
+            "title": "У них светят в квадрате --",
             "icon": "Reload",
             "text": "У них светят в квадрате {ownPos}",
             "chatMode": "Team"
         },
-        {"title": "Стоим, сами приедут",
+        {
+            "title": "Стоим, сами приедут",
             "icon": "Stop",
             "text": "Стоим, сами приедут!",
             "chatMode": "Team",
             "ping": "{ownPos}"
         },
-        {"title": "Не лезем, Дефим!",
+        {
+            "title": "Не лезем, Дефим!",
             "icon": "Stop",
             "text": "Не лезем, Дефим!",
             "chatMode": "Team"
         },
-        {"title": "Быстро, Все на захват!",
+        {
+            "title": "Быстро, Все на захват!",
             "icon": "Backtobase",
             "text": "Быстро, Все на захват!",
             "chatMode": "Team"
         },
-        {"title": "В атаку!",
+        {
+            "title": "В атаку!",
             "icon": "Attack",
             "text": "В атаку!",
             "chatMode": "Team"
         },
-        {"title": "Всем спасибо! Отличный бой!",
+        {
+            "title": "Всем спасибо! Отличный бой!",
             "icon": "Attack",
             "text": "Всем спасибо! Отличный бой!",
             "chatMode": "Team"
         },
-        {"title": "Блин, прости!",
+        {
+            "title": "Блин, прости!",
             "icon": "Attack",
             "text": "Блин, прости!",
             "chatMode": "Team"
         },
-        {"title": "Снаряды кончились :(",
+        {
+            "title": "Снаряды кончились :(",
             "icon": "Attack",
             "text": "Снаряды кончились :(",
             "chatMode": "Team"
         },
-        {"title": "Я дно",
+        {
+            "title": "Я дно",
             "icon": "Attack",
             "text": "Я дно",
             "chatMode": "All"
         },
-        {"title": "Я на гору",
+        {
+            "title": "Я на гору",
             "icon": "Attack",
             "text": "Я на гору",
             "chatMode": "Team"
         },
-        {"title": "Ну вашу мать А!",
+        {
+            "title": "Ну вашу мать А!",
             "icon": "Attack",
             "text": "Ну вашу мать А!",
             "chatMode": "Team"
         },
-        {"title": "У нас команда оленей!",
+        {
+            "title": "У нас команда оленей!",
             "icon": "Attack",
             "text": "У нас команда оленей!",
             "chatMode": "All"
         }
-    ]            
+    ]
 }
