@@ -6,7 +6,6 @@ from Avatar import PlayerAvatar
 from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod, checkKeys
 from Vehicle import Vehicle
 from constants import ARENA_GUI_TYPE
-from gui import InputHandler
 from gui.Scaleform.daapi.view.battle.shared.minimap.plugins import ArenaVehiclesPlugin
 from gui.battle_control.arena_info import vos_collections
 from helpers import dependency
@@ -126,8 +125,8 @@ class PlayersPanelController(PYmodsConfigInterface):
         if vehicleID not in self.__vCache:
             self.__vCache.add(vehicleID)
 
-    def battleKeyControl(self, event):
-        if not self.data['mode']:
+    def onHotkeyPressed(self, event):
+        if not hasattr(BigWorld.player(), 'arena') or not self.data['enabled'] or not self.data['mode']:
             return
         if self.data['mode'] == 1 and checkKeys(self.data['toggle_key'], event.key) and event.isKeyDown():
             self.displayed = not self.displayed
@@ -185,16 +184,3 @@ else:
             traceback.print_exc()
         finally:
             return result
-
-
-    def inj_hkKeyEvent(event):
-        try:
-            if hasattr(BigWorld.player(), 'arena') and g_config.data['enabled']:
-                g_config.battleKeyControl(event)
-        except StandardError:
-            print g_config.ID + ': ERROR at inj_hkKeyEvent'
-            traceback.print_exc()
-
-
-    InputHandler.g_instance.onKeyDown += inj_hkKeyEvent
-    InputHandler.g_instance.onKeyUp += inj_hkKeyEvent

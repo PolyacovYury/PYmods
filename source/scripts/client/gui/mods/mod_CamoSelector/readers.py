@@ -29,8 +29,8 @@ def new_customization20(base, *args, **kwargs):
         groupName = g_config.i18n['flashCol_group_custom']
         for configDir in sorted(g_config.configFolders, key=lambda s: s.lower()):
             filePath = g_config.configPath + 'camouflages/' + configDir + '/'
-            __readCamoFolder(groupName, cache, cc.CamouflageItem, '.' + filePath, cache.camouflages)
-        __readPaintFolder(groupName, cache, cc.PaintItem, '.' + g_config.configPath + 'paints/', cache.paints)
+            __readCamoFolder(groupName, cache, cc.CamouflageItem, filePath, cache.camouflages)
+        __readPaintFolder(groupName, cache, cc.PaintItem, g_config.configPath + 'paints/', cache.paints)
     return cache
 
 

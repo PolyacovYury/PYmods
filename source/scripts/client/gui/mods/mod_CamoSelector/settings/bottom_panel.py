@@ -60,7 +60,7 @@ class CustomizationBottomPanel(CBP):
         cartInfo = getTotalPurchaseInfo(purchaseItems)
         totalPriceVO = getItemPricesVO(cartInfo.totalPrice)
         label = _ms(CUSTOMIZATION.COMMIT_APPLY)
-        tooltip = CUSTOMIZATION.CUSTOMIZATION_BUYDISABLED_BODY
+        tooltip = CUSTOMIZATION.CUSTOMIZATION_NOTSELECTEDITEMS
         fromStorageCount = 0
         toBuyCount = 0
         for item in purchaseItems:
