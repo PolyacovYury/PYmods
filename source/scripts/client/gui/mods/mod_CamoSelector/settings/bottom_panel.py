@@ -1,3 +1,4 @@
+import BigWorld
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
@@ -87,7 +88,7 @@ class CustomizationBottomPanel(CBP):
                        'pricePanel': totalPriceVO[0]}})
         self.as_setItemsPopoverBtnEnabledS(any(i[1].isFilled() for i in self.__ctx.currentOutfit.itemsFull()))
         if outfitsModified:
-            self.__showBill()
+            BigWorld.callback(0, self.__showBill)
         else:
             self.__hideBill()
 
