@@ -140,6 +140,7 @@ class ConfigInterface(PYmodsConfigInterface):
                                 fileName = fileInfo.filename
                                 if fileName == audio_mods_xml:
                                     fileInfo.filename = bankFiles[0].replace('.bnk', '.xml')
+                                    fileInfo.extra = ''
                                     zip_new.writestr(fileInfo, zip_orig.read(fileName))
             if cleaned:
                 print self.ID + ': config renamed for package', os.path.basename(filePath)
