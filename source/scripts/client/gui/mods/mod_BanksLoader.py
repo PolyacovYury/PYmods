@@ -94,8 +94,8 @@ class ConfigInterface(PYmodsConfigInterface):
             os.rename(oldModName, oldModName + '1')
 
     def check_wotmods(self, mediaPath):
-        modsRoot = curCV.replace('res_', '') + '/'
-        load_order_xml = '.' + modsRoot + 'load_order.xml'
+        modsRoot = '.' + curCV.replace('res_', '') + '/'
+        load_order_xml = modsRoot + 'load_order.xml'
         BLMarker = '_BanksLoaded'
         order_changed = False
         BL_present = False
