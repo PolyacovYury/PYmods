@@ -31,13 +31,13 @@
                 "text": "{randPart}",
                 "chatMode": "Team",
                 "variants": [
-                    "Не лезьте, ни этого и ждут!",
-                    "Не лезьте, удьте умнее!",
-                    "Не лезьте, то игра на нервы!",
-                    "Не лезьте, е стоит отхватывать от кучи стволов!",
-                    "Не лезьте, е надо!",
-                    "Не лезьте, ано еще!",
-                    "Не лезьте, ами вылезут!",
+                    "Не лезьте, они этого и ждут!",
+                    "Не лезьте, будьте умнее!",
+                    "Не лезьте, это игра на нервы!",
+                    "Не лезьте, не стоит отхватывать от кучи стволов!",
+                    "Не лезьте, не надо!",
+                    "Не лезьте, рано еще!",
+                    "Не лезьте, сами вылезут!",
                     "Не лезьте!"
                 ]
             },
@@ -82,38 +82,38 @@
             {
                 "title": "Не спеши!",
                 "icon": "Stop",
-                "text": "{name}, е спеши слиться, успеешь.",
+                "text": "{name}, не спеши слиться, успеешь.",
                 "chatMode": "Team"
             },
             {
                 "title": "За мной!",
                 "icon": "Followme",
-                "text": "{name}, ледуй за мной, нужна поддержка!",
+                "text": "{name}, следуй за мной, нужна поддержка!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_F7"]
             },
             {
                 "title": "Не подпирай!",
                 "icon": "Stop",
-                "text": "{name}, е подпирай, идиот!",
+                "text": "{name}, не подпирай, идиот!",
                 "chatMode": "Team"
             },
             {
                 "title": "Уйди из прицела!",
                 "icon": "Turnback",
-                "text": "{name}, вали! Не прозрачный! Бью насквозь!",
+                "text": "{name}, свали! Не прозрачный! Бью насквозь!",
                 "chatMode": "Team"
             },
             {
                 "title": "Помоги!",
                 "icon": "Followme",
-                "text": "{name}, омоги, иду в атаку!",
+                "text": "{name}, помоги, иду в атаку!",
                 "chatMode": "Team"
             },
             {
                 "title": "Останусь в дефе",
                 "icon": "No",
-                "text": "{name},  в дефе, дальше не пойду",
+                "text": "{name}, я в дефе, дальше не пойду",
                 "chatMode": "Team"
             }
         ],
@@ -206,7 +206,7 @@
                 "title": "Поддержи, арта!",
                 "icon": "AttackSPG",
                 "command": "HELPME",
-                "text": "Арта, поддержи в квадрате {viewPos}, ам засвет",
+                "text": "Арта, поддержи в квадрате {viewPos}, дам засвет",
                 "chatMode": "Team"
             },
             {
@@ -248,21 +248,21 @@
                 "title": "Прикрой!",
                 "icon": "Helpme",
                 "command": "HELPME",
-                "text": "{vehicle}, рикрой!",
+                "text": "{vehicle}, прикрой!",
                 "chatMode": "Team"
             },
             {
                 "title": "Стой!",
                 "icon": "Stop",
                 "command": "STOP",
-                "text": "{name}, е лезь!",
+                "text": "{name}, не лезь!",
                 "chatMode": "Team"
             },
             {
                 "title": "Назад!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
-                "text": "{name}, азад!!! Сами высунутся!!!",
+                "text": "{name}, Назад!!! Сами высунутся!!!",
                 "chatMode": "Team"
             },
             {
@@ -350,7 +350,7 @@
             {
                 "title": "Свет сюда!",
                 "icon": "Support",
-                "text": "Подсветите {viewPos}, тарайтесь не слиться сразу",
+                "text": "Подсветите {viewPos}, старайтесь не слиться сразу",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
@@ -387,21 +387,21 @@
                 "title": "Прикрой!",
                 "icon": "Helpme",
                 "command": "HELPME",
-                "text": "{vehicle}, рикрой!",
+                "text": "{vehicle}, прикрой!",
                 "chatMode": "Team"
             },
             {
                 "title": "Стой!",
                 "icon": "Stop",
                 "command": "STOP",
-                "text": "{name}, е лезь!",
+                "text": "{name}, не лезь!",
                 "chatMode": "Team"
             },
             {
                 "title": "Назад!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
-                "text": "{name}, азад!!! Сами высунутся!!!",
+                "text": "{name}, Назад!!! Сами высунутся!!!",
                 "chatMode": "Team"
             },
             {
@@ -489,7 +489,7 @@
             {
                 "title": "Свет сюда!",
                 "icon": "Support",
-                "text": "Подсветите {viewPos}, тарайтесь не слиться сразу",
+                "text": "Подсветите {viewPos}, старайтесь не слиться сразу",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
@@ -526,21 +526,21 @@
                 "title": "Прикрой!",
                 "icon": "Helpme",
                 "command": "HELPME",
-                "text": "{vehicle}, рикрой!",
+                "text": "{vehicle}, прикрой!",
                 "chatMode": "Team"
             },
             {
                 "title": "Стой!",
                 "icon": "Stop",
                 "command": "STOP",
-                "text": "{name}, е лезь!",
+                "text": "{name}, не лезь!",
                 "chatMode": "Team"
             },
             {
                 "title": "Назад!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
-                "text": "{name}, азад!!! Сами высунутся!!!",
+                "text": "{name}, Назад!!! Сами высунутся!!!",
                 "chatMode": "Team"
             },
             {
@@ -623,13 +623,13 @@
                 "title": "Поддержи, арта!",
                 "icon": "AttackSPG",
                 "command": "HELPME",
-                "text": "Арта, поддержи в квадрате {viewPos}, ам засвет",
+                "text": "Арта, поддержи в квадрате {viewPos}, дам засвет",
                 "chatMode": "Team"
             },
             {
                 "title": "Свет сюда!",
                 "icon": "Attack",
-                "text": "Подсветите {viewPos}, тарайтесь не слиться сразу",
+                "text": "Подсветите {viewPos}, старайтесь не слиться сразу",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
@@ -667,21 +667,21 @@
                 "title": "Прикрой!",
                 "icon": "Helpme",
                 "command": "HELPME",
-                "text": "{vehicle}, рикрой!",
+                "text": "{vehicle}, прикрой!",
                 "chatMode": "Team"
             },
             {
                 "title": "Стой!",
                 "icon": "Stop",
                 "command": "STOP",
-                "text": "{name}, е лезь!",
+                "text": "{name}, не лезь!",
                 "chatMode": "Team"
             },
             {
                 "title": "Назад!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
-                "text": "{name}, азад!!! Сами высунутся!!!",
+                "text": "{name}, Назад!!! Сами высунутся!!!",
                 "chatMode": "Team"
             },
             {
@@ -762,14 +762,14 @@
             {
                 "title": "Свет сюда!",
                 "icon": "Attack",
-                "text": "Подсветите {viewPos}, тарайтесь не слиться сразу",
+                "text": "Подсветите {viewPos}, старайтесь не слиться сразу",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
             {
                 "title": "Свелся сюда, помогу!",
                 "icon": "Yes",
-                "text": "Свелся на квадрат {viewPos}, омогу!",
+                "text": "Свелся на квадрат {viewPos}, помогу!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
@@ -792,7 +792,7 @@
             {
                 "title": "Свожусь!",
                 "icon": "AttackSPG",
-                "text": "Свожусь на квадрат {viewPos}, ужно время для атаки",
+                "text": "Свожусь на квадрат {viewPos}, нужно время для атаки",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
@@ -829,14 +829,14 @@
             {
                 "title": "Помогите ему!",
                 "icon": "Support",
-                "text": "Помогите {name} ({vehicle}) в квадрате {viewPos}, н сам не справится!",
+                "text": "Помогите {name} ({vehicle}) в квадрате {viewPos}, он сам не справится!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
             {
                 "title": "Выводи его под арту",
                 "icon": "Reload",
-                "text": "{name}, ыводи под арту!",
+                "text": "{name}, выводи под арту!",
                 "chatMode": "Team"
             },
             {
@@ -917,7 +917,7 @@
             {
                 "title": "Стой смирно!",
                 "icon": "Stop",
-                "text": "{name}, а не дергайся ты, стой смирно!",
+                "text": "{name}, да не дергайся ты, стой смирно!",
                 "chatMode": "All"
             },
             {
@@ -957,14 +957,14 @@
             {
                 "title": "Свет сюда!",
                 "icon": "Attack",
-                "text": "Подсветите {viewPos}, тарайтесь не слиться сразу",
+                "text": "Подсветите {viewPos}, старайтесь не слиться сразу",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
             {
                 "title": "Свелся сюда, помогу!",
                 "icon": "Yes",
-                "text": "Свелся на квадрат {viewPos}, омогу!",
+                "text": "Свелся на квадрат {viewPos}, помогу!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
@@ -987,7 +987,7 @@
             {
                 "title": "Свожусь!",
                 "icon": "AttackSPG",
-                "text": "Свожусь на квадрат {viewPos}, ужно время для атаки",
+                "text": "Свожусь на квадрат {viewPos}, нужно время для атаки",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
@@ -1024,14 +1024,14 @@
             {
                 "title": "Помогите ему!",
                 "icon": "Support",
-                "text": "Помогите {name} ({vehicle}) в квадрате {viewPos}, н сам не справится!",
+                "text": "Помогите {name} ({vehicle}) в квадрате {viewPos}, он сам не справится!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
             {
                 "title": "Выводи его под арту",
                 "icon": "Reload",
-                "text": "{name}, ыводи под арту!",
+                "text": "{name}, выводи под арту!",
                 "chatMode": "Team"
             },
             {
@@ -1112,7 +1112,7 @@
             {
                 "title": "Стой смирно!",
                 "icon": "Stop",
-                "text": "{name}, а не дергайся ты, стой смирно!",
+                "text": "{name}, да не дергайся ты, стой смирно!",
                 "chatMode": "All"
             },
             {
@@ -1153,7 +1153,10 @@
                 "icon": "Support",
                 "text": "{randPart}",
                 "chatMode": "Team",
-                "variants": ["Барабан заряжен! Снарядов - {ammo}", "Снарядов - {ammo}. Барабан - заряжен!"],
+                "variants": [
+                    "Барабан заряжен! Снарядов - {ammo}",
+                    "Снарядов - {ammo}. Барабан - заряжен!"
+                ],
                 "hotKey": ["KEY_F5"]
             },
             {
@@ -1167,7 +1170,7 @@
             {
                 "title": "Помогите!",
                 "icon": "Helpme",
-                "text": "Нужна помощь в квадрате {ownPos}, ам не справлюсь!",
+                "text": "Нужна помощь в квадрате {ownPos}, сам не справлюсь!",
                 "chatMode": "Team",
                 "ping": "{ownPos}",
                 "hotKey": ["KEY_F7"]
@@ -1246,13 +1249,13 @@
                 "text": "{randPart}!",
                 "chatMode": "Team",
                 "variants": [
-                    "Не лезьте, ни этого и ждут!",
-                    "Не лезьте, удьте умнее!",
-                    "Не лезьте, то игра на нервы!",
-                    "Не лезьте, е стоит отхватывать от кучи стволов!",
-                    "Не лезьте, е надо!",
-                    "Не лезьте, ано еще!",
-                    "Не лезьте, ами вылезут!",
+                    "Не лезьте, они этого и ждут!",
+                    "Не лезьте, будьте умнее!",
+                    "Не лезьте, это игра на нервы!",
+                    "Не лезьте, не стоит отхватывать от кучи стволов!",
+                    "Не лезьте, не надо!",
+                    "Не лезьте, рано еще!",
+                    "Не лезьте, сами вылезут!",
                     "Не лезьте!"
                 ]
             },

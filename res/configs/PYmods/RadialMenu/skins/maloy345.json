@@ -88,14 +88,14 @@
             {
                 "title": "Го!",
                 "icon": "No",
-                "text": "{name} {vehicle}, дь. Прийми дамаг я за тобой, прикрою!",
+                "text": "{name} {vehicle}, едь. Прийми дамаг я за тобой, прикрою!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_I"]
             },
             {
                 "title": "Из прицела!",
                 "icon": "No",
-                "text": "{name} {vehicle}, з прицела!",
+                "text": "{name} {vehicle}, из прицела!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_G"]
             }
@@ -154,14 +154,14 @@
             {
                 "title": "Свелся на квадрат!",
                 "icon": "Yes",
-                "text": "Свелся на квадрат {viewPos}, омогу!",
+                "text": "Свелся на квадрат {viewPos}, помогу!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
             {
                 "title": "Подсветите!",
                 "icon": "Backtobase",
-                "text": "Подсветите пожалуйста квадрат {viewPos}, омогу! ",
+                "text": "Подсветите пожалуйста квадрат {viewPos}, помогу! ",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
@@ -1029,14 +1029,14 @@
             {
                 "title": "Го!",
                 "icon": "No",
-                "text": "{name} {vehicle}, дь. Прийми дамаг я за тобой, прикрою!",
+                "text": "{name} {vehicle}, едь. Прийми дамаг я за тобой, прикрою!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_T"]
             },
             {
                 "title": "Из прицела!",
                 "icon": "No",
-                "text": "{name} {vehicle}, йди из прицела!",
+                "text": "{name} {vehicle}, уйди из прицела!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_G"]
             }
