@@ -154,14 +154,14 @@
             {
                 "title": "Не подпирай!",
                 "icon": "No",
-                "text": "{name}, е подпирай!",
+                "text": "{name}, не подпирай!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_LALT", "KEY_S"]
             },
             {
                 "title": "Из прицела!",
                 "icon": "Turnback",
-                "text": "{name}, йди из прицела!",
+                "text": "{name}, уйди из прицела!",
                 "chatMode": "Team",
                 "hotKey": ["KEY_LALT", "KEY_SPACE"]
             }

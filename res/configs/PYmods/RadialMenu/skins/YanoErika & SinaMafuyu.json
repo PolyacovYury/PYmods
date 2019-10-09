@@ -218,7 +218,11 @@
                 "icon": "Turnback",
                 "command": "TURNBACK",
                 "text": "{name}, {randPart}!",
-                "variants": ["a package is on its way", "watch out for incoming shell", "try to avoid the splash"],
+                "variants": [
+                    "a package is on its way",
+                    "watch out for incoming shell",
+                    "try to avoid the splash"
+                ],
                 "chatMode": "Team"
             }
         ],
@@ -332,21 +336,36 @@
                 "icon": "Yes",
                 "text": "{name}, {randPart}",
                 "chatMode": "All",
-                "variants": ["rest in pieces.", "was sent back to garage...", "went back to factory for refunds.", "will not kill any more of us."]
+                "variants": [
+                    "rest in pieces.",
+                    "was sent back to garage...",
+                    "went back to factory for refunds.",
+                    "will not kill any more of us."
+                ]
             },
             {
                 "title": "I'll eat you!",
                 "icon": "Attack",
                 "text": "{name}, {randPart}",
                 "chatMode": "All",
-                "variants": ["here I come!", "I am gonna chew on your behind!", "I wonder if you taste like chicken...", "it's soo on, biatch!"]
+                "variants": [
+                    "here I come!",
+                    "I am gonna chew on your behind!",
+                    "I wonder if you taste like chicken...",
+                    "it's soo on, biatch!"
+                ]
             },
             {
                 "title": "I can see you!",
                 "icon": "Yes",
                 "text": "{name}, {randPart}",
                 "chatMode": "All",
-                "variants": ["I can see you!", "Hellooo!", "smile for the incoming arty shell!", "be very, very quiet. Listen..."]
+                "variants": [
+                    "I can see you!",
+                    "Hellooo!",
+                    "smile for the incoming arty shell!",
+                    "be very, very quiet. Listen..."
+                ]
             }
         ],
         "default": [

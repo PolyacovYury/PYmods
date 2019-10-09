@@ -19,7 +19,7 @@
             {
                 "title": "Запрос Арты",
                 "icon": "AttackSPG",
-                "text": "Артиллерийская поддержка нужна в квадрате {position}, ожалуйста.",
+                "text": "Артиллерийская поддержка нужна в квадрате {position}, пожалуйста.",
                 "chatMode": "Team",
                 "ping": "{ownPos}"
             },
@@ -46,7 +46,7 @@
             {
                 "title": "Не спеши",
                 "icon": "Stop",
-                "text": "{name}, е спеши, притормози.",
+                "text": "{name}, не спеши, притормози.",
                 "chatMode": "Team",
                 "hotKey": ["KEY_LALT", "KEY_S"]
             },
@@ -54,32 +54,32 @@
                 "title": "Назад!",
                 "icon": "Turnback",
                 "command": "TURNBACK",
-                "text": "{name}, азад! Там завалят!",
+                "text": "{name}, назад! Там завалят!",
                 "chatMode": "Team"
             },
             {
                 "title": "Погнали!",
                 "icon": "Followme",
-                "text": "{name}, оехали продавим.",
+                "text": "{name}, поехали продавим.",
                 "chatMode": "Team"
             },
             {
                 "title": "Не подпирай",
                 "icon": "Stop",
                 "command": "STOP",
-                "text": "{name}, е подпирай!",
+                "text": "{name}, не подпирай!",
                 "chatMode": "Team"
             },
             {
                 "title": "Из прицела!",
                 "icon": "Turnback",
-                "text": "{name}, йди из прицела!",
+                "text": "{name}, уйди из прицела!",
                 "chatMode": "Team"
             },
             {
                 "title": "Оборона",
                 "icon": "Stop",
-                "text": "{name}, ставновись и удерживай оборону.",
+                "text": "{name}, оставновись и удерживай оборону.",
                 "chatMode": "Team"
             }
         ],
@@ -87,7 +87,7 @@
             {
                 "title": "Насмешка",
                 "icon": "Followme",
-                "text": "{name}, дь ко мне и сражайся боягуз!",
+                "text": "{name}, едь ко мне и сражайся боягуз!",
                 "chatMode": "All"
             },
             {
@@ -106,7 +106,7 @@
             {
                 "title": "Вылазь",
                 "icon": "Turnback",
-                "text": "{name}, ылазь, не боись:)",
+                "text": "{name}, вылазь, не боись:)",
                 "chatMode": "All"
             },
             {
@@ -128,14 +128,14 @@
             {
                 "title": "Свет сюда!",
                 "icon": "Attack",
-                "text": "Подсветите {viewPos}, тарайтесь не слиться сразу",
+                "text": "Подсветите {viewPos}, старайтесь не слиться сразу",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
             {
                 "title": "Свелся, помогу!",
                 "icon": "Yes",
-                "text": "Свелся на квадрат {viewPos}, омогу!",
+                "text": "Свелся на квадрат {viewPos}, помогу!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
@@ -156,7 +156,7 @@
             {
                 "title": "Свожусь!",
                 "icon": "AttackSPG",
-                "text": "Свожусь на квадрат {viewPos}, ужно время для атаки",
+                "text": "Свожусь на квадрат {viewPos}, нужно время для атаки",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
@@ -192,14 +192,14 @@
             {
                 "title": "Помогите ему",
                 "icon": "Support",
-                "text": "Помогите {name} ({vehicle}) в квадрате {viewPos}, н сам не справляется!",
+                "text": "Помогите {name} ({vehicle}) в квадрате {viewPos}, он сам не справляется!",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
             },
             {
                 "title": "Не достаю",
                 "icon": "Support",
-                "text": "{name}, е на линии огня.",
+                "text": "{name}, не на линии огня.",
                 "chatMode": "Team"
             },
             {
@@ -254,7 +254,7 @@
             {
                 "title": "Стой смирно!",
                 "icon": "Stop",
-                "text": "{name}, а не дергайся ты, стой смирно!",
+                "text": "{name}, да не дергайся ты, стой смирно!",
                 "chatMode": "All"
             },
             {
@@ -262,7 +262,12 @@
                 "icon": "Followme",
                 "text": "{name}, {randPart}",
                 "chatMode": "All",
-                "variants": ["поймал? Чего молчишь?", "как тебе плюшка?", "как тебе чемодан?", "словил?"]
+                "variants": [
+                    "поймал? Чего молчишь?",
+                    "как тебе плюшка?",
+                    "как тебе чемодан?",
+                    "словил?"
+                ]
             }
         ]
     },
@@ -271,21 +276,21 @@
             {
                 "title": "Прикрой!",
                 "icon": "Helpme",
-                "text": "{vehicle}, рикрой!",
+                "text": "{vehicle}, прикрой!",
                 "command": "HELPME",
                 "chatMode": "Team"
             },
             {
                 "title": "Стой!",
                 "icon": "Stop",
-                "text": "{name}, е лезь!",
+                "text": "{name}, не лезь!",
                 "command": "STOP",
                 "chatMode": "Team"
             },
             {
                 "title": "Назад!",
                 "icon": "Turnback",
-                "text": "{name}, тойди назад!",
+                "text": "{name}, отойди назад!",
                 "chatMode": "Team",
                 "command": "TURNBACK"
             },
@@ -349,7 +354,12 @@
                 "icon": "Attack",
                 "text": "{name}, {randPart}",
                 "chatMode": "All",
-                "variants": ["сейчас я тебя съем!", "ням-ням!", "я тебя загрызу!", "пришла твоя смерть!"]
+                "variants": [
+                    "сейчас я тебя съем!",
+                    "ням-ням!",
+                    "я тебя загрызу!",
+                    "пришла твоя смерть!"
+                ]
             },
             {
                 "title": "Я тебя вижу",
@@ -368,7 +378,7 @@
             {
                 "title": "Поддержи!",
                 "icon": "AttackSPG",
-                "text": "Арта, поддержи в квадрате {viewPos}, ам засвет",
+                "text": "Арта, поддержи в квадрате {viewPos}, дам засвет",
                 "command": "HELPME",
                 "chatMode": "Team",
                 "ping": "{viewPos}"
@@ -471,7 +481,7 @@
         {
             "title": "Статочка",
             "icon": "Attack",
-            "text": "Статистика {name}: побед: {winrate}%, эфф.: {eff}, боёв: {kbattles}К, ср. уровень: {avglvl}, винрейт: {twr}, дамаг: {tankDamage}, инрейт танка: {tankWinrate}%",
+            "text": "Статистика {name}: побед: {winrate}%, эфф.: {eff}, боёв: {kbattles}К, ср. уровень: {avglvl}, винрейт: {twr}, дамаг: {tankDamage}, винрейт танка: {tankWinrate}%",
             "chatMode": "All",
             "hotKey": ["KEY_0"]
         },
@@ -502,7 +512,10 @@
                 "icon": "Support",
                 "text": "{randPart}",
                 "chatMode": "Team",
-                "variants": ["Барабан заряжен! Снарядов - {ammo}", "Снарядов - {ammo}. Барабан - заряжен!"]
+                "variants": [
+                    "Барабан заряжен! Снарядов - {ammo}",
+                    "Снарядов - {ammo}. Барабан - заряжен!"
+                ]
             },
             {
                 "title": "Сбивать захват!",
@@ -514,7 +527,7 @@
             {
                 "title": "Помогите!",
                 "icon": "Helpme",
-                "text": "Нужна помощь в квадрате {ownPos}, ам не справлюсь!",
+                "text": "Нужна помощь в квадрате {ownPos}, сам не справлюсь!",
                 "chatMode": "Team",
                 "ping": "{ownPos}"
             },
