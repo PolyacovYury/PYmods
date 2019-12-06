@@ -9,7 +9,7 @@ from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import 
 from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_TYPE_MAPPING, TYPE_TO_TAB_IDX, TYPES_ORDER, \
     C11nTabs, TABS_SLOT_TYPE_MAPPING
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType, ProjectionDecalFormTags
@@ -165,7 +165,9 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             if 'victim' in item.descriptor.userKey:
                 isVictim = True
             isGlobal = g_config.isCamoGlobal(item.descriptor)
-        return (TYPES_ORDER.index(item.itemTypeID), not is3D, item.priceGroup == 'custom', item.isHidden, isVictim,
+        if item.itemTypeID not in TYPES_ORDER:
+            print GUI_ITEM_TYPE_NAMES[item.itemTypeID]
+        return (item.itemTypeID not in TYPES_ORDER or TYPES_ORDER.index(item.itemTypeID), not is3D, item.priceGroup == 'custom', item.isHidden, isVictim,
                 not isGlobal, len(nationIDs) != 1, getGroupName(item, self._proxy.isBuy), item.isRare(), item.id)
 
 
