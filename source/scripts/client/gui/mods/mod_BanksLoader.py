@@ -190,9 +190,9 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def collectBankFiles(self, mediaPath):
         bankFiles = {'mods': set(), 'pkg': set(), 'ignore': set(),
-                     'res': {os.path.basename(path) for path in glob.iglob('../res/' + mediaPath + '/*')
+                     'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')
                              if os.path.splitext(path)[1] in ('.bnk', '.pck')}}
-        for pkgPath in glob.iglob('../res/packages/audioww*.pkg'):
+        for pkgPath in glob.iglob('./res/packages/audioww*.pkg'):
             with zipfile.ZipFile(pkgPath) as pkg:
                 bankFiles['pkg'].update({os.path.basename(name) for name in pkg.namelist()})
         bankFiles['orig'] = bankFiles['res'] | bankFiles['pkg']
@@ -324,9 +324,9 @@ class ConfigInterface(PYmodsConfigInterface):
         if not any(self.editedBanks[key] for key in keys):
             ResMgr.purge(new_dir + new_name)
             return
-        orig_path = '.' + curCV + '/' + orig_path
+        orig_path = curCV + '/' + orig_path
         new_path = new_dir + new_name
-        new_dir = '.' + curCV + '/' + new_dir
+        new_dir = curCV + '/' + new_dir
         if not os.path.exists(new_dir):
             os.makedirs(new_dir)
         new_file.save()
@@ -335,7 +335,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 os.remove(orig_path)
             except StandardError:
                 traceback.print_exc()
-        for new_path in (new_dir + new_name, '../res/' + new_path, './' + new_path):
+        for new_path in (new_dir + new_name, './res/' + new_path, './' + new_path):
             if os.path.isfile(new_path):
                 os.rename(new_path, orig_path)
                 break
