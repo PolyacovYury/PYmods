@@ -7,7 +7,6 @@ from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
 from gui.battle_results.components import style
 from gui.battle_results.components.vehicles import RegularVehicleStatsBlock
 from gui.doc_loaders.badges_loader import getSelectedByLayout, getAvailableBadges
-from gui.prb_control.invites import PrbInviteWrapper
 from gui.prb_control.items import PlayerPrbInfo, PlayerUnitInfo
 from gui.prb_control.items.prb_seqs import PrbListItem
 
@@ -45,13 +44,6 @@ if badges_dir is not None:
     def new_PLI_init(base, self, *a, **kw):
         base(self, *a, **kw)
         addLobbyBadge(self.creatorDbId, self.badges._BadgesHelper__badges)
-
-
-    @overrideMethod(PrbInviteWrapper, '__new__')
-    def new_PIW_new(base, *a, **kw):
-        result = base(*a, **kw)
-        addLobbyBadge(result.creatorDBID, result.creatorBadges._BadgesHelper__badges)
-        return result
 
 
     @overrideMethod(PlayerPrbInfo, '__init__')
