@@ -1,4 +1,4 @@
 #!/bin/bash
-python source/scripts/mtimestore.py -s
+py -2 source/scripts/compile/mtimestore.py -s
 git add .
 

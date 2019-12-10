@@ -2,12 +2,12 @@ import BigWorld
 from .api import *
 from .utils import *
 
-patreon = None
+support = None
 
 
 def __import_delayed():
-    global patreon
-    patreon = __import__('patreon', globals=globals(), level=1)  # sorry, dirty hax had to happen
+    global support
+    support = __import__('support', globals=globals(), level=1)  # sorry, dirty hax had to happen
 
 
 BigWorld.callback(0, __import_delayed)

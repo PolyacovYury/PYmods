@@ -1,7 +1,6 @@
 ﻿{
     "battleMessage_commandOnDelay": "Эта команда недоступна, пожалуйста, подождите.",
     "description": "Радиальное Меню Команд",
-    "UI_setting_info_text": "Специально для ",
     "UI_setting_mapMenu_key_text": "Клавиша альтернативного меню",
     "UI_setting_mapMenu_key_tooltip": "Если активировать Боевое меню с зажатой этой клавишей, будет подгружено альтернативное (причем свое для каждой карты) меню, если оно прописано в конфиге.",
     "UI_setting_selectedConfig_defaultMeta": "Стандартные сообщения",

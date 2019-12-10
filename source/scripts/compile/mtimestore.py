@@ -90,8 +90,15 @@ def main():
         print 'Restoring modification dates'
         for path in subprocess.check_output(['git', 'ls-files', '*.mtimes*']).split('\n'):
             data = parse_file(path)
-            for filename in data:
-                change_date(data[filename], os.path.join(os.path.dirname(path), filename))
+            for filename in data.keys():
+                f_path = os.path.join(os.path.dirname(path), filename)
+                if os.path.isfile(f_path):
+                    change_date(data[filename], f_path)
+                else:
+                    print 'Deleted file detected:', f_path.replace('\\', '/')
+                    del data[filename]
+            if path:
+                write(path, data)
     elif mode in 'as':
         print 'Saving modification dates'
         for path in subprocess.check_output(['git', 'ls-files', '*.mtimes*']).split('\n'):
