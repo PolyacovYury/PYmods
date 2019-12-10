@@ -108,10 +108,10 @@ def new_formatEntity(base, self, entityID, *a, **kw):
 
 
 @overrideMethod(_BattleMessageBuilder, 'setName')
-def new_setName(base, self, dbID, *a, **kw):
-    self = base(self, dbID, *a, **kw)
-    battleCtx = self.sessionProvider.getCtx()
-    self._ctx['playerName'] = config.reformat(battleCtx, battleCtx.getVehIDByAccDBID(dbID), self._ctx['playerName'])
+def new_setName(base, self, avatarSessionID, *a, **k):
+    self = base(self, avatarSessionID, *a, **k)
+    ctx = self.sessionProvider.getCtx()
+    self._ctx['playerName'] = config.reformat(ctx, ctx.getVehIDBySessionID(avatarSessionID), self._ctx['playerName'])
     return self
 
 
