@@ -26,7 +26,7 @@ class Base(object):
 
     def init(self):
         self.containerClass = SettingContainer
-        self.configPath = '../mods/configs/%s/%s/' % (self.modsGroup, self.ID)
+        self.configPath = './mods/configs/%s/%s/' % (self.modsGroup, self.ID)
         self.langPath = '%si18n/' % self.configPath
 
     def loadLang(self):
@@ -138,4 +138,4 @@ class ConfBlockInterface(Base, DummyConfBlockInterface):
 class SettingContainer(DummySettingContainer):
     def loadLang(self):
         smart_update(self.i18n, loadJson(
-            self.ID, self.lang, self.i18n, '../mods/configs/%s/%s/i18n/' % (self.modsGroup, self.ID)))
+            self.ID, self.lang, self.i18n, 'mods/configs/%s/%s/i18n/' % (self.modsGroup, self.ID)))
