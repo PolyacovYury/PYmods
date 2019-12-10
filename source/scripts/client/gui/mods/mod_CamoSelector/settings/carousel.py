@@ -165,10 +165,9 @@ class CustomizationCarouselDataProvider(WGCarouselDataProvider):
             if 'victim' in item.descriptor.userKey:
                 isVictim = True
             isGlobal = g_config.isCamoGlobal(item.descriptor)
-        if item.itemTypeID not in TYPES_ORDER:
-            print GUI_ITEM_TYPE_NAMES[item.itemTypeID]
-        return (item.itemTypeID not in TYPES_ORDER or TYPES_ORDER.index(item.itemTypeID), not is3D, item.priceGroup == 'custom', item.isHidden, isVictim,
-                not isGlobal, len(nationIDs) != 1, getGroupName(item, self._proxy.isBuy), item.isRare(), item.id)
+        return (TYPES_ORDER.index(item.itemTypeID) if item.itemTypeID in TYPES_ORDER else 0, not is3D,
+                item.priceGroup == 'custom', item.isHidden, isVictim, not isGlobal, len(nationIDs) != 1,
+                getGroupName(item, self._proxy.isBuy), item.isRare(), item.id)
 
 
 def getGroupName(item, isBuy=False):
