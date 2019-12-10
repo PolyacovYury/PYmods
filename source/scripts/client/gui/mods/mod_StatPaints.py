@@ -137,7 +137,8 @@ class ConfigInterface(PYmodsConfigInterface):
             if result:
                 for databaseID in result:
                     dossier = result[databaseID]
-                    self.dossier[databaseID] = {'wgr': dossier['global_rating']}
+                    if dossier is not None:
+                        self.dossier[databaseID] = {'wgr': dossier['global_rating']}
                     self.pending.discard(databaseID)
         for databaseID in databaseIDs:
             self.pending.discard(databaseID)
@@ -212,13 +213,16 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
         'ally' if player.arena.vehicles[vID]['team'] == player.team else 'enemy'
     if not (any(g_config.data['paint_' + team + '_' + part] for part in TankPartNames.ALL)):
         return base(self, *a, **kw)
-    accountID = str(player.arena.vehicles[vID]['accountDBID'])
-    if accountID not in g_config.dossier:
-        if accountID not in g_config.pending:
-            g_config.thread([accountID])
+    accID = player.arena.vehicles[vID]['accountDBID']
+    if not accID:
+        return base(self, *a, **kw)
+    strAccID = str(accID)
+    if strAccID not in g_config.dossier:
+        if strAccID not in g_config.pending:
+            g_config.thread([strAccID])
         return base(self, *a, **kw)
     paintItem = None
-    rating = g_config.dossier[accountID]['wgr']
+    rating = g_config.dossier[strAccID]['wgr']
     for value in sorted(g_config.paintItems):
         if rating < value:
             paintItem = g_config.paintItems[value]
