@@ -50,7 +50,6 @@ class ConfigInterface(PYmodsConfigInterface):
                      'hotDelay': 350}
         self.i18n = {
             'description': 'Radial Menu',
-            'UI_setting_info_text': 'Special for ',
             'UI_setting_mapMenu_key_text': 'Alternative menu hotkey',
             'UI_setting_mapMenu_key_tooltip': (
                 'When Radial menu is activated while this key is pressed, an alternative map-specific menu is loaded if '
@@ -62,13 +61,10 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
-        infoLabel = self.tb.createLabel('info')
-        infoLabel['text'] += 'wotspeak.ru'
         return {'modDisplayName': self.i18n['description'],
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createOptions('selectedConfig', [self.configMeta[x] for x in self.commands])],
-                'column2': [self.tb.createHotKey('mapMenu_key'),
-                            infoLabel]}
+                'column2': [self.tb.createHotKey('mapMenu_key')]}
 
     def migrateConfigs(self):
         for path in sorted(glob.iglob(self.configPath + 'skins/*.json'), key=string.lower):
@@ -263,7 +259,7 @@ class CustomMenuCommand(object):
         self.inPostmortem = confDict.get('inPostmortem', False)
         self.command = confDict.get('command', '').strip()
         if self.command and self.command not in self.ALL_COMMANDS:
-            print 'RadialMenu: unsupported command: %s' % self.command
+            print g_config.ID + ': unsupported command: %s' % self.command
             self.command = ''
         chatMode = confDict.get('chatMode', 'Team')
         self.chatMode = chatMode if chatMode in self.ALL_CHANNELS else 'Team'

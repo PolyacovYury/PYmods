@@ -1,7 +1,6 @@
 ﻿{
     "battleMessage_commandOnDelay": "This command is on cooldown, please wait.",
     "description": "Radial Menu",
-    "UI_setting_info_text": "Special for ",
     "UI_setting_mapMenu_key_text": "Alternative menu hotkey",
     "UI_setting_mapMenu_key_tooltip": "When Radial menu is activated while this key is pressed, an alternative map-specific menu is loaded if the config provides one.",
     "UI_setting_selectedConfig_defaultMeta": "Default messages",
