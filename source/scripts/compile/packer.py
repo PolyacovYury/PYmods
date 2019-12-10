@@ -13,6 +13,13 @@ folder_ix_all = re.compile(r'mods/[.\d]*( Common Test)?/')
 printed = False
 
 
+def get_git_date(path):
+    try:
+        return subprocess.check_output('git log -n 1 --format="%ct" --'.split() + [path])[1:-2]
+    except subprocess.CalledProcessError:
+        return ''
+
+
 def pack_dir(path, o_dir, max_levels=10, v_str=None, v_date=None, force=False, quiet=False):
     if not quiet:
         print 'Listing', path, '...'
@@ -244,7 +251,7 @@ def main():
             with open(version_file, 'r') as v_file:
                 version_str = v_file.read().strip()
             assert version_str
-            timeStr = subprocess.check_output('git --no-pager log -n 1 --format="%ct" --'.split() + [version_file])[1:-2]
+            timeStr = get_git_date(version_file)
             version_date = datetime.fromtimestamp(long(timeStr) if timeStr else long(os.stat(version_file).st_mtime))
         except IOError:
             print 'WARNING: version file not found:', version_file

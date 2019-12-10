@@ -9,6 +9,9 @@ import sys
 import time
 
 
+Orion_path = None
+
+
 def get_git_date(path):
     try:
         return subprocess.check_output('git log -n 1 --format="%ct" --'.split() + [path])[1:-2]
@@ -72,23 +75,26 @@ def compile_file(fullname, d_file=None, o_file=None, force=False, quiet=False):
 
 
 def main():
+    global Orion_path
     import getopt
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'lfqd:o:')
+        opts, args = getopt.getopt(sys.argv[1:], 'lfqp:d:o:')
     except getopt.error, msg:
         print msg
-        print "usage: python %s [-l] [-f] [-q] [-d dest_dir] [-o output_dir] [directory|file ...]" % os.path.basename(
-            sys.argv[0])
+        print "usage: python %s [-l] [-f] [-q] [-p PJOrion_path] [-d dest_dir] [-o output_dir] [directory|file ...]" % \
+            os.path.basename(sys.argv[0])
         print '''    arguments: one or more file and directory names to compile
     options:
         -l: don't recurse into subdirectories
         -f: force rebuild even if timestamps are up-to-date
         -q: output only error messages
-        -d dest_dir: directory to prepend to file paths for use in compile-time tracebacks and
-            in runtime tracebacks in cases where the source file is unavailable
+        -p PJOrion_path: path to PJOrion executable, only required if any obfuscated files are present 
+        -d dest_dir: directory to prepend to file paths for use in compile-time and runtime tracebacks in cases where the 
+            source file is unavailable
         -o output_dir: directory to put compiled files into, defaults to the folder being compiled'''
         sys.exit(2)
     max_levels = 10
+    p_dir = None
     d_dir = None
     o_dir = None
     force = 0
@@ -97,8 +103,10 @@ def main():
         if o == '-l': max_levels = 0
         if o == '-f': force = True
         if o == '-q': quiet = True
+        if o == '-p': p_dir = a
         if o == '-d': d_dir = a
         if o == '-o': o_dir = a
+    Orion_path = p_dir
     if o_dir:
         if len(args) != 1 and not os.path.isdir(args[0]):
             print "-o output_dir requires exactly one directory argument"
@@ -148,6 +156,25 @@ def do_compile(f_path, d_file=None, o_file=None, raises=False, timeStr=''):
                 maxTS = long(timeStr)  # if __init__ is the newest - it will be reflected in folder's commit date
     codestring = codestring.replace('%(file_compile_date)s', time.strftime('%d.%m.%Y', time.localtime(maxTS))).replace(
         '%(mod_ID)s', os.path.basename(modName).replace('.py', '').replace('mod_', ''))
+    if '# -*- obfuscated -*-' in codestring:
+        if Orion_path is None:
+            sys.stderr.write('Obfuscated files present, but Orion path is not specified.')
+            sys.exit(2)
+        obf_path = (o_file or f_path).replace('.py', '_obf.py')
+        obf_dir = os.path.dirname(obf_path)
+        if not os.path.isdir(obf_dir):
+            os.makedirs(obf_dir)
+        with open(obf_path, 'wb') as fo:
+            fo.write(codestring)
+        try:
+            # subprocess.check_call([Orion_path, '/obfuscate-text-file', os.getcwd() + '/' + obf_path, '/exit'])
+            subprocess.check_call([Orion_path, '/obfuscate-bytecode-file', os.getcwd() + '/' + obf_path, '/exit'])
+            subprocess.check_call([Orion_path, '/protect-bytecode-file', os.getcwd() + '/' + obf_path + 'c', '/exit'])
+        except subprocess.CalledProcessError, err:
+            sys.stderr.write(err.message + '\n')
+        else:
+            if timeStr:
+                os.utime(obf_path + 'c', (time.time(), timestamp))
     try:
         code_object = __builtin__.compile(codestring, d_file or f_path, 'exec')
     except Exception, err:
@@ -174,5 +201,4 @@ def do_compile(f_path, d_file=None, o_file=None, raises=False, timeStr=''):
 
 
 if __name__ == '__main__':
-    exit_status = int(not main())
-    sys.exit(exit_status)
+    sys.exit(int(not main()))
