@@ -54,11 +54,12 @@ class ConfigInterface(PYmodsConfigInterface):
         }
         super(ConfigInterface, self).init()
 
-    def migrateConfigs(self):
-        data = self.loadDataJson(quiet=False)
+    def readCurrentSettings(self, quiet=True):
+        super(ConfigInterface, self).readCurrentSettings(quiet)
+        data = self.loadDataJson()
         if 'mode' in data:
-            data['voice'] = data.pop('mode')
-        self.writeDataJson()
+            self.data['voice'] = data.pop('mode')
+            self.loadDataJson(True)
 
     def createTemplate(self):
         return {'modDisplayName': self.i18n['name'],
