@@ -1,4 +1,4 @@
 #!/bin/bash
 py -2 source/scripts/compile/mtimestore.py -r
+start "cmd.exe /c \"start debug\""
 #git update-index --refresh #causes some problems under windows tortoise git
-

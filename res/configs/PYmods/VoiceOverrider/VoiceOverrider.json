@@ -1,4 +1,5 @@
 ﻿{
     "enabled": true,
-    "mode": 0
+    "music": 0,
+    "voice": 0
 }
