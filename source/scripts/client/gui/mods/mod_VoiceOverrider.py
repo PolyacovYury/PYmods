@@ -18,11 +18,12 @@ class ConfigInterface(PYmodsConfigInterface):
         self.__previewNations = []
         self.modes = [
             'default_male', 'default_female', 'national_male', 'national_female', 'valkyrie_male', 'valkyrie_female',
-            'sabaton', 'buffon', 'offspring']
+            'sabaton', 'buffon', 'offspring', 'racer_ru', 'racer_en']
         self.params = [
             {}, {'female': True}, {'national': True}, {'national': True, 'female': True},
             {'languageMode': 'valkyrie2'}, {'languageMode': 'valkyrie1'},
-            {'languageMode': 'sabaton'}, {'languageMode': 'buffon'}, {'languageMode': 'offspring'}]
+            {'languageMode': 'sabaton'}, {'languageMode': 'buffon'}, {'languageMode': 'offspring'},
+            {'languageMode': 'racer_ru'}, {'languageMode': 'racer_en'}]
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -40,7 +41,9 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_mode_valkyrie_female': 'Valkyrie Chronicles: female',
             'UI_setting_mode_sabaton': 'Sabaton',
             'UI_setting_mode_buffon': 'Buffon',
-            'UI_setting_mode_offspring': 'The Offspring'}
+            'UI_setting_mode_offspring': 'The Offspring',
+            'UI_setting_mode_racer_ru': 'Racer (RU)',
+            'UI_setting_mode_racer_en': 'Racer (EN)'}
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
