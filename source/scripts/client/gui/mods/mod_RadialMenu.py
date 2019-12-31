@@ -259,7 +259,7 @@ class CustomMenuCommand(object):
         self.inPostmortem = confDict.get('inPostmortem', False)
         self.command = confDict.get('command', '').strip()
         if self.command and self.command not in self.ALL_COMMANDS:
-            print g_config.ID + ': unsupported command: %s' % self.command
+            print '%(mod_ID)s' + (': unsupported command: %s' % self.command)
             self.command = ''
         chatMode = confDict.get('chatMode', 'Team')
         self.chatMode = chatMode if chatMode in self.ALL_CHANNELS else 'Team'
