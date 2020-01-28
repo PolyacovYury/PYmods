@@ -5,11 +5,16 @@ import SoundGroups
 import nations
 from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics
 from Vehicle import Vehicle
+from collections import namedtuple
 from debug_utils import LOG_ERROR
 from gui.battle_control import avatar_getter
 from gui.game_control.special_sound_ctrl import SpecialSoundCtrl
 from gui.shared.personality import ServicesLocator
 from items.vehicles import VehicleDescr
+
+VoiceMode = namedtuple('VoiceMode', 'name, languageMode, national, female')
+VoiceMode.__new__.__defaults__ = (None, False, False)
+MusicMode = namedtuple('MusicMode', 'name, tag')
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -18,22 +23,25 @@ class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.__previewSound = None
         self.__previewNations = []
+        # noinspection PyArgumentList,SpellCheckingInspection
         self.voice_modes = [
-            'default_male', 'default_female', 'national_male', 'national_female', 'valkyrie_male', 'valkyrie_female',
-            'sabaton', 'buffon', 'offspring', 'racer_ru', 'racer_en']
-        self.voice_params = [
-            {}, {'female': True}, {'national': True}, {'national': True, 'female': True},
-            {'languageMode': 'valkyrie2'}, {'languageMode': 'valkyrie1'},
-            {'languageMode': 'sabaton'}, {'languageMode': 'buffon'}, {'languageMode': 'offspring'},
-            {'languageMode': 'racer_ru'}, {'languageMode': 'racer_en'}]
-        self.music_modes = ['default', 'offspring']
-        self.music_params = [{'tag': 'default'}, {'tag': 'offspringArenaMusic'}]
+            VoiceMode('default_male'), VoiceMode('default_female', female=True), VoiceMode('national_male', national=True),
+            VoiceMode('national_female', national=True, female=True),
+            VoiceMode('valkyrie_male', 'valkyrie2'), VoiceMode('valkyrie_female', 'valkyrie1'),
+            VoiceMode('sabaton', 'sabaton'), VoiceMode('buffon', 'buffon'), VoiceMode('offspring', 'offspring'),
+            VoiceMode('racer_ru', 'racer_ru'), VoiceMode('racer_en', 'racer_en'),
+            VoiceMode('LeBwa', 'ru1_Lebwa'), VoiceMode('Yusha', 'ru2_Yusha'),
+            VoiceMode('Amway921', 'ru3_Amway921'), VoiceMode('KorbenDallas', 'ru4_KorbenDallas'),
+            VoiceMode('Mailand', 'eu1_Mailand'), VoiceMode('Skill4ltu', 'eu2_Skill4ltu'),
+            VoiceMode('Dezgamez', 'eu3_Dezgamez'), VoiceMode('AwesomeEpicGuys', 'eu4_AwesomeEpicGuys')]
+        self.music_modes = [MusicMode('default', 'default'), MusicMode('offspring', 'offspringArenaMusic')]
         super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.1.0 (%(file_compile_date)s)'
+        self.version = '1.1.1 (%(file_compile_date)s)'
         self.data = {'enabled': True, 'voice': 0, 'music': 0}
+        # noinspection SpellCheckingInspection
         self.i18n = {
             'name': 'Ingame voice messages override',
             'UI_setting_music_text': 'Ingame music mode',
@@ -51,6 +59,14 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_voice_offspring': 'The Offspring',
             'UI_setting_voice_racer_ru': 'Racer (RU)',
             'UI_setting_voice_racer_en': 'Racer (EN)',
+            'UI_setting_voice_LeBwa': 'Blogger battle-RU: LeBwa',
+            'UI_setting_voice_Yusha': 'Blogger battle-RU: Yusha',
+            'UI_setting_voice_Amway921': 'Blogger battle-RU: Amway921',
+            'UI_setting_voice_KorbenDallas': 'Blogger battle-RU: KorbenDallas',
+            'UI_setting_voice_Mailand': 'Blogger battle-EU: Mailand',
+            'UI_setting_voice_Skill4ltu': 'Blogger battle-EU: Skill4ltu',
+            'UI_setting_voice_Dezgamez': 'Blogger battle-EU: Dezgamez',
+            'UI_setting_voice_AwesomeEpicGuys': 'Blogger battle-EU: AwesomeEpicGuys'
         }
         super(ConfigInterface, self).init()
 
@@ -65,10 +81,10 @@ class ConfigInterface(PYmodsConfigInterface):
         return {'modDisplayName': self.i18n['name'],
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createOptions(
-                    'voice', [self.i18n['UI_setting_voice_%s' % mode] for mode in self.voice_modes],
+                    'voice', [self.i18n['UI_setting_voice_%s' % mode.name] for mode in self.voice_modes],
                     button={'iconSource': '../maps/icons/buttons/sound.png'})],
                 'column2': [self.tb.createOptions(
-                    'music', [self.i18n['UI_setting_music_%s' % mode] for mode in self.music_modes],
+                    'music', [self.i18n['UI_setting_music_%s' % mode.name] for mode in self.music_modes],
                     button={'iconSource': '../maps/icons/buttons/sound.png'})]}
 
     def onButtonPress(self, vName, value):
@@ -91,7 +107,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.__previewSound = SoundGroups.g_instance.getSound2D(sndPath)
         if self.__previewSound is None:
             return
-        if self.voice_params[self.data['voice']].get('national', False):
+        if self.voice_modes[self.data['voice']].national:
             self.__previewNations = list(nations.AVAILABLE_NAMES)
             self.__previewSound.setCallback(self.playPreview)
             self.playPreview(self.__previewSound)
@@ -114,13 +130,13 @@ class ConfigInterface(PYmodsConfigInterface):
             sound.play()
 
     def setSystemValue(self, nation=None):
-        params = self.voice_params[self.data['voice']]
+        mode = self.voice_modes[self.data['voice']]
         soundModes = SoundGroups.g_instance.soundModes
-        if params.get('languageMode', None) is not None:
-            return soundModes.setMode(params['languageMode'])
-        gender = SoundGroups.CREW_GENDER_SWITCHES.GENDER_ALL[self.voice_params[self.data['voice']].get('female', False)]
+        if mode.languageMode is not None:
+            return soundModes.setMode(mode.languageMode)
+        gender = SoundGroups.CREW_GENDER_SWITCHES.GENDER_ALL[mode.female]
         soundModes.setCurrentNation(nation or soundModes.DEFAULT_NATION, gender)
-        if params.get('national', False):
+        if mode.national:
             return soundModes.setNationalMappingByPreset('NationalDefault')
         return soundModes.setNationalMappingByMode('default')
 
@@ -145,5 +161,5 @@ def new_setPlayerVehicle(base, self, *a, **k):
     if arena is None:
         return
     self._SpecialSoundCtrl__arenaMusicSetup = musicSetup = arena.arenaType.wwmusicSetup.copy()
-    tag = g_config.music_params[g_config.data['music']].get('tag')
+    tag = g_config.music_modes[g_config.data['music']].tag
     musicSetup.update(self._SpecialSoundCtrl__arenaMusicByStyle.get(tag, ()))
