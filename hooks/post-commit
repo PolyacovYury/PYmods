@@ -1,2 +1,2 @@
 #!/bin/sh
-start "cmd.exe /c \"start debug\""
+start debug &

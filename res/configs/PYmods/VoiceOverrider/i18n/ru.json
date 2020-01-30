@@ -2,6 +2,14 @@
     "UI_setting_music_default": "Стандартная",
     "UI_setting_music_offspring": "The Offspring",
     "UI_setting_music_text": "Режим музыки",
+    "UI_setting_voice_Amway921": "Битва блогеров-RU: Amway921",
+    "UI_setting_voice_AwesomeEpicGuys": "Битва блогеров-EU: AwesomeEpicGuys",
+    "UI_setting_voice_Dezgamez": "Битва блогеров-EU: Dezgamez",
+    "UI_setting_voice_KorbenDallas": "Битва блогеров-RU: KorbenDallas",
+    "UI_setting_voice_LeBwa": "Битва блогеров-RU: LeBwa",
+    "UI_setting_voice_Mailand": "Битва блогеров-EU: Mailand",
+    "UI_setting_voice_Skill4ltu": "Битва блогеров-EU: Skill4ltu",
+    "UI_setting_voice_Yusha": "Битва блогеров-RU: Yusha",
     "UI_setting_voice_buffon": "Буффон",
     "UI_setting_voice_default_female": "Стандартный: женский",
     "UI_setting_voice_default_male": "Стандартный: мужской",
@@ -14,5 +22,5 @@
     "UI_setting_voice_text": "Режим голосового оповещения",
     "UI_setting_voice_valkyrie_female": "Valkyrie Chronicles: женский",
     "UI_setting_voice_valkyrie_male": "Valkyrie Chronicles: мужской",
-    "name": "Переопределение режима внутриигрового голосового оповещения"
+    "name": "Переключатель внутриигрового голосового оповещения и музыки"
 }

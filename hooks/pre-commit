@@ -1,4 +1,4 @@
 #!/bin/bash
+cp hooks/* .git/hooks/
 py -2 source/scripts/compile/mtimestore.py -s
-git add .
-
+git add '*.mtimes*'
