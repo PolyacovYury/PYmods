@@ -59,14 +59,14 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_voice_offspring': 'The Offspring',
             'UI_setting_voice_racer_ru': 'Racer (RU)',
             'UI_setting_voice_racer_en': 'Racer (EN)',
-            'UI_setting_voice_LeBwa': 'Blogger battle-RU: LeBwa',
-            'UI_setting_voice_Yusha': 'Blogger battle-RU: Yusha',
-            'UI_setting_voice_Amway921': 'Blogger battle-RU: Amway921',
-            'UI_setting_voice_KorbenDallas': 'Blogger battle-RU: KorbenDallas',
-            'UI_setting_voice_Mailand': 'Blogger battle-EU: Mailand',
-            'UI_setting_voice_Skill4ltu': 'Blogger battle-EU: Skill4ltu',
-            'UI_setting_voice_Dezgamez': 'Blogger battle-EU: Dezgamez',
-            'UI_setting_voice_AwesomeEpicGuys': 'Blogger battle-EU: AwesomeEpicGuys'
+            'UI_setting_voice_LeBwa': 'TC-RU: LeBwa',
+            'UI_setting_voice_Yusha': 'TC-RU: Yusha',
+            'UI_setting_voice_Amway921': 'TC-RU: Amway921',
+            'UI_setting_voice_KorbenDallas': 'TC-RU: KorbenDallas',
+            'UI_setting_voice_Mailand': 'TC-EU: Mailand',
+            'UI_setting_voice_Skill4ltu': 'TC-EU: Skill4ltu',
+            'UI_setting_voice_Dezgamez': 'TC-EU: Dezgamez',
+            'UI_setting_voice_AwesomeEpicGuys': 'TC-EU: AwesomeEpicGuys'
         }
         super(ConfigInterface, self).init()
 
