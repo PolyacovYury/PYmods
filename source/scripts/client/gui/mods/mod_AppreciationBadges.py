@@ -47,15 +47,20 @@ if badges_dir is not None:
 
 
     @overrideMethod(PlayerPrbInfo, '__init__')
-    def new_PPI_init(base, self, *a, **kw):
-        base(self, *a, **kw)
-        addLobbyBadge(self.dbID, self.badges._BadgesHelper__badges)
-
-
     @overrideMethod(PlayerUnitInfo, '__init__')
-    def new_PUI_init(base, self, *a, **kw):
+    def new_PPUI_init(base, self, *a, **kw):
         base(self, *a, **kw)
         addLobbyBadge(self.dbID, self.badges._BadgesHelper__badges)
+
+
+    @overrideMethod(PrbListItem, 'getBadgeID')
+    @overrideMethod(PlayerPrbInfo, 'getBadgeID')
+    @overrideMethod(PlayerUnitInfo, 'getBadgeID')
+    def new_getBadgeID(base, self, *a, **k):
+        result = base(self, *a, **k)
+        if isinstance(result, basestring) and '_' in result:
+            result = int(result.split('_')[1])
+        return result
 
 
     @overrideMethod(VehicleArenaInfoVO, '__init__')
