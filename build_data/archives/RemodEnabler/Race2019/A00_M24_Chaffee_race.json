@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/Race2019/A00_M24_Chaffee_race.json": "res/configs/PYmods/RemodEnabler/remods/Race2019/A00_M24_Chaffee_race.json",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/Race2019/A00_M24_Chaffee_race.wotmod": "build/wotmods/RemodEnabler_remods/Race2019/A00_M24_Chaffee_race.wotmod"
+    }
+}

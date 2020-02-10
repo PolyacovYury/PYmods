@@ -1032,6 +1032,9 @@
             "_85mm_D-5T": {
                 "effects": "gun_85mm_shot_RU"
             },
+            "_85mm_D-5T_dualgun": {
+                "effects": ["gun_85mm_shot_RU", "gun_85mm_shot_RU"]
+            },
             "_85mm_S-31": {
                 "effects": "gun_85mm_shot_RU_1"
             },
@@ -1094,6 +1097,12 @@
             },
             "_100mm_S34": {
                 "effects": "gun_100mm_shot_RU_6"
+            },
+            "_100mm_S34_dualgun": {
+                "effects": ["gun_100mm_shot_RU_6", "gun_100mm_shot_RU_6"]
+            },
+            "_100mm_S34_P_dualgun": {
+                "effects": ["gun_100mm_shot_RU_6", "gun_100mm_shot_RU_6"]
             },
             "_100mm_D10T": {
                 "effects": "gun_100mm_shot_RU_7"
@@ -1191,11 +1200,20 @@
             "_122-mm_D-25TA": {
                 "effects": "gun_122mm_shot_RU_1"
             },
+            "_122-mm_D-25TA_dualgun": {
+                "effects": ["gun_122mm_shot_RU_1", "gun_122mm_shot_RU_1"]
+            },
             "_122mm_D_25TS": {
                 "effects": "gun_122mm_shot_RU_1"
             },
             "_122mm_D_25TSU": {
                 "effects": "gun_122mm_shot_RU_1"
+            },
+            "_122mm_S34_II_dualgun": {
+                "effects": ["gun_122mm_shot_RU_1", "gun_122mm_shot_RU_1"]
+            },
+            "_122mm_BL-9_dualgun": {
+                "effects": ["gun_122mm_shot_RU_2", "gun_122mm_shot_RU_2"]
             },
             "_122-mm_D-49": {
                 "effects": "gun_122mm_shot_RU_2"
@@ -1235,6 +1253,12 @@
             },
             "_122mm_M62-T2": {
                 "effects": "gun_122mm_shot_RU"
+            },
+            "_122mm_M62": {
+                "effects": "gun_122mm_shot_RU"
+            },
+            "_122mm_M62-T2_dualgun": {
+                "effects": ["gun_122mm_shot_RU", "gun_122mm_shot_RU"]
             },
             "_122mm_M62-T2A": {
                 "effects": "gun_122mm_shot_RU_1"

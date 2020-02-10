@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/RemodEnabler/remods/ValkyrieChronicles/J29_Nameless.json": "res/configs/PYmods/RemodEnabler/remods/ValkyrieChronicles/J29_Nameless.json",
+        "mods/{GAME_VERSION}/RemodEnabler_remods/ValkyrieChronicles/J29_Nameless.wotmod": "build/wotmods/RemodEnabler_remods/ValkyrieChronicles/J29_Nameless.wotmod"
+    }
+}

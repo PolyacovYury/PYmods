@@ -323,20 +323,23 @@
 1553795651|configs/PYmods/RemodEnabler/i18n/en.json
 1553795651|configs/PYmods/RemodEnabler/i18n/ru.json
 1565359810|configs/PYmods/RemodEnabler/remods/A80_T26_E4_MilkyM4n.json
-1565359811|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_FV217.json
-1565359811|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_IS-3.json
-1565359811|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_KV2.json
-1565359811|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_PzI_C.json
-1565359811|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_T49.json
-1565359811|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_TOG_II.json
-1565359811|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_WZ_132.json
+1581347011|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_FV217.json
+1581347011|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_IS-3.json
+1581347011|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_KV2.json
+1581347011|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_PzI_C.json
+1581347011|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_T49.json
+1581347011|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_TOG_II.json
+1581347011|configs/PYmods/RemodEnabler/remods/ForceMod/ForceMod_WZ_132.json
 1565359810|configs/PYmods/RemodEnabler/remods/G56_E-100_Algiz.json
 1565359810|configs/PYmods/RemodEnabler/remods/G58_VK_4502P_B2_Algiz.json
 1565359810|configs/PYmods/RemodEnabler/remods/G76_Pz_Sfl_IVc_dg_foxerfit.json
 1565359810|configs/PYmods/RemodEnabler/remods/G76_Pz_Sfl_IVc_foxerfit.json
 1565359810|configs/PYmods/RemodEnabler/remods/PP_WoT_E25_Remodel_F1.json
-1565359811|configs/PYmods/RemodEnabler/remods/Valkyrie Chronicles/J29_Nameless.json
-1565359811|configs/PYmods/RemodEnabler/remods/Valkyrie Chronicles/J30_Edelweiss.json
+1581347021|configs/PYmods/RemodEnabler/remods/Race2019/A00_M24_Chaffee_race.json
+1581347021|configs/PYmods/RemodEnabler/remods/Race2019/G00_VK1602_race.json
+1581347021|configs/PYmods/RemodEnabler/remods/Race2019/R00_T-50_race.json
+1581347036|configs/PYmods/RemodEnabler/remods/ValkyrieChronicles/J29_Nameless.json
+1581347036|configs/PYmods/RemodEnabler/remods/ValkyrieChronicles/J30_Edelweiss.json
 1565359812|configs/PYmods/RemodEnabler/remods/WG_styles/50TP_pr_WingedHussar.json
 1565359813|configs/PYmods/RemodEnabler/remods/WG_styles/B-C_25t_NYst/B-C_25t_NYst_1.json
 1565359813|configs/PYmods/RemodEnabler/remods/WG_styles/B-C_25t_NYst/B-C_25t_NYst_2.json
@@ -372,7 +375,7 @@
 1546529120|configs/PYmods/Skinner/i18n/ru.json
 1539857823|configs/PYmods/SoundEventInjector/configs/GO_engines.json
 1563465036|configs/PYmods/SoundEventInjector/configs/GO_gun_effects.json
-1555406303|configs/PYmods/SoundEventInjector/configs/GO_guns.json
+1581342999|configs/PYmods/SoundEventInjector/configs/GO_guns.json
 1502712925|configs/PYmods/SoundEventInjector/configs/GO_hits.json
 1502710182|configs/PYmods/SoundEventInjector/configs/GO_reload.json
 1502714717|configs/PYmods/SoundEventInjector/configs/GO_surface_hits.json
