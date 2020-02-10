@@ -5,7 +5,7 @@
     "enemy": false,
     "whitelist": ["g63_pzi_ausf_c"],
     "chassis": {
-        "undamaged": "vehicles/remods/ForceMod/G63_PzI_ausf_C/normal/lod0/Chassis.model",
+        "undamaged": "vehicles/ForceMod/G63_PzI_ausf_C/normal/lod0/Chassis.model",
         "traces": {
             "lodDist": 120.0,
             "bufferPrefs": "smallTank",
@@ -344,7 +344,7 @@
         "leveredSuspension": null
     },
     "hull": {
-        "undamaged": "vehicles/remods/ForceMod/G63_PzI_ausf_C/normal/lod0/Hull.model",
+        "undamaged": "vehicles/ForceMod/G63_PzI_ausf_C/normal/lod0/Hull.model",
         "exhaust": {
             "pixie": "",
             "nodes": ["HP_Track_Exhaus_1"]
@@ -379,7 +379,7 @@
         ]
     },
     "turret": {
-        "undamaged": "vehicles/remods/ForceMod/G63_PzI_ausf_C/normal/lod0/Turret_01.model",
+        "undamaged": "vehicles/ForceMod/G63_PzI_ausf_C/normal/lod0/Turret_01.model",
         "emblemSlots": [
             {
                 "rayStart": [-0.6024580001831055, 0.24883100390434265, 0.28115400671958923],
@@ -410,7 +410,7 @@
         ]
     },
     "gun": {
-        "undamaged": "vehicles/remods/ForceMod/G63_PzI_ausf_C/normal/lod0/Gun_02.model",
+        "undamaged": "vehicles/ForceMod/G63_PzI_ausf_C/normal/lod0/Gun_02.model",
         "emblemSlots": [],
         "drivenJoints": null
     },

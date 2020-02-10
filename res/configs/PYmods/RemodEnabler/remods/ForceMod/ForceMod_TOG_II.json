@@ -5,7 +5,7 @@
     "enemy": false,
     "whitelist": ["gb63_tog_ii"],
     "chassis": {
-        "undamaged": "vehicles/remods/ForceMod/GB63_TOG_II/normal/lod0/Chassis.model",
+        "undamaged": "vehicles/ForceMod/GB63_TOG_II/normal/lod0/Chassis.model",
         "traces": {
             "lodDist": 120.0,
             "bufferPrefs": "largeTank",
@@ -190,7 +190,7 @@
         "leveredSuspension": null
     },
     "hull": {
-        "undamaged": "vehicles/remods/ForceMod/GB63_TOG_II/normal/lod0/Hull.model",
+        "undamaged": "vehicles/ForceMod/GB63_TOG_II/normal/lod0/Hull.model",
         "exhaust": {
             "pixie": "",
             "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
@@ -225,7 +225,7 @@
         ]
     },
     "turret": {
-        "undamaged": "vehicles/remods/ForceMod/GB63_TOG_II/normal/lod0/Turret_01.model",
+        "undamaged": "vehicles/ForceMod/GB63_TOG_II/normal/lod0/Turret_01.model",
         "emblemSlots": [
             {
                 "rayStart": [-0.9867219924926758, 0.7135059833526611, -0.8662670254707336],
@@ -269,7 +269,7 @@
         ]
     },
     "gun": {
-        "undamaged": "vehicles/remods/ForceMod/GB63_TOG_II/normal/lod0/Gun_01.model",
+        "undamaged": "vehicles/ForceMod/GB63_TOG_II/normal/lod0/Gun_01.model",
         "emblemSlots": [
             {
                 "rayStart": [0.0, 0.0002921739942394197, 2.414479970932007],

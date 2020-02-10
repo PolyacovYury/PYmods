@@ -5,7 +5,7 @@
     "enemy": false,
     "whitelist": ["ch17_wz131_1_wz132"],
     "chassis": {
-        "undamaged": "vehicles/remods/ForceMod/Ch17_WZ131_1_WZ132/normal/lod0/Chassis.model",
+        "undamaged": "vehicles/ForceMod/Ch17_WZ131_1_WZ132/normal/lod0/Chassis.model",
         "traces": {
             "lodDist": 120.0,
             "bufferPrefs": "mediumTank",
@@ -432,7 +432,7 @@
         "leveredSuspension": null
     },
     "hull": {
-        "undamaged": "vehicles/remods/ForceMod/Ch17_WZ131_1_WZ132/normal/lod0/Hull.model",
+        "undamaged": "vehicles/ForceMod/Ch17_WZ131_1_WZ132/normal/lod0/Hull.model",
         "exhaust": {
             "pixie": "",
             "nodes": ["HP_Track_Exhaus_1"]
@@ -454,7 +454,7 @@
         ]
     },
     "turret": {
-        "undamaged": "vehicles/remods/ForceMod/Ch17_WZ131_1_WZ132/normal/lod0/Turret_01.model",
+        "undamaged": "vehicles/ForceMod/Ch17_WZ131_1_WZ132/normal/lod0/Turret_01.model",
         "emblemSlots": [
             {
                 "rayStart": [-1.254639983177185, 0.260250985622406, -0.48314300179481506],
@@ -511,7 +511,7 @@
         ]
     },
     "gun": {
-        "undamaged": "vehicles/remods/ForceMod/Ch17_WZ131_1_WZ132/normal/lod0/Gun_01.model",
+        "undamaged": "vehicles/ForceMod/Ch17_WZ131_1_WZ132/normal/lod0/Gun_01.model",
         "emblemSlots": [
             {
                 "rayStart": [-0.00557307992130518, 0.010488700121641159, 1.4576400518417358],

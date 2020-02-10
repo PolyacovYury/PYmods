@@ -5,7 +5,7 @@
     "enemy": true,
     "whitelist": [],
     "chassis": {
-        "undamaged": "vehicles/japan/J29_Nameless/normal/lod0/Chassis.model",
+        "undamaged": "vehicles/ValkyrieChronicles/J29_Nameless/normal/lod0/Chassis.model",
         "traces": {
             "lodDist": 120.0,
             "bufferPrefs": "mediumTank",
@@ -299,14 +299,14 @@
             "lodSettings": null
         },
         "splineDesc": {
-            "leftDesc": [["vehicles/japan/J29_Nameless/track/left.track", 0, 0.19300000369548798, 0.33500000834465027, 0.0]],
-            "rightDesc": [["vehicles/japan/J29_Nameless/track/right.track", 0, 0.19300000369548798, 0.33500000834465027, 0.0]],
+            "leftDesc": [["vehicles/ValkyrieChronicles/J29_Nameless/track/left.track", 0, 0.19300000369548798, 0.33500000834465027, 0.0]],
+            "rightDesc": [["vehicles/ValkyrieChronicles/J29_Nameless/track/right.track", 0, 0.19300000369548798, 0.33500000834465027, 0.0]],
             "lodDist": 50.0,
             "atlasUTiles": 1,
             "atlasVTiles": 1,
             "segmentModelSets": {
-                "left": "vehicles/japan/J29_Nameless/track/segment.model",
-                "right": "vehicles/japan/J29_Nameless/track/segment.model",
+                "left": "vehicles/ValkyrieChronicles/J29_Nameless/track/segment.model",
+                "right": "vehicles/ValkyrieChronicles/J29_Nameless/track/segment.model",
                 "secondLeft": null,
                 "secondRight": null
             }
@@ -322,7 +322,7 @@
         "leveredSuspension": null
     },
     "hull": {
-        "undamaged": "vehicles/japan/J29_Nameless/normal/lod0/Hull.model",
+        "undamaged": "vehicles/ValkyrieChronicles/J29_Nameless/normal/lod0/Hull.model",
         "exhaust": {
             "pixie": "",
             "nodes": ["HP_Track_Exhaus_1"]
@@ -344,7 +344,7 @@
         ]
     },
     "turret": {
-        "undamaged": "vehicles/japan/J29_Nameless/normal/lod0/Turret_01.model",
+        "undamaged": "vehicles/ValkyrieChronicles/J29_Nameless/normal/lod0/Turret_01.model",
         "emblemSlots": [
             {
                 "rayStart": [-0.7322679758071899, 0.35985198616981506, 1.2270400524139404],
@@ -362,7 +362,7 @@
         ]
     },
     "gun": {
-        "undamaged": "vehicles/japan/J29_Nameless/normal/lod0/Gun_01.model",
+        "undamaged": "vehicles/ValkyrieChronicles/J29_Nameless/normal/lod0/Gun_01.model",
         "emblemSlots": [
             {
                 "rayStart": [0.009199989959597588, 0.0020346599631011486, 2.319999933242798],
