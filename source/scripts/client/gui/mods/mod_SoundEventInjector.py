@@ -7,14 +7,15 @@ import os
 import traceback
 from Avatar import PlayerAvatar
 from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, Analytics
-from ReloadEffect import _SimpleReloadDesc, _BarrelReloadDesc, _AutoReloadDesc
+from ReloadEffect import ReloadEffectsType, _SimpleReloadDesc, _BarrelReloadDesc, _AutoReloadDesc, _DualGunReloadDesc
 from debug_utils import LOG_ERROR
 from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc, ImpactNames, KeyPoint
 from items.components.sound_components import WWTripleSoundConfig as SoundConfig
 from items.vehicles import g_cache, VehicleType, __readEffectsTimeLine as readEffectsTimeLine, _VEHICLE_TYPE_XML_PATH
 from material_kinds import EFFECT_MATERIALS
 
-reloadTypes = {'SimpleReload': _SimpleReloadDesc, 'BarrelReload': _BarrelReloadDesc, 'AutoReload': _AutoReloadDesc}
+reloadTypes = {ReloadEffectsType.SIMPLE_RELOAD: _SimpleReloadDesc, ReloadEffectsType.BARREL_RELOAD: _BarrelReloadDesc,
+               ReloadEffectsType.AUTO_RELOAD: _AutoReloadDesc, ReloadEffectsType.DUALGUN_RELOAD: _DualGunReloadDesc}
 mismatchSlots = {'soundEvent': 'sound', 'shellDt': 'loopShellDt', 'shellDtLast': 'loopShellLastDt',
                  'clipShellLoadT': 'clipShellLoadDuration', 'almostCompleteT': 'almostCompleteDuration'}
 modifiers = {'duration': (lambda x: x * 1000.0), 'shellDuration': (lambda x: x * 1000.0),
@@ -28,7 +29,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.2.0 (%(file_compile_date)s)'
+        self.version = '1.3.0 (%(file_compile_date)s)'
         self.data = {'engines': {}, 'guns': {}, 'gun_effects': {}, 'gun_reload_effects': {}, 'shot_effects': {},
                      'sound_notifications': {}}
         super(ConfigInterface, self).init()
@@ -158,7 +159,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         item.sounds = SoundConfig('', itemData.get('wwsoundPC', s[0]), itemData.get('wwsoundNPC', s[1]))
                     elif item_type == 'guns':
                         if 'effects' in itemData:
-                            item.effects = g_cache._gunEffects.get(itemData['effects'], item.effects)
+                            self.overrideGunEffects(item, itemData['effects'])
                         if 'reloadEffect' in itemData:
                             item.reloadEffect = g_cache._gunReloadEffects.get(itemData['reloadEffect'], item.reloadEffect)
         for sname, index in g_cache.shotEffectsIndexes.iteritems():
@@ -198,9 +199,36 @@ class ConfigInterface(PYmodsConfigInterface):
                 itemData = self.data['guns'].get(nations.NAMES[nationID], {}).get(item.name)
             if itemData:
                 if 'effects' in itemData:
-                    item.effects = g_cache._gunEffects.get(itemData['effects'], item.effects)
+                    self.overrideGunEffects(item, itemData['effects'])
                 if 'reloadEffect' in itemData:
                     item.reloadEffect = g_cache._gunReloadEffects.get(itemData['reloadEffect'], item.reloadEffect)
+
+    def overrideGunEffects(self, gun, effectsData):
+        is_old_list = isinstance(gun.effects, list)
+        is_new_list = isinstance(effectsData, list)
+        if is_old_list != is_new_list:
+            if is_new_list:
+                gun.effects = g_cache._gunEffects.get(effectsData[0], gun.effects)
+            else:
+                print self.ID + ': item %s needs %s effects as list but one string was provided. Skipping...' % (
+                    gun.name, len(gun.effects))
+                return
+        if not is_new_list:
+            gun.effects = g_cache._gunEffects.get(effectsData, gun.effects)
+            return
+        if len(gun.effects) != len(effectsData):
+            print self.ID + ': item %s needs %s effects as list but %s were provided. Skipping...' % (
+                gun.name, len(gun.effects), len(effectsData))
+            return
+        effects = []
+        for effectName in effectsData:
+            gun_effect = g_cache._gunEffects.get(effectName)
+            if gun_effect is None:
+                print self.ID + ': gun effect', effectName, 'not found'
+            else:
+                effects.append(gun_effect)
+        if len(effects) == len(gun.effects):
+            gun.effects = effects
 
 
 @overrideMethod(VehicleType, '__init__')
