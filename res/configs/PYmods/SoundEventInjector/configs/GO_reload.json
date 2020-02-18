@@ -29,6 +29,16 @@
             "type": "SimpleReload",
             "duration": "3850.0",
             "sound": "reload_6"
+        },
+        "dualgun_reload85_107": {
+            "type": "DualGunReload",
+            "sound": "reload_4",
+            "ammoLowSound": "reload_4"
+        },
+        "dualgun_reload115_152": {
+            "type": "DualGunReload",
+            "sound": "reload_5",
+            "ammoLowSound": "reload_5"
         }
     }
 }
