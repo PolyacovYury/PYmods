@@ -212,7 +212,7 @@ class ConfigInterface(PYmodsConfigInterface):
             else:
                 print self.ID + ': item %s needs %s effects as list but one string was provided. Skipping...' % (
                     gun.name, len(gun.effects))
-                return
+            return
         if not is_new_list:
             gun.effects = g_cache._gunEffects.get(effectsData, gun.effects)
             return
