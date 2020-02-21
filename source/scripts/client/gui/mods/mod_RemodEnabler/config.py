@@ -27,6 +27,7 @@ from .remods import chassis_params
 
 class ConfigInterface(PYmodsConfigInterface):
     hangarSpace = dependency.descriptor(IHangarSpace)
+    teams = ('player', 'ally', 'enemy')
     # noinspection PyUnusedLocal
     modelDescriptor = property(lambda self: {
         'name': '', 'message': '', 'whitelist': [],
@@ -41,7 +42,6 @@ class ConfigInterface(PYmodsConfigInterface):
         'common': {'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}}})
 
     def __init__(self):
-        self.teams = ('player', 'ally', 'enemy')
         self.settings = {}
         self.modelsData = {'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}}}
         self.isModAdded = False
@@ -154,34 +154,43 @@ class ConfigInterface(PYmodsConfigInterface):
         self.modelsData['models'].clear()
         self.modelsData['selected'] = selectedData = loadJson(
             self.ID, 'remodsCache', self.modelsData['selected'], self.configPath)
-        remodTanks = set()
-        for root, _, fNames in os.walk(self.configPath + 'remods/'):
+        changed_xmlNames = set()
+        configs_dir = self.configPath + 'remods/'
+        for directory, _, fNames in os.walk(configs_dir):
             for fName in fnmatch.filter(fNames, '*.json'):
-                sName = fName.split('.')[0]
-                confDict = loadJson(self.ID, sName, {}, root, encrypted=True)
+                remod_name = os.path.join(directory.replace(configs_dir, ''), fName.split('.')[0]).replace(os.sep, '/')
+                confDict = loadJson(self.ID, remod_name, {}, configs_dir, encrypted=True)
                 if not confDict:
-                    print self.ID + ': error while reading', fName + '.'
+                    print self.ID + ': error while reading', remod_name + '.json.'
                     continue
-                settingsDict = self.settings.setdefault(sName, {team: confDict[team] for team in self.teams})
-                self.modelsData['models'][sName] = pRecord = self.modelDescriptor
-                pRecord['name'] = sName
-                pRecord['message'] = confDict.get('message', '')
-                settingsDict['whitelist'] = pRecord['whitelist'] = whitelist = remDups(
-                    x.strip() for x in settingsDict.get('whitelist', confDict['whitelist']) if x.strip())
+                old_settings = None
+                old_setting_names = [name for name in self.settings if name in remod_name]
+                if old_setting_names and remod_name not in old_setting_names:
+                    if len(old_setting_names) > 1:
+                        print self.ID + ': multiple possible settings for remod', remod_name + ':', old_setting_names,
+                        print 'skipping settings migration'
+                    else:
+                        old_settings = self.settings.pop(old_setting_names[0])
+                settings = self.settings.setdefault(remod_name, old_settings or {team: confDict[team] for team in self.teams})
+                self.modelsData['models'][remod_name] = descr = self.modelDescriptor
+                descr['name'] = remod_name
+                descr['message'] = confDict.get('message', '')
+                settings['whitelist'] = descr['whitelist'] = whitelist = remDups(
+                    x.strip() for x in settings.get('whitelist', confDict['whitelist']) if x.strip())
                 for xmlName in whitelist:
-                    remodTanks.add(xmlName)
+                    changed_xmlNames.add(xmlName)
                     for team in selectedData:
                         if xmlName not in selectedData[team] or selectedData[team][xmlName] is None:
-                            if settingsDict[team]:
-                                selectedData[team][xmlName] = sName
+                            if settings[team]:
+                                selectedData[team][xmlName] = remod_name
                             else:
                                 selectedData[team][xmlName] = None
                 if self.data['isDebug']:
                     if not whitelist:
-                        print self.ID + ': empty whitelist for', sName + '.'
+                        print self.ID + ': empty whitelist for', remod_name + '.'
                     else:
-                        print self.ID + ': whitelist for', sName + ':', whitelist
-                for key, data in pRecord.iteritems():
+                        print self.ID + ': whitelist for', remod_name + ':', whitelist
+                for key, data in descr.iteritems():
                     if key in ('name', 'message', 'whitelist'):
                         continue
                     if key == 'common':
@@ -206,7 +215,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         if 'tiling' in confSubDict['camouflage']:
                             data['camouflage']['tiling'] = confSubDict['camouflage']['tiling']
                     elif key == 'common' and self.data['isDebug']:
-                        print self.ID + ': default camomask not found for', sName
+                        print self.ID + ': default camomask not found for', remod_name
                     if 'emblemSlots' in data:
                         data['emblemSlots'] = slots = []
                         for subDict in confSubDict.get('emblemSlots', ()):
@@ -227,25 +236,29 @@ class ConfigInterface(PYmodsConfigInterface):
                         if k in data and k in confSubDict:
                             data[k] = confSubDict[k]
                 if self.data['isDebug']:
-                    print self.ID + ': config for', sName, 'loaded.'
+                    print self.ID + ': config for', remod_name, 'loaded.'
 
-        for sName in self.settings.keys():
-            if sName not in self.modelsData['models']:
-                del self.settings[sName]
+        for remod_name in self.settings.keys():
+            if remod_name not in self.modelsData['models']:
+                del self.settings[remod_name]
 
         if not self.modelsData['models']:
             if not quiet:
                 print self.ID + ': no configs found, model module standing down.'
-        for team in self.teams:
-            for xmlName in selectedData[team].keys():
-                if xmlName not in remodTanks:
-                    del selectedData[team][xmlName]
+        for team, teamData in selectedData.items():
+            for xmlName in teamData.keys():
+                if xmlName not in changed_xmlNames:
+                    teamData.pop(xmlName)
                     continue
-                if selectedData[team][xmlName] is None or (
-                        selectedData[team][xmlName] and selectedData[team][xmlName] not in self.modelsData['models']):
-                    selectedData[team][xmlName] = next(
-                        (sName for sName in sorted(self.modelsData['models']) if xmlName in self.settings[sName]['whitelist']
-                         and self.settings[sName][team]), None) or ''
+                remod_name = teamData[xmlName]
+                if remod_name and remod_name not in self.modelsData['models']:
+                    teamData[xmlName] = remod_name = next(
+                        (name for name in sorted(self.modelsData['models']) if remod_name in name), None)
+                if remod_name is None or (remod_name and remod_name not in self.modelsData['models']):
+                    teamData[xmlName] = next(
+                        (name for name in sorted(self.modelsData['models'])
+                         if xmlName in self.settings[name]['whitelist'] and self.settings[name][team]),
+                        None) or ''
         loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True, quiet=quiet)
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
 
