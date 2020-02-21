@@ -2,10 +2,10 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH/BDR_G1B_WH_1.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH/BDR_G1B_WH_1.json",
-        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH/BDR_G1B_WH_2.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH/BDR_G1B_WH_2.json",
-        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH/BDR_G1B_WH_3.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH/BDR_G1B_WH_3.json",
-        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH/BDR_G1B_WH_4.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH/BDR_G1B_WH_4.json",
-        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH/BDR_G1B_WH_5.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH/BDR_G1B_WH_5.json"
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH_1.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH_1.json",
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH_2.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH_2.json",
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH_3.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH_3.json",
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH_4.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH_4.json",
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH_5.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/BDR_G1B_WH_5.json"
     }
 }
