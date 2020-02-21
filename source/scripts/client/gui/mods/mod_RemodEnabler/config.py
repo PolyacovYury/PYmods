@@ -163,7 +163,15 @@ class ConfigInterface(PYmodsConfigInterface):
                 if not confDict:
                     print self.ID + ': error while reading', remod_name + '.json.'
                     continue
-                settings = self.settings.setdefault(remod_name, {team: confDict[team] for team in self.teams})
+                old_settings = None
+                old_setting_names = [name for name in self.settings if name in remod_name]
+                if old_setting_names and remod_name not in old_setting_names:
+                    if len(old_setting_names) > 1:
+                        print self.ID + ': multiple possible settings for remod', remod_name + ':', old_setting_names,
+                        print 'skipping settings migration'
+                    else:
+                        old_settings = self.settings.pop(old_setting_names[0])
+                settings = self.settings.setdefault(remod_name, old_settings or {team: confDict[team] for team in self.teams})
                 self.modelsData['models'][remod_name] = descr = self.modelDescriptor
                 descr['name'] = remod_name
                 descr['message'] = confDict.get('message', '')
@@ -244,7 +252,8 @@ class ConfigInterface(PYmodsConfigInterface):
                     continue
                 remod_name = teamData[xmlName]
                 if remod_name and remod_name not in self.modelsData['models']:
-                    remod_name = next((name for name in sorted(self.modelsData['models']) if remod_name in name), None)
+                    teamData[xmlName] = remod_name = next(
+                        (name for name in sorted(self.modelsData['models']) if remod_name in name), None)
                 if remod_name is None or (remod_name and remod_name not in self.modelsData['models']):
                     teamData[xmlName] = next(
                         (name for name in sorted(self.modelsData['models'])
