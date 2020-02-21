@@ -25,7 +25,8 @@ package  {
 	public class RemodEnablerUI extends AbstractWindowView {
 		private static const SCROLL_ITEM_LIMIT: int = 9;
 		private const teams: Array = ["player", "ally", "enemy"];
-		private var headerSize:int = 54;
+		private var heightMargin:int = 54;
+		private var widthMargin:int = 25;
 		
 		private var texts:Object;
 		private var settings:Object;
@@ -171,7 +172,7 @@ package  {
 			}
 		}
 		
-		private function createDropdown(x: int, y: int, callback: Function): DropdownMenu {
+		private function createDropdown(x: int, y: int, callback: Function, width:int=223): DropdownMenu {
 			var dropdown: DropdownMenu = App.utils.classFactory.getComponent("DropdownMenuUI", DropdownMenu);
 			dropdown.itemRenderer = App.utils.classFactory.getClass("DropDownListItemRendererSound");
 			dropdown.dropdown = "DropdownMenu_ScrollingList";
@@ -183,8 +184,8 @@ package  {
 			dropdown.showEmptyItems = false;
 			dropdown.x = x;
 			dropdown.y = y;
-			dropdown.width = 223;
-			dropdown.menuWidth = 224;
+			dropdown.width = width;
+			dropdown.menuWidth = width + 1;
 			//dropdown.menuRowsFixed = true;
 			//dropdown.soundId = "";
 			//dropdown.soundType = "dropDownMenu";
@@ -222,13 +223,15 @@ package  {
 			return _loc8_;
 		}
 
-		private function changeWindow(header: String, height: int): void {
+		private function changeWindow(header: String, width:int, height: int): void {
 			App.utils.focusHandler.setFocus(this);
 			if (window) {
 				window.title = header;
-				window.height = this.headerSize + height;
+				window.height = this.heightMargin + height;
+				window.width = this.widthMargin + width;
 			}
 			this.height = height;
+			this.width = width;
 			this.invalidate(InvalidationType.SIZE);
 		}
 
@@ -250,7 +253,7 @@ package  {
 				this.removeButtons();
 				this.removeChildren();
 				this.mode = "simple";
-				this.remodNameDropdown = this.createDropdown(8, 8, this.remodNameDropdownChange);
+				this.remodNameDropdown = this.createDropdown(8, 8, this.remodNameDropdownChange, 373);
 				this.useForLabel = this.createLabel(this.texts.useFor_header_text, "", 8, 38);
 				this.addChild(this.useForLabel);
 				this.playerCB = this.createCheckBox(this.texts.useFor_player_text, "", 8, 58, this.UFPCBChange);
@@ -275,7 +278,7 @@ package  {
 		}
 
 		private function calculateSimpleMenuData(): void {
-			this.changeWindow(this.texts.header_simple + this.currentVehicleName, 183);
+			this.changeWindow(this.texts.header_simple + this.currentVehicleName, 390, 183);
 			var names:Array = new Array();
 			var iter:int = 0;
 			this.currentRemods = [];
@@ -304,7 +307,7 @@ package  {
 				this.py_onRequestSettings();
 				this.removeChildren();
 				this.mode = "advanced_menu";
-				this.changeWindow(this.texts.header_main, 113);
+				this.changeWindow(this.texts.header_main, 240, 113);
 				this.remodSetupBtn = this.createButton(this.texts.remodSetupBtn, 8, 8, this.remodSetupBtnClick, 223, 32, true);
 				this.remodCreateBtn = this.createButton(this.texts.remodCreateBtn, 8, 45, this.remodCreateBtnClick, 223, 32, true);
 				this.remodSetupBtn.enabled = Boolean(this.remodNameArray.length);
@@ -379,17 +382,15 @@ package  {
 				this.removeButtons();
 				this.removeChildren();
 				this.mode = "advanced_setup";
-				this.changeWindow(this.texts.header_setup, 178);
-				this.remodNameDropdown = this.createDropdown(8, 8, this.remodNameDropdownChange);
-				this.useForLabel = this.createLabel(this.texts.useFor_header_text, "",  8, 38);
+				this.changeWindow(this.texts.header_setup, 390, 178);
+				this.remodNameDropdown = this.createDropdown(8, 8, this.remodNameDropdownChange, 373);
+				this.useForLabel = this.createLabel(this.texts.useFor_header_text, "",  9, 37);
 				this.addChild(this.useForLabel);
-				this.playerCB = this.createCheckBox(this.texts.useFor_player_text, "", 8, 58, this.UFPCBChange);
-				this.allyCB = this.createCheckBox(this.texts.useFor_ally_text, "", 8, 78, this.UFACBChange);
-				this.enemyCB = this.createCheckBox(this.texts.useFor_enemy_text, "", 8, 98, this.UFECBChange);
-				this.addBtn = this.createButton(this.texts.addBtn, 158, 118, this.addBtnClick, 70);
-				this.whitelistDropdown = this.createDropdown(8, 116, this.whitelistDropdownChange);
-				this.whitelistDropdown.width = 149;
-				this.whitelistDropdown.menuWidth = 150;
+				this.playerCB = this.createCheckBox(this.texts.useFor_player_text, "", 8, 57, this.UFPCBChange);
+				this.allyCB = this.createCheckBox(this.texts.useFor_ally_text, "", 8, 77, this.UFACBChange);
+				this.enemyCB = this.createCheckBox(this.texts.useFor_enemy_text, "", 8, 97, this.UFECBChange);
+				this.addBtn = this.createButton(this.texts.addBtn, 158, 120, this.addBtnClick, 70);
+				this.whitelistDropdown = this.createDropdown(8, 118, this.whitelistDropdownChange, 149);
 				this.whitelistDropdown.validateNow();
 				this.addBottomButtons(153);
 				var names:Array = [];
@@ -414,7 +415,7 @@ package  {
 			this.removeButtons();
 			this.removeChildren();
 			this.mode = "advanced_create";
-			this.changeWindow(this.texts.header_create, 228);
+			this.changeWindow(this.texts.header_create, 240, 228);
 			this.newSettings = this.py_getRemodData();
 			this.nameBox = this.createTextInput(this.texts.remodCreate_name_text, "{HEADER}" + this.texts.remodCreate_name_text + "{/HEADER}{BODY}" + this.texts.remodCreate_name_tooltip + "{/BODY}", this.newSettings.name, 0, -2);
 			this.nameBox["value"].addEventListener(Event.CHANGE, this.onInputChange);
@@ -431,9 +432,7 @@ package  {
 			this.enemyCB = this.createCheckBox(this.texts.useFor_enemy_text, "", 8, 148, this.UFECBChange);
 			this.enemyCB.cb.selected = this.newSettings.enemy;
 			this.addBtn = this.createButton(this.texts.addBtn, 158, 168, this.addBtnClick, 70);
-			this.whitelistDropdown = this.createDropdown(8, 166, this.whitelistDropdownChange);
-			this.whitelistDropdown.width = 149;
-			this.whitelistDropdown.menuWidth = 150;
+			this.whitelistDropdown = this.createDropdown(8, 166, this.whitelistDropdownChange, 149);
 			this.whitelistDropdown.validateNow();
 			this.addBottomButtons(198);
 			this.provideWhitelistData();
