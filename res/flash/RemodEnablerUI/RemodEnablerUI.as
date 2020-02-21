@@ -95,7 +95,7 @@ package  {
 			return this.py_checkSettings(this.settings, this.cache);
 		}
 		
-		private function createButton(label: String, x: int, y: int, handler: Function, width: int = 100, height:int = 23, big:Boolean = false, type: String = "ButtonNormal"): SoundButtonEx {
+		private function createButton(label: String, x: int, y: int, handler: Function, width: int = 125, height:int = 23, big:Boolean = false, type: String = "ButtonNormal"): SoundButtonEx {
 			var Button:SoundButtonEx = App.utils.classFactory.getComponent(type, SoundButtonEx);
 			Button.width = width;
 			Button.height = height;
@@ -211,7 +211,7 @@ package  {
 			var textInput: TextInput = TextInput(App.utils.classFactory.getComponent("TextInput", TextInput));
 			TextFieldEx.setNoTranslate(textInput.textField, true);
 			textInput.y = _loc6_;
-			textInput.width = 200;
+			textInput.width = 273;
 			textInput.text = param3;
 			textInput.displayAsPassword = param4;
 			_loc5_.addChild(textInput);
@@ -253,14 +253,14 @@ package  {
 				this.removeButtons();
 				this.removeChildren();
 				this.mode = "simple";
-				this.remodNameDropdown = this.createDropdown(8, 8, this.remodNameDropdownChange, 373);
+				this.remodNameDropdown = this.createDropdown(8, 8, this.remodNameDropdownChange, 273);
 				this.useForLabel = this.createLabel(this.texts.useFor_header_text, "", 8, 38);
 				this.addChild(this.useForLabel);
 				this.playerCB = this.createCheckBox(this.texts.useFor_player_text, "", 8, 58, this.UFPCBChange);
 				this.allyCB = this.createCheckBox(this.texts.useFor_ally_text, "", 8, 78, this.UFACBChange);
 				this.enemyCB = this.createCheckBox(this.texts.useFor_enemy_text, "", 8, 98, this.UFECBChange);
 				this.addBtn = this.createButton(this.texts.addBtn, 8, 123, this.addBtnClick);
-				this.removeBtn = this.createButton(this.texts.removeBtn, 128, 123, this.removeBtnClick);
+				this.removeBtn = this.createButton(this.texts.removeBtn, 153, 123, this.removeBtnClick);
 				this.addBottomButtons(153);
 				this.calculateSimpleMenuData();
 			} catch (error: Error) {
@@ -278,7 +278,7 @@ package  {
 		}
 
 		private function calculateSimpleMenuData(): void {
-			this.changeWindow(this.texts.header_simple + this.currentVehicleName, 390, 183);
+			this.changeWindow(this.texts.header_simple + this.currentVehicleName, 290, 183);
 			var names:Array = new Array();
 			var iter:int = 0;
 			this.currentRemods = [];
@@ -311,7 +311,7 @@ package  {
 				this.remodSetupBtn = this.createButton(this.texts.remodSetupBtn, 8, 8, this.remodSetupBtnClick, 223, 32, true);
 				this.remodCreateBtn = this.createButton(this.texts.remodCreateBtn, 8, 45, this.remodCreateBtnClick, 223, 32, true);
 				this.remodSetupBtn.enabled = Boolean(this.remodNameArray.length);
-				this.backBtn = this.createButton(this.texts.backBtn, 8, 88, this.backBtnClick);
+				this.backBtn = this.createButton(this.texts.backBtn, 8, 88, this.backBtnClick, 100);
 			} catch (error: Error) {
 				this.py_printLog(error.getStackTrace());
 			}
@@ -324,7 +324,7 @@ package  {
 			} else {
 				this.backBtn.label = this.texts.backBtn;
 			}
-			this.saveBtn = this.createButton("", 128, y, this.saveBtnClick, 100, 23, false, "ButtonRed");
+			this.saveBtn = this.createButton("", 153, y, this.saveBtnClick, 125, 23, false, "ButtonRed");
 			if (this.mode == "simple_add") {
 				this.saveBtn.label = this.texts.addBtn;
 			} else {
@@ -382,15 +382,15 @@ package  {
 				this.removeButtons();
 				this.removeChildren();
 				this.mode = "advanced_setup";
-				this.changeWindow(this.texts.header_setup, 390, 178);
-				this.remodNameDropdown = this.createDropdown(8, 8, this.remodNameDropdownChange, 373);
+				this.changeWindow(this.texts.header_setup, 290, 178);
+				this.remodNameDropdown = this.createDropdown(8, 8, this.remodNameDropdownChange, 273);
 				this.useForLabel = this.createLabel(this.texts.useFor_header_text, "",  9, 37);
 				this.addChild(this.useForLabel);
 				this.playerCB = this.createCheckBox(this.texts.useFor_player_text, "", 8, 57, this.UFPCBChange);
 				this.allyCB = this.createCheckBox(this.texts.useFor_ally_text, "", 8, 77, this.UFACBChange);
 				this.enemyCB = this.createCheckBox(this.texts.useFor_enemy_text, "", 8, 97, this.UFECBChange);
-				this.addBtn = this.createButton(this.texts.addBtn, 158, 120, this.addBtnClick, 70);
-				this.whitelistDropdown = this.createDropdown(8, 118, this.whitelistDropdownChange, 149);
+				this.addBtn = this.createButton(this.texts.addBtn, 184, 120, this.addBtnClick, 95);
+				this.whitelistDropdown = this.createDropdown(8, 118, this.whitelistDropdownChange, 172);
 				this.whitelistDropdown.validateNow();
 				this.addBottomButtons(153);
 				var names:Array = [];
@@ -415,7 +415,7 @@ package  {
 			this.removeButtons();
 			this.removeChildren();
 			this.mode = "advanced_create";
-			this.changeWindow(this.texts.header_create, 240, 228);
+			this.changeWindow(this.texts.header_create, 290, 228);
 			this.newSettings = this.py_getRemodData();
 			this.nameBox = this.createTextInput(this.texts.remodCreate_name_text, "{HEADER}" + this.texts.remodCreate_name_text + "{/HEADER}{BODY}" + this.texts.remodCreate_name_tooltip + "{/BODY}", this.newSettings.name, 0, -2);
 			this.nameBox["value"].addEventListener(Event.CHANGE, this.onInputChange);
@@ -431,8 +431,8 @@ package  {
 			this.allyCB.cb.selected = this.newSettings.ally;
 			this.enemyCB = this.createCheckBox(this.texts.useFor_enemy_text, "", 8, 148, this.UFECBChange);
 			this.enemyCB.cb.selected = this.newSettings.enemy;
-			this.addBtn = this.createButton(this.texts.addBtn, 158, 168, this.addBtnClick, 70);
-			this.whitelistDropdown = this.createDropdown(8, 166, this.whitelistDropdownChange, 149);
+			this.addBtn = this.createButton(this.texts.addBtn, 184, 168, this.addBtnClick, 95);
+			this.whitelistDropdown = this.createDropdown(8, 166, this.whitelistDropdownChange, 172);
 			this.whitelistDropdown.validateNow();
 			this.addBottomButtons(198);
 			this.provideWhitelistData();
@@ -490,7 +490,7 @@ package  {
 				this.removeBottomButtons();
 				this.remodNameDropdown.enabled = false;
 				this.remodNameDropdownChange(null);
-				this.whitelistDropdown = this.createDropdown(8, 123, this.whitelistDropdownChange);
+				this.whitelistDropdown = this.createDropdown(8, 123, this.whitelistDropdownChange, 273);
 				this.addBottomButtons(153);
 				
 				var names:Array = [];
@@ -595,7 +595,7 @@ package  {
 				this.removeChild(this.whitelistDropdown);
 				this.whitelistDropdown = null;
 				this.addBtn = this.createButton(this.texts.addBtn, 8, 123, this.addBtnClick);
-				this.removeBtn = this.createButton(this.texts.removeBtn, 128, 123, this.removeBtnClick);
+				this.removeBtn = this.createButton(this.texts.removeBtn, 153, 123, this.removeBtnClick);
 				this.removeBottomButtons();
 				this.addBottomButtons(153);
 				this.calculateSimpleMenuData();
