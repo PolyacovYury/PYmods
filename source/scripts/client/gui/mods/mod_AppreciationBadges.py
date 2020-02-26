@@ -3,9 +3,9 @@ import os
 import traceback
 from PYmodsCore import overrideMethod, remDups, Analytics
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
+from gui.Scaleform.settings import getBadgeIconPath, ICONS_SIZES
 from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
-from gui.battle_results.components import style
-from gui.battle_results.components.vehicles import RegularVehicleStatsBlock
+from gui.battle_results.components.vehicles import BadgeBlock
 from gui.doc_loaders.badges_loader import getSelectedByLayout, getAvailableBadges
 from gui.prb_control.items import PlayerPrbInfo, PlayerUnitInfo
 from gui.prb_control.items.prb_seqs import PrbListItem
@@ -35,66 +35,41 @@ if badges_dir is not None:
         g_badges[accID] = {'battle': badgeID, 'lobby': badge_name}
 
 
-    def addLobbyBadge(dbID, badgesList):
-        if dbID in g_badges:
-            badgesList.append(g_badges[dbID]['lobby'])
-
-
     @overrideMethod(PrbListItem, '__init__')
-    def new_PLI_init(base, self, *a, **kw):
-        base(self, *a, **kw)
-        addLobbyBadge(self.creatorDbId, self.badges._BadgesHelper__badges)
-
-
     @overrideMethod(PlayerPrbInfo, '__init__')
     @overrideMethod(PlayerUnitInfo, '__init__')
     def new_PPUI_init(base, self, *a, **kw):
         base(self, *a, **kw)
-        addLobbyBadge(self.dbID, self.badges._BadgesHelper__badges)
-
-
-    @overrideMethod(PrbListItem, 'getBadgeID')
-    @overrideMethod(PlayerPrbInfo, 'getBadgeID')
-    @overrideMethod(PlayerUnitInfo, 'getBadgeID')
-    def new_getBadgeID(base, self, *a, **k):
-        result = base(self, *a, **k)
-        if isinstance(result, basestring) and '_' in result:
-            result = int(result.split('_')[1])
-        return result
+        dbID = getattr(self, 'creatorDbId', getattr(self, 'dbID', None))
+        if dbID in g_badges:
+            old_badges = self.badges._BadgesHelper__badges
+            if old_badges:
+                self.badges._BadgesHelper__badges = (old_badges[0] + (g_badges[dbID]['lobby'],), old_badges[1])
+            else:
+                self.badges._BadgesHelper__badges = ((g_badges[dbID]['lobby'],), ())
+            self.badges._BadgesHelper__prefixBadgeID = None
 
 
     @overrideMethod(VehicleArenaInfoVO, '__init__')
     def new_VAIVO_init(base, self, *a, **kw):
         base(self, *a, **kw)
         if self.player.accountDBID in g_badges:
-            self.ranked.badges += (g_badges[self.player.accountDBID]['battle'],)
-            self.ranked._PlayerRankedInfoVO__prefixBadge, self.ranked._PlayerRankedInfoVO__suffixBadge = getSelectedByLayout(
-                self.ranked.badges)
+            self.badges = (self.badges[0] + (g_badges[self.player.accountDBID]['battle'],), self.badges[1])
+            self._VehicleArenaInfoVO__prefixBadge, self._VehicleArenaInfoVO__suffixBadge = getSelectedByLayout(self.badges[0])
 
 
-    @overrideMethod(RegularVehicleStatsBlock, 'setRecord')
-    def new_RVSB_setRecord(base, self, result, reusable):
+    @overrideMethod(BadgeBlock, 'setRecord')
+    def new_BadgeBlock_setRecord(base, self, result, reusable):
         base(self, result, reusable)
         if result.player.dbID in g_badges:
-            self.badge = g_badges[result.player.dbID]['lobby']
-            self.badgeIcon = style.makeBadgeIcon(self.badge)
+            self.icon = getBadgeIconPath(ICONS_SIZES.X24, g_badges[result.player.dbID]['lobby'])
+            self.sizeContent = ICONS_SIZES.X24
 
 
     @overrideMethod(RES_ICONS, 'getBadgeIcon')
     def new_getBadgeIcon(base, _, size, value):
         if isinstance(value, int) or '_' not in value:
             return base(size, value)
-        return getBadgePath(value)
-
-
-    @overrideMethod(RES_ICONS, 'getBadgeIconBySize')
-    def new_getBadgeIconBySize(base, _, w, h, value):
-        if isinstance(value, int) or '_' not in value:
-            return base(w, h, value)
-        return getBadgePath(value)
-
-
-    def getBadgePath(value):
         outcome = '../AppreciationBadges/{}.png'.format(value)
         normOutcome = os.path.normpath('gui/flash/' + outcome).replace(os.sep, '/')
         if ResMgr.openSection(normOutcome) is None:
@@ -105,5 +80,5 @@ if badges_dir is not None:
 else:
     message = 'folder not found!'
     badges = []
-print 'AppreciationBadges v.1.0.1 by Polyacov_Yury:', message
-analytics = Analytics('AppreciationBadges', 'v.1.0.1', 'UA-76792179-17', badges)
+print 'AppreciationBadges v.1.0.2 by Polyacov_Yury:', message
+analytics = Analytics('AppreciationBadges', 'v.1.0.2', 'UA-76792179-17', badges)
