@@ -3,14 +3,12 @@ import os
 import traceback
 from PYmodsCore import overrideMethod, remDups, Analytics
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
-from gui.Scaleform.settings import getBadgeIconPath, ICONS_SIZES
 from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
-from gui.battle_results.components.vehicles import BadgeBlock
 from gui.battle_results.reusable.avatars import AvatarsInfo
 from gui.doc_loaders.badges_loader import getSelectedByLayout, getAvailableBadges
 from gui.prb_control.items import PlayerPrbInfo, PlayerUnitInfo
 from gui.prb_control.items.prb_seqs import PrbListItem
-from gui.shared.gui_items.badge import Badge
+from gui.shared.gui_items.badge import Badge, BadgeLayouts
 
 badges_dir = ResMgr.openSection('gui/AppreciationBadges/')
 if badges_dir is None:
@@ -25,21 +23,14 @@ else:
         if '_' not in badge_name:
             print 'AppreciationBadges: wrong badge format:', badge_name
             continue
-        strAccID, strBadgeID = badge_name.split('_', 1)
+        strAccID, _ = badge_name.split('_', 1)
         try:
             accID = int(strAccID)
         except ValueError:
             print 'AppreciationBadges: incorrect account ID:', strAccID
             continue
-        try:
-            badgeID = int(strBadgeID)
-        except ValueError:
-            print 'AppreciationBadges: incorrect default badge ID:', strBadgeID
-            continue
-        if badgeID not in badges_data:
-            print 'AppreciationBadges: unrecognized default badge ID:', strBadgeID
-            continue
-        badges_data[badge_name] = dict(badges_data[badgeID], id=badge_name)
+        badges_data[badge_name] = {
+            'id': badge_name, 'name': badge_name, 'weight': -1.0, 'type': 0, 'layout': BadgeLayouts.PREFIX}
         g_badges[accID] = badge_name
 
 
@@ -72,14 +63,6 @@ else:
         if dbID in g_badges:
             result._AvatarInfo__badge = g_badges[dbID]
         return result
-
-
-    @overrideMethod(BadgeBlock, 'setRecord')
-    def new_BadgeBlock_setRecord(base, self, result, reusable):
-        base(self, result, reusable)
-        if result.player.dbID in g_badges:
-            self.icon = getBadgeIconPath(ICONS_SIZES.X24, g_badges[result.player.dbID])
-            self.sizeContent = ICONS_SIZES.X24
 
 
     @overrideMethod(Badge, 'getBadgeVO')
