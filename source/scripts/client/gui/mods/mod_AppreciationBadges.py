@@ -6,6 +6,7 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.settings import getBadgeIconPath, ICONS_SIZES
 from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
 from gui.battle_results.components.vehicles import BadgeBlock
+from gui.battle_results.reusable.avatars import AvatarsInfo
 from gui.doc_loaders.badges_loader import getSelectedByLayout, getAvailableBadges
 from gui.prb_control.items import PlayerPrbInfo, PlayerUnitInfo
 from gui.prb_control.items.prb_seqs import PrbListItem
@@ -58,6 +59,14 @@ if badges_dir is not None:
             self._VehicleArenaInfoVO__prefixBadge, self._VehicleArenaInfoVO__suffixBadge = getSelectedByLayout(self.badges[0])
 
 
+    @overrideMethod(AvatarsInfo, 'getAvatarInfo')
+    def new_AI_getAvatarInfo(base, self, dbID):
+        result = base(self, dbID)
+        if dbID in g_badges:
+            result._AvatarInfo__badge = g_badges[dbID]['lobby']
+        return result
+
+
     @overrideMethod(BadgeBlock, 'setRecord')
     def new_BadgeBlock_setRecord(base, self, result, reusable):
         base(self, result, reusable)
@@ -80,5 +89,5 @@ if badges_dir is not None:
 else:
     message = 'folder not found!'
     badges = []
-print 'AppreciationBadges v.1.0.2 by Polyacov_Yury:', message
-analytics = Analytics('AppreciationBadges', 'v.1.0.2', 'UA-76792179-17', badges)
+print 'AppreciationBadges v.1.0.3 by Polyacov_Yury:', message
+analytics = Analytics('AppreciationBadges', 'v.1.0.3', 'UA-76792179-17', badges)
