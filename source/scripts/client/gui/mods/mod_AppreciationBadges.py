@@ -42,11 +42,11 @@ if badges_dir is not None:
         base(self, *a, **kw)
         dbID = getattr(self, 'creatorDbId', getattr(self, 'dbID', None))
         if dbID in g_badges:
-            old_badges = self.badges._BadgesHelper__badges
+            old_badges = self.badges._BadgesHelper__badgesRawData
             if old_badges:
-                self.badges._BadgesHelper__badges = (old_badges[0] + (g_badges[dbID]['lobby'],), old_badges[1])
+                old_badges[0].append(g_badges[dbID]['lobby'])
             else:
-                self.badges._BadgesHelper__badges = ((g_badges[dbID]['lobby'],), ())
+                self.badges._BadgesHelper__badgesRawData = ([g_badges[dbID]['lobby']], [0])
             self.badges._BadgesHelper__prefixBadgeID = None
 
 
@@ -54,7 +54,7 @@ if badges_dir is not None:
     def new_VAIVO_init(base, self, *a, **kw):
         base(self, *a, **kw)
         if self.player.accountDBID in g_badges:
-            self.badges = (self.badges[0] + (g_badges[self.player.accountDBID]['battle'],), self.badges[1])
+            self.badges = (list(self.badges[0]) + [g_badges[self.player.accountDBID]['battle']], self.badges[1])
             self._VehicleArenaInfoVO__prefixBadge, self._VehicleArenaInfoVO__suffixBadge = getSelectedByLayout(self.badges[0])
 
 
