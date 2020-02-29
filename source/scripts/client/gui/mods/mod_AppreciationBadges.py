@@ -10,9 +10,13 @@ from gui.battle_results.reusable.avatars import AvatarsInfo
 from gui.doc_loaders.badges_loader import getSelectedByLayout, getAvailableBadges
 from gui.prb_control.items import PlayerPrbInfo, PlayerUnitInfo
 from gui.prb_control.items.prb_seqs import PrbListItem
+from gui.shared.gui_items.badge import Badge
 
 badges_dir = ResMgr.openSection('gui/AppreciationBadges/')
-if badges_dir is not None:
+if badges_dir is None:
+    message = 'folder not found!'
+    badges = []
+else:
     g_badges = {}
     badges_data = getAvailableBadges()
     message = 'initialised.'
@@ -25,15 +29,18 @@ if badges_dir is not None:
         try:
             accID = int(strAccID)
         except ValueError:
-            print 'AppreciationBadges: unrecognized account ID:', strAccID
+            print 'AppreciationBadges: incorrect account ID:', strAccID
             continue
         try:
             badgeID = int(strBadgeID)
         except ValueError:
-            print 'AppreciationBadges: wrong battle badge ID:', strBadgeID
+            print 'AppreciationBadges: incorrect default badge ID:', strBadgeID
+            continue
+        if badgeID not in badges_data:
+            print 'AppreciationBadges: unrecognized default badge ID:', strBadgeID
             continue
         badges_data[badge_name] = dict(badges_data[badgeID], id=badge_name)
-        g_badges[accID] = {'battle': badgeID, 'lobby': badge_name}
+        g_badges[accID] = badge_name
 
 
     @overrideMethod(PrbListItem, '__init__')
@@ -45,9 +52,9 @@ if badges_dir is not None:
         if dbID in g_badges:
             old_badges = self.badges._BadgesHelper__badgesRawData
             if old_badges:
-                old_badges[0].append(g_badges[dbID]['lobby'])
+                old_badges[0].append(g_badges[dbID])
             else:
-                self.badges._BadgesHelper__badgesRawData = ([g_badges[dbID]['lobby']], [0])
+                self.badges._BadgesHelper__badgesRawData = ([g_badges[dbID]], [0])
             self.badges._BadgesHelper__prefixBadgeID = None
 
 
@@ -55,7 +62,7 @@ if badges_dir is not None:
     def new_VAIVO_init(base, self, *a, **kw):
         base(self, *a, **kw)
         if self.player.accountDBID in g_badges:
-            self.badges = (list(self.badges[0]) + [g_badges[self.player.accountDBID]['battle']], self.badges[1])
+            self.badges = (list(self.badges[0]) + [g_badges[self.player.accountDBID]], self.badges[1])
             self._VehicleArenaInfoVO__prefixBadge, self._VehicleArenaInfoVO__suffixBadge = getSelectedByLayout(self.badges[0])
 
 
@@ -63,7 +70,7 @@ if badges_dir is not None:
     def new_AI_getAvatarInfo(base, self, dbID):
         result = base(self, dbID)
         if dbID in g_badges:
-            result._AvatarInfo__badge = g_badges[dbID]['lobby']
+            result._AvatarInfo__badge = g_badges[dbID]
         return result
 
 
@@ -71,8 +78,17 @@ if badges_dir is not None:
     def new_BadgeBlock_setRecord(base, self, result, reusable):
         base(self, result, reusable)
         if result.player.dbID in g_badges:
-            self.icon = getBadgeIconPath(ICONS_SIZES.X24, g_badges[result.player.dbID]['lobby'])
+            self.icon = getBadgeIconPath(ICONS_SIZES.X24, g_badges[result.player.dbID])
             self.sizeContent = ICONS_SIZES.X24
+
+
+    @overrideMethod(Badge, 'getBadgeVO')
+    def new_getBadgeVO(base, self, size, extraData=None, shortIconName=False):
+        if '_' in self.getIconPostfix():
+            shortIconName = False
+            if extraData is not None and 'isAtlasSource' in extraData:
+                extraData['isAtlasSource'] = False
+        return base(self, size, extraData, shortIconName)
 
 
     @overrideMethod(RES_ICONS, 'getBadgeIcon')
@@ -86,8 +102,5 @@ if badges_dir is not None:
             traceback.print_stack()
             return ''
         return outcome
-else:
-    message = 'folder not found!'
-    badges = []
 print 'AppreciationBadges v.1.0.3 by Polyacov_Yury:', message
 analytics = Analytics('AppreciationBadges', 'v.1.0.3', 'UA-76792179-17', badges)
