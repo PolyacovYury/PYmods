@@ -198,11 +198,6 @@ def new_setModuleInfoS(base, self, moduleInfo):
     base(self, moduleInfo)
 
 
-def new_setFightButtonS(base, self, label):
-    from helpers import i18n
-    base(self, i18n.makeString(label))
-
-
 @overrideMethod(ResourceManager, 'getTranslatedText')
 def getTranslatedText(base, self, resourceID):
     path = _config.accessorPaths.get(resourceID)
@@ -219,12 +214,10 @@ def getTranslatedText(base, self, resourceID):
 
 
 def ButtonReplacer_hooks():
-    from gui.Scaleform.daapi.view.meta.LobbyHeaderMeta import LobbyHeaderMeta
     from gui.Scaleform.daapi.view.meta.ModuleInfoMeta import ModuleInfoMeta
     from gui.shared.tooltips.module import EffectsBlockConstructor
     overrideMethod(ModuleInfoMeta, 'as_setModuleInfoS', new_setModuleInfoS)
     overrideMethod(EffectsBlockConstructor, 'construct', new_construct)
-    overrideMethod(LobbyHeaderMeta, 'as_setFightButtonS', new_setFightButtonS)
     _config.getAccessorsPaths()
 
 

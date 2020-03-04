@@ -35,6 +35,13 @@ def loadMods():
         except StandardError:
             traceback.print_exc()
 
+    def override_backport_text():
+        from gui.impl import backport
+        backport.text = lambda resId, *a, **k: globals()['makeString'](backport.msgid(resId), *a, **k)
+
+    import BigWorld
+    BigWorld.callback(0, override_backport_text)
+
 
 try:
     loadMods()
