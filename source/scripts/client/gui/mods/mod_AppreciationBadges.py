@@ -4,14 +4,17 @@ import traceback
 from PYmodsCore import overrideMethod, remDups, Analytics
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
-from gui.battle_results.components import style
-from gui.battle_results.components.vehicles import RegularVehicleStatsBlock
+from gui.battle_results.reusable.avatars import AvatarsInfo
 from gui.doc_loaders.badges_loader import getSelectedByLayout, getAvailableBadges
 from gui.prb_control.items import PlayerPrbInfo, PlayerUnitInfo
 from gui.prb_control.items.prb_seqs import PrbListItem
+from gui.shared.gui_items.badge import Badge, BadgeLayouts
 
 badges_dir = ResMgr.openSection('gui/AppreciationBadges/')
-if badges_dir is not None:
+if badges_dir is None:
+    message = 'folder not found!'
+    badges = []
+else:
     g_badges = {}
     badges_data = getAvailableBadges()
     message = 'initialised.'
@@ -20,81 +23,61 @@ if badges_dir is not None:
         if '_' not in badge_name:
             print 'AppreciationBadges: wrong badge format:', badge_name
             continue
-        strAccID, strBadgeID = badge_name.split('_', 1)
+        strAccID, _ = badge_name.split('_', 1)
         try:
             accID = int(strAccID)
         except ValueError:
-            print 'AppreciationBadges: unrecognized account ID:', strAccID
+            print 'AppreciationBadges: incorrect account ID:', strAccID
             continue
-        try:
-            badgeID = int(strBadgeID)
-        except ValueError:
-            print 'AppreciationBadges: wrong battle badge ID:', strBadgeID
-            continue
-        badges_data[badge_name] = dict(badges_data[badgeID], id=badge_name)
-        g_badges[accID] = {'battle': badgeID, 'lobby': badge_name}
-
-
-    def addLobbyBadge(dbID, badgesList):
-        if dbID in g_badges:
-            badgesList.append(g_badges[dbID]['lobby'])
+        badges_data[badge_name] = {
+            'id': badge_name, 'name': badge_name, 'weight': -1.0, 'type': 0, 'layout': BadgeLayouts.PREFIX}
+        g_badges[accID] = badge_name
 
 
     @overrideMethod(PrbListItem, '__init__')
-    def new_PLI_init(base, self, *a, **kw):
-        base(self, *a, **kw)
-        addLobbyBadge(self.creatorDbId, self.badges._BadgesHelper__badges)
-
-
     @overrideMethod(PlayerPrbInfo, '__init__')
     @overrideMethod(PlayerUnitInfo, '__init__')
     def new_PPUI_init(base, self, *a, **kw):
         base(self, *a, **kw)
-        addLobbyBadge(self.dbID, self.badges._BadgesHelper__badges)
-
-
-    @overrideMethod(PrbListItem, 'getBadgeID')
-    @overrideMethod(PlayerPrbInfo, 'getBadgeID')
-    @overrideMethod(PlayerUnitInfo, 'getBadgeID')
-    def new_getBadgeID(base, self, *a, **k):
-        result = base(self, *a, **k)
-        if isinstance(result, basestring) and '_' in result:
-            result = int(result.split('_')[1])
-        return result
+        dbID = getattr(self, 'creatorDbId', getattr(self, 'dbID', None))
+        if dbID in g_badges:
+            old_badges = self.badges._BadgesHelper__badgesRawData
+            if old_badges:
+                old_badges[0].append(g_badges[dbID])
+            else:
+                self.badges._BadgesHelper__badgesRawData = ([g_badges[dbID]], [0])
+            self.badges._BadgesHelper__prefixBadgeID = None
 
 
     @overrideMethod(VehicleArenaInfoVO, '__init__')
     def new_VAIVO_init(base, self, *a, **kw):
         base(self, *a, **kw)
         if self.player.accountDBID in g_badges:
-            self.ranked.badges += (g_badges[self.player.accountDBID]['battle'],)
-            self.ranked._PlayerRankedInfoVO__prefixBadge, self.ranked._PlayerRankedInfoVO__suffixBadge = getSelectedByLayout(
-                self.ranked.badges)
+            self.badges = (list(self.badges[0]) + [g_badges[self.player.accountDBID]], self.badges[1])
+            self._VehicleArenaInfoVO__prefixBadge, self._VehicleArenaInfoVO__suffixBadge = getSelectedByLayout(self.badges[0])
 
 
-    @overrideMethod(RegularVehicleStatsBlock, 'setRecord')
-    def new_RVSB_setRecord(base, self, result, reusable):
-        base(self, result, reusable)
-        if result.player.dbID in g_badges:
-            self.badge = g_badges[result.player.dbID]['lobby']
-            self.badgeIcon = style.makeBadgeIcon(self.badge)
+    @overrideMethod(AvatarsInfo, 'getAvatarInfo')
+    def new_AI_getAvatarInfo(base, self, dbID):
+        result = base(self, dbID)
+        if dbID in g_badges:
+            result._AvatarInfo__badge = g_badges[dbID]
+        return result
+
+
+    @overrideMethod(Badge, 'getBadgeVO')
+    def new_getBadgeVO(base, self, size, extraData=None, shortIconName=False):
+        if '_' in self.getIconPostfix():
+            shortIconName = False
+            if extraData is not None and 'isAtlasSource' in extraData:
+                extraData['isAtlasSource'] = False
+        return base(self, size, extraData, shortIconName)
 
 
     @overrideMethod(RES_ICONS, 'getBadgeIcon')
     def new_getBadgeIcon(base, _, size, value):
         if isinstance(value, int) or '_' not in value:
             return base(size, value)
-        return getBadgePath(value)
-
-
-    @overrideMethod(RES_ICONS, 'getBadgeIconBySize')
-    def new_getBadgeIconBySize(base, _, w, h, value):
-        if isinstance(value, int) or '_' not in value:
-            return base(w, h, value)
-        return getBadgePath(value)
-
-
-    def getBadgePath(value):
         outcome = '../AppreciationBadges/{}.png'.format(value)
         normOutcome = os.path.normpath('gui/flash/' + outcome).replace(os.sep, '/')
         if ResMgr.openSection(normOutcome) is None:
@@ -102,8 +85,5 @@ if badges_dir is not None:
             traceback.print_stack()
             return ''
         return outcome
-else:
-    message = 'folder not found!'
-    badges = []
-print 'AppreciationBadges v.1.0.1 by Polyacov_Yury:', message
-analytics = Analytics('AppreciationBadges', 'v.1.0.1', 'UA-76792179-17', badges)
+print 'AppreciationBadges v.1.0.3 by Polyacov_Yury:', message
+analytics = Analytics('AppreciationBadges', 'v.1.0.3', 'UA-76792179-17', badges)
