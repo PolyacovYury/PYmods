@@ -12,9 +12,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.0.1 (%(file_compile_date)s)'
-        self.data = {'10percent': 'percent_10',
-                     '25percent': 'percent_25',
-                     '50percent': 'percent_50'}
+        self.data = {'10percent': 'PlayerHPAnnouncer_10',
+                     '25percent': 'PlayerHPAnnouncer_25',
+                     '50percent': 'PlayerHPAnnouncer_50'}
         super(ConfigInterface, self).init()
 
     def loadLang(self):
