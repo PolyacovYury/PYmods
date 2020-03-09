@@ -106,6 +106,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
 _config = ConfigInterface()
 i18nHooks = ('i18n_hook_makeString',)
+TAG_RE = re.compile(r'<[^>]+>')
 
 
 def old_makeString(*_, **__):
@@ -185,10 +186,15 @@ def new_tankmanAttr_getValue(base, self):
 def new_I18nDialog_init(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
     if _config.data['enabled']:
-        TAG_RE = re.compile(r'<[^>]+>')
         for key in self._messageCtx:
             if isinstance(self._messageCtx[key], basestring):
                 self._messageCtx[key] = TAG_RE.sub('', self._messageCtx[key])
+
+
+def new_getQuestShortInfoData(base, *a, **k):
+    result = base(*a, **k)
+    result['questName'] = TAG_RE.sub('', result['questName'])
+    return result
 
 
 def delayedHooks():
@@ -196,12 +202,14 @@ def delayedHooks():
     from gui.Scaleform.daapi.view.lobby.hangar.Crew import Crew
     from gui.shared.tooltips.tankman import TankmanSkillListField, ToolTipAttrField, TankmanRoleLevelField, \
         TankmanCurrentVehicleAttrField
+    from gui.battle_control.controllers.quest_progress.quest_progress_ctrl import QuestProgressController
     overrideMethod(Crew, 'as_tankmenResponseS', new_as_tankmenResponseS)
     overrideMethod(TankmanSkillListField, '_getValue', new_tankmanSkill_getValue)
     overrideMethod(ToolTipAttrField, '_getValue', new_tankmanAttr_getValue)
     overrideMethod(TankmanRoleLevelField, '_getValue', new_tankmanAttr_getValue)
     overrideMethod(TankmanCurrentVehicleAttrField, '_getValue', new_tankmanAttr_getValue)
     overrideMethod(I18nDialogMeta, '__init__', new_I18nDialog_init)
+    overrideMethod(QuestProgressController, 'getQuestShortInfoData', new_getQuestShortInfoData)
 
 
 BigWorld.callback(0, delayedHooks)
