@@ -16,22 +16,23 @@ __all__ = ['loadJson', 'loadJsonOrdered']
 class JSONObjectEncoder(json.JSONEncoder):
     def encode(self, o, i=0):
         try:  # Special Processing for lists
+            i += self.indent
+            item_sep = ('%s\n%s' % (self.item_separator, ' ' * i))
             if isinstance(o, (list, tuple)):
                 if not any(isinstance(x, dict) for x in o):
-                    result = '[%s]' % ', '.join(self.encode(x) for x in o)
+                    result = '[%s]' % ('%s ' % self.item_separator).join(self.encode(x) for x in o)
                     if len(result) <= 80:
                         return result
-                i += self.indent
-                return '[\n%s\n%s]' % (',\n'.join((' ' * i + self.encode(x, i)) for x in o), ' ' * (i - self.indent))
+                return '[\n%s\n%s]' % (item_sep.join(self.encode(x, i) for x in o), ' ' * (i - self.indent))
             elif isinstance(o, dict):
                 if not o:
                     return '{}'
                 keys = o.keys()
                 if self.sort_keys:
                     keys = sorted(keys)
-                i += self.indent
-                return '{\n%s\n%s}' % (',\n'.join(' ' * i + '%s: %s' % (json.dumps(k), self.encode(o[k], i)) for k in keys),
-                                       ' ' * (i - self.indent))
+                return '{\n%s\n%s}' % (
+                    item_sep.join('%s%s%s' % (json.dumps(k), self.key_separator, self.encode(o[k], i)) for k in keys),
+                    ' ' * (i - self.indent))
             else:
                 return super(JSONObjectEncoder, self).encode(o)
         except StandardError:
