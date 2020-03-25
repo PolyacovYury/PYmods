@@ -2,6 +2,7 @@
 import BigWorld
 import inspect
 import random
+import sys
 import threading
 import urllib
 import urllib2
@@ -50,9 +51,22 @@ def overrideMethod(obj, prop, getter=None, setter=None, deleter=None):
         getter_orig = getter
         assert callable(src), 'Source property is not callable!'
         assert callable(getter_orig), 'Handler is not callable!'
-        getter_new = lambda *args, **kwargs: getter_orig(src, *args, **kwargs)
         while isinstance(getter, partial):
             getter = getter.func
+
+        def getter_new(*a, **k):  # noinspection PyUnusedLocal
+            info = None
+            try:
+                return getter_orig(src, *a, **k)
+            except Exception:  # Code to remove this wrapper from traceback
+                info = sys.exc_info()
+                new_tb = info[2].tb_next  # https://stackoverflow.com/q/44813333
+                if new_tb is None:  # exception occurs inside this wrapper, not inside of getter_orig
+                    new_tb = _generate_new_tb(getter.func_code)
+                raise info[0], info[1], new_tb
+            finally:
+                del info
+
         try:
             update_wrapper(getter_new, getter)
         except AttributeError:
@@ -66,6 +80,17 @@ def overrideMethod(obj, prop, getter=None, setter=None, deleter=None):
         return getter_orig
     else:
         return partial(overrideMethod, obj, prop)
+
+
+def _generate_new_tb(co):  # https://unterwaditzer.net/2018/python-custom-tracebacks.html
+    ns = {}
+    exec (compile(''.join(('\n' * (co.co_firstlineno - 1), 'def ', co.co_name, '(): 1/0')), co.co_filename, 'exec'), ns)
+    tb_obj = None
+    try:
+        ns[co.co_name]()
+    except ZeroDivisionError:
+        tb_obj = sys.exc_info()[2].tb_next
+    return tb_obj
 
 
 def objToDict(obj):
