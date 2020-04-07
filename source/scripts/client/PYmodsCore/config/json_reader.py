@@ -59,13 +59,12 @@ class JSONLoader:
 
     @classmethod
     def stringed_ints(cls, inputs):
-        if inputs:
+        if inputs and isinstance(inputs, dict):  # OrderedDict is a subclass of dict
+            gen_expr = (
+                ((str(key) if isinstance(key, int) else key), cls.stringed_ints(value)) for key, value in inputs.iteritems())
             if isinstance(inputs, OrderedDict):
-                return OrderedDict(((str(key) if isinstance(key, int) else key), cls.stringed_ints(value)) for key, value in
-                                   inputs.iteritems())
-            elif isinstance(inputs, dict):
-                return {(str(key) if isinstance(key, int) else key): cls.stringed_ints(value) for key, value in
-                        inputs.iteritems()}
+                return OrderedDict(gen_expr)
+            return dict(gen_expr)
         return inputs
 
     @staticmethod
@@ -100,10 +99,9 @@ class JSONLoader:
             return line, False
 
     @staticmethod
-    def json_dumps(conf, sort_keys):
-        # noinspection PyArgumentEqualDefault
-        return json.dumps(conf, sort_keys=sort_keys, indent=4, cls=JSONObjectEncoder,
-                          ensure_ascii=False, encoding='utf-8', separators=(',', ': '))
+    def json_dumps(conf, sort_keys):  # noinspection PyArgumentEqualDefault
+        return json.dumps(conf, sort_keys=sort_keys, indent=4, ensure_ascii=False, encoding='utf-8', separators=(',', ': '),
+                          cls=JSONObjectEncoder)
 
     @classmethod
     def json_file_read(cls, new_path, encrypted):
