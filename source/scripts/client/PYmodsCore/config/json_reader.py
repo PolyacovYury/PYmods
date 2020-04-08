@@ -16,22 +16,23 @@ __all__ = ['loadJson', 'loadJsonOrdered']
 class JSONObjectEncoder(json.JSONEncoder):
     def encode(self, o, i=0):
         try:  # Special Processing for lists
+            i += self.indent
+            item_sep = ('%s\n%s' % (self.item_separator, ' ' * i))
             if isinstance(o, (list, tuple)):
                 if not any(isinstance(x, dict) for x in o):
-                    result = '[%s]' % ', '.join(self.encode(x) for x in o)
+                    result = '[%s]' % ('%s ' % self.item_separator).join(self.encode(x) for x in o)
                     if len(result) <= 80:
                         return result
-                i += self.indent
-                return '[\n%s\n%s]' % (',\n'.join((' ' * i + self.encode(x, i)) for x in o), ' ' * (i - self.indent))
+                return '[\n%s\n%s]' % (item_sep.join(self.encode(x, i) for x in o), ' ' * (i - self.indent))
             elif isinstance(o, dict):
                 if not o:
                     return '{}'
                 keys = o.keys()
                 if self.sort_keys:
                     keys = sorted(keys)
-                i += self.indent
-                return '{\n%s\n%s}' % (',\n'.join(' ' * i + '%s: %s' % (json.dumps(k), self.encode(o[k], i)) for k in keys),
-                                       ' ' * (i - self.indent))
+                return '{\n%s\n%s}' % (
+                    item_sep.join('%s%s%s' % (json.dumps(k), self.key_separator, self.encode(o[k], i)) for k in keys),
+                    ' ' * (i - self.indent))
             else:
                 return super(JSONObjectEncoder, self).encode(o)
         except StandardError:
@@ -58,13 +59,12 @@ class JSONLoader:
 
     @classmethod
     def stringed_ints(cls, inputs):
-        if inputs:
+        if inputs and isinstance(inputs, dict):  # OrderedDict is a subclass of dict
+            gen_expr = (
+                ((str(key) if isinstance(key, int) else key), cls.stringed_ints(value)) for key, value in inputs.iteritems())
             if isinstance(inputs, OrderedDict):
-                return OrderedDict(((str(key) if isinstance(key, int) else key), cls.stringed_ints(value)) for key, value in
-                                   inputs.iteritems())
-            elif isinstance(inputs, dict):
-                return {(str(key) if isinstance(key, int) else key): cls.stringed_ints(value) for key, value in
-                        inputs.iteritems()}
+                return OrderedDict(gen_expr)
+            return dict(gen_expr)
         return inputs
 
     @staticmethod
@@ -99,10 +99,9 @@ class JSONLoader:
             return line, False
 
     @staticmethod
-    def json_dumps(conf, sort_keys):
-        # noinspection PyArgumentEqualDefault
-        return json.dumps(conf, sort_keys=sort_keys, indent=4, cls=JSONObjectEncoder,
-                          ensure_ascii=False, encoding='utf-8', separators=(',', ': '))
+    def json_dumps(conf, sort_keys):  # noinspection PyArgumentEqualDefault
+        return json.dumps(conf, sort_keys=sort_keys, indent=4, ensure_ascii=False, encoding='utf-8', separators=(',', ': '),
+                          cls=JSONObjectEncoder)
 
     @classmethod
     def json_file_read(cls, new_path, encrypted):
