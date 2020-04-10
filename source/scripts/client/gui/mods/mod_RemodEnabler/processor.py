@@ -99,7 +99,7 @@ def new_cacheAppearance(base, self, vId, info, *args, **kwargs):
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled']:
-        modelDesc, playerName = getModelDescInfo(self._HangarVehicleAppearance__vEntity.id, vDesc, 'hangar')
+        modelDesc, playerName = getModelDescInfo(self.id, vDesc, 'hangar')
         view = SL.appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOBBY_CUSTOMIZATION))
         if view is not None:
             if modelDesc is not None and getattr(vDesc, 'modelDesc', None) is not None:
@@ -111,7 +111,8 @@ def new_startBuild(base, self, vDesc, vState):
 
 
 @overrideMethod(MainView, '_populate')
-def new_populate(base, *a, **kw):
+def new_populate(base, self, *a, **kw):
     if g_config.data['enabled']:
         BigWorld.callback(0, refreshCurrentVehicle)
-    return base(*a, **kw)
+        BigWorld.callback(0.2, self._MainView__onVehicleChanged)
+    return base(self, *a, **kw)
