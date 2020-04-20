@@ -153,63 +153,51 @@ def i18n_hook_makeString(key, *args, **kwargs):
         return old_makeString(key, *args, **kwargs)
 
 
-def new_as_tankmenResponseS(base, self, data):
-    if _config.data['enabled']:
-        from CurrentVehicle import g_currentVehicle
-        vehicle = g_currentVehicle.item
-        for tankmanData in data['tankmen']:
-            for key in tankmanData:
-                if (key in ('firstName', 'lastName', 'rank') and _config.data['crewColour']) or key == 'role' or \
-                        (key == 'vehicleType' and tankmanData[key] == vehicle.shortUserName):
-                    tankmanData[key] = "<font color='#%s'>%s</font>" % (_config.data['colour'], tankmanData[key])
-        for roleData in data['roles']:
-            for key in ('role', 'vehicleType'):
-                roleData[key] = "<font color='#%s'>%s</font>" % (_config.data['colour'], roleData[key])
-    return base(self, data)
-
-
-def new_tankmanSkill_getValue(base, self):
-    result = base(self)
-    if _config.data['enabled']:
-        for skill in result:
-            skill['label'] = "<font color='#%s'>%s</font>" % (_config.data['colour'], skill['label'])
-    return result
-
-
-def new_tankmanAttr_getValue(base, self):
-    result = base(self)
-    return ("<font color='#%s'>%s</font>" % (_config.data['colour'], result)
-            if _config.data['enabled'] and self._name in ('name', 'rank', 'role', 'efficiencyRoleLevel', 'currentVehicleName')
-            else result)
-
-
-def new_I18nDialog_init(base, self, *args, **kwargs):
-    base(self, *args, **kwargs)
-    if _config.data['enabled']:
-        for key in self._messageCtx:
-            if isinstance(self._messageCtx[key], basestring):
-                self._messageCtx[key] = TAG_RE.sub('', self._messageCtx[key])
-
-
-def new_getQuestShortInfoData(base, *a, **k):
-    result = base(*a, **k)
-    result['questName'] = TAG_RE.sub('', result['questName'])
-    return result
-
-
 def delayedHooks():
     from gui.Scaleform.daapi.view.dialogs import I18nDialogMeta
     from gui.Scaleform.daapi.view.lobby.hangar.Crew import Crew
     from gui.shared.tooltips.tankman import TankmanSkillListField, ToolTipAttrField, TankmanRoleLevelField, \
         TankmanCurrentVehicleAttrField
-    from gui.battle_control.controllers.quest_progress.quest_progress_ctrl import QuestProgressController
-    overrideMethod(Crew, 'as_tankmenResponseS', new_as_tankmenResponseS)
-    overrideMethod(TankmanSkillListField, '_getValue', new_tankmanSkill_getValue)
-    overrideMethod(ToolTipAttrField, '_getValue', new_tankmanAttr_getValue)
-    overrideMethod(TankmanRoleLevelField, '_getValue', new_tankmanAttr_getValue)
-    overrideMethod(TankmanCurrentVehicleAttrField, '_getValue', new_tankmanAttr_getValue)
-    overrideMethod(I18nDialogMeta, '__init__', new_I18nDialog_init)
-    overrideMethod(QuestProgressController, 'getQuestShortInfoData', new_getQuestShortInfoData)
+
+    @overrideMethod(I18nDialogMeta, '__init__')
+    def new_I18nDialog_init(base, self, *args, **kwargs):
+        base(self, *args, **kwargs)
+        if _config.data['enabled']:
+            for key in self._messageCtx:
+                if isinstance(self._messageCtx[key], basestring):
+                    self._messageCtx[key] = TAG_RE.sub('', self._messageCtx[key])
+
+    @overrideMethod(Crew, 'as_tankmenResponseS')
+    def new_as_tankmenResponseS(base, self, data):
+        if _config.data['enabled']:
+            from CurrentVehicle import g_currentVehicle
+            vehicle = g_currentVehicle.item
+            for tankmanData in data['tankmen']:
+                for key in tankmanData:
+                    if (key in ('firstName', 'lastName', 'rank') and _config.data['crewColour'] or key == 'role' or
+                            key == 'vehicleType' and tankmanData[key] == vehicle.shortUserName):
+                        tankmanData[key] = "<font color='#%s'>%s</font>" % (_config.data['colour'], tankmanData[key])
+            for roleData in data['roles']:
+                for key in ('role', 'vehicleType'):
+                    roleData[key] = "<font color='#%s'>%s</font>" % (_config.data['colour'], roleData[key])
+        return base(self, data)
+
+    @overrideMethod(TankmanSkillListField, '_getValue')
+    def new_tankmanSkill_getValue(base, self):
+        result = base(self)
+        if _config.data['enabled']:
+            for skill in result:
+                skill['label'] = "<font color='#%s'>%s</font>" % (_config.data['colour'], skill['label'])
+        return result
+
+    @overrideMethod(ToolTipAttrField, '_getValue')
+    @overrideMethod(TankmanRoleLevelField, '_getValue')
+    @overrideMethod(TankmanCurrentVehicleAttrField, '_getValue')
+    def new_tankmanAttr_getValue(base, self):
+        result = base(self)
+        if _config.data['enabled'] and self._name in ('name', 'rank', 'role', 'efficiencyRoleLevel', 'currentVehicleName'):
+            return "<font color='#%s'>%s</font>" % (_config.data['colour'], result)
+        return result
 
 
 BigWorld.callback(0, delayedHooks)
