@@ -405,7 +405,8 @@ class RemodEnablerUI(AbstractWindowView):
                 for key in chassis_params + ('chassisLodDistance',):
                     obj = _asDict(getattr(vDesc.chassis, key))
                     chassis[key] = obj
-                chassis['splineDesc']['segmentModelSets'] = chassis['splineDesc']['segmentModelSets'][modelsSet]
+                modelsSets = chassis['splineDesc']['segmentModelSets']
+                chassis['splineDesc']['segmentModelSets'] = modelsSets.get(modelsSet, modelsSets['default'])
                 chassis['hullPosition'] = vDesc.chassis.hullPosition.list()
                 chassis['AODecals'] = [[[decal.get(strIdx, colIdx) for colIdx in xrange(3)] for strIdx in xrange(4)]
                                        for decal in vDesc.chassis.AODecals]
