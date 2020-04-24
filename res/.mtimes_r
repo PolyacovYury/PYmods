@@ -266,8 +266,8 @@
 1498837233|configs/PYmods/LampLights/models/SpotSphere/sphere.visual
 1556331126|configs/PYmods/PYmodsGUI/i18n/en.json
 1556331176|configs/PYmods/PYmodsGUI/i18n/ru.json
-1509840505|configs/PYmods/PlayerHPAnnouncer/PlayerHPAnnouncer.json
-1570568577|configs/PYmods/PlayersPanelHP/PlayersPanelHP.json
+1582966840|configs/PYmods/PlayerHPAnnouncer/PlayerHPAnnouncer.json
+1570568434|configs/PYmods/PlayersPanelHP/PlayersPanelHP.json
 1549800862|configs/PYmods/PlayersPanelHP/i18n/en.json
 1549800855|configs/PYmods/PlayersPanelHP/i18n/ru.json
 1401624965|configs/PYmods/PlayersPanelHP/icons/hp_alive_l.png
@@ -387,7 +387,7 @@
 1521449989|configs/PYmods/SunController/SunController.json
 1482142459|configs/PYmods/SunController/i18n/en.json
 1482142550|configs/PYmods/SunController/i18n/ru.json
-1556449474|configs/PYmods/UT_announcer/UT_announcer.json
+1587599654|configs/PYmods/UT_announcer/UT_announcer.json
 1556367257|configs/PYmods/UT_announcer/i18n/en.json
 1521708229|configs/PYmods/UT_announcer/i18n/ru.json
 1577042299|configs/PYmods/VoiceOverrider/VoiceOverrider.json

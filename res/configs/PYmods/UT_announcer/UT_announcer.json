@@ -27,7 +27,7 @@
 //      Цвет текста в бою.
         "colour": "#2AB157",
 //      Шрифт.
-        "font": "$IMELanguageBar",
+        "font": "$FieldFont",
 //      Размер (походу, в пикселях :D)
         "size": 25
     },
