@@ -60,7 +60,7 @@ class ConfigInterface(PYmodsConfigInterface):
                                 'ramKill': 'ramkill', 'payback': 'payback', 'denied': 'denied', 'sndStart': '',
                                 'snd5min': 't5min', 'snd3min': 't3min', 'snd2min': '', 'snd1min': 't1min',
                                 'snd30sec': 't30secs', 'snd10sec': '', 'snd5sec': 't5secs', 'sndFinish': ''},
-                     'textStyle': {'colour': '#2AB157', 'size': 25, 'font': '$IMELanguageBar'},
+                     'textStyle': {'colour': '#2AB157', 'size': 25, 'font': '$FieldFont'},
                      'textPosition': {'alignX': 'center', 'alignY': 'top', 'x': 0, 'y': 120},
                      'textBackground': {'enabled': True, 'width': 530, 'height': 32,
                                         'image': '../../scripts/client/gui/mods/mod_UT_announcer.png'},
