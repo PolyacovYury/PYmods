@@ -1,7 +1,0 @@
-﻿{
-    "enabled": true,
-    "ext": ".zip",
-    "files": {
-        "mods/{GAME_VERSION}/PYmods/EffectsListSpamFix.wotmod": "build/wotmods/PYmods/EffectsListSpamFix.wotmod"
-    }
-}
