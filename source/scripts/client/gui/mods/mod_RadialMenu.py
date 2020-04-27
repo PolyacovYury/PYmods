@@ -40,7 +40,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '2.2.0 (%(file_compile_date)s)'
+        self.version = '2.2.1 (%(file_compile_date)s)'
         self.author += ' (orig by locastan/tehHedger/TRJ_VoRoN)'
         self.defaultKeys = {'mapMenu_key': [Keys.KEY_LALT]}
         self.data = {'enabled': True,
@@ -371,6 +371,7 @@ def new_updateMenu(base, self):
     for state in SHORTCUT_STATES.ALL:
         stateData = [{'title': x.title, 'action': x.action, 'icon': x.icon, 'key': getKeyFromAction(x.action, state)}
                      for x in SHORTCUT_SETS[state]]
+        data.append({'state': state, 'data': stateData})
         state = state.replace('_spg', '')
         if state not in menuConf:
             continue
@@ -387,7 +388,6 @@ def new_updateMenu(base, self):
                 hotkey = hotKeys[0] if len(hotKeys) == 1 else 0
             stateData[idx] = {'title': command.title, 'icon': command.icon, 'key': getScaleformKey(hotkey),
                               'action': '.'.join((menuType, state, '%s' % idx))}
-        data.append({'state': state, 'data': stateData})
     self.as_buildDataS(data)
 
 
