@@ -7,7 +7,6 @@ import traceback
 import zipfile
 from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, events, curCV
 from PYmodsCore.delayed import showConfirmDialog
-from debug_utils import LOG_ERROR, LOG_NOTE
 from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
 
 
@@ -20,7 +19,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.4.0 (%(file_compile_date)s)'
+        self.version = '1.4.0.1 (%(file_compile_date)s)'
         self.author += ' and Ekspoint'
         self.data = {'defaultPool': 36,
                      'lowEnginePool': 10,
@@ -165,7 +164,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def checkConfigs(self):
         orig_engine = ResMgr.openSection('engine_config.xml')
         if orig_engine is None:
-            LOG_ERROR('engine_config.xml not found')
+            print _config.ID + ': ERROR: engine_config.xml not found'
             return
         new_engine = ResMgr.openSection('engine_config_edited.xml', True)
         new_engine.copy(orig_engine)
@@ -189,15 +188,16 @@ class ConfigInterface(PYmodsConfigInterface):
                          ('delete', 'move', 'create', 'memory'))
 
     def collectBankFiles(self, mediaPath):
-        bankFiles = {'mods': set(), 'pkg': set(), 'ignore': set(),
+        bankFiles = {'mods': set(), 'pkg': set(), 'ignore': set(), 'audio_mods_allowed': ('protanki.bnk',),
                      'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')
                              if os.path.splitext(path)[1] in ('.bnk', '.pck')}}
         for pkgPath in glob.iglob('./res/packages/audioww*.pkg'):
             with zipfile.ZipFile(pkgPath) as pkg:
                 bankFiles['pkg'].update({os.path.basename(name) for name in pkg.namelist()})
         bankFiles['orig'] = bankFiles['res'] | bankFiles['pkg']
-        bankFiles['mods'] = set(x for x in ResMgr.openSection(mediaPath).keys()
-                                if os.path.splitext(x)[1] in ('.bnk', '.pck') and not any(y in bankFiles['orig'] for y in (x, x.lower())))
+        bankFiles['mods'] = set(
+            x for x in ResMgr.openSection(mediaPath).keys()
+            if os.path.splitext(x)[1] in ('.bnk', '.pck') and not any(y in bankFiles['orig'] for y in (x, x.lower())))
         bankFiles['all'] = bankFiles['orig'] | bankFiles['mods']
         return bankFiles
 
@@ -229,8 +229,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def merge_audio_mods(self, mediaPath, bankFiles):
         audio_mods = ResMgr.openSection(mediaPath + '/audio_mods.xml')
         audio_mods_new = ResMgr.openSection(mediaPath + '/audio_mods_edited.xml', True)
+        audio_mods_banks = []
         if audio_mods is None:
-            LOG_NOTE('audio_mods.xml not found, will be created if needed')
+            print _config.ID + ': audio_mods.xml not found, will be created if needed'
         data_structure = [
             {'name': 'events', 'key': 'event', 'keys': ('name', 'mod'), 'data': ()},
             {'name': 'switches', 'key': 'switch', 'keys': ('name', 'mod'),
@@ -260,11 +261,15 @@ class ConfigInterface(PYmodsConfigInterface):
                 data_new.setdefault(key, []).extend(bankData.get(key, []))
         for bankSect in audio_mods['loadBanks'].values():
             bankName = bankSect.asString
-            print self.ID + ': clearing audio_mods section for bank', bankName
-            self.editedBanks['delete'].append(bankName)
+            if bankName not in bankFiles['audio_mods_allowed']:
+                print self.ID + ': clearing audio_mods section for bank', bankName
+                self.editedBanks['delete'].append(bankName)
+            else:
+                audio_mods_banks.append(bankName)
         self.editedBanks['delete'] = remDups(self.editedBanks['delete'])
         for key in ['loadBanks'] + [struct['name'] for struct in data_structure]:
             audio_mods_new.createSection(key)
+        audio_mods_new['loadBanks'].writeStrings('bank', audio_mods_banks)
         for struct in data_structure:
             key = struct['name']
             if data_old[key] != data_new.setdefault(key, []):
@@ -295,7 +300,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     print self.ID + ': changing value for', profile_type, 'memory setting:', poolValue
 
     def manageProfileBanks(self, profile_type, profile, bankFiles):
-        moddedExist = set()
+        exist = set()
         for name, section in profile.items():
             if 'soundbanks' not in name:
                 continue
@@ -303,15 +308,15 @@ class ConfigInterface(PYmodsConfigInterface):
                 if sectName != 'project':
                     continue
                 bankName = project['name'].asString
-                if bankName not in bankFiles['all']:
+                if bankName not in bankFiles['all'] or bankName in bankFiles['audio_mods_allowed']:
                     print self.ID + ': clearing engine_config', profile_type, 'section for bank', bankName
                     self.editedBanks['delete'].append(bankName)
                     section.deleteSection(project)
-                elif bankName not in moddedExist:
-                    moddedExist.add(bankName)
+                else:
+                    exist.add(bankName)
         bankFiles['orig'] = [x.lower() for x in bankFiles['orig']]
         for bankName in sorted(bankFiles['mods']):
-            if bankName not in bankFiles['orig'] and bankName not in moddedExist and bankName not in bankFiles['ignore']:
+            if not any(bankName in bankFiles[x] for x in ('orig', 'ignore', 'audio_mods_allowed')) and bankName not in exist:
                 print self.ID + ': creating', profile_type, 'sections for bank', bankName
                 if bankName in self.editedBanks['delete']:
                     self.editedBanks['delete'].remove(bankName)
