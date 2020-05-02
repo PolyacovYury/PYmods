@@ -195,7 +195,7 @@ def do_compile(f_path, d_file=None, o_file=None, raises=False, timeStr=''):
         fc.flush()
         fc.seek(0, 0)
         fc.write(py_compile.MAGIC)
-    if timeStr:
+    if timeStr or timestamp:
         os.utime(o_file, (time.time(), timestamp))
     return True
 
