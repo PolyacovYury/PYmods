@@ -20,10 +20,10 @@ else:
     message = 'initialised.'
     badges = remDups(os.path.splitext(x)[0] for x in badges_dir.keys())
     for badge_name in badges:
-        if '_' not in badge_name:
+        if not badge_name.startswith('ABadge_'):
             print 'AppreciationBadges: wrong badge format:', badge_name
             continue
-        strAccID, _ = badge_name.split('_', 1)
+        _, strAccID = badge_name.split('_', 1)
         try:
             accID = int(strAccID)
         except ValueError:
@@ -67,7 +67,7 @@ else:
 
     @overrideMethod(Badge, 'getBadgeVO')
     def new_getBadgeVO(base, self, size, extraData=None, shortIconName=False):
-        if '_' in self.getIconPostfix():
+        if self.getIconPostfix().startswith('ABadge_'):
             shortIconName = False
             if extraData is not None and 'isAtlasSource' in extraData:
                 extraData['isAtlasSource'] = False
@@ -76,14 +76,14 @@ else:
 
     @overrideMethod(RES_ICONS, 'getBadgeIcon')
     def new_getBadgeIcon(base, _, size, value):
-        if isinstance(value, int) or '_' not in value:
+        if isinstance(value, int) or not value.startswith('ABadge_'):
             return base(size, value)
-        outcome = '../AppreciationBadges/{}.png'.format(value)
+        outcome = '../AppreciationBadges/%s.png' % value
         normOutcome = os.path.normpath('gui/flash/' + outcome).replace(os.sep, '/')
         if ResMgr.openSection(normOutcome) is None:
             print 'WARNING: not found icon:', normOutcome
             traceback.print_stack()
             return ''
         return outcome
-print 'AppreciationBadges v.1.0.3 by Polyacov_Yury:', message
-analytics = Analytics('AppreciationBadges', 'v.1.0.3', 'UA-76792179-17', badges)
+print 'AppreciationBadges v.1.0.4 by Polyacov_Yury:', message
+analytics = Analytics('AppreciationBadges', 'v.1.0.4', 'UA-76792179-17', badges)
