@@ -2,9 +2,9 @@
     "enabled": true,
     "ext": ".wotmod",
     "files": {
-        "res/gui/AppreciationBadges/1005654291_28.png": "res/res/gui/AppreciationBadges/1005654291_28.png",
-        "res/gui/AppreciationBadges/4260379_28.png": "res/res/gui/AppreciationBadges/4260379_28.png",
-        "res/gui/AppreciationBadges/508211276_28.png": "res/res/gui/AppreciationBadges/508211276_28.png",
+        "res/gui/AppreciationBadges/ABadge_1005654291.png": "res/res/gui/AppreciationBadges/ABadge_1005654291.png",
+        "res/gui/AppreciationBadges/ABadge_4260379.png": "res/res/gui/AppreciationBadges/ABadge_4260379.png",
+        "res/gui/AppreciationBadges/ABadge_508211276.png": "res/res/gui/AppreciationBadges/ABadge_508211276.png",
         "res/scripts/client/gui/mods/mod_AppreciationBadges.pyc": "build/scripts/client/gui/mods/mod_AppreciationBadges.pyc"
     }
 }
