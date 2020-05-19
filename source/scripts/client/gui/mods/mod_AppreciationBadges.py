@@ -20,10 +20,10 @@ else:
     message = 'initialised.'
     badges = remDups(os.path.splitext(x)[0] for x in badges_dir.keys())
     for badge_name in badges:
-        if not badge_name.startswith('ABadge_'):
+        if not badge_name.startswith('a_badge_'):
             print 'AppreciationBadges: wrong badge format:', badge_name
             continue
-        _, strAccID = badge_name.split('_', 1)
+        _, strAccID = badge_name.rsplit('_', 1)
         try:
             accID = int(strAccID)
         except ValueError:
@@ -67,7 +67,7 @@ else:
 
     @overrideMethod(Badge, 'getBadgeVO')
     def new_getBadgeVO(base, self, size, extraData=None, shortIconName=False):
-        if self.getIconPostfix().startswith('ABadge_'):
+        if self.getIconPostfix().startswith('a_badge_'):
             shortIconName = False
             if extraData is not None and 'isAtlasSource' in extraData:
                 extraData['isAtlasSource'] = False
@@ -76,7 +76,7 @@ else:
 
     @overrideMethod(RES_ICONS, 'getBadgeIcon')
     def new_getBadgeIcon(base, _, size, value):
-        if isinstance(value, int) or not value.startswith('ABadge_'):
+        if isinstance(value, int) or not value.startswith('a_badge_'):
             return base(size, value)
         outcome = '../AppreciationBadges/%s.png' % value
         normOutcome = os.path.normpath('gui/flash/' + outcome).replace(os.sep, '/')
