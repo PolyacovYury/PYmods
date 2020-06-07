@@ -144,7 +144,7 @@ def i18n_hook_makeString(key, *args, **kwargs):
                 else:
                     return key[_config.data['debugBegin']:]
             else:
-                return old_makeString(key, *args, **kwargs)
+                return TAG_RE.sub('', old_makeString(key, *args, **kwargs))
         except StandardError:
             print _config.ID + ': error at', key
             traceback.print_exc()
