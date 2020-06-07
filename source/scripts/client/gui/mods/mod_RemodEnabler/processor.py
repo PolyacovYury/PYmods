@@ -6,7 +6,7 @@ from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
-from gui.shared.gui_items.customization.outfit import Outfit
+from vehicle_outfit.outfit import Outfit
 from gui.shared.personality import ServicesLocator as SL
 from items.vehicles import CompositeVehicleDescriptor as CompVDesc
 from vehicle_systems import appearance_cache, camouflages

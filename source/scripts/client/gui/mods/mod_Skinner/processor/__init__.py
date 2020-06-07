@@ -3,7 +3,7 @@ import traceback
 from PYmodsCore import overrideMethod
 from gui import SystemMessages
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
-from gui.shared.gui_items.customization.outfit import Outfit
+from vehicle_outfit.outfit import Outfit
 from items.vehicles import CompositeVehicleDescriptor
 from vehicle_systems import appearance_cache, camouflages
 from vehicle_systems.tankStructure import TankPartNames
