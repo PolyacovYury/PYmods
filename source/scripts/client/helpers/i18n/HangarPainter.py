@@ -158,6 +158,7 @@ def delayedHooks():
     from gui.Scaleform.daapi.view.lobby.hangar.Crew import Crew
     from gui.shared.tooltips.tankman import TankmanSkillListField, ToolTipAttrField, TankmanRoleLevelField, \
         TankmanCurrentVehicleAttrField
+    from frameworks.wulf import ViewModel
 
     @overrideMethod(I18nDialogMeta, '__init__')
     def new_I18nDialog_init(base, self, *args, **kwargs):
@@ -198,6 +199,10 @@ def delayedHooks():
         if _config.data['enabled'] and self._name in ('name', 'rank', 'role', 'efficiencyRoleLevel', 'currentVehicleName'):
             return "<font color='#%s'>%s</font>" % (_config.data['colour'], result)
         return result
+
+    @overrideMethod(ViewModel, '_setString')
+    def new_setString(base, self, index, value):
+        return base(self, index, TAG_RE.sub('', value))
 
 
 BigWorld.callback(0, delayedHooks)
