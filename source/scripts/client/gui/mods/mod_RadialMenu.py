@@ -359,7 +359,8 @@ def getCrosshairType(player, target):
 
 def isTargetCorrect(player, target):
     return (target is not None and isinstance(target, Vehicle) and target.isAlive() and player is not None
-            and isPlayerAvatar() and not player.guiSessionProvider.getArenaDP().getVehicleInfo(target.id).isActionsDisabled())
+            and isPlayerAvatar() and not player.guiSessionProvider.getArenaDP().getVehicleInfo(
+                target.id).isChatCommandsDisabled(target.publicInfo.team == player.team))
 
 
 @overrideMethod(radial_menu.RadialMenu, '_populate')
