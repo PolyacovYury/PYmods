@@ -32,6 +32,7 @@ from zipfile import ZipFile
 from . import g_config
 
 wgc_mode._g_firstEntry = not g_config.data['enabled']
+empty_async = partial(async, cbwrapper=lambda x: partial(x, None))
 callLoading = Event.Event()
 texReplaced = False
 skinsChecked = False
@@ -166,7 +167,7 @@ def CRC32_from_file(filename, localPath):
     return binascii.crc32(str(ResMgr.openSection(filename).asBinary)) & 0xFFFFFFFF & hash(localPath)
 
 
-@async
+@empty_async
 @process
 def skinCRC32All(callback):
     global texReplaced, vehicleSkins
@@ -229,7 +230,7 @@ def skinCRC32All(callback):
     BigWorld.callback(0, callback)
 
 
-@async
+@empty_async
 @process
 def rmtree(rootPath, callback):
     callLoading('updateTitle', g_config.i18n['UI_loading_header_models_clean'])
@@ -253,10 +254,10 @@ def rmtree(rootPath, callback):
         callLoading('onBarComplete')
         shutil.rmtree(os.path.join(rootPath, skinPack))
     shutil.rmtree(rootPath)
-    BigWorld.callback(1, partial(callback, None))
+    BigWorld.callback(1, callback)
 
 
-@async
+@empty_async
 @process
 def modelsCheck(callback):
     global clientIsNew, skinsModelsMissing, needToReReadSkinsModels
@@ -293,7 +294,7 @@ def modelsCheck(callback):
     BigWorld.callback(0, callback)
 
 
-@async
+@empty_async
 @process
 def modelsProcess(callback):
     if not needToReReadSkinsModels:
