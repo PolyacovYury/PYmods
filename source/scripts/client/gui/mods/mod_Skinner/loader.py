@@ -25,13 +25,13 @@ from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewTyp
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from helpers import getClientVersion, dependency
+from shared_utils import awaitNextFrame
 from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.login_manager import ILoginManager
 from zipfile import ZipFile
 from . import g_config
 
 wgc_mode._g_firstEntry = not g_config.data['enabled']
-empty_async = partial(async, cbwrapper=lambda x: partial(x, None))
 callLoading = Event.Event()
 texReplaced = False
 skinsChecked = False
@@ -166,7 +166,7 @@ def CRC32_from_file(filename, localPath):
     return binascii.crc32(str(ResMgr.openSection(filename).asBinary)) & 0xFFFFFFFF & hash(localPath)
 
 
-@empty_async
+@async
 @process
 def skinCRC32All(callback):
     global texReplaced, vehicleSkins
@@ -208,7 +208,7 @@ def skinCRC32All(callback):
                     texPath = skinsPath + skin + '/' + localPath
                     textureCRC32 = CRC32_from_file(texPath, localPath)
                     skinCRC32 ^= textureCRC32
-                yield doFuncCall()
+                yield awaitNextFrame()
                 currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
                 if currentPercentage != completionPercentage:
                     completionPercentage = currentPercentage
@@ -229,7 +229,7 @@ def skinCRC32All(callback):
     BigWorld.callback(0, callback)
 
 
-@empty_async
+@async
 @process
 def rmtree(rootPath, callback):
     callLoading('updateTitle', g_config.i18n['UI_loading_header_models_clean'])
@@ -245,7 +245,7 @@ def rmtree(rootPath, callback):
             vehLen = len(vehiclesList)
             for vehNum, vehicleName in enumerate(vehiclesList):
                 shutil.rmtree(os.path.join(rootPath, skinPack, 'vehicles', nation, vehicleName))
-                yield doFuncCall()
+                yield awaitNextFrame()
                 currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
                 if currentPercentage != completionPercentage:
                     completionPercentage = currentPercentage
@@ -253,10 +253,10 @@ def rmtree(rootPath, callback):
         callLoading('onBarComplete')
         shutil.rmtree(os.path.join(rootPath, skinPack))
     shutil.rmtree(rootPath)
-    BigWorld.callback(1, callback)
+    BigWorld.callback(1, partial(callback, None))
 
 
-@empty_async
+@async
 @process
 def modelsCheck(callback):
     global clientIsNew, skinsModelsMissing, needToReReadSkinsModels
@@ -293,7 +293,7 @@ def modelsCheck(callback):
     BigWorld.callback(0, callback)
 
 
-@empty_async
+@async
 @process
 def modelsProcess(callback):
     if not needToReReadSkinsModels:
@@ -320,19 +320,14 @@ def modelsProcess(callback):
                 except ValueError as e:
                     print g_config.ID + ':', e
             if not fileNum % 25:
-                yield doFuncCall()
+                yield awaitNextFrame()
             currentPercentage = int(100 * float(fileNum) / float(allFilesCnt))
             if currentPercentage != completionPercentage:
                 completionPercentage = currentPercentage
                 callLoading('updatePercentage', completionPercentage)
-                yield doFuncCall()
+                yield awaitNextFrame()
         pkg.close()
         callLoading('onBarComplete')
-    BigWorld.callback(0, callback)
-
-
-@empty_async
-def doFuncCall(callback):
     BigWorld.callback(0, callback)
 
 
