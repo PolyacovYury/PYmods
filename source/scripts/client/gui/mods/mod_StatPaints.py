@@ -1,5 +1,8 @@
+# noinspection SpellCheckingInspection
 __appID__ = '216060d4797ff99153c400922baeed6f'
+
 import BigWorld
+import items
 import json
 import threading
 import traceback
@@ -9,28 +12,18 @@ from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod
 from functools import partial
 from gui.Scaleform.battle_entry import BattleEntry
 from gui.shared.gui_items import GUI_ITEM_TYPE
+from items.components.c11n_components import PaintItem
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 
 
-class CustomPaint(object):
-    def __init__(self, color, gloss, metallic):
-        self.itemTypeID = GUI_ITEM_TYPE.PAINT
-        self.__color = color[0] + (color[1] << 8) + (color[2] << 16) + (color[3] << 24)
-        self.__gloss = gloss
-        self.__metallic = metallic
-
-    @property
-    def color(self):
-        return self.__color
-
-    @property
-    def gloss(self):
-        return self.__gloss
-
-    @property
-    def metallic(self):
-        return self.__metallic
+class CustomPaint(PaintItem):
+    def __init__(self, id, color, gloss, metallic):
+        PaintItem.__init__(self)
+        self.id = 22000 + id
+        self.color = color[0] + (color[1] << 8) + (color[2] << 16) + (color[3] << 24)
+        self.gloss = gloss
+        self.metallic = metallic
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -44,7 +37,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.2.0 (%(file_compile_date)s)'
+        self.version = '1.2.1 (%(file_compile_date)s)'
         self.data = {'enabled': True,
                      'ignorePresentPaints': True,
                      'removeCamouflages': True,
@@ -99,15 +92,14 @@ class ConfigInterface(PYmodsConfigInterface):
                     self.tb.createControl('removeCamouflages'),
                     self.tb.createLabel('colorScales'),
                 ],
-                'column2': [
-                ] + self.createPartsTemplate('ally')
-                  + self.createPartsTemplate('enemy')}
+                'column2': self.createPartsTemplate('ally') + self.createPartsTemplate('enemy')}
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings(quiet)
         self.paintItems.clear()
         for value, data in self.data['scale'].iteritems():
-            self.paintItems[int(value)] = CustomPaint(**data)
+            id = int(value)
+            self.paintItems[id] = CustomPaint(id, **data)
 
     def loadPlayerStats(self, databaseIDs):
         regions = {}
@@ -227,6 +219,7 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
         if rating < value:
             paintItem = g_config.paintItems[value]
             break
+    items.vehicles.g_cache.customization20().paints[paintItem.id] = paintItem
     for fashionIdx, part in enumerate(TankPartNames.ALL):
         if not g_config.data['paint_' + team + '_' + part]:
             continue
@@ -237,7 +230,7 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
         if paintSlot is not None:
             for idx in xrange(paintSlot.capacity()):
                 if g_config.data['ignorePresentPaints'] or paintSlot.getItem(idx) is None:
-                    paintSlot.set(paintItem, idx)
+                    paintSlot.set(paintItem.compactDescr, idx)
                     removeCamo = True
         if camoSlot is not None and g_config.data['removeCamouflages'] and removeCamo:
             camoSlot.clear()
