@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import BigWorld
-import CommandMapping
 import Keys
 import Math
 import glob
@@ -8,6 +7,7 @@ import math_utils
 import os
 import string
 import traceback
+from Event import SafeEvent
 from PYmodsCore import PYmodsConfigInterface, loadJson, config, checkKeys, pickRandomPart, Analytics, overrideMethod, \
     sendChatMessage, loadJsonOrdered, events
 from Vehicle import Vehicle
@@ -32,6 +32,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.configMeta = {}
         self.commands = OrderedDict()
         self.altMenuActive = False
+        self.updateMenu = SafeEvent()
         super(ConfigInterface, self).__init__()
 
     @property
@@ -40,7 +41,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '2.2.1 (%(file_compile_date)s)'
+        self.version = '2.2.2 (%(file_compile_date)s)'
         self.author += ' (orig by locastan/tehHedger/TRJ_VoRoN)'
         self.defaultKeys = {'mapMenu_key': [Keys.KEY_LALT]}
         self.data = {'enabled': True,
@@ -129,7 +130,7 @@ class ConfigInterface(PYmodsConfigInterface):
         isDown = checkKeys(self.data['mapMenu_key'])
         if isDown != self.altMenuActive:
             self.altMenuActive = isDown
-            CommandMapping.g_instance.onMappingChanged()
+            self.updateMenu()
         if not event.isKeyDown():
             return
         target = BigWorld.target()
@@ -358,7 +359,20 @@ def getCrosshairType(player, target):
 
 def isTargetCorrect(player, target):
     return (target is not None and isinstance(target, Vehicle) and target.isAlive() and player is not None
-            and isPlayerAvatar() and not player.guiSessionProvider.getArenaDP().getVehicleInfo(target.id).isActionsDisabled())
+            and isPlayerAvatar() and not player.guiSessionProvider.getArenaDP().getVehicleInfo(
+                target.id).isChatCommandsDisabled(target.publicInfo.team == player.team))
+
+
+@overrideMethod(radial_menu.RadialMenu, '_populate')
+def new_populate(base, self):
+    base(self)
+    g_config.updateMenu += self._RadialMenu__updateMenu
+
+
+@overrideMethod(radial_menu.RadialMenu, '_dispose')
+def new_populate(base, self):
+    g_config.updateMenu -= self._RadialMenu__updateMenu
+    base(self)
 
 
 @overrideMethod(radial_menu.RadialMenu, '_RadialMenu__updateMenu')

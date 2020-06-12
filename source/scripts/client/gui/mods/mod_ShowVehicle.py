@@ -64,7 +64,7 @@ def addValues(zooms, exposures):
 @overrideMethod(SniperCamera, 'enable')
 def new_SniperCamera_enable(base, self, *a, **kw):
     if config.data['enabled']:
-        addValues(self._SniperCamera__cfg['zooms'], self._SniperCamera__dynamicCfg['zoomExposure'])
+        addValues(self._cfg['zooms'], self._SniperCamera__dynamicCfg['zoomExposure'])
     base(self, *a, **kw)
     if config.data['enabled'] and config.data['isEnabled']:
         hide_hull(True)
@@ -92,13 +92,13 @@ def new_SniperControlMode_handleKeyEvent(base, self, isDown, key, mods, event=No
     if config.data['enabled'] and isDown and checkKeys(config.data['hotkey'], key):
         config.data['isEnabled'] = not config.data['isEnabled']
         hide_hull(config.data['isEnabled'])
-        addValues(self._cam._SniperCamera__cfg['zooms'], self._cam._SniperCamera__dynamicCfg['zoomExposure'])
+        addValues(self._cam._cfg['zooms'], self._cam._SniperCamera__dynamicCfg['zoomExposure'])
     base(self, isDown, key, mods, event)
 
 
 @overrideMethod(SniperCamera, '_SniperCamera__getZooms')
 def new_SniperCamera_getZooms(base, self):
     zooms = base(self)
-    if not self._SniperCamera__cfg['increasedZoom'] and config.data['zoomValue'] in zooms:
-        zooms.append(self._SniperCamera__cfg['zooms'][3])
+    if not self._cfg['increasedZoom'] and config.data['zoomValue'] in zooms:
+        zooms.append(self._cfg['zooms'][3])
     return zooms
