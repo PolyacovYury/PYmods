@@ -5,6 +5,7 @@ from common_tank_appearance import CommonTankAppearance
 from gui import SystemMessages
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from items.vehicles import CompositeVehicleDescriptor
+from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from . import skins_dynamic, skins_static
 from .. import g_config
@@ -103,6 +104,7 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
 
 
 @overrideMethod(CommonTankAppearance, '_prepareOutfit')
+@overrideMethod(CompoundAppearance, '_prepareOutfit')
 def new_prepareOutfit(base, self, outfitCD):
     outfit = base(self, outfitCD)
     if g_config.data['enabled'] and getattr(self.typeDescriptor, 'modelDesc', None) is None:
