@@ -41,7 +41,7 @@ class PlayersPanelController(PYmodsConfigInterface):
             'UI_setting_mode_holding': 'Holding',
             'UI_setting_toggle_key_text': 'Toggle hotkey',
             'UI_setting_toggle_key_tooltip': 'Pressing this button in-battle toggles HP markers displaying.'}
-        g_playerPanelsAPI.events.onUIReady += self.onStartBattle
+        g_PlayersPanelAPI.events.onUIReady += self.onStartBattle
         super(PlayersPanelController, self).init()
 
     def createTemplate(self):
@@ -54,12 +54,12 @@ class PlayersPanelController(PYmodsConfigInterface):
 
     def readCurrentSettings(self, quiet=True):
         for fieldName in self.data['textFields']:
-            g_playerPanelsAPI.delete(self.ID + fieldName)
+            g_PlayersPanelAPI.delete(self.ID + fieldName)
         super(PlayersPanelController, self).readCurrentSettings(quiet)
         self.data['textFields'].update(self.loadDataJson().get('textFields', {}))
         self.displayed = not self.data['mode']
         for fieldName, fieldData in self.data['textFields'].iteritems():
-            g_playerPanelsAPI.create(self.ID + fieldName, fieldData)
+            g_PlayersPanelAPI.create(self.ID + fieldName, fieldData)
 
     def onApplySettings(self, settings):
         super(PlayersPanelController, self).onApplySettings(settings)
@@ -96,7 +96,7 @@ class PlayersPanelController(PYmodsConfigInterface):
             barWidth = currentHP
             if 'width' in fieldData[panelSide]:
                 barWidth = fieldData[panelSide]['width'] * (float(currentHP) / maxHP)
-            g_playerPanelsAPI.update(self.ID + fieldName, {'vehicleID': vehicleID, 'text': (
+            g_PlayersPanelAPI.update(self.ID + fieldName, {'vehicleID': vehicleID, 'text': (
                     fieldData[panelSide]['text'] % {'curHealth': currentHP, 'maxHealth': maxHP, 'barWidth': barWidth}
             ) if self.displayed and (not fieldData.get('hideIfDead', False) or barWidth) else ''})
 
@@ -138,7 +138,7 @@ class PlayersPanelController(PYmodsConfigInterface):
 
 g_config = None
 try:
-    from PlayerPanelsAPI import g_playerPanelsAPI
+    from PlayersPanelAPI import g_PlayersPanelAPI
 
     g_config = PlayersPanelController()
     statistic_mod = Analytics(g_config.ID, g_config.version, 'UA-76792179-11')
