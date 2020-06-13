@@ -9,6 +9,7 @@ from gui.Scaleform.framework.entities.View import ViewKey
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.personality import ServicesLocator as SL
 from items.vehicles import CompositeVehicleDescriptor as CompVDesc
+from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from . import remods, g_config
 
@@ -83,6 +84,7 @@ def applyModelDesc(vDesc, modelDesc, modelsSet, playerName):
 
 
 @overrideMethod(CommonTankAppearance, '_prepareOutfit')
+@overrideMethod(CompoundAppearance, '_prepareOutfit')
 def new_prepareOutfit(base, self, outfitCD):
     outfit = base(self, outfitCD)
     if g_config.data['enabled']:
