@@ -4,7 +4,7 @@
 1480775387|configs/PYmods/ButtonReplacer/ButtonReplacer.json
 1484733601|configs/PYmods/ButtonReplacer/configs/BattleButton.json
 1535570443|configs/PYmods/ButtonReplacer/configs/BattleButton_FULL.json
-1526570569|configs/PYmods/ButtonReplacer/configs/Polyacov_YuryIngameGUI.json
+1587731678|configs/PYmods/ButtonReplacer/configs/Polyacov_YuryIngameGUI.json
 1526549294|configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Artillery.png
 1526536112|configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Bomber.png
 1367599313|configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/Image-524.png
@@ -394,9 +394,9 @@
 1580344455|configs/PYmods/VoiceOverrider/i18n/en.json
 1580344480|configs/PYmods/VoiceOverrider/i18n/ru.json
 1471690378|configs/PYmods/i18nDebugger/i18nDebugger.xml
-1556808194|flash/PlayerPanelsAPI.swf
-1556803349|flash/PlayerPanelsAPI/PlayerPanelsAPI.as3proj
-1556808183|flash/PlayerPanelsAPI/src/polyacov_yury/views/battle/PlayerPanels.as
+1592037078|flash/PlayersPanelAPI.swf
+1592037066|flash/PlayersPanelAPI/PlayersPanelAPI.as3proj
+1592035759|flash/PlayersPanelAPI/src/polyacov_yury/views/battle/PlayersPanelAPI.as
 1582272942|flash/RemodEnabler.swf
 1582272941|flash/RemodEnablerUI/RemodEnablerUI.as
 1546896278|flash/RemodEnablerUI/RemodEnablerUI.as3proj
@@ -468,4 +468,4 @@
 1479780730|res/scripts/client/gui/mods/mod_UT_announcer.png
 1557316151|wotmods/gambiter.guiflash_0.3.1.wotmod
 1570555200|wotmods/izeberg.modsettingsapi_1.3.0.wotmod
-1583316082|wotmods/poliroid.modslistapi_1.3.0.wotmod
+1591953794|wotmods/poliroid.modslistapi_1.3.2.wotmod

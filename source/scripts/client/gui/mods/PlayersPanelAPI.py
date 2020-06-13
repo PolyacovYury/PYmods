@@ -42,12 +42,12 @@ class Events(object):
             return
         app = ServicesLocator.appLoader.getDefBattleApp()
         if app is not None:
-            app.loadView(SFViewLoadParams('PlayerPanelsUI'))
+            app.loadView(SFViewLoadParams('PY_PlayersPanelAPI_UI'))
 
 
-class PlayerPanelsUI(View):
+class PlayersPanelUI(View):
     def _populate(self):
-        super(PlayerPanelsUI, self)._populate()
+        super(PlayersPanelUI, self)._populate()
 
         for linkage, data in g_cache.items.iteritems():
             self.as_createS(linkage, data['config'])
@@ -62,7 +62,7 @@ class PlayerPanelsUI(View):
         g_events.create -= self.as_createS
         g_events.update -= self.as_updateS
         g_events.delete -= self.as_deleteS
-        super(PlayerPanelsUI, self)._dispose()
+        super(PlayersPanelUI, self)._dispose()
 
     def as_createS(self, linkage, config):
         if self._isDAAPIInited():
@@ -79,7 +79,7 @@ class PlayerPanelsUI(View):
 
 # noinspection PyArgumentList
 g_entitiesFactories.addSettings(ViewSettings(
-    'PlayerPanelsUI', PlayerPanelsUI, 'PlayerPanelsAPI.swf', ViewTypes.WINDOW, None, ScopeTemplates.GLOBAL_SCOPE))
+    'PY_PlayersPanelAPI_UI', PlayersPanelUI, 'PlayersPanelAPI.swf', ViewTypes.WINDOW, None, ScopeTemplates.GLOBAL_SCOPE))
 
 g_events = Events()
 g_cache = Cache()
@@ -110,7 +110,7 @@ LABEL_CONFIG = {
 }
 
 
-class PlayerPanelsAPI(object):
+class PlayersPanelAPI(object):
     events = g_events
 
     def create(self, linkage, config):
@@ -125,4 +125,4 @@ class PlayerPanelsAPI(object):
         g_events.delete(linkage)
 
 
-g_playerPanelsAPI = PlayerPanelsAPI()
+g_PlayersPanelAPI = PlayersPanelAPI()

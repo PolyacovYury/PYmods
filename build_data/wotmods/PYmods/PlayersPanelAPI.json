@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/scripts/client/gui/mods/PlayersPanelAPI.pyc": "build/scripts/client/gui/mods/PlayersPanelAPI.pyc",
+        "res/gui/flash/PlayersPanelAPI.swf": "res/flash/PlayersPanelAPI.swf"
+    }
+}

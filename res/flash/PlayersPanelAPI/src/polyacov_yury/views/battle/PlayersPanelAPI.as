@@ -13,11 +13,11 @@
 	
 	import scaleform.gfx.TextFieldEx;
 	
-	public class PlayerPanels extends AbstractView
+	public class PlayersPanelAPI extends AbstractView
 	{
 		private static const NAME_MAIN:String = "main";
 		
-		public static var ui:PlayerPanels;
+		public static var ui:PlayersPanelAPI;
 		
 		public var py_log:Function;
 		public var py_update:Function;
@@ -27,7 +27,7 @@
 		private var configs:Object = {};
 		private var textFields:Object = {};
 		
-		public function PlayerPanels() : void 
+		public function PlayersPanelAPI() : void 
 		{
 			super();
 			ui = this;

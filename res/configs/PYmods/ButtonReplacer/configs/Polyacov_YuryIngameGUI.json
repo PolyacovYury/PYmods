@@ -9,11 +9,11 @@
     },
     "#ingame_gui:chat_shortcuts/attack_enemy" : {
         "mode" : "single",
-        "text" : "<img src='img://../mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/attack_enemy.png' width='20' height='20' vspace='-6'> <font color='#ffda24'>Атакую %(target)s</font>!</font>"
+        "text" : "<img src='img://../mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/attack_enemy.png' width='20' height='20' vspace='-6'> <font color='#ffda24'>Атакую <font color='#FA1100'>%(target)s</font>!</font>"
     },
     "#ingame_gui:chat_shortcuts/attack_enemy_reloading" : {
         "mode" : "single",
-        "text" : "<img src='img://../mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/attack_enemy.png' width='20' height='20' vspace='-6'> <font color='#ffda24'>Атакую %(target)s!\nПерезаряжаюсь, ещё %(reloadTime)d c!</font>"
+        "text" : "<img src='img://../mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/attack_enemy.png' width='20' height='20' vspace='-6'> <font color='#ffda24'>Атакую <font color='#FA1100'>%(target)s</font>!\nПерезаряжаюсь, ещё %(reloadTime)d c!</font>"
     },
     "#ingame_gui:chat_shortcuts/attention_to_cell" : {
         "mode" : "single",
@@ -97,7 +97,7 @@
     },
     "#ingame_gui:chat_shortcuts/support_me_with_fire" : {
         "mode" : "single",
-        "text" : "<img src='img://../mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/support_me_with_fire.png' width='20' height='20' vspace='-6'> <font color='#ffda24'>Поддержите огнём по</font> %(target)s!"
+        "text" : "<img src='img://../mods/configs/PYmods/ButtonReplacer/configs/chat_shortcuts_img/support_me_with_fire.png' width='20' height='20' vspace='-6'> <font color='#ffda24'>Поддержите огнём по</font> <font color='#FA1100'>%(target)s</font>!"
     },
     "#ingame_gui:chat_shortcuts/turn_back" : {
         "mode" : "single",

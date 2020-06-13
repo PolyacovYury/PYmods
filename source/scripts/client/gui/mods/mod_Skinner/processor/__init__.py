@@ -1,11 +1,10 @@
 import BigWorld
 import traceback
 from PYmodsCore import overrideMethod
+from common_tank_appearance import CommonTankAppearance
 from gui import SystemMessages
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
-from vehicle_outfit.outfit import Outfit
 from items.vehicles import CompositeVehicleDescriptor
-from vehicle_systems import appearance_cache, camouflages
 from vehicle_systems.tankStructure import TankPartNames
 from . import skins_dynamic, skins_static
 from .. import g_config
@@ -103,21 +102,16 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
     debugOutput(xmlName, vehName, playerName, modelsSet, staticDesc, dynamicDesc)
 
 
-@overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
-def new_cacheAppearance(base, self, vId, info, *args, **kwargs):
-    if g_config.data['enabled'] and getattr(info.typeDescr, 'modelDesc', None) is None:
-        outfitComponent = camouflages.getOutfitComponent(info.outfitCD)
-        outfit = Outfit(component=outfitComponent)
-        player = BigWorld.player()
-        forceHistorical = player.isHistoricallyAccurate and player.playerVehicleID != vId and not outfit.isHistorical()
-        outfit = Outfit() if forceHistorical else outfit
-        vDesc_process(vId, info.typeDescr, 'battle', outfit.modelsSet or 'default')
-    return base(self, vId, info, *args, **kwargs)
+@overrideMethod(CommonTankAppearance, '_prepareOutfit')
+def new_prepareOutfit(base, self, outfitCD):
+    outfit = base(self, outfitCD)
+    if g_config.data['enabled'] and getattr(self.typeDescriptor, 'modelDesc', None) is None:
+        vDesc_process(self.id, self.typeDescriptor, 'battle', outfit.modelsSet or 'default')
+    return outfit
 
 
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled'] and getattr(vDesc, 'modelDesc', None) is None:
-        vDesc_process(self._HangarVehicleAppearance__vEntity.id, vDesc, 'hangar',
-                      self._HangarVehicleAppearance__outfit.modelsSet or 'default')
-    base(self, vDesc, vState)
+        vDesc_process(self.id, vDesc, 'hangar', self._HangarVehicleAppearance__outfit.modelsSet or 'default')
+    return base(self, vDesc, vState)

@@ -4,7 +4,7 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="..\PlayerPanelsAPI.swf" />
+    <movie path="..\PlayersPanelAPI.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
@@ -88,7 +88,7 @@
   </library>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
-    <compile path="src\polyacov_yury\views\battle\PlayerPanels.as" />
+    <compile path="src\polyacov_yury\views\battle\PlayersPanelAPI.as" />
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
