@@ -1,15 +1,14 @@
 import BigWorld
 from HeroTank import HeroTank
 from PYmodsCore import overrideMethod, refreshCurrentVehicle
+from common_tank_appearance import CommonTankAppearance
 from gui import SystemMessages
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
-from vehicle_outfit.outfit import Outfit
 from gui.shared.personality import ServicesLocator as SL
 from items.vehicles import CompositeVehicleDescriptor as CompVDesc
-from vehicle_systems import appearance_cache, camouflages
 from vehicle_systems.tankStructure import TankPartNames
 from . import remods, g_config
 
@@ -83,17 +82,13 @@ def applyModelDesc(vDesc, modelDesc, modelsSet, playerName):
     vDesc.modelDesc = modelDesc
 
 
-@overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
-def new_cacheAppearance(base, self, vId, info, *args, **kwargs):
+@overrideMethod(CommonTankAppearance, '_prepareOutfit')
+def new_prepareOutfit(base, self, outfitCD):
+    outfit = base(self, outfitCD)
     if g_config.data['enabled']:
-        outfitComponent = camouflages.getOutfitComponent(info.outfitCD)
-        outfit = Outfit(component=outfitComponent)
-        player = BigWorld.player()
-        forceHistorical = player.isHistoricallyAccurate and player.playerVehicleID != vId and not outfit.isHistorical()
-        outfit = Outfit() if forceHistorical else outfit
-        modelDesc, playerName = getModelDescInfo(vId, info.typeDescr, 'battle')
-        applyModelDesc(info.typeDescr, modelDesc, outfit.modelsSet or 'default', playerName)
-    return base(self, vId, info, *args, **kwargs)
+        modelDesc, playerName = getModelDescInfo(self.id, self.typeDescriptor, 'battle')
+        applyModelDesc(self.typeDescriptor, modelDesc, outfit.modelsSet or 'default', playerName)
+    return outfit
 
 
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
@@ -107,7 +102,7 @@ def new_startBuild(base, self, vDesc, vState):
             vDesc.modelDesc = None
         else:
             applyModelDesc(vDesc, modelDesc, self._HangarVehicleAppearance__outfit.modelsSet or 'default', playerName)
-    base(self, vDesc, vState)
+    return base(self, vDesc, vState)
 
 
 @overrideMethod(MainView, '_populate')
