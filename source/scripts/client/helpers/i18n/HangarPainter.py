@@ -144,7 +144,9 @@ def i18n_hook_makeString(key, *args, **kwargs):
                 else:
                     return key[_config.data['debugBegin']:]
             else:
-                return TAG_RE.sub('', old_makeString(key, *args, **kwargs))
+                return old_makeString(
+                    key, *tuple((a if not isinstance(a, basestring) else TAG_RE.sub('', str(a))) for a in args),
+                    **{k: (v if not isinstance(v, basestring) else TAG_RE.sub('', str(v))) for k, v in kwargs.iteritems()})
         except StandardError:
             print _config.ID + ': error at', key
             traceback.print_exc()
