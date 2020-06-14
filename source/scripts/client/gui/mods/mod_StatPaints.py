@@ -97,9 +97,8 @@ class ConfigInterface(PYmodsConfigInterface):
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings(quiet)
         self.paintItems.clear()
-        for value, data in self.data['scale'].iteritems():
-            id = int(value)
-            self.paintItems[id] = CustomPaint(id, **data)
+        for idx, (value, data) in enumerate(self.data['scale'].iteritems()):
+            self.paintItems[int(value)] = CustomPaint(idx, **data)
 
     def loadPlayerStats(self, databaseIDs):
         regions = {}
