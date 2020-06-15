@@ -131,3 +131,8 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
             iv._copyPriceForItem(groupsDict[priceGroupId].compactDescr, item.compactDescr, itemNotInShop)
         else:
             ix.raiseWrongXml(iCtx, 'priceGroup', 'no price for item %s' % item.id)
+        if not item.palettes:
+            try:
+                ix.raiseWrongXml(iCtx, 'palettes', 'no palettes for item %s' % item.id)
+            except:
+                traceback.print_exc()
