@@ -182,7 +182,7 @@ def new_reload(base, self, vDesc, vState, outfit):
         if container is not None:
             c11nView = container.getView()
             if c11nView is not None and hasattr(c11nView, 'service'):
-                outfit = c11nView.service.getCtx().currentOutfit
+                outfit = c11nView.service.getCtx().mode.currentOutfit
                 return base(self, vDesc, vState, outfit)
     if (not g_config.data['enabled'] or vDesc.name in g_config.disable or (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault'])):
