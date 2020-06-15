@@ -11,13 +11,12 @@ from gui.customization.shared import C11N_ITEM_TYPE_MAP, SEASON_TYPE_TO_NAME
 from gui.customization.shared import __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
-from gui.shared.gui_items.customization.c11n_items import Camouflage
-from vehicle_outfit.containers import emptyComponent
-from vehicle_outfit.outfit import Outfit, Area
 from gui.shared.personality import ServicesLocator
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
 from skeletons.gui.shared import IItemsCache
+from vehicle_outfit.containers import emptyComponent
+from vehicle_outfit.outfit import Outfit, Area
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from . import g_config
@@ -54,7 +53,7 @@ def applyOutfitCache(outfit, seasonCache, clean=True):
             for regionIdx in areaCache.keys():
                 itemID = areaCache[regionIdx]['id']
                 if itemID is None:
-                    if slot.getItem(int(regionIdx)) is not None:
+                    if slot.getItemCD(int(regionIdx)):
                         slot.remove(int(regionIdx))
                     elif clean:  # item is being deleted while not applied at all. possible change after last cache
                         del areaCache[regionIdx]  # so we remove an obsolete key
@@ -63,12 +62,9 @@ def applyOutfitCache(outfit, seasonCache, clean=True):
                     print g_config.ID + ': wrong item ID for %s, idx %s:' % (areaName, regionIdx), itemID
                     del areaCache[regionIdx]
                     continue
-                intCD = itemDB[itemID].compactDescr
-                item = (itemsCache.items.getItemByCD if itemsCache.items.isSynced() else
-                        itemsCache.items.itemsFactory.createCustomization)(intCD)
                 component = emptyComponent(itemType)
                 [setattr(component, k, v) for k, v in areaCache[regionIdx].items()]
-                slot.set(item, int(regionIdx), component)
+                slot.set(itemDB[itemID].compactDescr, int(regionIdx), component)
     outfit.invalidate()
 
 
@@ -92,12 +88,16 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
     for container in outfit.containers():
         if not processTurret and container.getAreaID() == Area.TURRET:
             continue
-        for slot in container.slots():
-            item = slot.getItem(0)
-            if item is not None and item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
-                component = slot.getComponent(0)
-                outfitItemIDs.add(item.id)
-                outfitItems.add((item.id, component.palette, component.patternSize))
+        slot = container.slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
+        if not slot:
+            continue
+        intCD = slot.getItemCD(0)
+        if not intCD:
+            continue
+        item = itemsCache.items.getItemByCD(intCD)
+        component = slot.getComponent(0)
+        outfitItemIDs.add(item.id)
+        outfitItems.add((item.id, component.palette, component.patternSize))
     canBeUniform = len(outfitItemIDs) <= 1
     if canBeUniform and outfitItemIDs:
         camoID, palette, patternSize = outfitItems.pop()
@@ -105,8 +105,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
         if areaName == TankPartNames.CHASSIS or not processTurret and areaName == TankPartNames.TURRET:
             continue
         slot = outfit.getContainer(areaId).slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
-        item = slot.getItem(0)
-        if item is not None:
+        if slot.getItemCD(0):
             continue
         if areaName in seasonCache:
             if seasonCache[areaName]:
@@ -129,12 +128,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
                     patternSize = random.randrange(len(item.scales))
                     palette = random.randrange(len(item.palettes))
         if camoID is not None:
-            intCD = camouflages[camoID].compactDescr
-            if itemsCache.items.isSynced():
-                item = itemsCache.items.getItemByCD(intCD)
-            else:
-                item = Camouflage(intCD)
-            slot.set(item)
+            slot.set(camouflages[camoID].compactDescr)
             component = slot.getComponent()
             component.palette = palette
             component.patternSize = patternSize
