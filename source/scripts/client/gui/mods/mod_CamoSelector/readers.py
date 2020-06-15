@@ -7,9 +7,12 @@ import traceback
 from PYmodsCore import overrideMethod
 from items import makeIntCompactDescrByID as makeCD
 from items.components import shared_components
-from items.components.c11n_constants import SeasonType
+from items.components.c11n_constants import SeasonType, EMPTY_ITEM_ID
 from items.readers.c11n_readers import CamouflageXmlReader, PaintXmlReader
 from . import g_config
+
+
+STARTER_ITEM_ID = EMPTY_ITEM_ID + 1
 
 
 class ModdedCamouflageReader(CamouflageXmlReader):
@@ -35,12 +38,12 @@ def new_customization20(base, *args, **kwargs):
 
 
 def createPriceGroup(cache):
-    if 20000 in cache.priceGroups:
-        if cache.priceGroups[20000].name != 'custom':
+    if STARTER_ITEM_ID in cache.priceGroups:
+        if cache.priceGroups[STARTER_ITEM_ID].name != 'custom':
             ix.raiseWrongXml((None, ''), 'priceGroup', 'CamoSelector price group ID needs to be changed!')
         return
     priceGroup = cc.PriceGroup()
-    priceGroup.id = 20000
+    priceGroup.id = STARTER_ITEM_ID
     priceGroup.name = intern('custom')
     priceGroup.notInShop = True
     priceGroup.tags = frozenset(map(intern, ('custom', 'notInShop', 'legacy', 'paints', 'camouflages', 'common') +
@@ -116,7 +119,7 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
         if itemCls == cc.CamouflageItem:
             item.invisibilityFactor = 0
             item.i18n = shared_components.I18nExposedComponent(i_name, '')
-        item.id = max(20000, *storage) + 1
+        item.id = max(STARTER_ITEM_ID, *storage) + 1
         if item.compactDescr in itemToGroup:
             ix.raiseWrongXml(iCtx, 'id', 'duplicate item. id: %s found in group %s' % (
                 item.id, itemToGroup[item.compactDescr]))
@@ -131,8 +134,3 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
             iv._copyPriceForItem(groupsDict[priceGroupId].compactDescr, item.compactDescr, itemNotInShop)
         else:
             ix.raiseWrongXml(iCtx, 'priceGroup', 'no price for item %s' % item.id)
-        if itemCls == cc.CamouflageItem and not item.palettes:
-            try:
-                ix.raiseWrongXml(iCtx, 'palettes', 'no palettes for item %s' % item.id)
-            except:
-                traceback.print_exc()

@@ -6,7 +6,7 @@ import os
 from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups, Analytics
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
-from items.components.c11n_constants import SeasonType
+from items.components.c11n_constants import SeasonType, EMPTY_ITEM_ID
 from . import __date__, __modID__
 from .constants import SelectionMode, SEASON_NAME_TO_TYPE
 
@@ -256,6 +256,8 @@ class ConfigInterface(PYmodsConfigInterface):
         for season in SEASONS_CONSTANTS.SEASONS:
             self.camoForSeason[season] = {'random': [], 'ally': [], 'enemy': []}
         for camoID, camo in camouflages.iteritems():
+            if camoID == EMPTY_ITEM_ID:
+                continue
             itemName, itemKey = (camo.userKey, 'custom') if camo.priceGroup == 'custom' else (camoID, 'remap')
             cfg = self.camouflages[itemKey].get(itemName, {})
             mode = cfg.get('random_mode', SelectionMode.RANDOM)
