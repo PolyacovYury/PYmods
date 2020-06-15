@@ -12,8 +12,8 @@ from gui.customization.shared import __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.customization.c11n_items import Camouflage
-from gui.shared.gui_items.customization.containers import emptyComponent
-from gui.shared.gui_items.customization.outfit import Outfit, Area
+from vehicle_outfit.containers import emptyComponent
+from vehicle_outfit.outfit import Outfit, Area
 from gui.shared.personality import ServicesLocator
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
