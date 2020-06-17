@@ -140,7 +140,10 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
 
 def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVehicle=True):
     nationName, vehicleName = vDesc.name.split(':')
-    isTurretCustomisable = isTurretCustom(vDesc)
+    try:
+        isTurretCustomizable = isTurretCustom(vDesc)
+    except ValueError:
+        isTurretCustomizable = False
     if isPlayerVehicle:
         vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
         styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
@@ -162,12 +165,12 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
             if outfit.modelsSet and any(v for k, v in vehCache.iteritems() if k != 'style'):
                 outfit = Outfit()
             applyOutfitCache(outfit, vehCache.get(seasonName, {}))
-        deleteEmpty(vehCache, isTurretCustomisable)
+        deleteEmpty(vehCache, isTurretCustomizable)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
     if outfit.modelsSet or outfit.id == 20000:
         randomCache.clear()
     elif g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
-        processRandomCamouflages(outfit, seasonName, randomCache, isTurretCustomisable, vID)
+        processRandomCamouflages(outfit, seasonName, randomCache, isTurretCustomizable, vID)
         applyOutfitCache(outfit, randomCache)
     return outfit
 
