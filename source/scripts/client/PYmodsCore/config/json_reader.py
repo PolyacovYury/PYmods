@@ -70,21 +70,17 @@ class JSONLoader:
 
     @staticmethod
     def json_comments(text):
-        regex = r'\s*(\/{2}).*$'
-        regex_inline = r'(:?(?:\s)*(([A-Za-zА-Яа-я\d\.{}]*)|((?<=\").*\")),?)(?:\s)*((((\/{2})).*)|)$'
+        comment_re = re.compile(r'((?:^|[A-Za-zА-Яа-я\d.{}\[\]]+|(?=((?<=").*"))\2),?)\s*/{2}.*$')
         lines = text.split('\n')
         excluded = {}
-        for index, line in enumerate(lines):
-            if re.search(regex, line):
-                if re.search(r'^' + regex, line, re.IGNORECASE):
-                    excluded[index] = (lines[index], 1)
-                elif re.search(regex_inline, line):
-                    lines[index] = re.sub(regex_inline, r'\1', line)
-                    excluded[index] = (line.replace(lines[index], ''), 0)
-        for line, mode in excluded.itervalues():
-            if mode:
-                lines.remove(line)
-        return '\n'.join(lines), excluded
+        for lineNum, line in enumerate(lines):
+            match = comment_re.search(line)
+            if not match:
+                continue
+            split_at = match.end(1)
+            lines[lineNum] = new_line = line[:split_at]
+            excluded[lineNum] = (line[split_at:], not bool(new_line))
+        return '\n'.join([lines[i] for i in xrange(len(lines)) if i not in excluded or not excluded[i][1]]), excluded
 
     @staticmethod
     def encrypt(line):
@@ -156,14 +152,17 @@ class JSONLoader:
                     sort_keys = False
                 if updated:
                     write_lines = cls.byte_ify(cls.json_dumps(read_data, sort_keys)).split('\n')
-                    for lineNum in sorted(read_excluded):
-                        comment, mode = read_excluded[lineNum]
-                        if mode:
-                            write_lines.insert(lineNum, comment)
-                        else:
-                            write_lines[lineNum] += comment
                     if not quiet:
                         print ID + ': updating config:', new_path
+                    for lineNum, (comment, insert) in sorted(read_excluded.iteritems(), key=lambda x: x[0]):
+                        if not insert:
+                            if lineNum < len(write_lines):
+                                write_lines[lineNum] += comment
+                                continue
+                            else:
+                                print ID + ': warning while updating config:', new_path + ': comment on line', lineNum,
+                                print 'is beyond the scope of updated file'
+                        write_lines.insert(lineNum, comment)
                     cls.json_file_write(new_path, '\n'.join(write_lines), encrypted)
             else:
                 cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
