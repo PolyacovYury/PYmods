@@ -13,7 +13,7 @@ from .utils import smart_update
 __all__ = ['loadJson', 'loadJsonOrdered']
 
 
-class JSONObjectEncoder(json.JSONEncoder):
+class JSONEncoder(json.JSONEncoder):
     def encode(self, o, i=0):
         try:  # Special Processing for lists
             dedent = ' ' * i
@@ -35,7 +35,7 @@ class JSONObjectEncoder(json.JSONEncoder):
                 return '{\n%s\n%s}' % (item_sep.join(
                     '%s%s%s%s' % (indent, json.dumps(k), self.key_separator, self.encode(o[k], i)) for k in keys), dedent)
             else:
-                return super(JSONObjectEncoder, self).encode(o)
+                return super(JSONEncoder, self).encode(o)
         except StandardError:
             traceback.print_exc()
             print type(o)
@@ -96,9 +96,9 @@ class JSONLoader:
             return line, False
 
     @staticmethod
-    def json_dumps(conf, sort_keys):  # noinspection PyArgumentEqualDefault
-        return json.dumps(conf, sort_keys=sort_keys, indent=4, ensure_ascii=False, encoding='utf-8', separators=(',', ': '),
-                          cls=JSONObjectEncoder)
+    def json_dumps(conf, sort):  # noinspection PyArgumentEqualDefault
+        return json.dumps(
+            conf, sort_keys=sort, indent=4, ensure_ascii=False, encoding='utf-8', separators=(',', ': '), cls=JSONEncoder)
 
     @classmethod
     def json_file_read(cls, new_path, encrypted):
@@ -137,46 +137,46 @@ class JSONLoader:
         if not path.endswith('/'):
             path += '/'
         new_path = '%s%s.json' % (path, name)
-        if save:
-            if os.path.isfile(new_path):
-                read_contents, read_excluded, success = cls.json_file_read(new_path, encrypted)
-                if not success:
-                    read_contents = cls.json_dumps(oldConfig, sort_keys)
-                read_data = cls.byte_ify(json.loads(read_contents, object_pairs_hook=OrderedDict))  # maintains ordering
-                if rewrite:
-                    updated = read_data != oldConfig
-                    read_data = oldConfig
-                    sort_keys = not isinstance(oldConfig, OrderedDict)
-                else:
-                    updated = smart_update(read_data, oldConfig)
-                    sort_keys = False
-                if updated:
-                    write_lines = cls.byte_ify(cls.json_dumps(read_data, sort_keys)).split('\n')
-                    if not quiet:
-                        print ID + ': updating config:', new_path
-                    for lineNum, (comment, insert) in sorted(read_excluded.iteritems(), key=lambda x: x[0]):
-                        if not insert:
-                            if lineNum < len(write_lines):
-                                write_lines[lineNum] += comment
-                                continue
-                            else:
-                                print ID + ': warning while updating config:', new_path + ': comment on line', lineNum,
-                                print 'is beyond the scope of updated file'
-                        write_lines.insert(lineNum, comment)
-                    cls.json_file_write(new_path, '\n'.join(write_lines), encrypted)
-            else:
-                cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
-        elif os.path.isfile(new_path):
-            data, _, success = cls.json_file_read(new_path, encrypted)
-            if success:
-                try:
-                    config_new = cls.byte_ify(json.loads(data, object_hook=cls.byte_ify), ignore_dicts=True)
-                except StandardError:
-                    print new_path
-                    traceback.print_exc()
-        else:
+        if not os.path.isfile(new_path):
+            if not save:
+                print ID + ': ERROR: Config not found, creating default:', new_path
             cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
-            print ID + ': ERROR: Config not found, creating default:', new_path
+            return config_new
+        if not save:
+            data, _, success = cls.json_file_read(new_path, encrypted)
+            if not success:
+                return config_new
+            try:
+                config_new = cls.byte_ify(json.loads(data, object_hook=cls.byte_ify), ignore_dicts=True)
+            except StandardError:
+                print new_path
+                traceback.print_exc()
+            return config_new
+        read_contents, read_excluded, success = cls.json_file_read(new_path, encrypted)
+        if not success:
+            read_contents = cls.json_dumps(oldConfig, sort_keys)
+        read_data = cls.byte_ify(json.loads(read_contents, object_pairs_hook=OrderedDict))  # maintains ordering
+        if rewrite:
+            updated = read_data != oldConfig
+            read_data = oldConfig
+            sort_keys = not isinstance(oldConfig, OrderedDict)
+        else:
+            updated = smart_update(read_data, oldConfig)
+            sort_keys = False
+        if not updated:
+            return config_new
+        write_lines = cls.byte_ify(cls.json_dumps(read_data, sort_keys)).split('\n')
+        if not quiet:
+            print ID + ': updating config:', new_path
+        for lineNum, (comment, insert) in sorted(read_excluded.iteritems(), key=lambda x: x[0]):
+            if not insert:
+                if lineNum < len(write_lines):
+                    write_lines[lineNum] += comment
+                    continue
+                else:
+                    print ID + ': config', new_path, 'update warning: comment on line', lineNum, 'went beyond updated file'
+            write_lines.insert(lineNum, comment)
+        cls.json_file_write(new_path, '\n'.join(write_lines), encrypted)
         return config_new
 
     @classmethod
@@ -187,16 +187,17 @@ class JSONLoader:
         if not path.endswith('/'):
             path += '/'
         new_path = '%s%s.json' % (path, name)
-        if os.path.isfile(new_path):
-            data, _, success = cls.json_file_read(new_path, False)
-            if success:
-                try:
-                    config_new = cls.byte_ify(json.loads(data, object_pairs_hook=OrderedDict))
-                except StandardError:
-                    print new_path
-                    traceback.print_exc()
-        else:
+        if not os.path.isfile(new_path):
             print ID + ': ERROR: Config not found:', new_path
+            return config_new
+        data, _, success = cls.json_file_read(new_path, False)
+        if not success:
+            return config_new
+        try:
+            config_new = cls.byte_ify(json.loads(data, object_pairs_hook=OrderedDict))
+        except StandardError:
+            print new_path
+            traceback.print_exc()
         return config_new
 
 
