@@ -1,0 +1,420 @@
+﻿{
+    "message": "Автор: Wargaming",
+    "player": true,
+    "ally": false,
+    "enemy": false,
+    "whitelist": ["gb93_caernarvon_ax"],
+    "chassis": {
+        "undamaged": "vehicles/british/GB93_Caernarvon_AX/_skins/RoyalCorps/normal/lod0/Chassis.model",
+        "traces": {
+            "lodDist": 70.0,
+            "bufferPrefs": "mediumTank",
+            "textureSet": "ussr_01",
+            "centerOffset": 1.5181299448013306,
+            "size": [0.6499999761581421, 0.8600000143051147],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": -1.5499999523162842,
+            "pairsCount": 1
+        },
+        "wheels": {
+            "groups": [
+                {
+                    "isLeft": false,
+                    "template": "WD_R",
+                    "count": 4,
+                    "startIndex": 1,
+                    "radius": 0.13750000298023224
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 8,
+                    "startIndex": 0,
+                    "radius": 0.23922599852085114
+                },
+                {
+                    "isLeft": true,
+                    "template": "WD_L",
+                    "count": 4,
+                    "startIndex": 1,
+                    "radius": 0.13750000298023224
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 8,
+                    "startIndex": 0,
+                    "radius": 0.23951299488544464
+                }
+            ],
+            "wheels": [
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.42810899019241333,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 18.947399139404297,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.44185400009155273,
+                    "nodeName": "WD_R5",
+                    "isLeading": true,
+                    "leadingSyncAngle": 18.947399139404297,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.42810899019241333,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 18.947399139404297,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.44185400009155273,
+                    "nodeName": "WD_L5",
+                    "isLeading": true,
+                    "leadingSyncAngle": 18.947399139404297,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                }
+            ]
+        },
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": true,
+                    "minOffset": -0.12999999523162842,
+                    "maxOffset": 0.10000000149011612,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 8,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": false,
+                    "minOffset": -0.12999999523162842,
+                    "maxOffset": 0.10000000149011612,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 8,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.8500000238418579,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.8500000238418579,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_L1",
+                    "isLeft": true,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 1.7100000381469727,
+                    "backwardElasticityCoeff": 0.8600000143051147
+                },
+                {
+                    "name": "Track_VD_R1",
+                    "isLeft": false,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 1.7100000381469727,
+                    "backwardElasticityCoeff": 0.8600000143051147
+                },
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 1.9299999475479126
+                },
+                {
+                    "name": "Track_VT_L2",
+                    "isLeft": true,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 1.9299999475479126
+                },
+                {
+                    "name": "Track_VT_L3",
+                    "isLeft": true,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 1.9299999475479126
+                },
+                {
+                    "name": "Track_VT_L4",
+                    "isLeft": true,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.9100000262260437,
+                    "backwardElasticityCoeff": 1.9299999475479126
+                },
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.9200000166893005,
+                    "backwardElasticityCoeff": 1.9800000190734863
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.9200000166893005,
+                    "backwardElasticityCoeff": 1.9800000190734863
+                },
+                {
+                    "name": "Track_VT_R2",
+                    "isLeft": false,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.9200000166893005,
+                    "backwardElasticityCoeff": 1.9800000190734863
+                },
+                {
+                    "name": "Track_VT_R3",
+                    "isLeft": false,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.9200000166893005,
+                    "backwardElasticityCoeff": 1.9800000190734863
+                },
+                {
+                    "name": "Track_VT_R4",
+                    "isLeft": false,
+                    "initialOffset": -0.035999998450279236,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.9200000166893005,
+                    "backwardElasticityCoeff": 1.0
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentModelSets": {
+                "left": "vehicles/british/GB93_Caernarvon_AX/track/segment.model",
+                "right": "vehicles/british/GB93_Caernarvon_AX/track/segment.model",
+                "secondLeft": null,
+                "secondRight": null
+            },
+            "leftDesc": [["vehicles/british/GB93_Caernarvon_AX/track/left.track", 0, 0.13600000739097595, 0.2160000056028366, 0.0]],
+            "rightDesc": [["vehicles/british/GB93_Caernarvon_AX/track/right.track", 0, 0.13600000739097595, 0.2160000056028366, 0.0]],
+            "lodDist": 50.0,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1
+        },
+        "trackSplineParams": {
+            "thickness": -0.0034000000450760126,
+            "maxAmplitude": 0.14000000059604645,
+            "maxOffset": 0.14000000059604645,
+            "gravity": -9.800000190734863
+        },
+        "leveredSuspension": null,
+        "chassisLodDistance": 70.0,
+        "hullPosition": [0.0, 1.2044700384140015, 0.0],
+        "AODecals": [[[4.099339962005615, 0.0, 0.0], [0.0, 1.342020034790039, -0.0], [0.0, -0.0, 7.820069789886475], [0.00014662700414191931, -9.999999974752427e-07, -0.00016784699982963502]]],
+        "soundID": "Chassis_GB93_Caernarvon_AX",
+        "emblemSlots": []
+    },
+    "hull": {
+        "undamaged": "vehicles/british/GB93_Caernarvon_AX/_skins/RoyalCorps/normal/lod0/Hull.model",
+        "exhaust": {
+            "pixie": "",
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [-0.7252299785614014, 0.39956098794937134, 2.854300022125244],
+                "rayEnd": [-0.7252730131149292, 0.22659799456596375, 2.753880023956299],
+                "rayUp": [0.0, 0.0, -1.0],
+                "size": 0.30000001192092896,
+                "hideIfDamaged": true,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 1,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [-2.0894100666046143, 0.03057350032031536, 0.31718000769615173],
+                "rayEnd": [-1.8894200325012207, 0.030543699860572815, 0.31718000769615173],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.5580000281333923,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 36,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [2.0894100666046143, 0.03057350032031536, 0.31718000769615173],
+                "rayEnd": [1.8894200325012207, 0.030543699860572815, 0.31718000769615173],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.5580000281333923,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 37,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/british/GB93_Caernarvon_AX/_skins/RoyalCorps/normal/lod0/Turret_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [-1.135450005531311, 0.661532998085022, -0.7502179741859436],
+                "rayEnd": [-1.0371899604797363, 0.6589589715003967, -0.7318210005760193],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.25999999046325684,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 514,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [1.182170033454895, 0.46491900086402893, -0.5356619954109192],
+                "rayEnd": [1.083549976348877, 0.4618139863014221, -0.5193880200386047],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.25999999046325684,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 515,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/british/GB93_Caernarvon_AX/_skins/RoyalCorps/normal/lod0/Gun_01.model",
+        "soundID": "_20pdr_Gun_Type_B_1",
+        "emblemSlots": [
+            {
+                "rayStart": [-0.012847700156271458, -0.003334549954161048, 1.5299999713897705],
+                "rayEnd": [0.06923110038042068, 0.014268100261688232, 1.5361100435256958],
+                "rayUp": [0.10700000077486038, 0.0, 0.0],
+                "size": 0.367000013589859,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 771,
+                "applyToFabric": true
+            }
+        ],
+        "drivenJoints": null
+    },
+    "engine": {
+        "soundID": "Rolls_Royce_Griffon_A"
+    }
+}

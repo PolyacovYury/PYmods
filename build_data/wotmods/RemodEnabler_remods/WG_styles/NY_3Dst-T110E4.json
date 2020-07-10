@@ -1,0 +1,465 @@
+﻿{
+    "message": "beals",
+    "player": true,
+    "ally": false,
+    "enemy": false,
+    "whitelist": ["a83_t110e4"],
+    "chassis": {
+        "undamaged": "vehicles/american/A83_T110E4/_skins/NY_3Dst/normal/lod0/Chassis.model",
+        "traces": {
+            "lodDist": 120.0,
+            "bufferPrefs": "largeTank",
+            "textureSet": "t97",
+            "centerOffset": 1.5109699964523315,
+            "size": [0.75, 0.7699999809265137],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": -2.799999952316284,
+            "pairsCount": 1
+        },
+        "wheels": {
+            "groups": [
+                {
+                    "isLeft": false,
+                    "template": "WD_R",
+                    "count": 5,
+                    "startIndex": 1,
+                    "radius": 0.16076700389385223
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 6,
+                    "startIndex": 0,
+                    "radius": 0.32951998710632324
+                },
+                {
+                    "isLeft": true,
+                    "template": "WD_L",
+                    "count": 5,
+                    "startIndex": 1,
+                    "radius": 0.16076700389385223
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 6,
+                    "startIndex": 0,
+                    "radius": 0.32951998710632324
+                }
+            ],
+            "wheels": [
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.3295210003852844,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 32.727298736572266,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.3375000059604645,
+                    "nodeName": "WD_R6",
+                    "isLeading": true,
+                    "leadingSyncAngle": 32.727298736572266,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.3295210003852844,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 32.727298736572266,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.3375000059604645,
+                    "nodeName": "WD_L6",
+                    "isLeading": true,
+                    "leadingSyncAngle": 32.727298736572266,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                }
+            ]
+        },
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": true,
+                    "minOffset": -0.03999999910593033,
+                    "maxOffset": 0.07999999821186066,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 6,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": false,
+                    "minOffset": -0.03999999910593033,
+                    "maxOffset": 0.07999999821186066,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 6,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.800000011920929,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.800000011920929,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VD_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 2.0,
+                    "backwardElasticityCoeff": 0.800000011920929
+                },
+                {
+                    "name": "Track_VD_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 2.0,
+                    "backwardElasticityCoeff": 0.800000011920929
+                },
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": -0.10594800114631653,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": -0.09851299971342087,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 1.600000023841858
+                },
+                {
+                    "name": "Track_VT_L2",
+                    "isLeft": true,
+                    "initialOffset": -0.10594800114631653,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 1.7000000476837158
+                },
+                {
+                    "name": "Track_VT_L3",
+                    "isLeft": true,
+                    "initialOffset": -0.1022299975156784,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 1.7999999523162842
+                },
+                {
+                    "name": "Track_VT_L4",
+                    "isLeft": true,
+                    "initialOffset": -0.10594800114631653,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 1.899999976158142
+                },
+                {
+                    "name": "Track_VT_L5",
+                    "isLeft": true,
+                    "initialOffset": -0.09479550272226334,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": -0.10594800114631653,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": -0.09851299971342087,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 1.600000023841858
+                },
+                {
+                    "name": "Track_VT_R2",
+                    "isLeft": false,
+                    "initialOffset": -0.10594800114631653,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 1.7000000476837158
+                },
+                {
+                    "name": "Track_VT_R3",
+                    "isLeft": false,
+                    "initialOffset": -0.1022299975156784,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 1.7999999523162842
+                },
+                {
+                    "name": "Track_VT_R4",
+                    "isLeft": false,
+                    "initialOffset": -0.10594800114631653,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 1.899999976158142
+                },
+                {
+                    "name": "Track_VT_R5",
+                    "isLeft": false,
+                    "initialOffset": -0.09479550272226334,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1050.0,
+                    "forwardElasticityCoeff": 0.949999988079071,
+                    "backwardElasticityCoeff": 2.0
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentModelSets": {
+                "left": "vehicles/american/A83_T110E4/track/segment1.model",
+                "right": "vehicles/american/A83_T110E4/track/segment1.model",
+                "secondLeft": "vehicles/american/A83_T110E4/track/segment2.model",
+                "secondRight": "vehicles/american/A83_T110E4/track/segment2.model"
+            },
+            "leftDesc": [
+                [
+                    "vehicles/american/A83_T110E4/track/left.track",
+                    0,
+                    0.1720000058412552,
+                    0.257999986410141,
+                    0.09000000357627869
+                ]
+            ],
+            "rightDesc": [
+                [
+                    "vehicles/american/A83_T110E4/track/right.track",
+                    0,
+                    0.1720000058412552,
+                    0.257999986410141,
+                    0.09000000357627869
+                ]
+            ],
+            "lodDist": 50.0,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1
+        },
+        "trackSplineParams": {
+            "thickness": -0.0008999999845400453,
+            "maxAmplitude": 0.10000000149011612,
+            "maxOffset": 0.10000000149011612,
+            "gravity": -9.800000190734863
+        },
+        "leveredSuspension": null,
+        "chassisLodDistance": 70.0,
+        "hullPosition": [0.0, 1.1385999917984009, 0.0],
+        "AODecals": [
+            [
+                [5.233850002288818, -0.0, -0.0],
+                [-0.0, 1.350000023841858, 0.0],
+                [-0.0, -0.0, 7.144720077514648],
+                [-0.0, 0.0, 0.0]
+            ]
+        ],
+        "soundID": "Chassis_T110E4",
+        "emblemSlots": []
+    },
+    "hull": {
+        "undamaged": "vehicles/american/A83_T110E4/_skins/NY_3Dst/normal/lod0/Hull.model",
+        "exhaust": {
+            "pixie": "",
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [-0.6261109709739685, 0.6195340156555176, 2.4029300212860107],
+                "rayEnd": [-0.5255740284919739, 0.044453199952840805, 2.2644600868225098],
+                "rayUp": [0.0, 0.0, -1.0],
+                "size": 0.3199999928474426,
+                "hideIfDamaged": false,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 10000,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/american/A83_T110E4/_skins/NY_3Dst/normal/lod0/Turret_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [-1.1969200372695923, 0.7380160093307495, -0.8383520245552063],
+                "rayEnd": [-1.1054400205612183, 0.6976659893989563, -0.8364430069923401],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.30000001192092896,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 33000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [1.242319941520691, 0.7588099837303162, -0.8116409778594971],
+                "rayEnd": [1.0606000423431396, 0.6752730011940002, -0.8119680285453796],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.30000001192092896,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 33001,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [-1.415619969367981, 0.38018798828125, -0.3920069932937622],
+                "rayEnd": [-1.2338999509811401, 0.2966510057449341, -0.3923330008983612],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.7599999904632568,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 34000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [1.417449951171875, 0.3758229911327362, -0.22082599997520447],
+                "rayEnd": [1.2360800504684448, 0.29155200719833374, -0.2196889966726303],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.7599999904632568,
+                "hideIfDamaged": false,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 34001,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/american/A83_T110E4/_skins/NY_3Dst/normal/lod0/Gun_01.model",
+        "soundID": "_155mm_AT_Gun_T7E2",
+        "drivenJoints": {},
+        "emblemSlots": [
+            {
+                "rayStart": [0.0005765410023741424, 0.003824579995125532, 2.363729953765869],
+                "rayEnd": [-0.14133800566196442, -0.23825900256633759, 2.359220027923584],
+                "rayUp": [0.14399999380111694, 0.0, 0.0],
+                "size": 0.800000011920929,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 49000,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "engine": {
+        "soundID": "AOI-1490"
+    }
+}

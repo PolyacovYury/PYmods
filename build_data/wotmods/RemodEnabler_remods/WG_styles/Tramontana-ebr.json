@@ -1,0 +1,135 @@
+﻿{
+    "message": "beals",
+    "player": true,
+    "ally": false,
+    "enemy": false,
+    "whitelist": ["f108_panhard_ebr_105"],
+    "chassis": {
+        "undamaged": "vehicles/french/F108_Panhard_EBR_105/_skins/tramontana/normal/lod0/Chassis.model",
+        "traces": {
+            "lodDist": 70.0,
+            "bufferPrefs": "mediumTank",
+            "textureSet": "usa_04",
+            "centerOffset": 1.1792700290679932,
+            "size": [0.5, 0.4000000059604645],
+            "activePostmortem": true
+        },
+        "tracks": null,
+        "wheels": null,
+        "groundNodes": {
+            "nodes": [
+                {
+                    "nodeName": "Track_L0",
+                    "affectedWheelName": "WD_L0",
+                    "isLeft": true,
+                    "minOffset": -0.05999999865889549,
+                    "maxOffset": 0.03999999910593033,
+                    "collisionSamplesCount": 5,
+                    "hasLiftMode": false
+                },
+                {
+                    "nodeName": "Track_L3",
+                    "affectedWheelName": "WD_L1",
+                    "isLeft": true,
+                    "minOffset": -0.05999999865889549,
+                    "maxOffset": 0.03999999910593033,
+                    "collisionSamplesCount": 5,
+                    "hasLiftMode": false
+                },
+                {
+                    "nodeName": "Track_R0",
+                    "affectedWheelName": "WD_R0",
+                    "isLeft": false,
+                    "minOffset": -0.05999999865889549,
+                    "maxOffset": 0.03999999910593033,
+                    "collisionSamplesCount": 5,
+                    "hasLiftMode": false
+                },
+                {
+                    "nodeName": "Track_R3",
+                    "affectedWheelName": "WD_R1",
+                    "isLeft": false,
+                    "minOffset": -0.05999999865889549,
+                    "maxOffset": 0.03999999910593033,
+                    "collisionSamplesCount": 5,
+                    "hasLiftMode": false
+                }
+            ],
+            "groups": [],
+            "activePostmortem": true,
+            "lodSettings": {
+                "maxLodDistance": 200.0,
+                "maxPriority": 5
+            }
+        },
+        "trackNodes": {
+            "nodes": [],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": null,
+        "trackSplineParams": null,
+        "leveredSuspension": {
+            "levers": [
+                {
+                    "startNodeName": "Lever_Start_L1",
+                    "jointNodeName": "Lever_Joint_L1",
+                    "trackNodeName": "Track_L1",
+                    "minAngle": -0.6108652381980153,
+                    "maxAngle": 0.17453292519943295,
+                    "collisionSamplesCount": 5,
+                    "hasLiftMode": true,
+                    "affectedWheelName": "W_L0"
+                },
+                {
+                    "startNodeName": "Lever_Start_R1",
+                    "jointNodeName": "Lever_Joint_R1",
+                    "trackNodeName": "Track_R1",
+                    "minAngle": -0.6108652381980153,
+                    "maxAngle": 0.17453292519943295,
+                    "collisionSamplesCount": 5,
+                    "hasLiftMode": true,
+                    "affectedWheelName": "W_R0"
+                },
+                {
+                    "startNodeName": "Lever_Start_L2",
+                    "jointNodeName": "Lever_Joint_L2",
+                    "trackNodeName": "Track_L2",
+                    "minAngle": 3.7524578917878086,
+                    "maxAngle": 2.9670597283903604,
+                    "collisionSamplesCount": 5,
+                    "hasLiftMode": true,
+                    "affectedWheelName": "W_L1"
+                },
+                {
+                    "startNodeName": "Lever_Start_R2",
+                    "jointNodeName": "Lever_Joint_R2",
+                    "trackNodeName": "Track_R2",
+                    "minAngle": 3.7524578917878086,
+                    "maxAngle": 2.9670597283903604,
+                    "collisionSamplesCount": 5,
+                    "hasLiftMode": true,
+                    "affectedWheelName": "W_R1"
+                }
+            ],
+            "interpolationSpeedMul": 10.0,
+            "lodSettings": {
+                "maxLodDistance": 200.0,
+                "maxPriority": 5
+            },
+            "activePostmortem": true
+        },
+        "chassisLodDistance": 70.0
+    },
+    "hull": {
+        "undamaged": "vehicles/french/F108_Panhard_EBR_105/_skins/tramontana/normal/lod0/Hull.model"
+    },
+    "turret": {
+        "undamaged": "vehicles/french/F108_Panhard_EBR_105/_skins/tramontana/normal/lod0/Turret_01.model"
+    },
+    "gun": {
+        "undamaged": "vehicles/french/F108_Panhard_EBR_105/_skins/tramontana/normal/lod0/Gun_01.model"
+    },
+    "engine": {}
+}

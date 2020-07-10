@@ -1,0 +1,515 @@
+﻿{
+    "message": "Beals",
+    "player": true,
+    "ally": false,
+    "enemy": false,
+    "whitelist": ["f10_amx_50b"],
+    "chassis": {
+        "undamaged": "vehicles/french/F10_AMX_50B/_skins/FULL3D/normal/lod0/Chassis.model",
+        "traces": {
+            "lodDist": 120.0,
+            "bufferPrefs": "largeTank",
+            "textureSet": "germany_01",
+            "centerOffset": 1.3314599990844727,
+            "size": [0.47999998927116394, 0.699999988079071],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": -1.600000023841858,
+            "pairsCount": 1
+        },
+        "wheels": {
+            "groups": [
+                {
+                    "isLeft": false,
+                    "template": "WD_R",
+                    "count": 3,
+                    "startIndex": 4,
+                    "radius": 0.12095600366592407
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 4,
+                    "startIndex": 5,
+                    "radius": 0.40550199151039124
+                },
+                {
+                    "isLeft": false,
+                    "template": "WD_R",
+                    "count": 3,
+                    "startIndex": 1,
+                    "radius": 0.12095600366592407
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 5,
+                    "startIndex": 0,
+                    "radius": 0.40550199151039124
+                },
+                {
+                    "isLeft": true,
+                    "template": "WD_L",
+                    "count": 3,
+                    "startIndex": 4,
+                    "radius": 0.12095600366592407
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 4,
+                    "startIndex": 5,
+                    "radius": 0.40550199151039124
+                },
+                {
+                    "isLeft": true,
+                    "template": "WD_L",
+                    "count": 3,
+                    "startIndex": 1,
+                    "radius": 0.12095600366592407
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 5,
+                    "startIndex": 0,
+                    "radius": 0.40550199151039124
+                }
+            ],
+            "wheels": [
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.4139389991760254,
+                    "nodeName": "WD_R7",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.34759798645973206,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.4108169972896576,
+                    "nodeName": "WD_L7",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.34759798645973206,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 24.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                }
+            ]
+        },
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": true,
+                    "minOffset": -0.10000000149011612,
+                    "maxOffset": 0.07000000029802322,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 9,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": false,
+                    "minOffset": -0.10000000149011612,
+                    "maxOffset": 0.07000000029802322,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 9,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.600000023841858
+                },
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.600000023841858
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.7200000286102295,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_R2",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.7400000095367432,
+                    "backwardElasticityCoeff": 2.5
+                },
+                {
+                    "name": "Track_VT_R3",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.7599999904632568,
+                    "backwardElasticityCoeff": 3.0
+                },
+                {
+                    "name": "Track_VT_R4",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.7799999713897705,
+                    "backwardElasticityCoeff": 3.0
+                },
+                {
+                    "name": "Track_VT_R5",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 1.399999976158142,
+                    "backwardElasticityCoeff": 3.0
+                },
+                {
+                    "name": "Track_VT_R6",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 1.2000000476837158,
+                    "backwardElasticityCoeff": 3.0
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.7200000286102295,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_L2",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.7400000095367432,
+                    "backwardElasticityCoeff": 2.5
+                },
+                {
+                    "name": "Track_VT_L3",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.7599999904632568,
+                    "backwardElasticityCoeff": 3.0
+                },
+                {
+                    "name": "Track_VT_L4",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.7799999713897705,
+                    "backwardElasticityCoeff": 3.0
+                },
+                {
+                    "name": "Track_VT_L5",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 1.399999976158142,
+                    "backwardElasticityCoeff": 3.0
+                },
+                {
+                    "name": "Track_VT_L6",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 1.2000000476837158,
+                    "backwardElasticityCoeff": 3.0
+                },
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.8799999952316284,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 0.8799999952316284,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VD_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 2.049999952316284,
+                    "backwardElasticityCoeff": 0.800000011920929
+                },
+                {
+                    "name": "Track_VD_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1000.0,
+                    "forwardElasticityCoeff": 2.049999952316284,
+                    "backwardElasticityCoeff": 0.800000011920929
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentModelSets": {
+                "left": "vehicles/french/F10_AMX_50B/track/segment.model",
+                "right": "vehicles/french/F10_AMX_50B/track/segment.model",
+                "secondLeft": null,
+                "secondRight": null
+            },
+            "leftDesc": [
+                [
+                    "vehicles/french/F10_AMX_50B/track/left.track",
+                    0,
+                    0.1550000011920929,
+                    0.08299999684095383,
+                    0.0
+                ]
+            ],
+            "rightDesc": [
+                [
+                    "vehicles/french/F10_AMX_50B/track/right.track",
+                    0,
+                    0.1550000011920929,
+                    0.08299999684095383,
+                    0.0
+                ]
+            ],
+            "lodDist": 50.0,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1
+        },
+        "trackSplineParams": {
+            "thickness": -0.05000000074505806,
+            "maxAmplitude": 0.26499998569488525,
+            "maxOffset": 0.26499998569488525,
+            "gravity": -9.0
+        },
+        "leveredSuspension": null,
+        "chassisLodDistance": 70.0,
+        "hullPosition": [0.0, 1.1453399658203125, 0.0],
+        "AODecals": [
+            [
+                [4.734829902648926, 0.0, 0.0],
+                [0.0, 1.7886099815368652, -0.0],
+                [-0.0, 0.0, 8.45261001586914],
+                [0.0, -0.0, 3.999999989900971e-06]
+            ]
+        ],
+        "soundID": "Chassis_AMX_50_68t",
+        "emblemSlots": []
+    },
+    "hull": {
+        "undamaged": "vehicles/french/F10_AMX_50B/_skins/FULL3D/normal/lod0/Hull.model",
+        "exhaust": {
+            "pixie": "",
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [0.43771401047706604, 0.4849570095539093, 2.4139199256896973],
+                "rayEnd": [0.41759398579597473, 0.25409799814224243, 2.35152006149292],
+                "rayUp": [0.0, 0.0, -1.0],
+                "size": 0.2800000011920929,
+                "hideIfDamaged": true,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 10000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [0.01241379976272583, 0.485522985458374, 2.725990056991577],
+                "rayEnd": [0.01145320013165474, 0.11739599704742432, 2.5695300102233887],
+                "rayUp": [-0.0032125499565154314, 6.000000212225132e-06, -0.9999949932098389],
+                "size": 0.8199999928474426,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 14000,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/french/F10_AMX_50B/_skins/FULL3D/normal/lod0/Turret_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [1.2665899991989136, 0.2131049931049347, -2.348050117492676],
+                "rayEnd": [1.0271199941635132, 0.2131049931049347, -2.3320798873901367],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.2800000011920929,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 33000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [-1.267799973487854, 0.20123599469661713, -2.3328299522399902],
+                "rayEnd": [-1.0283399820327759, 0.20123499631881714, -2.316689968109131],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.2800000011920929,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 33001,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [1.3904900550842285, 0.17925700545310974, -1.702430009841919],
+                "rayEnd": [0.9914829730987549, 0.17559899389743805, -1.6746100187301636],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.8199999928474426,
+                "hideIfDamaged": false,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 34000,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/french/F10_AMX_50B/_skins/FULL3D/normal/lod0/Gun_01.model",
+        "soundID": "_120mm_SA_46",
+        "drivenJoints": {},
+        "emblemSlots": [
+            {
+                "rayStart": [-0.0, 0.0059648300521075726, 6.040130138397217],
+                "rayEnd": [0.10828600078821182, -0.06534100323915482, 6.037049770355225],
+                "rayUp": [0.10300000011920929, 0.0, 0.0],
+                "size": 0.8740000128746033,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 49000,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "engine": {
+        "soundID": "Maybach_HL_295_F"
+    }
+}
