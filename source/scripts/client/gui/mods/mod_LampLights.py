@@ -688,16 +688,14 @@ def new_oVHC(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
 
 
-@overrideMethod(CompoundAppearance, '_CompoundAppearance__onPeriodicTimer')
-def new_onPeriodicTimer(base, self):
+@overrideMethod(CompoundAppearance, '_periodicUpdate')
+def new_periodicUpdate(base, self):
     base(self)
-    if CompoundAppearance.frameTimeStamp > BigWorld.wg_getFrameTimestamp():
-        return
-    if self._CompoundAppearance__vehicle is None:
+    if self._vehicle is None:
         return
     if not _config.data['enabled'] or not _config.isLampsVisible or not _config.isTickRequired:
         return
-    vehicleID = self._CompoundAppearance__vehicle.id
+    vehicleID = self._vehicle.id
     if vehicleID not in lightDBDict:
         return
     curSpeeds = curSpeedsDict.setdefault(vehicleID, {})
