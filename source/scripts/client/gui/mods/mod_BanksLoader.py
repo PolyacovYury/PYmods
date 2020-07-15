@@ -166,7 +166,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if orig_engine is None:
             print _config.ID + ': ERROR: engine_config.xml not found'
             return
-        new_engine = ResMgr.openSection('engine_config_edited.xml', True)
+        new_engine = ResMgr.openSection('./engine_config_edited.xml', True)
         new_engine.copy(orig_engine)
         ResMgr.purge('engine_config.xml')
         soundMgr = new_engine['soundMgr']
