@@ -194,7 +194,8 @@ def new_construct(base, self):
 
 
 def new_setModuleInfoS(base, self, moduleInfo):
-    moduleInfo['description'] = re.sub(r'<[^>]*>', '', moduleInfo['description'])
+    if 'description' in moduleInfo:
+        moduleInfo['description'] = re.sub(r'<[^>]*>', '', moduleInfo['description'])
     base(self, moduleInfo)
 
 
