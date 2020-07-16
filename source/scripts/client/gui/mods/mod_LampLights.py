@@ -682,7 +682,7 @@ def new_leaveArena(base, *a, **kw):
 
 @overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
 def new_oVHC(base, self, *args, **kwargs):
-    vehicle = self._CompoundAppearance__vehicle
+    vehicle = self._vehicle
     if not vehicle.isAlive():
         lightsDestroy(vehicle.id, 'oVHC_vehicle_not_isAlive')
     base(self, *args, **kwargs)
@@ -700,7 +700,7 @@ def new_periodicUpdate(base, self):
         return
     curSpeeds = curSpeedsDict.setdefault(vehicleID, {})
     oldSpeed = curSpeeds.setdefault('curSpeed', 0.0)
-    speedValue = self._CompoundAppearance__vehicle.filter.speedInfo.value
+    speedValue = self._vehicle.filter.speedInfo.value
     curSpeed = round(speedValue[0], 1)
     curRSpeed = round(speedValue[1], 1)
     doVisible = {'back': curSpeed < 0,

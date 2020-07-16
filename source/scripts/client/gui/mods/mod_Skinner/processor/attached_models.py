@@ -135,7 +135,7 @@ def destroy_all():
 
 @overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
 def new_oVHC(base, self, *args, **kwargs):
-    vehicle = self._CompoundAppearance__vehicle
+    vehicle = self._vehicle
     if not vehicle.isAlive():
         detach(vehicle.id, 'destroy')
     base(self, *args, **kwargs)
