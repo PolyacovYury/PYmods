@@ -14,7 +14,7 @@ from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_
 from gui.shared.personality import ServicesLocator
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
-from skeletons.gui.shared import IItemsCache
+from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from vehicle_outfit.containers import emptyComponent
 from vehicle_outfit.outfit import Outfit, Area
 from vehicle_systems.CompoundAppearance import CompoundAppearance
@@ -43,7 +43,6 @@ def hasNoCamo(outfit):
 
 
 def applyOutfitCache(outfit, seasonCache, clean=True):
-    itemsCache = dependency.instance(IItemsCache)
     for itemTypeName, itemCache in seasonCache.items():
         itemType = GUI_ITEM_TYPE_INDICES[itemTypeName]
         itemDB = items.vehicles.g_cache.customization20().itemTypes[C11N_ITEM_TYPE_MAP[itemType]]
@@ -82,7 +81,6 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
     palette = None
     patternSize = None
     camouflages = items.vehicles.g_cache.customization20().camouflages
-    itemsCache = dependency.instance(IItemsCache)
     outfitItemIDs = set()
     outfitItems = set()
     for container in outfit.containers():
@@ -94,7 +92,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
         intCD = slot.getItemCD(0)
         if not intCD:
             continue
-        item = itemsCache.items.getItemByCD(intCD)
+        item = dependency.instance(IGuiItemsFactory).createCustomization(intCD)
         component = slot.getComponent(0)
         outfitItemIDs.add(item.id)
         outfitItems.add((item.id, component.palette, component.patternSize))
@@ -150,9 +148,7 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
         if styleCache['applied']:
             styleCD = styleCache['intCD']
             if styleCD is not None:
-                itemsCache = dependency.instance(IItemsCache)
-                style = (itemsCache.items.getItemByCD if itemsCache.items.isSynced() else
-                         itemsCache.items.itemsFactory.createCustomization)(styleCD)
+                style = dependency.instance(IGuiItemsFactory).createCustomization(styleCD)
                 if not style:
                     print g_config.ID + ': style', styleCD, 'for', vehicleName, 'deleted from game client.'
                     styleCache.update(intCD=None, applied=False)
