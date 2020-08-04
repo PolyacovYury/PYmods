@@ -172,7 +172,7 @@ def userRegion(databaseID):
     if databaseID < 1000000000:
         return 'eu'
     if databaseID < 2000000000:
-        return 'na'
+        return 'com'
     return 'asia'
 
 

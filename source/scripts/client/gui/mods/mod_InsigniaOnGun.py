@@ -70,7 +70,7 @@ def new_getRank(base, *a, **kw):
 
 @overrideMethod(CompoundAppearance, '_createStickers')
 def new_createStickers(base, self, *a, **kw):
-    vehicle = self._CompoundAppearance__vehicle
+    vehicle = self._vehicle
     if not vehicle or not config.data['enabled']:
         return base(self, *a, **kw)
     insigniaRank = origRank = vehicle.publicInfo['marksOnGun']

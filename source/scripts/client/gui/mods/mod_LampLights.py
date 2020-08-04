@@ -682,27 +682,25 @@ def new_leaveArena(base, *a, **kw):
 
 @overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
 def new_oVHC(base, self, *args, **kwargs):
-    vehicle = self._CompoundAppearance__vehicle
+    vehicle = self._vehicle
     if not vehicle.isAlive():
         lightsDestroy(vehicle.id, 'oVHC_vehicle_not_isAlive')
     base(self, *args, **kwargs)
 
 
-@overrideMethod(CompoundAppearance, '_CompoundAppearance__onPeriodicTimer')
-def new_onPeriodicTimer(base, self):
+@overrideMethod(CompoundAppearance, '_periodicUpdate')
+def new_periodicUpdate(base, self):
     base(self)
-    if CompoundAppearance.frameTimeStamp > BigWorld.wg_getFrameTimestamp():
-        return
-    if self._CompoundAppearance__vehicle is None:
+    if self._vehicle is None:
         return
     if not _config.data['enabled'] or not _config.isLampsVisible or not _config.isTickRequired:
         return
-    vehicleID = self._CompoundAppearance__vehicle.id
+    vehicleID = self._vehicle.id
     if vehicleID not in lightDBDict:
         return
     curSpeeds = curSpeedsDict.setdefault(vehicleID, {})
     oldSpeed = curSpeeds.setdefault('curSpeed', 0.0)
-    speedValue = self._CompoundAppearance__vehicle.filter.speedInfo.value
+    speedValue = self._vehicle.filter.speedInfo.value
     curSpeed = round(speedValue[0], 1)
     curRSpeed = round(speedValue[1], 1)
     doVisible = {'back': curSpeed < 0,
