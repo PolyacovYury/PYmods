@@ -14,5 +14,6 @@ def apply(vDesc, modelsSet, sname):
             path = models.undamaged.replace('vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
             if ResMgr.isFile(path):
                 part.modelsSets[modelsSet] = ModelStatesPaths(path, models.destroyed, models.exploded)
+                part.models = part.modelsSets['default']
             else:
                 print g_config.ID + ': skin model not found:', path
