@@ -294,9 +294,6 @@ def nodeWatcher(section, nodeName, upperMat=math_utils.createIdentityMatrix()):
 def findWheelNodes(vehicleID, place):
     nodeList = []
     nodeNamesList = []
-    wheelsCount = 0
-    wheelNodeStr = 'W_%s' % place
-    subWheelNodeStr = 'WD_%s' % place
     vEntity = BigWorld.entity(vehicleID)
     vDesc = vEntity.typeDescriptor
     chassisSource = vDesc.chassis.models.undamaged
@@ -311,29 +308,18 @@ def findWheelNodes(vehicleID, place):
     if sourceSec is None:
         print 'LampLights: visual not found for %s' % chassisSource
         return [], []
-    while True:
-        restoreMat = Math.Matrix()
-        transMat = nodeWatcher(sourceSec, wheelNodeStr + str(wheelsCount))
-        if transMat is not None:
-            restoreMat.setTranslate(transMat.translation)
-            nodeList.append(restoreMat)
-            nodeNamesList.append(wheelNodeStr + str(wheelsCount))
-            wheelsCount += 1
-        else:
-            break
-
-    if not wheelsCount:
+    for template in ('W_%s' % place, 'WD_%s' % place):
+        wheelsCount = 0
         while True:
             restoreMat = Math.Matrix()
-            transMat = nodeWatcher(sourceSec, subWheelNodeStr + str(wheelsCount))
+            transMat = nodeWatcher(sourceSec, template + str(wheelsCount))
             if transMat is not None:
                 restoreMat.setTranslate(transMat.translation)
                 nodeList.append(restoreMat)
-                nodeNamesList.append(subWheelNodeStr + str(wheelsCount))
+                nodeNamesList.append(template + str(wheelsCount))
                 wheelsCount += 1
             else:
                 break
-
     return [nodeList, nodeNamesList]
 
 
@@ -448,6 +434,27 @@ def lightsCreate(vehicleID, callPlace=''):
                 if transMat is None:
                     transMat = nodeWatcher(sourcesDict[TankPartNames.CHASSIS], node.replace('Up', ''))
                 isChassis = True
+            if transMat is None and isChassis:  # wheeled
+                placed = node.split('_')[-1]
+                place, side = placed[:1], placed[1:]
+                template = 'HP_Wheel_%s_0%s_%s' % (place, '%s', side)
+                edge = None
+                if side == 'Front':
+                    edge = nodeWatcher(sourcesDict[TankPartNames.CHASSIS], template % 1)
+                else:
+                    for idx in xrange(1, 10):
+                        found = nodeWatcher(sourcesDict[TankPartNames.CHASSIS], template % idx)
+                        if found is None:
+                            break
+                        edge = found
+                if edge is not None:
+                    wheels = nodeListML if place == 'L' else nodeListMR
+                    sign = 1 if side == 'Front' else -1
+                    center = max(wheels, key=lambda x: x.translation.z * sign)
+                    rotator = Math.Matrix()
+                    rotator.setRotateX(-sign * 3.1415 * 3 / 4)
+                    transMat = Math.Matrix()
+                    transMat.setTranslate(center.applyPoint(rotator.applyPoint(edge.translation - center.translation)))
             if transMat is None:
                 print _config.ID + ': restore Matrix not found for node', node, 'in', vDesc.hull.models.undamaged
                 print callPlace
