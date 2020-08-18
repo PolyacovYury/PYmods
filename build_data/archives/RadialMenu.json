@@ -1,5 +1,5 @@
 ﻿{
-    "enabled": true,
+    "enabled": false,
     "ext": ".zip",
     "files": {
         "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",
