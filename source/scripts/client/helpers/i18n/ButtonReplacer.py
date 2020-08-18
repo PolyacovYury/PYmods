@@ -18,7 +18,6 @@ class ConfigInterface(PYmodsConfigInterface):
         self.configsList = []
         self.confMeta = {}
         self.sectDict = {}
-        self.accessorPaths = {}
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -99,20 +98,6 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def registerSettings(self):
         BigWorld.callback(0, super(ConfigInterface, self).registerSettings)
-
-    def getAccessorsPaths(self):
-        from gui.impl.gen import R
-        self.buildPaths([], R.strings)
-
-    def buildPaths(self, path, cls):
-        for k in cls.keys():
-            v = cls.dyn(k)
-            if k.startswith('c_'):
-                k = k[2:]
-            if not v.exists():
-                self.buildPaths(path + [k], v)
-            else:
-                self.accessorPaths[v()] = path + [k]
 
 
 _config = ConfigInterface()
@@ -201,17 +186,20 @@ def new_setModuleInfoS(base, self, moduleInfo):
 
 @overrideMethod(ResourceManager, 'getTranslatedText')
 def getTranslatedText(base, self, resourceID):
-    path = _config.accessorPaths.get(resourceID)
-    if not path:
+    from gui.impl import backport
+    import re
+    k = backport.msgid(resourceID)
+    if not k:
         return base(self, resourceID)
     from helpers import i18n
     key = ''
     result = ''
-    if path[0] == 'tips':
+    if k.startswith('#tips'):
+        p = k.lower()
         key = 'override/' + (
-            'title' if (len(path) == 2 and 'sandbox' not in path[1] and 'tip' not in path[1]) or 'title' in path else 'body')
+            'title' if (len(re.split(r'[:/]', p)) == 2 and 'sandbox' not in p and 'tip' not in p) or 'title' in p else 'body')
         result = i18n.makeString('#tips:' + key)
-    return result if result != key else i18n.makeString('#' + path[0] + ':' + '/'.join(path[1:]))
+    return result if result != key else i18n.makeString(k)
 
 
 def ButtonReplacer_hooks():
@@ -219,7 +207,6 @@ def ButtonReplacer_hooks():
     from gui.shared.tooltips.module import EffectsBlockConstructor
     overrideMethod(ModuleInfoMeta, 'as_setModuleInfoS', new_setModuleInfoS)
     overrideMethod(EffectsBlockConstructor, 'construct', new_construct)
-    _config.getAccessorsPaths()
 
 
 g_playerEvents.onAvatarBecomeNonPlayer += onAvatarBecomeNonPlayer

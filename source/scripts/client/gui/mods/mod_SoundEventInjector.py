@@ -244,11 +244,11 @@ def new_initGUI(base, self):
     notificationsData = _config.data['sound_notifications']
     for eventName, event in events.iteritems():
         override = notificationsData.get(eventName, {})
-        for category, data in override.iteritems():
+        for category, sound in override.iteritems():
             if category not in event:
                 event[category] = {
                     'sound': '', 'playRules': 0, 'timeout': 3.0, 'minTimeBetweenEvents': 0, 'shouldBindToPlayer': False}
-            event[category].update(data)
+            event[category]['sound'] = sound
 
     self.soundNotifications._IngameSoundNotifications__events = events
     return result
