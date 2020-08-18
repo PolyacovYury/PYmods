@@ -37,7 +37,15 @@ def loadMods():
 
     def override_backport_text():
         from gui.impl import backport
-        backport.text = lambda resId, *a, **k: globals()['makeString'](backport.msgid(resId), *a, **k) if resId > 0 else ''
+        orig = backport.text
+
+        def overridden(resId, *a, **k):
+            if 'key' in k:
+                return orig(resId, *a, **k)
+            if resId > 0:
+                return globals()['makeString'](backport.msgid(resId), *a, **k)
+            return ''
+        backport.text = overridden
 
     import BigWorld
     BigWorld.callback(0, override_backport_text)
