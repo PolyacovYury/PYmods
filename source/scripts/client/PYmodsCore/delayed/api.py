@@ -96,8 +96,8 @@ else:
             def configSave(self):
                 pass
 
-    except ImportError:
-        print 'PYmodsCore: ModsSettingsApi package not found'
+    except ImportError as e:
+        print 'PYmodsCore: ModsSettingsApi package not loaded:', e
         MSA_Orig = loadView = ModsSettingsApiWindow = HotkeyContextHandler\
             = MOD_ICON = MOD_NAME = MOD_DESCRIPTION = VIEW_ALIAS = ContextMenuManager = SL = ViewKey = None
 
