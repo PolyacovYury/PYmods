@@ -5,7 +5,7 @@ import ResMgr
 from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, objToDict
 from PYmodsCore.delayed import showI18nDialog, g_modsListApi
 from gui import SystemMessages
-from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
+from gui.Scaleform.framework import ScopeTemplates, ViewSettings, WindowLayer, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared.personality import ServicesLocator as SL
@@ -218,13 +218,13 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).registerSettings()
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
-            ViewSettings('SkinnerUI', SkinnerUI, 'Skinner.swf', ViewTypes.WINDOW, None,
+            ViewSettings('SkinnerUI', SkinnerUI, 'Skinner.swf', WindowLayer.WINDOW, None,
                          ScopeTemplates.GLOBAL_SCOPE, False))
         self.isModAdded = g_modsListApi.addModification(
             id='SkinnerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/Skinner.png', enabled=self.data['enabled'] and bool(self.skinsData['models']), login=True,
             lobby=True, callback=lambda: (
-                    SL.appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
+                    SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.TOP_WINDOW).getViewCount()
                     or SL.appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI')))) != NotImplemented
 
     def onHotkeyPressed(self, event):
