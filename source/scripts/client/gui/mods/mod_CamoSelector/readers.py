@@ -97,6 +97,7 @@ def __readPaintFolder(groupName, cache, itemCls, folder, storage):
         ResMgr.purge(name)
 
 
+# noinspection DuplicatedCode
 def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
     reader = ModdedCamouflageReader() if itemCls == cc.CamouflageItem else PaintXmlReader()
     groupsDict = cache.priceGroups

@@ -6,7 +6,7 @@ from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
 from PYmodsCore import overrideMethod, loadJson
 from gui import g_tankActiveCamouflage
-from gui.Scaleform.framework import ViewTypes
+from gui.Scaleform.framework import WindowLayer
 from gui.customization.shared import C11N_ITEM_TYPE_MAP, SEASON_TYPE_TO_NAME
 from gui.customization.shared import __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
@@ -177,7 +177,7 @@ def new_reload(base, self, vDesc, vState, outfit):
         return base(self, vDesc, vState, outfit)
     manager = ServicesLocator.appLoader.getDefLobbyApp().containerManager
     if manager is not None:
-        container = manager.getContainer(ViewTypes.LOBBY_SUB)
+        container = manager.getContainer(WindowLayer.SUB_VIEW)
         if container is not None:
             c11nView = container.getView()
             if c11nView is not None and hasattr(c11nView, 'service'):
