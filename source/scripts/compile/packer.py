@@ -208,7 +208,7 @@ def do_pack(fp, arc_data, mode, v_str, v_date):
         os.makedirs(fd)
     tree = make_tree(sorted(arc_data))
     with zipfile.ZipFile(fp, 'w', mode) as zf_new:
-        min_time, max_time, v_was = pack_stuff(zf_new, mode, tree, arc_data, v_str, v_date, False, '')
+        _, max_time, v_was = pack_stuff(zf_new, mode, tree, arc_data, v_str, v_date, False, '')
     if v_str is not None and v_was:
         max_time = max(max_time, v_date)
     os.utime(fp, (time.time(), time.mktime(max_time.timetuple())))
@@ -228,7 +228,7 @@ def main():
     options:
         -l: don't recurse into subdirectories
         -f: force rebuild even if timestamps are up-to-date
-        -q: output only error messages and archive update reasons 
+        -q: output only error messages and archive update reasons
         -v version_file: if a {GAME_VERSION} macro is encountered and this path is not provided - build will fail'''
         sys.exit(2)
     max_levels = 10

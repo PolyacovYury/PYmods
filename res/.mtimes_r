@@ -394,9 +394,9 @@
 1580344455|configs/PYmods/VoiceOverrider/i18n/en.json
 1580344480|configs/PYmods/VoiceOverrider/i18n/ru.json
 1471690378|configs/PYmods/i18nDebugger/i18nDebugger.xml
-1592037078|flash/PlayersPanelAPI.swf
+1602759771|flash/PlayersPanelAPI.swf
 1592037066|flash/PlayersPanelAPI/PlayersPanelAPI.as3proj
-1592035759|flash/PlayersPanelAPI/src/polyacov_yury/views/battle/PlayersPanelAPI.as
+1602759765|flash/PlayersPanelAPI/src/polyacov_yury/views/battle/PlayersPanelAPI.as
 1582272942|flash/RemodEnabler.swf
 1582272941|flash/RemodEnablerUI/RemodEnablerUI.as
 1546896278|flash/RemodEnablerUI/RemodEnablerUI.as3proj
@@ -466,6 +466,6 @@
 1545255824|res/res.md
 1465562036|res/scripts/client/PYmodsGUI.png
 1479780730|res/scripts/client/gui/mods/mod_UT_announcer.png
-1557316151|wotmods/gambiter.guiflash_0.3.1.wotmod
-1570555200|wotmods/izeberg.modsettingsapi_1.3.0.wotmod
-1596541030|wotmods/poliroid.modslistapi_1.3.3.wotmod
+1603289050|wotmods/gambiter.guiflash_0.3.6.wotmod
+1603289050|wotmods/izeberg.modsettingsapi_1.3.1.wotmod
+1603289050|wotmods/poliroid.modslistapi_1.3.4.wotmod

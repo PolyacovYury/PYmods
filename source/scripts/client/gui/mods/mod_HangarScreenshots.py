@@ -7,7 +7,7 @@ import Math
 from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKeys, Analytics
 from gui import SystemMessages
 from gui.ClientHangarSpace import hangarCFG
-from gui.Scaleform.framework import ViewTypes
+from gui.Scaleform.framework import WindowLayer
 from gui.hangar_cameras.hangar_camera_manager import HangarCameraManager
 from gui.shared.personality import ServicesLocator
 from helpers import dependency
@@ -92,7 +92,7 @@ config = ConfigInterface()
 
 def toggleHangarUI(visible):
     lobby = ServicesLocator.appLoader.getApp()
-    hangar = lobby.containerManager.getView(ViewTypes.LOBBY_SUB)
+    hangar = lobby.containerManager.getView(WindowLayer.SUB_VIEW)
     hangar.as_setVisibleS(visible)
     lobby.graphicsOptimizationManager.switchOptimizationEnabled(visible)
 

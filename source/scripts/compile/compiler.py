@@ -88,8 +88,8 @@ def main():
         -l: don't recurse into subdirectories
         -f: force rebuild even if timestamps are up-to-date
         -q: output only error messages
-        -p PJOrion_path: path to PJOrion executable, only required if any obfuscated files are present 
-        -d dest_dir: directory to prepend to file paths for use in compile-time and runtime tracebacks in cases where the 
+        -p PJOrion_path: path to PJOrion executable, only required if any obfuscated files are present
+        -d dest_dir: directory to prepend to file paths for use in compile-time and runtime tracebacks in cases where the
             source file is unavailable
         -o output_dir: directory to put compiled files into, defaults to the folder being compiled'''
         sys.exit(2)

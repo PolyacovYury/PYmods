@@ -1,7 +1,7 @@
 ﻿import Event
 import copy
 from PYmodsCore.config import smart_update
-from gui.Scaleform.framework import g_entitiesFactories, ViewSettings, ViewTypes, ScopeTemplates
+from gui.Scaleform.framework import g_entitiesFactories, ViewSettings, WindowLayer, ScopeTemplates
 from gui.Scaleform.framework.entities.View import View
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared.personality import ServicesLocator
@@ -79,7 +79,7 @@ class PlayersPanelUI(View):
 
 # noinspection PyArgumentList
 g_entitiesFactories.addSettings(ViewSettings(
-    'PY_PlayersPanelAPI_UI', PlayersPanelUI, 'PlayersPanelAPI.swf', ViewTypes.WINDOW, None, ScopeTemplates.GLOBAL_SCOPE))
+    'PY_PlayersPanelAPI_UI', PlayersPanelUI, 'PlayersPanelAPI.swf', WindowLayer.WINDOW, None, ScopeTemplates.GLOBAL_SCOPE))
 
 g_events = Events()
 g_cache = Cache()
