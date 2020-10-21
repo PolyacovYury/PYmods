@@ -163,6 +163,9 @@
         "fire_started": {
             "voice": "fire_started_GO"
         },
+        "fire_stopped": {
+            "voice": "fire_stopped_GO"
+        },
         "chat_shortcut_common_fx": {
             "voice": "minimap_attention_GO"
         },
@@ -171,6 +174,42 @@
         },
         "observed_by_enemy": {
             "fx": "sixthsense_GO"
+        },
+        "ibc_ping_attention": {
+            "voice": "minimap_attention_GO"
+        },
+        "ibc_ping_attention_npc": {
+            "voice": "minimap_attention_GO"
+        },
+        "ibc_ping_reply": {
+            "voice": "minimap_attention_GO"
+        },
+        "ibc_ping_reply_npc": {
+            "voice": "minimap_attention_GO"
+        },
+        "ibc_ping_request": {
+            "voice": "minimap_attention_GO"
+        },
+        "ibc_ping_request_npc": {
+            "voice": "minimap_attention_GO"
+        },
+        "ibc_ping_action": {
+            "voice": "minimap_attention_GO"
+        },
+        "ibc_ping_action_npc": {
+            "voice": "minimap_attention_GO"
+        },
+        "ibc_ping_cancel": {
+            "voice": "minimap_attention_GO"
+        },
+        "ibc_ping_cancel_npc": {
+            "voice": "minimap_attention_GO"
+        },
+        "ibc_marker_focused": {
+            "voice": "minimap_attention_GO"
+        },
+        "br_ability": {
+            "voice": "minimap_attention_GO"
         }
     }
 }

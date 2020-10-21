@@ -21,7 +21,7 @@ from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WW
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
 from gui.Scaleform.daapi.view.login.login_modes import wgc_mode
 from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
-from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, ViewTypes, g_entitiesFactories
+from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, WindowLayer, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from helpers import getClientVersion, dependency
@@ -159,7 +159,7 @@ def doLogin(app):
 
 
 g_entitiesFactories.addSettings(
-    GroupedViewSettings('SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', ViewTypes.TOP_WINDOW,
+    GroupedViewSettings('SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', WindowLayer.TOP_WINDOW,
                         '', None, ScopeTemplates.DEFAULT_SCOPE, canClose=False))
 
 

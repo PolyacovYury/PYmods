@@ -26,7 +26,7 @@ def help():
     print '''version: 1.6
     usage: mtimestore <switch>
     options:
-      -a  saves mtimes of all git-versed files into .mtimes file (done on intialization of mtime fixes)
+      -a  saves mtimes of all git-versed files into .mtimes file (done on initialization of mtime fixes)
       -s  saves mtimes of modified staged files into .mtimes file(pre-commit hook)
       -r  restores mtimes from .mtimes file (stored in repository server-side, called in post-checkout hook)
       -h  show this help'''
@@ -35,8 +35,8 @@ def help():
 def parse_file(path):
     data = {}
     if os.path.isfile(path):
-        with codecs.open(path, 'r', 'utf-8-sig') as fstream:
-            for line in fstream.read().split('\n'):
+        with codecs.open(path, 'r', 'utf-8-sig') as f:
+            for line in f.read().split('\n'):
                 line = line.strip()
                 if not line: continue
                 timestamp, filename = parse_line(line)
@@ -64,10 +64,10 @@ def update_data(path, data, rec):
 
 
 def write(path, data):
-    with codecs.open(path, 'w', 'utf-8-sig') as fstream:
+    with codecs.open(path, 'w', 'utf-8-sig') as f:
         for filename in sorted(data):
             if filename:
-                fstream.write('%s|%s\n' % (data[filename], filename))
+                f.write('%s|%s\n' % (data[filename], filename))
 
 
 def main():

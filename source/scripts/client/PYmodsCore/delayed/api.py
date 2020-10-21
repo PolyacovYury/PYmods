@@ -34,6 +34,7 @@ except ImportError:
 else:
     try:
         from gui.modsSettingsApi.api import ModsSettingsApi as MSA_Orig
+        # noinspection PyUnresolvedReferences
         from gui.modsSettingsApi.hotkeys import HotkeysContoller
         from gui.modsSettingsApi.view import loadView, ModsSettingsApiWindow, HotkeyContextHandler
         from gui.modsSettingsApi._constants import MOD_ICON, MOD_NAME, MOD_DESCRIPTION, VIEW_ALIAS
@@ -95,9 +96,10 @@ else:
             def configSave(self):
                 pass
 
-    except ImportError:
-        print 'PYmodsCore: ModsSettingsApi package not found'
-        MSA_Orig = None
+    except ImportError as e:
+        print 'PYmodsCore: ModsSettingsApi package not loaded:', e
+        MSA_Orig = loadView = ModsSettingsApiWindow = HotkeyContextHandler\
+            = MOD_ICON = MOD_NAME = MOD_DESCRIPTION = VIEW_ALIAS = ContextMenuManager = SL = ViewKey = None
 
 
 def registerSettings(config):

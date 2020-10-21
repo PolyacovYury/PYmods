@@ -2,7 +2,6 @@
 __appID__ = '216060d4797ff99153c400922baeed6f'
 
 import BigWorld
-import items
 import json
 import threading
 import traceback
@@ -13,6 +12,7 @@ from functools import partial
 from gui.Scaleform.battle_entry import BattleEntry
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.components.c11n_components import PaintItem
+from items.vehicles import g_cache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 
@@ -172,7 +172,7 @@ def userRegion(databaseID):
     if databaseID < 1000000000:
         return 'eu'
     if databaseID < 2000000000:
-        return 'na'
+        return 'com'
     return 'asia'
 
 
@@ -218,7 +218,7 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
         if rating < value:
             paintItem = g_config.paintItems[value]
             break
-    items.vehicles.g_cache.customization20().paints[paintItem.id] = paintItem
+    g_cache.customization20().paints[paintItem.id] = paintItem
     for fashionIdx, part in enumerate(TankPartNames.ALL):
         if not g_config.data['paint_' + team + '_' + part]:
             continue

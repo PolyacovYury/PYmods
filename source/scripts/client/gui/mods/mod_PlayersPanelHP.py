@@ -147,7 +147,7 @@ except ImportError:
 except StandardError:
     traceback.print_exc()
 else:
-    @overrideMethod(ArenaVehiclesPlugin, '_ArenaVehiclesPlugin__setInAoI')
+    @overrideMethod(ArenaVehiclesPlugin, '_setInAoI')
     def new_setInAoI(base, self, entry, isInAoI):
         result = base(self, entry, isInAoI)
         try:

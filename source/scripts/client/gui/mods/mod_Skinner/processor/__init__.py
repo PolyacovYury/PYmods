@@ -1,11 +1,10 @@
 import BigWorld
 import traceback
 from PYmodsCore import overrideMethod
-from common_tank_appearance import CommonTankAppearance
 from gui import SystemMessages
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from items.vehicles import CompositeVehicleDescriptor
-from vehicle_systems.CompoundAppearance import CompoundAppearance
+from vehicle_systems import appearance_cache, camouflages
 from vehicle_systems.tankStructure import TankPartNames
 from . import skins_dynamic, skins_static
 from .. import g_config
@@ -103,13 +102,12 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
     debugOutput(xmlName, vehName, playerName, modelsSet, staticDesc, dynamicDesc)
 
 
-@overrideMethod(CommonTankAppearance, '_prepareOutfit')
-@overrideMethod(CompoundAppearance, '_prepareOutfit')
-def new_prepareOutfit(base, self, outfitCD):
-    outfit = base(self, outfitCD)
-    if g_config.data['enabled'] and getattr(self.typeDescriptor, 'modelDesc', None) is None:
-        vDesc_process(self.id, self.typeDescriptor, 'battle', outfit.modelsSet or 'default')
-    return outfit
+@overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
+def new_cacheAppearance(base, self, vId, info, *a, **k):
+    if g_config.data['enabled'] and getattr(info.typeDescr, 'modelDesc', None) is None:
+        outfit = camouflages.prepareBattleOutfit(info.outfitCD, info.typeDescr, vId)
+        vDesc_process(vId, info.typeDescr, 'battle', outfit.modelsSet or 'default')
+    return base(self, vId, info, *a, **k)
 
 
 @overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
