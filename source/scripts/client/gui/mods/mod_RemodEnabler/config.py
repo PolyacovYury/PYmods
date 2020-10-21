@@ -10,7 +10,7 @@ from PYmodsCore.delayed import showI18nDialog, g_modsListApi
 from collections import OrderedDict
 from functools import partial
 from gui import SystemMessages
-from gui.Scaleform.framework import ScopeTemplates, ViewSettings, ViewTypes, g_entitiesFactories
+from gui.Scaleform.framework import ScopeTemplates, ViewSettings, WindowLayer, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared.personality import ServicesLocator as SL
@@ -281,12 +281,12 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).registerSettings()
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(
-            ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', ViewTypes.WINDOW, None,
+            ViewSettings('RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', WindowLayer.WINDOW, None,
                          ScopeTemplates.GLOBAL_SCOPE, False))
         self.isModAdded = g_modsListApi.addModification(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=False, lobby=True, callback=lambda: (
-                    SL.appLoader.getDefLobbyApp().containerManager.getContainer(ViewTypes.TOP_WINDOW).getViewCount()
+                    SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.TOP_WINDOW).getViewCount()
                     or SL.appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI')))) != NotImplemented
 
     def onHotkeyPressed(self, event):

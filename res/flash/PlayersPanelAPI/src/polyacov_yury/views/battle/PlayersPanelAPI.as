@@ -1,16 +1,13 @@
 ﻿package polyacov_yury.views.battle 
 {
-	
 	import flash.filters.DropShadowFilter;
 	import flash.text.TextField;
-	
-	import net.wg.data.constants.generated.APP_CONTAINERS_NAMES;
+	import net.wg.data.constants.generated.LAYER_NAMES;
 	import net.wg.gui.battle.random.views.BattlePage;
 	import net.wg.gui.battle.views.BaseBattlePage;
 	import net.wg.gui.components.containers.MainViewContainer;
-	import net.wg.infrastructure.managers.impl.ContainerManagerBase;
 	import net.wg.infrastructure.base.AbstractView;
-	
+	import net.wg.infrastructure.managers.impl.ContainerManagerBase;
 	import scaleform.gfx.TextFieldEx;
 	
 	public class PlayersPanelAPI extends AbstractView
@@ -40,7 +37,7 @@
 			try
 			{
 				parent.removeChild(this);
-				var viewContainer:MainViewContainer = (App.containerMgr as ContainerManagerBase).containersMap[APP_CONTAINERS_NAMES.VIEWS];
+				var viewContainer:MainViewContainer = (App.containerMgr as ContainerManagerBase).getContainer(LAYER_NAMES.LAYER_ORDER.indexOf(LAYER_NAMES.VIEWS)) as MainViewContainer;
 				viewContainer.setFocusedView(viewContainer.getTopmostView());
 				viewPage = viewContainer.getChildByName(NAME_MAIN) as BaseBattlePage;
 			}
