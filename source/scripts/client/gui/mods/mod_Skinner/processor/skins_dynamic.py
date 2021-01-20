@@ -33,7 +33,7 @@ def destroy(vehicleID):
     attached_models.detach(vehicleID, 'destroy', 'skins_dynamic')
 
 
-@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__setupModel')
+@overrideMethod(HangarVehicleAppearance, '__setupModel')
 def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     attach(self._HangarVehicleAppearance__vEntity.id,

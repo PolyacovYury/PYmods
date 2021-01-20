@@ -33,7 +33,7 @@ def new_recreate(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
 
 
-@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__setupModel')
+@overrideMethod(HangarVehicleAppearance, '__setupModel')
 def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     if not g_config.data['enabled']:

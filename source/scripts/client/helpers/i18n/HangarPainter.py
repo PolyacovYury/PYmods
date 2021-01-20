@@ -177,8 +177,9 @@ def delayedHooks():
             vehicle = g_currentVehicle.item
             for tankmanData in data['tankmen']:
                 for key in tankmanData:
-                    if (key in ('firstName', 'lastName', 'rank') and _config.data['crewColour'] or key == 'role' or
-                            key == 'vehicleType' and tankmanData[key] == vehicle.shortUserName):
+                    if (key in ('firstName', 'lastName', 'fullName', 'rank') and _config.data['crewColour']
+                            or key in ('role',)
+                            or key in ('vehicleType',) and tankmanData[key] == vehicle.shortUserName):
                         tankmanData[key] = "<font color='#%s'>%s</font>" % (_config.data['colour'], tankmanData[key])
             for roleData in data['roles']:
                 for key in ('role', 'vehicleType'):

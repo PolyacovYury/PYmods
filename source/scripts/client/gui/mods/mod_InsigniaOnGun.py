@@ -60,7 +60,7 @@ class ConfigInterface(PYmodsConfigInterface):
                             self.tb.createStepper('enemy', 0, 3, 1, True)]}
 
 
-@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__getThisVehicleDossierInsigniaRank')
+@overrideMethod(HangarVehicleAppearance, '__getThisVehicleDossierInsigniaRank')
 def new_getRank(base, *a, **kw):
     result = base(*a, **kw)
     if config.data['enabled'] and config.data['enableHangar'] and (config.data['replaceHangar'] or not result):
