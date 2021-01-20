@@ -118,7 +118,7 @@ def new_SniperControlMode_handleKeyEvent(base, self, isDown, key, mods, event=No
     return base(self, isDown, key, mods, event)
 
 
-@overrideMethod(SniperCamera, '_SniperCamera__getZooms')
+@overrideMethod(SniperCamera, '__getZooms')
 def new_SniperCamera_getZooms(base, self):
     zooms = base(self)
     if not self._cfg['increasedZoom'] and config.data['zoomValue'] in zooms:

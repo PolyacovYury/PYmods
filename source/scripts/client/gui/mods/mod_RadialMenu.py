@@ -375,7 +375,7 @@ def new_populate(base, self):
     base(self)
 
 
-@overrideMethod(radial_menu.RadialMenu, '_RadialMenu__updateMenu')
+@overrideMethod(radial_menu.RadialMenu, '__updateMenu')
 def new_updateMenu(base, self):
     data = []
     mapName = BigWorld.player().arena.arenaType.geometryName

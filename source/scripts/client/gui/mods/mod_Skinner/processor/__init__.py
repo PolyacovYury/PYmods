@@ -102,7 +102,7 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
     debugOutput(xmlName, vehName, playerName, modelsSet, staticDesc, dynamicDesc)
 
 
-@overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
+@overrideMethod(appearance_cache._AppearanceCache, '__cacheApperance')
 def new_cacheAppearance(base, self, vId, info, *a, **k):
     if g_config.data['enabled'] and getattr(info.typeDescr, 'modelDesc', None) is None:
         outfit = camouflages.prepareBattleOutfit(info.outfitCD, info.typeDescr, vId)
@@ -110,7 +110,7 @@ def new_cacheAppearance(base, self, vId, info, *a, **k):
     return base(self, vId, info, *a, **k)
 
 
-@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
+@overrideMethod(HangarVehicleAppearance, '__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled'] and getattr(vDesc, 'modelDesc', None) is None:
         vDesc_process(self.id, vDesc, 'hangar', self._HangarVehicleAppearance__outfit.modelsSet or 'default')

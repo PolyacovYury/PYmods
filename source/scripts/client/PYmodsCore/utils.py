@@ -35,10 +35,14 @@ def overrideMethod(obj, prop, getter=None, setter=None, deleter=None):
     :param deleter: fdel function or None
     :return function: unmodified getter or, if getter is None and src is not property, decorator"""
 
-    if inspect.isclass(obj) and prop.startswith('__') and prop not in dir(obj) + dir(type(obj)):
-        prop = obj.__name__ + prop
-        if not prop.startswith('_'):
-            prop = '_' + prop
+    if inspect.isclass(obj) and prop.startswith('__') and not prop.endswith('__') and not hasattr(obj, prop):
+        full_name = obj.__name__ + prop
+        if not full_name.startswith('_'):
+            full_name = '_' + full_name
+        if hasattr(obj, full_name):
+            prop = full_name
+        elif hasattr(obj, prop[1:]):
+            prop = prop[1:]
     src = getattr(obj, prop)
     if type(src) is property and (getter or setter or deleter):
         props = []

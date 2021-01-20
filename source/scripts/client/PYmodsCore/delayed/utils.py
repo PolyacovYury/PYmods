@@ -30,7 +30,7 @@ def new_handleAction(base, self, model, typeID, entityID, actionName):
         base(self, model, typeID, entityID, actionName)
 
 
-@overrideMethod(SimpleDialog, '_SimpleDialog__callHandler')
+@overrideMethod(SimpleDialog, '__callHandler')
 def new_callHandler(base, self, buttonID):
     if len(self._SimpleDialog__buttons) != 3:
         return base(self, buttonID)

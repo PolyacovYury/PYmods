@@ -237,7 +237,7 @@ def new_vehicleType_init(base, self, *args, **kwargs):
     _config.inject_vehicleType(self)
 
 
-@overrideMethod(PlayerAvatar, '_PlayerAvatar__initGUI')
+@overrideMethod(PlayerAvatar, '__initGUI')
 def new_initGUI(base, self):
     result = base(self)
     events = self.soundNotifications._IngameSoundNotifications__events

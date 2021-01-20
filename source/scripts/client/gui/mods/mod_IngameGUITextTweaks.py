@@ -94,7 +94,7 @@ config = ConfigInterface()
 analytics = Analytics(config.ID, config.version, 'UA-76792179-21')
 
 
-@overrideMethod(FadingMessages, '_FadingMessages__formatEntitiesEx')
+@overrideMethod(FadingMessages, '__formatEntitiesEx')
 def new_formatEntities(base, self, args, extra=None, *a, **kw):
     base(self, args, extra, *a, **kw)
     for argName, vID in (extra if extra is not None else ()):
@@ -102,7 +102,7 @@ def new_formatEntities(base, self, args, extra=None, *a, **kw):
             args[argName] = config.reformat(self.sessionProvider.getCtx(), vID, args[argName])
 
 
-@overrideMethod(VehicleMessages, '_VehicleMessages__formatEntity')
+@overrideMethod(VehicleMessages, '__formatEntity')
 def new_formatEntity(base, self, entityID, *a, **kw):
     return config.reformat(self.sessionProvider.getCtx(), entityID, base(self, entityID, *a, **kw), '| ')
 
@@ -128,5 +128,5 @@ def new_setPlayerInfo(attrClass, base, self, vehicleID, *a, **kw):
         setattr(self, '_%s__playerInfo' % attrClass, pInfo._replace(playerFullName=fullName))
 
 
-overrideMethod(PostmortemPanel, '_PostmortemPanel__setPlayerInfo', partial(new_setPlayerInfo, 'PostmortemPanel'))
-overrideMethod(VehicleStatePlugin, '_VehicleStatePlugin__setPlayerInfo', partial(new_setPlayerInfo, 'VehicleStatePlugin'))
+overrideMethod(PostmortemPanel, '__setPlayerInfo', partial(new_setPlayerInfo, 'PostmortemPanel'))
+overrideMethod(VehicleStatePlugin, '__setPlayerInfo', partial(new_setPlayerInfo, 'VehicleStatePlugin'))

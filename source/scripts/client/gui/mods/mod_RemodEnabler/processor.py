@@ -82,7 +82,7 @@ def applyModelDesc(vDesc, modelDesc, modelsSet, playerName):
     vDesc.modelDesc = modelDesc
 
 
-@overrideMethod(appearance_cache._AppearanceCache, '_AppearanceCache__cacheApperance')
+@overrideMethod(appearance_cache._AppearanceCache, '__cacheApperance')
 def new_cacheAppearance(base, self, vId, info, *a, **k):
     if g_config.data['enabled']:
         outfit = camouflages.prepareBattleOutfit(info.outfitCD, info.typeDescr, vId)
@@ -91,7 +91,7 @@ def new_cacheAppearance(base, self, vId, info, *a, **k):
     return base(self, vId, info, *a, **k)
 
 
-@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__startBuild')
+@overrideMethod(HangarVehicleAppearance, '__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled']:
         modelDesc, playerName = getModelDescInfo(self.id, vDesc, 'hangar')
