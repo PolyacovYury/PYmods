@@ -171,7 +171,7 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
     return outfit
 
 
-@overrideMethod(HangarVehicleAppearance, '_HangarVehicleAppearance__reload')
+@overrideMethod(HangarVehicleAppearance, '__reload')
 def new_reload(base, self, vDesc, vState, outfit):
     if vState != 'undamaged':
         return base(self, vDesc, vState, outfit)
