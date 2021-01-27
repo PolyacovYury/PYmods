@@ -180,7 +180,7 @@ g_config = ConfigInterface()
 analytics = Analytics(g_config.ID, g_config.version, 'UA-76792179-15')
 
 
-@overrideMethod(ClientArena, '_ClientArena__onVehicleListUpdate')
+@overrideMethod(ClientArena, '__onVehicleListUpdate')
 def new__onVehicleListUpdate(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
     g_config.loadStats()
@@ -192,7 +192,7 @@ def new_BattleEntry_beforeDelete(base, self, *args, **kwargs):
     g_config.resetStats()
 
 
-@overrideMethod(CompoundAppearance, '_CompoundAppearance__applyVehicleOutfit')
+@overrideMethod(CompoundAppearance, '__applyVehicleOutfit')
 def new_applyVehicleOutfit(base, self, *a, **kw):
     outfit = self.outfit
     vID = self.id
