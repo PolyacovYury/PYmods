@@ -151,9 +151,11 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
             if newLodDist is None and lodDist is not None:
                 new_config['chassisLodDistance'] = lodDist
             for wheel in obj['wheels']:
-                for s_key in ('index', 'hitTester', 'materials'):
+                for s_key in ('index', 'hitTesterManager', 'materials'):
                     wheel.setdefault(s_key, None)
                 wheel.setdefault('position', (0, 0, 0))
+                if 'hitTester' in wheel:
+                    wheel['hitTesterManager'] = wheel.pop('hitTester')
         if key == 'groundNodes':
             for group in obj['groups']:
                 if 'template' in group:
