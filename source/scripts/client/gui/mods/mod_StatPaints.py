@@ -11,16 +11,19 @@ from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod
 from functools import partial
 from gui.Scaleform.battle_entry import BattleEntry
 from gui.shared.gui_items import GUI_ITEM_TYPE
+from items.components import shared_components
 from items.components.c11n_components import PaintItem
+from items.components.c11n_constants import SeasonType
 from items.vehicles import g_cache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
+import items.components.c11n_components as cc
 
 
 class CustomPaint(PaintItem):
-    def __init__(self, id, color, gloss, metallic):
-        PaintItem.__init__(self)
-        self.id = 22000 + id
+    def __init__(self, parentGroup, id, color, gloss, metallic):
+        PaintItem.__init__(self, parentGroup)
+        self.id = id
         self.color = color[0] + (color[1] << 8) + (color[2] << 16) + (color[3] << 24)
         self.gloss = gloss
         self.metallic = metallic
@@ -97,8 +100,15 @@ class ConfigInterface(PYmodsConfigInterface):
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings(quiet)
         self.paintItems.clear()
+        parentGroup = cc.ItemGroup(PaintItem)
+        itemPrototype = parentGroup.itemPrototype
+        itemPrototype.season = SeasonType.ALL
+        itemPrototype.priceGroup = 'paints 20g notInShop'
+        itemPrototype.historical = False
+        itemPrototype.i18n = shared_components.I18nExposedComponent(self.ID, '')
         for idx, (value, data) in enumerate(self.data['scale'].iteritems()):
-            self.paintItems[int(value)] = CustomPaint(idx, **data)
+            g_cache.customization20().paints[22000 + idx] = self.paintItems[
+                int(value)] = CustomPaint(parentGroup, 22000 + idx, **data)
 
     def loadPlayerStats(self, databaseIDs):
         regions = {}
@@ -218,7 +228,6 @@ def new_applyVehicleOutfit(base, self, *a, **kw):
         if rating < value:
             paintItem = g_config.paintItems[value]
             break
-    g_cache.customization20().paints[paintItem.id] = paintItem
     for fashionIdx, part in enumerate(TankPartNames.ALL):
         if not g_config.data['paint_' + team + '_' + part]:
             continue
