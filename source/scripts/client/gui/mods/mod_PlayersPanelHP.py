@@ -176,8 +176,8 @@ else:
 
 
     @overrideMethod(Vehicle, 'onHealthChanged')
-    def new_vehicle_onHealthChanged(base, self, newHealth, attackerID, attackReasonID):
-        result = base(self, newHealth, attackerID, attackReasonID)
+    def new_vehicle_onHealthChanged(base, self, newHealth, *a, **k):
+        result = base(self, newHealth, *a, **k)
         try:
             g_config.updateHealth(self.id, newHealth)
         except StandardError:
