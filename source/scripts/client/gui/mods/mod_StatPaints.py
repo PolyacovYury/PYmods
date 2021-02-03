@@ -11,18 +11,16 @@ from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod
 from functools import partial
 from gui.Scaleform.battle_entry import BattleEntry
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from items.components import shared_components
 from items.components.c11n_components import PaintItem
-from items.components.c11n_constants import SeasonType
+from items.components.c11n_constants import ItemTags
 from items.vehicles import g_cache
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
-import items.components.c11n_components as cc
 
 
 class CustomPaint(PaintItem):
-    def __init__(self, parentGroup, id, color, gloss, metallic):
-        PaintItem.__init__(self, parentGroup)
+    def __init__(self, id, color, gloss, metallic):
+        PaintItem.__init__(self)
         self.id = id
         self.color = color[0] + (color[1] << 8) + (color[2] << 16) + (color[3] << 24)
         self.gloss = gloss
@@ -99,16 +97,13 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def readCurrentSettings(self, quiet=True):
         super(ConfigInterface, self).readCurrentSettings(quiet)
+        cache = g_cache.customization20()
+        for item in self.paintItems.values():
+            cache.paints.pop(item.id, None)
         self.paintItems.clear()
-        parentGroup = cc.ItemGroup(PaintItem)
-        itemPrototype = parentGroup.itemPrototype
-        itemPrototype.season = SeasonType.ALL
-        itemPrototype.priceGroup = 'paints 20g notInShop'
-        itemPrototype.historical = False
-        itemPrototype.i18n = shared_components.I18nExposedComponent(self.ID, '')
         for idx, (value, data) in enumerate(self.data['scale'].iteritems()):
-            g_cache.customization20().paints[22000 + idx] = self.paintItems[
-                int(value)] = CustomPaint(parentGroup, 22000 + idx, **data)
+            cache.paints[22000 + idx] = self.paintItems[int(value)] = item = CustomPaint(22000 + idx, **data)
+            item.tags |= frozenset((ItemTags.HIDDEN_IN_UI,))
 
     def loadPlayerStats(self, databaseIDs):
         regions = {}
