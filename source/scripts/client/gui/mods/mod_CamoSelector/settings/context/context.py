@@ -353,9 +353,6 @@ class CustomizationContext(WGCtx, CSModImpl):
 
 @overrideMethod(WGCtx, '__new__')
 def new(base, cls, *a, **kw):
-    print 'running new'
     if not g_config.data['enabled']:
-        print 'mod disabled'
         return base(cls, *a, **kw)
-    print 'mod enabled'
     return base(CustomizationContext, *a, **kw)
