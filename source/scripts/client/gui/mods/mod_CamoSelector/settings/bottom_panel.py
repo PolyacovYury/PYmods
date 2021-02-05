@@ -38,9 +38,10 @@ class CustomizationBottomPanel(CBP):
         self.__updatePopoverBtnIcon()
 
     def showGroupFromTab(self, tabIndex):
-        self.__ctx.changeMode(
-            CustomizationModes.STYLED if tabIndex == CustomizationTabs.STYLES else CustomizationModes.CUSTOM,
-            tabIndex, source=CustomizationModeSource.BOTTOM_PANEL)
+        if tabIndex == CustomizationTabs.STYLES and self.__ctx.modeId != CustomizationModes.STYLED:
+            self.__ctx.changeMode(CustomizationModes.STYLED, tabIndex, source=CustomizationModeSource.BOTTOM_PANEL)
+        else:
+            self.__ctx.mode.changeTab(tabIndex)
         self.__updatePopoverBtnIcon()
 
     def __updateTabs(self):
