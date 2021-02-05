@@ -32,7 +32,7 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
 
     def __createFilterCriteria(self):
         # noinspection PyUnresolvedReferences
-        requirement = WGCarouselDP._CustomizationCarouselDataProvider__createFilterCriteria()
+        requirement = WGCarouselDP._CustomizationCarouselDataProvider__createFilterCriteria(self)
         isBuy = self.__ctx.isBuy
         groupIdx = self.__getSelectedGroupIdx()
         if groupIdx is not None:
