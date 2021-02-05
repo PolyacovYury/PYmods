@@ -40,6 +40,13 @@ def new_setNotificationCounters(base, self):
     self.as_setNotificationCountersS([seasonCounters[season] for season in SEASONS_ORDER])
 
 
+@overrideMethod(mw.MainView, 'onPressClearBtn')
+def new_onPressClearBtn(base, self):
+    base(self)
+    if g_config.data['enabled']:
+        self._MainView__ctx.cancelChanges()
+
+
 @overrideMethod(si.CustomizationStyleInfo, '__makeButtonVO')
 def new_makeButtonVO(base, self, style):
     if not g_config.data['enabled']:
