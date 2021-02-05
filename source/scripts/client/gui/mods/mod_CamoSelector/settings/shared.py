@@ -5,7 +5,7 @@ from ..constants import SEASON_NAME_TO_TYPE
 
 
 class CSMode(object):
-    BUY, INSTALL = range(2)
+    INSTALL, BUY = range(2)
     NAMES = {BUY: 'buy', INSTALL: 'install'}
 
 
