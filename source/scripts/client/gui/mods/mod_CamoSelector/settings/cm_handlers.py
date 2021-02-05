@@ -29,9 +29,11 @@ class CustomizationItemCMHandler(WGCMHandler):
         if self.__ctx.isBuy:
             return result
         item = self.itemsCache.items.getItemByCD(self._intCD)
-        if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
-            return [result[0], result[-1]]
-        result = result[-1:]
+        leave_tail = 1  # > 0
+        to_remove = 2
+        if item.isRentable:
+            to_remove += 1
+        del result[-(to_remove + leave_tail) * 2 + 1:-leave_tail*2 + 1]
         if item.itemTypeID != GUI_ITEM_TYPE.CAMOUFLAGE:
             return result
         getOptionLabel = lambda option: g_config.i18n['contextMenu_' + option]
@@ -52,8 +54,10 @@ class CustomizationItemCMHandler(WGCMHandler):
             self._makeItem(*getSeasonOptionData(Options.SEASON_SUMMER, SEASONS_CONSTANTS.SUMMER)),
             self._makeItem(*getSeasonOptionData(Options.SEASON_WINTER, SEASONS_CONSTANTS.WINTER)),
             self._makeItem(*getSeasonOptionData(Options.SEASON_DESERT, SEASONS_CONSTANTS.DESERT)),
+            self._makeSeparator(),
             self._makeItem(*getTeamOptionData(Options.TEAM_ALLY, setting['ally'])),
             self._makeItem(*getTeamOptionData(Options.TEAM_ENEMY, setting['enemy'])),
+            self._makeSeparator(),
             self._makeItem(Options.MODE_GROUP, getOptionLabel(Options.MODE_GROUP) + modeLabel, optSubMenu=sub),
         )
         return result
