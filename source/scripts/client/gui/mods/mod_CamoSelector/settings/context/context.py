@@ -253,6 +253,8 @@ class CustomizationContext(WGCtx, CSModImpl):
         nation, vehName = g_currentVehicle.item.descriptor.name.split(':')
         for mode in CSMode.BUY, CSMode.INSTALL:
             self.actualMode = mode
+            self.getMode(mode, CustomizationModes.STYLED).start()
+            self.getMode(mode, CustomizationModes.CUSTOM).start(None if self.isBuy else CustomizationTabs.CAMOUFLAGES)
             applied = g_config.outfitCache.get(nation, {}).get(vehName, {}).get('style', {}).get('applied', False)
             if self._service.isStyleInstalled() if self.isBuy else applied:
                 self.__startModeIds[mode] = CustomizationModes.STYLED
