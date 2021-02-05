@@ -28,12 +28,11 @@ def new_setNotificationCounters(base, self):
     if not itemTypes:
         return self.as_setNotificationCountersS([0 for _ in SEASONS_ORDER])
     seasonCounters = {season: 0 for season in SEASONS_ORDER}
-    currentSeason = ctx.currentSeason
     itemsFilter = not REQ_CRITERIA.CUSTOMIZATION.ALL_SEASON
     if ctx.modeId == sh.CustomizationModes.EDITABLE_STYLE:
         itemsFilter |= REQ_CRITERIA.CUSTOM(lambda item: ctx.mode.style.isItemInstallable(item))
     for season in SEASONS_ORDER:
-        if season != currentSeason:
+        if season != ctx.season:
             seasonCounters[season] = g_currentVehicle.item.getC11nItemsNoveltyCounter(
                 g_currentVehicle.itemsCache.items, itemTypes, season, itemsFilter)
 
