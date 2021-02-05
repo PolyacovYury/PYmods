@@ -65,6 +65,8 @@ class CarouselCache(WGCache):
             g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.mode.getAppliedItems())
         if self.__ctx.isBuy:
             requirement |= REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
+        else:
+            requirement |= REQ_CRITERIA.CUSTOM(lambda _item: _item.parentGroup is not None)
         itemTypes = []
         for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
             if vehicleHasSlot(slotType):
