@@ -253,14 +253,8 @@ class CustomizationContext(WGCtx, CSModImpl):
         nation, vehName = g_currentVehicle.item.descriptor.name.split(':')
         for mode in CSMode.BUY, CSMode.INSTALL:
             self.actualMode = mode
-            customMode = self.getMode(mode, CustomizationModes.CUSTOM)
-            customMode.start(CustomizationTabs.PAINTS if self.isBuy else CustomizationTabs.CAMOUFLAGES)
-            styledMode = self.getMode(mode, CustomizationModes.STYLED)
-            styledMode.start()
-            notInstalled = all([not customMode.getOriginalOutfit(season).isInstalled() for season in SeasonType.COMMON_SEASONS])
             applied = g_config.outfitCache.get(nation, {}).get(vehName, {}).get('style', {}).get('applied', False)
-            if (styledMode.getOriginalStyle() and (self.isBuy or applied)
-                    or notInstalled and not customMode.isOutfitsEmpty() and not styledMode.modifiedStyle):
+            if self._service.isStyleInstalled() if self.isBuy else applied:
                 self.__startModeIds[mode] = CustomizationModes.STYLED
                 self.__currentModeIds[mode] = CustomizationModes.STYLED
             else:
