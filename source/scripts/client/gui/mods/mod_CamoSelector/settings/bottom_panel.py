@@ -34,7 +34,7 @@ class CustomizationBottomPanel(CBP):
         self.__onModeChanged(self.__ctx.modeId, self.__ctx.modeId)
 
     def __changeMode(self, modeId):
-        self.__ctx.changeActualMode(modeId, source=CustomizationModeSource.BOTTOM_PANEL)
+        self.__ctx.changeActualMode(CSMode.FROM_BUTTONS[modeId], source=CustomizationModeSource.BOTTOM_PANEL)
         self.__updatePopoverBtnIcon()
 
     def showGroupFromTab(self, tabIndex):
