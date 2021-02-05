@@ -1,173 +1,156 @@
+
 import nations
 import re
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
-from collections import defaultdict
-from functools import partial
-from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import CustomizationBookmarkVO, \
-    CustomizationCarouselDataProvider as WGCarouselDataProvider, CustomizationSeasonAndTypeFilterData
-from gui.Scaleform.daapi.view.lobby.customization.shared import TABS_ITEM_TYPE_MAPPING, TYPE_TO_TAB_IDX, TYPES_ORDER, \
-    C11nTabs, TABS_SLOT_TYPE_MAPPING
-from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
+from collections import OrderedDict
+from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import (
+    CustomizationBookmarkVO, CustomizationCarouselDataProvider as WGCarouselDP, CarouselData, CarouselCache as WGCache,
+    ItemsData)
+from gui.Scaleform.daapi.view.lobby.customization.shared import (
+    ITEM_TYPE_TO_TAB, TYPES_ORDER, CustomizationTabs, vehicleHasSlot)
+from gui.customization.constants import CustomizationModes
+from gui.customization.shared import createCustomizationBaseRequestCriteria, C11N_ITEM_TYPE_MAP
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
+from gui.shared.utils.requesters.ItemsRequester import PredicateCondition
+from helpers import dependency
 from helpers.i18n import makeString as _ms
-from items.components.c11n_constants import SeasonType, ProjectionDecalFormTags
-from .shared import getItemSeason
+from items import vehicles
+from items.components.c11n_constants import SeasonType, ProjectionDecalFormTags, ItemTags, EMPTY_ITEM_ID
+from skeletons.gui.customization import ICustomizationService
 from .. import g_config
 
 
-class CustomizationCarouselDataProvider(WGCarouselDataProvider):
-    def __init__(self, currentVehicle, carouselItemWrapper, proxy):
-        super(CustomizationCarouselDataProvider, self).__init__(currentVehicle, carouselItemWrapper, proxy)
-        self._selectedIdx = -1
+class CustomizationCarouselDataProvider(WGCarouselDP):
+    def onModeChanged(self, modeId, prevModeId):
+        if CustomizationModes.EDITABLE_STYLE in (modeId, prevModeId):
+            self.clearFilter()
+            self.__selectedGroup.clear()
+            self.invalidateFilteredItems()
+        self.getVisibleTabs()  # don't reset tab idx upon mode change
 
-    def updateTabGroups(self):
-        self.invalidateCache()
-        self.invalidateFiltered()
-        self._allSeasonAndTabFilterData.clear()
-        self._formfactorGroupsFilterByTabIndex.clear()
-        availableTabs = set()
-        visibleTabs = defaultdict(set)
-        isBuy = self._proxy.isBuy
-        requirement = self._createBaseRequestCriteriaBySeason(None)
-        allItems = self.itemsCache.items.getItems(GUI_ITEM_TYPE.CUSTOMIZATIONS, requirement, onlyWithPrices=isBuy)
-        for tabIndex in C11nTabs.ALL:
-            self._allSeasonAndTabFilterData[tabIndex] = {}
-            if tabIndex == C11nTabs.PROJECTION_DECAL:
-                self._formfactorGroupsFilterByTabIndex[tabIndex] = dict.fromkeys(ProjectionDecalFormTags.ALL, False)
-            else:
-                self._formfactorGroupsFilterByTabIndex[tabIndex] = {}
+    def __createFilterCriteria(self):
+        # noinspection PyUnresolvedReferences
+        requirement = WGCarouselDP._CustomizationCarouselDataProvider__createFilterCriteria()
+        isBuy = self.__ctx.isBuy
+        groupIdx = self.__getSelectedGroupIdx()
+        if groupIdx is not None:
+            itemsData = self.__carouselCache.getItemsData()
+            groupId = itemsData.groups.keys()[groupIdx]
+            groupName = itemsData.groups[groupId]
+            requirement._contitions[0] = PredicateCondition(lambda item: groupName in getGroupName(item, isBuy))
+        return requirement
+
+
+class CarouselCache(WGCache):
+    def __getCarouselData(self, season=None, modeId=None, tabId=None):
+        itemsData = self.getItemsData(season, modeId, tabId)
+        filteredItems = filter(self.__createFilterCriteria(), itemsData.items)
+        carouselData = CarouselData()
+        lastGroupID = None
+        for item in filteredItems:
+            if item.groupID != lastGroupID:
+                lastGroupID = item.groupID
+                bookmarkVO = CustomizationBookmarkVO(getGroupName(item, self.__ctx.isBuy), len(carouselData.items))
+                carouselData.bookmarks.append(bookmarkVO._asdict())
+            carouselData.items.append(item.intCD)
+            carouselData.sizes.append(item.isWide())
+
+        return carouselData
+
+    def __initItemsData(self):
+        self.__itemsData.clear()
+        requirement = createCustomizationBaseRequestCriteria(
+            g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.mode.getAppliedItems())
+        if self.__ctx.isBuy:
+            requirement |= REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
+        itemTypes = []
+        for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
+            if vehicleHasSlot(slotType):
+                itemTypes.extend(CustomizationTabs.ITEM_TYPES[tabId])
+
+        allItems = []
+        customizationCache = vehicles.g_cache.customization20().itemTypes
+        cTypes = set((C11N_ITEM_TYPE_MAP[iType] for iType in itemTypes if iType in C11N_ITEM_TYPE_MAP))
+        for cType in cTypes:
+            for itemID in customizationCache[cType]:
+                if itemID == EMPTY_ITEM_ID:
+                    continue
+                intCD = vehicles.makeIntCompactDescrByID('customizationItem', cType, itemID)
+                item = self.__service.getItemByCD(intCD)
+                if requirement(item):
+                    allItems.append(item)
+
+        sortedItems = sorted(allItems, key=CSComparisonKey)
+        customModeTabs = CustomizationTabs.MODES[CustomizationModes.CUSTOM]
+        for item in sortedItems:
+            tabId = ITEM_TYPE_TO_TAB[item.itemTypeID]
+            modeId = CustomizationModes.CUSTOM if tabId in customModeTabs else CustomizationModes.STYLED
             for season in SeasonType.COMMON_SEASONS:
-                self._allSeasonAndTabFilterData[tabIndex][season] = CustomizationSeasonAndTypeFilterData()
+                if not item.season & season:
+                    continue
+                itemsDataStorage = self.__itemsData[modeId][season]
+                if not itemsDataStorage or tabId != itemsDataStorage.keys()[-1]:
+                    itemsDataStorage[tabId] = ItemsData()
+                itemsData = itemsDataStorage.values()[-1]
+                if not itemsData.groups or item.groupID != itemsData.groups.keys()[-1]:
+                    itemsData.groups[item.groupID] = getGroupName(item, self.__ctx.isBuy)
+                itemsData.items.append(item)
 
-            slotType = TABS_SLOT_TYPE_MAPPING[tabIndex]
-            if self.__hasSlots(slotType):
-                availableTabs.add(tabIndex)
+    def __initEditableStyleItemsData(self):
+        style = self.__ctx.mode.style
+        if CustomizationModes.EDITABLE_STYLE in self.__itemsData:
+            self.__itemsData[CustomizationModes.EDITABLE_STYLE].clear()
+        vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
+        itemsFilter = style.descriptor.isItemInstallable
+        for season in SeasonType.COMMON_SEASONS:
+            itemsDataStorage = self.__itemsData[CustomizationModes.CUSTOM][season]
+            styleBaseOutfit = style.getOutfit(season, vehicleCD)
+            styleBaseItems = [self.__service.getItemByCD(intCD) for intCD in styleBaseOutfit.items()]
+            for tabId, itemsData in itemsDataStorage.iteritems():
+                itemTypes = CustomizationTabs.ITEM_TYPES[tabId]
+                filteredItems = [item for item in itemsData.items if itemsFilter(item.descriptor)]
+                alternateItems = []
+                for itemType in itemTypes:
+                    c11nType = C11N_ITEM_TYPE_MAP[itemType]
+                    alternateItemIds = style.descriptor.alternateItems.get(c11nType, ())
+                    buf = [self.__service.getItemByID(itemType, itemId) for itemId in alternateItemIds]
+                    alternateItems.extend([i for i in buf if i.itemTypeID in itemTypes])
 
-        for item in sorted(allItems.itervalues(), key=self.CSComparisonKey):
-            if isBuy and item.isHiddenInUI():
-                continue
-            groupName = getGroupName(item, isBuy)
-            tabIndex = TYPE_TO_TAB_IDX.get(item.itemTypeID)
-            if tabIndex not in availableTabs or not self.isItemSuitableForTab(tabIndex, item):
-                continue
-            for seasonType in SeasonType.COMMON_SEASONS:
-                if (item.season if isBuy else getItemSeason(item)) & seasonType:
-                    seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
-                    for name in groupName.split(g_config.i18n['flashCol_group_separator']):
-                        if name and name not in seasonAndTabData.allGroups:
-                            seasonAndTabData.allGroups.append(name)
-                    seasonAndTabData.itemCount += 1
-                    visibleTabs[seasonType].add(tabIndex)
-        for tabIndex in C11nTabs.ALL:
-            for seasonType in SeasonType.COMMON_SEASONS:
-                seasonAndTabData = self._allSeasonAndTabFilterData[tabIndex][seasonType]
-                seasonAndTabData.allGroups.append(_ms(VEHICLE_CUSTOMIZATION.CUSTOMIZATION_FILTER_ALLGROUPS))
-                seasonAndTabData.selectedGroupIndex = len(seasonAndTabData.allGroups) - 1
+                allItems = [item for item in filteredItems + alternateItems if item.season & season]
+                if not allItems:
+                    continue
+                baseItems = [item for item in styleBaseItems if item.itemTypeID in itemTypes and item.season & season]
+                allItems += baseItems
+                items = sorted(set(allItems), key=CSComparisonKey)
+                groups = OrderedDict()
+                for item in items:
+                    if not groups or item.groupID != groups.keys()[-1]:
+                        groups[item.groupID] = getGroupName(item, self.__ctx.isBuy)
 
-        self.clear()
-        self._proxy.updateVisibleTabsList(visibleTabs)
+                self.__itemsData[CustomizationModes.EDITABLE_STYLE][season][tabId] = ItemsData(items, groups)
 
-    def _applyFilter(self, items, season):
-        isBuy = self._proxy.isBuy
-        requirement = REQ_CRITERIA.EMPTY
-        seasonAndTabData = self._allSeasonAndTabFilterData[self._tabIndex][season]
-        allItemsGroup = len(seasonAndTabData.allGroups) - 1
-        if seasonAndTabData.selectedGroupIndex != allItemsGroup:
-            selectedGroup = seasonAndTabData.allGroups[seasonAndTabData.selectedGroupIndex]
-            requirement |= REQ_CRITERIA.CUSTOM(lambda item: selectedGroup in getGroupName(item, isBuy))
-        if self._historicOnlyItems:
-            requirement |= ~REQ_CRITERIA.CUSTOMIZATION.HISTORICAL
-        if self._onlyOwnedAndFreeItems:
-            requirement |= REQ_CRITERIA.CUSTOM(lambda item: self._proxy.getItemInventoryCount(item) > 0)
-        sub = REQ_CRITERIA.IN_CD_LIST(self._proxy.getAppliedItems(isOriginal=False))
-        if self._onlyAppliedItems:
-            requirement |= sub
-        else:
-            requirement ^= sub
-        if any(self._formfactorGroupsFilterByTabIndex[self._tabIndex].itervalues()):
-            formfactors = [formfactorGroup for formfactorGroup, value in
-                           self._formfactorGroupsFilterByTabIndex[self._tabIndex].iteritems() if value]
-            requirement |= REQ_CRITERIA.CUSTOM(lambda item: not hasattr(item, 'formfactor') or item.formfactor in formfactors)
-        if self._propertySheetShow:
-            slot = self.__ctx.selectedAnchor
-            if slot.slotType == GUI_ITEM_TYPE.PROJECTION_DECAL:
-                anchor = self._currentVehicle.item.getAnchorBySlotId(slot.slotType, slot.areaId, slot.regionIdx)
-                requirement |= REQ_CRITERIA.CUSTOM(
-                    lambda item: not hasattr(item, 'formfactor') or item.formfactor in anchor.formfactors)
-        requirement |= REQ_CRITERIA.CUSTOM(lambda item: not self._proxy.isBuy or not item.isHiddenInUI())
-        filteredItems = {k: v for k, v in items.iteritems() if requirement(v)}
-        return filteredItems
+        self.__cachedEditableStyleId = style.id
 
-    def _buildCustomizationItems(self):
-        seasonID = self._seasonID
-        tabIndex = self._tabIndex
-        builtAllCustomizationItems = self._builtAllCustomizationItems
-        if seasonID not in builtAllCustomizationItems or tabIndex not in builtAllCustomizationItems[seasonID]:
-            allCustomizationItems = {}
-            builtAllCustomizationItems.setdefault(seasonID, {})[tabIndex] = allCustomizationItems
-            requirement = self._createBaseRequestCriteriaBySeason(seasonID)
-            if not self._proxy.isBuy:
-                requirement |= REQ_CRITERIA.CUSTOM(partial(self.isItemSuitableForTab, self._tabIndex))
-            allCustomizationItems.update(self.itemsCache.items.getItems(
-                TABS_ITEM_TYPE_MAPPING[tabIndex], requirement, onlyWithPrices=self._proxy.isBuy))
 
-        items = self._builtCustomizationItems
-        if seasonID not in items or tabIndex not in items[seasonID]:
-            filteredItems = self._applyFilter(builtAllCustomizationItems[seasonID][tabIndex], self._seasonID)
-            customizationItems = []
-            customizationBookmarks = []
-            itemSizeData = []
-            isBuy = self._proxy.isBuy
-            lastGroup = None
-            for item in sorted(filteredItems.itervalues(), key=self.CSComparisonKey):
-                groupName = getGroupName(item, isBuy)
-                group = item.groupID if isBuy else groupName
-                if group != lastGroup:
-                    lastGroup = group
-                    customizationBookmarks.append(CustomizationBookmarkVO(groupName, len(customizationItems)).asDict())
-                customizationItems.append(item.intCD)
-                itemSizeData.append(item.isWide())
-
-            self._customizationItems = customizationItems
-            self._customizationBookmarks = customizationBookmarks
-            self._itemSizeData = itemSizeData
-            items.setdefault(self._seasonID, {})[self._tabIndex] = (customizationItems, customizationBookmarks, itemSizeData)
-        else:
-            self._customizationItems, self._customizationBookmarks, self._itemSizeData = items[self._seasonID][self._tabIndex]
-        self._selectedIdx = -1
-        if self._selectIntCD in self._customizationItems:
-            self._selectedIdx = self._customizationItems.index(self._selectIntCD)
-        self._proxy.setCarouselItems(self.collection)
-
-    def _createBaseRequestCriteriaBySeason(self, season):
-        if self._proxy.isBuy:
-            return super(CustomizationCarouselDataProvider, self)._createBaseRequestCriteriaBySeason(season)
-        return REQ_CRITERIA.CUSTOM(lambda item: getItemSeason(item) & (season or SeasonType.ALL))
-
-    def isItemSuitableForTab(self, tabIndex, item):
-        if item is None or tabIndex != TYPE_TO_TAB_IDX[item.itemTypeID]:
-            return False
-        if item.itemTypeID == GUI_ITEM_TYPE.STYLE and item.modelsSet:
-            return item.mayInstall(g_currentVehicle.item)
-        return True
-
-    def CSComparisonKey(self, item):
-        nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
-        is3D, isVictim, isGlobal = False, False, False
-        if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
-            if item.modelsSet:
-                is3D = True
-            if any('Victim' in tag for tag in item.tags):
-                isVictim = True
-        if item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
-            if 'victim' in item.descriptor.userKey:
-                isVictim = True
-            isGlobal = g_config.isCamoGlobal(item.descriptor)
-        return (TYPES_ORDER.index(item.itemTypeID) if item.itemTypeID in TYPES_ORDER else 0, not is3D,
-                item.priceGroup == 'custom', item.isHidden, isVictim, not isGlobal, len(nationIDs) != 1,
-                getGroupName(item, self._proxy.isBuy), item.isRare(), item.id)
+@dependency.replace_none_kwargs(service=ICustomizationService)
+def CSComparisonKey(item, service=None):
+    nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
+    is3D, isVictim, isGlobal = False, False, False
+    if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
+        if item.modelsSet:
+            is3D = True
+        if any('Victim' in tag for tag in item.tags):
+            isVictim = True
+    if item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
+        if 'victim' in item.descriptor.userKey:
+            isVictim = True
+        isGlobal = g_config.isCamoGlobal(item.descriptor)
+    return (TYPES_ORDER.index(item.itemTypeID) if item.itemTypeID in TYPES_ORDER else 0, not is3D,
+            ItemTags.NATIONAL_EMBLEM not in item.tags, item.priceGroup == 'custom', item.isHidden, isVictim, not isGlobal,
+            len(nationIDs) != 1, getGroupName(item, service.getCtx().isBuy), item.isRare(),
+            0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), item.id)
 
 
 def getGroupName(item, isBuy=False):
@@ -193,7 +176,7 @@ def getGroupName(item, isBuy=False):
     return group
 
 
-@overrideMethod(WGCarouselDataProvider, '__new__')
+@overrideMethod(WGCarouselDP, '__new__')
 def new(base, cls, *a, **kw):
     if not g_config.data['enabled']:
         return base(cls, *a, **kw)

@@ -8,7 +8,7 @@ from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.customization.constants import CustomizationModes
+from gui.customization.constants import CustomizationModes, CustomizationModeSource
 from gui.shared.formatters import getItemPricesVO
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
@@ -31,6 +31,25 @@ class CustomizationBottomPanel(CBP):
     def __onActualModeChanged(self):
         self._carouselDP.invalidateItems()
         self.__onModeChanged(self.__ctx.modeId, self.__ctx.modeId)
+
+    def __changeMode(self, modeId):
+        self.__ctx.changeActualMode(modeId, source=CustomizationModeSource.BOTTOM_PANEL)
+        self.__updatePopoverBtnIcon()
+
+    def showGroupFromTab(self, tabIndex):
+        self.__ctx.changeMode(
+            CustomizationModes.STYLED if tabIndex == CustomizationTabs.STYLES else CustomizationModes.CUSTOM,
+            tabIndex, source=CustomizationModeSource.BOTTOM_PANEL)
+        self.__updatePopoverBtnIcon()
+
+    def __updateTabs(self):
+        tabsData, pluses = self.__getItemTabsData()
+        if self.__ctx.modeId == CustomizationModes.STYLED:
+            selectedTab = CustomizationTabs.STYLES
+        else:
+            selectedTab = self.__ctx.mode.tabId
+        self.as_setBottomPanelTabsDataS({'tabsDP': tabsData, 'selectedTab': selectedTab})
+        self.as_setBottomPanelTabsPlusesS(pluses)
 
     def __setNotificationCounters(self):
         vehicle = g_currentVehicle.item

@@ -18,7 +18,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
                 or actionType != CA.CUSTOMIZATION_SHEET_ACTION_EDIT):
             return super(CustomizationPropertiesSheet, self).onActionBtnClick(actionType, actionData)
         nat, veh = g_currentVehicle.item.descriptor.name.split(':')
-        if not (getCustomPurchaseItems(self.__ctx.getModdedOutfitsInfo(), (self.__ctx.currentSeason,))
+        if not (getCustomPurchaseItems(self.__ctx.getModdedModifiedCustomOutfits(), (self.__ctx.currentSeason,))
                 or g_config.outfitCache.get(nat, {}).get(veh, {}).get(SEASON_TYPE_TO_NAME[self.__ctx.currentSeason])):
             self.__ctx.installStyleItemsToModifiedOutfits(True)
             return
@@ -51,7 +51,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             'notifyText': makeHtmlString('html_templates:lobby/customization/notify', 'decal', {
                 'value': g_config.i18n['flashCol_propertySheet_edit_notify']}),
             'needNotify': enabled and bool(
-                getCustomPurchaseItems(self.__ctx.getModdedOutfitsInfo(), (self.__ctx.currentSeason,))
+                getCustomPurchaseItems(self.__ctx.getModdedModifiedCustomOutfits(), (self.__ctx.currentSeason,))
                 or g_config.outfitCache.get(nation, {}).get(vehicle, {}).get(SEASON_TYPE_TO_NAME[self.__ctx.currentSeason])),
             'enabled': enabled}
 
