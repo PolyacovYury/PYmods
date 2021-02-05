@@ -5,8 +5,9 @@ from ..constants import SEASON_NAME_TO_TYPE
 
 
 class CSMode(object):
-    INSTALL, BUY = range(1, 3)
+    BUY, INSTALL = range(2)
     NAMES = {BUY: 'buy', INSTALL: 'install'}
+    BUTTONS = {INSTALL: 1, BUY: 2}
 
 
 def getItemSeason(item):

@@ -81,7 +81,7 @@ class CustomizationBottomPanel(CBP):
         return dict(data, **{
             'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.INSTALL]],
             'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.BUY]],
-            'selectedIndex': self.__ctx.actualMode,
+            'selectedIndex': CSMode.BUTTONS[self.__ctx.actualMode],
             'rightEnabled': True
         })
 
