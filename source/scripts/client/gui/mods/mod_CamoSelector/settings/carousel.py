@@ -1,4 +1,3 @@
-
 import nations
 import re
 from CurrentVehicle import g_currentVehicle
@@ -44,6 +43,14 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
 
 
 class CarouselCache(WGCache):
+    def getVisibleTabs(self):
+        visibleTabs = super(CarouselCache, self).getVisibleTabs()
+        season, modeId = self.__ctx.season, self.__ctx.modeId
+        if not self.__ctx.isBuy and modeId != CustomizationModes.EDITABLE_STYLE:
+            visibleTabs = (self.__itemsData[CustomizationModes.CUSTOM][season].keys(
+            ) + self.__itemsData[CustomizationModes.STYLED][season].keys())
+        return visibleTabs
+
     def __getCarouselData(self, season=None, modeId=None, tabId=None):
         itemsData = self.getItemsData(season, modeId, tabId)
         filteredItems = filter(self.__createFilterCriteria(), itemsData.items)
