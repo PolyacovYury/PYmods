@@ -316,9 +316,9 @@ class CustomizationContext(WGCtx, CSModImpl):
             self._modifiedModdedStyle = moddedStyle
             self._originalModdedStyle = moddedStyle if styleCache['applied'] else None
         if self._modifiedStyle:
-            self._currentOutfit = self._modifiedStyle.getOutfit(self._currentSeason)
+            self._currentOutfit = self._modifiedStyle.getOutfit(self.season)
         else:
-            self._currentOutfit = self._modifiedOutfits[self._currentSeason]
+            self._currentOutfit = self._modifiedOutfits[self.season]
 
     def __preserveState(self):
         self._state.update(

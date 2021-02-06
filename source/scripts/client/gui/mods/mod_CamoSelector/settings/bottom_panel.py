@@ -145,7 +145,7 @@ class CustomizationBottomPanel(CBP):
         newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items), key=CSComparisonKey)
         for item in newItems:
             if item.itemTypeID in currentTypes and (
-                    item.season if self.__ctx.isBuy else getItemSeason(item)) & self.__ctx.currentSeason:
+                    item.season if self.__ctx.isBuy else getItemSeason(item)) & self.__ctx.season:
                 self.__scrollToItem(item.intCD)
                 break
         else:
