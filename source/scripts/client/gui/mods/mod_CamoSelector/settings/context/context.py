@@ -192,19 +192,6 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.refreshOutfit()
         self.onCustomizationItemsRemoved()
 
-    def switchToCustom(self):
-        self.switchToStyle()
-
-    def switchToStyle(self):
-        if self.__switcherIgnored:
-            self.__switcherIgnored = False
-            return
-        self.__switcherIgnored = True
-        self._lastTab[self.actualMode] = self._tabIndex
-        self.actualMode = (self.actualMode + 1) % len(CSMode.NAMES)
-        self.onActualModeChanged()  # this will cause the carousel to update, which will call onTabChanged anyway
-        self.refreshOutfit()
-
     def cancelChanges(self):
         self._currentSettings = {'custom': {}, 'remap': {}}
         for mode in self.__origModes.values():
@@ -297,6 +284,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         newMode.start(source=source)
         self.refreshOutfit()
         self.events.onBeforeModeChange()
+        self.events.onActualModeChanged()
         self.events.onModeChanged(newMode.modeId, prevMode.modeId)
         self.events.onTabChanged(self.mode.tabId)
 
