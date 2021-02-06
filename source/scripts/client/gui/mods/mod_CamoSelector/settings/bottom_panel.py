@@ -104,6 +104,7 @@ class CustomizationBottomPanel(CBP):
         VO = super(CustomizationBottomPanel, self)._carouseItemWrapper(itemCD)
         if not self.__ctx.isBuy:
             VO['locked'] = False
+            VO['isAlreadyUsed'] = False  # actually marks item.isUsedUp
             VO['isDarked'] = False
             VO['buyPrice'] = getItemPricesVO(ITEM_PRICE_EMPTY)[0]
             VO['rentalInfoText'] = ''
