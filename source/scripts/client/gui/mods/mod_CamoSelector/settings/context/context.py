@@ -197,7 +197,10 @@ class CustomizationContext(WGCtx, CSModImpl):
         for mode in self.__origModes.values() + self.__moddedModes.values():
             if mode.isInited:
                 mode.cancelChanges()
+        prevModeId = self.modeId
         self.__currentModeIds = self.__startModeIds.copy()
+        self.events.onModeChanged(self.modeId, prevModeId)
+        self.events.onTabChanged(self.mode.tabId)
         self.refreshOutfit()
 
     @adisp.async
