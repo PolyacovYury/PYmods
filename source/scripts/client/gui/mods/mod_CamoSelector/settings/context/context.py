@@ -194,10 +194,9 @@ class CustomizationContext(WGCtx, CSModImpl):
 
     def cancelChanges(self):
         self._currentSettings = {'custom': {}, 'remap': {}}
-        for mode in self.__origModes.values():
-            mode.cancelChanges()
-        for mode in self.__moddedModes.values():
-            mode.cancelChanges()
+        for mode in self.__origModes.values() + self.__moddedModes.values():
+            if mode.isInited:
+                mode.cancelChanges()
         self.__currentModeIds = self.__startModeIds.copy()
         self.refreshOutfit()
 
