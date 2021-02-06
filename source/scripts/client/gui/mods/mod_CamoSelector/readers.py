@@ -7,7 +7,7 @@ import traceback
 from PYmodsCore import overrideMethod
 from items import makeIntCompactDescrByID as makeCD
 from items.components import shared_components
-from items.components.c11n_constants import SeasonType, EMPTY_ITEM_ID
+from items.components.c11n_constants import SeasonType, EMPTY_ITEM_ID, ItemTags
 from items.readers.c11n_readers import CamouflageXmlReader, PaintXmlReader
 from . import g_config
 
@@ -107,6 +107,7 @@ def _readItems(groupName, cache, itemCls, xmlCtx, section, storage):
     itemPrototype.season = SeasonType.ALL
     itemPrototype.priceGroup = 'custom'
     itemPrototype.historical = False
+    itemPrototype.tags |= frozenset((ItemTags.HIDDEN_IN_UI,))
     itemPrototype.i18n = shared_components.I18nExposedComponent(groupName, '')
     group.itemPrototype = itemPrototype
     j = 0
