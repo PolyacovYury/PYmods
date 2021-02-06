@@ -90,6 +90,10 @@ class CustomizationContext(WGCtx, CSModImpl):
                 mode.fini()
             modes.clear()
 
+    @property
+    def isItemsOnAnotherVeh(self):
+        return self.isBuy and self.__isItemsOnAnotherVeh
+
     def installStyleItemsToModifiedOutfit(self, proceed):
         if not proceed:
             return
