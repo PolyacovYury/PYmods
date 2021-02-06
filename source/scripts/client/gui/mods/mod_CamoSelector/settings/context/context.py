@@ -86,7 +86,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         super(CustomizationContext, self).fini()
         for actualMode in CSMode.NAMES:
             modes = self.getMode(actualMode)
-            for mode in modes:
+            for mode in modes.values():
                 mode.fini()
             modes.clear()
 
