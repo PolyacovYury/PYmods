@@ -84,9 +84,11 @@ class CustomizationContext(WGCtx, CSModImpl):
 
     def fini(self):
         super(CustomizationContext, self).fini()
-        for mode in self.__moddedModes.itervalues():
-            mode.fini()
-        self.__moddedModes.clear()
+        for actualMode in CSMode.NAMES:
+            modes = self.getMode(actualMode)
+            for mode in modes:
+                mode.fini()
+            modes.clear()
 
     def installStyleItemsToModifiedOutfit(self, proceed):
         if not proceed:
