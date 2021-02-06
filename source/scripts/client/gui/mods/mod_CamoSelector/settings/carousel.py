@@ -190,3 +190,10 @@ def new(base, cls, *a, **kw):
     if not g_config.data['enabled']:
         return base(cls, *a, **kw)
     return base(CustomizationCarouselDataProvider, *a, **kw)
+
+
+@overrideMethod(WGCache, '__new__')
+def new(base, cls, *a, **kw):
+    if not g_config.data['enabled']:
+        return base(cls, *a, **kw)
+    return base(CarouselCache, *a, **kw)
