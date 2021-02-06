@@ -284,13 +284,15 @@ class CustomizationContext(WGCtx, CSModImpl):
         return result
 
     def changeActualMode(self, modeId, source=None):
-        if self.actualMode == modeId or modeId not in CSMode.NAMES:
+        if self.actualMode == modeId and self.modeId != CustomizationModes.EDITABLE_STYLE:
             return
         prevMode = self.mode
         prevMode.unselectItem()
         prevMode.unselectSlot()
         prevMode.stop()
         self.actualMode = modeId
+        if self.modeId == CustomizationModes.EDITABLE_STYLE:
+            self.__modeId = CustomizationModes.STYLED
         newMode = self.mode
         newMode.start(source=source)
         self.refreshOutfit()

@@ -33,8 +33,15 @@ class CustomizationBottomPanel(CBP):
         self._carouselDP.invalidateItems()
         self.__onModeChanged(self.__ctx.modeId, self.__ctx.modeId)
 
+    def returnToStyledMode(self):
+        self.__changeMode(CSMode.BUY)
+
+    def switchMode(self, index):
+        if index != 2:
+            self.__changeMode(CSMode.FROM_BUTTONS[index])
+
     def __changeMode(self, modeId):
-        self.__ctx.changeActualMode(CSMode.FROM_BUTTONS[modeId], source=CustomizationModeSource.BOTTOM_PANEL)
+        self.__ctx.changeActualMode(modeId, source=CustomizationModeSource.BOTTOM_PANEL)
         self.__updatePopoverBtnIcon()
 
     def showGroupFromTab(self, tabIndex):
@@ -81,7 +88,7 @@ class CustomizationBottomPanel(CBP):
         return dict(data, **{
             'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.INSTALL]],
             'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.BUY]],
-            'selectedIndex': CSMode.BUTTONS[self.__ctx.actualMode],
+            'selectedIndex': CSMode.BUTTONS[self.__ctx.actualMode] + int(self.__ctx.isBuy and data['isEditable']),
             'rightEnabled': True
         })
 
