@@ -44,7 +44,7 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
             itemsData = self.__carouselCache.getItemsData()
             groupId = itemsData.groups.keys()[groupIdx]
             groupName = itemsData.groups[groupId]
-            requirement._contitions[0] = PredicateCondition(lambda item: groupName in getGroupName(item, isBuy))
+            requirement._conditions[0] = PredicateCondition(lambda item: groupName in getGroupName(item, isBuy))
         return requirement
 
 
