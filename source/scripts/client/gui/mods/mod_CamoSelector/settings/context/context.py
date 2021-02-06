@@ -180,24 +180,6 @@ class CustomizationContext(WGCtx, CSModImpl):
         if self._mode != mode:
             self.onCustomizationModeChanged(self._mode)
 
-    def isPossibleToInstallToAllTankAreas(self, season, slotType, currentSlotData):
-        return not self.isBuy or super(CustomizationContext, self).isPossibleToInstallToAllTankAreas(
-            season, slotType, currentSlotData)
-
-    def isPossibleToInstallItemForAllSeasons(self, areaID, slotType, regionIdx, currentSlotData):
-        return not self.isBuy or super(CustomizationContext, self).isPossibleToInstallItemForAllSeasons(
-            areaID, slotType, regionIdx, currentSlotData)
-
-    def removeStyle(self, intCD):
-        if self.isBuy:
-            if self.__modifiedStyle and self.__modifiedStyle.intCD == intCD:
-                self.__modifiedStyle = None
-        elif self.actualMode == CSMode.INSTALL:
-            if self._modifiedModdedStyle and self._modifiedModdedStyle.intCD == intCD:
-                self._modifiedModdedStyle = None
-        self.refreshOutfit()
-        self.onCustomizationItemsRemoved()
-
     def cancelChanges(self):
         self._currentSettings = {'custom': {}, 'remap': {}}
         for mode in self.__origModes.values() + self.__moddedModes.values():
