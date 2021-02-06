@@ -9,3 +9,6 @@ class CustomMode(WGCustomMode):
     def installStyleItemsToModifiedOutfit(self, season, styleOutfit):
         self._modifiedOutfits[season] = styleOutfit
         self._fitOutfits()
+
+    def _validateItem(self, item, slotId, season):
+        return []

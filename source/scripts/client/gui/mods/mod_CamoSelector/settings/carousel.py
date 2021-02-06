@@ -2,12 +2,13 @@ import nations
 import re
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
+from cache import cached_property
 from collections import OrderedDict
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import (
     CustomizationBookmarkVO, CustomizationCarouselDataProvider as WGCarouselDP, CarouselData, CarouselCache as WGCache,
-    ItemsData)
+    ItemsData as WGItemsData)
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    ITEM_TYPE_TO_TAB, TYPES_ORDER, CustomizationTabs, vehicleHasSlot)
+    ITEM_TYPE_TO_TAB, TYPES_ORDER, CustomizationTabs, vehicleHasSlot, isItemUsedUp)
 from gui.customization.constants import CustomizationModes
 from gui.customization.shared import createCustomizationBaseRequestCriteria, C11N_ITEM_TYPE_MAP
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -19,6 +20,14 @@ from items import vehicles
 from items.components.c11n_constants import SeasonType, ProjectionDecalFormTags, ItemTags, EMPTY_ITEM_ID
 from skeletons.gui.customization import ICustomizationService
 from .. import g_config
+
+
+class ItemsData(WGItemsData):
+    __service = dependency.descriptor(ICustomizationService)
+
+    @cached_property
+    def hasUsedUpItems(self):
+        return self.__service.getCtx().isBuy and any((isItemUsedUp(item) for item in self.items))
 
 
 class CustomizationCarouselDataProvider(WGCarouselDP):

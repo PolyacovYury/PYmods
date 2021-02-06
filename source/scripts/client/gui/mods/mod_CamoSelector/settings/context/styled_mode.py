@@ -8,3 +8,6 @@ class StyledMode(WGStyledMode):
 
     def prolongRent(self, style):
         self._baseMode.prolongRent(style)
+
+    def _validateItem(self, item, slotId, season):
+        return []
