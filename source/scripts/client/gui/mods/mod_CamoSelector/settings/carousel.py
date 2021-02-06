@@ -68,12 +68,12 @@ class CarouselCache(WGCache):
 
     def __initItemsData(self):
         self.__itemsData.clear()
-        requirement = createCustomizationBaseRequestCriteria(
-            g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.mode.getAppliedItems())
         if self.__ctx.isBuy:
-            requirement |= REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
+            requirement = createCustomizationBaseRequestCriteria(
+                g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.mode.getAppliedItems()
+            ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
         else:
-            requirement |= REQ_CRITERIA.CUSTOM(lambda _item: _item.parentGroup is not None)
+            requirement = REQ_CRITERIA.CUSTOM(lambda _item: _item.parentGroup is not None)
         itemTypes = []
         for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
             if vehicleHasSlot(slotType):
