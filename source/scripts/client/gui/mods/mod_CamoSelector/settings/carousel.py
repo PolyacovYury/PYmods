@@ -73,7 +73,8 @@ class CarouselCache(WGCache):
                 g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.mode.getAppliedItems()
             ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
         else:
-            requirement = REQ_CRITERIA.CUSTOM(lambda _item: _item.descriptor.parentGroup is not None)
+            requirement = REQ_CRITERIA.CUSTOM(lambda _i: _i.descriptor.parentGroup is not None and (
+                True if _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet else _i.mayInstall(g_currentVehicle.item)))
         itemTypes = []
         for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
             if vehicleHasSlot(slotType):
@@ -90,6 +91,8 @@ class CarouselCache(WGCache):
                 item = self.__service.getItemByCD(intCD)
                 if requirement(item):
                     allItems.append(item)
+                if 'global_map' in item.descriptor.userKey:
+                    print 'global_map item encountered', item in allItems, item
 
         sortedItems = sorted(allItems, key=CSComparisonKey)
         customModeTabs = CustomizationTabs.MODES[CustomizationModes.CUSTOM]
