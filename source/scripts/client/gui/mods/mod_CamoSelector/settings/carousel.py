@@ -97,8 +97,6 @@ class CarouselCache(WGCache):
                 item = self.__service.getItemByCD(intCD)
                 if requirement(item):
                     allItems.append(item)
-                if 'global_map' in item.descriptor.userKey:
-                    print 'global_map item encountered', item in allItems, item
 
         sortedItems = sorted(allItems, key=CSComparisonKey)
         customModeTabs = CustomizationTabs.MODES[CustomizationModes.CUSTOM]
