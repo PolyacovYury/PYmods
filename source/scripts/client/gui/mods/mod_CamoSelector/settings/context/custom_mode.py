@@ -22,7 +22,7 @@ class CustomMode(WGCustomMode):
         vehCache = g_config.getOutfitCache()
         tempCache = g_config.getHangarCache()
         for season in SeasonType.COMMON_SEASONS:
-            fromOutfit = self._service.getOutfit(season) or self._service.getEmptyOutfit()
+            fromOutfit = self._service.getCustomOutfit(season) or self._service.getEmptyOutfit()
             seasonName = SEASON_TYPE_TO_NAME[season]
             applyOutfitCache(fromOutfit, vehCache.get(seasonName, {}), False)
             self._originalOutfits[season] = fromOutfit.copy()
