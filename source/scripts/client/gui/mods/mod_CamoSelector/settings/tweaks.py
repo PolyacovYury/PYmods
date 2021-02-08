@@ -2,12 +2,16 @@ from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization import (
     main_view as mw, shared as sh, customization_style_info as si)
+from gui.customization.constants import CustomizationModes
 from gui.customization.shared import SEASONS_ORDER, getPurchaseMoneyState, isTransactionValid
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.shared.formatters import icons, text_styles
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from helpers import dependency
 from items.components import c11n_components as c11c
+from items.components.c11n_constants import EDITABLE_STYLE_STORAGE_DEPTH
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
 from .. import g_config
@@ -44,6 +48,32 @@ def new_onPressClearBtn(base, self):
     base(self)
     if g_config.data['enabled']:
         self._MainView__ctx.cancelChanges()
+
+
+# noinspection DuplicatedCode
+@overrideMethod(mw.MainView, 'as_setHeaderDataS')
+def as_setHeaderDataS(base, self, data):
+    ctx = self._MainView__ctx
+    if ctx.isBuy and ctx.mode.modeId == CustomizationModes.STYLED:
+        showSpecialLabel = False
+        counter = 0
+        for intCD in self._MainView__bottomPanel._carouselDP.collection:
+            item = self.service.getItemByCD(intCD)
+            if item.itemTypeID != GUI_ITEM_TYPE.STYLE:
+                break
+            if item.canBeEditedForVehicle(g_currentVehicle.item.intCD):
+                counter += 1
+            if counter > EDITABLE_STYLE_STORAGE_DEPTH:
+                showSpecialLabel = True
+                break
+        if showSpecialLabel:
+            storedStylesCount = len(self.service.getStoredStyleDiffs())
+            img = icons.makeImageTag(backport.image(R.images.gui.maps.icons.customization.edited_big()))
+            label = text_styles.vehicleStatusSimpleText(backport.text(
+                R.strings.vehicle_customization.savedStyles.label(), img=img, current=storedStylesCount,
+                max=EDITABLE_STYLE_STORAGE_DEPTH))
+            data['tankInfo'] = label
+    return base(self, data)
 
 
 @overrideMethod(si.CustomizationStyleInfo, '__makeButtonVO')
