@@ -11,11 +11,5 @@ class CustomMode(WGCustomMode):
         self._modifiedOutfits[season] = styleOutfit
         self._fitOutfits()
 
-    def _validateItem(self, item, slotId, season):
-        return []
-
-    def isPossibleToInstallToAllTankAreas(self, intCD, slotType):
-        return True
-
-    def isPossibleToInstallItemForAllSeasons(self, slotId, intCD):
-        return self._service.getItemByCD(intCD).season == SeasonType.ALL
+    def getItemInventoryCount(self, item, excludeBase=False):
+        return 10  # should be enough to plaster any vehicle

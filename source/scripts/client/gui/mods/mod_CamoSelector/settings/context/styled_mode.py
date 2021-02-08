@@ -9,5 +9,5 @@ class StyledMode(WGStyledMode):
     def prolongRent(self, style):
         self._baseMode.prolongRent(style)
 
-    def _validateItem(self, item, slotId, season):
-        return []
+    def getItemInventoryCount(self, item, excludeBase=False):
+        return 10  # should be enough to plaster any vehicle

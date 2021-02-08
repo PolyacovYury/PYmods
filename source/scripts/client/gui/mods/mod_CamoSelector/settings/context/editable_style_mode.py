@@ -23,3 +23,6 @@ class EditableStyleMode(WGEditableMode):
                 return True
         return self._service.getItemByCD(intCD).season == SeasonType.ALL
 
+    def getItemInventoryCount(self, item, excludeBase=False):
+        return 10  # should be enough to plaster any vehicle
+
