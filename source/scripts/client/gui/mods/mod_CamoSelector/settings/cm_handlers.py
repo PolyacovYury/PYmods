@@ -29,11 +29,15 @@ class CustomizationItemCMHandler(WGCMHandler):
         if self.__ctx.isBuy:
             return result
         item = self.itemsCache.items.getItemByCD(self._intCD)
-        leave_tail = 1  # > 0
-        to_remove = 2
-        if item.isRentable:
-            to_remove += 1
-        del result[-(to_remove + leave_tail) * 2 + 1:-leave_tail*2 + 1]
+        # leave_tail = 1  # > 0
+        # to_remove = 2
+        # if item.isRentable:
+        #     to_remove += 1
+        # del result[-(to_remove + leave_tail) * 2 + 1:-leave_tail*2 + 1]
+        if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
+            result[2:-1] = self.__separateItem(self.__getEditStyleBtn(item))
+        else:
+            del result[:-1]
         if item.itemTypeID != GUI_ITEM_TYPE.CAMOUFLAGE:
             return result
         getOptionLabel = lambda option: g_config.i18n['contextMenu_' + option]

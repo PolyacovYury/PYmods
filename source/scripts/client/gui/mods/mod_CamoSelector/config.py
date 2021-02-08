@@ -36,7 +36,6 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_description': 'Camouflage selector',
             'flash_switcher_buy': 'PURCHASE',
             'flash_switcher_install': 'INSTALL',
-            'flash_propertySheet_edit_action': 'Edit style',
             'flashCol_propertySheet_edit_disabled': 'Style editing is disabled for 3D styles.',
             'flashCol_propertySheet_edit_message': (
                 '<b>All</b> installed items will be removed from <b>current</b> season.\nAre you sure you want to continue?'),

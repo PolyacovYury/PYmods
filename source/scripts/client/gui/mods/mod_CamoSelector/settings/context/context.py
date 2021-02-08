@@ -17,7 +17,6 @@ from items.components.c11n_constants import SeasonType
 from items.customizations import EmptyComponent
 from vehicle_outfit.outfit import Area
 from .custom_mode import CustomMode
-from .editable_style_mode import EditableStyleMode
 from .mod_impl import CSModImpl
 from .styled_mode import StyledMode
 from ..shared import CSMode
@@ -30,7 +29,7 @@ def ModdedMode(ctx, modeId, baseMode):
         return CustomMode(ctx, baseMode)
     if modeId == CustomizationModes.STYLED:
         return StyledMode(ctx, baseMode)
-    return EditableStyleMode(ctx, baseMode)
+    return None
 
 
 class CustomizationContext(WGCtx, CSModImpl):
@@ -94,11 +93,25 @@ class CustomizationContext(WGCtx, CSModImpl):
     def isItemsOnAnotherVeh(self):
         return self.isBuy and self.__isItemsOnAnotherVeh
 
+    def editStyle(self, intCD, source=None):
+        if self.isBuy:
+            return super(CustomizationContext, self).editStyle(intCD, source)
+        if not (self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).getModdedPurchaseItems()
+                or g_config.getOutfitCache().get(SEASON_TYPE_TO_NAME[self.season])):
+            self.installStyleItemsToModifiedOutfit(True)
+            return
+        message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
+            'value': g_config.i18n['flashCol_propertySheet_edit_message']})
+        DialogsInterface.showDialog(
+            PMConfirmationDialogMeta(_APPLY_TO_OTHER_SEASONS_DIALOG, messageCtx={
+                'message': message, 'icon': RES_ICONS.MAPS_ICONS_LIBRARY_ICON_ALERT_90X84}),
+            self.installStyleItemsToModifiedOutfit)
+
     def installStyleItemsToModifiedOutfit(self, proceed):
         if not proceed:
             return
         self.__moddedModes[CustomizationModes.CUSTOM].installStyleItemsToModifiedOutfit(
-            self.season, self.__moddedModes[CustomizationModes.STYLED].modifiedStyle.getOutfit(self.season).copy())
+            self.season, self.__moddedModes[CustomizationModes.STYLED].getModifiedOutfit(self.season).copy())
         self.changeMode(CustomizationModes.CUSTOM, CustomizationTabs.CAMOUFLAGES)
 
     def getModdedModifiedCustomOutfits(self):
