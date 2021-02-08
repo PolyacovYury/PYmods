@@ -2,18 +2,19 @@ import Event
 import adisp
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
-from gui import SystemMessages
+from gui import SystemMessages, makeHtmlString, DialogsInterface
+from gui.Scaleform.daapi.view.dialogs import PMConfirmationDialogMeta
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx
+from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import _APPLY_TO_OTHER_SEASONS_DIALOG
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
     CustomizationTabs, CustomizationModes, getCustomPurchaseItems, getStylePurchaseItems,
     OutfitInfo, AdditionalPurchaseGroups)
 from gui.Scaleform.locale.MESSENGER import MESSENGER
+from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.SystemMessages import SM_TYPE
-from gui.customization.shared import (
-    C11nId, __isTurretCustomizable as isTurretCustom, SEASON_TYPE_TO_NAME)
+from gui.customization.shared import __isTurretCustomizable as isTurretCustom, SEASON_TYPE_TO_NAME
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.utils.decorators import process
-from items.components.c11n_constants import SeasonType
 from items.customizations import EmptyComponent
 from vehicle_outfit.outfit import Area
 from .custom_mode import CustomMode
@@ -21,7 +22,7 @@ from .mod_impl import CSModImpl
 from .styled_mode import StyledMode
 from ..shared import CSMode
 from ... import g_config
-from ...processors import deleteEmpty, applyOutfitCache
+from ...processors import deleteEmpty
 
 
 def ModdedMode(ctx, modeId, baseMode):
@@ -174,25 +175,6 @@ class CustomizationContext(WGCtx, CSModImpl):
         deleteEmpty(g_config.outfitCache, isTurretCustomisable)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
 
-    # noinspection PyMethodOverriding
-    def tabChanged(self, tabIndex):
-        self._tabIndex = tabIndex
-        mode = self._mode
-        if self._tabIndex == CustomizationTabs.EFFECT:
-            self._selectedAnchor = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.MODIFICATION, regionIdx=0)
-        elif self._tabIndex == CustomizationTabs.STYLE:
-            self._selectedAnchor = C11nId(areaId=Area.MISC, slotType=GUI_ITEM_TYPE.STYLE, regionIdx=0)
-        else:
-            # noinspection PyArgumentList
-            self._selectedAnchor = C11nId()
-        self._selectedCarouselItem = CaruselItemData()  # noqa
-        self._lastTab[self.actualMode] = self._tabIndex
-        if self._mode != mode:
-            self.refreshOutfit()
-        self.onCustomizationTabChanged(tabIndex)
-        if self._mode != mode:
-            self.onCustomizationModeChanged(self._mode)
-
     def cancelChanges(self):
         self._currentSettings = {'custom': {}, 'remap': {}}
         for mode in self.__origModes.values() + self.__moddedModes.values():
@@ -280,7 +262,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         prevMode.unselectSlot()
         prevMode.stop()
         self.actualMode = modeId
-        if self.modeId == CustomizationModes.EDITABLE_STYLE:
+        if not self.isBuy and self.modeId == CustomizationModes.EDITABLE_STYLE:
             self.__modeId = CustomizationModes.STYLED
         newMode = self.mode
         newMode.start(source=source)
@@ -289,58 +271,6 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.events.onActualModeChanged()
         self.events.onModeChanged(newMode.modeId, prevMode.modeId)
         self.events.onTabChanged(self.mode.tabId)
-
-
-    '''
-    def __carveUpOutfits(self):
-        origMode = self.actualMode
-        self.actualMode = CSMode.BUY
-        # noinspection PyUnresolvedReferences
-        super(CustomizationContext, self)._CustomizationContext__carveUpOutfits()
-        self.actualMode = origMode
-        nation, vehName = g_currentVehicle.item.descriptor.name.split(':')
-        vehCache = g_config.outfitCache.get(nation, {}).get(vehName, {})
-        styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
-        for season in SeasonType.COMMON_SEASONS:
-            fromOutfit = self.service.getOutfit(season)
-            outfit = self.service.getEmptyOutfit()
-            if fromOutfit and not fromOutfit.modelsSet:
-                self.updateOutfitByVehicleSlots(fromOutfit, outfit)
-            applyOutfitCache(outfit, vehCache.get(SEASON_TYPE_TO_NAME[season], {}), False)
-            outfit._isInstalled = (outfit.isInstalled() or not outfit.isEmpty()) and not styleCache['applied']
-            self._originalModdedOutfits[season] = outfit.copy()
-            self._modifiedModdedOutfits[season] = outfit.copy()
-        origStyle = self.service.getCurrentStyle()
-        moddedStyle = None if styleCache['intCD'] is None else self.service.getItemByCD(styleCache['intCD'])
-        if not moddedStyle and not styleCache['applied'] and self.service.isCurrentStyleInstalled():
-            self._originalModdedStyle = origStyle
-            self._modifiedModdedStyle = origStyle
-        elif moddedStyle:
-            self._modifiedModdedStyle = moddedStyle
-            self._originalModdedStyle = moddedStyle if styleCache['applied'] else None
-        if self._modifiedStyle:
-            self._currentOutfit = self._modifiedStyle.getOutfit(self.season)
-        else:
-            self._currentOutfit = self._modifiedOutfits[self.season]
-
-    def __preserveState(self):
-        self._state.update(
-            modifiedStyle=self.__modifiedStyle,
-            modifiedOutfits={season: outfit.copy() for season, outfit in self.__modifiedOutfits.iteritems()},
-            modifiedModdedStyle=self._modifiedModdedStyle,
-            modifiedModdedOutfits={season: outfit.copy() for season, outfit in self._modifiedModdedOutfits.iteritems()})
-
-    def __restoreState(self):
-        self.__modifiedStyle = self._state.get('modifiedStyle')
-        self.__modifiedOutfits = self._state.get('modifiedOutfits')
-        if self.__modifiedStyle:
-            self.__modifiedStyle = self.service.getItemByCD(self.__modifiedStyle.intCD)
-        self._modifiedModdedStyle = self._state.get('modifiedModdedStyle')
-        self._modifiedModdedOutfits = self._state.get('modifiedModdedOutfits')
-        if self._modifiedModdedStyle:
-            self._modifiedModdedStyle = self.service.getItemByCD(self._modifiedModdedStyle.intCD)
-        self._state.clear()
-    '''
 
 
 @overrideMethod(WGCtx, '__new__')
