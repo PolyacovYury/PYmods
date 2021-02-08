@@ -127,7 +127,7 @@ class CustomizationContext(WGCtx, CSModImpl):
             if p.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
                 vehCache.setdefault('style', {}).update(intCD=p.item.intCD if not p.isDismantling else None, applied=True)
                 if p.item is not None and not p.isDismantling:
-                    g_config.hangarCamoCache.get(nation, {}).get(vehName, {}).clear()
+                    g_config.getHangarCache().clear()
                 break  # there will only ever be one, but just to make sure...
             else:
                 vehCache.get('style', {}).update(applied=False)
@@ -141,7 +141,7 @@ class CustomizationContext(WGCtx, CSModImpl):
                 origComponent = origOutfit.getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
             reg = str(p.regionID)
             if p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
-                seasonCache = g_config.hangarCamoCache.get(nation, {}).get(vehName, {}).get(seasonName, {})
+                seasonCache = g_config.getHangarCache().get(seasonName, {})
                 seasonCache.get(typeName, {}).get(area, {}).pop(reg, None)
                 deleteEmpty(seasonCache, isTurretCustomisable)
             if not origComponent if p.isDismantling else p.component.weak_eq(origComponent):
@@ -197,10 +197,8 @@ class CustomizationContext(WGCtx, CSModImpl):
         if purchaseItems:
             mode = self.actualMode
             self.actualMode = CSMode.BUY
-            vDesc = g_currentVehicle.item.descriptor
-            nation, vehName = vDesc.name.split(':')
-            vehCache = g_config.hangarCamoCache.get(nation, {}).get(vehName, {})
-            isTurretCustomisable = isTurretCustom(vDesc)
+            vehCache = g_config.getHangarCache()
+            isTurretCustomisable = isTurretCustom(g_currentVehicle.item.descriptor)
             for p in (p for p in purchaseItems if p.selected):
                 if p.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
                     if p.item is not None and not p.isDismantling:
@@ -227,7 +225,6 @@ class CustomizationContext(WGCtx, CSModImpl):
         super(CustomizationContext, self).init(season, modeId, tabId)
         self.events.onActualModeChanged = Event.Event(self.events._eventsManager)
         origMode = self.actualMode
-        nation, vehName = g_currentVehicle.item.descriptor.name.split(':')
         for mode in CSMode.BUY, CSMode.INSTALL:
             self.actualMode = mode
             self.getMode(mode, CustomizationModes.STYLED).start()
@@ -237,16 +234,13 @@ class CustomizationContext(WGCtx, CSModImpl):
                 custom.start(tabId)
             else:
                 custom.changeTab(tabId)
-            applied = g_config.outfitCache.get(nation, {}).get(vehName, {}).get('style', {}).get('applied', False)
-            if self._service.isStyleInstalled() if self.isBuy else applied:
-                self.__startModeIds[mode] = CustomizationModes.STYLED
-                self.__currentModeIds[mode] = CustomizationModes.STYLED
-            else:
-                self.__startModeIds[mode] = CustomizationModes.CUSTOM
-        for season in SeasonType.COMMON_SEASONS:
-            outfit = self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).getModifiedOutfit(season)
-            seasonName = SEASON_TYPE_TO_NAME[season]
-            applyOutfitCache(outfit, g_config.hangarCamoCache.get(nation, {}).get(vehName, {}).get(seasonName, {}))
+            self.__currentModeIds[mode] = self.__startModeIds[mode] = (
+                CustomizationModes.STYLED
+                if (
+                    self._service.isStyleInstalled() if self.isBuy
+                    else g_config.getOutfitCache().get('style', {}).get('applied', False))
+                else CustomizationModes.CUSTOM
+            )
         self.actualMode = origMode
         self.refreshOutfit()
         # from functools import partial

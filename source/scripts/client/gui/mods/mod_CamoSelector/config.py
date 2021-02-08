@@ -3,6 +3,7 @@ import ResMgr
 import items.vehicles
 import nations
 import os
+from CurrentVehicle import g_currentVehicle
 from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups, Analytics
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
@@ -276,6 +277,14 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def isCamoGlobal(self, camo):
         return camo.id in self.internationalCamoIDs
+
+    def getOutfitCache(self):
+        nation, vehicle = g_currentVehicle.item.descriptor.name.split(':')
+        return self.outfitCache.get(nation, {}).get(vehicle, {})
+
+    def getHangarCache(self):
+        nation, vehicle = g_currentVehicle.item.descriptor.name.split(':')
+        return self.hangarCamoCache.get(nation, {}).get(vehicle, {})
 
 
 g_config = ConfigInterface()
