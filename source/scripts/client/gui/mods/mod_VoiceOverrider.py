@@ -1,10 +1,8 @@
-import itertools
-
 import BigWorld
 import SoundGroups
+import itertools
 import nations
 from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics
-from Vehicle import Vehicle
 from collections import namedtuple
 from debug_utils import LOG_ERROR
 from gui.battle_control import avatar_getter
@@ -29,11 +27,22 @@ class ConfigInterface(PYmodsConfigInterface):
             VoiceMode('national_female', national=True, female=True),
             VoiceMode('valkyrie_male', 'valkyrie2'), VoiceMode('valkyrie_female', 'valkyrie1'),
             VoiceMode('sabaton', 'sabaton'), VoiceMode('buffon', 'buffon'), VoiceMode('offspring', 'offspring'),
+            VoiceMode('celebrity2021_ru', 'celebrity2021_ru'), VoiceMode('celebrity2021_en', 'celebrity2021_en'),
             VoiceMode('racer_ru', 'racer_ru'), VoiceMode('racer_en', 'racer_en'),
-            VoiceMode('LeBwa', 'ru1_Lebwa'), VoiceMode('Yusha', 'ru2_Yusha'),
-            VoiceMode('Amway921', 'ru3_Amway921'), VoiceMode('KorbenDallas', 'ru4_KorbenDallas'),
-            VoiceMode('Mailand', 'eu1_Mailand'), VoiceMode('Skill4ltu', 'eu2_Skill4ltu'),
-            VoiceMode('Dezgamez', 'eu3_Dezgamez'), VoiceMode('AwesomeEpicGuys', 'eu4_AwesomeEpicGuys')]
+            VoiceMode('20_LeBwa', 'ru1_Lebwa'), VoiceMode('20_Yusha', 'ru2_Yusha'),
+            VoiceMode('20_Amway921', 'ru3_Amway921'), VoiceMode('20_KorbenDallas', 'ru4_KorbenDallas'),
+            VoiceMode('20_Mailand', 'eu1_Mailand'), VoiceMode('20_Skill4ltu', 'eu2_Skill4ltu'),
+            VoiceMode('20_Dezgamez', 'eu3_Dezgamez'), VoiceMode('20_AwesomeEpicGuys', 'eu4_AwesomeEpicGuys'),
+            VoiceMode('21_Yusha', 'bb21_ru1_Yusha'), VoiceMode('21_Vspishka', 'bb21_ru1_Vspishka'),
+            VoiceMode('21_Amway921', 'bb21_ru2_Amway921'), VoiceMode('21_KorbenDallas', 'bb21_ru2_Korbendailas'),
+            VoiceMode('21_LeBwa', 'bb21_ru3_Lebwa'), VoiceMode('21_Inspirer', 'bb21_ru3_Inspirer'),
+            VoiceMode('21_Evil_Granny', 'bb21_ru4_Evilgranny'), VoiceMode('21_Near_You', 'bb21_ru4_Nearyou'),
+            VoiceMode('21_Circon', 'bb21_eu1_Circon'), VoiceMode('21_Dakillzor', 'bb21_eu2_Dakillzor'),
+            VoiceMode('21_Newmulti2k', 'bb21_eu3_Newmulti2k'), VoiceMode('21_Orzanel', 'bb21_eu4_Orzanel'),
+            VoiceMode('21_CabMech', 'bb21_na1_Cabbagemechanic'), VoiceMode('21_TragicLoss', 'bb21_na2_Tragicloss'),
+            VoiceMode('21_Cmdr_AF', 'bb21_na3_Cmdraf'), VoiceMode('21_MasterTortoise', 'bb21_asia1_Mastertortoise'),
+            VoiceMode('21_SummerTiger', 'bb21_asia2_Summertiger'), VoiceMode('21_Maharlika', 'bb21_asia3_Maharlika'),
+        ]
         self.music_modes = [MusicMode('default', 'default'), MusicMode('offspring', 'offspringArenaMusic')]
         super(ConfigInterface, self).__init__()
 
@@ -57,16 +66,36 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_voice_sabaton': 'Sabaton',
             'UI_setting_voice_buffon': 'Buffon',
             'UI_setting_voice_offspring': 'The Offspring',
+            'UI_setting_voice_celebrity2021_ru': 'Chuck Norris (RU)',
+            'UI_setting_voice_celebrity2021_en': 'Chuck Norris (EN)',
             'UI_setting_voice_racer_ru': 'Racer (RU)',
             'UI_setting_voice_racer_en': 'Racer (EN)',
-            'UI_setting_voice_LeBwa': 'TC-RU: LeBwa',
-            'UI_setting_voice_Yusha': 'TC-RU: Yusha',
-            'UI_setting_voice_Amway921': 'TC-RU: Amway921',
-            'UI_setting_voice_KorbenDallas': 'TC-RU: KorbenDallas',
-            'UI_setting_voice_Mailand': 'TC-EU: Mailand',
-            'UI_setting_voice_Skill4ltu': 'TC-EU: Skill4ltu',
-            'UI_setting_voice_Dezgamez': 'TC-EU: Dezgamez',
-            'UI_setting_voice_AwesomeEpicGuys': 'TC-EU: AwesomeEpicGuys'
+            'UI_setting_voice_20_LeBwa': 'RU-20: LeBwa',
+            'UI_setting_voice_20_Yusha': 'RU-20: Yusha',
+            'UI_setting_voice_20_Amway921': 'RU-20: Amway921',
+            'UI_setting_voice_20_KorbenDallas': 'RU-20: KorbenDallas',
+            'UI_setting_voice_20_Mailand': 'EU-20: Mailand',
+            'UI_setting_voice_20_Skill4ltu': 'EU-20: Skill4ltu',
+            'UI_setting_voice_20_Dezgamez': 'EU-20: Dezgamez',
+            'UI_setting_voice_20_AwesomeEpicGuys': 'EU-20: AwesomeEpicGuys',
+            'UI_setting_voice_21_Yusha': 'RU-21: Yusha',
+            'UI_setting_voice_21_Vspishka': 'RU-21: Vspishka',
+            'UI_setting_voice_21_Amway921': 'RU-21: Amway921',
+            'UI_setting_voice_21_KorbenDallas': 'RU-21: KorbenDallas',
+            'UI_setting_voice_21_LeBwa': 'RU-21: LeBwa',
+            'UI_setting_voice_21_Inspirer': 'RU-21: Inspirer',
+            'UI_setting_voice_21_Evil_Granny': 'RU-21: Evil_Granny',
+            'UI_setting_voice_21_Near_You': 'RU-21: Near_You',
+            'UI_setting_voice_21_Circon': 'EU-21: Circon',
+            'UI_setting_voice_21_Dakillzor': 'EU-21: Dakillzor',
+            'UI_setting_voice_21_Newmulti2k': 'EU-21: Newmulti2k',
+            'UI_setting_voice_21_Orzanel': 'EU-21: Orzanel',
+            'UI_setting_voice_21_CabMech': 'NA-21: CabMech',
+            'UI_setting_voice_21_TragicLoss': 'NA-21: TragicVeLOSSiraptor',
+            'UI_setting_voice_21_Cmdr_AF': 'NA-21: Cmdr_AF',
+            'UI_setting_voice_21_MasterTortoise': 'ASIA-21: MasterTortoise: Kame',
+            'UI_setting_voice_21_SummerTiger': 'ASIA-21: SummerTiger: Summer',
+            'UI_setting_voice_21_Maharlika': 'ASIA-21: Maharlika: Conan',
         }
         super(ConfigInterface, self).init()
 
@@ -78,14 +107,18 @@ class ConfigInterface(PYmodsConfigInterface):
             self.loadDataJson(True)
 
     def createTemplate(self):
-        return {'modDisplayName': self.i18n['name'],
-                'enabled': self.data['enabled'],
-                'column1': [self.tb.createOptions(
+        return {
+            'modDisplayName': self.i18n['name'],
+            'enabled': self.data['enabled'],
+            'column1': [
+                self.tb.createOptions(
                     'voice', [self.i18n['UI_setting_voice_%s' % mode.name] for mode in self.voice_modes],
-                    button={'iconSource': '../maps/icons/buttons/sound.png'})],
-                'column2': [self.tb.createOptions(
-                    'music', [self.i18n['UI_setting_music_%s' % mode.name] for mode in self.music_modes],
-                    button={'iconSource': '../maps/icons/buttons/sound.png'})]}
+                    button={'iconSource': '../maps/icons/buttons/sound.png'}),
+            ],
+            'column2': [
+                self.tb.createOptions(
+                    'music', [self.i18n['UI_setting_music_%s' % mode.name] for mode in self.music_modes]),
+            ]}
 
     def onButtonPress(self, vName, value):
         if vName != 'voice':
@@ -145,21 +178,13 @@ g_config = ConfigInterface()
 analytics = Analytics(g_config.ID, g_config.version, 'UA-76792179-22')
 
 
-@overrideMethod(Vehicle, 'refreshNationalVoice')
-def new_refreshNationalVoice(base, self, *a, **kw):
-    base(self, *a, **kw)
-    player = BigWorld.player()
-    if not g_config.data['enabled'] or self.id not in (player.playerVehicleID, player.observedVehicleID):
-        return
-    g_config.setSystemValue(nations.NAMES[VehicleDescr(self.publicInfo.compDescr).type.id[0]])
-
-
 @overrideMethod(SpecialSoundCtrl, 'setPlayerVehicle')
-def new_setPlayerVehicle(base, self, *a, **k):
-    base(self, *a, **k)
+def new_setPlayerVehicle(base, self, vehiclePublicInfo, isPlayerVehicle):
+    base(self, vehiclePublicInfo, isPlayerVehicle)
     arena = avatar_getter.getArena()
-    if arena is None:
+    if not g_config.data['enabled'] or arena is None:
         return
+    g_config.setSystemValue(nations.NAMES[VehicleDescr(vehiclePublicInfo.compDescr).type.id[0]])
     self._SpecialSoundCtrl__arenaMusicSetup = musicSetup = arena.arenaType.wwmusicSetup.copy()
     tag = g_config.music_modes[g_config.data['music']].tag
     musicSetup.update(self._SpecialSoundCtrl__arenaMusicByStyle.get(tag, ()))
