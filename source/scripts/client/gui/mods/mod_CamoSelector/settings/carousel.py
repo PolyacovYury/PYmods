@@ -7,7 +7,7 @@ from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import 
     CustomizationBookmarkVO, CustomizationCarouselDataProvider as WGCarouselDP, CarouselData, CarouselCache as WGCache,
     ItemsData, FilterTypes)
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    ITEM_TYPE_TO_TAB, TYPES_ORDER, CustomizationTabs, vehicleHasSlot)
+    ITEM_TYPE_TO_TAB, TYPES_ORDER, CustomizationTabs, vehicleHasSlot, isItemLimitReached)
 from gui.customization.constants import CustomizationModes
 from gui.customization.shared import createCustomizationBaseRequestCriteria, C11N_ITEM_TYPE_MAP
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -29,6 +29,21 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
             self.__selectedGroup.clear()
             self.invalidateFilteredItems()
         self.getVisibleTabs()  # don't reset tab idx upon mode change
+
+    def getNextItem(self, reverse):
+        if self.__selectedItem.idx == -1:
+            return None
+        outfits = self.__ctx.mode.getModifiedOutfits()
+        shift = -1 if reverse else 1
+        itemsCount = len(self.collection)
+        idx = self.__selectedItem.idx + shift
+        while 0 <= idx < itemsCount:
+            intCD = self.collection[idx]
+            item = self.__service.getItemByCD(intCD)
+            if not self.__ctx.isBuy or not isItemLimitReached(item, outfits) or item.isStyleOnly:
+                return item
+            idx += shift
+        return None
 
     def __initFilters(self):
         # noinspection PyUnresolvedReferences
