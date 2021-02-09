@@ -86,7 +86,7 @@ class CarouselCache(WGCache):
             if group != lastGroupID:
                 lastGroupID = group
                 bookmarkVO = CustomizationBookmarkVO(group, len(carouselData.items))
-                carouselData.bookmarks.append(bookmarkVO._asdict())
+                # carouselData.bookmarks.append(bookmarkVO._asdict())
             carouselData.items.append(item.intCD)
             carouselData.sizes.append(item.isWide())
 
