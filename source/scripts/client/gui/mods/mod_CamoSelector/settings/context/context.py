@@ -108,8 +108,8 @@ class CustomizationContext(WGCtx, CSModImpl):
             return
         message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
             'value': g_config.i18n['flashCol_propertySheet_edit_message']})
-        builder = WarningDialogBuilder().setMessagesAndButtons(
-            R.strings.dialogs.crewSkins.skinWillBeRemoved).setFormattedMessage(message)
+        builder = WarningDialogBuilder().setFormattedMessage(message)
+        builder.setMessagesAndButtons(R.strings.dialogs.crewSkins.skinWillBeRemoved)  # the most convenient
         subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
         result = yield await(dialogs.showSimple(builder.build(parent=subview)))
         self.installStyleItemsToModifiedOutfit(result)
