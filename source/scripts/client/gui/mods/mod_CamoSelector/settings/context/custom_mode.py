@@ -31,7 +31,7 @@ class CustomMode(WGCustomMode):
             self._fitOutfits()
 
     def getPurchaseItems(self):
-        return self._baseMode.getPurchaseItems()
+        return self._ctx.getPurchaseItems()
 
     def getModdedPurchaseItems(self):
         return super(CustomMode, self).getPurchaseItems()

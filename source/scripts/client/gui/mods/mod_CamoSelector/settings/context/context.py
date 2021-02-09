@@ -127,6 +127,13 @@ class CustomizationContext(WGCtx, CSModImpl):
             return getCustomPurchaseItems(self.season, self.getModdedModifiedCustomOutfits())
         return getStylePurchaseItems(self.getModdedModifiedStyle(), OutfitInfo(self._originalModdedStyle, self._modifiedModdedStyle))
 
+    def getPurchaseItems(self):
+        mode = self.actualMode
+        self.actualMode = CSMode.BUY
+        items = self.mode.getPurchaseItems()
+        self.actualMode = mode
+        return items
+
     def applyModdedStuff(self):
         self.applySettings()
         self.applyModdedItems()

@@ -41,7 +41,7 @@ class StyledMode(WGStyledMode):
             self._modifiedOutfits[season] = outfit.copy()
 
     def getPurchaseItems(self):
-        return self._baseMode.getPurchaseItems()
+        return self._ctx.getPurchaseItems()
 
     def getModdedPurchaseItems(self):
         return super(StyledMode, self).getPurchaseItems()
