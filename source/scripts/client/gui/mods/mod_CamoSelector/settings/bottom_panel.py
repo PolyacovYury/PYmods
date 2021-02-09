@@ -135,12 +135,6 @@ class CustomizationBottomPanel(CBP):
             pluses.append(showPlus)
         return tabsData, pluses
 
-    def __onModeChanged(self, *_):
-        # noinspection PyUnresolvedReferences
-        super(CustomizationBottomPanel, self)._CustomizationBottomPanel__onModeChanged(*_)
-        self.__scrollToNewItem()
-        self.__updatePopoverBtnIcon()
-
     def __scrollToNewItem(self):
         currentTypes = CustomizationTabs.ITEM_TYPES[self.__ctx.mode.tabId]
         newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items), key=CSComparisonKey)
