@@ -2,18 +2,21 @@ import Event
 import adisp
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
-from gui import SystemMessages, makeHtmlString, DialogsInterface
-from gui.Scaleform.daapi.view.dialogs import PMConfirmationDialogMeta
+from async import await, async
+from frameworks.wulf import WindowLayer
+from gui import SystemMessages, makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx
-from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import _APPLY_TO_OTHER_SEASONS_DIALOG
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
     CustomizationTabs, CustomizationModes, getCustomPurchaseItems, getStylePurchaseItems,
     OutfitInfo, AdditionalPurchaseGroups)
 from gui.Scaleform.locale.MESSENGER import MESSENGER
-from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.SystemMessages import SM_TYPE
 from gui.customization.shared import __isTurretCustomizable as isTurretCustom, SEASON_TYPE_TO_NAME
+from gui.impl.dialogs import dialogs
+from gui.impl.dialogs.builders import WarningDialogBuilder
+from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
+from gui.shared.personality import ServicesLocator as SL
 from gui.shared.utils.decorators import process
 from items.customizations import EmptyComponent
 from vehicle_outfit.outfit import Area
@@ -79,7 +82,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.__currentModeIds = {CSMode.BUY: None, CSMode.INSTALL: None}
         WGCtx.__init__(self)
         self.__moddedModes = {
-            modeId: ModdedMode(self, modeId, self.__origModes[modeId]) 
+            modeId: ModdedMode(self, modeId, self.__origModes[modeId])
             for modeId in (CustomizationModes.CUSTOM, CustomizationModes.STYLED)}
         self.__switcherIgnored = False
 
@@ -95,19 +98,21 @@ class CustomizationContext(WGCtx, CSModImpl):
     def isItemsOnAnotherVeh(self):
         return self.isBuy and self.__isItemsOnAnotherVeh
 
+    @async
     def editStyle(self, intCD, source=None):
         if self.isBuy:
-            return super(CustomizationContext, self).editStyle(intCD, source)
-        if not (self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).getModdedPurchaseItems()
-                or g_config.getOutfitCache().get(SEASON_TYPE_TO_NAME[self.season])):
+            super(CustomizationContext, self).editStyle(intCD, source)
+            return
+        if self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).getModifiedOutfit(self.season).isEmpty():
             self.installStyleItemsToModifiedOutfit(True)
             return
         message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
             'value': g_config.i18n['flashCol_propertySheet_edit_message']})
-        DialogsInterface.showDialog(
-            PMConfirmationDialogMeta(_APPLY_TO_OTHER_SEASONS_DIALOG, messageCtx={
-                'message': message, 'icon': RES_ICONS.MAPS_ICONS_LIBRARY_ICON_ALERT_90X84}),
-            self.installStyleItemsToModifiedOutfit)
+        builder = WarningDialogBuilder().setMessagesAndButtons(
+            R.strings.dialogs.crewSkins.skinWillBeRemoved).setFormattedMessage(message)
+        subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
+        result = yield await(dialogs.showSimple(builder.build(parent=subview)))
+        self.installStyleItemsToModifiedOutfit(result)
 
     def installStyleItemsToModifiedOutfit(self, proceed):
         if not proceed:
@@ -125,7 +130,8 @@ class CustomizationContext(WGCtx, CSModImpl):
     def getModdedPurchaseItems(self):
         if self.__currentModeIds[CSMode.INSTALL] != CustomizationModes.STYLED:
             return getCustomPurchaseItems(self.season, self.getModdedModifiedCustomOutfits())
-        return getStylePurchaseItems(self.getModdedModifiedStyle(), OutfitInfo(self._originalModdedStyle, self._modifiedModdedStyle))
+        return getStylePurchaseItems(self.getModdedModifiedStyle(),
+                                     OutfitInfo(self._originalModdedStyle, self._modifiedModdedStyle))
 
     def getPurchaseItems(self):
         mode = self.actualMode

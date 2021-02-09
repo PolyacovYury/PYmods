@@ -3,8 +3,7 @@ from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import \
     CustomizationPropertiesSheet as WGPropertiesSheet
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES as CA
-from gui.customization.constants import CustomizationModes
-from gui.customization.shared import SEASON_TYPE_TO_NAME
+from gui.customization.constants import CustomizationModes as C11nModes
 from gui.impl import backport
 from gui.impl.gen import R
 from .shared import CSMode
@@ -32,9 +31,8 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             'disableTooltip': g_config.i18n['flashCol_propertySheet_edit_disabled'],
             'notifyText': makeHtmlString('html_templates:lobby/customization/notify', 'decal', {
                 'value': g_config.i18n['flashCol_propertySheet_edit_notify']}),
-            'needNotify': enabled and bool(
-                self.__ctx.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).getModdedPurchaseItems()
-                or g_config.getOutfitCache().get(SEASON_TYPE_TO_NAME[self.__ctx.season])),
+            'needNotify': enabled and (
+                not self.__ctx.getMode(CSMode.INSTALL, C11nModes.CUSTOM).getModifiedOutfit(self.__ctx.season).isEmpty()),
             'enabled': enabled}
 
 
