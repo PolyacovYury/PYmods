@@ -81,7 +81,7 @@ class CustomizationItemCMHandler(WGCMHandler):
             settings['random_mode'] = SelectionMode.INDICES[value]
         elif optionId in Options.TEAM:
             settings[value] = not settings[value]
-        self.__ctx.onCacheResync()
+        self.__ctx.events.onCacheResync()
 
 
 @overrideMethod(WGCMHandler, '__new__')
