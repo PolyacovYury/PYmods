@@ -28,7 +28,9 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
             self.clearFilter()
             self.__selectedGroup.clear()
             self.invalidateFilteredItems()
-        self.getVisibleTabs()  # don't reset tab idx upon mode change
+        visibleTabs = self.getVisibleTabs()  # don't reset tab idx upon mode change, unless absolutely necessary
+        if self.__ctx.mode.tabId not in visibleTabs:
+            self.__ctx.mode.changeTab(visibleTabs[0])
 
     def getNextItem(self, reverse):
         if self.__selectedItem.idx == -1:
