@@ -30,7 +30,6 @@ def ModdedMode(ctx, modeId, baseMode):
         return CustomMode(ctx, baseMode)
     if modeId == CustomizationModes.STYLED:
         return StyledMode(ctx, baseMode)
-    return None
 
 
 class CustomizationContext(WGCtx, CSModImpl):
@@ -79,7 +78,9 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.__startModeIds = {CSMode.BUY: None, CSMode.INSTALL: None}
         self.__currentModeIds = {CSMode.BUY: None, CSMode.INSTALL: None}
         WGCtx.__init__(self)
-        self.__moddedModes = {modeId: ModdedMode(self, modeId, self.__origModes[modeId]) for modeId in self.__origModes}
+        self.__moddedModes = {
+            modeId: ModdedMode(self, modeId, self.__origModes[modeId]) 
+            for modeId in (CustomizationModes.CUSTOM, CustomizationModes.STYLED)}
         self.__switcherIgnored = False
 
     def fini(self):
