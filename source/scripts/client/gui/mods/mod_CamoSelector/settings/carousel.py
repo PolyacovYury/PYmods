@@ -18,6 +18,7 @@ from helpers.i18n import makeString as _ms
 from items import vehicles
 from items.components.c11n_constants import SeasonType, ProjectionDecalFormTags, ItemTags, EMPTY_ITEM_ID
 from skeletons.gui.customization import ICustomizationService
+from .shared import getItemSeason
 from .. import g_config
 
 
@@ -63,9 +64,12 @@ class CarouselCache(WGCache):
         carouselData = CarouselData()
         lastGroupID = None
         for item in filteredItems:
-            if item.groupID != lastGroupID:
-                lastGroupID = item.groupID
-                bookmarkVO = CustomizationBookmarkVO(getGroupName(item, self.__ctx.isBuy), len(carouselData.items))
+            isBuy = self.__ctx.isBuy
+            groupName = getGroupName(item, isBuy)
+            group = item.groupID if isBuy else groupName
+            if group != lastGroupID:
+                lastGroupID = group
+                bookmarkVO = CustomizationBookmarkVO(group, len(carouselData.items))
                 carouselData.bookmarks.append(bookmarkVO._asdict())
             carouselData.items.append(item.intCD)
             carouselData.sizes.append(item.isWide())
@@ -103,15 +107,17 @@ class CarouselCache(WGCache):
         for item in sortedItems:
             tabId = ITEM_TYPE_TO_TAB[item.itemTypeID]
             modeId = CustomizationModes.CUSTOM if tabId in customModeTabs else CustomizationModes.STYLED
+            groupName = getGroupName(item, self.__ctx.isBuy)
             for season in SeasonType.COMMON_SEASONS:
-                if not item.season & season:
+                if not (item.season if self.__ctx.isBuy else getItemSeason(item)) & season:
                     continue
                 itemsDataStorage = self.__itemsData[modeId][season]
                 if not itemsDataStorage or tabId != itemsDataStorage.keys()[-1]:
                     itemsDataStorage[tabId] = ItemsData()
                 itemsData = itemsDataStorage.values()[-1]
-                if not itemsData.groups or item.groupID != itemsData.groups.keys()[-1]:
-                    itemsData.groups[item.groupID] = getGroupName(item, self.__ctx.isBuy)
+                for name in groupName.split(g_config.i18n['flashCol_group_separator']):
+                    if name and name not in itemsData.groups:
+                        itemsData.groups[name] = name
                 itemsData.items.append(item)
 
     def __initEditableStyleItemsData(self):
@@ -142,8 +148,10 @@ class CarouselCache(WGCache):
                 items = sorted(set(allItems), key=CSComparisonKey)
                 groups = OrderedDict()
                 for item in items:
-                    if not groups or item.groupID != groups.keys()[-1]:
-                        groups[item.groupID] = getGroupName(item, self.__ctx.isBuy)
+                    groupName = getGroupName(item, self.__ctx.isBuy)
+                    for name in groupName.split(g_config.i18n['flashCol_group_separator']):
+                        if name and name not in groups:
+                            groups[name] = name
 
                 self.__itemsData[CustomizationModes.EDITABLE_STYLE][season][tabId] = ItemsData(items, groups)
 
