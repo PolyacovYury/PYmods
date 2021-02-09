@@ -12,7 +12,7 @@ from gui.customization.constants import CustomizationModes
 from gui.customization.shared import createCustomizationBaseRequestCriteria, C11N_ITEM_TYPE_MAP
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
-from gui.shared.utils.requesters.ItemsRequester import PredicateCondition
+from gui.shared.utils.requesters.ItemsRequester import RequestCriteria
 from helpers import dependency
 from helpers.i18n import makeString as _ms
 from items import vehicles
@@ -60,7 +60,8 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
             itemsData = self.__carouselCache.getItemsData()
             groupId = itemsData.groups.keys()[groupIdx]
             groupName = itemsData.groups[groupId]
-            requirement._conditions[0] = PredicateCondition(lambda item: groupName in getGroupName(item, isBuy))
+            requirement = REQ_CRITERIA.CUSTOM(
+                lambda item: groupName in getGroupName(item, isBuy)) | RequestCriteria(*requirement.getConditions()[1:])
         return requirement
 
 
