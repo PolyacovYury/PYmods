@@ -276,7 +276,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         prevMode.unselectSlot()
         prevMode.stop()
         self.actualMode = modeId
-        if not self.isBuy and self.modeId == CustomizationModes.EDITABLE_STYLE:
+        if self.modeId == CustomizationModes.EDITABLE_STYLE:
             self.__modeId = CustomizationModes.STYLED
         newMode = self.mode
         newMode.start(source=source)
