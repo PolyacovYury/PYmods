@@ -57,8 +57,9 @@ class MainView(WGMainView):
 
     def __selectFirstVisibleTab(self):
         visibleTabs = self.__bottomPanel.getVisibleTabs()
-        if visibleTabs and self.__ctx.mode.tabId not in visibleTabs:
-            self.__ctx.mode.changeTab(visibleTabs[0])
+        if visibleTabs:
+            if self.__ctx.mode.tabId not in visibleTabs:
+                self.__ctx.mode.changeTab(visibleTabs[0])
         else:
             _logger.error('There is no visible customization tabs for current vehicle: %s', g_currentVehicle.item)
 
