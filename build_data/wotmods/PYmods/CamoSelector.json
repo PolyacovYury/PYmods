@@ -16,9 +16,9 @@
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/__init__.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/__init__.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/context.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/context.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/custom_mode.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/custom_mode.pyc",
-        "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/editable_style_mode.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/editable_style_mode.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/mod_impl.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/mod_impl.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/styled_mode.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/styled_mode.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/tweaks.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/tweaks.pyc"
