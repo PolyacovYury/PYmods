@@ -14,11 +14,6 @@ class CustomMode(WGCustomMode):
         self._modifiedOutfits[season] = styleOutfit
         self._fitOutfits()
 
-    def changeTab(self, tabId, itemCD=None):
-        print 'changing tab from', self.tabId, 'to', tabId, 'item CD =', itemCD
-        __import__('traceback').print_stack()
-        return super(CustomMode, self).changeTab(tabId, itemCD)
-
     def getItemInventoryCount(self, item, excludeBase=False):
         return 10  # should be enough to plaster any vehicle
 
