@@ -155,6 +155,11 @@ class CustomizationContext(WGCtx, CSModImpl):
         result = yield await(dialogs.showSimple(builder.build(parent=subview)))
         self.installStyleItemsToModifiedOutfit(result)
 
+    def refreshOutfit(self, season=None):
+        if season is None and not self.isBuy:
+            self.mode.updateOutfits()
+        return super(CustomizationContext, self).refreshOutfit(season)
+
     def installStyleItemsToModifiedOutfit(self, proceed):
         if not proceed:
             return
@@ -162,17 +167,11 @@ class CustomizationContext(WGCtx, CSModImpl):
             self.season, self.__moddedModes[CustomizationModes.STYLED].getModifiedOutfit(self.season).copy())
         self.changeMode(CustomizationModes.CUSTOM, CustomizationTabs.CAMOUFLAGES)
 
-    def getModdedModifiedCustomOutfits(self):
-        return self.__moddedModes[CustomizationModes.CUSTOM].getModifiedOutfits()
-
-    def getModdedModifiedStyle(self):
-        return self.__moddedModes[CustomizationModes.STYLED].getModifiedStyle()
-
-    def getModdedPurchaseItems(self):
-        if self.__currentModeIds[CSMode.INSTALL] != CustomizationModes.STYLED:
-            return getCustomPurchaseItems(self.season, self.getModdedModifiedCustomOutfits())
-        return getStylePurchaseItems(
-            self.getModdedModifiedStyle(), OutfitInfo(self._originalModdedStyle, self._modifiedModdedStyle))
+    def getOrigModifiedOutfits(self):
+        mode = self.actualMode
+        outfits = self.mode.getModifiedOutfits()
+        self.actualMode = mode
+        return outfits
 
     def getPurchaseItems(self):
         mode = self.actualMode
@@ -187,16 +186,6 @@ class CustomizationContext(WGCtx, CSModImpl):
         if purchaseItems:
             mode = self.actualMode
             self.actualMode = CSMode.BUY
-            vehCache = g_config.getHangarCache()
-            isTurretCustomisable = isTurretCustom(g_currentVehicle.item.descriptor)
-            for p in (p for p in purchaseItems if p.selected):
-                if p.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
-                    if p.item is not None and not p.isDismantling:
-                        vehCache.clear()
-                elif p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
-                    sCache = vehCache.get(SEASON_TYPE_TO_NAME[p.group], {})
-                    sCache.get(GUI_ITEM_TYPE_NAMES[p.slot], {}).get(Area.getName(p.areaID), {}).pop(str(p.regionID), None)
-                    deleteEmpty(sCache, isTurretCustomisable)
             self._itemsCache.onSyncCompleted -= self.__onCacheResync
             isModeChanged = self.modeId != self.__startMode
             yield self.mode.applyItems(purchaseItems, isModeChanged)
@@ -206,56 +195,12 @@ class CustomizationContext(WGCtx, CSModImpl):
         mode = self.actualMode
         self.actualMode = CSMode.INSTALL
         self.applySettings()
-        self.applyModdedItems()
+        isModeChanged = self.modeId != self.__startMode
+        yield self.mode.applyItems(purchaseItems, isModeChanged)
         self.actualMode = mode
         self.__onCacheResync()
         self._itemsCache.onSyncCompleted += self.__onCacheResync
         callback(None)
-
-    def applyModdedItems(self):
-        vDesc = g_currentVehicle.item.descriptor
-        nation, vehName = vDesc.name.split(':')
-        isTurretCustomisable = isTurretCustom(vDesc)
-        vehCache = g_config.outfitCache.setdefault(nation, {}).setdefault(vehName, {})
-        anything = False
-        for p in (x for x in self.getModdedPurchaseItems() if x.selected):
-            anything = True
-            if p.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
-                vehCache.setdefault('style', {}).update(intCD=p.item.intCD if not p.isDismantling else None, applied=True)
-                if p.item is not None and not p.isDismantling:
-                    g_config.getHangarCache().clear()
-                break  # there will only ever be one, but just to make sure...
-            else:
-                vehCache.get('style', {}).update(applied=False)
-            typeName = GUI_ITEM_TYPE_NAMES[p.slot]
-            seasonName = SEASON_TYPE_TO_NAME[p.group]
-            area = Area.getName(p.areaID) if p.areaID != Area.MISC else 'misc'
-            conf = vehCache.setdefault(seasonName, {}).setdefault(typeName, {}).setdefault(area, {})
-            origComponent = None
-            origOutfit = self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).getOriginalOutfit(p.group)
-            if origOutfit:
-                origComponent = origOutfit.getContainer(p.areaID).slotFor(p.slot).getComponent(p.regionID)
-            reg = str(p.regionID)
-            if p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
-                seasonCache = g_config.getHangarCache().get(seasonName, {})
-                seasonCache.get(typeName, {}).get(area, {}).pop(reg, None)
-                deleteEmpty(seasonCache, isTurretCustomisable)
-            if not origComponent if p.isDismantling else p.component.weak_eq(origComponent):
-                conf.pop(reg, None)
-            else:
-                conf[reg] = (({f: getattr(p.component, f) for f, fd in p.component.fields.items() if not fd.weakEqualIgnored}
-                              if not isinstance(p.component, EmptyComponent) else {'id': p.item.id})
-                             if not p.isDismantling else {'id': None})
-        if not anything and self.modeId != self.__startMode:
-            vehCache.get('style', {}).update(applied=False)  # if an "empty" style is applied - 'anything' is already true
-            anything = True
-        if vehCache.get('style', {}) == {'intCD': None, 'applied': False}:
-            vehCache.pop('style', None)
-        if anything:
-            SystemMessages.pushI18nMessage(
-                MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
-        deleteEmpty(g_config.outfitCache, isTurretCustomisable)
-        loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
 
     def cancelChanges(self):
         CSModImpl.cancelChanges(self)
