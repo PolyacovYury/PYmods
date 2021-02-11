@@ -5,7 +5,7 @@ from PYmodsCore import overrideMethod, loadJson
 from async import await, async
 from frameworks.wulf import WindowLayer
 from gui import SystemMessages, makeHtmlString
-from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx
+from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx, _logger
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
     CustomizationTabs, CustomizationModes, getCustomPurchaseItems, getStylePurchaseItems,
     OutfitInfo, AdditionalPurchaseGroups)
@@ -36,6 +36,17 @@ def ModdedMode(ctx, modeId, baseMode):
 
 
 class CustomizationContext(WGCtx, CSModImpl):
+    def __init__(self):
+        CSModImpl.__init__(self)
+        self.actualMode = CSMode.INSTALL
+        self.__startModeIds = {CSMode.BUY: None, CSMode.INSTALL: None}
+        self.__currentModeIds = {CSMode.BUY: None, CSMode.INSTALL: None}
+        WGCtx.__init__(self)
+        self.__moddedModes = {
+            modeId: ModdedMode(self, modeId, self.__origModes[modeId])
+            for modeId in (CustomizationModes.CUSTOM, CustomizationModes.STYLED)}
+        self.__switcherIgnored = False
+
     @property
     def isBuy(self):
         return self.actualMode == CSMode.BUY
@@ -75,16 +86,32 @@ class CustomizationContext(WGCtx, CSModImpl):
     def mode(self):
         return self.getMode(self.actualMode, self.modeId)
 
-    def __init__(self):
-        CSModImpl.__init__(self)
-        self.actualMode = CSMode.INSTALL
-        self.__startModeIds = {CSMode.BUY: None, CSMode.INSTALL: None}
-        self.__currentModeIds = {CSMode.BUY: None, CSMode.INSTALL: None}
-        WGCtx.__init__(self)
-        self.__moddedModes = {
-            modeId: ModdedMode(self, modeId, self.__origModes[modeId])
-            for modeId in (CustomizationModes.CUSTOM, CustomizationModes.STYLED)}
-        self.__switcherIgnored = False
+    @property
+    def isItemsOnAnotherVeh(self):
+        return self.isBuy and self.__isItemsOnAnotherVeh
+
+    def init(self, season=None, modeId=None, tabId=None):
+        super(CustomizationContext, self).init(season, modeId, tabId)
+        self.events.onActualModeChanged = Event.Event(self.events._eventsManager)
+        origMode = self.actualMode
+        for mode in CSMode.BUY, CSMode.INSTALL:
+            self.actualMode = mode
+            self.getMode(mode, CustomizationModes.STYLED).start()
+            custom = self.getMode(mode, CustomizationModes.CUSTOM)
+            tabId = None if self.isBuy else CustomizationTabs.CAMOUFLAGES
+            if not custom.isInited:
+                custom.start(tabId)
+            else:
+                custom.changeTab(tabId)
+            self.__currentModeIds[mode] = self.__startModeIds[mode] = (
+                CustomizationModes.STYLED
+                if (
+                    self._service.isStyleInstalled() if self.isBuy
+                    else g_config.getOutfitCache().get('style', {}).get('applied', False))
+                else CustomizationModes.CUSTOM
+            )
+        self.actualMode = origMode
+        self.refreshOutfit()
 
     def fini(self):
         super(CustomizationContext, self).fini()
@@ -94,9 +121,23 @@ class CustomizationContext(WGCtx, CSModImpl):
                 mode.fini()
             modes.clear()
 
-    @property
-    def isItemsOnAnotherVeh(self):
-        return self.isBuy and self.__isItemsOnAnotherVeh
+    def changeActualMode(self, modeId, source=None):
+        if self.actualMode == modeId and self.modeId != CustomizationModes.EDITABLE_STYLE:
+            return
+        prevMode = self.mode
+        prevMode.unselectItem()
+        prevMode.unselectSlot()
+        prevMode.stop()
+        self.actualMode = modeId
+        if self.modeId == CustomizationModes.EDITABLE_STYLE:
+            self.__modeId = CustomizationModes.STYLED
+        newMode = self.mode
+        newMode.start(self.mode.tabId, source=source)
+        self.refreshOutfit()
+        self.events.onBeforeModeChange()
+        self.events.onActualModeChanged()
+        self.events.onModeChanged(newMode.modeId, prevMode.modeId)
+        self.events.onTabChanged(self.mode.tabId)
 
     @async
     def editStyle(self, intCD, source=None):
@@ -130,8 +171,8 @@ class CustomizationContext(WGCtx, CSModImpl):
     def getModdedPurchaseItems(self):
         if self.__currentModeIds[CSMode.INSTALL] != CustomizationModes.STYLED:
             return getCustomPurchaseItems(self.season, self.getModdedModifiedCustomOutfits())
-        return getStylePurchaseItems(self.getModdedModifiedStyle(),
-                                     OutfitInfo(self._originalModdedStyle, self._modifiedModdedStyle))
+        return getStylePurchaseItems(
+            self.getModdedModifiedStyle(), OutfitInfo(self._originalModdedStyle, self._modifiedModdedStyle))
 
     def getPurchaseItems(self):
         mode = self.actualMode
@@ -140,9 +181,36 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.actualMode = mode
         return items
 
-    def applyModdedStuff(self):
+    @adisp.async
+    @process('customizationApply')
+    def applyItems(self, purchaseItems, callback):
+        if purchaseItems:
+            mode = self.actualMode
+            self.actualMode = CSMode.BUY
+            vehCache = g_config.getHangarCache()
+            isTurretCustomisable = isTurretCustom(g_currentVehicle.item.descriptor)
+            for p in (p for p in purchaseItems if p.selected):
+                if p.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
+                    if p.item is not None and not p.isDismantling:
+                        vehCache.clear()
+                elif p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
+                    sCache = vehCache.get(SEASON_TYPE_TO_NAME[p.group], {})
+                    sCache.get(GUI_ITEM_TYPE_NAMES[p.slot], {}).get(Area.getName(p.areaID), {}).pop(str(p.regionID), None)
+                    deleteEmpty(sCache, isTurretCustomisable)
+            self._itemsCache.onSyncCompleted -= self.__onCacheResync
+            isModeChanged = self.modeId != self.__startMode
+            yield self.mode.applyItems(purchaseItems, isModeChanged)
+            self.actualMode = mode
+        else:
+            self.events.onItemsBought([], [], [])
+        mode = self.actualMode
+        self.actualMode = CSMode.INSTALL
         self.applySettings()
         self.applyModdedItems()
+        self.actualMode = mode
+        self.__onCacheResync()
+        self._itemsCache.onSyncCompleted += self.__onCacheResync
+        callback(None)
 
     def applyModdedItems(self):
         vDesc = g_currentVehicle.item.descriptor
@@ -190,7 +258,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
 
     def cancelChanges(self):
-        self._currentSettings = {'custom': {}, 'remap': {}}
+        CSModImpl.cancelChanges(self)
         for mode in self.__origModes.values() + self.__moddedModes.values():
             if mode.isInited:
                 mode.cancelChanges()
@@ -200,67 +268,8 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.events.onTabChanged(self.mode.tabId)
         self.refreshOutfit()
 
-    @adisp.async
-    @process('customizationApply')
-    def applyItems(self, purchaseItems, callback):
-        if purchaseItems:
-            mode = self.actualMode
-            self.actualMode = CSMode.BUY
-            vehCache = g_config.getHangarCache()
-            isTurretCustomisable = isTurretCustom(g_currentVehicle.item.descriptor)
-            for p in (p for p in purchaseItems if p.selected):
-                if p.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
-                    if p.item is not None and not p.isDismantling:
-                        vehCache.clear()
-                elif p.slot == GUI_ITEM_TYPE.CAMOUFLAGE:
-                    sCache = vehCache.get(SEASON_TYPE_TO_NAME[p.group], {})
-                    sCache.get(GUI_ITEM_TYPE_NAMES[p.slot], {}).get(Area.getName(p.areaID), {}).pop(str(p.regionID), None)
-                    deleteEmpty(sCache, isTurretCustomisable)
-            self._itemsCache.onSyncCompleted -= self.__onCacheResync
-            isModeChanged = self.modeId != self.__startMode
-            yield self.mode.applyItems(purchaseItems, isModeChanged)
-            self.actualMode = mode
-        else:
-            self.events.onItemsBought([], [], [])
-        mode = self.actualMode
-        self.actualMode = CSMode.INSTALL
-        self.applyModdedStuff()
-        self.actualMode = mode
-        self.__onCacheResync()
-        self._itemsCache.onSyncCompleted += self.__onCacheResync
-        callback(None)
-
-    def init(self, season=None, modeId=None, tabId=None):
-        super(CustomizationContext, self).init(season, modeId, tabId)
-        self.events.onActualModeChanged = Event.Event(self.events._eventsManager)
-        origMode = self.actualMode
-        for mode in CSMode.BUY, CSMode.INSTALL:
-            self.actualMode = mode
-            self.getMode(mode, CustomizationModes.STYLED).start()
-            custom = self.getMode(mode, CustomizationModes.CUSTOM)
-            tabId = None if self.isBuy else CustomizationTabs.CAMOUFLAGES
-            if not custom.isInited:
-                custom.start(tabId)
-            else:
-                custom.changeTab(tabId)
-            self.__currentModeIds[mode] = self.__startModeIds[mode] = (
-                CustomizationModes.STYLED
-                if (
-                    self._service.isStyleInstalled() if self.isBuy
-                    else g_config.getOutfitCache().get('style', {}).get('applied', False))
-                else CustomizationModes.CUSTOM
-            )
-        self.actualMode = origMode
-        self.refreshOutfit()
-        # from functools import partial
-        # import BigWorld
-        # BigWorld.callback(0, partial(self.onCustomizationModeChanged, self._mode))  # because bottom_panel updates too early
-
     def isOutfitsModified(self):
-        self._cleanSettings()
-        if any(self._currentSettings.itervalues()):
-            return True
-        result = False
+        result = CSModImpl.isOutfitsModified(self)
         origActualMode = self.actualMode
         for actualMode in CSMode.BUY, CSMode.INSTALL:
             self.actualMode = actualMode
@@ -268,23 +277,40 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.actualMode = origActualMode
         return result
 
-    def changeActualMode(self, modeId, source=None):
-        if self.actualMode == modeId and self.modeId != CustomizationModes.EDITABLE_STYLE:
+    def __onCacheResync(self, *_):
+        if g_currentVehicle.isPresent():
+            for actualMode in CSMode.NAMES:
+                modes = self.getMode(actualMode)
+                for mode in modes.values():
+                    if mode.isInited:
+                        mode.updateOutfits(preserve=True)
+            self.refreshOutfit()
+        self.events.onCacheResync()
+
+    def __onVehicleChanged(self):
+        if self._vehicle is None or not g_currentVehicle.isPresent():
+            _logger.error('There is no vehicle in hangar for customization.')
             return
-        prevMode = self.mode
-        prevMode.unselectItem()
-        prevMode.unselectSlot()
-        prevMode.stop()
-        self.actualMode = modeId
-        if self.modeId == CustomizationModes.EDITABLE_STYLE:
-            self.__modeId = CustomizationModes.STYLED
-        newMode = self.mode
-        newMode.start(self.mode.tabId, source=source)
+        preserve = self._vehicle.intCD == g_currentVehicle.item.intCD
+        self._vehicle = g_currentVehicle.item
+        for actualMode in CSMode.NAMES:
+            modes = self.getMode(actualMode)
+            for mode in modes.values():
+                if mode.isInited:
+                    mode.updateOutfits(preserve=preserve)
         self.refreshOutfit()
-        self.events.onBeforeModeChange()
-        self.events.onActualModeChanged()
-        self.events.onModeChanged(newMode.modeId, prevMode.modeId)
-        self.events.onTabChanged(self.mode.tabId)
+
+    def __onVehicleChangeStarted(self):
+        if self._vehicle is None or not g_currentVehicle.isPresent():
+            _logger.error('There is no vehicle in hangar for customization.')
+            return
+        elif self._vehicle.intCD == g_currentVehicle.item.intCD:
+            return
+        for actualMode in CSMode.NAMES:
+            modes = self.getMode(actualMode)
+            for mode in modes.values():
+                if mode.isInited:
+                    mode.onVehicleChangeStarted()
 
 
 @overrideMethod(WGCtx, '__new__')

@@ -25,6 +25,13 @@ class CSModImpl(object):
         settings.setdefault('enemy', origSettings.get('enemy', True))
         return settings
 
+    def isOutfitsModified(self):
+        self._cleanSettings()
+        return any(self._currentSettings.itervalues())
+
+    def cancelChanges(self):
+        self._currentSettings = {'custom': {}, 'remap': {}}
+
     def _cleanSettings(self):
         camouflages = g_cache.customization20().camouflages
         for key, settings in self._currentSettings.iteritems():
