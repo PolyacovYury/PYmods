@@ -177,7 +177,7 @@ class CustomizationContext(WGCtx, CSModImpl):
     def getPurchaseItems(self):
         mode = self.actualMode
         self.actualMode = CSMode.BUY
-        items = self.mode.getPurchaseItems()
+        items = self.mode.getPurchaseItems() if self.mode.isOutfitsModified() else []
         self.actualMode = mode
         return items
 
