@@ -279,7 +279,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         if self.modeId == CustomizationModes.EDITABLE_STYLE:
             self.__modeId = CustomizationModes.STYLED
         newMode = self.mode
-        newMode.start(source=source)
+        newMode.start(self.mode.tabId, source=source)
         self.refreshOutfit()
         self.events.onBeforeModeChange()
         self.events.onActualModeChanged()
