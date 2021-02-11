@@ -66,6 +66,12 @@ class CustomizationItemCMHandler(WGCMHandler):
         )
         return result
 
+    def __getEditStyleBtn(self, item):
+        # noinspection PyUnresolvedReferences
+        btn = super(CustomizationItemCMHandler, self)._CustomizationItemCMHandler__getEditStyleBtn(item)
+        btn['initData']['enabled'] = not item.modelsSet
+        return btn
+
     def onOptionSelect(self, optionId):
         if optionId not in Options.ALL:
             return super(CustomizationItemCMHandler, self).onOptionSelect(optionId)

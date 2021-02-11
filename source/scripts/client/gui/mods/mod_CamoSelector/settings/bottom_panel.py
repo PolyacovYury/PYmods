@@ -9,6 +9,8 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.constants import CustomizationModes, CustomizationModeSource
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared.formatters import getItemPricesVO
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
@@ -103,11 +105,22 @@ class CustomizationBottomPanel(CBP):
     def _carouseItemWrapper(self, itemCD):
         VO = super(CustomizationBottomPanel, self)._carouseItemWrapper(itemCD)
         if not self.__ctx.isBuy:
+            item = self.service.getItemByCD(itemCD)
             VO['locked'] = False
             VO['isAlreadyUsed'] = False  # actually marks item.isUsedUp
             VO['isDarked'] = False
             VO['buyPrice'] = getItemPricesVO(ITEM_PRICE_EMPTY)[0]
             VO['rentalInfoText'] = ''
+            if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
+                VO['editBtnEnabled'] = not item.modelsSet
+                VO['editableIcon'] = (
+                    backport.image(R.images.gui.maps.icons.customization.editable_small())
+                    if not item.modelsSet else
+                    backport.image(R.images.gui.maps.icons.customization.editable_small_disable())
+                )
+            else:
+                VO['editableIcon'] = ''
+                VO['editBtnEnabled'] = False
             VO.pop('quantity', None)
         return VO
 
