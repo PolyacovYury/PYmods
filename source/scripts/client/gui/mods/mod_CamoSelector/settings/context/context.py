@@ -38,7 +38,7 @@ def ModdedMode(ctx, modeId, baseMode):
 class CustomizationContext(WGCtx, CSModImpl):
     def __init__(self):
         CSModImpl.__init__(self)
-        self.actualMode = CSMode.INSTALL
+        self.actualMode = CSMode.BUY
         self.__startModeIds = {CSMode.BUY: None, CSMode.INSTALL: None}
         self.__currentModeIds = {CSMode.BUY: None, CSMode.INSTALL: None}
         WGCtx.__init__(self)
@@ -93,7 +93,6 @@ class CustomizationContext(WGCtx, CSModImpl):
     def init(self, season=None, modeId=None, tabId=None):
         super(CustomizationContext, self).init(season, modeId, tabId)
         self.events.onActualModeChanged = Event.Event(self.events._eventsManager)
-        origMode = self.actualMode
         for mode in CSMode.BUY, CSMode.INSTALL:
             self.actualMode = mode
             self.getMode(mode, CustomizationModes.STYLED).start()
@@ -110,7 +109,7 @@ class CustomizationContext(WGCtx, CSModImpl):
                     else g_config.getOutfitCache().get('style', {}).get('applied', False))
                 else CustomizationModes.CUSTOM
             )
-        self.actualMode = origMode
+        self.actualMode = CSMode.INSTALL
         self.refreshOutfit()
 
     def fini(self):
