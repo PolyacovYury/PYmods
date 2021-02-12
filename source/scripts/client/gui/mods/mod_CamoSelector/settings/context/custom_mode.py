@@ -70,7 +70,7 @@ class CustomMode(WGCustomMode):
             self._originalOutfits[season] = fromOutfit.copy()
             applyOutfitCache(fromOutfit, self._cache.get(seasonName, {}))
             self._modifiedOutfits[season] = fromOutfit.copy()
-            self._fitOutfits()
+        self._fitOutfits()
         return bool(self._cache)
 
     def _fillOutfits(self):
@@ -82,7 +82,7 @@ class CustomMode(WGCustomMode):
             self._originalOutfits[season] = fromOutfit.copy()
             applyOutfitCache(fromOutfit, self._cache.get(seasonName, {}))
             self._modifiedOutfits[season] = fromOutfit.copy()
-            self._fitOutfits()
+        self._fitOutfits()
 
     @async
     def _applyItems(self, purchaseItems, isModeChanged, callback):
