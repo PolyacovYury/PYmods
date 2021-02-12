@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import BigWorld
 import Keys
+import math
 import traceback
 from Avatar import PlayerAvatar
 from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod, checkKeys
@@ -95,7 +96,7 @@ class PlayersPanelController(PYmodsConfigInterface):
         for fieldName, fieldData in sorted(self.data['textFields'].iteritems()):
             barWidth = currentHP
             if 'width' in fieldData[panelSide]:
-                barWidth = fieldData[panelSide]['width'] * (float(currentHP) / maxHP)
+                barWidth = math.ceil(fieldData[panelSide]['width'] * (float(currentHP) / maxHP))
             g_PlayersPanelAPI.update(self.ID + fieldName, {'vehicleID': vehicleID, 'text': (
                     fieldData[panelSide]['text'] % {'curHealth': currentHP, 'maxHealth': maxHP, 'barWidth': barWidth}
             ) if self.displayed and (not fieldData.get('hideIfDead', False) or barWidth) else ''})
