@@ -66,5 +66,4 @@ def __getModifiedItemsData(base, self):
         if key not in itemData:
             itemData[key] = C11nPopoverItemData(item=pItem.item, isFromInventory=pItem.isFromInventory)
         itemData[key].slotsIds.append(slotId._asdict())
-    itemBlocks = sorted(itemData.values(), key=orderKey)
-    return itemBlocks
+    return sorted(itemData.values(), key=orderKey)

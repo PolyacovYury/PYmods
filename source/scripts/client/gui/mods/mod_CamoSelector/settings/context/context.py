@@ -1,32 +1,24 @@
 import Event
 import adisp
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import overrideMethod, loadJson
+from PYmodsCore import overrideMethod
 from async import await, async
 from contextlib import contextmanager
 from frameworks.wulf import WindowLayer
-from gui import SystemMessages, makeHtmlString
+from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx, _logger
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    CustomizationTabs, CustomizationModes, getCustomPurchaseItems, getStylePurchaseItems,
-    OutfitInfo, AdditionalPurchaseGroups)
-from gui.Scaleform.locale.MESSENGER import MESSENGER
-from gui.SystemMessages import SM_TYPE
-from gui.customization.shared import __isTurretCustomizable as isTurretCustom, SEASON_TYPE_TO_NAME
+    CustomizationTabs, CustomizationModes)
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.builders import WarningDialogBuilder
 from gui.impl.gen import R
-from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.personality import ServicesLocator as SL
 from gui.shared.utils.decorators import process
-from items.customizations import EmptyComponent
-from vehicle_outfit.outfit import Area
 from .custom_mode import CustomMode
 from .mod_impl import CSModImpl
 from .styled_mode import StyledMode
 from ..shared import CSMode
 from ... import g_config
-from ...processors import deleteEmpty
 
 
 def ModdedMode(ctx, modeId, baseMode):

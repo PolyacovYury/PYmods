@@ -18,7 +18,7 @@ from gui.shared.utils.functions import makeTooltip
 from helpers.i18n import makeString as _ms
 from shared_utils import first
 from .carousel import CSComparisonKey
-from .shared import CSMode, getItemSeason
+from .shared import CSMode
 from .. import g_config
 
 

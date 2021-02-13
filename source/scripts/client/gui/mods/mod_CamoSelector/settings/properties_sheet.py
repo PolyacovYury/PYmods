@@ -23,7 +23,8 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         return {
             'iconSrc': backport.image(R.images.gui.maps.icons.customization.property_sheet.idle.edit_style()),
             'iconHoverSrc': backport.image(R.images.gui.maps.icons.customization.property_sheet.idle.edit_style_hover()),
-            'iconDisableSrc': backport.image(R.images.gui.maps.icons.customization.property_sheet.disable.edit_style_disable()),
+            'iconDisableSrc': backport.image(
+                R.images.gui.maps.icons.customization.property_sheet.disable.edit_style_disable()),
             'actionBtnLabel': backport.text(R.strings.vehicle_customization.propertySheet.actionBtn.edit.style()),
             'actionType': CA.CUSTOMIZATION_SHEET_ACTION_EDIT_STYLE,
             'rendererLnk': CA.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
