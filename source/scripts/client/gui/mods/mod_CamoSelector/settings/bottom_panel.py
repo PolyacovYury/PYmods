@@ -161,6 +161,12 @@ class CustomizationBottomPanel(CBP):
         if intCD is not None:
             self.__scrollToItem(intCD, immediately=True)
 
+    def __processBillDataPurchaseItems(self, purchaseItems):
+        with self.__ctx.overrideActualMode():
+            # noinspection PyUnresolvedReferences
+            return super(
+                CustomizationBottomPanel, self)._CustomizationBottomPanel__processBillDataPurchaseItems(purchaseItems)
+
 
 @overrideMethod(CBP, '__new__')
 def new(base, cls, *a, **kw):
