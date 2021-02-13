@@ -79,7 +79,7 @@ class CustomMode(WGCustomMode):
             applyOutfitCache(fromOutfit, self._cache[seasonName])
             self._modifiedOutfits[season] = fromOutfit.copy()
         self._fitOutfits()
-        return bool(self._cache)
+        return any(self._cache.values())
 
     def _fillOutfits(self):
         vehCache = g_config.getOutfitCache()
