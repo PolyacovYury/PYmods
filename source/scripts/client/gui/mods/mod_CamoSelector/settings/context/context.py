@@ -154,11 +154,6 @@ class CustomizationContext(WGCtx, CSModImpl):
         result = yield await(dialogs.showSimple(builder.build(parent=subview)))
         self.installStyleItemsToModifiedOutfit(result)
 
-    def refreshOutfit(self, season=None):
-        if season is None and not self.isBuy:
-            self.mode.updateOutfits()
-        return super(CustomizationContext, self).refreshOutfit(season)
-
     def installStyleItemsToModifiedOutfit(self, proceed):
         if not proceed:
             return
