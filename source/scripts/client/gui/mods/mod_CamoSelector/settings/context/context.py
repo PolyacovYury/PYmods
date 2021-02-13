@@ -174,17 +174,12 @@ class CustomizationContext(WGCtx, CSModImpl):
     @adisp.async
     @process('customizationApply')
     def applyItems(self, purchaseItems, callback):
-        if purchaseItems:
-            with self.overrideActualMode():
-                self._itemsCache.onSyncCompleted -= self.__onCacheResync
+        self._itemsCache.onSyncCompleted -= self.__onCacheResync
+        for mode in CSMode.BUY, CSMode.INSTALL:
+            with self.overrideActualMode(mode):
                 isModeChanged = self.modeId != self.__startMode
                 yield self.mode.applyItems(purchaseItems, isModeChanged)
-        else:
-            self.events.onItemsBought([], [], [])
-        with self.overrideActualMode(CSMode.INSTALL):
-            self.applySettings()
-            isModeChanged = self.modeId != self.__startMode
-            yield self.mode.applyItems(purchaseItems, isModeChanged)
+        self.applySettings()
         self.__onCacheResync()
         self._itemsCache.onSyncCompleted += self.__onCacheResync
         callback(None)
