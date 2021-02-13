@@ -25,6 +25,11 @@ class StyledMode(WGStyledMode):
     def _removeHiddenFromOutfit(self, outfit, vehicleIntCD):
         pass
 
+    def safe_getOutfitFromStyle(self, style, season, vehicleCD):
+        if style is None:
+            return self._service.getEmptyOutfit()
+        return style.getOutfit(season, vehicleCD=vehicleCD).copy()
+
     def _isOutfitsModified(self):
         vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
         style = self._baseMode.modifiedStyle
@@ -32,8 +37,8 @@ class StyledMode(WGStyledMode):
             self.__modifiedStyle = style
         self.__originalStyle = style
         for season in SeasonType.COMMON_SEASONS:
-            self._originalOutfits[season] = self.__originalStyle.getOutfit(season, vehicleCD=vehicleCD).copy()
-            self._modifiedOutfits[season] = self.__modifiedStyle.getOutfit(season, vehicleCD=vehicleCD).copy()
+            self._originalOutfits[season] = self.safe_getOutfitFromStyle(self.__originalStyle, season, vehicleCD)
+            self._modifiedOutfits[season] = self.safe_getOutfitFromStyle(self.__modifiedStyle, season, vehicleCD)
         return super(StyledMode, self)._isOutfitsModified()
 
     def _fillOutfits(self):
@@ -54,7 +59,7 @@ class StyledMode(WGStyledMode):
             elif moddedStyle is None:
                 outfit = self._baseMode.getOriginalOutfit(season).copy()
             else:
-                outfit = style.getOutfit(season, vehicleCD=vehicleCD)
+                outfit = style.getOutfit(season, vehicleCD=vehicleCD).copy()
             self._originalOutfits[season] = outfit.copy()
             self._modifiedOutfits[season] = outfit.copy()
 
