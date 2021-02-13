@@ -168,6 +168,7 @@ class CustomizationContext(WGCtx, CSModImpl):
 
     def getOrigModifiedOutfits(self):
         mode = self.actualMode
+        self.actualMode = CSMode.BUY
         outfits = self.mode.getModifiedOutfits()
         self.actualMode = mode
         return outfits
