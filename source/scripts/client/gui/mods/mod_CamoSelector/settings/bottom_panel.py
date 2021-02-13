@@ -121,6 +121,7 @@ class CustomizationBottomPanel(CBP):
             else:
                 VO['editableIcon'] = ''
                 VO['editBtnEnabled'] = False
+            VO['noveltyCounter'] = 0
             VO.pop('quantity', None)
         return VO
 
@@ -149,17 +150,16 @@ class CustomizationBottomPanel(CBP):
         return tabsData, pluses
 
     def __scrollToNewItem(self):
-        currentTypes = CustomizationTabs.ITEM_TYPES[self.__ctx.mode.tabId]
-        newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items), key=CSComparisonKey)
-        for item in newItems:
-            if item.itemTypeID in currentTypes and (
-                    item.season if self.__ctx.isBuy else getItemSeason(item)) & self.__ctx.season:
-                self.__scrollToItem(item.intCD)
-                break
-        else:
-            intCD = first(self.carouselItems)
-            if intCD is not None:
-                self.__scrollToItem(intCD, immediately=True)
+        if self.__ctx.isBuy:
+            itemTypes = CustomizationTabs.ITEM_TYPES[self.__ctx.mode.tabId]
+            newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items), key=CSComparisonKey)
+            for item in newItems:
+                if item.itemTypeID in itemTypes and item.season & self.__ctx.season:
+                    self.__scrollToItem(item.intCD)
+                    return
+        intCD = first(self.carouselItems)
+        if intCD is not None:
+            self.__scrollToItem(intCD, immediately=True)
 
 
 @overrideMethod(CBP, '__new__')
