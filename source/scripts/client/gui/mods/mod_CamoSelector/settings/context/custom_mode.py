@@ -60,7 +60,7 @@ class CustomMode(WGCustomMode):
                 seasonCache.setdefault(typeName, {}).setdefault(area, {})[reg] = (
                     ({f: getattr(m.component, f) for f, fd in m.component.fields.items()
                       if not fd.flags & (FieldFlags.DEPRECATED | FieldFlags.WEAK_EQUAL_IGNORED)}
-                     if not isinstance(m.component, EmptyComponent) else {'id': item.id})
+                     if not isinstance(m.component, EmptyComponent) else {'id': self._service.getItemByCD(m.intCD).id})
                     if m.intCD else {'id': None})
         return seasonCache
 
