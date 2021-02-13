@@ -10,7 +10,7 @@ from gui.SystemMessages import SM_TYPE
 from gui.customization.shared import SEASON_TYPE_TO_NAME, C11nId, __isTurretCustomizable as isTurretCustom
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from items.components.c11n_constants import SeasonType
-from items.customizations import EmptyComponent
+from items.customizations import EmptyComponent, FieldFlags
 from vehicle_outfit.outfit import Area
 from ... import g_config
 from ...processors import applyOutfitCache, deleteEmpty
@@ -58,7 +58,8 @@ class CustomMode(WGCustomMode):
             area = Area.getName(areaID) if areaID != Area.MISC else 'misc'
             if component if not m.intCD else not m.component.weak_eq(component):
                 seasonCache.setdefault(typeName, {}).setdefault(area, {})[reg] = (
-                    ({f: getattr(m.component, f) for f, fd in m.component.fields.items() if not fd.weakEqualIgnored}
+                    ({f: getattr(m.component, f) for f, fd in m.component.fields.items()
+                      if not fd.flags & (FieldFlags.DEPRECATED | FieldFlags.WEAK_EQUAL_IGNORED)}
                      if not isinstance(m.component, EmptyComponent) else {'id': item.id})
                     if m.intCD else {'id': None})
         return seasonCache
