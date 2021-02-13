@@ -43,6 +43,26 @@ class CustomMode(WGCustomMode):
                     else:
                         yield None, None, regionIdx, container, slot
 
+    def computeDiff(self, original, modified):
+        seasonCache = {}
+        for intCD, component, regionIdx, container, slot in self.iterOutfit(original):
+            item = self._service.getItemByCD(intCD) if intCD is not None else None
+            slotType = item.itemTypeID if item is not None else ITEM_TYPE_TO_SLOT_TYPE.get(slot.getTypes()[0])
+            if slotType is None:
+                continue
+            typeName = GUI_ITEM_TYPE_NAMES[slotType]
+            areaID = container.getAreaID()
+            slotId = C11nId(areaID, slotType, regionIdx)
+            reg = str(regionIdx)
+            m = getSlotDataFromSlot(modified, slotId)
+            area = Area.getName(areaID) if areaID != Area.MISC else 'misc'
+            if component if not m.intCD else not m.component.weak_eq(component):
+                seasonCache.setdefault(typeName, {}).setdefault(area, {})[reg] = (
+                    ({f: getattr(m.component, f) for f, fd in m.component.fields.items() if not fd.weakEqualIgnored}
+                     if not isinstance(m.component, EmptyComponent) else {'id': item.id})
+                    if m.intCD else {'id': None})
+        return seasonCache
+
     def _isOutfitsModified(self):
         vehCache = g_config.getOutfitCache()
         fromOutfits = self._ctx.getOrigModifiedOutfits()
@@ -51,24 +71,11 @@ class CustomMode(WGCustomMode):
             seasonName = SEASON_TYPE_TO_NAME[season]
             original = self._originalOutfits[season]
             modified = self._modifiedOutfits[season]
-            for intCD, component, regionIdx, container, slot in self.iterOutfit(original):
-                item = self._service.getItemByCD(intCD) if intCD is not None else None
-                slotType = ITEM_TYPE_TO_SLOT_TYPE.get(slot.getTypes()[0])
-                typeName = GUI_ITEM_TYPE_NAMES[slotType]
-                areaID = container.getAreaID()
-                slotId = C11nId(areaID, slotType, regionIdx)
-                reg = str(regionIdx)
-                m = getSlotDataFromSlot(modified, slotId)
-                area = Area.getName(areaID) if areaID != Area.MISC else 'misc'
-                if component if not m.intCD else not m.component.weak_eq(component):
-                    self._cache.setdefault(seasonName, {}).setdefault(typeName, {}).setdefault(area, {})[reg] = (
-                        ({f: getattr(m.component, f) for f, fd in m.component.fields.items() if not fd.weakEqualIgnored}
-                         if not isinstance(m.component, EmptyComponent) else {'id': item.id})
-                        if m.intCD else {'id': None})
+            self._cache[seasonName] = self.computeDiff(original, modified)
             fromOutfit = fromOutfits[season]
             applyOutfitCache(fromOutfit, vehCache.get(seasonName, {}), False)
             self._originalOutfits[season] = fromOutfit.copy()
-            applyOutfitCache(fromOutfit, self._cache.get(seasonName, {}))
+            applyOutfitCache(fromOutfit, self._cache[seasonName])
             self._modifiedOutfits[season] = fromOutfit.copy()
         self._fitOutfits()
         return bool(self._cache)
@@ -89,10 +96,14 @@ class CustomMode(WGCustomMode):
         vDesc = g_currentVehicle.item.descriptor
         nation, vehName = vDesc.name.split(':')
         isTurretCustomisable = isTurretCustom(vDesc)
+        fromOutfits = self._ctx.getOrigModifiedOutfits()
         if self.isOutfitsModified():
             SystemMessages.pushI18nMessage(
                 MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
-            for seasonName, seasonCache in self._cache.items():
+            cache = {}
+            for season in SeasonType.COMMON_SEASONS:
+                seasonName = SEASON_TYPE_TO_NAME[season]
+                cache[seasonName] = seasonCache = self.computeDiff(fromOutfits[season], self.getModifiedOutfit(season))
                 for typeName, typeCache in seasonCache.items():
                     if typeName != GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]:
                         continue
@@ -104,8 +115,8 @@ class CustomMode(WGCustomMode):
             styleCache.setdefault('intCD', None)
             styleCache['applied'] = False
             if styleCache != {'intCD': None, 'applied': False}:
-                self._cache['style'] = styleCache
-            g_config.outfitCache.setdefault(nation, {})[vehName] = self._cache
+                cache['style'] = styleCache
+            g_config.outfitCache.setdefault(nation, {})[vehName] = cache
             deleteEmpty(g_config.outfitCache, isTurretCustomisable)
             loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
         callback(self)
