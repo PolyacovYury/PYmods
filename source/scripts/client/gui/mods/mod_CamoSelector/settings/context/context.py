@@ -3,6 +3,7 @@ import adisp
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod, loadJson
 from async import await, async
+from contextlib import contextmanager
 from frameworks.wulf import WindowLayer
 from gui import SystemMessages, makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx, _logger
@@ -138,6 +139,15 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.events.onModeChanged(newMode.modeId, prevMode.modeId)
         self.events.onTabChanged(self.mode.tabId)
 
+    @contextmanager
+    def overrideActualMode(self, desired=CSMode.BUY):
+        mode = self.actualMode
+        self.actualMode = desired
+        try:
+            yield
+        finally:
+            self.actualMode = mode
+
     @async
     def editStyle(self, intCD, source=None):
         if self.isBuy:
@@ -162,37 +172,27 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.changeMode(CustomizationModes.CUSTOM, CustomizationTabs.CAMOUFLAGES)
 
     def getOrigModifiedOutfits(self):
-        mode = self.actualMode
-        self.actualMode = CSMode.BUY
-        outfits = self.mode.getModifiedOutfits()
-        self.actualMode = mode
-        return outfits
+        with self.overrideActualMode():
+            return self.mode.getModifiedOutfits()
 
     def getPurchaseItems(self):
-        mode = self.actualMode
-        self.actualMode = CSMode.BUY
-        items = self.mode.getPurchaseItems() if self.mode.isOutfitsModified() else []
-        self.actualMode = mode
-        return items
+        with self.overrideActualMode():
+            return self.mode.getPurchaseItems() if self.mode.isOutfitsModified() else []
 
     @adisp.async
     @process('customizationApply')
     def applyItems(self, purchaseItems, callback):
         if purchaseItems:
-            mode = self.actualMode
-            self.actualMode = CSMode.BUY
-            self._itemsCache.onSyncCompleted -= self.__onCacheResync
-            isModeChanged = self.modeId != self.__startMode
-            yield self.mode.applyItems(purchaseItems, isModeChanged)
-            self.actualMode = mode
+            with self.overrideActualMode():
+                self._itemsCache.onSyncCompleted -= self.__onCacheResync
+                isModeChanged = self.modeId != self.__startMode
+                yield self.mode.applyItems(purchaseItems, isModeChanged)
         else:
             self.events.onItemsBought([], [], [])
-        mode = self.actualMode
-        self.actualMode = CSMode.INSTALL
-        self.applySettings()
-        isModeChanged = self.modeId != self.__startMode
-        yield self.mode.applyItems(purchaseItems, isModeChanged)
-        self.actualMode = mode
+        with self.overrideActualMode(CSMode.INSTALL):
+            self.applySettings()
+            isModeChanged = self.modeId != self.__startMode
+            yield self.mode.applyItems(purchaseItems, isModeChanged)
         self.__onCacheResync()
         self._itemsCache.onSyncCompleted += self.__onCacheResync
         callback(None)
@@ -210,11 +210,9 @@ class CustomizationContext(WGCtx, CSModImpl):
 
     def isOutfitsModified(self):
         result = CSModImpl.isOutfitsModified(self)
-        origActualMode = self.actualMode
-        for actualMode in CSMode.BUY, CSMode.INSTALL:
-            self.actualMode = actualMode
-            result |= super(CustomizationContext, self).isOutfitsModified()
-        self.actualMode = origActualMode
+        for mode in CSMode.BUY, CSMode.INSTALL:
+            with self.overrideActualMode(mode):
+                result |= super(CustomizationContext, self).isOutfitsModified()
         return result
 
     def __onCacheResync(self, *_):
