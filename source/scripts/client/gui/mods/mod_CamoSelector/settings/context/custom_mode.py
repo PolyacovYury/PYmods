@@ -1,3 +1,4 @@
+import operator
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import loadJson
 from adisp import async
@@ -12,6 +13,7 @@ from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from items.components.c11n_constants import SeasonType
 from items.customizations import EmptyComponent, FieldFlags
 from vehicle_outfit.outfit import Area
+from ..shared import getItemSeason
 from ... import g_config
 from ...processors import applyOutfitCache, deleteEmpty
 
@@ -141,3 +143,7 @@ class CustomMode(WGCustomMode):
         if refresh:
             self._ctx.refreshOutfit(season)
             self._events.onItemsRemoved()
+
+    def isPossibleToInstallItemForAllSeasons(self, slotId, intCD):
+        return getItemSeason(self._service.getItemByCD(intCD)) == reduce(
+            operator.ior, SeasonType.COMMON_SEASONS, SeasonType.UNDEFINED)

@@ -1,9 +1,10 @@
 from PYmodsCore import overrideMethod
 from gui import makeHtmlString
-from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import \
-    CustomizationPropertiesSheet as WGPropertiesSheet
+from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import (
+    CustomizationPropertiesSheet as WGPropertiesSheet)
+from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES as CA
-from gui.customization.constants import CustomizationModes as C11nModes
+from gui.customization.constants import CustomizationModes as C11nModes, CustomizationModes
 from gui.impl import backport
 from gui.impl.gen import R
 from .shared import CSMode
@@ -11,12 +12,62 @@ from .. import g_config
 
 
 class CustomizationPropertiesSheet(WGPropertiesSheet):
+    def __init__(self):
+        super(CustomizationPropertiesSheet, self).__init__()
+        self._isItemAppliedToAllSeasons = False
+        self._isItemAppliedToAllParts = False
+
+    def __applyToOtherAreas(self, installItem):
+        installItem = self._isItemAppliedToAllParts = not self._isItemAppliedToAllParts
+        # noinspection PyUnresolvedReferences
+        super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__applyToOtherAreas(installItem)
+
+    def __applyToOtherSeasons(self):
+        self._isItemAppliedToAll = self._isItemAppliedToAllSeasons  # restoration handled by __update
+        # noinspection PyUnresolvedReferences
+        super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__applyToOtherSeasons()
+
+    def __updateItemAppliedToAllFlag(self):
+        # noinspection PyUnresolvedReferences
+        super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__updateItemAppliedToAllFlag()
+        if self.__ctx.mode.tabId in CustomizationTabs.MODES[CustomizationModes.CUSTOM]:
+            self._isItemAppliedToAllSeasons = self.__isItemAppliedToAllSeasons()
+            self._isItemAppliedToAllParts = self.__isItemAppliedToAllRegions()
+        else:
+            self._isItemAppliedToAllSeasons = False
+            self._isItemAppliedToAllParts = False
+
+    def __makePaintRenderersVOs(self):
+        if self.__ctx.isBuy:
+            # noinspection PyUnresolvedReferences
+            return super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makePaintRenderersVOs()
+        return [
+            self.__makeSetOnOtherSeasonsRendererVO(), self.__makeSetOnOtherTankPartsRendererVO()
+        ]
+
+    def __makeCamouflageRenderersVOs(self):
+        if self.__ctx.isBuy:
+            # noinspection PyUnresolvedReferences
+            return super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makeCamouflageRenderersVOs()
+        return [
+            self.__makeCamoColorRendererVO(), self.__makeScaleRendererVO(),
+            self.__makeSetOnOtherSeasonsRendererVO(), self.__makeSetOnOtherTankPartsRendererVO()
+        ]
+
     def __makeStyleRenderersVOs(self):
         # noinspection PyUnresolvedReferences
         renderers = super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makeStyleRenderersVOs()
         if not self.__ctx.isBuy:
             renderers[1:] = [self.__makeStyleEditRendererVO()]
         return renderers
+
+    def __makeSetOnOtherTankPartsRendererVO(self):
+        backup = self._isItemAppliedToAll
+        self._isItemAppliedToAll = self._isItemAppliedToAllParts
+        # noinspection PyUnresolvedReferences
+        result = super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makeSetOnOtherTankPartsRendererVO()
+        self._isItemAppliedToAll = backup
+        return result
 
     def __makeStyleEditRendererVO(self):
         enabled = not bool(self._currentStyle.modelsSet)
@@ -35,6 +86,14 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             'needNotify': enabled and (
                 not self.__ctx.getMode(CSMode.INSTALL, C11nModes.CUSTOM).getModifiedOutfit(self.__ctx.season).isEmpty()),
             'enabled': enabled}
+
+    def __makeSetOnOtherSeasonsRendererVO(self):
+        backup = self._isItemAppliedToAll
+        self._isItemAppliedToAll = self._isItemAppliedToAllSeasons
+        # noinspection PyUnresolvedReferences
+        result = super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makeSetOnOtherSeasonsRendererVO()
+        self._isItemAppliedToAll = backup
+        return result
 
 
 @overrideMethod(WGPropertiesSheet, '__new__')
