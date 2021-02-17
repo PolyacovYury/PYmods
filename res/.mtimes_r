@@ -394,8 +394,10 @@
 1612798301|configs/PYmods/VoiceOverrider/i18n/en.json
 1612798706|configs/PYmods/VoiceOverrider/i18n/ru.json
 1471690378|configs/PYmods/i18nDebugger/i18nDebugger.xml
+1613568151|flash/CamoSelector_carousel.swf
 1613561960|flash/CamoSelector_carousel/CamoSelector_carousel.as3proj
 1613565624|flash/CamoSelector_carousel/src/polyacov_yury/views/lobby/CamoSelector_carousel.as
+1613568068|flash/CamoSelector_carousel/src/polyacov_yury/views/lobby/FixedCarouselLayoutController.as
 1602759771|flash/PlayersPanelAPI.swf
 1592037066|flash/PlayersPanelAPI/PlayersPanelAPI.as3proj
 1602759765|flash/PlayersPanelAPI/src/polyacov_yury/views/battle/PlayersPanelAPI.as
