@@ -31,11 +31,11 @@
 				var carousel:CustomizationCarousel = viewPage.getSubContainers()[0].getTopmostView().bottomPanel.carousel;
 				var controller:FixedCarouselLayoutController = new FixedCarouselLayoutController(carousel.scrollList);
 				carousel.scrollList.setLayoutController(controller);
-				carousel["_layoutController"].dispose();
-				carousel["_layoutController"] = controller;
-				controller.setData(carousel["_data"]);
-				carousel.invalidateData();
-				carousel.invalidateSize();
+				var data:* = carousel["_data"].clone();  // breaks reference to arrays
+				carousel["_data"] = null;  // setData() has an equality check
+				carousel["_layoutController"].dispose();  // erases data's inner arrays due to assignment instead of copying
+				carousel["_layoutController"] = controller;  // re-assign our controller
+				carousel.setData(data);  // and re-send the data
 			}
 			catch (error:Error) {
 				py_log(error.getStackTrace());

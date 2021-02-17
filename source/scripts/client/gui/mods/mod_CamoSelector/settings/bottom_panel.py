@@ -177,11 +177,16 @@ class CamoSelector_carousel(View):
     def _populate(self):
         super(CamoSelector_carousel, self)._populate()
         BigWorld.callback(0, self.destroy)
+        BigWorld.callback(0, self.app.containerManager.getContainer(
+            WindowLayer.SUB_VIEW).getView()._MainView__bottomPanel.resetFilter)
 
     @staticmethod
     def py_log(*args):
         for arg in args:
             print arg
+            # print dir(arg)
+            if hasattr(arg, 'toDict'):
+                print arg.toDict()
 
 
 # noinspection PyArgumentList
