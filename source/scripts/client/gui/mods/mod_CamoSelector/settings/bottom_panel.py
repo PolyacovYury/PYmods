@@ -127,6 +127,8 @@ class CustomizationBottomPanel(CBP):
                 VO['editableIcon'] = ''
                 VO['editBtnEnabled'] = False
             VO['noveltyCounter'] = 0
+            if '4278190335,4278255360,4294901760,4278190080' in VO['icon']:
+                VO['icon'] = '../../' + VO['icon'].split('"', 2)[1]
             VO.pop('quantity', None)
         return VO
 
