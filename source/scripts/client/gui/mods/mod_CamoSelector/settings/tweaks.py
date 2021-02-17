@@ -89,3 +89,11 @@ def __getOriginalItemsData(base, self):
             itemData[intCD] = C11nPopoverItemData(item=item, isFromInventory=True)
         itemData[intCD].slotsIds.append(slotId._asdict())
     return sorted(itemData.values(), key=orderKey)
+
+
+@overrideMethod(CustomPopoverDataProvider, '__makeItemDataVO')
+def __makeItemDataVO(base, itemData, isModified):
+    data = base(itemData, isModified)
+    if '4278190335,4278255360,4294901760,4278190080' in data['icon']:
+        data['icon'] = '../../' + data['icon'].split('"', 2)[1]
+    return data
