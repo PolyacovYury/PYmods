@@ -174,6 +174,10 @@ class CustomizationBottomPanel(CBP):
 
 
 class CamoSelector_carousel(View):
+    def _populate(self):
+        super(CamoSelector_carousel, self)._populate()
+        BigWorld.callback(0, self.destroy)
+
     @staticmethod
     def py_log(*args):
         for arg in args:
