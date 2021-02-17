@@ -72,7 +72,7 @@ class StyledMode(WGStyledMode):
         nation, vehName = vDesc.name.split(':')
         isTurretCustomisable = isTurretCustom(vDesc)
         vehCache = g_config.outfitCache.setdefault(nation, {}).setdefault(vehName, {})
-        if self.__originalStyle != self.__modifiedStyle or isModeChanged:
+        if self.__originalStyle != self.__modifiedStyle or self._moddedStyle != self.__modifiedStyle or isModeChanged:
             vehCache.setdefault('style', {}).update(
                 intCD=self.__modifiedStyle.intCD if self.__modifiedStyle else None, applied=True)
             if self.__modifiedStyle:
