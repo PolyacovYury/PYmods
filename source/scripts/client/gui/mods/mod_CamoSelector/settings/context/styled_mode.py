@@ -15,6 +15,7 @@ class StyledMode(WGStyledMode):
     def __init__(self, ctx, baseMode):
         super(StyledMode, self).__init__(ctx)
         self._baseMode = baseMode
+        self._moddedStyle = None
 
     def prolongRent(self, style):
         self._baseMode.prolongRent(style)
@@ -33,9 +34,11 @@ class StyledMode(WGStyledMode):
     def _isOutfitsModified(self):
         vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
         style = self._baseMode.modifiedStyle
-        if self.__modifiedStyle == self.__originalStyle:
+        if self.__modifiedStyle == self.__originalStyle and self._baseMode.originalStyle == self._moddedStyle:
             self.__modifiedStyle = style
-        self.__originalStyle = style
+            self.__originalStyle = style
+        else:
+            self.__originalStyle = self._moddedStyle or style
         for season in SeasonType.COMMON_SEASONS:
             self._originalOutfits[season] = self.safe_getOutfitFromStyle(self.__originalStyle, season, vehicleCD)
             self._modifiedOutfits[season] = self.safe_getOutfitFromStyle(self.__modifiedStyle, season, vehicleCD)
@@ -46,18 +49,18 @@ class StyledMode(WGStyledMode):
         vehCache = g_config.getOutfitCache()
         styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
         style = self._baseMode.originalStyle
-        moddedStyle = None if styleCache['intCD'] is None else self._service.getItemByCD(styleCache['intCD'])
+        self._moddedStyle = None if styleCache['intCD'] is None else self._service.getItemByCD(styleCache['intCD'])
         if not styleCache['applied']:
             style = None
-        elif moddedStyle:
-            style = moddedStyle
+        elif self._moddedStyle:
+            style = self._moddedStyle
         self.__originalStyle = style
         self.__modifiedStyle = style
         for season in SeasonType.COMMON_SEASONS:
             if style is None:
                 outfit = self._service.getEmptyOutfit()
-            elif moddedStyle is None:
-                outfit = self._baseMode.getOriginalOutfit(season).copy()
+            elif self._moddedStyle is None:
+                outfit = self._baseMode.getModifiedOutfit(season).copy()
             else:
                 outfit = style.getOutfit(season, vehicleCD=vehicleCD).copy()
             self._originalOutfits[season] = outfit.copy()
