@@ -1,9 +1,13 @@
 import BigWorld
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
+from frameworks.wulf import WindowLayer
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
     CustomizationTabs, checkSlotsFilling, getItemTypesAvailableForVehicle, getEditableStylesExtraNotificationCounter)
+from gui.Scaleform.framework import g_entitiesFactories, ViewSettings, ScopeTemplates
+from gui.Scaleform.framework.entities.View import View
+from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -25,6 +29,7 @@ from .. import g_config
 class CustomizationBottomPanel(CBP):
     def _populate(self):
         super(CustomizationBottomPanel, self)._populate()
+        self.app.loadView(SFViewLoadParams('PY_CS_carousel_UI'))
         self.__ctx.events.onActualModeChanged += self.__onActualModeChanged
 
     def _dispose(self):
@@ -166,6 +171,18 @@ class CustomizationBottomPanel(CBP):
             # noinspection PyUnresolvedReferences
             return super(
                 CustomizationBottomPanel, self)._CustomizationBottomPanel__processBillDataPurchaseItems(purchaseItems)
+
+
+class CamoSelector_carousel(View):
+    @staticmethod
+    def py_log(*args):
+        for arg in args:
+            print arg
+
+
+# noinspection PyArgumentList
+g_entitiesFactories.addSettings(ViewSettings(
+    'PY_CS_carousel_UI', CamoSelector_carousel, 'CamoSelector_carousel.swf', WindowLayer.WINDOW, None, ScopeTemplates.GLOBAL_SCOPE))
 
 
 @overrideMethod(CBP, '__new__')
