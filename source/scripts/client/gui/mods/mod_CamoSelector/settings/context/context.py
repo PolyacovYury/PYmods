@@ -14,6 +14,7 @@ from gui.impl.dialogs.builders import WarningDialogBuilder
 from gui.impl.gen import R
 from gui.shared.personality import ServicesLocator as SL
 from gui.shared.utils.decorators import process
+from shared_utils import first
 from .custom_mode import CustomMode
 from .mod_impl import CSModImpl
 from .styled_mode import StyledMode
@@ -90,7 +91,7 @@ class CustomizationContext(WGCtx, CSModImpl):
             self.actualMode = mode
             self.getMode(mode, CustomizationModes.STYLED).start()
             custom = self.getMode(mode, CustomizationModes.CUSTOM)
-            tabId = None if self.isBuy else CustomizationTabs.CAMOUFLAGES
+            tabId = first(custom._tabs) if self.isBuy else CustomizationTabs.CAMOUFLAGES
             if not custom.isInited:
                 custom.start(tabId)
             else:
