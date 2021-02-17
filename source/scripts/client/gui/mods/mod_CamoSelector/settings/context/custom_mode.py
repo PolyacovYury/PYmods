@@ -127,3 +127,17 @@ class CustomMode(WGCustomMode):
 
     def getModdedPurchaseItems(self):
         return super(CustomMode, self).getPurchaseItems()
+
+    def removeItemsFromSeason(self, season=None, filterMethod=None, refresh=True):
+        season = season or self.season
+        outfit = self._modifiedOutfits[season]
+        for intCD, _, regionIdx, container, _ in outfit.itemsFull():
+            item = self._service.getItemByCD(intCD)
+            if filterMethod is None or filterMethod(item):
+                areaId = container.getAreaID()
+                slotType = ITEM_TYPE_TO_SLOT_TYPE[item.itemTypeID]
+                slotId = C11nId(areaId, slotType, regionIdx)
+                self.removeItem(slotId, season, refresh=False)
+        if refresh:
+            self._ctx.refreshOutfit(season)
+            self._events.onItemsRemoved()

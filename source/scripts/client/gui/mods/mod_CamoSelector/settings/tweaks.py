@@ -3,7 +3,7 @@ from gui.Scaleform.daapi.view.lobby.customization import (
     customization_style_info as si)
 from gui.Scaleform.daapi.view.lobby.customization.popovers import C11nPopoverItemData, orderKey
 from gui.Scaleform.daapi.view.lobby.customization.popovers.custom_popover import CustomPopoverDataProvider
-from gui.Scaleform.daapi.view.lobby.customization.shared import getSlotDataFromSlot
+from gui.Scaleform.daapi.view.lobby.customization.shared import getSlotDataFromSlot, ITEM_TYPE_TO_SLOT_TYPE
 from gui.customization.shared import getPurchaseMoneyState, isTransactionValid, C11nId
 from gui.impl import backport
 from gui.impl.gen import R
@@ -66,4 +66,26 @@ def __getModifiedItemsData(base, self):
         if key not in itemData:
             itemData[key] = C11nPopoverItemData(item=pItem.item, isFromInventory=pItem.isFromInventory)
         itemData[key].slotsIds.append(slotId._asdict())
+    return sorted(itemData.values(), key=orderKey)
+
+
+@overrideMethod(CustomPopoverDataProvider, '__getOriginalItemsData')
+def __getOriginalItemsData(base, self):
+    if not g_config.data['enabled']:
+        return base(self)
+    itemData = {}
+    ctx = self._CustomPopoverDataProvider__ctx
+    notModifiedOutfit = ctx.mode.getNotModifiedItems()
+    for intCD, _, regionIdx, container, _ in notModifiedOutfit.itemsFull():
+        item = self._CustomPopoverDataProvider__service.getItemByCD(intCD)
+        if ctx.isBuy and item.isHiddenInUI():
+            continue
+        if self._CustomPopoverDataProvider__isNonHistoric and item.isHistorical():
+            continue
+        areaId = container.getAreaID()
+        slotType = ITEM_TYPE_TO_SLOT_TYPE[item.itemTypeID]
+        slotId = C11nId(areaId, slotType, regionIdx)
+        if intCD not in itemData:
+            itemData[intCD] = C11nPopoverItemData(item=item, isFromInventory=True)
+        itemData[intCD].slotsIds.append(slotId._asdict())
     return sorted(itemData.values(), key=orderKey)
