@@ -100,7 +100,7 @@ class CustomMode(WGCustomMode):
         nation, vehName = vDesc.name.split(':')
         isTurretCustomisable = isTurretCustom(vDesc)
         fromOutfits = self._ctx.getOrigModifiedOutfits()
-        if self.isOutfitsModified():
+        if self.isOutfitsModified() or isModeChanged:
             SystemMessages.pushI18nMessage(
                 MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
             cache = {}
