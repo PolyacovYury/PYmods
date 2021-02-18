@@ -176,6 +176,7 @@ class CustomizationContext(WGCtx, CSModImpl):
     @process('customizationApply')
     def applyItems(self, purchaseItems, callback):
         self._itemsCache.onSyncCompleted -= self.__onCacheResync
+        self.mode.unselectSlot()
         for mode in CSMode.BUY, CSMode.INSTALL:
             with self.overrideActualMode(mode):
                 isModeChanged = self.modeId != self.__startMode
