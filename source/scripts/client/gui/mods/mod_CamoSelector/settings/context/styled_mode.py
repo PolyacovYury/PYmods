@@ -50,9 +50,7 @@ class StyledMode(WGStyledMode):
         styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
         style = self._baseMode.originalStyle
         self._moddedStyle = None if styleCache['intCD'] is None else self._service.getItemByCD(styleCache['intCD'])
-        if not styleCache['applied']:
-            style = None
-        elif self._moddedStyle:
+        if self._moddedStyle:
             style = self._moddedStyle
         self.__originalStyle = style
         self.__modifiedStyle = style
