@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/{GAME_VERSION}/PYmods/ShutLoggersUp.wotmod": "build/wotmods/PYmods/ShutLoggersUp.wotmod"
+    }
+}
