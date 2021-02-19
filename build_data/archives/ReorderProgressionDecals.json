@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/{GAME_VERSION}/PYmods/ReorderProgressionDecals.wotmod": "build/wotmods/PYmods/ReorderProgressionDecals.wotmod"
+    }
+}
