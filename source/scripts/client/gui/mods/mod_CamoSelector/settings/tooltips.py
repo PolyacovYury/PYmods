@@ -10,11 +10,14 @@ class ElementTooltip(WGTooltip):
             statsConfig.sellPrice = False
             statsConfig.inventoryCount = False
             statsConfig.showBonus = False
+            if self._item.isProgressive:
+                self._progressionLevel = self._progressionLevel or 1
         return super(ElementTooltip, self)._packItemBlocks(statsConfig)
 
     def _packIconBlock(self, isHistorical=False, isDim=False):
         data = super(ElementTooltip, self)._packIconBlock(isHistorical, isDim)
-        if '4278190335,4278255360,4294901760,4278190080' in data['data']['imagePath']:
+        if (data and 'data' in data and 'imagePath' in data['data']
+                and '4278190335,4278255360,4294901760,4278190080' in data['data']['imagePath']):
             data['data']['imagePath'] = '../../' + data['data']['imagePath'].split('"', 2)[1]
         return data
 
