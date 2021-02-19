@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/{GAME_VERSION}/PYmods/DamagePercentIndicator.wotmod": "build/wotmods/PYmods/DamagePercentIndicator.wotmod"
+    }
+}
