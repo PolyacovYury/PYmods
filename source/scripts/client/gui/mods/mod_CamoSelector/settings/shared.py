@@ -29,7 +29,7 @@ def getItemSeason(item):
 @dependency.replace_none_kwargs(service=ICustomizationService)
 def CSComparisonKey(item, service=None):
     nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
-    is3D, isVictim, isGlobal = False, False, False
+    is3D, isVictim, isGlobal, texName = False, False, False, ''
     if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
         if item.modelsSet:
             is3D = True
@@ -39,10 +39,14 @@ def CSComparisonKey(item, service=None):
         if 'victim' in item.descriptor.userKey:
             isVictim = True
         isGlobal = g_config.isCamoGlobal(item.descriptor)
+        if item.priceGroup == 'camouflages 50g notInShop':
+            texName = getattr(item, 'texture', '').lower()
+            if '/' in texName:
+                texName = texName.rsplit('/', 1)[-1]
     return (TYPES_ORDER.index(item.itemTypeID) if item.itemTypeID in TYPES_ORDER else 0, not is3D,
             ItemTags.NATIONAL_EMBLEM not in item.tags, item.priceGroup == 'custom', item.isHidden, isVictim, not isGlobal,
             len(nationIDs) != 1, getGroupName(item, service.getCtx().isBuy), item.isRare(),
-            0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), item.id)
+            0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), texName, item.id)
 
 
 def getGroupName(item, isBuy=False):
