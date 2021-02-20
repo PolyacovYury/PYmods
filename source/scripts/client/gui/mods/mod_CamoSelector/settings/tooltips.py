@@ -5,7 +5,7 @@ from .. import g_config
 
 class ElementTooltip(WGTooltip):
     def _packItemBlocks(self, statsConfig):
-        if not self.__ctx.isBuy:
+        if self.__ctx and not self.__ctx.isBuy:
             statsConfig.buyPrice = False
             statsConfig.sellPrice = False
             statsConfig.inventoryCount = False
@@ -22,10 +22,10 @@ class ElementTooltip(WGTooltip):
         return data
 
     def _packAppliedBlock(self):
-        return None if not self.__ctx.isBuy else super(ElementTooltip, self)._packAppliedBlock()
+        return None if self.__ctx and not self.__ctx.isBuy else super(ElementTooltip, self)._packAppliedBlock()
 
     def _packSpecialBlock(self):
-        return None if not self.__ctx.isBuy else super(ElementTooltip, self)._packSpecialBlock()
+        return None if self.__ctx and not self.__ctx.isBuy else super(ElementTooltip, self)._packSpecialBlock()
 
 
 @overrideMethod(WGTooltip, '__new__')
