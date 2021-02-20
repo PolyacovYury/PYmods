@@ -107,52 +107,46 @@ class ConfigInterface(PYmodsConfigInterface):
 _config = ConfigInterface()
 i18nHooks = ('i18n_hook_makeString',)
 TAG_RE = re.compile(r'<[^>]+>')
+remove_tags = lambda a: TAG_RE.sub('', str(a)) if isinstance(a, basestring) else a
 
 
 def old_makeString(*_, **__):
     return LOG_ERROR('i18n hook failed')
 
 
-def i18n_hook_makeString(key, *args, **kwargs):
-    if _config.data['enabled']:
-        try:
-            if not key or key[0] != '#':
-                return key
-            moName, subkey = key[1:].split(':', 1)
-            if not moName or not subkey:
-                return key
-            moFile = '#' + moName
-            identity = {listType: any(
-                moKey in moFile and (not idList[moKey] or any(re.search(x, subkey) for x in idList[moKey]))
-                for moKey in idList) for listType, idList in _config.blacklists.iteritems()}
-            if moFile == '#menu' and subkey.startswith('tankmen/') and len(subkey.split('/')) == 2:
-                from CurrentVehicle import g_currentVehicle  # this can't be in the script header
-                if g_currentVehicle.isPresent() and g_currentVehicle.item.type in subkey:  # don't recolor mismatches
-                    identity['commonBlacklist'] = False  # fix for tankmen popover
-            whitelist = _config.blacklists['commonWhitelist']
-            identity['commonWhitelist'] = any(
-                moKey in moFile and any(x == subkey for x in whitelist[moKey]) for moKey in whitelist)
-            if not identity['commonBlacklist'] or identity['commonWhitelist']:
-                if not _config.data['debug']:
-                    translation = old_makeString(key, *args, **kwargs)
-                    if translation.strip() and translation not in (key, subkey):
-                        return "<font color='#%s'>%s</font>" % (_config.data['colour'], translation)
-                    else:
-                        return translation
-                elif _config.data['debugColour']:
-                    return "<font color='#%s'>%s</font>" % (_config.data['colour'], subkey)
-                else:
-                    return key[_config.data['debugBegin']:]
-            else:
-                return old_makeString(
-                    key, *tuple((a if not isinstance(a, basestring) else TAG_RE.sub('', str(a))) for a in args),
-                    **{k: (v if not isinstance(v, basestring) else TAG_RE.sub('', str(v))) for k, v in kwargs.iteritems()})
-        except StandardError:
-            print _config.ID + ': error at', key
-            traceback.print_exc()
-            return old_makeString(key, *args, **kwargs)
-    else:
-        return old_makeString(key, *args, **kwargs)
+def i18n_hook_makeString(key, *args, **kw):
+    if not _config.data['enabled'] or not key or key[0] != '#':  # already translated text still needs arguments filled in
+        return old_makeString(key, *args, **kw)
+    try:
+        moName, subkey = key[1:].split(':', 1)
+        if not moName or not subkey:
+            return key
+        moFile = '#' + moName
+        identity = {listType: any(
+            moKey in moFile and (not idList[moKey] or any(re.search(x, subkey) for x in idList[moKey]))
+            for moKey in idList) for listType, idList in _config.blacklists.iteritems()}
+        if moFile == '#menu' and subkey.startswith('tankmen/') and len(subkey.split('/')) == 2:
+            from CurrentVehicle import g_currentVehicle  # this can't be in the script header
+            if g_currentVehicle.isPresent() and g_currentVehicle.item.type in subkey:  # don't recolor mismatches
+                identity['commonBlacklist'] = False  # fix for tankmen popover
+        whitelist = _config.blacklists['commonWhitelist']
+        identity['commonWhitelist'] = any(
+            moKey in moFile and any(x == subkey for x in whitelist[moKey]) for moKey in whitelist)
+        if identity['commonBlacklist'] and not identity['commonWhitelist']:
+            return old_makeString(key, *tuple(remove_tags(a) for a in args), **{k: remove_tags(v) for k, v in kw.iteritems()})
+        if _config.data['debug']:
+            if _config.data['debugColour']:
+                return "<font color='#%s'>%s</font>" % (_config.data['colour'], subkey)
+            return key[_config.data['debugBegin']:]
+        translation = old_makeString(key, *args, **kw)
+        if translation.strip() and translation not in (key, subkey):
+            return "<font color='#%s'>%s</font>" % (_config.data['colour'], translation)
+        else:
+            return translation
+    except StandardError:
+        print _config.ID + ': error at', key
+        traceback.print_exc()
+        return old_makeString(key, *args, **kw)
 
 
 def delayedHooks():
