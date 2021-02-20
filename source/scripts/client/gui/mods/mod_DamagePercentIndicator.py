@@ -3,8 +3,9 @@ from gui.Scaleform.daapi.view.battle.shared.indicators import _ExtendedMarkerVOB
 
 def new_getDamageLabel(self, markerData):
     label = old_getDamageLabel(self, markerData)
-    if not markerData.hitData.isFriendlyFire():
-        label += '\n%s%%' % round(100.0 * markerData.hitData.getDamage() / markerData.hitData.getPlayerVehicleMaxHP(), 1)
+    data = markerData.hitData
+    if not data.isFriendlyFire() and not data.isBlocked() and not data.isCritical():
+        label += '\n%s%%' % round(100.0 * data.getDamage() / data.getPlayerVehicleMaxHP(), 1)
     return label
 
 
