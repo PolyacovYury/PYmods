@@ -21,8 +21,7 @@ from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.utils.functions import makeTooltip
 from helpers.i18n import makeString as _ms
 from shared_utils import first
-from .carousel import CSComparisonKey
-from .shared import CSMode
+from .shared import CSMode, CSComparisonKey
 from .. import g_config
 
 

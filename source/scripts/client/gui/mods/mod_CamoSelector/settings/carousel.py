@@ -1,5 +1,3 @@
-import nations
-import re
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from collections import OrderedDict
@@ -7,18 +5,15 @@ from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import 
     CustomizationBookmarkVO, CustomizationCarouselDataProvider as WGCarouselDP, CarouselData, CarouselCache as WGCache,
     ItemsData, FilterTypes)
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    ITEM_TYPE_TO_TAB, TYPES_ORDER, CustomizationTabs, vehicleHasSlot, isItemLimitReached)
+    ITEM_TYPE_TO_TAB, CustomizationTabs, vehicleHasSlot, isItemLimitReached)
 from gui.customization.constants import CustomizationModes
 from gui.customization.shared import createCustomizationBaseRequestCriteria, C11N_ITEM_TYPE_MAP
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.shared.utils.requesters.ItemsRequester import RequestCriteria
-from helpers import dependency
-from helpers.i18n import makeString as _ms
 from items import vehicles
-from items.components.c11n_constants import SeasonType, ProjectionDecalFormTags, ItemTags, EMPTY_ITEM_ID
-from skeletons.gui.customization import ICustomizationService
-from .shared import getItemSeason
+from items.components.c11n_constants import SeasonType, EMPTY_ITEM_ID
+from .shared import getItemSeason, CSComparisonKey, getGroupName
 from .. import g_config
 
 
@@ -174,48 +169,6 @@ class CarouselCache(WGCache):
                 self.__itemsData[CustomizationModes.EDITABLE_STYLE][season][tabId] = ItemsData(items, groups)
 
         self.__cachedEditableStyleId = style.id
-
-
-@dependency.replace_none_kwargs(service=ICustomizationService)
-def CSComparisonKey(item, service=None):
-    nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
-    is3D, isVictim, isGlobal = False, False, False
-    if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
-        if item.modelsSet:
-            is3D = True
-        if any('Victim' in tag for tag in item.tags):
-            isVictim = True
-    if item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
-        if 'victim' in item.descriptor.userKey:
-            isVictim = True
-        isGlobal = g_config.isCamoGlobal(item.descriptor)
-    return (TYPES_ORDER.index(item.itemTypeID) if item.itemTypeID in TYPES_ORDER else 0, not is3D,
-            ItemTags.NATIONAL_EMBLEM not in item.tags, item.priceGroup == 'custom', item.isHidden, isVictim, not isGlobal,
-            len(nationIDs) != 1, getGroupName(item, service.getCtx().isBuy), item.isRare(),
-            0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), item.id)
-
-
-def getGroupName(item, isBuy=False):
-    group = item.groupUserName
-    if isBuy:
-        return group
-    if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
-        if item.modelsSet:
-            group = _ms('#vehicle_customization:styles/unique_styles')
-        if any('Victim' in tag for tag in item.tags):
-            group = _ms('#vehicle_customization:victim_style/default')
-    if item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
-        if 'victim' in item.descriptor.userKey:
-            group = _ms('#vehicle_customization:victim_style/default')
-    nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
-    nation = ''
-    if len(nationIDs) == 1:
-        nation = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
-    elif len(nationIDs) > 1:
-        nation = g_config.i18n['flashCol_group_multinational']
-    if group and nation:  # HangarPainter support
-        group = re.sub(r'( [^ <>]+)(?![^ <>]*>)', '', nation) + g_config.i18n['flashCol_group_separator'] + group
-    return group
 
 
 @overrideMethod(WGCarouselDP, '__new__')
