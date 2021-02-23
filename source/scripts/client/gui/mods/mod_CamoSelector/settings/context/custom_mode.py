@@ -114,13 +114,15 @@ class CustomMode(WGCustomMode):
                         for reg in areaCache:
                             g_config.getHangarCache().get(seasonName, {}).get(typeName, {}).get(area, {}).pop(reg, None)
             deleteEmpty(g_config.getHangarCache(), isTurretCustomisable)
+            deleteEmpty(g_config.hangarCamoCache)
             styleCache = g_config.getOutfitCache().get('style', {})
             styleCache.setdefault('intCD', None)
             styleCache['applied'] = False
             if styleCache != {'intCD': None, 'applied': False}:
                 cache['style'] = styleCache
             g_config.outfitCache.setdefault(nation, {})[vehName] = cache
-            deleteEmpty(g_config.outfitCache, isTurretCustomisable)
+            deleteEmpty(cache, isTurretCustomisable)
+            deleteEmpty(g_config.outfitCache)
             loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
         callback(self)
 

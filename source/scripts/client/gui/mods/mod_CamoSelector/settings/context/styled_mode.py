@@ -75,9 +75,11 @@ class StyledMode(WGStyledMode):
                 intCD=self.__modifiedStyle.intCD if self.__modifiedStyle else None, applied=True)
             if self.__modifiedStyle:
                 g_config.getHangarCache().clear()
+                deleteEmpty(g_config.hangarCamoCache)
             SystemMessages.pushI18nMessage(
                 MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
-        deleteEmpty(g_config.outfitCache, isTurretCustomisable)
+        deleteEmpty(vehCache, isTurretCustomisable)
+        deleteEmpty(g_config.outfitCache)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
         callback(self)
 

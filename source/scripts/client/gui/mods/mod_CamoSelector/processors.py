@@ -28,7 +28,7 @@ except ImportError:
     pass
 
 
-def deleteEmpty(settings, isTurretCustomisable):
+def deleteEmpty(settings, isTurretCustomisable=True):
     for key, value in settings.items():
         if key == GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE] and not isTurretCustomisable:
             value.pop(TankPartNames.TURRET, None)
@@ -141,6 +141,8 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
     try:
         isTurretCustomizable = isTurretCustom(vDesc)
     except ValueError:
+        print g_config.ID + ': turret customization check for', vehicleName, 'failed:'
+        __import__('traceback').print_exc()
         isTurretCustomizable = False
     if isPlayerVehicle:
         vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
