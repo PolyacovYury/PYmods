@@ -26,9 +26,12 @@ class Options(object):
 class CustomizationItemCMHandler(WGCMHandler):
     def _generateOptions(self, ctx=None):
         result = super(CustomizationItemCMHandler, self)._generateOptions(ctx)
-        if self.__ctx.isBuy:
-            return result
         item = self.itemsCache.items.getItemByCD(self._intCD)
+        if self.__ctx.isBuy:
+            if item.itemTypeID == GUI_ITEM_TYPE.STYLE and item.isEditable:
+                result[2]['initData']['enabled'] &= (
+                        self.__ctx.mode.getItemInventoryCount(item) > 0 and self.__ctx.mode.getPurchaseLimit(item) > 0)
+            return result
         # leave_tail = 1  # > 0
         # to_remove = 2
         # if item.isRentable:
