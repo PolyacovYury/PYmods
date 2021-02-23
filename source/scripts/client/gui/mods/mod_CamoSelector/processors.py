@@ -43,28 +43,32 @@ def hasNoCamo(outfit):
 
 
 def applyOutfitCache(outfit, seasonCache, clean=True):
-    for itemTypeName, itemCache in seasonCache.items():
-        itemType = GUI_ITEM_TYPE_INDICES[itemTypeName]
-        itemDB = items.vehicles.g_cache.customization20().itemTypes[C11N_ITEM_TYPE_MAP[itemType]]
-        for areaName, areaCache in itemCache.items():
-            areaId = (Area.MISC if areaName == 'misc' else TankPartNames.getIdx(areaName))
-            slot = outfit.getContainer(areaId).slotFor(itemType)
-            for regionIdx in areaCache.keys():
-                itemID = areaCache[regionIdx]['id']
-                if itemID is None:
-                    if slot.getItemCD(int(regionIdx)):
-                        slot.remove(int(regionIdx))
-                    elif clean:  # item is being deleted while not applied at all. possible change after last cache
-                        del areaCache[regionIdx]  # so we remove an obsolete key
-                    continue
-                if itemID not in itemDB:
-                    print g_config.ID + ': wrong item ID for %s, idx %s:' % (areaName, regionIdx), itemID
-                    del areaCache[regionIdx]
-                    continue
-                component = emptyComponent(itemType)
-                [setattr(component, k, v) for k, v in areaCache[regionIdx].items()]
-                slot.set(itemDB[itemID].compactDescr, int(regionIdx), component)
-    outfit.invalidate()
+    try:
+        for itemTypeName, itemCache in seasonCache.items():
+            itemType = GUI_ITEM_TYPE_INDICES[itemTypeName]
+            itemDB = items.vehicles.g_cache.customization20().itemTypes[C11N_ITEM_TYPE_MAP[itemType]]
+            for areaName, areaCache in itemCache.items():
+                areaId = (Area.MISC if areaName == 'misc' else TankPartNames.getIdx(areaName))
+                slot = outfit.getContainer(areaId).slotFor(itemType)
+                for regionIdx in areaCache.keys():
+                    itemID = areaCache[regionIdx]['id']
+                    if itemID is None:
+                        if slot.getItemCD(int(regionIdx)):
+                            slot.remove(int(regionIdx))
+                        elif clean:  # item is being deleted while not applied at all. possible change after last cache
+                            del areaCache[regionIdx]  # so we remove an obsolete key
+                        continue
+                    if itemID not in itemDB:
+                        print g_config.ID + ': wrong item ID for %s, idx %s:' % (areaName, regionIdx), itemID
+                        del areaCache[regionIdx]
+                        continue
+                    component = emptyComponent(itemType)
+                    [setattr(component, k, v) for k, v in areaCache[regionIdx].items()]
+                    slot.set(itemDB[itemID].compactDescr, int(regionIdx), component)
+        outfit.invalidate()
+    except AttributeError:
+        __import__('pprint').pprint(seasonCache)
+        raise
 
 
 def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID=None):
