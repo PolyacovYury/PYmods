@@ -8,8 +8,8 @@
     "UI_restart_header": "Banks Loader by PY: restart",
     "UI_restart_memory": " • values <b>changed</b> for memory settings: ",
     "UI_restart_move": " • sections <b>moved</b> for these banks: ",
-    "UI_restart_reason": "Exact changes:\n{}.\n",
+    "UI_restart_reason": " Exact changes:\n{}.",
     "UI_restart_remap": " • sections <b>changed</b> for these settings: ",
-    "UI_restart_text": "You have installed new audio mods, so the game config was changed. {reason}Client restart required to accept changes.\nSound mods proper behaviour <b>NOT GUARANTEED</b> until next client start. This will <b>not</b> be required later. Do you want to restart the game now?",
+    "UI_restart_text": "You have installed new audio mods, so the game config was changed.{reason}\nClient restart required to accept changes.\nSound mods proper behaviour <b>NOT GUARANTEED</b> until next client start.\nThis will <b>not</b> be required later.\nDo you want to restart the game now?",
     "UI_restart_wotmod": " • configs <b>removed</b> from these packages: "
 }

@@ -32,14 +32,14 @@ class ConfigInterface(PYmodsConfigInterface):
                      'debug': False}
         self.i18n = {'UI_restart_header': 'Banks Loader by PY: restart',
                      'UI_restart_text': (
-                         'You have installed new audio mods, so the game config was changed. {reason}'
+                         'You have installed new audio mods, so the game config was changed.{reason}\n'
                          'Client restart required to accept changes.\n'
                          'Sound mods proper behaviour <b>NOT GUARANTEED</b> until next client start.\n'
                          'This will <b>not</b> be required later.\nDo you want to restart the game now?'),
                      'UI_restart_button_restart': 'Restart',
                      'UI_restart_button_shutdown': 'Shutdown',
                      'UI_restart_button_close': 'Continue',
-                     'UI_restart_reason': 'Exact changes:\n{}.\n',
+                     'UI_restart_reason': ' Exact changes:\n{}.',
                      'UI_restart_create': ' • sections <b>created</b> for these banks: ',
                      'UI_restart_delete': ' • sections <b>deleted</b> for these banks: ',
                      'UI_restart_move': ' • sections <b>moved</b> for these banks: ',
