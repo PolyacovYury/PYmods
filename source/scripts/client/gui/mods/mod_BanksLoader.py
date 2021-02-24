@@ -304,14 +304,14 @@ class ConfigInterface(PYmodsConfigInterface):
         for name, section in profile.items():
             if 'soundbanks' not in name:
                 continue
-            for sectName, project in section.items():
-                if sectName != 'project':
+            for sectName, bank in section.items():
+                if sectName != 'bank':
                     continue
-                bankName = project['name'].asString
+                bankName = bank['name'].asString
                 if bankName not in bankFiles['all'] or bankName in bankFiles['audio_mods_allowed']:
                     print self.ID + ': clearing engine_config', profile_type, 'section for bank', bankName
                     self.editedBanks['delete'].append(bankName)
-                    section.deleteSection(project)
+                    section.deleteSection(bank)
                 else:
                     exist.add(bankName)
         bankFiles['orig'] = [x.lower() for x in bankFiles['orig']]
@@ -323,7 +323,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     self.editedBanks['move'].append(bankName)
                 else:
                     self.editedBanks['create'].append(bankName)
-                profile.createSection('SFX_soundbanks_loadonce/project').writeString('name', bankName)
+                profile.createSection('SFX_soundbanks_loadonce/bank').writeString('name', bankName)
 
     def saveNewFile(self, new_file, new_dir, new_name, orig_path, keys):
         if not any(self.editedBanks[key] for key in keys):
