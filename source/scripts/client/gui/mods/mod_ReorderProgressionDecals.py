@@ -2,7 +2,7 @@ from gui.impl.lobby.customization.progressive_items_view.progressive_items_view 
 from items import vehicles
 from items.components.c11n_constants import CustomizationType
 
-order = ('battles', 'frags', 'ranked', 'marksOfMastery', 'mainGun', 'BrothersInArms', )
+order = ('battles', 'frags', 'BonusBattles', 'marksOfMastery', 'mainGun', 'BrothersInArms', )
 
 
 def _getPossibleItemsForVehicle(self):
@@ -11,10 +11,10 @@ def _getPossibleItemsForVehicle(self):
     items = [item for item in customizationCache.customizationWithProgression.itervalues()
              if item.itemType == CustomizationType.PROJECTION_DECAL]
     sortedItems = sorted(items, key=lambda i: (
-        next((j for j, tag in enumerate(order) if tag in i.progression.levels[1][0]['path'][1]), 100),
+        next((j for j, tag in enumerate(order) if tag in i.progression.levels[1]['conditions'][0]['path'][1]), 100),
         i.id
     ))
     return [item.compactDescr for item in sortedItems if item.filter.matchVehicleType(vehicleType)]
 
 
-ProgressiveItemsView._ProgressiveItemsView__getPossibleItemsForVehicle = _getPossibleItemsForVehicle
+ProgressiveItemsView._getPossibleItemsForVehicle = _getPossibleItemsForVehicle
