@@ -6,8 +6,10 @@ import os
 import traceback
 import zipfile
 from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, events, curCV
-from PYmodsCore.delayed import showConfirmDialog
-from gui.Scaleform.daapi.view.dialogs import DIALOG_BUTTON_ID
+from async import await, async
+from gui.impl.dialogs import dialogs
+from gui.impl.dialogs.builders import WarningDialogBuilder
+from gui.impl.pub.dialog_window import DialogButtons as DButtons
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -30,9 +32,10 @@ class ConfigInterface(PYmodsConfigInterface):
                      'debug': False}
         self.i18n = {'UI_restart_header': 'Banks Loader by PY: restart',
                      'UI_restart_text': (
-                         'You have installed new audio mods, so the game config was changed. {reason}Client restart '
-                         'required to accept changes.\nSound mods proper behaviour <b>NOT GUARANTEED</b> until next '
-                         'client start. This will <b>not</b> be required later. Do you want to restart the game now?'),
+                         'You have installed new audio mods, so the game config was changed. {reason}'
+                         'Client restart required to accept changes.\n'
+                         'Sound mods proper behaviour <b>NOT GUARANTEED</b> until next client start.\n'
+                         'This will <b>not</b> be required later.\nDo you want to restart the game now?'),
                      'UI_restart_button_restart': 'Restart',
                      'UI_restart_button_shutdown': 'Shutdown',
                      'UI_restart_button_close': 'Continue',
@@ -51,19 +54,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def createTemplate(self):
         pass
 
-    def onRestartConfirmed(self, buttonID):
-        if buttonID == DIALOG_BUTTON_ID.SUBMIT:
-            print self.ID + ': client restart confirmed.'
-            BigWorld.savePreferences()
-            BigWorld.restartGame()
-        elif buttonID == 'shutdown':
-            print self.ID + ': client shut down.'
-            BigWorld.savePreferences()
-            BigWorld.quit()
-        else:
-            print self.ID + ': client restart declined.'
-            self.was_declined = True
-
+    @async
     def tryRestart(self, *_, **__):
         if self.was_declined:
             return
@@ -77,9 +68,21 @@ class ConfigInterface(PYmodsConfigInterface):
                 for key in self.editedBanks if self.editedBanks[key]]
         reasonStr = self.i18n['UI_restart_reason'].format(';\n'.join(reasons)) if reasons else ''
         dialogText = self.i18n['UI_restart_text'].format(reason=reasonStr)
-        showConfirmDialog(
-            self.i18n['UI_restart_header'], dialogText,
-            [self.i18n['UI_restart_button_%s' % key] for key in ('restart', 'shutdown', 'close')], self.onRestartConfirmed)
+        builder = WarningDialogBuilder().setFormattedMessage(dialogText).setFormattedTitle(self.i18n['UI_restart_header'])
+        for ID, key in (DButtons.PURCHASE, 'restart'), (DButtons.RESEARCH, 'shutdown'), (DButtons.SUBMIT, 'close'):
+            builder.addButton(ID, None, ID == DButtons.PURCHASE, rawLabel=self.i18n['UI_restart_button_%s' % key])
+        result = yield await(dialogs.show(builder.build()))
+        if result.result == DButtons.PURCHASE:
+            print self.ID + ': client restart confirmed.'
+            BigWorld.savePreferences()
+            BigWorld.restartGame()
+        elif result.result == DButtons.RESEARCH:
+            print self.ID + ': client shut down.'
+            BigWorld.savePreferences()
+            BigWorld.quit()
+        elif result.result == DButtons.SUBMIT:
+            print self.ID + ': client restart declined.'
+            self.was_declined = True
 
     @staticmethod
     def suppress_old_mod():
