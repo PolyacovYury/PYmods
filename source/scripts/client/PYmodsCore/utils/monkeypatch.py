@@ -36,7 +36,7 @@ def overrideMethod(obj, prop, getter=None, setter=None, deleter=None):
         assert callable(getter_orig), 'Handler is not callable!'
         while isinstance(getter, partial):
             getter = getter.func
-        getter_new = redirect_traceback(partial(getter_orig, src), getter.func_code)
+        getter_new = redirect_traceback(partial(getter_orig, src), getattr(getter, 'func_code', None))
         try:
             update_wrapper(getter_new, getter)
         except AttributeError:

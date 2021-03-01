@@ -11,8 +11,10 @@ def redirect_traceback(callback, func_code):  # noinspection PyUnusedLocal
         except Exception:  # Code to remove this wrapper from traceback
             info = sys.exc_info()
             new_tb = info[2].tb_next  # https://stackoverflow.com/q/44813333
-            if new_tb is None:  # exception occurs inside this wrapper, not inside of the callback
-                new_tb = _generate_new_tb(func_code)  # so we point at the place of callback definition
+            if new_tb is None:  # exception occurs inside this wrapper, not inside of the callback [1]
+                if func_code is None:  # we have no idea where to redirect the traceback to
+                    raise
+                new_tb = _generate_new_tb(func_code)  # [1] so we point to the place of callback definition
             raise info[0], info[1], new_tb
         finally:
             del info
