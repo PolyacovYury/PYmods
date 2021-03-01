@@ -8,7 +8,7 @@ import math_utils
 import os
 import traceback
 from Avatar import PlayerAvatar
-from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKeys, sendMessage, Analytics, events
+from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKeys, sendPanelMessage, Analytics, events
 from Vehicle import Vehicle
 from debug_utils import LOG_ERROR, LOG_NOTE
 from functools import partial
@@ -252,12 +252,12 @@ class ConfigInterface(PYmodsConfigInterface):
                 if curVehicle is not None and curVehicle.isAlive():
                     lightsCreate(vehicleID, 'keyPress')
 
-            sendMessage(self.i18n['UI_activLamps'])
+            sendPanelMessage(self.i18n['UI_activLamps'])
         else:
             for vehicleID in lightDBDict.keys():
                 lightsDestroy(vehicleID, 'keyPress')
 
-            sendMessage(self.i18n['UI_deactivLamps'], 'Red')
+            sendPanelMessage(self.i18n['UI_deactivLamps'], 'Red')
 
 
 _config = ConfigInterface()
