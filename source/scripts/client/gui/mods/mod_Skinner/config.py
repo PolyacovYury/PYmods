@@ -45,8 +45,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.i18n = {
             'UI_description': 'Skinner',
             'UI_flash_header': 'Skins setup',
-            'UI_flash_header_tooltip': "Setup for Skinner by "
-                                       "<font color='#DD7700'><b>Polyacov_Yury</b></font>",
+            'UI_flash_header_tooltip': "Setup for Skinner by <font color='#DD7700'><b>Polyacov_Yury</b></font>",
             'UI_flash_skinSetup': 'Skin setup',
             'UI_flash_skinPriority': 'Skin priorities',
             'UI_flash_skinSetupBtn': 'Setup',
@@ -76,9 +75,9 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_loading_skins_clean': 'Cleaning skin models...',
             'UI_restart_header': 'Skinner: restart',
             'UI_restart_text': (
-                'Skin models have been re-unpacked. Client restart required to accept changes.\n'
-                'Client proper behaviour <b>NOT GUARANTEED</b> until next client start. This will <b>not</b>'
-                'be required later. Do you want to restart the game now?'),
+                'Skin models have been re-unpacked.\nClient restart required to accept changes.\n'
+                'Client proper behaviour <b>NOT GUARANTEED</b> until next client start.\n'
+                'This will <b>not</b> be required later.\nDo you want to restart the game now?'),
             'UI_restart_button_restart': 'Restart',
             'UI_restart_button_shutdown': 'Shutdown',
             'UI_setting_isDebug_text': 'Enable extended log printing',
