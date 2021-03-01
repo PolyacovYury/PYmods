@@ -11,9 +11,9 @@ import os
 import shutil
 import traceback
 from PYmodsCore import remDups, loadJson, events, curCV
-from PYmodsCore.delayed import showConfirmDialog
 from account_helpers.settings_core.settings_constants import GAME
 from adisp import AdispException, async, process
+from async import await, async as async2
 from functools import partial
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -24,6 +24,9 @@ from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowM
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, WindowLayer, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from gui.impl.dialogs import dialogs
+from gui.impl.dialogs.builders import WarningDialogBuilder
+from gui.impl.pub.dialog_window import DialogButtons
 from helpers import getClientVersion, dependency
 from shared_utils import awaitNextFrame
 from skeletons.account_helpers.settings_core import ISettingsCore
@@ -118,13 +121,22 @@ class SkinnerLoading(LoginQueueWindowMeta):
     def onWindowClose(self):
         callLoading.__isub__(self.__callMethod)
         if needToReReadSkinsModels:
-            showConfirmDialog(
-                g_config.i18n['UI_restart_header'], g_config.i18n['UI_restart_text'],
-                (g_config.i18n['UI_restart_button_restart'], g_config.i18n['UI_restart_button_shutdown']),
-                lambda restart: (BigWorld.savePreferences(), (BigWorld.restartGame() if restart else BigWorld.quit())))
+            self.call_restart()
         elif self.doLogin:
             BigWorld.callback(0.1, partial(doLogin, self.app))
         self.destroy()
+
+    @staticmethod
+    @async2
+    def call_restart():
+        result = yield await(dialogs.showSimple(
+            WarningDialogBuilder().setFormattedTitle(g_config.i18n['UI_restart_header'])
+            .setFormattedMessage(g_config.i18n['UI_restart_text'])
+            .addButton(DialogButtons.PURCHASE, None, True, rawLabel=g_config.i18n['UI_restart_button_restart'])
+            .addButton(DialogButtons.RESEARCH, None, False, rawLabel=g_config.i18n['UI_restart_button_shutdown'])
+            .build(), DialogButtons.PURCHASE))
+        BigWorld.savePreferences()
+        BigWorld.restartGame() if result else BigWorld.quit()
 
     @process
     def loadSkins(self):
@@ -373,8 +385,8 @@ def processMember(memberFileName, skinName):
                     if ResMgr.isFile(newTexture):
                         prop.writeString('Texture', newTexture.replace('\\', '/'))
                 if hasTracks:
-                    for prop in (p for name, p in sub['material'].items() if name == 'property'
-                                 and p.asString == 'g_useNormalPackDXT1'):
+                    for prop in (p for name, p in sub['material'].items()
+                                 if name == 'property' and p.asString == 'g_useNormalPackDXT1'):
                         prop.writeString('Bool', 'true')
             if section['primitivesName'] is None:
                 section.writeString('primitivesName', os.path.splitext(memberFileName)[0])
