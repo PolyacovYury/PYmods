@@ -11,3 +11,4 @@ def new_getDamageLabel(self, markerData):
 
 old_getDamageLabel = _ExtendedMarkerVOBuilder._getDamageLabel
 _ExtendedMarkerVOBuilder._getDamageLabel = new_getDamageLabel
+print 'DamagePercentIndicator v.1.0.0 by Polyacov_Yury: initialised.'
