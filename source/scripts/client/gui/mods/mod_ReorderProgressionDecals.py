@@ -18,3 +18,4 @@ def _getPossibleItemsForVehicle(self):
 
 
 ProgressiveItemsView._getPossibleItemsForVehicle = _getPossibleItemsForVehicle
+print 'ReorderProgressionDecals v.1.0.0 by Polyacov_Yury: initialised.'
