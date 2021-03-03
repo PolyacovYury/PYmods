@@ -3,7 +3,7 @@ import time
 
 import BigWorld
 import Keys
-from PYmodsCore import PYmodsConfigInterface, checkKeys, sendMessage, Analytics, events
+from PYmodsCore import PYmodsConfigInterface, checkKeys, sendPanelMessage, Analytics, events
 from gui import SystemMessages
 
 
@@ -60,9 +60,9 @@ class ConfigInterface(PYmodsConfigInterface):
         self.isSunControlled = not self.isSunControlled
         sun_controller(self.isSunControlled)
         if self.isSunControlled:
-            sendMessage(self.i18n['UI_activSunMod'])
+            sendPanelMessage(self.i18n['UI_activSunMod'])
         else:
-            sendMessage(self.i18n['UI_deactivSunMod'], 'Red')
+            sendPanelMessage(self.i18n['UI_deactivSunMod'], 'Red')
 
 
 g_config = ConfigInterface()

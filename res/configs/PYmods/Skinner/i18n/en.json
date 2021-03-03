@@ -41,7 +41,7 @@
     "UI_restart_button_restart": "Restart",
     "UI_restart_button_shutdown": "Shutdown",
     "UI_restart_header": "Skinner: restart",
-    "UI_restart_text": "Skin models have been re-unpacked. Client restart required to accept changes.\nClient proper behaviour <b>NOT GUARANTEED</b> until next client start. This will <b>not</b>be required later. Do you want to restart the game now?",
+    "UI_restart_text": "Skin models have been re-unpacked.\nClient restart required to accept changes.\nClient proper behaviour <b>NOT GUARANTEED</b> until next client start.\nThis will <b>not</b>be required later.\nDo you want to restart the game now?",
     "UI_setting_ChangeViewHotkey_text": "View mode switch hotkey",
     "UI_setting_ChangeViewHotkey_tooltip": "This hotkey will switch the preview mode in hangar.\n<b>Possible modes:</b>\n • Player tank\n • Ally tank\n • Enemy tank",
     "UI_setting_DynamicSkinHotkey_text": "Dynamic skin display switch hotkey",

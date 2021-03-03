@@ -1,5 +1,5 @@
 ﻿{
-    "enabled": true,
+    "enabled": false,
     "ext": ".wotmod",
     "files": {
         "res/scripts/client/gui/mods/mod_RadialMenu.pyc": "build/scripts/client/gui/mods/mod_RadialMenu.pyc"
