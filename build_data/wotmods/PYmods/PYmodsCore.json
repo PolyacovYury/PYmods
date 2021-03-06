@@ -18,6 +18,7 @@
         "res/scripts/client/PYmodsCore/delayed/utils/__init__.pyc": "build/scripts/client/PYmodsCore/delayed/utils/__init__.pyc",
         "res/scripts/client/PYmodsCore/delayed/utils/notifications_hooks.pyc": "build/scripts/client/PYmodsCore/delayed/utils/notifications_hooks.pyc",
         "res/scripts/client/PYmodsCore/delayed/utils/old_dialogs.pyc": "build/scripts/client/PYmodsCore/delayed/utils/old_dialogs.pyc",
+        "res/scripts/client/PYmodsCore/delayed/utils/dialogs.pyc": "build/scripts/client/PYmodsCore/delayed/utils/dialogs.pyc",
         "res/scripts/client/PYmodsCore/events/__init__.pyc": "build/scripts/client/PYmodsCore/events/__init__.pyc",
         "res/scripts/client/PYmodsCore/events/game.pyc": "build/scripts/client/PYmodsCore/events/game.pyc",
         "res/scripts/client/PYmodsCore/events/LobbyView.pyc": "build/scripts/client/PYmodsCore/events/LobbyView.pyc",
