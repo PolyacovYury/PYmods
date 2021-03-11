@@ -40,10 +40,10 @@ class ConfigInterface(DummyConfigInterface):
             'streamlabs_twitch_button_text': 'Twitch:', 'streamlabs_twitch_button_label': 'Открыть в браузере',
         } if self.lang in ('ru', 'uk') else {
             'header': 'Support the author',
-            'UI_setting_subscription_label': 'Subscription:',
+            'UI_setting_subscription_text': 'Subscription:',
             'patreon_button_text': 'Patreon:', 'patreon_button_label': 'Open browser',
             'boosty_button_text': 'Boosty:', 'boosty_button_label': 'Open browser',
-            'UI_setting_donation_label': 'Donate:',
+            'UI_setting_donation_text': 'Donate:',
             'webmoney_button_text': 'WebMoney:', 'webmoney_button_label': 'Open browser',
             'qiwi_button_text': 'QIWI Wallet:', 'qiwi_button_label': 'Open browser',
             'UI_setting_streamlabs_text': 'PayPal + stream shout-out:',

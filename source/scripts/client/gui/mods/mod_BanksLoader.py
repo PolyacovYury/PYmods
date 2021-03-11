@@ -10,18 +10,20 @@ from async import await, async
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.builders import WarningDialogBuilder
 from gui.impl.pub.dialog_window import DialogButtons as DButtons
+from helpers import getClientVersion
 
 
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
-        self.editedBanks = {'create': [], 'delete': [], 'memory': [], 'move': [], 'remap': set(), 'wotmod': []}
+        self.editedBanks = {'create': [], 'delete': [], 'memory': [], 'move': [], 'remap': set(), 'wotmod': [], 'section': []}
+        self.version_changed = False
         self.was_declined = False
         events.LoginView.populate.after(events.LobbyView.populate.after(events.PlayerAvatar.startGUI.after(self.tryRestart)))
         super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.4.1 (%(file_compile_date)s)'
+        self.version = '1.5.0 (%(file_compile_date)s)'
         self.author += ' and Ekspoint'
         self.data = {'defaultPool': 36,
                      'lowEnginePool': 10,
@@ -30,22 +32,27 @@ class ConfigInterface(PYmodsConfigInterface):
                      'IOPoolSize': 8,
                      'max_voices': 110,
                      'debug': False}
-        self.i18n = {'UI_restart_header': 'Banks Loader by PY: restart',
-                     'UI_restart_text': (
-                         'You have installed new audio mods, so the game config was changed.{reason}\n'
-                         'Client restart required to accept changes.\n'
-                         'Sound mods proper behaviour <b>NOT GUARANTEED</b> until next client start.\n'
-                         'This will <b>not</b> be required later.\nDo you want to restart the game now?'),
-                     'UI_restart_button_restart': 'Restart',
-                     'UI_restart_button_shutdown': 'Shutdown',
-                     'UI_restart_button_close': 'Continue',
-                     'UI_restart_reason': ' Exact changes:\n{}.',
-                     'UI_restart_create': ' • sections <b>created</b> for these banks: ',
-                     'UI_restart_delete': ' • sections <b>deleted</b> for these banks: ',
-                     'UI_restart_move': ' • sections <b>moved</b> for these banks: ',
-                     'UI_restart_memory': ' • values <b>changed</b> for memory settings: ',
-                     'UI_restart_remap': ' • sections <b>changed</b> for these settings: ',
-                     'UI_restart_wotmod': ' • configs <b>removed</b> from these packages: '}
+        self.i18n = {
+            'UI_restart_header': 'Banks Loader by PY: restart',
+            'UI_restart_reason_new': 'You have installed new audio mods, so the game config was changed.',
+            'UI_restart_reason_update': 'Game client update was detected, so game config changes were re-applied anew.',
+            'UI_restart_text': (
+                '{reason}{reasons}\n'
+                'Game client restart is required to accept changes.\n'
+                'Sound mods\' proper behaviour <b>NOT GUARANTEED</b> until next game launch.\n'
+                'This will <b>not</b> be required later.\nDo you want to restart the game now?'),
+            'UI_restart_button_restart': 'Restart',
+            'UI_restart_button_shutdown': 'Shutdown',
+            'UI_restart_button_close': 'Continue',
+            'UI_restart_reason': ' Exact changes:\n{}.',
+            'UI_restart_create': ' • sections <b>created</b> for banks: ',
+            'UI_restart_delete': ' • sections <b>deleted</b> for banks: ',
+            'UI_restart_move': ' • sections <b>moved</b> for banks: ',
+            'UI_restart_section': ' • sections <b>shifted</b> for banks: ',
+            'UI_restart_memory': ' • values <b>changed</b> for memory settings: ',
+            'UI_restart_remap': ' • sections <b>changed</b> for settings: ',
+            'UI_restart_wotmod': ' • configs <b>removed</b> from packages: ',
+         }
         super(ConfigInterface, self).init()
 
     def updateMod(self):
@@ -67,7 +74,8 @@ class ConfigInterface(PYmodsConfigInterface):
                 self.i18n['UI_restart_' + key] + ', '.join('<b>%s</b>' % x for x in remDups(self.editedBanks[key]))
                 for key in self.editedBanks if self.editedBanks[key]]
         reasonStr = self.i18n['UI_restart_reason'].format(';\n'.join(reasons)) if reasons else ''
-        dialogText = self.i18n['UI_restart_text'].format(reason=reasonStr)
+        dialogText = self.i18n['UI_restart_text'].format(
+            reason=self.i18n['UI_restart_reason_' + ('update' if self.version_changed else 'new')], reasons=reasonStr)
         builder = WarningDialogBuilder().setFormattedMessage(dialogText).setFormattedTitle(self.i18n['UI_restart_header'])
         for ID, key in (DButtons.PURCHASE, 'restart'), (DButtons.RESEARCH, 'shutdown'), (DButtons.SUBMIT, 'close'):
             builder.addButton(ID, None, ID == DButtons.PURCHASE, rawLabel=self.i18n['UI_restart_button_%s' % key])
@@ -165,12 +173,29 @@ class ConfigInterface(PYmodsConfigInterface):
         ResMgr.purge(load_order_xml, True)
 
     def checkConfigs(self):
-        orig_engine = ResMgr.openSection('engine_config.xml')
-        if orig_engine is None:
-            print _config.ID + ': ERROR: engine_config.xml not found'
-            return
+        while True:
+            orig_engine = ResMgr.openSection('engine_config.xml')
+            if orig_engine is None:
+                print _config.ID + ': ERROR: engine_config.xml not found'
+                return
+            path = curCV + '/' + 'engine_config.xml'
+            if not os.path.isfile(path):
+                break
+            if (orig_engine.has_key('BanksLoader_gameVersion')
+                    and orig_engine['BanksLoader_gameVersion'].asString == getClientVersion()):
+                break
+            print self.ID + ': client version change detected'
+            self.version_changed = True
+            try:
+                os.remove(path)
+            except StandardError:
+                traceback.print_exc()
+            del orig_engine
+            ResMgr.purge('engine_config.xml')
         new_engine = ResMgr.openSection('./engine_config_edited.xml', True)
         new_engine.copy(orig_engine)
+        if not new_engine.has_key('BanksLoader_gameVersion'):
+            new_engine.writeString('BanksLoader_gameVersion', getClientVersion())
         ResMgr.purge('engine_config.xml')
         soundMgr = new_engine['soundMgr']
         mediaPath = soundMgr['wwmediaPath'].asString
@@ -191,9 +216,10 @@ class ConfigInterface(PYmodsConfigInterface):
                          ('delete', 'move', 'create', 'memory'))
 
     def collectBankFiles(self, mediaPath):
-        bankFiles = {'mods': set(), 'pkg': set(), 'ignore': set(), 'audio_mods_allowed': ('protanki.bnk',),
-                     'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')
-                             if os.path.splitext(path)[1] in ('.bnk', '.pck')}}
+        bankFiles = {
+            'mods': set(), 'pkg': set(), 'ignore': set(), 'section': {}, 'audio_mods_allowed': ('protanki.bnk',),
+            'res': {os.path.basename(path) for path in glob.iglob('./res/' + mediaPath + '/*')
+                    if os.path.splitext(path)[1] in ('.bnk', '.pck')}}
         for pkgPath in glob.iglob('./res/packages/audioww*.pkg'):
             with zipfile.ZipFile(pkgPath) as pkg:
                 bankFiles['pkg'].update({os.path.basename(name) for name in pkg.namelist()})
@@ -262,17 +288,20 @@ class ConfigInterface(PYmodsConfigInterface):
                 if sect.has_key(key):
                     bankData[key] = self.check_and_collect_data(key, sect[key], struct, False)
                 data_new.setdefault(key, []).extend(bankData.get(key, []))
+            if sect.has_key('engine_config_section'):
+                bankFiles['section'][bankName] = sect['engine_config_section'].asString
         for bankSect in audio_mods['loadBanks'].values():
-            bankName = bankSect.asString
+            bankName = bankSect.asString or getattr(bankSect['name'], 'asString', None)
             if bankName not in bankFiles['audio_mods_allowed']:
                 print self.ID + ': clearing audio_mods section for bank', bankName
                 self.editedBanks['delete'].append(bankName)
-            else:
+            elif bankName not in audio_mods_banks:
                 audio_mods_banks.append(bankName)
         self.editedBanks['delete'] = remDups(self.editedBanks['delete'])
         for key in ['loadBanks'] + [struct['name'] for struct in data_structure]:
             audio_mods_new.createSection(key)
-        audio_mods_new['loadBanks'].writeStrings('bank', audio_mods_banks)
+        for bankName in audio_mods_banks:
+            audio_mods_new['loadBanks'].createSection('bank').writeString('name', bankName)
         for struct in data_structure:
             key = struct['name']
             if data_old[key] != data_new.setdefault(key, []):
@@ -312,7 +341,15 @@ class ConfigInterface(PYmodsConfigInterface):
                     continue
                 bankName = bank['name'].asString
                 if bankName not in bankFiles['all'] or bankName in bankFiles['audio_mods_allowed']:
-                    print self.ID + ': clearing engine_config', profile_type, 'section for bank', bankName
+                    print self.ID + ': clearing', profile_type, 'section for missing bank', bankName
+                    self.editedBanks['delete'].append(bankName)
+                    section.deleteSection(bank)
+                elif bankFiles['section'].get(bankName, name) != name:
+                    print self.ID + ': deleting', profile_type, 'section from', name, 'for bank', bankName
+                    self.editedBanks['section'].append(bankName)
+                    section.deleteSection(bank)
+                elif bankName in bankFiles['mods'] and bankName in exist:
+                    print self.ID + ': clearing', profile_type, 'section duplicate for bank', bankName
                     self.editedBanks['delete'].append(bankName)
                     section.deleteSection(bank)
                 else:
@@ -320,13 +357,14 @@ class ConfigInterface(PYmodsConfigInterface):
         bankFiles['orig'] = [x.lower() for x in bankFiles['orig']]
         for bankName in sorted(bankFiles['mods']):
             if not any(bankName in bankFiles[x] for x in ('orig', 'ignore', 'audio_mods_allowed')) and bankName not in exist:
-                print self.ID + ': creating', profile_type, 'sections for bank', bankName
+                sectName = bankFiles['section'].get(bankName, 'SFX_soundbanks_loadonce')
+                print self.ID + ': creating', profile_type, 'section in', sectName, 'for bank', bankName
                 if bankName in self.editedBanks['delete']:
                     self.editedBanks['delete'].remove(bankName)
                     self.editedBanks['move'].append(bankName)
-                else:
+                elif bankName not in self.editedBanks['section']:
                     self.editedBanks['create'].append(bankName)
-                profile.createSection('SFX_soundbanks_loadonce/bank').writeString('name', bankName)
+                profile.createSection(sectName + '/bank').writeString('name', bankName)
 
     def saveNewFile(self, new_file, new_dir, new_name, orig_path, keys):
         if not any(self.editedBanks[key] for key in keys):
