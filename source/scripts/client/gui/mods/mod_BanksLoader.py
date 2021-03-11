@@ -291,16 +291,17 @@ class ConfigInterface(PYmodsConfigInterface):
             if sect.has_key('engine_config_section'):
                 bankFiles['section'][bankName] = sect['engine_config_section'].asString
         for bankSect in audio_mods['loadBanks'].values():
-            bankName = bankSect.asString
+            bankName = bankSect.asString or getattr(bankSect['name'], 'asString', None)
             if bankName not in bankFiles['audio_mods_allowed']:
                 print self.ID + ': clearing audio_mods section for bank', bankName
                 self.editedBanks['delete'].append(bankName)
-            else:
+            elif bankName not in audio_mods_banks:
                 audio_mods_banks.append(bankName)
         self.editedBanks['delete'] = remDups(self.editedBanks['delete'])
         for key in ['loadBanks'] + [struct['name'] for struct in data_structure]:
             audio_mods_new.createSection(key)
-        audio_mods_new['loadBanks'].writeStrings('bank', audio_mods_banks)
+        for bankName in audio_mods_banks:
+            audio_mods_new['loadBanks'].createSection('bank').writeString('name', bankName)
         for struct in data_structure:
             key = struct['name']
             if data_old[key] != data_new.setdefault(key, []):
