@@ -8,8 +8,10 @@
     "UI_restart_memory": " • values <b>changed</b> for memory settings: ",
     "UI_restart_move": " • sections <b>moved</b> for banks: ",
     "UI_restart_reason": " Exact changes:\n{}.",
+    "UI_restart_reason_new": "You have installed new audio mods, so the game config was changed.",
+    "UI_restart_reason_update": "Game client update was detected, so game config changes were re-applied anew.",
     "UI_restart_remap": " • sections <b>changed</b> for settings: ",
     "UI_restart_section": " • sections <b>shifted</b> for banks: ",
-    "UI_restart_text": "You have installed new audio mods, so the game config was changed.{reason}\nClient restart required to accept changes.\nSound mods proper behaviour <b>NOT GUARANTEED</b> until next client start.\nThis will <b>not</b> be required later.\nDo you want to restart the game now?",
+    "UI_restart_text": "{reason}{reasons}\nGame client restart is required to accept changes.\nSound mods' proper behaviour <b>NOT GUARANTEED</b> until next game launch.\nThis will <b>not</b> be required later.\nDo you want to restart the game now?",
     "UI_restart_wotmod": " • configs <b>removed</b> from packages: "
 }

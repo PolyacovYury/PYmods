@@ -10,11 +10,13 @@ from async import await, async
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.builders import WarningDialogBuilder
 from gui.impl.pub.dialog_window import DialogButtons as DButtons
+from helpers import getClientVersion
 
 
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
         self.editedBanks = {'create': [], 'delete': [], 'memory': [], 'move': [], 'remap': set(), 'wotmod': [], 'section': []}
+        self.version_changed = False
         self.was_declined = False
         events.LoginView.populate.after(events.LobbyView.populate.after(events.PlayerAvatar.startGUI.after(self.tryRestart)))
         super(ConfigInterface, self).__init__()
@@ -32,10 +34,12 @@ class ConfigInterface(PYmodsConfigInterface):
                      'debug': False}
         self.i18n = {
             'UI_restart_header': 'Banks Loader by PY: restart',
+            'UI_restart_reason_new': 'You have installed new audio mods, so the game config was changed.',
+            'UI_restart_reason_update': 'Game client update was detected, so game config changes were re-applied anew.',
             'UI_restart_text': (
-                'You have installed new audio mods, so the game config was changed.{reason}\n'
-                'Client restart required to accept changes.\n'
-                'Sound mods proper behaviour <b>NOT GUARANTEED</b> until next client start.\n'
+                '{reason}{reasons}\n'
+                'Game client restart is required to accept changes.\n'
+                'Sound mods\' proper behaviour <b>NOT GUARANTEED</b> until next game launch.\n'
                 'This will <b>not</b> be required later.\nDo you want to restart the game now?'),
             'UI_restart_button_restart': 'Restart',
             'UI_restart_button_shutdown': 'Shutdown',
@@ -70,7 +74,8 @@ class ConfigInterface(PYmodsConfigInterface):
                 self.i18n['UI_restart_' + key] + ', '.join('<b>%s</b>' % x for x in remDups(self.editedBanks[key]))
                 for key in self.editedBanks if self.editedBanks[key]]
         reasonStr = self.i18n['UI_restart_reason'].format(';\n'.join(reasons)) if reasons else ''
-        dialogText = self.i18n['UI_restart_text'].format(reason=reasonStr)
+        dialogText = self.i18n['UI_restart_text'].format(
+            reason=self.i18n['UI_restart_reason_' + ('update' if self.version_changed else 'new')], reasons=reasonStr)
         builder = WarningDialogBuilder().setFormattedMessage(dialogText).setFormattedTitle(self.i18n['UI_restart_header'])
         for ID, key in (DButtons.PURCHASE, 'restart'), (DButtons.RESEARCH, 'shutdown'), (DButtons.SUBMIT, 'close'):
             builder.addButton(ID, None, ID == DButtons.PURCHASE, rawLabel=self.i18n['UI_restart_button_%s' % key])
@@ -168,12 +173,29 @@ class ConfigInterface(PYmodsConfigInterface):
         ResMgr.purge(load_order_xml, True)
 
     def checkConfigs(self):
-        orig_engine = ResMgr.openSection('engine_config.xml')
-        if orig_engine is None:
-            print _config.ID + ': ERROR: engine_config.xml not found'
-            return
+        while True:
+            orig_engine = ResMgr.openSection('engine_config.xml')
+            if orig_engine is None:
+                print _config.ID + ': ERROR: engine_config.xml not found'
+                return
+            path = curCV + '/' + 'engine_config.xml'
+            if not os.path.isfile(path):
+                break
+            if (orig_engine.has_key('BanksLoader_gameVersion')
+                    and orig_engine['BanksLoader_gameVersion'].asString == getClientVersion()):
+                break
+            print self.ID + ': client version change detected'
+            self.version_changed = True
+            try:
+                os.remove(path)
+            except StandardError:
+                traceback.print_exc()
+            del orig_engine
+            ResMgr.purge('engine_config.xml')
         new_engine = ResMgr.openSection('./engine_config_edited.xml', True)
         new_engine.copy(orig_engine)
+        if not new_engine.has_key('BanksLoader_gameVersion'):
+            new_engine.writeString('BanksLoader_gameVersion', getClientVersion())
         ResMgr.purge('engine_config.xml')
         soundMgr = new_engine['soundMgr']
         mediaPath = soundMgr['wwmediaPath'].asString
