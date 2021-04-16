@@ -191,11 +191,11 @@ def skinCRC32All(callback):
         skinCRC32 = 0
         skinSect = dirSect[skin]['vehicles']
         nationsList = [] if skinSect is None else remDups(skinSect.keys())
-        natLen = len(nationsList)
+        natLen = float(len(nationsList))
         for natNum, nation in enumerate(nationsList):
             nationSect = skinSect[nation]
             vehiclesList = [] if nationSect is None else remDups(nationSect.keys())
-            vehLen = len(vehiclesList)
+            vehLen = float(len(vehiclesList))
             for vehNum, vehicleName in enumerate(vehiclesList):
                 vehicleSkins.setdefault(vehicleName.lower(), []).append(skin)
                 texPrefix = 'vehicles/' + nation + '/' + vehicleName + '/'
@@ -212,7 +212,7 @@ def skinCRC32All(callback):
                     texPath = skinsPath + skin + '/' + localPath
                     skinCRC32 ^= binascii.crc32(str(ResMgr.openSection(texPath).asBinary)) & 0xFFFFFFFF & hash(localPath)
                 yield awaitNextFrame()
-                new_progress = int(100 * (float(natNum) + float(vehNum) / float(vehLen)) / float(natLen))
+                new_progress = int(100 * (natNum + vehNum / vehLen) / natLen)
                 if new_progress != progress:
                     progress = new_progress
                     SkinnerLoading.callMethod('updateProgress', progress)
@@ -242,14 +242,14 @@ def rmtree(rootPath, callback):
         SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
         progress = 0
         nationsList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles'))
-        natLen = len(nationsList)
+        natLen = float(len(nationsList))
         for natNum, nation in enumerate(nationsList):
             vehiclesList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles', nation))
-            vehLen = len(vehiclesList)
+            vehLen = float(len(vehiclesList))
             for vehNum, vehicleName in enumerate(vehiclesList):
                 shutil.rmtree(os.path.join(rootPath, skinPack, 'vehicles', nation, vehicleName))
                 yield awaitNextFrame()
-                new_progress = int(100 * (float(natNum) + float(vehNum) / float(vehLen)) / float(natLen))
+                new_progress = int(100 * (natNum + vehNum / vehLen) / natLen)
                 if new_progress != progress:
                     progress = new_progress
                     SkinnerLoading.callMethod('updateProgress', progress)
@@ -304,7 +304,7 @@ def modelsProcess(vehicleSkins, callback):
         pkg = ZipFile(pkgPath)
         fileNamesList = [
             x for x in pkg.namelist() if x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in fileFormats]
-        allFilesCnt = len(fileNamesList)
+        allFilesCnt = float(len(fileNamesList))
         for fileNum, memberFileName in enumerate(fileNamesList):
             attempt = memberFileName.split('/')[2]
             if '_skins/' in memberFileName:
@@ -314,7 +314,7 @@ def modelsProcess(vehicleSkins, callback):
                     processMember(memberFileName, skinName)
                 except ValueError as e:
                     print g_config.ID + ':', e
-            new_progress = int(100 * float(fileNum) / float(allFilesCnt))
+            new_progress = int(100 * fileNum / allFilesCnt)
             if new_progress != progress:
                 progress = new_progress
                 SkinnerLoading.callMethod('updateProgress', progress)
