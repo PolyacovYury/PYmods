@@ -39,6 +39,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
     loginManager = dependency.descriptor(ILoginManager)
     sCore = dependency.descriptor(ISettingsCore)
     __callMethod = lambda self, name, *a, **kw: getattr(self, name)(*a, **kw)
+    callMethod = Event.Event()
 
     def __init__(self, loginView):
         super(SkinnerLoading, self).__init__()
@@ -49,7 +50,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
     def _populate(self):
         super(SkinnerLoading, self)._populate()
-        callLoading.__iadd__(self.__callMethod)
+        self.callMethod += self.__callMethod
         self.__initTexts()
         BigWorld.callback(0, self.loadSkins)
 
@@ -108,7 +109,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.updateCancelLabel()
 
     def onWindowClose(self):
-        callLoading.__isub__(self.__callMethod)
+        self.callMethod -= self.__callMethod
         if needToReReadSkinsModels:
             self.call_restart()
         elif self.doLogin:
@@ -161,7 +162,6 @@ def doLogin(app):
 
 modelsDir = curCV + '/vehicles/skins/models/'
 empty_async = partial(async, cbwrapper=lambda x: partial(x, None))
-callLoading = Event.Event()
 texReplaced = False
 skinsChecked = False
 clientIsNew = True
@@ -189,12 +189,12 @@ def skinCRC32All(callback):
         BigWorld.callback(0, callback)
         return
     print g_config.ID + ': listing', skinsPath, 'for CRC32'
-    callLoading('addLine', g_config.i18n['UI_loading_skins'])
+    SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_skins'])
     CRC32 = 0
     resultList = []
     for skin in remDups(dirSect.keys()):
         progress = 0
-        callLoading('addBar', g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
+        SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
         skinCRC32 = 0
         skinSect = dirSect[skin]['vehicles']
         nationsList = [] if skinSect is None else remDups(skinSect.keys())
@@ -223,8 +223,8 @@ def skinCRC32All(callback):
                 new_progress = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
                 if new_progress != progress:
                     progress = new_progress
-                    callLoading('updateProgress', progress)
-        callLoading('onBarComplete')
+                    SkinnerLoading.callMethod('updateProgress', progress)
+        SkinnerLoading.callMethod('onBarComplete')
         if skinCRC32 in resultList:
             print g_config.ID + ': detected duplicate skins pack:', skin.replace(os.sep, '/')
             continue
@@ -243,11 +243,11 @@ def skinCRC32All(callback):
 @empty_async
 @process
 def rmtree(rootPath, callback):
-    callLoading('updateTitle', g_config.i18n['UI_loading_header_models_clean'])
-    callLoading('addLine', g_config.i18n['UI_loading_skins_clean'])
+    SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_clean'])
+    SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_skins_clean'])
     rootDirs = os.listdir(rootPath)
     for skinPack in rootDirs:
-        callLoading('addBar', g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
+        SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
         progress = 0
         nationsList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles'))
         natLen = len(nationsList)
@@ -260,8 +260,8 @@ def rmtree(rootPath, callback):
                 new_progress = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
                 if new_progress != progress:
                     progress = new_progress
-                    callLoading('updateProgress', progress)
-        callLoading('onBarComplete')
+                    SkinnerLoading.callMethod('updateProgress', progress)
+        SkinnerLoading.callMethod('onBarComplete')
         shutil.rmtree(os.path.join(rootPath, skinPack))
     shutil.rmtree(rootPath)
     BigWorld.callback(1, callback)
@@ -310,13 +310,14 @@ def modelsProcess(callback):
     if not needToReReadSkinsModels:
         BigWorld.callback(0, callback)
         return
-    callLoading('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
+    SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
     modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
     print g_config.ID + ': unpacking vehicle packages'
     for pkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
         progress = 0
-        callLoading('addBar', g_config.i18n['UI_loading_package'] % os.path.basename(pkgPath)[:-4].replace('sandbox', 'sb'))
+        SkinnerLoading.callMethod(
+            'addBar', g_config.i18n['UI_loading_package'] % os.path.basename(pkgPath)[:-4].replace('sandbox', 'sb'))
         pkg = ZipFile(pkgPath)
         fileNamesList = [x for x in pkg.namelist()
                          if x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats]
@@ -335,10 +336,10 @@ def modelsProcess(callback):
             new_progress = int(100 * float(fileNum) / float(allFilesCnt))
             if new_progress != progress:
                 progress = new_progress
-                callLoading('updateProgress', progress)
+                SkinnerLoading.callMethod('updateProgress', progress)
                 yield awaitNextFrame()
         pkg.close()
-        callLoading('onBarComplete')
+        SkinnerLoading.callMethod('onBarComplete')
     BigWorld.callback(0, callback)
 
 
