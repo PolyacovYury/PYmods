@@ -21,7 +21,7 @@ from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WW
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
 from gui.Scaleform.daapi.view.login.login_modes import wgc_mode
 from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
-from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, WindowLayer, g_entitiesFactories
+from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates as ST, WindowLayer as WL, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.impl.dialogs import dialogs
@@ -170,9 +170,8 @@ def doLogin(app):
         loginView.onLogin(login, password, loginView._servers.selectedServer['data'], '@' not in login)
 
 
-g_entitiesFactories.addSettings(
-    GroupedViewSettings('SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', WindowLayer.TOP_WINDOW,
-                        '', None, ScopeTemplates.DEFAULT_SCOPE, canClose=False))
+g_entitiesFactories.addSettings(GroupedViewSettings(
+    'SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', WL.TOP_WINDOW, '', None, ST.DEFAULT_SCOPE, canClose=False))
 
 
 def CRC32_from_file(filename, localPath):
