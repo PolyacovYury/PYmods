@@ -44,7 +44,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         super(SkinnerLoading, self).__init__()
         self.loginView = loginView
         self.lines = []
-        self.curPercentage = 0
+        self.progress = 0
         self.doLogin = self.loginManager.wgcAvailable and not self.sCore.getSetting(GAME.LOGIN_SERVER_SELECTION)
 
     def _populate(self):
@@ -80,19 +80,19 @@ class SkinnerLoading(LoginQueueWindowMeta):
         SoundGroups.g_instance.playSound2D(MINIMAP_ATTENTION_SOUND_ID)
 
     def addBar(self, line):
-        self.curPercentage = 0
+        self.progress = 0
         self.addLine(line)
         self.addLine(self.createBar())
 
     def createBar(self):
-        red = 510 - 255 * self.curPercentage / 50
-        green = 255 * self.curPercentage / 50
+        red = 510 - 255 * self.progress / 50
+        green = 255 * self.progress / 50
         return "<font color='#007BFF' face='Arial'>%s</font><font color='#{0:0>2x}{1:0>2x}00'>  %s%%</font>".format(
             red if red < 255 else 255, green if green < 255 else 255) % (
-                   u'\u2593' * (self.curPercentage / 4) + u'\u2591' * (25 - self.curPercentage / 4), self.curPercentage)
+                   u'\u2593' * (self.progress / 4) + u'\u2591' * (25 - self.progress / 4), self.progress)
 
-    def updatePercentage(self, percentage):
-        self.curPercentage = percentage
+    def updateProgress(self, progress):
+        self.progress = progress
         self.lines[-1] = self.createBar()
         self.updateMessage()
 
@@ -193,7 +193,7 @@ def skinCRC32All(callback):
     CRC32 = 0
     resultList = []
     for skin in remDups(dirSect.keys()):
-        completionPercentage = 0
+        progress = 0
         callLoading('addBar', g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
         skinCRC32 = 0
         skinSect = dirSect[skin]['vehicles']
@@ -220,10 +220,10 @@ def skinCRC32All(callback):
                     textureCRC32 = CRC32_from_file(texPath, localPath)
                     skinCRC32 ^= textureCRC32
                 yield awaitNextFrame()
-                currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
-                if currentPercentage != completionPercentage:
-                    completionPercentage = currentPercentage
-                    callLoading('updatePercentage', completionPercentage)
+                new_progress = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
+                if new_progress != progress:
+                    progress = new_progress
+                    callLoading('updateProgress', progress)
         callLoading('onBarComplete')
         if skinCRC32 in resultList:
             print g_config.ID + ': detected duplicate skins pack:', skin.replace(os.sep, '/')
@@ -248,7 +248,7 @@ def rmtree(rootPath, callback):
     rootDirs = os.listdir(rootPath)
     for skinPack in rootDirs:
         callLoading('addBar', g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
-        completionPercentage = 0
+        progress = 0
         nationsList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles'))
         natLen = len(nationsList)
         for num, nation in enumerate(nationsList):
@@ -257,10 +257,10 @@ def rmtree(rootPath, callback):
             for vehNum, vehicleName in enumerate(vehiclesList):
                 shutil.rmtree(os.path.join(rootPath, skinPack, 'vehicles', nation, vehicleName))
                 yield awaitNextFrame()
-                currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
-                if currentPercentage != completionPercentage:
-                    completionPercentage = currentPercentage
-                    callLoading('updatePercentage', completionPercentage)
+                new_progress = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
+                if new_progress != progress:
+                    progress = new_progress
+                    callLoading('updateProgress', progress)
         callLoading('onBarComplete')
         shutil.rmtree(os.path.join(rootPath, skinPack))
     shutil.rmtree(rootPath)
@@ -315,7 +315,7 @@ def modelsProcess(callback):
     modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
     print g_config.ID + ': unpacking vehicle packages'
     for pkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
-        completionPercentage = 0
+        progress = 0
         callLoading('addBar', g_config.i18n['UI_loading_package'] % os.path.basename(pkgPath)[:-4].replace('sandbox', 'sb'))
         pkg = ZipFile(pkgPath)
         fileNamesList = [x for x in pkg.namelist()
@@ -332,10 +332,10 @@ def modelsProcess(callback):
                     print g_config.ID + ':', e
             if not fileNum % 25:
                 yield awaitNextFrame()
-            currentPercentage = int(100 * float(fileNum) / float(allFilesCnt))
-            if currentPercentage != completionPercentage:
-                completionPercentage = currentPercentage
-                callLoading('updatePercentage', completionPercentage)
+            new_progress = int(100 * float(fileNum) / float(allFilesCnt))
+            if new_progress != progress:
+                progress = new_progress
+                callLoading('updateProgress', progress)
                 yield awaitNextFrame()
         pkg.close()
         callLoading('onBarComplete')
