@@ -161,7 +161,7 @@ def doLogin(app):
 
 
 modelsDir = curCV + '/vehicles/skins/models/'
-empty_async = partial(async, cbwrapper=lambda x: partial(x, None))
+delay_call = lambda cb, *a: BigWorld.callback(0, partial(cb, a[0] if len(a) == 1 else a))  # a may be an empty tuple
 texReplaced = False
 skinsChecked = False
 clientIsNew = True
@@ -177,7 +177,7 @@ def CRC32_from_file(filename, localPath):
     return binascii.crc32(str(ResMgr.openSection(filename).asBinary)) & 0xFFFFFFFF & hash(localPath)
 
 
-@empty_async
+@async
 @process
 def skinCRC32All(callback):
     global texReplaced, vehicleSkins
@@ -186,7 +186,7 @@ def skinCRC32All(callback):
     dirSect = ResMgr.openSection(skinsPath)
     if dirSect is None or not dirSect.keys() or not g_config.skinsData['models']:
         print g_config.ID + ': skins folder is empty'
-        BigWorld.callback(0, callback)
+        delay_call(callback)
         return
     print g_config.ID + ': listing', skinsPath, 'for CRC32'
     SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_skins'])
@@ -237,10 +237,10 @@ def skinCRC32All(callback):
         g_config.skinsCache['CRC32'] = str(CRC32)
         texReplaced = True
     ResMgr.purge(skinsPath)
-    BigWorld.callback(0, callback)
+    delay_call(callback)
 
 
-@empty_async
+@async
 @process
 def rmtree(rootPath, callback):
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_clean'])
@@ -264,10 +264,10 @@ def rmtree(rootPath, callback):
         SkinnerLoading.callMethod('onBarComplete')
         shutil.rmtree(os.path.join(rootPath, skinPack))
     shutil.rmtree(rootPath)
-    BigWorld.callback(1, callback)
+    delay_call(callback)
 
 
-@empty_async
+@async
 @process
 def modelsCheck(callback):
     global clientIsNew, skinsModelsMissing, needToReReadSkinsModels
@@ -301,14 +301,14 @@ def modelsCheck(callback):
     elif texReplaced and os.path.isdir(modelsDir):
         yield rmtree(modelsDir)
         os.makedirs(modelsDir)
-    BigWorld.callback(0, callback)
+    delay_call(callback)
 
 
-@empty_async
+@async
 @process
 def modelsProcess(callback):
     if not needToReReadSkinsModels:
-        BigWorld.callback(0, callback)
+        delay_call(callback)
         return
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
@@ -340,7 +340,7 @@ def modelsProcess(callback):
                 yield awaitNextFrame()
         pkg.close()
         SkinnerLoading.callMethod('onBarComplete')
-    BigWorld.callback(0, callback)
+    delay_call(callback)
 
 
 def processMember(memberFileName, skinName):
