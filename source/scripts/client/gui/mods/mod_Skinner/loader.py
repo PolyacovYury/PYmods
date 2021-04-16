@@ -192,7 +192,7 @@ def skinCRC32All(callback):
         skinSect = dirSect[skin]['vehicles']
         nationsList = [] if skinSect is None else remDups(skinSect.keys())
         natLen = len(nationsList)
-        for num, nation in enumerate(nationsList):
+        for natNum, nation in enumerate(nationsList):
             nationSect = skinSect[nation]
             vehiclesList = [] if nationSect is None else remDups(nationSect.keys())
             vehLen = len(vehiclesList)
@@ -212,7 +212,7 @@ def skinCRC32All(callback):
                     texPath = skinsPath + skin + '/' + localPath
                     skinCRC32 ^= binascii.crc32(str(ResMgr.openSection(texPath).asBinary)) & 0xFFFFFFFF & hash(localPath)
                 yield awaitNextFrame()
-                new_progress = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
+                new_progress = int(100 * (float(natNum) + float(vehNum) / float(vehLen)) / float(natLen))
                 if new_progress != progress:
                     progress = new_progress
                     SkinnerLoading.callMethod('updateProgress', progress)
@@ -243,13 +243,13 @@ def rmtree(rootPath, callback):
         progress = 0
         nationsList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles'))
         natLen = len(nationsList)
-        for num, nation in enumerate(nationsList):
+        for natNum, nation in enumerate(nationsList):
             vehiclesList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles', nation))
             vehLen = len(vehiclesList)
             for vehNum, vehicleName in enumerate(vehiclesList):
                 shutil.rmtree(os.path.join(rootPath, skinPack, 'vehicles', nation, vehicleName))
                 yield awaitNextFrame()
-                new_progress = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
+                new_progress = int(100 * (float(natNum) + float(vehNum) / float(vehLen)) / float(natLen))
                 if new_progress != progress:
                     progress = new_progress
                     SkinnerLoading.callMethod('updateProgress', progress)
