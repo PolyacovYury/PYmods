@@ -40,6 +40,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
     sCore = dependency.descriptor(ISettingsCore)
     __callMethod = lambda self, name, *a, **kw: getattr(self, name)(*a, **kw)
     callMethod = Event.Event()
+    skinsChecked = False
 
     def __init__(self, loginView):
         super(SkinnerLoading, self).__init__()
@@ -131,7 +132,6 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
     @process
     def loadSkins(self):
-        global skinsChecked
         jobStartTime = time.time()
         try:
             yield skinCRC32All()
@@ -145,7 +145,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, self.onWindowClose)
-        skinsChecked = True
+        SkinnerLoading.skinsChecked = True
         self.loginView.update()
 
 
@@ -165,7 +165,6 @@ def doLogin(app):
 modelsDir = curCV + '/vehicles/skins/models/'
 delay_call = lambda cb, *a: BigWorld.callback(0, partial(cb, a[0] if len(a) == 1 else a))  # a may be an empty tuple
 texReplaced = False
-skinsChecked = False
 clientIsNew = True
 skinsModelsMissing = True
 vehicleSkins = {}
@@ -386,12 +385,13 @@ def processMember(memberFileName, skinName):
 
 @events.LoginView.populate.before
 def before_Login_populate(*_, **__):
-    wgc_mode._g_firstEntry &= not (g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked)
+    wgc_mode._g_firstEntry &= not (
+            g_config.data['enabled'] and g_config.skinsData['models'] and not SkinnerLoading.skinsChecked)
 
 
 @events.LoginView.populate.after
 def new_Login_populate(self, *_, **__):
-    if g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked:
+    if g_config.data['enabled'] and g_config.skinsData['models'] and not SkinnerLoading.skinsChecked:
         self.as_setDefaultValuesS({
             'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
             'memberMeVisible': self._loginMode.rememberPassVisible,
