@@ -173,10 +173,6 @@ g_entitiesFactories.addSettings(GroupedViewSettings(
     'SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', WL.TOP_WINDOW, '', None, ST.DEFAULT_SCOPE, canClose=False))
 
 
-def CRC32_from_file(filename, localPath):
-    return binascii.crc32(str(ResMgr.openSection(filename).asBinary)) & 0xFFFFFFFF & hash(localPath)
-
-
 @async
 @process
 def skinCRC32All(callback):
@@ -217,8 +213,7 @@ def skinCRC32All(callback):
                                         for texName in remDups(modelsSect[modelsSet].keys()) if texName.endswith('.dds'))
                 for localPath in textures:
                     texPath = skinsPath + skin + '/' + localPath
-                    textureCRC32 = CRC32_from_file(texPath, localPath)
-                    skinCRC32 ^= textureCRC32
+                    skinCRC32 ^= binascii.crc32(str(ResMgr.openSection(texPath).asBinary)) & 0xFFFFFFFF & hash(localPath)
                 yield awaitNextFrame()
                 new_progress = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
                 if new_progress != progress:
