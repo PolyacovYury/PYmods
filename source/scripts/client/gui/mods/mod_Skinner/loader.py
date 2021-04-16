@@ -154,8 +154,8 @@ def doLogin(app):
     if loginView.loginManager.wgcAvailable:
         loginView.loginManager.tryWgcLogin()
     elif loginView.loginManager.getPreference('remember_user'):
-        password = '*' * loginView.loginManager.getPreference('password_length')
         login = loginView.loginManager.getPreference('login')
+        password = '*' * loginView.loginManager.getPreference('password_length')
         loginView.onLogin(login, password, loginView._servers.selectedServer['data'], '@' not in login)
 
 
