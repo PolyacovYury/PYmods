@@ -34,17 +34,6 @@ from skeletons.gui.login_manager import ILoginManager
 from zipfile import ZipFile
 from . import g_config
 
-wgc_mode._g_firstEntry = not g_config.data['enabled']
-empty_async = partial(async, cbwrapper=lambda x: partial(x, None))
-callLoading = Event.Event()
-texReplaced = False
-skinsChecked = False
-clientIsNew = True
-skinsModelsMissing = True
-needToReReadSkinsModels = False
-modelsDir = curCV + '/vehicles/skins/models/'
-vehicleSkins = {}
-
 
 class SkinnerLoading(LoginQueueWindowMeta):
     loginManager = dependency.descriptor(ILoginManager)
@@ -170,6 +159,16 @@ def doLogin(app):
         loginView.onLogin(login, password, loginView._servers.selectedServer['data'], '@' not in login)
 
 
+modelsDir = curCV + '/vehicles/skins/models/'
+empty_async = partial(async, cbwrapper=lambda x: partial(x, None))
+callLoading = Event.Event()
+texReplaced = False
+skinsChecked = False
+clientIsNew = True
+skinsModelsMissing = True
+needToReReadSkinsModels = False
+vehicleSkins = {}
+wgc_mode._g_firstEntry = not g_config.data['enabled']
 g_entitiesFactories.addSettings(GroupedViewSettings(
     'SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', WL.TOP_WINDOW, '', None, ST.DEFAULT_SCOPE, canClose=False))
 
