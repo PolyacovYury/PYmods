@@ -134,10 +134,10 @@ class SkinnerLoading(LoginQueueWindowMeta):
     def loadSkins(self):
         jobStartTime = time.time()
         try:
-            yield skinCRC32All()
-            self.restart = yield modelsCheck()
+            texReplaced, vehicleSkins = yield skinCRC32All()
+            self.restart = yield modelsCheck(texReplaced)
             if self.restart:
-                yield modelsProcess()
+                yield modelsProcess(vehicleSkins)
         except AdispException:
             traceback.print_exc()
         else:
@@ -164,8 +164,6 @@ def doLogin(app):
 
 modelsDir = curCV + '/vehicles/skins/models/'
 delay_call = lambda cb, *a: BigWorld.callback(0, partial(cb, a[0] if len(a) == 1 else a))  # a may be an empty tuple
-texReplaced = False
-vehicleSkins = {}
 wgc_mode._g_firstEntry = not g_config.data['enabled']
 g_entitiesFactories.addSettings(GroupedViewSettings(
     'SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', WL.TOP_WINDOW, '', None, ST.DEFAULT_SCOPE, canClose=False))
@@ -174,13 +172,14 @@ g_entitiesFactories.addSettings(GroupedViewSettings(
 @async
 @process
 def skinCRC32All(callback):
-    global texReplaced, vehicleSkins
+    texReplaced = False
+    vehicleSkins = {}
     CRC32cache = g_config.skinsCache['CRC32']
     skinsPath = 'vehicles/skins/textures/'
     dirSect = ResMgr.openSection(skinsPath)
     if dirSect is None or not dirSect.keys() or not g_config.skinsData['models']:
         print g_config.ID + ': skins folder is empty'
-        delay_call(callback)
+        delay_call(callback, texReplaced, vehicleSkins)
         return
     print g_config.ID + ': listing', skinsPath, 'for CRC32'
     SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_skins'])
@@ -230,7 +229,7 @@ def skinCRC32All(callback):
         g_config.skinsCache['CRC32'] = str(CRC32)
         texReplaced = True
     ResMgr.purge(skinsPath)
-    delay_call(callback)
+    delay_call(callback, texReplaced, vehicleSkins)
 
 
 @async
@@ -262,7 +261,7 @@ def rmtree(rootPath, callback):
 
 @async
 @process
-def modelsCheck(callback):
+def modelsCheck(texReplaced, callback):
     skinsModelsMissing = True
     clientIsNew = True
     lastVersion = g_config.skinsCache['version']
@@ -299,7 +298,7 @@ def modelsCheck(callback):
 
 @async
 @process
-def modelsProcess(callback):
+def modelsProcess(vehicleSkins, callback):
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
     modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
