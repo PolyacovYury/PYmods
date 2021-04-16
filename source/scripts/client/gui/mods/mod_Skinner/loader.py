@@ -165,8 +165,6 @@ def doLogin(app):
 modelsDir = curCV + '/vehicles/skins/models/'
 delay_call = lambda cb, *a: BigWorld.callback(0, partial(cb, a[0] if len(a) == 1 else a))  # a may be an empty tuple
 texReplaced = False
-clientIsNew = True
-skinsModelsMissing = True
 vehicleSkins = {}
 wgc_mode._g_firstEntry = not g_config.data['enabled']
 g_entitiesFactories.addSettings(GroupedViewSettings(
@@ -265,7 +263,8 @@ def rmtree(rootPath, callback):
 @async
 @process
 def modelsCheck(callback):
-    global clientIsNew, skinsModelsMissing
+    skinsModelsMissing = True
+    clientIsNew = True
     lastVersion = g_config.skinsCache['version']
     if lastVersion:
         if getClientVersion() == lastVersion:
