@@ -320,12 +320,12 @@ def modelsProcess(vehicleSkins, callback):
                     processMember(memberFileName, skinName)
                 except ValueError as e:
                     print g_config.ID + ':', e
-            if not fileNum % 25:
-                yield awaitNextFrame()
             new_progress = int(100 * float(fileNum) / float(allFilesCnt))
             if new_progress != progress:
                 progress = new_progress
                 SkinnerLoading.callMethod('updateProgress', progress)
+                yield awaitNextFrame()
+            elif not fileNum % 25:
                 yield awaitNextFrame()
         pkg.close()
         SkinnerLoading.callMethod('onBarComplete')
