@@ -301,15 +301,15 @@ def modelsCheck(texReplaced, callback):
 def modelsProcess(vehicleSkins, callback):
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
-    modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
+    fileFormats = ('.model', '.visual', '.visual_processed', '.vt')
     print g_config.ID + ': unpacking vehicle packages'
     for pkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
         progress = 0
         SkinnerLoading.callMethod(
             'addBar', g_config.i18n['UI_loading_package'] % os.path.basename(pkgPath)[:-4].replace('sandbox', 'sb'))
         pkg = ZipFile(pkgPath)
-        fileNamesList = [x for x in pkg.namelist()
-                         if x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats]
+        fileNamesList = [
+            x for x in pkg.namelist() if x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in fileFormats]
         allFilesCnt = len(fileNamesList)
         for fileNum, memberFileName in enumerate(fileNamesList):
             attempt = memberFileName.split('/')[2]
