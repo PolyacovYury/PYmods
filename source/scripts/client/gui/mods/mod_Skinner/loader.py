@@ -70,8 +70,8 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.as_setMessageS(''.join("<p align='left'>%s</p>" % line for line in self.lines))
 
     def addLine(self, line):
-        if len(self.lines) == 8:
-            del self.lines[0]
+        while len(self.lines) >= 8:
+            self.lines.pop(0)
         self.lines.append(line)
         self.updateMessage()
 
@@ -98,7 +98,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.updateMessage()
 
     def onBarComplete(self):
-        del self.lines[-1]
+        self.lines.pop(-1)
         self.onComplete()
 
     def onTryClosing(self):
