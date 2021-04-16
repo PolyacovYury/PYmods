@@ -64,6 +64,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_unsaved_text': 'Unsaved setting changes detected. Do you want to save them?',
             'UI_loading_autoLogin': 'Log in afterwards',
             'UI_loading_autoLogin_cancel': 'Cancel auto login',
+            'UI_loading_changed_skins': 'Skin changes detected!',
+            'UI_loading_changed_version': 'Client version change detected!',
             'UI_loading_done': ' Done!',
             'UI_loading_header_CRC32': 'Skinner: checking textures',
             'UI_loading_header_models_clean': 'Skinner: cleaning models',

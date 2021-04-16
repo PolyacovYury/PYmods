@@ -262,37 +262,31 @@ def rmtree(rootPath, callback):
 @async
 @process
 def modelsCheck(texReplaced, callback):
-    skinsModelsMissing = True
-    clientIsNew = True
     lastVersion = g_config.skinsCache['version']
-    if lastVersion:
-        if getClientVersion() == lastVersion:
-            clientIsNew = False
-        else:
-            print g_config.ID + ': skins client version changed'
-    else:
+    clientIsNew = getClientVersion() != lastVersion
+    if not lastVersion:
         print g_config.ID + ': skins client version cache not found'
-
-    if os.path.isdir(modelsDir):
-        if len(glob.glob(modelsDir + '*')):
-            skinsModelsMissing = False
-        else:
-            print g_config.ID + ': skins models dir is empty'
-    else:
+    elif clientIsNew:
+        print g_config.ID + ': skins client version changed'
+    skinsModelsMissing = not next(glob.iglob(modelsDir + '*'), False)  # directory does not exist or is empty
+    if not os.path.isdir(modelsDir):
         print g_config.ID + ': skins models dir not found'
+    elif skinsModelsMissing:
+        print g_config.ID + ': skins models dir is empty'
     found = bool(g_config.skinsData['models'])
-    if found and clientIsNew:
-        if os.path.isdir(modelsDir):
+    if found:
+        if clientIsNew:
+            SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_changed_version'])
+            g_config.skinsCache['version'] = getClientVersion()
+        if texReplaced:
+            SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_changed_skins'])
+        if (clientIsNew or texReplaced) and os.path.isdir(modelsDir):
             yield rmtree(modelsDir)
-        g_config.skinsCache['version'] = getClientVersion()
-    if found and not os.path.isdir(modelsDir):
-        os.makedirs(modelsDir)
-    elif not found and os.path.isdir(modelsDir):
+        if not os.path.isdir(modelsDir):
+            os.makedirs(modelsDir)
+    elif os.path.isdir(modelsDir):
         print g_config.ID + ': no skins found, deleting', modelsDir
         yield rmtree(modelsDir)
-    elif texReplaced and os.path.isdir(modelsDir):
-        yield rmtree(modelsDir)
-        os.makedirs(modelsDir)
     delay_call(callback, found and (clientIsNew or skinsModelsMissing or texReplaced))
 
 
