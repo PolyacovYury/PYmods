@@ -46,6 +46,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.loginView = loginView
         self.lines = []
         self.progress = 0
+        self.restart = False
         self.doLogin = self.loginManager.wgcAvailable and not self.sCore.getSetting(GAME.LOGIN_SERVER_SELECTION)
 
     def _populate(self):
@@ -110,7 +111,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
     def onWindowClose(self):
         self.callMethod -= self.__callMethod
-        if needToReReadSkinsModels:
+        if self.restart:
             self.call_restart()
         elif self.doLogin:
             BigWorld.callback(0.1, partial(doLogin, self.app))
@@ -134,8 +135,9 @@ class SkinnerLoading(LoginQueueWindowMeta):
         jobStartTime = time.time()
         try:
             yield skinCRC32All()
-            yield modelsCheck()
-            yield modelsProcess()
+            self.restart = yield modelsCheck()
+            if self.restart:
+                yield modelsProcess()
         except AdispException:
             traceback.print_exc()
         else:
@@ -166,7 +168,6 @@ texReplaced = False
 skinsChecked = False
 clientIsNew = True
 skinsModelsMissing = True
-needToReReadSkinsModels = False
 vehicleSkins = {}
 wgc_mode._g_firstEntry = not g_config.data['enabled']
 g_entitiesFactories.addSettings(GroupedViewSettings(
@@ -265,7 +266,7 @@ def rmtree(rootPath, callback):
 @async
 @process
 def modelsCheck(callback):
-    global clientIsNew, skinsModelsMissing, needToReReadSkinsModels
+    global clientIsNew, skinsModelsMissing
     lastVersion = g_config.skinsCache['version']
     if lastVersion:
         if getClientVersion() == lastVersion:
@@ -283,7 +284,6 @@ def modelsCheck(callback):
     else:
         print g_config.ID + ': skins models dir not found'
     found = bool(g_config.skinsData['models'])
-    needToReReadSkinsModels = found and (clientIsNew or skinsModelsMissing or texReplaced)
     if found and clientIsNew:
         if os.path.isdir(modelsDir):
             yield rmtree(modelsDir)
@@ -296,15 +296,12 @@ def modelsCheck(callback):
     elif texReplaced and os.path.isdir(modelsDir):
         yield rmtree(modelsDir)
         os.makedirs(modelsDir)
-    delay_call(callback)
+    delay_call(callback, found and (clientIsNew or skinsModelsMissing or texReplaced))
 
 
 @async
 @process
 def modelsProcess(callback):
-    if not needToReReadSkinsModels:
-        delay_call(callback)
-        return
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
     modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
