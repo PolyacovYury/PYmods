@@ -173,13 +173,12 @@ class ConfigInterface(PYmodsConfigInterface):
                             sections[modelsSet] = modelsSetSect
                     for modelsSet, modelsSetSect in sections.items():
                         tracksDirSect = modelsSetSect['tracks']
-                        if not any(texName.endswith('.dds') for texName in (
+                        if any(texName.endswith('.dds') for texName in (
                                 ([] if modelsSetSect is None else remDups(modelsSetSect.keys())) +
                                 ([] if tracksDirSect is None else remDups(tracksDirSect.keys())))):
-                            if self.data['isDebug']:
-                                print self.ID + ':', vehicleName, 'folder from', sname, 'pack is empty.'
-                        else:
                             pRecord['whitelist'].add((vehicleName + '/' + modelsSet).lower())
+                        elif self.data['isDebug']:
+                            print self.ID + ':', vehicleName, 'folder from', sname, 'pack is empty.'
             for skinType in ('static', 'dynamic'):
                 priorities = self.skinsData['priorities'][skinType]
                 for tankType in priorities:
