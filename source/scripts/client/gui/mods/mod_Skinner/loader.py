@@ -142,11 +142,20 @@ class SkinnerLoading(LoginQueueWindowMeta):
             traceback.print_exc()
         else:
             loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
+            os.utime(g_config.configPath + 'skinsCache.json', None)  # loadJson does not poke the file, see need_check
         print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, self.onWindowClose)
         SkinnerLoading.skinsChecked = True
         self.loginView.update()
+
+    @staticmethod
+    def need_check():
+        if (not SkinnerLoading.skinsChecked and g_config.skinsCache['version'] == getClientVersion()
+                and time.time() - os.path.getmtime(g_config.configPath + 'skinsCache.json') < 60 * 60 * 6):
+            print g_config.ID + ': skins checksum was checked recently, trusting the user on this one'
+            SkinnerLoading.skinsChecked = True
+        return g_config.data['enabled'] and g_config.skinsData['models'] and not SkinnerLoading.skinsChecked
 
 
 def doLogin(app):
@@ -164,7 +173,6 @@ def doLogin(app):
 
 modelsDir = curCV + '/vehicles/skins/models/'
 delay_call = lambda cb, *a: BigWorld.callback(0, partial(cb, a[0] if len(a) == 1 else a))  # a may be an empty tuple
-wgc_mode._g_firstEntry = not g_config.data['enabled']
 g_entitiesFactories.addSettings(GroupedViewSettings(
     'SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', WL.TOP_WINDOW, '', None, ST.DEFAULT_SCOPE, canClose=False))
 
@@ -377,16 +385,16 @@ def processMember(memberFileName, skinName):
 
 @events.LoginView.populate.before
 def before_Login_populate(*_, **__):
-    wgc_mode._g_firstEntry &= not (
-            g_config.data['enabled'] and g_config.skinsData['models'] and not SkinnerLoading.skinsChecked)
+    wgc_mode._g_firstEntry &= not SkinnerLoading.need_check()
 
 
 @events.LoginView.populate.after
 def new_Login_populate(self, *_, **__):
-    if g_config.data['enabled'] and g_config.skinsData['models'] and not SkinnerLoading.skinsChecked:
-        self.as_setDefaultValuesS({
-            'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
-            'memberMeVisible': self._loginMode.rememberPassVisible,
-            'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
-            'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
-        BigWorld.callback(3, partial(self.app.loadView, SFViewLoadParams('SkinnerLoading'), self))
+    if not SkinnerLoading.need_check():
+        return
+    self.as_setDefaultValuesS({
+        'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
+        'memberMeVisible': self._loginMode.rememberPassVisible,
+        'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
+        'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
+    BigWorld.callback(3, partial(self.app.loadView, SFViewLoadParams('SkinnerLoading'), self))
