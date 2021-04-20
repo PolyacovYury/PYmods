@@ -43,11 +43,11 @@
     "UI_restart_button_restart": "Restart",
     "UI_restart_button_shutdown": "Shutdown",
     "UI_restart_header": "Skinner: restart",
-    "UI_restart_text": "Skin models have been re-unpacked.\nClient restart required to accept changes.\nClient proper behaviour <b>NOT GUARANTEED</b> until next client start.\nThis will <b>not</b>be required later.\nDo you want to restart the game now?",
+    "UI_restart_text": "Skin models have been re-unpacked.\nClient restart required to accept changes.\nClient proper behaviour <b>NOT GUARANTEED</b> until next client start.\nThis will <b>not</b> be required later.\nDo you want to restart the game now?",
     "UI_setting_ChangeViewHotkey_text": "View mode switch hotkey",
-    "UI_setting_ChangeViewHotkey_tooltip": "This hotkey will switch the preview mode in hangar.\n<b>Possible modes:</b>\n • Player tank\n • Ally tank\n • Enemy tank",
+    "UI_setting_ChangeViewHotkey_tooltip": "This hotkey will switch the preview mode in hangar.\n<b>Available modes:</b>\n • Player tank\n • Ally tank\n • Enemy tank",
     "UI_setting_DynamicSkinHotkey_text": "Dynamic skin display switch hotkey",
-    "UI_setting_DynamicSkinHotkey_tooltip": "This hotkey will switch dynamic skin preview mode in hangar.\n<b>Possible modes:</b>\n • OFF\n • Model add",
+    "UI_setting_DynamicSkinHotkey_tooltip": "This hotkey will switch dynamic skin preview mode in hangar.\n<b>Available modes:</b>\n • OFF\n • Model add",
     "UI_setting_isDebug_text": "Enable extended log printing",
     "UI_setting_isDebug_tooltip": "If enabled, your python.log will be harassed with mod's debug information."
 }

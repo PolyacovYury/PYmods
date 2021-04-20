@@ -86,12 +86,12 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_isDebug_tooltip': 'If enabled, your python.log will be harassed with mod\'s debug information.',
             'UI_setting_ChangeViewHotkey_text': 'View mode switch hotkey',
             'UI_setting_ChangeViewHotkey_tooltip': (
-                'This hotkey will switch the preview mode in hangar.\n<b>Possible modes:</b>\n'
+                'This hotkey will switch the preview mode in hangar.\n<b>Available modes:</b>\n'
                 ' • Player tank\n • Ally tank\n • Enemy tank'),
             'UI_setting_DynamicSkinHotkey_text': 'Dynamic skin display switch hotkey',
             'UI_setting_DynamicSkinHotkey_tooltip': (
                 'This hotkey will switch dynamic skin preview mode in hangar.\n'
-                '<b>Possible modes:</b>\n • OFF\n • Model add'),
+                '<b>Available modes:</b>\n • OFF\n • Model add'),
             'UI_enableDynamicSkin': '<b>Skinner:</b>\nEnabling dynamic skins display.',
             'UI_disableDynamicSkin': '<b>Skinner:</b>\nDisabling dynamic skins display.',
             'UI_install_skin': '<b>Skinner:</b>\nSkin installed: ',
