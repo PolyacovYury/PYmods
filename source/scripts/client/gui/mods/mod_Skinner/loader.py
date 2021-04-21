@@ -19,7 +19,7 @@ from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
-from gui.Scaleform.daapi.view.login.login_modes import wgc_mode
+from gui.Scaleform.daapi.view.login.login_modes import base_wgc_mode as wgc_mode
 from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates as ST, WindowLayer as WL, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import ViewKey
@@ -29,15 +29,13 @@ from gui.impl.dialogs.builders import WarningDialogBuilder
 from gui.impl.pub.dialog_window import DialogButtons
 from helpers import getClientVersion, dependency
 from shared_utils import awaitNextFrame
-from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.login_manager import ILoginManager
 from zipfile import ZipFile
 from . import g_config
 
 
 class SkinnerLoading(LoginQueueWindowMeta):
-    loginManager = dependency.descriptor(ILoginManager)
-    sCore = dependency.descriptor(ISettingsCore)
+    _loginManager = dependency.descriptor(ILoginManager)
     __callMethod = lambda self, name, *a, **kw: getattr(self, name)(*a, **kw)
     callMethod = Event.Event()
     skinsChecked = False
@@ -48,7 +46,8 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.lines = []
         self.progress = 0
         self.restart = False
-        self.doLogin = self.loginManager.wgcAvailable and not self.sCore.getSetting(GAME.LOGIN_SERVER_SELECTION)
+        self.doLogin = (self._loginManager.wgcAvailable and not self._loginManager.settingsCore.getSetting(
+            GAME.LOGIN_SERVER_SELECTION) and not self._loginManager.getPreference('server_select_was_set'))
 
     def _populate(self):
         super(SkinnerLoading, self)._populate()
