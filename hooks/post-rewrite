@@ -1,0 +1,5 @@
+#!/bin/bash
+cp hooks/* .git/hooks/
+if [[ "$1" == "rebase" ]]; then
+    start debug &
+fi

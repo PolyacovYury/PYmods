@@ -25,6 +25,8 @@
     "UI_install_skin_dynamic": "<b>Шкуродёр:</b>\nДинамическая шкурка установлена: ",
     "UI_loading_autoLogin": "Войти по завершению",
     "UI_loading_autoLogin_cancel": "Отменить автовход",
+    "UI_loading_changed_skins": "Обнаружены изменения шкурок!",
+    "UI_loading_changed_version": "Обнаружено изменение версии клиента!",
     "UI_loading_done": " Готово!",
     "UI_loading_header_CRC32": "Шкуродёр: проверка текстур",
     "UI_loading_header_models_clean": "Шкуродёр: очистка моделей",

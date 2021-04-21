@@ -19,9 +19,9 @@ from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
 from gui.Scaleform.daapi.view.battle.shared.minimap.settings import MINIMAP_ATTENTION_SOUND_ID
-from gui.Scaleform.daapi.view.login.login_modes import wgc_mode
+from gui.Scaleform.daapi.view.login.login_modes import base_wgc_mode as wgc_mode
 from gui.Scaleform.daapi.view.meta.LoginQueueWindowMeta import LoginQueueWindowMeta
-from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, WindowLayer, g_entitiesFactories
+from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates as ST, WindowLayer as WL, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.impl.dialogs import dialogs
@@ -29,38 +29,29 @@ from gui.impl.dialogs.builders import WarningDialogBuilder
 from gui.impl.pub.dialog_window import DialogButtons
 from helpers import getClientVersion, dependency
 from shared_utils import awaitNextFrame
-from skeletons.account_helpers.settings_core import ISettingsCore
 from skeletons.gui.login_manager import ILoginManager
 from zipfile import ZipFile
 from . import g_config
 
-wgc_mode._g_firstEntry = not g_config.data['enabled']
-empty_async = partial(async, cbwrapper=lambda x: partial(x, None))
-callLoading = Event.Event()
-texReplaced = False
-skinsChecked = False
-clientIsNew = True
-skinsModelsMissing = True
-needToReReadSkinsModels = False
-modelsDir = curCV + '/vehicles/skins/models/'
-vehicleSkins = {}
-
 
 class SkinnerLoading(LoginQueueWindowMeta):
-    loginManager = dependency.descriptor(ILoginManager)
-    sCore = dependency.descriptor(ISettingsCore)
+    _loginManager = dependency.descriptor(ILoginManager)
     __callMethod = lambda self, name, *a, **kw: getattr(self, name)(*a, **kw)
+    callMethod = Event.Event()
+    skinsChecked = False
 
     def __init__(self, loginView):
         super(SkinnerLoading, self).__init__()
         self.loginView = loginView
         self.lines = []
-        self.curPercentage = 0
-        self.doLogin = self.loginManager.wgcAvailable and not self.sCore.getSetting(GAME.LOGIN_SERVER_SELECTION)
+        self.progress = 0
+        self.restart = False
+        self.doLogin = (self._loginManager.wgcAvailable and not self._loginManager.settingsCore.getSetting(
+            GAME.LOGIN_SERVER_SELECTION) and not self._loginManager.getPreference('server_select_was_set'))
 
     def _populate(self):
         super(SkinnerLoading, self)._populate()
-        callLoading.__iadd__(self.__callMethod)
+        self.callMethod += self.__callMethod
         self.__initTexts()
         BigWorld.callback(0, self.loadSkins)
 
@@ -80,8 +71,8 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.as_setMessageS(''.join("<p align='left'>%s</p>" % line for line in self.lines))
 
     def addLine(self, line):
-        if len(self.lines) == 8:
-            del self.lines[0]
+        while len(self.lines) >= 8:
+            self.lines.pop(0)
         self.lines.append(line)
         self.updateMessage()
 
@@ -91,24 +82,24 @@ class SkinnerLoading(LoginQueueWindowMeta):
         SoundGroups.g_instance.playSound2D(MINIMAP_ATTENTION_SOUND_ID)
 
     def addBar(self, line):
-        self.curPercentage = 0
+        self.progress = 0
         self.addLine(line)
         self.addLine(self.createBar())
 
     def createBar(self):
-        red = 510 - 255 * self.curPercentage / 50
-        green = 255 * self.curPercentage / 50
+        red = 510 - 255 * self.progress / 50
+        green = 255 * self.progress / 50
         return "<font color='#007BFF' face='Arial'>%s</font><font color='#{0:0>2x}{1:0>2x}00'>  %s%%</font>".format(
             red if red < 255 else 255, green if green < 255 else 255) % (
-                   u'\u2593' * (self.curPercentage / 4) + u'\u2591' * (25 - self.curPercentage / 4), self.curPercentage)
+                   u'\u2593' * (self.progress / 4) + u'\u2591' * (25 - self.progress / 4), self.progress)
 
-    def updatePercentage(self, percentage):
-        self.curPercentage = percentage
+    def updateProgress(self, progress):
+        self.progress = progress
         self.lines[-1] = self.createBar()
         self.updateMessage()
 
     def onBarComplete(self):
-        del self.lines[-1]
+        self.lines.pop(-1)
         self.onComplete()
 
     def onTryClosing(self):
@@ -119,8 +110,8 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.updateCancelLabel()
 
     def onWindowClose(self):
-        callLoading.__isub__(self.__callMethod)
-        if needToReReadSkinsModels:
+        self.callMethod -= self.__callMethod
+        if self.restart:
             self.call_restart()
         elif self.doLogin:
             BigWorld.callback(0.1, partial(doLogin, self.app))
@@ -140,21 +131,30 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
     @process
     def loadSkins(self):
-        global skinsChecked
         jobStartTime = time.time()
         try:
-            yield skinCRC32All()
-            yield modelsCheck()
-            yield modelsProcess()
+            texReplaced, vehicleSkins = yield skinCRC32All()
+            self.restart = yield modelsCheck(texReplaced)
+            if self.restart:
+                yield modelsProcess(vehicleSkins)
         except AdispException:
             traceback.print_exc()
         else:
             loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
+            os.utime(g_config.configPath + 'skinsCache.json', None)  # loadJson does not poke the file, see need_check
         print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, self.onWindowClose)
-        skinsChecked = True
+        SkinnerLoading.skinsChecked = True
         self.loginView.update()
+
+    @staticmethod
+    def need_check():
+        if (not SkinnerLoading.skinsChecked and g_config.skinsCache['version'] == getClientVersion()
+                and time.time() - os.path.getmtime(g_config.configPath + 'skinsCache.json') < 60 * 60 * 6):
+            print g_config.ID + ': skins checksum was checked recently, trusting the user on this one'
+            SkinnerLoading.skinsChecked = True
+        return g_config.data['enabled'] and g_config.skinsData['models'] and not SkinnerLoading.skinsChecked
 
 
 def doLogin(app):
@@ -165,46 +165,44 @@ def doLogin(app):
     if loginView.loginManager.wgcAvailable:
         loginView.loginManager.tryWgcLogin()
     elif loginView.loginManager.getPreference('remember_user'):
-        password = '*' * loginView.loginManager.getPreference('password_length')
         login = loginView.loginManager.getPreference('login')
+        password = '*' * loginView.loginManager.getPreference('password_length')
         loginView.onLogin(login, password, loginView._servers.selectedServer['data'], '@' not in login)
 
 
-g_entitiesFactories.addSettings(
-    GroupedViewSettings('SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', WindowLayer.TOP_WINDOW,
-                        '', None, ScopeTemplates.DEFAULT_SCOPE, canClose=False))
+modelsDir = curCV + '/vehicles/skins/models/'
+delay_call = lambda cb, *a: BigWorld.callback(0, partial(cb, a[0] if len(a) == 1 else a))  # a may be an empty tuple
+g_entitiesFactories.addSettings(GroupedViewSettings(
+    'SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', WL.TOP_WINDOW, '', None, ST.DEFAULT_SCOPE, canClose=False))
 
 
-def CRC32_from_file(filename, localPath):
-    return binascii.crc32(str(ResMgr.openSection(filename).asBinary)) & 0xFFFFFFFF & hash(localPath)
-
-
-@empty_async
+@async
 @process
 def skinCRC32All(callback):
-    global texReplaced, vehicleSkins
+    texReplaced = False
+    vehicleSkins = {}
     CRC32cache = g_config.skinsCache['CRC32']
     skinsPath = 'vehicles/skins/textures/'
     dirSect = ResMgr.openSection(skinsPath)
     if dirSect is None or not dirSect.keys() or not g_config.skinsData['models']:
         print g_config.ID + ': skins folder is empty'
-        BigWorld.callback(0, callback)
+        delay_call(callback, texReplaced, vehicleSkins)
         return
     print g_config.ID + ': listing', skinsPath, 'for CRC32'
-    callLoading('addLine', g_config.i18n['UI_loading_skins'])
+    SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_skins'])
     CRC32 = 0
     resultList = []
     for skin in remDups(dirSect.keys()):
-        completionPercentage = 0
-        callLoading('addBar', g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
+        progress = 0
+        SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
         skinCRC32 = 0
         skinSect = dirSect[skin]['vehicles']
         nationsList = [] if skinSect is None else remDups(skinSect.keys())
-        natLen = len(nationsList)
-        for num, nation in enumerate(nationsList):
+        natLen = float(len(nationsList))
+        for natNum, nation in enumerate(nationsList):
             nationSect = skinSect[nation]
             vehiclesList = [] if nationSect is None else remDups(nationSect.keys())
-            vehLen = len(vehiclesList)
+            vehLen = float(len(vehiclesList))
             for vehNum, vehicleName in enumerate(vehiclesList):
                 vehicleSkins.setdefault(vehicleName.lower(), []).append(skin)
                 texPrefix = 'vehicles/' + nation + '/' + vehicleName + '/'
@@ -219,14 +217,13 @@ def skinCRC32All(callback):
                                         for texName in remDups(modelsSect[modelsSet].keys()) if texName.endswith('.dds'))
                 for localPath in textures:
                     texPath = skinsPath + skin + '/' + localPath
-                    textureCRC32 = CRC32_from_file(texPath, localPath)
-                    skinCRC32 ^= textureCRC32
+                    skinCRC32 ^= binascii.crc32(str(ResMgr.openSection(texPath).asBinary)) & 0xFFFFFFFF & hash(localPath)
                 yield awaitNextFrame()
-                currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
-                if currentPercentage != completionPercentage:
-                    completionPercentage = currentPercentage
-                    callLoading('updatePercentage', completionPercentage)
-        callLoading('onBarComplete')
+                new_progress = int(100 * (natNum + vehNum / vehLen) / natLen)
+                if new_progress != progress:
+                    progress = new_progress
+                    SkinnerLoading.callMethod('updateProgress', progress)
+        SkinnerLoading.callMethod('onBarComplete')
         if skinCRC32 in resultList:
             print g_config.ID + ': detected duplicate skins pack:', skin.replace(os.sep, '/')
             continue
@@ -239,90 +236,82 @@ def skinCRC32All(callback):
         g_config.skinsCache['CRC32'] = str(CRC32)
         texReplaced = True
     ResMgr.purge(skinsPath)
-    BigWorld.callback(0, callback)
+    delay_call(callback, texReplaced, vehicleSkins)
 
 
-@empty_async
+@async
 @process
 def rmtree(rootPath, callback):
-    callLoading('updateTitle', g_config.i18n['UI_loading_header_models_clean'])
-    callLoading('addLine', g_config.i18n['UI_loading_skins_clean'])
+    SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_clean'])
+    SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_skins_clean'])
     rootDirs = os.listdir(rootPath)
     for skinPack in rootDirs:
-        callLoading('addBar', g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
-        completionPercentage = 0
+        SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
+        progress = 0
         nationsList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles'))
-        natLen = len(nationsList)
-        for num, nation in enumerate(nationsList):
+        natLen = float(len(nationsList))
+        for natNum, nation in enumerate(nationsList):
             vehiclesList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles', nation))
-            vehLen = len(vehiclesList)
+            vehLen = float(len(vehiclesList))
             for vehNum, vehicleName in enumerate(vehiclesList):
                 shutil.rmtree(os.path.join(rootPath, skinPack, 'vehicles', nation, vehicleName))
                 yield awaitNextFrame()
-                currentPercentage = int(100 * (float(num) + float(vehNum) / float(vehLen)) / float(natLen))
-                if currentPercentage != completionPercentage:
-                    completionPercentage = currentPercentage
-                    callLoading('updatePercentage', completionPercentage)
-        callLoading('onBarComplete')
+                new_progress = int(100 * (natNum + vehNum / vehLen) / natLen)
+                if new_progress != progress:
+                    progress = new_progress
+                    SkinnerLoading.callMethod('updateProgress', progress)
+        SkinnerLoading.callMethod('onBarComplete')
         shutil.rmtree(os.path.join(rootPath, skinPack))
     shutil.rmtree(rootPath)
-    BigWorld.callback(1, callback)
+    delay_call(callback)
 
 
-@empty_async
+@async
 @process
-def modelsCheck(callback):
-    global clientIsNew, skinsModelsMissing, needToReReadSkinsModels
+def modelsCheck(texReplaced, callback):
     lastVersion = g_config.skinsCache['version']
-    if lastVersion:
-        if getClientVersion() == lastVersion:
-            clientIsNew = False
-        else:
-            print g_config.ID + ': skins client version changed'
-    else:
+    clientIsNew = getClientVersion() != lastVersion
+    if not lastVersion:
         print g_config.ID + ': skins client version cache not found'
-
-    if os.path.isdir(modelsDir):
-        if len(glob.glob(modelsDir + '*')):
-            skinsModelsMissing = False
-        else:
-            print g_config.ID + ': skins models dir is empty'
-    else:
+    elif clientIsNew:
+        print g_config.ID + ': skins client version changed'
+    skinsModelsMissing = not next(glob.iglob(modelsDir + '*'), False)  # directory does not exist or is empty
+    if not os.path.isdir(modelsDir):
         print g_config.ID + ': skins models dir not found'
+    elif skinsModelsMissing:
+        print g_config.ID + ': skins models dir is empty'
     found = bool(g_config.skinsData['models'])
-    needToReReadSkinsModels = found and (clientIsNew or skinsModelsMissing or texReplaced)
-    if found and clientIsNew:
-        if os.path.isdir(modelsDir):
+    if found:
+        if clientIsNew:
+            SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_changed_version'])
+            g_config.skinsCache['version'] = getClientVersion()
+        if texReplaced:
+            SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_changed_skins'])
+        if (clientIsNew or texReplaced) and os.path.isdir(modelsDir):
             yield rmtree(modelsDir)
-        g_config.skinsCache['version'] = getClientVersion()
-    if found and not os.path.isdir(modelsDir):
-        os.makedirs(modelsDir)
-    elif not found and os.path.isdir(modelsDir):
+        if not os.path.isdir(modelsDir):
+            os.makedirs(modelsDir)
+    elif os.path.isdir(modelsDir):
         print g_config.ID + ': no skins found, deleting', modelsDir
         yield rmtree(modelsDir)
-    elif texReplaced and os.path.isdir(modelsDir):
-        yield rmtree(modelsDir)
-        os.makedirs(modelsDir)
-    BigWorld.callback(0, callback)
+    delay_call(callback, found and (clientIsNew or skinsModelsMissing or texReplaced))
 
 
-@empty_async
+@async
 @process
-def modelsProcess(callback):
-    if not needToReReadSkinsModels:
-        BigWorld.callback(0, callback)
-        return
-    callLoading('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
+def modelsProcess(vehicleSkins, callback):
+    SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
-    modelFileFormats = ('.model', '.visual', '.visual_processed', '.vt')
+    fileFormats = ('.model', '.visual', '.visual_processed', '.vt')
     print g_config.ID + ': unpacking vehicle packages'
     for pkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
-        completionPercentage = 0
-        callLoading('addBar', g_config.i18n['UI_loading_package'] % os.path.basename(pkgPath)[:-4].replace('sandbox', 'sb'))
+        progress = 0
+        SkinnerLoading.callMethod(
+            'addBar', g_config.i18n['UI_loading_package'] % os.path.basename(pkgPath)[:-4].replace('sandbox', 'sb'))
         pkg = ZipFile(pkgPath)
-        fileNamesList = [x for x in pkg.namelist()
-                         if x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in modelFileFormats]
-        allFilesCnt = len(fileNamesList)
+        fileNamesList = [
+            x for x in pkg.namelist() if x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in fileFormats]
+        allFilesCnt = float(len(fileNamesList))
         for fileNum, memberFileName in enumerate(fileNamesList):
             attempt = memberFileName.split('/')[2]
             if '_skins/' in memberFileName:
@@ -332,16 +321,16 @@ def modelsProcess(callback):
                     processMember(memberFileName, skinName)
                 except ValueError as e:
                     print g_config.ID + ':', e
-            if not fileNum % 25:
+            new_progress = int(100 * fileNum / allFilesCnt)
+            if new_progress != progress:
+                progress = new_progress
+                SkinnerLoading.callMethod('updateProgress', progress)
                 yield awaitNextFrame()
-            currentPercentage = int(100 * float(fileNum) / float(allFilesCnt))
-            if currentPercentage != completionPercentage:
-                completionPercentage = currentPercentage
-                callLoading('updatePercentage', completionPercentage)
+            elif not fileNum % 25:
                 yield awaitNextFrame()
         pkg.close()
-        callLoading('onBarComplete')
-    BigWorld.callback(0, callback)
+        SkinnerLoading.callMethod('onBarComplete')
+    delay_call(callback)
 
 
 def processMember(memberFileName, skinName):
@@ -395,15 +384,16 @@ def processMember(memberFileName, skinName):
 
 @events.LoginView.populate.before
 def before_Login_populate(*_, **__):
-    wgc_mode._g_firstEntry &= not (g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked)
+    wgc_mode._g_firstEntry &= not SkinnerLoading.need_check()
 
 
 @events.LoginView.populate.after
 def new_Login_populate(self, *_, **__):
-    if g_config.data['enabled'] and g_config.skinsData['models'] and not skinsChecked:
-        self.as_setDefaultValuesS({
-            'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
-            'memberMeVisible': self._loginMode.rememberPassVisible,
-            'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
-            'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
-        BigWorld.callback(3, partial(self.app.loadView, SFViewLoadParams('SkinnerLoading'), self))
+    if not SkinnerLoading.need_check():
+        return
+    self.as_setDefaultValuesS({
+        'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,
+        'memberMeVisible': self._loginMode.rememberPassVisible,
+        'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
+        'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
+    BigWorld.callback(3, partial(self.app.loadView, SFViewLoadParams('SkinnerLoading'), self))
