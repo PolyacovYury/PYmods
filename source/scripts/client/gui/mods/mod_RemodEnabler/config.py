@@ -106,13 +106,13 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_isDebug_tooltip': 'If enabled, your python.log will be harassed with mod\'s debug information.',
             'UI_setting_ChangeViewHotkey_text': 'View mode switch hotkey',
             'UI_setting_ChangeViewHotkey_tooltip': (
-                'This hotkey will switch the preview mode in hangar.\n<b>Possible modes:</b>\n'
+                'This hotkey will switch the preview mode in hangar.\n<b>Available modes:</b>\n'
                 ' • Player tank\n • Ally tank\n • Enemy tank'),
             'UI_setting_CollisionHotkey_text': 'Collision view switch hotkey',
             'UI_setting_CollisionHotkey_tooltip': (
                 '<b>WARNING: this module is non-functional. Apologies for the inconvenience.</b>\n'
                 'This hotkey will switch collision preview mode in hangar.\n'
-                '<b>Possible modes:</b>\n • OFF\n • Model replace\n • Model add'),
+                '<b>Available modes:</b>\n • OFF\n • Model replace\n • Model add'),
             'UI_setting_SwitchRemodHotkey_text': 'Remod switch hotkey',
             'UI_setting_SwitchRemodHotkey_tooltip': 'This hotkey will cycle through all remods.',
             'UI_collision_compare_enable': '<b>RemodEnabler:</b>\nEnabling collision comparison mode.',
@@ -167,7 +167,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 old_setting_names = [name for name in self.settings if name in remod_name]
                 if old_setting_names and remod_name not in old_setting_names:
                     if len(old_setting_names) > 1:
-                        print self.ID + ': multiple possible settings for remod', remod_name + ':', old_setting_names,
+                        print self.ID + ': multiple settings for remod', remod_name + ':', old_setting_names,
                         print 'skipping settings migration'
                     else:
                         old_settings = self.settings.pop(old_setting_names[0])
