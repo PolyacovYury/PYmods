@@ -109,46 +109,44 @@ def old_makeString(*_, **__):
 
 
 def i18n_hook_makeString(key, *args, **kwargs):
-    if _config.data['enabled'] and key in _config.sectDict:
-        if key not in _config.wasReplaced or not _config.wasReplaced[key]:
-            mode = _config.sectDict[key]['mode']
-            textList = _config.sectDict[key]['textList']
-            if not textList:
-                print _config.ID + ': empty text list for key', key
-            else:
-                if mode == 'single':
-                    _config.textStack[key], _config.textId[key] = textList[0], 0
-                elif mode in ('circle', 'random'):
-                    _config.textStack[key], _config.textId[key] = pickRandomPart(
-                        textList, _config.textId.get(key, -1), mode != 'circle')
-                elif mode == 'bindToKey':
-                    _config.textStack[key] = textList[
-                        min(_config.textId.get(_config.sectDict[key].get('bindToKey', key), 0), len(textList) - 1)]
-                if mode in ('single', 'random', 'circle', 'bindToKey'):
-                    _config.wasReplaced[key] = True
-        text = _config.textStack.get(key)
-        if text is not None:
-            try:
-                text = text.encode('utf-8')
-                if args:
-                    try:
-                        text %= args
-                    except TypeError:
-                        LOG_WARNING("Arguments do not match string read by key '%s': %s", (key, args))
-                        return key
-
-                elif kwargs:
-                    try:
-                        text %= kwargs
-                    except TypeError:
-                        LOG_WARNING("Arguments do not match string read by key '%s': %s", (key, kwargs))
-                        return key
-
-                return text
-            except StandardError:
-                traceback.print_exc()
-                print key
-
+    if not _config.data['enabled'] or key not in _config.sectDict:
+        return old_makeString(key, *args, **kwargs)
+    if key not in _config.wasReplaced or not _config.wasReplaced[key]:
+        mode = _config.sectDict[key]['mode']
+        textList = _config.sectDict[key]['textList']
+        if not textList:
+            print _config.ID + ': empty text list for key', key
+        else:
+            if mode == 'single':
+                _config.textStack[key], _config.textId[key] = textList[0], 0
+            elif mode in ('circle', 'random'):
+                _config.textStack[key], _config.textId[key] = pickRandomPart(
+                    textList, _config.textId.get(key, -1), mode != 'circle')
+            elif mode == 'bindToKey':
+                _config.textStack[key] = textList[
+                    min(_config.textId.get(_config.sectDict[key].get('bindToKey', key), 0), len(textList) - 1)]
+            if mode in ('single', 'random', 'circle', 'bindToKey'):
+                _config.wasReplaced[key] = True
+    text = _config.textStack.get(key)
+    if text is not None:
+        try:
+            text = text.encode('utf-8')
+            if args:
+                try:
+                    text %= args
+                except TypeError:
+                    LOG_WARNING("Arguments do not match string read by key '%s': %s", (key, args))
+                    return key
+            elif kwargs:
+                try:
+                    text %= kwargs
+                except TypeError:
+                    LOG_WARNING("Arguments do not match string read by key '%s': %s", (key, kwargs))
+                    return key
+            return text
+        except StandardError:
+            traceback.print_exc()
+            print key
     return old_makeString(key, *args, **kwargs)
 
 
@@ -187,7 +185,6 @@ def new_setModuleInfoS(base, self, moduleInfo):
 @overrideMethod(ResourceManager, 'getTranslatedText')
 def getTranslatedText(base, self, resourceID):
     from gui.impl import backport
-    import re
     k = backport.msgid(resourceID)
     if not k:
         return base(self, resourceID)
@@ -195,10 +192,10 @@ def getTranslatedText(base, self, resourceID):
     key = ''
     result = ''
     if k.startswith('#tips'):
-        p = k.lower()
-        key = 'override/' + (
-            'title' if (len(re.split(r'[:/]', p)) == 2 and 'sandbox' not in p and 'tip' not in p) or 'title' in p else 'body')
-        result = i18n.makeString('#tips:' + key)
+        p = k.lower().replace('#tips:', '')
+        key = '#tips:override/' + (
+            'body' if 'title' not in p and any(x in p for x in ('/', 'sandbox', 'tip')) else 'title')
+        result = i18n.makeString(key)
     return result if result != key else i18n.makeString(k)
 
 
