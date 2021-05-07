@@ -1,0 +1,1054 @@
+{
+    "meta": {
+        "name": "<b>Цветные сообщения в килл-логе</b>",
+        "desc": " • Замена сообщений в килл-логе на цветные аналоги.\n • Автор: <font color='#DD7700'>NooBooL, Polyacov_Yury</font>"
+    },
+    "#ingame_gui:player_messages/ALLY_HIT": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "Попадание в союзника <font color='#74C500'>%(entity)s</font>!"
+        ]
+    },
+    "#ingame_gui:player_messages/COMBAT_BR_EQUIPMENT_READY" : {
+        "mode" : "single",
+        "text" : "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/positive.png' width='20' height='20' vspace='-4'><font color='#decf9f'> Готово к использованию: </font><font color='#ffda24'>[%(equipment)s]</font>"
+    },
+    "#ingame_gui:player_messages/COMBAT_EQUIPMENT_READY_ARTILLERY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/artefact/artillery.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#ffda24'>Артбатарея развёрнута и готова к залпу!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/COMBAT_EQUIPMENT_READY_BOMBER": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/artefact/bomber.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#ffda24'>Авиация прибыла и готова к бомбометанию!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/COMBAT_EQUIPMENT_READY_INSPIRE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/artefact/inspire.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#ffda24'>Ваш экипаж готов воодушевить союзников!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/COMBAT_EQUIPMENT_READY_RECON": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/artefact/recon.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#ffda24'>Самолёт прибыл и готов вести разведку!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/COMBAT_EQUIPMENT_READY_SMOKE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/artefact/smoke.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#ffda24'>Батарея дымовыпуска готова вести огонь!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/COMBAT_EQUIPMENT_USED_ARTILLERY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Артбатарея</font> %(player)s <font color='#ffda24'>произвела залп!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/COMBAT_EQUIPMENT_USED_BOMBER": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#ffda24'>Авиация</font> %(player)s <font color='#ffda24'>приступила к бомбометанию!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/COMBAT_EQUIPMENT_USED_HEALPOINT": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/artefact/gunner_gunsmith.png' width='22' height='22' vspace='-12'> ",
+            "%(player)s <font color='#ffda24'>создаёт зону восстановления!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/COMBAT_EQUIPMENT_USED_INSPIRE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/artefact/inspire.png' width='22' height='22' vspace='-12'> ",
+            "%(player)s <font color='#ffda24'>активирует воодушевление!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/COMBAT_EQUIPMENT_USED_RECON": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Recon.png' width='22' height='22' vspace='-12'> ",
+            "%(player)s <font color='#ffda24'>вызвал самолёт-разведчик!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/COMBAT_EQUIPMENT_USED_SMOKE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png' width='22' height='22' vspace='-12'> ",
+            "%(player)s <font color='#ffda24'>поставил дымовую завесу!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_ARTILLERY_ALLY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_ARTILLERY_ALLY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_ARTILLERY_ALLY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_ARTILLERY_ENEMY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_ARTILLERY_ENEMY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_ARTILLERY_ENEMY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_ARTILLERY_PROTECTION_UNKNOWN": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Машина уничтожена огнём артбатареи!</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_ARTILLERY_PROTECTION_UNKNOWN_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_ARTILLERY_PROTECTION_UNKNOWN_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_BOMBER_ALLY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_BOMBER_ENEMY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DEATH_ZONE_ALLY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png' width='28' height='20' vspace='-10'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://gui/maps/icons/library/BattleResultIcon-1.png' width='16' height='16' align='baseline' vspace='-1'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DEATH_ZONE_ALLY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png' width='28' height='20' vspace='-10'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://gui/maps/icons/library/TournamentBattleResultIcon-1.png' width='16' height='16' align='baseline' vspace='-1'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DEATH_ZONE_ALLY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png' width='28' height='20' vspace='-10'> ",
+            "Машина уничтожена союзником <font color='#74C500'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DEATH_ZONE_ALLY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png' width='28' height='20' vspace='-10'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> самоуничтожился."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DEATH_ZONE_ENEMY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png' width='28' height='20' vspace='-10'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://gui/maps/icons/library/BattleResultIcon-1.png' width='16' height='16' align='baseline' vspace='-1'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DEATH_ZONE_ENEMY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png' width='28' height='20' vspace='-10'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://gui/maps/icons/library/TournamentBattleResultIcon-1.png' width='16' height='16' align='baseline' vspace='-1'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DEATH_ZONE_ENEMY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png' width='28' height='20' vspace='-10'> ",
+            "Машина уничтожена <font color='#FA1100'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DEATH_ZONE_ENEMY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png' width='28' height='20' vspace='-10'> ",
+            "Противник <font color='#FA1100'>%(target)s</font> cамоуничтожился!"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DEATH_ZONE_SELF_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png' width='28' height='20' vspace='-10'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> уничтожен."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DEATH_ZONE_SELF_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png' width='28' height='20' vspace='-10'> ",
+            "<img src='img://gui/maps/icons/library/TournamentBattleResultIcon-1.png' width='16' height='16' align='baseline' vspace='-1'> ",
+            "%(target)s"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DEATH_ZONE_SELF_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png' width='28' height='20' vspace='-10'> ",
+            "Машина уничтожена."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DROWNING_ALLY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DROWNING_ALLY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DROWNING_ALLY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png' width='29' height='20' vspace='-6'> ",
+            "Машина потоплена союзником <font color='#74C500'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DROWNING_ALLY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png' width='29' height='20' vspace='-6'> ",
+            "Самозатопление союзника <font color='#74C500'>%(target)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DROWNING_ENEMY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DROWNING_ENEMY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DROWNING_ENEMY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png' width='29' height='20' vspace='-6'> ",
+            "Машина потоплена <font color='#FA1100'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DROWNING_ENEMY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png' width='29' height='20' vspace='-6'> ",
+            "Самозатопление противника <font color='#FA1100'>%(target)s</font>!"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DROWNING_SELF_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png' width='29' height='20' vspace='-6'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> потоплен."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DROWNING_SELF_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_DROWNING_SELF_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png' width='29' height='20' vspace='-6'> ",
+            "Машина затоплена."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_GAS_ATTACK_ALLY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_GAS_ATTACK_ALLY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_GAS_ATTACK_ALLY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png' width='22' height='22' vspace='-12'> ",
+            "Машина уничтожена союзником <font color='#74C500'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_GAS_ATTACK_ALLY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#74C500'>%(target)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_GAS_ATTACK_ENEMY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_GAS_ATTACK_ENEMY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_GAS_ATTACK_ENEMY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png' width='22' height='22' vspace='-12'> ",
+            "Машина уничтожена <font color='#FA1100'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_GAS_ATTACK_ENEMY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_GAS_ATTACK_SELF_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png' width='22' height='22' vspace='-12'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> уничтожен."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_GAS_ATTACK_SELF_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "Экипаж уничтожен."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_SHOT": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "Экипаж уничтожен выстрелом <font color='#FA1100'>%(entity)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION_ALLY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION_ALLY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION_ALLY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "Экипаж уничтожен союзником <font color='#74C500'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION_ALLY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION_ENEMY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION_ENEMY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION_ENEMY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "Экипаж уничтожен <font color='#FA1100'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION_ENEMY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION_SELF_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "Экипаж союзника <font color='#74C500'>%(target)s</font> уничтожен."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION_SELF_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_INACTIVE_CREW_AT_WORLD_COLLISION_SELF_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png' width='25' height='25' vspace='-15'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "Экипаж уничтожен."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_OVERTURN_ALLY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_OVERTURN_ALLY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_OVERTURN_ALLY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png' width='29' height='20' vspace='-6'> ",
+            "Машина перевёрнута союзником <font color='#74C500'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_OVERTURN_ALLY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png' width='29' height='20' vspace='-6'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> перевернулся."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_OVERTURN_ENEMY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_OVERTURN_ENEMY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_OVERTURN_ENEMY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png' width='29' height='20' vspace='-6'> ",
+            "Машина перевёрнута <font color='#FA1100'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_OVERTURN_ENEMY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png' width='29' height='20' vspace='-6'> ",
+            "Противник <font color='#FA1100'>%(target)s</font> перевернулся!"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_OVERTURN_SELF_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png' width='29' height='20' vspace='-6'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> перевёрнут."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_OVERTURN_SELF_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_OVERTURN_SELF_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png' width='29' height='20' vspace='-6'> ",
+            "Машина перевёрнута."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RAMMING_ALLY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RAMMING_ALLY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RAMMING_ALLY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png' width='29' height='20' vspace='-6'> ",
+            "Машина уничтожена союзником <font color='#74C500'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RAMMING_ALLY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png' width='29' height='20' vspace='-6'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> разбился."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RAMMING_ENEMY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RAMMING_ENEMY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RAMMING_ENEMY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png' width='29' height='20' vspace='-6'> ",
+            "Машина уничтожена <font color='#FA1100'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RAMMING_ENEMY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png' width='29' height='20' vspace='-6'> ",
+            "Противник <font color='#FA1100'>%(target)s</font> разбился!"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RAMMING_SELF_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png' width='29' height='20' vspace='-6'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> уничтожен."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RAMMING_SELF_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RAMMING_SELF_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png' width='29' height='20' vspace='-6'> ",
+            "Машина уничтожена."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RECOVERY_ALLY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#74C500'>%(target)s</font> покинул машину."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_RECOVERY_ENEMY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#FA1100'>%(target)s</font> покинул машину!"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SECTOR_BOMBERS_UNKNOWN": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Bomber.png' width='22' height='22' vspace='-12'> ",
+            "Машина уничтожена во время бомбардировки."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SECTOR_BOMBERS_UNKNOWN_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Bomber.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#74C500'>%(target)s</font> уничтожен во время бомбардировки."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SECTOR_BOMBERS_UNKNOWN_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Bomber.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#FA1100'>%(target)s</font> уничтожен во время бомбардировки."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SECTOR_PROTECTION_UNKNOWN": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "Машина уничтожена огнём артбатареи."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SECTOR_PROTECTION_UNKNOWN_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font> уничтожен огнём артбатареи."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SECTOR_PROTECTION_UNKNOWN_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font> уничтожен огнём артбатареи."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ALLY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://gui/maps/icons/library/BattleResultIcon-1.png' width='16' height='16' align='baseline' vspace='-1'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ALLY_ALLY_ARTILLERY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ALLY_ALLY_BOMBER": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ALLY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://gui/maps/icons/library/TournamentBattleResultIcon-1.png' width='16' height='16' align='baseline' vspace='-1'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ALLY_ENEMY_ARTILLERY": {
+        "mode": "single",
+        "text": [
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ALLY_ENEMY_BOMBER": {
+        "mode": "single",
+        "text": [
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ALLY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> самоуничтожился."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ALLY_SUICIDE_ARTILLERY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> самоуничтожился."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ALLY_SUICIDE_BOMBER": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png' width='22' height='22' vspace='-12'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> самоуничтожился."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ENEMY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://gui/maps/icons/library/BattleResultIcon-1.png' width='16' height='16' align='baseline' vspace='-1'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ENEMY_ALLY_ARTILLERY": {
+        "mode": "single",
+        "text": [
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ENEMY_ALLY_BOMBER": {
+        "mode": "single",
+        "text": [
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ENEMY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://gui/maps/icons/library/TournamentBattleResultIcon-1.png' width='16' height='16' align='baseline' vspace='-1'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ENEMY_ENEMY_ARTILLERY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ENEMY_ENEMY_BOMBER": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ENEMY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "Противник <font color='#FA1100'>%(target)s</font> самоуничтожился!"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ENEMY_SUICIDE_ARTILLERY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "Противник <font color='#FA1100'>%(target)s</font> самоуничтожился!"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_ENEMY_SUICIDE_BOMBER": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png' width='22' height='22' vspace='-12'> ",
+            "Противник <font color='#FA1100'>%(target)s</font> самоуничтожился!"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_SELF_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> уничтожен."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_SELF_ALLY_ARTILLERY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> уничтожен."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_SELF_ALLY_BOMBER": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png' width='22' height='22' vspace='-12'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> уничтожен."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_SELF_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/TournamentBattleResultIcon-1.png' width='16' height='16' align='baseline' vspace='-1'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_SELF_ENEMY_ARTILLERY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png' width='30' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_SHOT_SELF_ENEMY_BOMBER": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png' width='22' height='22' vspace='-12'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_WORLD_COLLISION_ALLY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_WORLD_COLLISION_ALLY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<font color='#74C500'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_WORLD_COLLISION_ALLY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "Машина разбита союзником <font color='#74C500'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_WORLD_COLLISION_ALLY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> разбился."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_WORLD_COLLISION_ENEMY_ALLY": {
+        "mode": "single",
+        "text": [
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#74C500'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_WORLD_COLLISION_ENEMY_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<font color='#FA1100'>%(attacker)s</font> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_WORLD_COLLISION_ENEMY_SELF": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "Машина разбита <font color='#FA1100'>%(attacker)s</font>."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_WORLD_COLLISION_ENEMY_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/GiftIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "Противник <font color='#FA1100'>%(target)s</font> разбился!"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_WORLD_COLLISION_SELF_ALLY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://gui/maps/icons/library/WarningIcon-1.png' width='16' height='16' align='baseline' vspace='-3'> ",
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "Союзник <font color='#74C500'>%(target)s</font> разбит."
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_WORLD_COLLISION_SELF_ENEMY": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "<font color='#FA1100'>%(target)s</font>"
+        ]
+    },
+    "#ingame_gui:player_messages/DEATH_FROM_WORLD_COLLISION_SELF_SUICIDE": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png' width='29' height='20' vspace='-6'> ",
+            "Машина разбита."
+        ]
+    }
+}
