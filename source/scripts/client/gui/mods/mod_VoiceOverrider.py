@@ -42,13 +42,15 @@ class ConfigInterface(PYmodsConfigInterface):
             VoiceMode('21_CabMech', 'bb21_na1_Cabbagemechanic'), VoiceMode('21_TragicLoss', 'bb21_na2_Tragicloss'),
             VoiceMode('21_Cmdr_AF', 'bb21_na3_Cmdraf'), VoiceMode('21_MasterTortoise', 'bb21_asia1_Mastertortoise'),
             VoiceMode('21_SummerTiger', 'bb21_asia2_Summertiger'), VoiceMode('21_Maharlika', 'bb21_asia3_Maharlika'),
+            VoiceMode('gup_jp_commander', 'gup_jp_commander'), VoiceMode('gup_jp_crew', 'gup_jp_crew'),
+            VoiceMode('duke', 'duke'), VoiceMode('cobra', 'cobra'), VoiceMode('gagarin21', 'gagarin21'),
         ]
         self.music_modes = [MusicMode('default', 'default'), MusicMode('offspring', 'offspringArenaMusic')]
         super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.1.1 (%(file_compile_date)s)'
+        self.version = '1.1.2 (%(file_compile_date)s)'
         self.data = {'enabled': True, 'voice': 0, 'music': 0}
         # noinspection SpellCheckingInspection
         self.i18n = {
@@ -70,6 +72,11 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_voice_celebrity2021_en': 'Chuck Norris (EN)',
             'UI_setting_voice_racer_ru': 'Racer (RU)',
             'UI_setting_voice_racer_en': 'Racer (EN)',
+            'UI_setting_voice_gup_jp_commander': 'GUP: Commander',
+            'UI_setting_voice_gup_jp_crew': 'GUP: Full crew',
+            'UI_setting_voice_duke': 'G.I.Joe: Duke',
+            'UI_setting_voice_cobra': 'G.I.Joe: Cobra',
+            'UI_setting_voice_gagarin21': 'Space-21: Gagarin',
             'UI_setting_voice_20_LeBwa': 'RU-20: LeBwa',
             'UI_setting_voice_20_Yusha': 'RU-20: Yusha',
             'UI_setting_voice_20_Amway921': 'RU-20: Amway921',
