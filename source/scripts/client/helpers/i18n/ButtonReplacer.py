@@ -152,6 +152,8 @@ def i18n_hook_makeString(key, *args, **kwargs):
 
 def onAvatarBecomeNonPlayer(*_, **__):
     if _config.data['enabled'] and _config.data['reReadAtEnd']:
+        from gui.doc_loaders import messages_panel_reader
+        messages_panel_reader._cache.clear()
         _config.wasReplaced = dict.fromkeys(_config.wasReplaced.keys(), False)
 
 
@@ -202,8 +204,10 @@ def getTranslatedText(base, self, resourceID):
 def ButtonReplacer_hooks():
     from gui.Scaleform.daapi.view.meta.ModuleInfoMeta import ModuleInfoMeta
     from gui.shared.tooltips.module import EffectsBlockConstructor
+    from gui.doc_loaders import messages_panel_reader
     overrideMethod(ModuleInfoMeta, 'as_setModuleInfoS', new_setModuleInfoS)
     overrideMethod(EffectsBlockConstructor, 'construct', new_construct)
+    messages_panel_reader._cache.clear()
 
 
 g_playerEvents.onAvatarBecomeNonPlayer += onAvatarBecomeNonPlayer
