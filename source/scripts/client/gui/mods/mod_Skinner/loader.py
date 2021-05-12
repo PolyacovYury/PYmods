@@ -37,7 +37,7 @@ from . import g_config
 class SkinnerLoading(LoginQueueWindowMeta):
     _loginManager = dependency.descriptor(ILoginManager)
     __callMethod = lambda self, name, *a, **kw: getattr(self, name)(*a, **kw)
-    callMethod = Event.Event()
+    callMethod = Event.Handler()
     skinsChecked = False
 
     def __init__(self, loginView):
@@ -51,7 +51,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
     def _populate(self):
         super(SkinnerLoading, self)._populate()
-        self.callMethod += self.__callMethod
+        self.callMethod.set(self.__callMethod)
         self.__initTexts()
         BigWorld.callback(0, self.loadSkins)
 
@@ -76,31 +76,30 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.lines.append(line)
         self.updateMessage()
 
-    def onComplete(self):
-        self.lines[-1] += "<font color='#00FF00'>%s</font>" % g_config.i18n['UI_loading_done']
-        self.updateMessage()
-        SoundGroups.g_instance.playSound2D(MINIMAP_ATTENTION_SOUND_ID)
-
     def addBar(self, line):
         self.progress = 0
         self.addLine(line)
         self.addLine(self.createBar())
 
     def createBar(self):
-        red = 510 - 255 * self.progress / 50
-        green = 255 * self.progress / 50
-        return "<font color='#007BFF' face='Arial'>%s</font><font color='#{0:0>2x}{1:0>2x}00'>  %s%%</font>".format(
-            red if red < 255 else 255, green if green < 255 else 255) % (
-                   u'\u2593' * (self.progress / 4) + u'\u2591' * (25 - self.progress / 4), self.progress)
+        r = min(255, 510 - 255 * self.progress / 50)
+        g = min(255, 255 * self.progress / 50)
+        return "<font color='#007BFF' face='Arial'>%s%s</font><font color='#%02X%02X00'>  %s%%</font>" % (
+                   u'\u2593' * (self.progress / 4), u'\u2591' * (25 - self.progress / 4), r, g, self.progress)
 
     def updateProgress(self, progress):
-        self.progress = progress
-        self.lines[-1] = self.createBar()
-        self.updateMessage()
+        if progress != self.progress:
+            self.progress = progress
+            self.lines[-1] = self.createBar()
+            self.updateMessage()
+            return True
+        return False
 
     def onBarComplete(self):
         self.lines.pop(-1)
-        self.onComplete()
+        self.lines[-1] += "<font color='#00FF00'>%s</font>" % g_config.i18n['UI_loading_done']
+        self.updateMessage()
+        SoundGroups.g_instance.playSound2D(MINIMAP_ATTENTION_SOUND_ID)
 
     def onTryClosing(self):
         return False
@@ -110,7 +109,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.updateCancelLabel()
 
     def onWindowClose(self):
-        self.callMethod -= self.__callMethod
+        self.callMethod.clear()
         if self.restart:
             self.call_restart()
         elif self.doLogin:
@@ -193,7 +192,6 @@ def skinCRC32All(callback):
     CRC32 = 0
     resultList = []
     for skin in remDups(dirSect.keys()):
-        progress = 0
         SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
         skinCRC32 = 0
         skinSect = dirSect[skin]['vehicles']
@@ -219,10 +217,7 @@ def skinCRC32All(callback):
                     texPath = skinsPath + skin + '/' + localPath
                     skinCRC32 ^= binascii.crc32(str(ResMgr.openSection(texPath).asBinary)) & 0xFFFFFFFF & hash(localPath)
                 yield awaitNextFrame()
-                new_progress = int(100 * (natNum + vehNum / vehLen) / natLen)
-                if new_progress != progress:
-                    progress = new_progress
-                    SkinnerLoading.callMethod('updateProgress', progress)
+                SkinnerLoading.callMethod('updateProgress', int(100 * (natNum + vehNum / vehLen) / natLen))
         SkinnerLoading.callMethod('onBarComplete')
         if skinCRC32 in resultList:
             print g_config.ID + ': detected duplicate skins pack:', skin.replace(os.sep, '/')
@@ -247,7 +242,6 @@ def rmtree(rootPath, callback):
     rootDirs = os.listdir(rootPath)
     for skinPack in rootDirs:
         SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
-        progress = 0
         nationsList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles'))
         natLen = float(len(nationsList))
         for natNum, nation in enumerate(nationsList):
@@ -256,10 +250,7 @@ def rmtree(rootPath, callback):
             for vehNum, vehicleName in enumerate(vehiclesList):
                 shutil.rmtree(os.path.join(rootPath, skinPack, 'vehicles', nation, vehicleName))
                 yield awaitNextFrame()
-                new_progress = int(100 * (natNum + vehNum / vehLen) / natLen)
-                if new_progress != progress:
-                    progress = new_progress
-                    SkinnerLoading.callMethod('updateProgress', progress)
+                SkinnerLoading.callMethod('updateProgress', int(100 * (natNum + vehNum / vehLen) / natLen))
         SkinnerLoading.callMethod('onBarComplete')
         shutil.rmtree(os.path.join(rootPath, skinPack))
     shutil.rmtree(rootPath)
@@ -305,7 +296,6 @@ def modelsProcess(vehicleSkins, callback):
     fileFormats = ('.model', '.visual', '.visual_processed', '.vt')
     print g_config.ID + ': unpacking vehicle packages'
     for pkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
-        progress = 0
         SkinnerLoading.callMethod(
             'addBar', g_config.i18n['UI_loading_package'] % os.path.basename(pkgPath)[:-4].replace('sandbox', 'sb'))
         pkg = ZipFile(pkgPath)
@@ -321,12 +311,7 @@ def modelsProcess(vehicleSkins, callback):
                     processMember(memberFileName, skinName)
                 except ValueError as e:
                     print g_config.ID + ':', e
-            new_progress = int(100 * fileNum / allFilesCnt)
-            if new_progress != progress:
-                progress = new_progress
-                SkinnerLoading.callMethod('updateProgress', progress)
-                yield awaitNextFrame()
-            elif not fileNum % 25:
+            if SkinnerLoading.callMethod('updateProgress', int(100 * fileNum / allFilesCnt)) or not fileNum % 25:
                 yield awaitNextFrame()
         pkg.close()
         SkinnerLoading.callMethod('onBarComplete')
