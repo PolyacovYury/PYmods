@@ -70,11 +70,11 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_loading_header_CRC32': 'Skinner: checking textures',
             'UI_loading_header_models_clean': 'Skinner: cleaning models',
             'UI_loading_header_models_unpack': 'Skinner: unpacking models',
-            'UI_loading_package': 'Unpacking %s:',
             'UI_loading_skinPack': 'Checking %s:',
             'UI_loading_skinPack_clean': 'Cleaning %s:',
             'UI_loading_skins': 'Checking skins...',
             'UI_loading_skins_clean': 'Cleaning skin models...',
+            'UI_loading_unpacking': 'Unpacking %s:',
             'UI_restart_header': 'Skinner: restart',
             'UI_restart_text': (
                 'Skin models have been re-unpacked.\nClient restart required to accept changes.\n'
