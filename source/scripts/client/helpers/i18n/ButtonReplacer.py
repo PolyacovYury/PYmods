@@ -187,18 +187,20 @@ def new_setModuleInfoS(base, self, moduleInfo):
 @overrideMethod(ResourceManager, 'getTranslatedText')
 def getTranslatedText(base, self, resourceID):
     from gui.impl import backport
-    k = backport.msgid(resourceID)
-    if not k:
+    full_key = backport.msgid(resourceID)
+    if not full_key:
         return base(self, resourceID)
     from helpers import i18n
-    key = ''
+    override_key = ''
     result = ''
-    if k.startswith('#tips'):
-        p = k.lower().replace('#tips:', '')
-        key = '#tips:override/' + (
-            'body' if 'title' not in p and any(x in p for x in ('/', 'sandbox', 'tip')) else 'title')
-        result = i18n.makeString(key)
-    return result if result != key else i18n.makeString(k)
+    key = full_key.lower().partition('#tips:')[2]
+    if key:
+        # noinspection SpellCheckingInspection
+        override_key = 'override/' + ('title' if (
+                ('battleroyale' not in key or 'status' in key)
+                and not any(x in key for x in ('/', 'sandbox', 'tip'))) else 'body')
+        result = i18n.makeString('#tips:' + override_key)  # orig_makeString strips off file name for no reason
+    return result if result != override_key else i18n.makeString(full_key)
 
 
 def ButtonReplacer_hooks():
