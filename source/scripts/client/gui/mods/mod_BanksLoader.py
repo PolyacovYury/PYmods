@@ -6,6 +6,7 @@ import os
 import traceback
 import zipfile
 from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, events, curCV
+from PYmodsCore.config.interfaces.Simple import ConfigNoInterface
 from async import await, async
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.builders import WarningDialogBuilder
@@ -13,7 +14,7 @@ from gui.impl.pub.dialog_window import DialogButtons as DButtons
 from helpers import getClientVersion
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
     def __init__(self):
         self.editedBanks = {'create': [], 'delete': [], 'memory': [], 'move': [], 'remap': set(), 'wotmod': [], 'section': []}
         self.version_changed = False
@@ -55,11 +56,10 @@ class ConfigInterface(PYmodsConfigInterface):
          }
         super(ConfigInterface, self).init()
 
-    def updateMod(self):
-        pass
-
-    def createTemplate(self):
-        pass
+    def readCurrentSettings(self, quiet=True):
+        super(ConfigInterface, self).readCurrentSettings(quiet)
+        self.suppress_old_mod()
+        self.checkConfigs()
 
     @async
     def tryRestart(self, *_, **__):
@@ -385,12 +385,6 @@ class ConfigInterface(PYmodsConfigInterface):
             if os.path.isfile(new_path):
                 os.rename(new_path, orig_path)
                 break
-
-    def load(self):
-        self.suppress_old_mod()
-        self.readCurrentSettings(False)
-        self.checkConfigs()
-        print self.message() + ': initialised.'
 
 
 _config = ConfigInterface()

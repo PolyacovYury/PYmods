@@ -16,7 +16,6 @@ class DummyConfigInterface(object):
         self.i18n = {}
         self.lang = DEFAULT_LANGUAGE
         self.modSettingsID = self.ID + '_settings'
-        self.containerClass = DummySettingContainer
         self.init()
         self.loadLang()
         self.tb = self.createTB()
@@ -54,6 +53,10 @@ class DummyConfigInterface(object):
     @property
     def template(self):
         return self.createTemplate()
+
+    @property
+    def containerClass(self):
+        return DummySettingContainer
 
     def migrateConfigs(self):
         """

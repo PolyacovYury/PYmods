@@ -21,9 +21,12 @@ class ConfigInterface(DummyConfigInterface):
         self.ID = 'Support'
         self.modsGroup = 'PYmods'
         self.modSettingsID = 'PYmodsGUI'
-        self.containerClass = PYmodsSettingContainer
         self.i18n = {}
         super(ConfigInterface, self).init()
+
+    @property
+    def containerClass(self):
+        return PYmodsSettingContainer
 
     def loadLang(self):
         # noinspection SpellCheckingInspection

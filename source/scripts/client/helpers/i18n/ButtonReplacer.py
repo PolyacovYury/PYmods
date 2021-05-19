@@ -87,6 +87,9 @@ class ConfigInterface(PYmodsConfigInterface):
             data['texts'] = remDups(data['texts'])
         self.updateMod()
 
+    def registerHotkeys(self):
+        BigWorld.callback(0, super(ConfigInterface, self).registerHotkeys)
+
     def registerSettings(self):
         BigWorld.callback(0, super(ConfigInterface, self).registerSettings)
 
