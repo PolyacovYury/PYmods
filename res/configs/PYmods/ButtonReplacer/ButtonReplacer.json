@@ -2,5 +2,5 @@
 //  Задействовать мод
     "enabled": true,
 //  Перечитывать конфиги при выходе из боя
-    "reReadAtEnd": true
+    "updateAfterBattle": true
 }

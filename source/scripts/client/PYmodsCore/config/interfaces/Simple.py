@@ -7,9 +7,8 @@ from ..utils import smart_update, processHotKeys
 __all__ = ['ConfigInterface', 'ConfBlockInterface', 'SettingContainer']
 
 
-class Base(object):
+class ConfigBase(object):
     def __init__(self):
-        self.containerClass = None
         self.ID = ''
         self.defaultKeys = {}
         self.i18n = {}
@@ -25,15 +24,19 @@ class Base(object):
     loadLangJson = lambda self, *a, **kw: loadJson(self.ID, self.lang, self.i18n, self.langPath, *a, **kw)
 
     def init(self):
-        self.containerClass = SettingContainer
         self.configPath = './mods/configs/%s/%s/' % (self.modsGroup, self.ID)
         self.langPath = '%si18n/' % self.configPath
+        self.registerHotkeys()
 
     def loadLang(self):
         smart_update(self.i18n, self.loadLangJson())
 
     def createTB(self):
         return TemplateBuilder(self.data, self.i18n)
+
+    @property
+    def containerClass(self):
+        return SettingContainer
 
     def readCurrentSettings(self):
         pass
@@ -54,7 +57,7 @@ class Base(object):
     def onHotkeyPressed(self, event):
         pass
 
-    def registerSettings(self):
+    def registerHotkeys(self):
         from gui import InputHandler
         InputHandler.g_instance.onKeyDown += self.__hotKeyPressed
         InputHandler.g_instance.onKeyUp += self.__hotKeyPressed
@@ -63,9 +66,20 @@ class Base(object):
         print self.message() + ': initialised.'
 
 
-class ConfigInterface(Base, DummyConfigInterface):
+class ConfigNoInterface(object):
+    def updateMod(self):
+        pass
+
+    def createTemplate(self):
+        pass
+
+    def registerSettings(self):
+        pass
+
+
+class ConfigInterface(ConfigBase, DummyConfigInterface):
     def __init__(self):
-        Base.__init__(self)
+        ConfigBase.__init__(self)
         DummyConfigInterface.__init__(self)
 
     def getData(self):
@@ -86,18 +100,14 @@ class ConfigInterface(Base, DummyConfigInterface):
         self.writeDataJson()
         processHotKeys(self.data, self.defaultKeys, 'read')
 
-    def registerSettings(self):
-        DummyConfigInterface.registerSettings(self)
-        Base.registerSettings(self)
-
     def load(self):
         DummyConfigInterface.load(self)
-        Base.load(self)
+        ConfigBase.load(self)
 
 
-class ConfBlockInterface(Base, DummyConfBlockInterface):
+class ConfBlockInterface(ConfigBase, DummyConfBlockInterface):
     def __init__(self):
-        Base.__init__(self)
+        ConfigBase.__init__(self)
         DummyConfBlockInterface.__init__(self)
 
     @property
@@ -126,13 +136,9 @@ class ConfBlockInterface(Base, DummyConfBlockInterface):
         self.writeDataJson()
         processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'read')
 
-    def registerSettings(self):
-        DummyConfBlockInterface.registerSettings(self)
-        Base.registerSettings(self)
-
     def load(self):
         DummyConfBlockInterface.load(self)
-        Base.load(self)
+        ConfigBase.load(self)
 
 
 class SettingContainer(DummySettingContainer):
