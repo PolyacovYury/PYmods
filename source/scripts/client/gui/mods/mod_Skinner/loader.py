@@ -1,4 +1,5 @@
 import binascii
+import cProfile
 import datetime
 import time
 
@@ -130,6 +131,10 @@ class SkinnerLoading(LoginQueueWindowMeta):
     @process
     def loadSkins(self):
         jobStartTime = time.time()
+        pr = None
+        if g_config.data['isDebug']:
+            pr = cProfile.Profile()
+            pr.enable()
         try:
             texReplaced, vehicleSkins = yield checkSkinFiles()
             self.restart = yield checkMeta(texReplaced)
@@ -140,6 +145,9 @@ class SkinnerLoading(LoginQueueWindowMeta):
         else:
             loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
             os.utime(g_config.configPath + 'skinsCache.json', None)  # loadJson does not poke the file, see need_check
+        if g_config.data['isDebug']:
+            pr.disable()
+            pr.print_stats('time')
         print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, self.onWindowClose)
@@ -148,7 +156,8 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
     @staticmethod
     def need_check():
-        if (not SkinnerLoading.skinsChecked and g_config.skinsCache['version'] == getClientVersion()
+        if (not g_config.data['isDebug'] and not SkinnerLoading.skinsChecked
+                and g_config.skinsCache['version'] == getClientVersion()
                 and time.time() - os.path.getmtime(g_config.configPath + 'skinsCache.json') < 60 * 60 * 6):
             print g_config.ID + ': skins checksum was checked recently, trusting the user on this one'
             SkinnerLoading.skinsChecked = True
