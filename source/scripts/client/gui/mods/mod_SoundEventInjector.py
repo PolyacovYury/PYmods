@@ -115,7 +115,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             if not isinstance(orig, reloadType):  # None is not an instance too
                 if orig is not None:
                     print self.ID + ': changing type of reload effect %s. Might cause problems!' % sname
-                orig, desc = None, reloadType(sect)
+                orig, desc = None, reloadType(sect, effData['type'])
             for slot in reloadType.__slots__:
                 slotName = mismatchSlots.get(slot, slot)
                 if slotName in effData:
@@ -125,7 +125,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                     if slot in modifiers:
                         value = modifiers[slot](value)
                 sect.writeString(slotName, str(value))
-            new_desc = reloadType(sect)
+            new_desc = reloadType(sect, effData['type'])
             if orig is None:
                 g_cache._gunReloadEffects[sname] = new_desc
             else:  # set new attributes to existing descriptors, otherwise they don't update

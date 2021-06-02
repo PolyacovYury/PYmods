@@ -668,7 +668,7 @@ def new_onVehicleDestroyed(base, self):
     base(self)
 
 
-@overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '__readConfig')
+@overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '__readConfigs')
 def new_readConfig(base, self):
     base(self)
     if _config.data['enabled'] and _config.data['disStand']:
