@@ -1,11 +1,11 @@
 import BigWorld
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
-from frameworks.wulf import WindowLayer
+from frameworks.wulf import WindowLayer as WL
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
     CustomizationTabs, checkSlotsFilling, getItemTypesAvailableForVehicle, getEditableStylesExtraNotificationCounter)
-from gui.Scaleform.framework import g_entitiesFactories, ViewSettings, ScopeTemplates
+from gui.Scaleform.framework import g_entitiesFactories, ViewSettings, ScopeTemplates as ST
 from gui.Scaleform.framework.entities.View import View
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
@@ -75,13 +75,13 @@ class CustomizationBottomPanel(CBP):
         visibleTabs = self.getVisibleTabs()
         season = self.__ctx.season
         isBuy = self.__ctx.isBuy
-        itemFilter = self.__ctx.mode.style.isItemInstallable if self.__ctx.modeId == CustomizationModes.EDITABLE_STYLE else None
+        _filter = self.__ctx.mode.style.isItemInstallable if self.__ctx.modeId == CustomizationModes.EDITABLE_STYLE else None
         for tabId in visibleTabs:
             if not isBuy:
                 tabsCounters.append(0)
                 continue
             itemTypes = CustomizationTabs.ITEM_TYPES[tabId]
-            tabsCounters.append(vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes, season, itemFilter))
+            tabsCounters.append(vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes, season, _filter))
         if self.__ctx.isBuy:
             switchersCounter = 0
         else:
@@ -178,8 +178,7 @@ class CamoSelector_carousel(View):
     def _populate(self):
         super(CamoSelector_carousel, self)._populate()
         BigWorld.callback(0, self.destroy)
-        BigWorld.callback(0, self.app.containerManager.getContainer(
-            WindowLayer.SUB_VIEW).getView()._MainView__bottomPanel.resetFilter)
+        BigWorld.callback(0, self.app.containerManager.getContainer(WL.SUB_VIEW).getView()._MainView__bottomPanel.resetFilter)
 
     @staticmethod
     def py_log(*args):
@@ -192,7 +191,7 @@ class CamoSelector_carousel(View):
 
 # noinspection PyArgumentList
 g_entitiesFactories.addSettings(ViewSettings(
-    'PY_CS_carousel_UI', CamoSelector_carousel, 'CamoSelector_carousel.swf', WindowLayer.WINDOW, None, ScopeTemplates.GLOBAL_SCOPE))
+    'PY_CS_carousel_UI', CamoSelector_carousel, 'CamoSelector_carousel.swf', WL.WINDOW, None, ST.GLOBAL_SCOPE))
 
 
 @overrideMethod(CBP, '__new__')
