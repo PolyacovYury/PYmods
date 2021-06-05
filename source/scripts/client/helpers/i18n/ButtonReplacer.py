@@ -191,13 +191,19 @@ def getTranslatedText(base, self, resourceID):
     return result if result != override_key else i18n.makeString(full_key)
 
 
+def new_makeReasonInfo(base, *a, **k):
+    return re.sub(r'<[^>]*>', '', base(*a, **k))
+
+
 def ButtonReplacer_hooks():
     from gui.Scaleform.daapi.view.meta.ModuleInfoMeta import ModuleInfoMeta
     from gui.shared.tooltips.module import EffectsBlockConstructor
     from gui.doc_loaders import messages_panel_reader
+    from gui.Scaleform.daapi.view.battle.shared.postmortem_panel import PostmortemPanel
     overrideMethod(ModuleInfoMeta, 'as_setModuleInfoS', new_setModuleInfoS)
     overrideMethod(EffectsBlockConstructor, 'construct', new_construct)
     messages_panel_reader._cache.clear()
+    overrideMethod(PostmortemPanel, '__makeReasonInfo', new_makeReasonInfo)
 
 
 g_playerEvents.onAvatarBecomeNonPlayer += onAvatarBecomeNonPlayer
