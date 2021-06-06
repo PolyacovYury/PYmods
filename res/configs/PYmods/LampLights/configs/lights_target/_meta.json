@@ -1,0 +1,11 @@
+﻿{
+//  Информация о паке
+    "en": {
+        "name": "<b>Beams that light up your current target</b>",
+        "desc": "{attachTo} • Idea from: Delysid"
+    },
+    "ru": {
+        "name": "<b>Лучи, светящие на танк в прицеле</b>",
+        "desc": "{attachTo} • Идея: Delysid"
+    }
+}

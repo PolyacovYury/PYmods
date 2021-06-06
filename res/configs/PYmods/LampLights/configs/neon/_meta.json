@@ -1,0 +1,11 @@
+﻿{
+//  Информация о паке
+    "en": {
+        "name": "<b>Tanks' bottom neon lighting</b>",
+        "desc": "{attachTo}"
+    },
+    "ru": {
+        "name": "<b>Неоновая подсветка днища</b>",
+        "desc": "{attachTo}"
+    }
+}

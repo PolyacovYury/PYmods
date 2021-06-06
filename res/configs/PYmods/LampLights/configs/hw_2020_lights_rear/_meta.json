@@ -1,0 +1,11 @@
+﻿{
+//  Информация о паке
+    "en": {
+        "name": "<b>Tank reversing signal lights</b>",
+        "desc": "{attachTo}"
+    },
+    "ru": {
+        "name": "<b>Лучи сигналов заднего хода</b>",
+        "desc": "{attachTo}"
+    }
+}
