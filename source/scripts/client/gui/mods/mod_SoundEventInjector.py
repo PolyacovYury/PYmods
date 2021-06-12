@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 import ResMgr
 import SoundGroups
-import glob
 import nations
-import os
 import traceback
 from Avatar import PlayerAvatar
-from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, Analytics
+from PYmodsCore import PYmodsConfigInterface, overrideMethod, Analytics
 from PYmodsCore.config.interfaces.Simple import ConfigNoInterface
 from ReloadEffect import ReloadEffectsType, _SimpleReloadDesc, _BarrelReloadDesc, _AutoReloadDesc, _DualGunReloadDesc
-from debug_utils import LOG_ERROR
 from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc, ImpactNames, KeyPoint
 from items.components.sound_components import WWTripleSoundConfig as SoundConfig
 from items.vehicles import g_cache, VehicleType, __readEffectsTimeLine as readEffectsTimeLine, _VEHICLE_TYPE_XML_PATH
@@ -26,6 +23,8 @@ modifiers = {'duration': (lambda x: x * 1000.0), 'shellDuration': (lambda x: x *
 class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
     def __init__(self):
         self.confList = set()
+        self.effectsXmlPath = _VEHICLE_TYPE_XML_PATH + 'common/gun_effects.xml'
+        self.effectsXml = None
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -38,63 +37,57 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
     def loadLang(self):
         pass
 
-    def readCurrentSettings(self, quiet=True):
-        configPath = self.configPath + 'configs/'
-        if not os.path.exists(configPath):
-            LOG_ERROR('config folder not found: ' + configPath)
-            os.makedirs(configPath)
-        effectsXmlPath = _VEHICLE_TYPE_XML_PATH + 'common/gun_effects.xml'
-        effectsXml = ResMgr.openSection(effectsXmlPath)
-        for confPath in glob.iglob(configPath + '*.json'):
-            confName = os.path.basename(confPath).split('.')[0]
-            try:
-                confdict = loadJson(self.ID, confName, {}, os.path.dirname(confPath) + '/')
-            except StandardError:
-                print self.ID + ': config', os.path.basename(confPath), 'is invalid.'
-                traceback.print_exc()
-                continue
-            self.confList.add(confName)
-            for itemType, itemsDict in confdict.iteritems():
-                if itemType not in self.data:
-                    if not quiet:
-                        print self.ID + ': invalid item type in', confName + ':', itemType
-                    continue
-                itemsData = self.data[itemType]
-                if itemType in ('engines', 'guns'):
-                    for nationName, nationData in itemsDict.iteritems():
-                        if nationName.split(':')[0] not in nations.NAMES:
-                            print self.ID + ': unknown nation in', itemType, 'in', confName + ':', nationName
-                            continue
-                        for itemName in nationData:
-                            itemsData.setdefault(nationName, {}).setdefault(itemName, {}).update(nationData[itemName])
-                if itemType in ('gun_reload_effects', 'shot_effects', 'sound_notifications'):
-                    for itemName in itemsDict:
-                        itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
-                if itemType == 'gun_effects':
-                    for itemName, itemData in itemsDict.iteritems():
-                        if 'origin' not in itemData:
-                            print self.ID + ':', confName + ':', itemName, 'has no origin'
-                            continue
-                        origin = itemData['origin']
-                        if origin not in effectsXml.keys():
-                            print self.ID + ':', confName + ':', itemName, 'has unknown origin:', origin
-                            continue
-                        itemName = intern(itemName)
-                        for key in itemData.keys():
-                            if key not in ('origin', 'timeline', 'effects'):
-                                print self.ID + ':', confName + ': incorrect key', key, 'in', itemName, 'ignored'
-                                itemData.pop(key, None)
-                        if 'effects' in itemData:
-                            for key in itemData['effects'].keys():
-                                if key != 'shotSound':
-                                    print self.ID + ':', confName + ': only shotSound effects are supported,', key, 'ignored'
-                                    itemData['effects'].pop(key)
-                        itemsData.setdefault(itemName, {}).update(itemData)
+    def readData(self, quiet=True):
+        self.effectsXml = ResMgr.openSection(self.effectsXmlPath)
+        self.readConfigDir(quiet)
         print self.ID + ': loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
+        self.injectEffects()
+        self.effectsXml = None
+
+    def onReadConfig(self, quiet, dir_path, name, json_data, sub_dirs, names):
+        self.confList.add(name)
+        for itemType, itemsDict in json_data.iteritems():
+            if itemType not in self.data:
+                if not quiet:
+                    print self.ID + ': invalid item type in', name + ':', itemType
+                continue
+            itemsData = self.data[itemType]
+            if itemType in ('engines', 'guns'):
+                for nationName, nationData in itemsDict.iteritems():
+                    if nationName.split(':')[0] not in nations.NAMES:
+                        print self.ID + ': unknown nation in', itemType, 'in', name + ':', nationName
+                        continue
+                    for itemName in nationData:
+                        itemsData.setdefault(nationName, {}).setdefault(itemName, {}).update(nationData[itemName])
+            if itemType in ('gun_reload_effects', 'shot_effects', 'sound_notifications'):
+                for itemName in itemsDict:
+                    itemsData.setdefault(itemName, {}).update(itemsDict[itemName])
+            if itemType == 'gun_effects':
+                for itemName, itemData in itemsDict.iteritems():
+                    if 'origin' not in itemData:
+                        print self.ID + ':', name + ':', itemName, 'has no origin'
+                        continue
+                    origin = itemData['origin']
+                    if origin not in self.effectsXml.keys():
+                        print self.ID + ':', name + ':', itemName, 'has unknown origin:', origin
+                        continue
+                    itemName = intern(itemName)
+                    for key in itemData.keys():
+                        if key not in ('origin', 'timeline', 'effects'):
+                            print self.ID + ':', name + ': incorrect key', key, 'in', itemName, 'ignored'
+                            itemData.pop(key, None)
+                    if 'effects' in itemData:
+                        for key in itemData['effects'].keys():
+                            if key != 'shotSound':
+                                print self.ID + ':', name + ': only shotSound effects are supported,', key, 'ignored'
+                                itemData['effects'].pop(key)
+                    itemsData.setdefault(itemName, {}).update(itemData)
+
+    def injectEffects(self):
         for sname, effData in self.data['gun_effects'].iteritems():
             if sname not in g_cache._gunEffects:
                 g_cache._gunEffects[sname] = readEffectsTimeLine(
-                    ((None, effectsXmlPath), effData['origin']), effectsXml[effData['origin']])
+                    ((None, self.effectsXmlPath), effData['origin']), self.effectsXml[effData['origin']])
             effectDesc = g_cache._gunEffects[sname]
             if 'timeline' in effData:
                 for keyPointName, timePoint in effData['timeline'].iteritems():

@@ -106,13 +106,6 @@ class ConfigInterface(PYmodsConfigInterface):
         }
         super(ConfigInterface, self).init()
 
-    def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
-        data = self.loadDataJson()
-        if 'mode' in data:
-            self.data['voice'] = data.pop('mode')
-            self.loadDataJson(True)
-
     def createTemplate(self):
         return {
             'modDisplayName': self.i18n['name'],
@@ -134,7 +127,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.playPreviewSound()
 
     def onMSADestroy(self):
-        self.readCurrentSettings()
+        self.readData()
         self.clearPreviewSound()
 
     def playPreviewSound(self):

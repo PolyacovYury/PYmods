@@ -66,7 +66,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def onMSADestroy(self):
         SoundLoop(False)
-        self.readCurrentSettings()
+        self.readData()
 
     def onHotkeyPressed(self, event):
         if (not hasattr(BigWorld.player(), 'arena') or not self.data['enabled'] or (

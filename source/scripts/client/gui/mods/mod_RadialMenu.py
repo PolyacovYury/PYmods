@@ -2,14 +2,12 @@
 import BigWorld
 import Keys
 import Math
-import glob
 import math_utils
-import os
 import string
 import traceback
 from Event import SafeEvent
-from PYmodsCore import PYmodsConfigInterface, loadJson, config, checkKeys, pickRandomPart, Analytics, overrideMethod, \
-    sendChatMessage, loadJsonOrdered, events
+from PYmodsCore import (
+    PYmodsConfigInterface, loadJson, config, checkKeys, pickRandomPart, Analytics, overrideMethod, sendChatMessage, events)
 from Vehicle import Vehicle
 from collections import OrderedDict
 from constants import ARENA_BONUS_TYPE
@@ -68,61 +66,49 @@ class ConfigInterface(PYmodsConfigInterface):
                 'column2': [self.tb.createHotKey('mapMenu_key')]}
 
     def migrateConfigs(self):
-        for path in sorted(glob.iglob(self.configPath + 'skins/*.json'), key=string.lower):
-            new_config = OrderedDict()
-            dir_path, full_name = os.path.split(path)
-            name = os.path.splitext(full_name)[0]
-            old_config = loadJsonOrdered(self.ID, dir_path, name)
-            if not old_config:
-                print self.ID + ': error while reading', full_name + '.'
-                continue
-            for key, data in old_config.iteritems():
-                if key.endswith('Menu'):
-                    new_key = key[:-4]
-                    if new_key not in VEHICLE_TYPES_ORDER:
-                        new_key = 'default' if new_key == 'Tank' else key
-                    new_config[new_key] = data
-                elif key == 'tankSpecific':
-                    new_config.update(data)
-                else:
-                    new_config[key] = data
-            loadJson(self.ID, name, new_config, dir_path, True, sort_keys=False)
+        self.readConfigDir(False, ordered=True, migrate=True)
+
+    def onMigrateConfig(self, quiet, path, dir_path, name, json_data, sub_dirs, names):
+        new_config = OrderedDict()
+        for key, data in json_data.iteritems():
+            if key.endswith('Menu'):
+                new_key = key[:-4]
+                if new_key not in VEHICLE_TYPES_ORDER:
+                    new_key = 'default' if new_key == 'Tank' else key
+                new_config[new_key] = data
+            elif key == 'tankSpecific':
+                new_config.update(data)
+            else:
+                new_config[key] = data
+        loadJson(self.ID, name, new_config, path, True, sort_keys=False)
 
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
         self.updateCommandData()
 
     def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
-        self.updateCommandData()
-        self.updateMod()
+        self.updateCommandData(quiet)
 
-    def updateCommandData(self):
+    def updateCommandData(self, quiet=True):
         self.configMeta = {'default': self.i18n['UI_setting_selectedConfig_defaultMeta']}
         self.commands.clear()
         self.commands['default'] = {'hotkeyOnly': [CustomMenuCommand({'command': 'RELOADINGGUN', 'hotKey': ['KEY_C']})]}
-        for path in sorted(glob.iglob(self.configPath + 'skins/*.json'), key=string.lower):
-            dir_path, full_name = os.path.split(path)
-            name = os.path.splitext(full_name)[0]
-            try:
-                confDict = loadJson(self.ID, name, {}, dir_path)
-            except StandardError:
-                print self.ID + ': config', full_name, 'is invalid.'
-                traceback.print_exc()
-                continue
-            self.configMeta[name] = confDict.get('meta', name)
-            self.commands[name] = commands = {}
-            for key, confSect in confDict.iteritems():
-                if key == 'meta':
-                    continue
-                if isinstance(confSect, basestring):
-                    commands[key] = confSect
-                elif key == 'hotkeyOnly':
-                    commands[key] = [CustomMenuCommand(x) for x in confSect]
-                else:
-                    commands[key] = {menuType: [CustomMenuCommand(x) if x else x for x in menuConf]
-                                     for menuType, menuConf in confSect.iteritems()}
+        self.readConfigDir(quiet, dir_name='skins')
         self.data['selectedConfig'] = min(self.data['selectedConfig'], len(self.commands) - 1)
+
+    def onReadConfig(self, quiet, dir_path, name, json_data, sub_dirs, names):
+        self.configMeta[name] = json_data.get('meta', name)
+        self.commands[name] = commands = {}
+        for key, confSect in json_data.iteritems():
+            if key == 'meta':
+                continue
+            if isinstance(confSect, basestring):
+                commands[key] = confSect
+            elif key == 'hotkeyOnly':
+                commands[key] = [CustomMenuCommand(x) for x in confSect]
+            else:
+                commands[key] = {menuType: [CustomMenuCommand(x) if x else x for x in menuConf]
+                                 for menuType, menuConf in confSect.iteritems()}
 
     def onHotkeyPressed(self, event):
         if not isPlayerAvatar() or not self.data['enabled']:

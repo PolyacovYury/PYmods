@@ -57,7 +57,6 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
         super(ConfigInterface, self).init()
 
     def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.suppress_old_mod()
         self.checkConfigs()
 

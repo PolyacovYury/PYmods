@@ -1,5 +1,5 @@
 import BigWorld
-from HeroTank import HeroTank
+from HangarVehicle import HangarVehicle
 from PYmodsCore import overrideMethod, refreshCurrentVehicle
 from gui import SystemMessages
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -46,7 +46,7 @@ def getModelDescInfo(vehicleID, vDesc, mode):
     else:
         return None, None
     xmlName = vDesc.name.split(':')[1].lower()
-    modelDesc = g_config.findModelDesc(xmlName, currentTeam, isinstance(BigWorld.entity(vehicleID), HeroTank))
+    modelDesc = g_config.findModelDesc(xmlName, currentTeam, isinstance(BigWorld.entity(vehicleID), HangarVehicle))
     if modelDesc is not None and vDesc.chassis.generalWheelsAnimatorConfig is not None:
         print g_config.ID + ':', (
             'WARNING: wheeled vehicles are NOT processed. At least until WG moves params processing out of Vehicular.')

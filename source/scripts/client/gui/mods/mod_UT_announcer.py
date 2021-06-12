@@ -195,13 +195,12 @@ class ConfigInterface(PYmodsConfigInterface):
         if flashController is not None:
             flashController.onApplySettings()
 
-    def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
+    def readData(self, quiet=True):
+        super(ConfigInterface, self).readData(quiet)
         colour = self.data['textStyle']['colour']
         colours = self.colours.values()
         self.data['textColour'] = colours.index(colour) if colour in colours else 10
         self.data['textStyle']['colour'] = self.colours.values()[self.data['textColour']]
-        self.updateMod()
 
     def formatText(self, newText, isPlayer, isAlly, isSquadMan, names):
         colors = dict(

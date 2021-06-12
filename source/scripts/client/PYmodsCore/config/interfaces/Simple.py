@@ -1,6 +1,7 @@
+import os
 import traceback
 from .Dummy import DummyConfigInterface, DummyConfBlockInterface, DummySettingContainer
-from ..json_reader import loadJson
+from ..json_reader import loadJson, loadJsonOrdered
 from ..template_builders import TemplateBuilder
 from ..utils import smart_update, processHotKeys
 
@@ -38,11 +39,46 @@ class ConfigBase(object):
     def containerClass(self):
         return SettingContainer
 
-    def readCurrentSettings(self):
+    def readConfigDir(
+            self, quiet, recursive=False, dir_name='configs', error_not_exist=True, make_dir=True, ordered=False,
+            encrypted=False, migrate=False):
+        configs_dir = self.configPath + dir_name + '/'
+        if not os.path.isdir(configs_dir):
+            if error_not_exist and not quiet:
+                print self.ID + ': config directory not found:', configs_dir
+            if make_dir:
+                os.makedirs(configs_dir)
+        for dir_path, sub_dirs, names in os.walk(configs_dir):
+            dir_path = dir_path.replace('\\', '/')
+            local_path = dir_path.replace(configs_dir, '')
+            names = sorted([x for x in names if x.endswith('.json')], key=str.lower)
+            if not recursive:
+                sub_dirs[:] = []
+            for name in names:
+                name = os.path.splitext(name)[0]
+                json_data = {}
+                try:
+                    if ordered:
+                        json_data = loadJsonOrdered(self.ID, dir_path, name)
+                    else:
+                        json_data = loadJson(self.ID, name, json_data, dir_path, encrypted=encrypted)
+                except StandardError:
+                    traceback.print_exc()
+                if not json_data:
+                    print self.ID + ':', (local_path and (local_path + '/')) + name + '.json is invalid'
+                    continue
+                if migrate:
+                    self.onMigrateConfig(quiet, dir_path, local_path, name, json_data, sub_dirs, names)
+                else:
+                    self.onReadConfig(quiet, local_path, name, json_data, sub_dirs, names)
+
+    def onMigrateConfig(self, quiet, path, dir_path, name, json_data, sub_dirs, names):
+        """clearing sub_dirs and/or names using slice assignment breaks the corresponding loop"""
         pass
 
-    def onMSAPopulate(self):
-        self.readCurrentSettings()
+    def onReadConfig(self, quiet, dir_path, name, json_data, sub_dirs, names):
+        """clearing sub_dirs and/or names using slice assignment breaks the corresponding loop"""
+        pass
 
     def message(self):
         return '%s v.%s %s' % (self.ID, self.version, self.author)
@@ -88,11 +124,10 @@ class ConfigInterface(ConfigBase, DummyConfigInterface):
     def createTemplate(self):
         raise NotImplementedError
 
-    def readCurrentSettings(self, quiet=True):
+    def readData(self, quiet=True):
         processHotKeys(self.data, self.defaultKeys, 'write')
         smart_update(self.data, self.loadDataJson(quiet=quiet))
         processHotKeys(self.data, self.defaultKeys, 'read')
-        self.updateMod()
 
     def onApplySettings(self, settings):
         smart_update(self.data, settings)
@@ -120,7 +155,7 @@ class ConfBlockInterface(ConfigBase, DummyConfBlockInterface):
     def createTemplate(self, blockID=None):
         raise NotImplementedError('Template for block %s is not created' % blockID)
 
-    def readCurrentSettings(self, quiet=True):
+    def readData(self, quiet=True):
         for blockID in self.data:
             processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'write')
         data = self.loadDataJson(quiet=quiet)
@@ -128,7 +163,6 @@ class ConfBlockInterface(ConfigBase, DummyConfBlockInterface):
             if blockID in data:
                 smart_update(self.data[blockID], data[blockID])
             processHotKeys(self.data[blockID], self.defaultKeys[blockID], 'read')
-            self.updateMod(blockID)
 
     def onApplySettings(self, settings, blockID=None):
         smart_update(self.data[blockID], settings)

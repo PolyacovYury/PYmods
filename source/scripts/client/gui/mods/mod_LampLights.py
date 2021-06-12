@@ -102,14 +102,14 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).onApplySettings(settings)
         self.isLampsVisible = self.data['enabled'] and self.data['enableAtStartup'] and self.isLampsVisible
 
-    def readConfDict(self, quiet, confdict, confPath, sourceModel=None, upperName=''):
+    def readConfDict(self, quiet, confdict, name, sourceModel=None, upperName=''):
         for confKey, configDict in confdict.items():
             if upperName:
                 confKey = upperName + '.' + confKey
             if confKey in ('enable', 'meta', 'attachToPlayer', 'attachToAlly', 'attachToEnemy'):
                 continue
             if any(confKey in curConfigsDict for curConfigsDict in self.configsDict.values()):
-                print self.ID + ':', confPath + ': overlap detected:', confKey, 'already exists.'
+                print self.ID + ':', name + '.json: overlap detected:', confKey, 'already exists.'
                 continue
             model = None
             if 'model' in configDict['type']:
@@ -134,12 +134,12 @@ class ConfigInterface(PYmodsConfigInterface):
                 if not quiet:
                     print self.ID + ':', confKey, 'disabled in config.'
                 continue
-            self.configsDict[os.path.basename(confPath).split('.')[0]][confKey] = confDict = {}
+            self.configsDict[name][confKey] = confDict = {}
             for key in ('type', 'place', 'mode', 'preRotate', 'postRotate', 'vect'):
                 confDict[key] = listToTuple(configDict[key])
 
             for key in ('attachToPlayer', 'attachToAlly', 'attachToEnemy'):
-                confDict[key] = self.configsDict[os.path.basename(confPath).split('.')[0]][key]
+                confDict[key] = self.configsDict[name][key]
 
             if confDict['mode'] not in self.modes:
                 print self.ID + ': unknown mode in', confKey, 'detected:', confDict['mode'] + '. This light will be off.'
@@ -154,16 +154,13 @@ class ConfigInterface(PYmodsConfigInterface):
             else:
                 confDict['path'] = configDict['path']
                 if 'subLights' in configDict:
-                    self.readConfDict(quiet, configDict['subLights'], confPath, sourceModel=model,
-                                      upperName=confKey)
+                    self.readConfDict(quiet, configDict['subLights'], name, sourceModel=model, upperName=confKey)
             if self.data['Debug'] and not quiet:
                 print self.ID + ':', confKey, 'loaded.'
 
     def readCurrentSettings(self, quiet=True):
         self.configsDict.clear()
         self.modes = {'constant': [], 'stop': [], 'turn_left': [], 'turn_right': [], 'back': [], 'target': [], 'spot': []}
-        super(ConfigInterface, self).readCurrentSettings(quiet)
-
         if self.data['DebugModel']:
             if self.data['DebugPath']:
                 try:
@@ -176,35 +173,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 LOG_NOTE('Debug disabled due to absence of DebugPath.')
                 self.data['DebugModel'] = False
         if self.data['enabled']:
-            configPath = self.configPath + 'configs/'
-            if not os.path.exists(configPath):
-                LOG_ERROR('%s config folder not found: %s' % (self.ID, configPath))
-                os.makedirs(configPath)
-            for confPath in glob.iglob(configPath + '*.json'):
-                confName = os.path.basename(confPath)
-                try:
-                    confdict = loadJson(self.ID, confName.split('.')[0], self.configsDict.get(confName.split('.')[0], {}),
-                                        os.path.dirname(confPath) + '/')
-                except StandardError:
-                    print self.ID + ': config', confName, 'is invalid.'
-                    traceback.print_exc()
-                    continue
-                if not confdict['enable'] or not any(
-                        x for x in (confdict.get(y, True) for y in ('attachToPlayer', 'attachToAlly', 'attachToEnemy'))):
-                    if not quiet:
-                        print self.ID + ': config', confName, 'is disabled.'
-                    continue
-                if self.data['Debug']:
-                    print self.ID + ': loading', confName + ':'
-                self.configsDict[confName.split('.')[0]] = configsDict = {}
-                configsDict['meta'] = metaDict = {'name': '<b>%s</b>' % confName,
-                                                  'desc': self.i18n['UI_setting_meta_NDA']}
-                metaDict['name'] = confdict.get('meta', {}).get(self.lang, {}).get('name', metaDict['name'])
-                metaDict['desc'] = confdict.get('meta', {}).get(self.lang, {}).get('desc', metaDict['desc'])
-                for key in ['attachToPlayer', 'attachToAlly', 'attachToEnemy']:
-                    configsDict[key] = confdict.get(key, True)
-                self.readConfDict(quiet, confdict, confPath)
-
+            self.readConfigDir(quiet)
             if not self.configsDict:
                 print 'LampLights has not loaded any configs. Are you sure you need this .pyc?'
             if self.data['DebugModel'] and self.configsDict:
@@ -238,7 +207,23 @@ class ConfigInterface(PYmodsConfigInterface):
             LOG_NOTE('LampLights mod fully disabled via main config.')
             self.isLampsVisible = False
         self.isTickRequired = any(self.modes[key] for key in ('stop', 'turn_left', 'turn_right', 'back'))
-        self.updateMod()
+
+    def onReadConfig(self, quiet, dir_path, name, json_data, sub_dirs, names):
+        if not json_data['enable'] or not any(
+                x for x in (json_data.get(y, True) for y in ('attachToPlayer', 'attachToAlly', 'attachToEnemy'))):
+            if not quiet:
+                print self.ID + ': config', name + '.json is disabled.'
+            return
+        if self.data['Debug']:
+            print self.ID + ': loading', name + '.json:'
+        self.configsDict[name] = configsDict = {}
+        configsDict['meta'] = metaDict = {'name': '<b>%s.json</b>' % name,
+                                          'desc': self.i18n['UI_setting_meta_NDA']}
+        metaDict['name'] = json_data.get('meta', {}).get(self.lang, {}).get('name', metaDict['name'])
+        metaDict['desc'] = json_data.get('meta', {}).get(self.lang, {}).get('desc', metaDict['desc'])
+        for key in ['attachToPlayer', 'attachToAlly', 'attachToEnemy']:
+            configsDict[key] = json_data.get(key, True)
+        self.readConfDict(quiet, json_data, name)
 
     def onHotkeyPressed(self, event):
         if (not hasattr(BigWorld.player(), 'arena') or not self.data['enabled']

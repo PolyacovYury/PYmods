@@ -6,7 +6,6 @@ from ..config.interfaces import DummyConfigInterface, PYmodsSettingContainer
 
 class ConfigInterface(DummyConfigInterface):
     def __init__(self):
-        super(ConfigInterface, self).__init__()
         # noinspection SpellCheckingInspection
         self.links = {
             'patreon': 'https://www.patreon.com/polyacov_yury/',
@@ -16,6 +15,7 @@ class ConfigInterface(DummyConfigInterface):
             'streamlabs_yt': 'https://streamlabs.com/%D0%AE%D1%80%D0%B8%D0%B9%D0%9F%D0%BE%D0%BB%D1%8F%D0%BA%D0%BE%D0%B21/',
             'streamlabs_twitch': 'https://streamlabs.com/polyacov_yury/',
         }
+        super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = 'Support'

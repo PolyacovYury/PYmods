@@ -57,7 +57,6 @@ class ConfigInterface(PYmodsConfigInterface):
                             self.tb.createControl('addUnlockMode')]}
 
     def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.cameraPos = loadJson(self.ID, 'cameraPositions', self.cameraPos, self.configPath, quiet=quiet)
 
     def onHotkeyPressed(self, event):

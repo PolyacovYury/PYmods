@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import BigWorld
-import glob
-import os
 import re
 import traceback
-from PYmodsCore import PYmodsConfigInterface, loadJson, remDups, pickRandomPart, Analytics, overrideMethod
+from PYmodsCore import PYmodsConfigInterface, remDups, pickRandomPart, Analytics, overrideMethod
 from PYmodsCore.config import smart_update
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_ERROR, LOG_WARNING
@@ -48,36 +46,8 @@ class ConfigInterface(PYmodsConfigInterface):
                 'column2': [self.tb.createControl('updateAfterBattle')]}
 
     def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.meta.clear(), self.textData.clear(), self.textCache.clear(), self.textId.clear()
-        configPath = self.configPath + 'configs/'
-        if not os.path.isdir(configPath):
-            if not quiet:
-                print self.ID + ': config directory not found:', configPath
-            self.updateMod()
-            return
-        for fPath in glob.iglob(configPath + '*.json'):
-            fName = os.path.basename(fPath)
-            json_data = loadJson(self.ID, fName.split('.')[0], {}, configPath)
-            self.meta[fName] = meta = {'name': '<b>%s</b>' % fName, 'desc': self.i18n['UI_setting_NDA']}
-            smart_update(meta, json_data.get('meta', {}))
-            for key, data in json_data.iteritems():
-                if key == 'meta':
-                    continue
-                section = self.textData.setdefault(key, {})
-                section['mode'] = data['mode']
-                if 'bindToKey' in data:
-                    section['bindToKey'] = data['bindToKey']
-                texts = section.setdefault('texts', [])
-                text = data['text']
-                if section['mode'] == 'single':
-                    if isinstance(text, list):
-                        text = ''.join(x for x in text if x)
-                    texts.append(text.rstrip())
-                else:
-                    if isinstance(text, str):
-                        text = text.split(';')
-                    texts.extend(x.rstrip() for x in text if x.rstrip())
+        self.readConfigDir(quiet)
         if not quiet:
             if self.meta:
                 print self.ID + ': loaded configs:', ', '.join(self.meta)
@@ -85,7 +55,27 @@ class ConfigInterface(PYmodsConfigInterface):
                 print self.ID + ': no configs loaded'
         for data in self.textData.itervalues():
             data['texts'] = remDups(data['texts'])
-        self.updateMod()
+
+    def onReadConfig(self, quiet, dir_path, name, json_data, sub_dirs, names):
+        self.meta[name + '.json'] = meta = {'name': '<b>%s.json</b>' % name, 'desc': self.i18n['UI_setting_NDA']}
+        smart_update(meta, json_data.get('meta', {}))
+        for key, data in json_data.iteritems():
+            if key == 'meta':
+                continue
+            section = self.textData.setdefault(key, {})
+            section['mode'] = data['mode']
+            if 'bindToKey' in data:
+                section['bindToKey'] = data['bindToKey']
+            texts = section.setdefault('texts', [])
+            text = data['text']
+            if section['mode'] == 'single':
+                if isinstance(text, list):
+                    text = ''.join(x for x in text if x)
+                texts.append(text.rstrip())
+            else:
+                if isinstance(text, str):
+                    text = text.split(';')
+                texts.extend(x.rstrip() for x in text if x.rstrip())
 
     def registerHotkeys(self):
         BigWorld.callback(0, super(ConfigInterface, self).registerHotkeys)

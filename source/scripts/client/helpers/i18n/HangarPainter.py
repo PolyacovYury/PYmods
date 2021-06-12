@@ -65,7 +65,6 @@ class ConfigInterface(PYmodsConfigInterface):
         self.backupData = {}
 
     def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.blacklists = loadJson(self.ID, 'blacklist', self.blacklists, self.configPath)
 
     @staticmethod
