@@ -4,16 +4,17 @@ import random
 from Account import Account
 from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
+from HeroTank import _HeroTankAppearance
 from PYmodsCore import overrideMethod, loadJson
+from PlatoonTank import _PlatoonTankAppearance
 from gui import g_tankActiveCamouflage
-from gui.Scaleform.framework import WindowLayer
 from gui.customization.shared import C11N_ITEM_TYPE_MAP, SEASON_TYPE_TO_NAME
 from gui.customization.shared import __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
-from gui.shared.personality import ServicesLocator
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
+from items.customizations import createNationalEmblemComponents, CustomizationOutfit
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from vehicle_outfit.containers import emptyComponent
 from vehicle_outfit.outfit import Outfit, Area
@@ -177,44 +178,50 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
     return outfit
 
 
-@overrideMethod(HangarVehicleAppearance, '__reload')
-def new_reload(base, self, vDesc, vState, outfit):
-    if vState != 'undamaged':
-        return base(self, vDesc, vState, outfit)
-    manager = ServicesLocator.appLoader.getDefLobbyApp().containerManager
-    if manager is not None:
-        container = manager.getContainer(WindowLayer.SUB_VIEW)
-        if container is not None:
-            c11nView = container.getView()
-            if c11nView is not None and hasattr(c11nView, 'service'):
-                outfit = c11nView.service.getCtx().mode.currentOutfit
-                return base(self, vDesc, vState, outfit)
-    if (not g_config.data['enabled'] or vDesc.name in g_config.disable or (
+@overrideMethod(HangarVehicleAppearance, '_getActiveOutfit')
+@overrideMethod(_HeroTankAppearance, '_getActiveOutfit')
+@overrideMethod(_PlatoonTankAppearance, '_getActiveOutfit')
+def new_getActiveOutfit(base, self, vDesc):
+    outfit = base(self, vDesc)
+    if (not g_config.data['enabled'] or not vDesc or vDesc.name in g_config.disable or (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault'])):
-        return base(self, vDesc, vState, outfit)
-    for descr in g_currentPreviewVehicle, g_currentVehicle:
-        if descr.isPresent() and descr.item.descriptor.name == vDesc.name:
-            vehicle = descr.item
-            break
-    else:
-        vehicle = None
+        return outfit
     nation, vehicleName = vDesc.name.split(':')
-    intCD = vDesc.type.compactDescr
-    season = g_tankActiveCamouflage.get(intCD, SeasonType.EVENT)
-    if g_config.data['hangarCamoKind'] < 3:
-        g_tankActiveCamouflage[intCD] = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
-    elif season in (SeasonType.UNDEFINED, SeasonType.EVENT):
-        active = [s for s in SeasonType.SEASONS if vehicle and vehicle.hasOutfitWithItems(s)]
-        g_tankActiveCamouflage[intCD] = random.choice(active) if active else SeasonType.SUMMER
-    if season not in (g_tankActiveCamouflage[intCD], SeasonType.UNDEFINED, SeasonType.EVENT):
-        season = g_tankActiveCamouflage[intCD]
-        if vehicle:
-            outfit = vehicle.getOutfit(season)
-    outfit = outfit.copy() if outfit else Outfit()
-    seasonName = SEASON_TYPE_TO_NAME[g_tankActiveCamouflage[intCD]]
+    intCD = vDesc.makeCompactDescr()
+    if isinstance(self, _HeroTankAppearance):
+        if g_config.data['hangarCamoKind'] < 3:
+            season = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
+            if self._HeroTankAppearance__season != season:
+                self._HeroTankAppearance__season = season
+                outfit = base(self, vDesc)
+        season = self._HeroTankAppearance__season
+    elif isinstance(self, _PlatoonTankAppearance):
+        if g_config.data['hangarCamoKind'] < 3:
+            season = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
+            if self._PlatoonTankAppearance__tankInfo.seasonType != season:
+                self._PlatoonTankAppearance__tankInfo = self._PlatoonTankAppearance__tankInfo._replace(seasonType=season)
+                outfit = base(self, vDesc)
+        season = self._PlatoonTankAppearance__tankInfo.seasonType
+    else:  # self.__class__ == HangarVehicleAppearance
+        for descr in (g_currentPreviewVehicle, g_currentVehicle):
+            if descr.isPresent() and descr.item.descriptor.name == vDesc.name:
+                vehicle = descr.item
+                break
+        else:
+            vehicle = None
+        season = g_tankActiveCamouflage.get(intCD, SeasonType.EVENT)
+        if g_config.data['hangarCamoKind'] < 3:
+            g_tankActiveCamouflage[intCD] = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
+        elif season in (SeasonType.UNDEFINED, SeasonType.EVENT):
+            g_tankActiveCamouflage[intCD] = vehicle.getAnyOutfitSeason() if vehicle else SeasonType.SUMMER
+        if season not in (g_tankActiveCamouflage[intCD], SeasonType.UNDEFINED, SeasonType.EVENT):
+            season = g_tankActiveCamouflage[intCD]
+            if vehicle:
+                outfit = vehicle.getOutfit(season)
+    seasonName = SEASON_TYPE_TO_NAME[season]
+    outfit = outfit.copy() if outfit else self.customizationService.getEmptyOutfitWithNationalEmblems(vehicleCD=intCD)
     seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(seasonName, {})
-    outfit = applyOutfitInfo(outfit, seasonName, vDesc, seasonCache)
-    return base(self, vDesc, vState, outfit)
+    return applyOutfitInfo(outfit, seasonName, vDesc, seasonCache)
 
 
 @overrideMethod(CompoundAppearance, '_prepareOutfit')
@@ -222,15 +229,16 @@ def new_prepareOutfit(base, self, *a, **kw):
     outfit = base(self, *a, **kw).copy()
     vDesc = self.typeDescriptor
     if not vDesc:
-        return
-    if g_config.data['enabled'] and vDesc.name not in g_config.disable and not (
+        return outfit
+    if not g_config.data['enabled'] or vDesc.name in g_config.disable or (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
-        if not g_config.data['useBought']:
-            outfit = Outfit()
-        seasonName = SEASON_TYPE_TO_NAME[SeasonType.fromArenaKind(BigWorld.player().arena.arenaType.vehicleCamouflageKind)]
-        outfit = applyOutfitInfo(outfit, seasonName, vDesc, g_config.arenaCamoCache.setdefault(self.id, {}),
-                                 self.id, self.id == BigWorld.player().playerVehicleID)
-    return outfit
+        return outfit
+    if not g_config.data['useBought']:
+        outfit = self.itemsFactory.createOutfit(
+            component=(CustomizationOutfit(decals=createNationalEmblemComponents(vDesc))), vehicleCD=vDesc.makeCompactDescr())
+    seasonName = SEASON_TYPE_TO_NAME[SeasonType.fromArenaKind(BigWorld.player().arena.arenaType.vehicleCamouflageKind)]
+    return applyOutfitInfo(outfit, seasonName, vDesc, g_config.arenaCamoCache.setdefault(self.id, {}),
+                           self.id, self.id == BigWorld.player().playerVehicleID)
 
 
 @overrideMethod(PlayerAvatar, 'onBecomePlayer')
