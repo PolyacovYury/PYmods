@@ -1,0 +1,342 @@
+{
+    "meta": {
+        "name": "<b>Цветные сообщения в чате</b>",
+        "desc": " • Замена быстрых сообщений в чате на цветные аналоги.\n • Автор: <font color='#DD7700'>NooBooL, Polyacov_Yury</font>"
+    },
+    "#ingame_gui:chat_shortcuts/affirmative": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/positive.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#d6eb88'>Так точно!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attack_enemy": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/support_me_with_fire.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Поддержите огнём по <font color='#FA1100'>%(target)s</font>!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attack_enemy_with_SPG": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Атакую <font color='#FA1100'>%(target)s</font>!\n",
+            "К выстрелу готов!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attack_enemy_with_SPG_reloading": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/reloading_gun.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Атакую <font color='#FA1100'>%(target)s</font>!\n",
+            "Перезаряжаюсь, ещё %(reloadTime)d c!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attacking_base": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Я буду захватывать базу!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attacking_base_numbered": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Я захватываю базу %(strArg1)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attacking_enemy": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack_enemy.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Атакую <font color='#FA1100'>%(target)s</font>!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attention_to_base_atk": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Захватите базу!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attention_to_base_atk_numbered": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Захватите базу %(strArg1)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attention_to_base_def": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/back_to_base.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Защищайте базу!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attention_to_base_def_numbered": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/back_to_base.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Защищайте базу %(strArg1)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attention_to_cell": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Внимание на %(cellName)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attention_to_objective_atk": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Уничтожьте цель %(int32Arg1)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attention_to_objective_atk_autocommit": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Я уничтожу цель %(int32Arg1)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attention_to_objective_def": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/back_to_base.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Защищайте цель %(int32Arg1)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attention_to_objective_def_autocommit": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/back_to_base.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Я защищаю цель %(int32Arg1)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attention_to_position": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png' width='24' height='24' vspace='-14'> ",
+            "<font color='#ffda24'>Внимание на позицию!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/attention_to_position_gridInfo": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png' width='24' height='24' vspace='-14'> ",
+            "<font color='#ffda24'>Внимание на %(gridId)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/defending_base": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/back_to_base.png' width='17' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Я буду защищать базу!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/defending_base_numbered" : {
+        "mode" : "single",
+        "text" : [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/back_to_base.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Я защищаю базу %(strArg1)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/global_msg/atk/focus_hq" : {
+        "mode" : "single",
+        "text" : [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack_enemy.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Уничтожайте цели!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/global_msg/atk/save_tanks" : {
+        "mode" : "single",
+        "text" : [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/time_icon.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>У нас достаточно времени, не теряйте свою технику!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/global_msg/atk/time" : {
+        "mode" : "single",
+        "text" : [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/time_icon.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Время на исходе! Бросьте все силы на захват!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/global_msg/def/focus_hq" : {
+        "mode" : "single",
+        "text" : [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack_enemy.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Обороняйте цели!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/global_msg/def/save_tanks" : {
+        "mode" : "single",
+        "text" : [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack_enemy.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Нам нужно сдержать натиск, не теряйте свою технику!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/global_msg/def/time" : {
+        "mode" : "single",
+        "text" : [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/time_icon.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Время на исходе! Обороняйтесь изо всех сил!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/global_msg/lane/center" : {
+        "mode" : "single",
+        "text" : [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack_enemy.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Требуется подкрепление в зоне %(strArg1)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/global_msg/lane/east" : {
+        "mode" : "single",
+        "text" : [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack_enemy.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Требуется подкрепление в зоне %(strArg1)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/global_msg/lane/west" : {
+        "mode" : "single",
+        "text" : [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack_enemy.png' width='20' height='20' vspace='-4'> ",
+            "<font color='#ffda24'>Требуется подкрепление в зоне %(strArg1)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/going_there": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png' width='24' height='24' vspace='-14'> ",
+            "<font color='#ffda24'>Двигаюсь на позицию!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/going_there_gridInfo": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png' width='24' height='24' vspace='-14'> ",
+            "<font color='#ffda24'>Двигаюсь в %(gridId)s!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/help_me": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/help_me.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Нужна помощь!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/help_me_ex": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/help_me_ex.png' width='20' height='20' vspace='-6'> ",
+            "%(target)s<font color='#ffda24'>, помоги!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/negative": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/negative.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#d6eb88'>Никак нет!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/positive": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/positive.png' width='20' height='20' vspace='-6'> ",
+            "%(target)s<font color='#d6eb88'>, так точно!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/reloading_cassette": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/reloading_gun.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>К выстрелу готов через: %(floatArg1)d с, снарядов в кассете: %(int32Arg1)s шт.</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/reloading_gun": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/reloading_gun.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Перезаряжаюсь, ещё %(floatArg1)d c!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/reloading_ready": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/positive.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>К выстрелу готов!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/reloading_ready_cassette": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/positive.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>К выстрелу готов!\n",
+            "Cнарядов в кассете: %(int32Arg1)s шт.</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/reloading_unavailable": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/stop.png' width='20' height='20' vspace='-6'> ",
+            "<font color='#ffda24'>Боекомплект пуст.</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/spg_aim_area": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png' width='24' height='24' vspace='-14'> ",
+            "<font color='#ffda24'>Навожусь на позицию!\n",
+            "К выстрелу готов!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/spg_aim_area_gridInfo": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png' width='24' height='24' vspace='-14'> ",
+            "<font color='#ffda24'>Навожусь на %(gridId)s!\n",
+            "К выстрелу готов!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/spg_aim_area_reloading": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png' width='24' height='24' vspace='-14'> ",
+            "<font color='#ffda24'>Навожусь на позицию!\n",
+            "Перезаряжаюсь, ещё %(reloadTime)d cек.</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/spg_aim_area_reloading_gridInfo": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png' width='24' height='24' vspace='-14'> ",
+            "<font color='#ffda24'>Навожусь на %(gridId)s!\n",
+            "Перезаряжаюсь, ещё %(reloadTime)d cек.</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/supporting_ally": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/follow_me.png' width='20' height='20' vspace='-6'> ",
+            "%(target)s<font color='#ffda24'>, я помогу тебе!</font>"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/thanks": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/positive.png' width='20' height='20' vspace='-6'> ",
+            "%(target)s<font color='#ffda24'>, спасибо!"
+        ]
+    },
+    "#ingame_gui:chat_shortcuts/turn_back": {
+        "mode": "single",
+        "text": [
+            "<img src='img://../mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/turn_back.png' width='20' height='20' vspace='-6'> ",
+            "%(target)s<font color='#ffda24'>, назад!</font>"
+        ]
+    }
+}

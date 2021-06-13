@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import SoundGroups
 from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod, events
+from PYmodsCore.config.interfaces.Simple import ConfigNoInterface
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
     def __init__(self):
         self.currentPercent = None
         super(ConfigInterface, self).__init__()
@@ -18,15 +19,6 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).init()
 
     def loadLang(self):
-        pass
-
-    def updateMod(self):
-        pass
-
-    def createTemplate(self):
-        pass
-
-    def registerSettings(self):
         pass
 
 

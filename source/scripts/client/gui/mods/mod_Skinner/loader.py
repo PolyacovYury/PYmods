@@ -1,4 +1,5 @@
 import binascii
+import cProfile
 import datetime
 import time
 
@@ -30,14 +31,13 @@ from gui.impl.pub.dialog_window import DialogButtons
 from helpers import getClientVersion, dependency
 from shared_utils import awaitNextFrame
 from skeletons.gui.login_manager import ILoginManager
-from zipfile import ZipFile
 from . import g_config
 
 
 class SkinnerLoading(LoginQueueWindowMeta):
     _loginManager = dependency.descriptor(ILoginManager)
     __callMethod = lambda self, name, *a, **kw: getattr(self, name)(*a, **kw)
-    callMethod = Event.Event()
+    callMethod = Event.Handler()
     skinsChecked = False
 
     def __init__(self, loginView):
@@ -51,7 +51,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
     def _populate(self):
         super(SkinnerLoading, self)._populate()
-        self.callMethod += self.__callMethod
+        self.callMethod.set(self.__callMethod)
         self.__initTexts()
         BigWorld.callback(0, self.loadSkins)
 
@@ -76,31 +76,30 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.lines.append(line)
         self.updateMessage()
 
-    def onComplete(self):
-        self.lines[-1] += "<font color='#00FF00'>%s</font>" % g_config.i18n['UI_loading_done']
-        self.updateMessage()
-        SoundGroups.g_instance.playSound2D(MINIMAP_ATTENTION_SOUND_ID)
-
     def addBar(self, line):
         self.progress = 0
         self.addLine(line)
         self.addLine(self.createBar())
 
     def createBar(self):
-        red = 510 - 255 * self.progress / 50
-        green = 255 * self.progress / 50
-        return "<font color='#007BFF' face='Arial'>%s</font><font color='#{0:0>2x}{1:0>2x}00'>  %s%%</font>".format(
-            red if red < 255 else 255, green if green < 255 else 255) % (
-                   u'\u2593' * (self.progress / 4) + u'\u2591' * (25 - self.progress / 4), self.progress)
+        r = min(255, 510 - 255 * self.progress / 50)
+        g = min(255, 255 * self.progress / 50)
+        return "<font color='#007BFF' face='Arial'>%s%s</font><font color='#%02X%02X00'>  %s%%</font>" % (
+            u'\u2593' * (self.progress / 4), u'\u2591' * (25 - self.progress / 4), r, g, self.progress)
 
     def updateProgress(self, progress):
-        self.progress = progress
-        self.lines[-1] = self.createBar()
-        self.updateMessage()
+        if progress != self.progress:
+            self.progress = progress
+            self.lines[-1] = self.createBar()
+            self.updateMessage()
+            return True
+        return False
 
     def onBarComplete(self):
         self.lines.pop(-1)
-        self.onComplete()
+        self.lines[-1] += "<font color='#00FF00'>%s</font>" % g_config.i18n['UI_loading_done']
+        self.updateMessage()
+        SoundGroups.g_instance.playSound2D(MINIMAP_ATTENTION_SOUND_ID)
 
     def onTryClosing(self):
         return False
@@ -110,7 +109,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         self.updateCancelLabel()
 
     def onWindowClose(self):
-        self.callMethod -= self.__callMethod
+        self.callMethod.clear()
         if self.restart:
             self.call_restart()
         elif self.doLogin:
@@ -132,16 +131,23 @@ class SkinnerLoading(LoginQueueWindowMeta):
     @process
     def loadSkins(self):
         jobStartTime = time.time()
+        pr = None
+        if g_config.data['isDebug']:
+            pr = cProfile.Profile()
+            pr.enable()
         try:
-            texReplaced, vehicleSkins = yield skinCRC32All()
-            self.restart = yield modelsCheck(texReplaced)
+            texReplaced, vehSkins = yield checkSkinFiles()
+            self.restart = yield checkMeta(texReplaced)
             if self.restart:
-                yield modelsProcess(vehicleSkins)
+                yield unpackModels(vehSkins)
         except AdispException:
             traceback.print_exc()
         else:
             loadJson(g_config.ID, 'skinsCache', g_config.skinsCache, g_config.configPath, True)
             os.utime(g_config.configPath + 'skinsCache.json', None)  # loadJson does not poke the file, see need_check
+        if g_config.data['isDebug']:
+            pr.disable()
+            pr.print_stats('time')
         print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
         BigWorld.callback(2, self.onWindowClose)
@@ -150,7 +156,8 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
     @staticmethod
     def need_check():
-        if (not SkinnerLoading.skinsChecked and g_config.skinsCache['version'] == getClientVersion()
+        if (not g_config.data['isDebug'] and not SkinnerLoading.skinsChecked
+                and g_config.skinsCache['version'] == getClientVersion()
                 and time.time() - os.path.getmtime(g_config.configPath + 'skinsCache.json') < 60 * 60 * 6):
             print g_config.ID + ': skins checksum was checked recently, trusting the user on this one'
             SkinnerLoading.skinsChecked = True
@@ -176,90 +183,89 @@ g_entitiesFactories.addSettings(GroupedViewSettings(
     'SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', WL.TOP_WINDOW, '', None, ST.DEFAULT_SCOPE, canClose=False))
 
 
+def enumLen(arr, cond=None):
+    arr = filter(cond, arr)
+    arrLen = float(len(arr))
+    for idx, elem in enumerate(arr):
+        yield arrLen, idx, elem
+
+
+def iterSection(sect, numbers=True, depth=1):
+    subs = [] if sect is None else remDups(sect.keys())
+    for sub in (enumLen if numbers else zip)(subs):
+        if depth > 1:
+            for _sub in iterSection(sect[sub[-1]], numbers, depth - 1):
+                yield sub + _sub
+        else:
+            yield sub + (sect[sub[-1]],)
+
+
 @async
 @process
-def skinCRC32All(callback):
+def checkSkinFiles(callback):
     texReplaced = False
-    vehicleSkins = {}
+    vehSkins = {}
     CRC32cache = g_config.skinsCache['CRC32']
     skinsPath = 'vehicles/skins/textures/'
-    dirSect = ResMgr.openSection(skinsPath)
-    if dirSect is None or not dirSect.keys() or not g_config.skinsData['models']:
+    rootSect = ResMgr.openSection(skinsPath)
+    if rootSect is None or not rootSect.keys() or not g_config.skinsData['models']:
         print g_config.ID + ': skins folder is empty'
-        delay_call(callback, texReplaced, vehicleSkins)
+        delay_call(callback, texReplaced, vehSkins)
         return
     print g_config.ID + ': listing', skinsPath, 'for CRC32'
     SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_skins'])
     CRC32 = 0
     resultList = []
-    for skin in remDups(dirSect.keys()):
-        progress = 0
-        SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_skinPack'] % os.path.basename(skin))
+    for skinName in remDups(rootSect.keys()):
+        SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_skinPack'] % os.path.basename(skinName))
         skinCRC32 = 0
-        skinSect = dirSect[skin]['vehicles']
-        nationsList = [] if skinSect is None else remDups(skinSect.keys())
-        natLen = float(len(nationsList))
-        for natNum, nation in enumerate(nationsList):
-            nationSect = skinSect[nation]
-            vehiclesList = [] if nationSect is None else remDups(nationSect.keys())
-            vehLen = float(len(vehiclesList))
-            for vehNum, vehicleName in enumerate(vehiclesList):
-                vehicleSkins.setdefault(vehicleName.lower(), []).append(skin)
-                texPrefix = 'vehicles/' + nation + '/' + vehicleName + '/'
-                vehicleSect = nationSect[vehicleName]
-                textures = []
-                if vehicleSect is not None:
-                    textures = [texPrefix + texName for texName in remDups(vehicleSect.keys()) if texName.endswith('.dds')]
-                    modelsSect = vehicleSect['_skins']
-                    for modelsSet in modelsSect.keys() if modelsSect is not None else ():
-                        vehicleSkins.setdefault((vehicleName + '/' + modelsSet).lower(), []).append(skin)
-                        textures.extend(texPrefix + '_skins/' + modelsSet + '/' + texName
-                                        for texName in remDups(modelsSect[modelsSet].keys()) if texName.endswith('.dds'))
-                for localPath in textures:
-                    texPath = skinsPath + skin + '/' + localPath
-                    skinCRC32 ^= binascii.crc32(str(ResMgr.openSection(texPath).asBinary)) & 0xFFFFFFFF & hash(localPath)
-                yield awaitNextFrame()
-                new_progress = int(100 * (natNum + vehNum / vehLen) / natLen)
-                if new_progress != progress:
-                    progress = new_progress
-                    SkinnerLoading.callMethod('updateProgress', progress)
+        packSect = rootSect[skinName]['vehicles']
+        for natLen, natNum, nation, vehLen, vehNum, vehName, vehSect in iterSection(packSect, depth=2):
+            vehSkins.setdefault('/'.join((nation, vehName)).lower(), []).append(skinName)
+            texPrefix = '/'.join(('vehicles', nation, vehName))
+            textures = ['/'.join((texPrefix, texName)) for texName in remDups(vehSect.keys()) if texName.endswith('.dds')]
+            for subName, subSect in iterSection(vehSect, False):
+                if not subName.startswith('_') or '.' in subName:
+                    continue
+                for styleName, styleSect in iterSection(subSect, False):
+                    vehSkins.setdefault('/'.join((nation, vehName, styleName)).lower(), []).append(skinName)
+                    textures.extend('/'.join((texPrefix, subName, styleName, texName))
+                                    for texName in remDups(styleSect.keys()) if texName.endswith('.dds'))
+            for localPath in textures:
+                texPath = skinsPath + skinName + '/' + localPath
+                skinCRC32 ^= binascii.crc32(str(ResMgr.openSection(texPath).asBinary)) & 0xFFFFFFFF & hash(localPath)
+            SkinnerLoading.callMethod('updateProgress', int(100 * (natNum + vehNum / vehLen) / natLen))
+            yield awaitNextFrame()
         SkinnerLoading.callMethod('onBarComplete')
         if skinCRC32 in resultList:
-            print g_config.ID + ': detected duplicate skins pack:', skin.replace(os.sep, '/')
+            print g_config.ID + ': detected duplicate skins pack:', skinName.replace(os.sep, '/')
             continue
         CRC32 ^= skinCRC32
         resultList.append(skinCRC32)
     if str(CRC32) == CRC32cache:
-        print g_config.ID + ': skins textures were not changed'
+        print g_config.ID + ': textures were not changed'
     else:
-        print g_config.ID + ': skins textures were', ('reinstalled' if CRC32cache is None else 'changed')
+        print g_config.ID + ': textures were', ('reinstalled' if CRC32cache is None else 'changed')
         g_config.skinsCache['CRC32'] = str(CRC32)
         texReplaced = True
     ResMgr.purge(skinsPath)
-    delay_call(callback, texReplaced, vehicleSkins)
+    delay_call(callback, texReplaced, vehSkins)
 
 
 @async
 @process
-def rmtree(rootPath, callback):
+def deleteModelFiles(rootPath, callback):
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_clean'])
     SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_skins_clean'])
-    rootDirs = os.listdir(rootPath)
-    for skinPack in rootDirs:
+    for skinPack in os.listdir(rootPath):
         SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_skinPack_clean'] % os.path.basename(skinPack))
-        progress = 0
         nationsList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles'))
-        natLen = float(len(nationsList))
-        for natNum, nation in enumerate(nationsList):
-            vehiclesList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles', nation))
-            vehLen = float(len(vehiclesList))
-            for vehNum, vehicleName in enumerate(vehiclesList):
-                shutil.rmtree(os.path.join(rootPath, skinPack, 'vehicles', nation, vehicleName))
+        for natLen, natNum, nation in enumLen(nationsList):
+            vehList = os.listdir(os.path.join(rootPath, skinPack, 'vehicles', nation))
+            for vehLen, vehNum, vehName in enumLen(vehList):
+                shutil.rmtree(os.path.join(rootPath, skinPack, 'vehicles', nation, vehName))
+                SkinnerLoading.callMethod('updateProgress', int(100 * (natNum + vehNum / vehLen) / natLen))
                 yield awaitNextFrame()
-                new_progress = int(100 * (natNum + vehNum / vehLen) / natLen)
-                if new_progress != progress:
-                    progress = new_progress
-                    SkinnerLoading.callMethod('updateProgress', progress)
         SkinnerLoading.callMethod('onBarComplete')
         shutil.rmtree(os.path.join(rootPath, skinPack))
     shutil.rmtree(rootPath)
@@ -268,18 +274,18 @@ def rmtree(rootPath, callback):
 
 @async
 @process
-def modelsCheck(texReplaced, callback):
+def checkMeta(texReplaced, callback):
     lastVersion = g_config.skinsCache['version']
     clientIsNew = getClientVersion() != lastVersion
     if not lastVersion:
-        print g_config.ID + ': skins client version cache not found'
+        print g_config.ID + ': client version cache not found'
     elif clientIsNew:
-        print g_config.ID + ': skins client version changed'
+        print g_config.ID + ': client version changed'
     skinsModelsMissing = not next(glob.iglob(modelsDir + '*'), False)  # directory does not exist or is empty
     if not os.path.isdir(modelsDir):
-        print g_config.ID + ': skins models dir not found'
+        print g_config.ID + ': models dir not found'
     elif skinsModelsMissing:
-        print g_config.ID + ': skins models dir is empty'
+        print g_config.ID + ': models dir is empty'
     found = bool(g_config.skinsData['models'])
     if found:
         if clientIsNew:
@@ -288,57 +294,65 @@ def modelsCheck(texReplaced, callback):
         if texReplaced:
             SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_changed_skins'])
         if (clientIsNew or texReplaced) and os.path.isdir(modelsDir):
-            yield rmtree(modelsDir)
+            yield deleteModelFiles(modelsDir)
         if not os.path.isdir(modelsDir):
             os.makedirs(modelsDir)
     elif os.path.isdir(modelsDir):
         print g_config.ID + ': no skins found, deleting', modelsDir
-        yield rmtree(modelsDir)
+        yield deleteModelFiles(modelsDir)
     delay_call(callback, found and (clientIsNew or skinsModelsMissing or texReplaced))
 
 
 @async
 @process
-def modelsProcess(vehicleSkins, callback):
+def unpackModels(vehSkins, callback):
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
-    fileFormats = ('.model', '.visual', '.visual_processed', '.vt')
-    print g_config.ID + ': unpacking vehicle packages'
-    for pkgPath in glob.glob('./res/packages/vehicles*.pkg') + glob.glob('./res/packages/shared_content*.pkg'):
-        progress = 0
-        SkinnerLoading.callMethod(
-            'addBar', g_config.i18n['UI_loading_package'] % os.path.basename(pkgPath)[:-4].replace('sandbox', 'sb'))
-        pkg = ZipFile(pkgPath)
-        fileNamesList = [
-            x for x in pkg.namelist() if x.startswith('vehicles') and 'normal' in x and os.path.splitext(x)[1] in fileFormats]
-        allFilesCnt = float(len(fileNamesList))
-        for fileNum, memberFileName in enumerate(fileNamesList):
-            attempt = memberFileName.split('/')[2]
-            if '_skins/' in memberFileName:
-                attempt += '/' + memberFileName.split('_skins/')[1].split('/', 1)[0]
-            for skinName in vehicleSkins.get(attempt.lower(), []):
-                try:
-                    processMember(memberFileName, skinName)
-                except ValueError as e:
-                    print g_config.ID + ':', e
-            new_progress = int(100 * fileNum / allFilesCnt)
-            if new_progress != progress:
-                progress = new_progress
-                SkinnerLoading.callMethod('updateProgress', progress)
+    print g_config.ID + ': unpacking vehicle models'
+    for nation, nationSect in iterSection(ResMgr.openSection('vehicles'), False):
+        if '.' in nation or nation in ('skins', 'remods'):  # idk about any else, it also pretty much doesn't matter
+            continue
+        SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_unpacking'] % ('vehicles/' + nation))
+        for vehLen, vehNum, vehName, vehSect in iterSection(nationSect):
+            for dirName, dirSect in iterSection(vehSect, False):
+                yield unpackVehDir(vehSkins, nation, vehName, dirName, dirSect, ())
+            if SkinnerLoading.callMethod('updateProgress', int(100 * vehNum / vehLen)):
                 yield awaitNextFrame()
-            elif not fileNum % 25:
-                yield awaitNextFrame()
-        pkg.close()
         SkinnerLoading.callMethod('onBarComplete')
     delay_call(callback)
 
 
-def processMember(memberFileName, skinName):
+@async
+@process
+def unpackVehDir(vehSkins, nation, vehName, dirName, dirSect, style, callback):
+    if dirName.startswith('_') and '.' not in dirName:
+        if style:
+            print g_config.ID + ': detected styles directory inside style directory:',
+            print nation, vehName, style, dirName
+        else:
+            for styleName, _dirName, _dirSect in iterSection(dirSect, False, 2):
+                yield unpackVehDir(vehSkins, nation, vehName, _dirName, _dirSect, (dirName, styleName))
+                yield awaitNextFrame()
+    if dirName != 'normal':
+        delay_call(callback)
+        return
+    for skinName in vehSkins.get('/'.join((nation, vehName) + style[1:]).lower(), []):
+        for lod, fName, fSect in iterSection(dirSect, False, 2):
+            ext = os.path.splitext(fName)[1]
+            if ext not in ('.model', '.visual', '.visual_processed', '.vt'):
+                continue
+            unpackNormal('/'.join(('vehicles', nation, vehName) + style + (dirName, lod, fName)), fSect, skinName)
+            if ext == '.vt':
+                yield awaitNextFrame()
+    delay_call(callback)
+
+
+def unpackNormal(oldPath, oldSection, skinName):
     skinDir = modelsDir.replace(curCV + '/', '') + skinName + '/'
     texDir = skinDir.replace('models', 'textures')
-    newPath = ResMgr.resolveToAbsolutePath('./' + skinDir + memberFileName)
-    oldSection = ResMgr.openSection(memberFileName)
-    if '.vt' in memberFileName:
+    newPath = ResMgr.resolveToAbsolutePath('./' + skinDir + oldPath)
+    oldPath, ext = os.path.splitext(oldPath)
+    if '.vt' in ext:
         if not os.path.isdir(os.path.dirname(newPath)):  # because .vts are not always first and makedirs is dumb
             os.makedirs(os.path.dirname(newPath))  # because .vts are sometimes first and dirs need to be there
         with open(newPath, 'wb') as newFile:
@@ -347,26 +361,28 @@ def processMember(memberFileName, skinName):
     newSection = ResMgr.openSection(newPath, True)
     newSection.copy(oldSection)
     sections = [newSection]
-    if 'Chassis' in memberFileName:
-        dynSection = ResMgr.openSection(newPath.replace('Chassis', 'Chassis_dynamic'), True)
+    if 'hassis' in newPath:
+        dynSection = ResMgr.openSection(newPath.replace('hassis', 'hassis_dynamic'), True)
         dynSection.copy(oldSection)
         sections.append(dynSection)
     for idx, section in enumerate(sections):
-        if '.model' in memberFileName:
+        if '.model' in ext:
             if section.has_key('parent'):
                 parent = skinDir + section['parent'].asString
                 if idx:
-                    parent = parent.replace('Chassis', 'Chassis_dynamic')
+                    parent = parent.replace('hassis', 'hassis_dynamic')
                 section.writeString('parent', parent.replace('\\', '/'))
             visualPath = skinDir + section['nodefullVisual'].asString
             if idx:
-                visualPath = visualPath.replace('Chassis', 'Chassis_dynamic')
+                visualPath = visualPath.replace('hassis', 'hassis_dynamic')
             section.writeString('nodefullVisual', visualPath.replace('\\', '/'))
-        elif '.visual' in memberFileName:
+        elif '.visual' in ext:
             for sub in (sub for name, sect in section.items() if name == 'renderSet'
                         for s_name, sub in sect['geometry'].items() if s_name == 'primitiveGroup'):
                 hasTracks = False
-                for prop in (p for name, p in sub['material'].items() if name == 'property' and p.has_key('Texture')):
+                for name, prop in sub['material'].items():
+                    if name != 'property' or not prop.has_key('Texture'):
+                        continue
                     newTexture = texDir + prop['Texture'].asString
                     if idx and 'tracks' in newTexture and prop.asString == 'diffuseMap':
                         newTexture = 'vehicles/skins/tracks/track_AM.dds'
@@ -374,11 +390,11 @@ def processMember(memberFileName, skinName):
                     if ResMgr.isFile(newTexture):
                         prop.writeString('Texture', newTexture.replace('\\', '/'))
                 if hasTracks:
-                    for prop in (p for name, p in sub['material'].items()
-                                 if name == 'property' and p.asString == 'g_useNormalPackDXT1'):
-                        prop.writeString('Bool', 'true')
+                    for name, prop in sub['material'].items():
+                        if name == 'property' and prop.asString == 'g_useNormalPackDXT1':
+                            prop.writeString('Bool', 'true')
             if section['primitivesName'] is None:
-                section.writeString('primitivesName', os.path.splitext(memberFileName)[0])
+                section.writeString('primitivesName', oldPath)
         section.save()
 
 

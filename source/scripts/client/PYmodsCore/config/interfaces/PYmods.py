@@ -3,31 +3,43 @@ from .Simple import ConfigInterface, ConfBlockInterface, SettingContainer
 __all__ = ['PYmodsConfigInterface', 'PYmodsConfBlockInterface', 'PYmodsSettingContainer']
 
 
-def init(self):
-    self.author = 'by Polyacov_Yury'
-    self.modsGroup = 'PYmods'
-    self.modSettingsID = 'PYmodsGUI'
+class PYmodsBase(object):
+    def __init__(self):
+        self.author = ''
+        self.modsGroup = ''
+        self.modSettingsID = ''
 
-
-def postInit(self):
-    self.containerClass = PYmodsSettingContainer
-
-
-class PYmodsConfigInterface(ConfigInterface):
     def init(self):
-        init(self)
-        super(PYmodsConfigInterface, self).init()
-        postInit(self)
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
+
+    @property
+    def containerClass(self):
+        return PYmodsSettingContainer
+
+
+class PYmodsConfigInterface(PYmodsBase, ConfigInterface):
+    def __init__(self):
+        PYmodsBase.__init__(self)
+        ConfigInterface.__init__(self)
+
+    def init(self):
+        PYmodsBase.init(self)
+        ConfigInterface.init(self)
 
     def createTemplate(self):
         raise NotImplementedError
 
 
-class PYmodsConfBlockInterface(ConfBlockInterface):
+class PYmodsConfBlockInterface(PYmodsBase, ConfBlockInterface):
+    def __init__(self):
+        PYmodsBase.__init__(self)
+        ConfBlockInterface.__init__(self)
+
     def init(self):
-        init(self)
-        super(PYmodsConfBlockInterface, self).init()
-        postInit(self)
+        PYmodsBase.init(self)
+        ConfBlockInterface.init(self)
 
     def createTemplate(self, blockID=None):
         raise NotImplementedError('Template for block %s is not created' % blockID)

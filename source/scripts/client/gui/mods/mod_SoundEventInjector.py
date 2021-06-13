@@ -7,6 +7,7 @@ import os
 import traceback
 from Avatar import PlayerAvatar
 from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, Analytics
+from PYmodsCore.config.interfaces.Simple import ConfigNoInterface
 from ReloadEffect import ReloadEffectsType, _SimpleReloadDesc, _BarrelReloadDesc, _AutoReloadDesc, _DualGunReloadDesc
 from debug_utils import LOG_ERROR
 from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc, ImpactNames, KeyPoint
@@ -22,7 +23,7 @@ modifiers = {'duration': (lambda x: x * 1000.0), 'shellDuration': (lambda x: x *
              'clipShellLoadT': (lambda x: x * 1000.0), 'almostCompleteT': (lambda x: x * 1000.0)}
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
     def __init__(self):
         self.confList = set()
         super(ConfigInterface, self).__init__()
@@ -35,15 +36,6 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).init()
 
     def loadLang(self):
-        pass
-
-    def updateMod(self):
-        pass
-
-    def createTemplate(self):
-        pass
-
-    def registerSettings(self):
         pass
 
     def readCurrentSettings(self, quiet=True):

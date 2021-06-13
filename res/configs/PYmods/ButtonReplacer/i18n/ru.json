@@ -1,10 +1,10 @@
 ﻿{
     "UI_description": "Button Replacer",
     "UI_setting_NDA": " • Данные не были загружены или автор их не предоставил.",
-    "UI_setting_caps_text": "Всего конфигов загружено: {totalCfg}, текстов изменено: {keys}",
     "UI_setting_meta_no_configs": "Ни одного конфига загружено не было.",
     "UI_setting_meta_text": "Загруженные конфиги:",
     "UI_setting_meta_tooltip": "%(meta)s",
-    "UI_setting_reReadAtEnd_text": "Перечитывать тексты из конфигов по окончании боя",
-    "UI_setting_reReadAtEnd_tooltip": "Эта настройка позволяет моду перечитывать тексты из конфигов, когда клиент загружает ангар после выхода из боя."
+    "UI_setting_nums_text": "Всего конфигов загружено: {totalCfg}, текстов изменено: {keys}",
+    "UI_setting_updateAfterBattle_text": "Перечитывать тексты из конфигов по окончании боя",
+    "UI_setting_updateAfterBattle_tooltip": "Эта настройка позволяет моду перечитывать тексты из конфигов, когда клиент загружает ангар после выхода из боя."
 }

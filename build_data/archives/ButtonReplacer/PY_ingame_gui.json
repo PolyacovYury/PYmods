@@ -1,0 +1,32 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/ButtonReplacer/configs/PY_chat_shortcuts.json": "res/configs/PYmods/ButtonReplacer/configs/PY_chat_shortcuts.json",
+        "mods/configs/PYmods/ButtonReplacer/configs/PY_player_messages.json": "res/configs/PYmods/ButtonReplacer/configs/PY_player_messages.json",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/Artillery.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Bomber.png": "res/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Bomber.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Recon.png": "res/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Recon.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png": "res/configs/PYmods/ButtonReplacer/icons/PY_player_messages/Smoke.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png": "res/configs/PYmods/ButtonReplacer/icons/PY_player_messages/airstrikeEnemy.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png": "res/configs/PYmods/ButtonReplacer/icons/PY_player_messages/artilleryEnemy.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack_enemy.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/attack_enemy.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/back_to_base.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/back_to_base.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png": "res/configs/PYmods/ButtonReplacer/icons/PY_player_messages/crew.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png": "res/configs/PYmods/ButtonReplacer/icons/PY_player_messages/drowning.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png": "res/configs/PYmods/ButtonReplacer/icons/PY_player_messages/enemy.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/follow_me.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/follow_me.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/help_me.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/help_me.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/help_me_ex.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/help_me_ex.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/negative.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/negative.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png": "res/configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/positive.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/positive.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png": "res/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png": "res/configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/reloading_gun.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/reloading_gun.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/stop.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/stop.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/support_me_with_fire.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/support_me_with_fire.png",
+        "mods/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/turn_back.png": "res/configs/PYmods/ButtonReplacer/icons/PY_chat_shortcuts/turn_back.png"
+    }
+}
