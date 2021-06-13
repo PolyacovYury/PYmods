@@ -164,10 +164,6 @@ class CustomizationContext(WGCtx, CSModImpl):
             self.season, self.__moddedModes[CustomizationModes.STYLED].getModifiedOutfit(self.season).copy())
         self.changeMode(CustomizationModes.CUSTOM, CustomizationTabs.CAMOUFLAGES)
 
-    def getOrigModifiedOutfits(self):
-        with self.overrideActualMode():
-            return self.mode.getModifiedOutfits()
-
     def getPurchaseItems(self):
         with self.overrideActualMode():
             return self.mode.getPurchaseItems() if self.mode.isOutfitsModified() else []

@@ -68,7 +68,7 @@ class CustomMode(WGCustomMode):
 
     def _isOutfitsModified(self):
         vehCache = g_config.getOutfitCache()
-        fromOutfits = self._ctx.getOrigModifiedOutfits()
+        fromOutfits = self._baseMode.getModifiedOutfits()
         self._cache.clear()
         for season in SeasonType.COMMON_SEASONS:
             seasonName = SEASON_TYPE_TO_NAME[season]
@@ -99,7 +99,7 @@ class CustomMode(WGCustomMode):
         vDesc = g_currentVehicle.item.descriptor
         nation, vehName = vDesc.name.split(':')
         isTurretCustomisable = isTurretCustom(vDesc)
-        fromOutfits = self._ctx.getOrigModifiedOutfits()
+        fromOutfits = self._baseMode.getModifiedOutfits()
         if self.isOutfitsModified() or isModeChanged:
             SystemMessages.pushI18nMessage(
                 MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
