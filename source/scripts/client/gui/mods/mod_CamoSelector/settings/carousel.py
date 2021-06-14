@@ -48,6 +48,20 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
         self.__carouselFilters[FilterTypes.USED_UP]._SimpleCarouselFilter__criteria ^= REQ_CRITERIA.CUSTOM(
             lambda _: not self.__ctx.isPurchase)
 
+    def __getSelectedGroupIdx(self):
+        purchaseMode = self.__ctx.purchaseMode
+        season, modeId, tabId = self.__ctx.season, self.__ctx.modeId, self.__ctx.mode.tabId
+        selectedGroup = self.__selectedGroup.get(purchaseMode, {}).get(modeId, {}).get(season, {}).get(tabId)
+        return selectedGroup
+
+    def __setSelectedGroupIdx(self, index=None):
+        purchaseMode = self.__ctx.purchaseMode
+        season, modeId, tabId = self.__ctx.season, self.__ctx.modeId, self.__ctx.mode.tabId
+        itemsData = self.__carouselCache.getItemsData()
+        if index is not None and index >= len(itemsData.groups):
+            index = None
+        self.__selectedGroup.setdefault(purchaseMode, {}).setdefault(modeId, {}).setdefault(season, {})[tabId] = index
+
     def __createFilterCriteria(self):
         # noinspection PyUnresolvedReferences
         requirement = WGCarouselDP._CustomizationCarouselDataProvider__createFilterCriteria(self)
