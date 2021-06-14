@@ -2,14 +2,12 @@
 import BigWorld
 import Keys
 import Math
-import fnmatch
-import os
 import traceback
 from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, objToDict
 from PYmodsCore.delayed import showI18nDialog, g_modsListApi
 from collections import OrderedDict
 from functools import partial
-from gui import SystemMessages
+from gui import SystemMessages as SM
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, WindowLayer, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
@@ -147,100 +145,18 @@ class ConfigInterface(PYmodsConfigInterface):
         if self.isModAdded:
             g_modsListApi.updateModification(id='RemodEnablerUI', enabled=self.data['enabled'])
 
-    # noinspection PyTypeChecker
     def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
         self.modelsData['models'].clear()
         self.modelsData['selected'] = selectedData = loadJson(
             self.ID, 'remodsCache', self.modelsData['selected'], self.configPath)
+        self.readConfigDir(quiet, recursive=True, dir_name='remods')
         changed_xmlNames = set()
-        configs_dir = self.configPath + 'remods/'
-        for directory, _, fNames in os.walk(configs_dir):
-            for fName in fnmatch.filter(fNames, '*.json'):
-                remod_name = os.path.join(directory.replace(configs_dir, ''), fName.split('.')[0]).replace(os.sep, '/')
-                confDict = loadJson(self.ID, remod_name, {}, configs_dir, encrypted=True)
-                if not confDict:
-                    print self.ID + ': error while reading', remod_name + '.json.'
-                    continue
-                old_settings = None
-                old_setting_names = [name for name in self.settings if name in remod_name]
-                if old_setting_names and remod_name not in old_setting_names:
-                    if len(old_setting_names) > 1:
-                        print self.ID + ': multiple settings for remod', remod_name + ':', old_setting_names,
-                        print 'skipping settings migration'
-                    else:
-                        old_settings = self.settings.pop(old_setting_names[0])
-                settings = self.settings.setdefault(remod_name, old_settings or {team: confDict[team] for team in self.teams})
-                self.modelsData['models'][remod_name] = descr = self.modelDescriptor
-                descr['name'] = remod_name
-                descr['message'] = confDict.get('message', '')
-                settings['whitelist'] = descr['whitelist'] = whitelist = remDups(
-                    x.strip() for x in settings.get('whitelist', confDict['whitelist']) if x.strip())
-                for xmlName in whitelist:
-                    changed_xmlNames.add(xmlName)
-                    for team in selectedData:
-                        if xmlName not in selectedData[team] or selectedData[team][xmlName] is None:
-                            if settings[team]:
-                                selectedData[team][xmlName] = remod_name
-                            else:
-                                selectedData[team][xmlName] = None
-                if self.data['isDebug']:
-                    if not whitelist:
-                        print self.ID + ': empty whitelist for', remod_name + '.'
-                    else:
-                        print self.ID + ': whitelist for', remod_name + ':', whitelist
-                for key, data in descr.iteritems():
-                    if key in ('name', 'message', 'whitelist'):
-                        continue
-                    if key == 'common':
-                        confSubDict = confDict
-                    else:
-                        confSubDict = confDict.get(key)
-                    if not confSubDict:
-                        continue
-                    if 'undamaged' in data:
-                        data['undamaged'] = confSubDict['undamaged']
-                    if 'AODecals' in data and 'AODecals' in confSubDict and 'hullPosition' in confSubDict:
-                        data['AODecals'] = []
-                        for subList in confSubDict['AODecals']:
-                            m = Math.Matrix()
-                            for strNum, row in enumerate(subList):
-                                for colNum, elemNum in enumerate(row):
-                                    m.setElement(strNum, colNum, elemNum)
-                            data['AODecals'].append(m)
-                        data['hullPosition'] = confSubDict['hullPosition']
-                    if 'camouflage' in data and 'exclusionMask' in confSubDict.get('camouflage', {}):
-                        data['camouflage']['exclusionMask'] = confSubDict['camouflage']['exclusionMask']
-                        if 'tiling' in confSubDict['camouflage']:
-                            data['camouflage']['tiling'] = confSubDict['camouflage']['tiling']
-                    elif key == 'common' and self.data['isDebug']:
-                        print self.ID + ': default camomask not found for', remod_name
-                    if 'emblemSlots' in data:
-                        data['emblemSlots'] = slots = []
-                        for subDict in confSubDict.get('emblemSlots', ()):
-                            if subDict['type'] not in AES:
-                                print g_config.ID + ': not supported emblem slot type:', subDict['type'] + ', expected:', AES
-                                continue
-                            subDict.update({k: Math.Vector3(subDict[k]) for k in ('rayStart', 'rayEnd', 'rayUp')})
-                            slots.append(EmblemSlot(**subDict))
-                    if 'exhaust' in data and 'exhaust' in confSubDict:
-                        if 'nodes' in confSubDict['exhaust']:
-                            data['exhaust']['nodes'] = confSubDict['exhaust']['nodes']
-                        if 'pixie' in confSubDict['exhaust']:
-                            data['exhaust']['pixie'] = confSubDict['exhaust']['pixie']
-                    if key == 'chassis':
-                        for k in chassis_params + ('chassisLodDistance',):
-                            data[k] = confSubDict[k]
-                    for k in ('soundID', 'drivenJoints'):
-                        if k in data and k in confSubDict:
-                            data[k] = confSubDict[k]
-                if self.data['isDebug']:
-                    print self.ID + ': config for', remod_name, 'loaded.'
-
         for remod_name in self.settings.keys():
             if remod_name not in self.modelsData['models']:
                 del self.settings[remod_name]
+            else:
+                changed_xmlNames.update(self.settings[remod_name]['whitelist'])
 
         if not self.modelsData['models']:
             if not quiet:
@@ -262,20 +178,91 @@ class ConfigInterface(PYmodsConfigInterface):
         loadJson(self.ID, 'remodsCache', selectedData, self.configPath, True, quiet=quiet)
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
 
+    # noinspection PyTypeChecker
+    def onReadConfig(self, quiet, dir_path, name, json_data, sub_dirs, names):
+        remod_name = (dir_path and (dir_path + '/')) + name
+        selectedData = self.modelsData['selected']
+        old_settings = None
+        old_setting_names = [_name for _name in self.settings if _name in remod_name]
+        if old_setting_names and remod_name not in old_setting_names:
+            if len(old_setting_names) > 1:
+                print self.ID + ': multiple settings for remod', remod_name + ':', old_setting_names,
+                print 'skipping settings migration'
+            else:
+                old_settings = self.settings.pop(old_setting_names[0])
+        settings = self.settings.setdefault(remod_name, old_settings or {team: json_data[team] for team in self.teams})
+        self.modelsData['models'][remod_name] = descr = self.modelDescriptor
+        descr['name'] = remod_name
+        descr['message'] = json_data.get('message', '')
+        settings['whitelist'] = descr['whitelist'] = whitelist = remDups(
+            x.strip() for x in settings.get('whitelist', json_data['whitelist']) if x.strip())
+        for xmlName in whitelist:
+            for team in selectedData:
+                if xmlName not in selectedData[team] or selectedData[team][xmlName] is None:
+                    selectedData[team][xmlName] = remod_name if settings[team] else None
+        if self.data['isDebug']:
+            print self.ID + ': whitelist for', remod_name + ':', whitelist
+        for key, data in descr.iteritems():
+            if key in ('name', 'message', 'whitelist'):
+                continue
+            if key == 'common':
+                confSubDict = json_data
+            else:
+                confSubDict = json_data.get(key)
+            if not confSubDict:
+                continue
+            if 'undamaged' in data:
+                data['undamaged'] = confSubDict['undamaged']
+            if 'AODecals' in data and 'AODecals' in confSubDict and 'hullPosition' in confSubDict:
+                data['AODecals'] = []
+                for subList in confSubDict['AODecals']:
+                    m = Math.Matrix()
+                    for strNum, row in enumerate(subList):
+                        for colNum, elemNum in enumerate(row):
+                            m.setElement(strNum, colNum, elemNum)
+                    data['AODecals'].append(m)
+                data['hullPosition'] = confSubDict['hullPosition']
+            if 'camouflage' in data and 'exclusionMask' in confSubDict.get('camouflage', {}):
+                data['camouflage']['exclusionMask'] = confSubDict['camouflage']['exclusionMask']
+                if 'tiling' in confSubDict['camouflage']:
+                    data['camouflage']['tiling'] = confSubDict['camouflage']['tiling']
+            elif key == 'common' and self.data['isDebug']:
+                print self.ID + ': default camomask not found for', remod_name
+            if 'emblemSlots' in data:
+                data['emblemSlots'] = slots = []
+                for subDict in confSubDict.get('emblemSlots', ()):
+                    if subDict['type'] not in AES:
+                        print g_config.ID + ': not supported emblem slot type:', subDict['type'] + ', expected:', AES
+                        continue
+                    subDict.update({k: Math.Vector3(subDict[k]) for k in ('rayStart', 'rayEnd', 'rayUp')})
+                    slots.append(EmblemSlot(**subDict))
+            if 'exhaust' in data and 'exhaust' in confSubDict:
+                if 'nodes' in confSubDict['exhaust']:
+                    data['exhaust']['nodes'] = confSubDict['exhaust']['nodes']
+                if 'pixie' in confSubDict['exhaust']:
+                    data['exhaust']['pixie'] = confSubDict['exhaust']['pixie']
+            if key == 'chassis':
+                for k in chassis_params + ('chassisLodDistance',):
+                    data[k] = confSubDict[k]
+            for k in ('soundID', 'drivenJoints'):
+                if k in data and k in confSubDict:
+                    data[k] = confSubDict[k]
+        if self.data['isDebug']:
+            print self.ID + ': config for', remod_name, 'loaded.'
+
     def migrateConfigs(self):
         from .config_converter import migrateConfigs
         migrateConfigs(self)
 
-    def findModelDesc(self, xmlName, currentTeam, notForPreview=True):
+    def findModelDesc(self, xmlName, currentTeam, forPreview=False):
         if not self.modelsData['models']:
             return
         selected = self.modelsData['selected'][currentTeam]
-        if not self.previewRemod or notForPreview:
-            if xmlName not in selected or not selected[xmlName]:
-                return
-            return self.modelsData['models'][selected[xmlName]]
-        else:
+        if self.previewRemod and forPreview:
             return self.modelsData['models'][self.previewRemod]
+        if xmlName not in selected or not selected[xmlName]:
+            return
+        return self.modelsData['models'][selected[xmlName]]
 
     def registerSettings(self):
         super(ConfigInterface, self).registerSettings()
@@ -290,65 +277,58 @@ class ConfigInterface(PYmodsConfigInterface):
                     or SL.appLoader.getDefLobbyApp().loadView(SFViewLoadParams('RemodEnablerUI')))) != NotImplemented
 
     def onHotkeyPressed(self, event):
-        if (not hasattr(BigWorld.player(), 'databaseID') or not self.data['enabled']
-                or not event.isKeyDown() or self.isMSAOpen):
+        if (not hasattr(BigWorld.player(), 'databaseID') or not event.isKeyDown()
+                or not self.data['enabled'] or not self.modelsData['models'] or self.previewRemod or self.isMSAOpen):
             return
-        if self.modelsData['models'] and not self.previewRemod:
-            if checkKeys(self.data['ChangeViewHotkey'], event.key):
-                newModeNum = (self.teams.index(self.currentTeam) + 1) % len(self.teams)
-                self.currentTeam = self.teams[newModeNum]
-                try:
-                    from gui.mods.mod_skinner import g_config as _
-                    _.currentTeam = self.currentTeam
-                except ImportError:
-                    _ = None
-                if self.data['isDebug']:
-                    print self.ID + ': changing display mode to', self.currentTeam
-                SystemMessages.pushMessage(
-                    'temp_SM%s<b>%s</b>' % (self.i18n['UI_mode'], self.i18n['UI_mode_' + self.currentTeam]),
-                    SystemMessages.SM_TYPE.Warning)
-                refreshCurrentVehicle()
-            if checkKeys(self.data['SwitchRemodHotkey'], event.key):
-                curTankType = self.currentTeam
-                snameList = sorted(self.modelsData['models'].keys()) + ['']
-                selected = self.modelsData['selected'][curTankType]
-                vehName = RemodEnablerUI.py_getCurrentVehicleName()
-                if vehName not in selected:
-                    return
-                snameIdx = (snameList.index(selected[vehName]) + 1) % len(snameList)
-                for Idx in xrange(snameIdx, len(snameList) - 1):
-                    curPRecord = self.modelsData['models'][snameList[Idx]]
-                    if vehName not in curPRecord['whitelist']:
-                        continue
-                    selected[vehName] = curPRecord['name']
-                    break
-                else:
-                    selected[vehName] = ''
-                loadJson(self.ID, 'remodsCache', self.modelsData['selected'], self.configPath, True,
-                         quiet=not self.data['isDebug'])
-                refreshCurrentVehicle()
+        if checkKeys(self.data['ChangeViewHotkey'], event.key):
+            newModeNum = (self.teams.index(self.currentTeam) + 1) % len(self.teams)
+            self.currentTeam = self.teams[newModeNum]
+            try:
+                from gui.mods.mod_skinner import g_config as _
+                _.currentTeam = self.currentTeam
+            except ImportError:
+                _ = None
+            if self.data['isDebug']:
+                print self.ID + ': changing display mode to', self.currentTeam
+            SM.pushMessage(
+                'temp_SM%s<b>%s</b>' % (self.i18n['UI_mode'], self.i18n['UI_mode_' + self.currentTeam]),
+                SM.SM_TYPE.Warning)
+            refreshCurrentVehicle()
+        if checkKeys(self.data['SwitchRemodHotkey'], event.key):
+            curTankType = self.currentTeam
+            snameList = sorted(self.modelsData['models'].keys()) + ['']
+            selected = self.modelsData['selected'][curTankType]
+            vehName = RemodEnablerUI.py_getCurrentVehicleName()
+            if vehName not in selected:
+                return
+            snameIdx = (snameList.index(selected[vehName]) + 1) % len(snameList)
+            for Idx in xrange(snameIdx, len(snameList) - 1):
+                if vehName not in self.settings[snameList[Idx]]['whitelist']:
+                    continue
+                selected[vehName] = snameList[Idx]
+                break
+            else:
+                selected[vehName] = ''
+            loadJson(self.ID, 'remodsCache', self.modelsData['selected'], self.configPath, True, quiet=not self.data['isDebug'])
+            refreshCurrentVehicle()
         if checkKeys(self.data['CollisionHotkey'], event.key):
-            SystemMessages.pushMessage('temp_SM' + self.i18n['UI_collision_unavailable'],
-                                       SystemMessages.SM_TYPE.CustomizationForGold)
+            SM.pushMessage('temp_SM' + self.i18n['UI_collision_unavailable'], SM.SM_TYPE.CustomizationForGold)
             return
             # noinspection PyUnreachableCode
             self.collisionMode += 1
             self.collisionMode %= 3
             if self.collisionMode == 0:
-                if self.data['isDebug']:
-                    print self.ID + ': disabling collision displaying'
-                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_collision_compare_disable'],
-                                           SystemMessages.SM_TYPE.CustomizationForGold)
+                debugMsg = 'disabling collision displaying'
+                msg = self.i18n['UI_collision_compare_disable']
             elif self.collisionMode == 2:
-                if self.data['isDebug']:
-                    print self.ID + ': enabling collision display comparison mode'
-                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_collision_compare_enable'],
-                                           SystemMessages.SM_TYPE.CustomizationForGold)
+                debugMsg = 'enabling collision display comparison mode'
+                msg = self.i18n['UI_collision_compare_enable']
             else:
-                if self.data['isDebug']:
-                    print self.ID + ': enabling collision display'
-                SystemMessages.pushMessage('temp_SM' + self.i18n['UI_collision_enable'],
-                                           SystemMessages.SM_TYPE.CustomizationForGold)
+                debugMsg = 'enabling collision display'
+                msg = self.i18n['UI_collision_enable']
+            if self.data['isDebug']:
+                print self.ID + ':', debugMsg
+            SM.pushMessage('temp_SM' + msg, SM.SM_TYPE.CustomizationForGold)
             refreshCurrentVehicle()
 
 
@@ -386,7 +366,9 @@ class RemodEnablerUI(AbstractWindowView):
     def py_getRemodData(self):
         appearance = self.getCurrentAppearance()
         vehName = self.py_getCurrentVehicleName()
-        if vehName:
+        if not vehName:
+            self.py_sendMessage('', '', 'vehicleAdd', 'notSupported')
+        else:
             try:
                 data = self.newRemodData
                 data.clear()
@@ -435,11 +417,8 @@ class RemodEnablerUI(AbstractWindowView):
                     part = getattr(vDesc, partName)
                     data[partName]['emblemSlots'] = [_asDict(slot) for slot in part.emblemSlots]
             except StandardError:
-                SystemMessages.pushMessage(
-                    'temp_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)
+                SM.pushMessage('temp_SM' + g_config.i18n['UI_flash_remodCreate_error'], SM.SM_TYPE.Warning)
                 traceback.print_exc()
-        else:
-            self.py_sendMessage('', '', 'vehicleAdd', 'notSupported')
         modelDesc = getattr(appearance._HangarVehicleAppearance__vDesc, 'modelDesc', None)
         if modelDesc is not None:
             return {'isRemod': True, 'name': modelDesc['name'], 'message': modelDesc['message'], 'vehicleName': vehName,
@@ -487,8 +466,7 @@ class RemodEnablerUI(AbstractWindowView):
     def py_onCreateRemod(self, settings):
         try:
             if not settings.name:
-                SystemMessages.pushMessage('temp_SM' + g_config.i18n['UI_flash_remodCreate_name_empty'],
-                                           SystemMessages.SM_TYPE.Warning)
+                SM.pushMessage('temp_SM' + g_config.i18n['UI_flash_remodCreate_name_empty'], SM.SM_TYPE.Warning)
                 return
             from collections import OrderedDict
             data = self.newRemodData
@@ -498,18 +476,16 @@ class RemodEnablerUI(AbstractWindowView):
             data['whitelist'] = settings.whitelist
             loadJson(g_config.ID, str(settings.name), data, g_config.configPath + 'remods/', True, False, sort_keys=False)
             g_config.readCurrentSettings()
-            SystemMessages.pushMessage(
-                'temp_SM' + g_config.i18n['UI_flash_remodCreate_success'], SystemMessages.SM_TYPE.CustomizationForGold)
+            SM.pushMessage('temp_SM' + g_config.i18n['UI_flash_remodCreate_success'], SM.SM_TYPE.CustomizationForGold)
         except StandardError:
-            SystemMessages.pushMessage(
-                'temp_SM' + g_config.i18n['UI_flash_remodCreate_error'], SystemMessages.SM_TYPE.Warning)
+            SM.pushMessage('temp_SM' + g_config.i18n['UI_flash_remodCreate_error'], SM.SM_TYPE.Warning)
             traceback.print_exc()
 
     @staticmethod
     def py_sendMessage(vehicleName, remodName, action, status):
-        SystemMessages.pushMessage(
+        SM.pushMessage(
             'temp_SM' + g_config.i18n['UI_flash_%s_%s' % (action, status)] % (remodName, vehicleName),
-            SystemMessages.SM_TYPE.CustomizationForGold)
+            SM.SM_TYPE.CustomizationForGold)
 
     def onWindowClose(self):
         self.py_onModelRestore()

@@ -27,7 +27,6 @@ source/scripts:
       mod_Skinner.py - mod loader stub file for Skinner
       mod_SoundEventInjector.py - an alternative to editing scipts/item_defs/vehicles/ for audio mod makers
       mod_StatPaints.py - paints vehicles depending on their driver's WGR value
-      mod_SunController.py - battle arena time of day manager
       mod_UT_announcer.py - frag, some medals and battle time sound notifier
       mod_VMTFix.py - Vehicle Model Transparency Fix - because transparent elements don't display on player vehicle
       mod_VoiceOverrider.py - switches some switches in SoundGroups to make different voiceover versions appear

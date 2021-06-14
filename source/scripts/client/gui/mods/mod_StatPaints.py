@@ -96,7 +96,6 @@ class ConfigInterface(PYmodsConfigInterface):
                 'column2': self.createPartsTemplate('ally') + self.createPartsTemplate('enemy')}
 
     def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
         cache = g_cache.customization20()
         for item in self.paintItems.values():
             cache.paints.pop(item.id, None)
