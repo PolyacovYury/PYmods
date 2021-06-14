@@ -54,11 +54,11 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.__currentModeIds[self.actualMode] = value
 
     @property
-    def __startMode(self):
+    def __startModeId(self):
         return self.__startModeIds[self.actualMode]
 
-    @__startMode.setter
-    def __startMode(self, value):
+    @__startModeId.setter
+    def __startModeId(self, value):
         for key in self.__startModeIds:
             self.__startModeIds[key] = value
             self.__currentModeIds[key] = value
@@ -175,8 +175,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.mode.unselectSlot()
         for mode in CSMode.BUY, CSMode.INSTALL:
             with self.overrideActualMode(mode):
-                isModeChanged = self.modeId != self.__startMode
-                yield self.mode.applyItems(purchaseItems, isModeChanged)
+                yield self.mode.applyItems(purchaseItems, self.isModeChanged)
         self.applySettings()
         self.__onCacheResync()
         self._itemsCache.onSyncCompleted += self.__onCacheResync
