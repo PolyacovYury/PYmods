@@ -187,7 +187,6 @@ def new_getActiveOutfit(base, self, vDesc):
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault'])):
         return outfit
     nation, vehicleName = vDesc.name.split(':')
-    intCD = vDesc.makeCompactDescr()
     if isinstance(self, _HeroTankAppearance):
         if g_config.data['hangarCamoKind'] < 3:
             season = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
@@ -209,6 +208,7 @@ def new_getActiveOutfit(base, self, vDesc):
                 break
         else:
             vehicle = None
+        intCD = vDesc.type.compactDescr
         season = g_tankActiveCamouflage.get(intCD, SeasonType.EVENT)
         if g_config.data['hangarCamoKind'] < 3:
             g_tankActiveCamouflage[intCD] = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
@@ -219,7 +219,8 @@ def new_getActiveOutfit(base, self, vDesc):
             if vehicle:
                 outfit = vehicle.getOutfit(season)
     seasonName = SEASON_TYPE_TO_NAME[season]
-    outfit = outfit.copy() if outfit else self.customizationService.getEmptyOutfitWithNationalEmblems(vehicleCD=intCD)
+    outfit = outfit.copy() if outfit else self.customizationService.getEmptyOutfitWithNationalEmblems(
+        vehicleCD=vDesc.makeCompactDescr())
     seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(seasonName, {})
     return applyOutfitInfo(outfit, seasonName, vDesc, seasonCache)
 
