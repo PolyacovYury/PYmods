@@ -38,7 +38,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             self._isItemAppliedToAllParts = False
 
     def __makePaintRenderersVOs(self):
-        if self.__ctx.isBuy:
+        if self.__ctx.isPurchase:
             # noinspection PyUnresolvedReferences
             return super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makePaintRenderersVOs()
         return [
@@ -46,7 +46,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         ]
 
     def __makeCamouflageRenderersVOs(self):
-        if self.__ctx.isBuy:
+        if self.__ctx.isPurchase:
             # noinspection PyUnresolvedReferences
             return super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makeCamouflageRenderersVOs()
         return [
@@ -57,7 +57,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
     def __makeStyleRenderersVOs(self):
         # noinspection PyUnresolvedReferences
         renderers = super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makeStyleRenderersVOs()
-        if not self.__ctx.isBuy:
+        if not self.__ctx.isPurchase:
             renderers[1:] = [self.__makeStyleEditRendererVO()]
         return renderers
 

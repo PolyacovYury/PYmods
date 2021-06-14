@@ -18,7 +18,7 @@ from .. import g_config
 @overrideMethod(c11c, 'isPersonalNumberAllowed')
 @dependency.replace_none_kwargs(service=ICustomizationService)
 def isPersonalNumberAllowed(base, number, service=None):
-    return (g_config.data['enabled'] and not service.getCtx().isBuy) or base(number)
+    return (g_config.data['enabled'] and not service.getCtx().isPurchase) or base(number)
 
 
 @overrideMethod(si.CustomizationStyleInfo, '__makeButtonVO')
@@ -30,7 +30,7 @@ def new_makeButtonVO(base, self, style):
         return None
     label = backport.text(R.strings.vehicle_customization.commit.apply())
     enabled = True
-    if ctx.isBuy:
+    if ctx.isPurchase:
         stylePrice = style.getBuyPrice().price
         moneyState = getPurchaseMoneyState(stylePrice)
         purchaseItem = first(ctx.mode.getPurchaseItems())
@@ -47,7 +47,7 @@ def __getModifiedItemsData(base, self):
         return base(self)
     itemData = {}
     ctx = self._CustomPopoverDataProvider__ctx
-    if ctx.isBuy:
+    if ctx.isPurchase:
         purchaseItems = ctx.mode.getPurchaseItems()
     else:
         purchaseItems = ctx.mode.getModdedPurchaseItems()
@@ -78,7 +78,7 @@ def __getOriginalItemsData(base, self):
     notModifiedOutfit = ctx.mode.getNotModifiedItems()
     for intCD, _, regionIdx, container, _ in notModifiedOutfit.itemsFull():
         item = self._CustomPopoverDataProvider__service.getItemByCD(intCD)
-        if ctx.isBuy and item.isHiddenInUI():
+        if ctx.isPurchase and item.isHiddenInUI():
             continue
         if self._CustomPopoverDataProvider__isNonHistoric and item.isHistorical():
             continue

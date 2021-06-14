@@ -32,9 +32,9 @@ def ModdedMode(ctx, modeId, baseMode):
 class CustomizationContext(WGCtx, CSModImpl):
     def __init__(self):
         CSModImpl.__init__(self)
-        self.actualMode = CSMode.BUY
-        self.__startModeIds = {CSMode.BUY: None, CSMode.INSTALL: None}
-        self.__currentModeIds = {CSMode.BUY: None, CSMode.INSTALL: None}
+        self.purchaseMode = CSMode.PURCHASE
+        self.__startModeIds = {CSMode.PURCHASE: None, CSMode.INSTALL: None}
+        self.__currentModeIds = {CSMode.PURCHASE: None, CSMode.INSTALL: None}
         WGCtx.__init__(self)
         self.__moddedModes = {
             modeId: ModdedMode(self, modeId, self.__origModes[modeId])
@@ -42,20 +42,20 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.__switcherIgnored = False
 
     @property
-    def isBuy(self):
-        return self.actualMode == CSMode.BUY
+    def isPurchase(self):
+        return self.purchaseMode == CSMode.PURCHASE
 
     @property
     def __modeId(self):
-        return self.__currentModeIds[self.actualMode]
+        return self.__currentModeIds[self.purchaseMode]
 
     @__modeId.setter
     def __modeId(self, value):
-        self.__currentModeIds[self.actualMode] = value
+        self.__currentModeIds[self.purchaseMode] = value
 
     @property
     def __startModeId(self):
-        return self.__startModeIds[self.actualMode]
+        return self.__startModeIds[self.purchaseMode]
 
     @__startModeId.setter
     def __startModeId(self, value):
@@ -65,85 +65,85 @@ class CustomizationContext(WGCtx, CSModImpl):
 
     @property
     def __modes(self):
-        return self.getMode(self.actualMode)
+        return self.getMode(self.purchaseMode)
 
     @__modes.setter
     def __modes(self, value):
         self.__origModes = value
 
-    def getMode(self, actualMode, modeId=None):
+    def getMode(self, purchaseMode, modeId=None):
         if modeId is not None:
-            return self.getMode(actualMode)[modeId]
-        return (self.__origModes, self.__moddedModes)[actualMode]
+            return self.getMode(purchaseMode)[modeId]
+        return (self.__origModes, self.__moddedModes)[purchaseMode]
 
     @property
     def mode(self):
-        return self.getMode(self.actualMode, self.modeId)
+        return self.getMode(self.purchaseMode, self.modeId)
 
     @property
     def isItemsOnAnotherVeh(self):
-        return self.isBuy and self.__isItemsOnAnotherVeh
+        return self.isPurchase and self.__isItemsOnAnotherVeh
 
     def init(self, season=None, modeId=None, tabId=None):
         super(CustomizationContext, self).init(season, modeId, tabId)
-        self.events.onActualModeChanged = Event.Event(self.events._eventsManager)
-        for mode in CSMode.BUY, CSMode.INSTALL:
-            self.actualMode = mode
-            self.getMode(mode, CustomizationModes.STYLED).start()
-            custom = self.getMode(mode, CustomizationModes.CUSTOM)
-            tabId = first(custom._tabs) if self.isBuy else CustomizationTabs.CAMOUFLAGES
+        self.events.onPurchaseModeChanged = Event.Event(self.events._eventsManager)
+        for purchaseMode in CSMode.PURCHASE, CSMode.INSTALL:
+            self.purchaseMode = purchaseMode
+            self.getMode(purchaseMode, CustomizationModes.STYLED).start()
+            custom = self.getMode(purchaseMode, CustomizationModes.CUSTOM)
+            tabId = first(custom._tabs) if self.isPurchase else CustomizationTabs.CAMOUFLAGES
             if not custom.isInited:
                 custom.start(tabId)
             else:
                 custom.changeTab(tabId)
-            self.__currentModeIds[mode] = self.__startModeIds[mode] = (
+            self.__currentModeIds[purchaseMode] = self.__startModeIds[purchaseMode] = (
                 CustomizationModes.STYLED
                 if (
-                    self._service.isStyleInstalled() if self.isBuy
+                    self._service.isStyleInstalled() if self.isPurchase
                     else g_config.getOutfitCache().get('style', {}).get('applied', False))
                 else CustomizationModes.CUSTOM
             )
-        self.actualMode = CSMode.INSTALL
+        self.purchaseMode = CSMode.INSTALL
         self.refreshOutfit()
 
     def fini(self):
         super(CustomizationContext, self).fini()
-        for actualMode in CSMode.NAMES:
-            modes = self.getMode(actualMode)
+        for purchaseMode in CSMode.ALL:
+            modes = self.getMode(purchaseMode)
             for mode in modes.values():
                 mode.fini()
             modes.clear()
 
-    def changeActualMode(self, modeId, source=None):
-        if self.actualMode == modeId and self.modeId != CustomizationModes.EDITABLE_STYLE:
+    def changePurchaseMode(self, purchaseMode, source=None):
+        if self.purchaseMode == purchaseMode and self.modeId != CustomizationModes.EDITABLE_STYLE:
             return
         prevMode = self.mode
         prevMode.unselectItem()
         prevMode.unselectSlot()
         prevMode.stop()
-        self.actualMode = modeId
+        self.purchaseMode = purchaseMode
         if self.modeId == CustomizationModes.EDITABLE_STYLE:
             self.__modeId = CustomizationModes.STYLED
         newMode = self.mode
         newMode.start(self.mode.tabId, source=source)
         self.refreshOutfit()
         self.events.onBeforeModeChange()
-        self.events.onActualModeChanged()
+        self.events.onPurchaseModeChanged()
         self.events.onModeChanged(newMode.modeId, prevMode.modeId)
         self.events.onTabChanged(self.mode.tabId)
 
     @contextmanager
-    def overrideActualMode(self, desired=CSMode.BUY):
-        mode = self.actualMode
-        self.actualMode = desired
+    def overridePurchaseMode(self, desired=CSMode.PURCHASE):
+        purchaseMode = self.purchaseMode
+        self.purchaseMode = desired
         try:
             yield
         finally:
-            self.actualMode = mode
+            self.purchaseMode = purchaseMode
 
     @async
     def editStyle(self, intCD, source=None):
-        if self.isBuy:
+        if self.isPurchase:
             super(CustomizationContext, self).editStyle(intCD, source)
             return
         if self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).getModifiedOutfit(self.season).isEmpty():
@@ -165,7 +165,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.changeMode(CustomizationModes.CUSTOM, CustomizationTabs.CAMOUFLAGES)
 
     def getPurchaseItems(self):
-        with self.overrideActualMode():
+        with self.overridePurchaseMode():
             return self.mode.getPurchaseItems() if self.mode.isOutfitsModified() else []
 
     @adisp.async
@@ -173,8 +173,8 @@ class CustomizationContext(WGCtx, CSModImpl):
     def applyItems(self, purchaseItems, callback):
         self._itemsCache.onSyncCompleted -= self.__onCacheResync
         self.mode.unselectSlot()
-        for mode in CSMode.BUY, CSMode.INSTALL:
-            with self.overrideActualMode(mode):
+        for purchaseMode in CSMode.PURCHASE, CSMode.INSTALL:
+            with self.overridePurchaseMode(purchaseMode):
                 yield self.mode.applyItems(purchaseItems, self.isModeChanged)
         self.applySettings()
         self.__onCacheResync()
@@ -194,15 +194,15 @@ class CustomizationContext(WGCtx, CSModImpl):
 
     def isOutfitsModified(self):
         result = CSModImpl.isOutfitsModified(self)
-        for mode in CSMode.BUY, CSMode.INSTALL:
-            with self.overrideActualMode(mode):
+        for purchaseMode in CSMode.PURCHASE, CSMode.INSTALL:
+            with self.overridePurchaseMode(purchaseMode):
                 result |= super(CustomizationContext, self).isOutfitsModified()
         return result
 
     def __onCacheResync(self, *_):
         if g_currentVehicle.isPresent():
-            for actualMode in CSMode.NAMES:
-                modes = self.getMode(actualMode)
+            for purchaseMode in CSMode.ALL:
+                modes = self.getMode(purchaseMode)
                 for mode in modes.values():
                     if mode.isInited:
                         mode.updateOutfits(preserve=True)
@@ -215,8 +215,8 @@ class CustomizationContext(WGCtx, CSModImpl):
             return
         preserve = self._vehicle.intCD == g_currentVehicle.item.intCD
         self._vehicle = g_currentVehicle.item
-        for actualMode in CSMode.NAMES:
-            modes = self.getMode(actualMode)
+        for purchaseMode in CSMode.ALL:
+            modes = self.getMode(purchaseMode)
             for mode in modes.values():
                 if mode.isInited:
                     mode.updateOutfits(preserve=preserve)
@@ -228,8 +228,8 @@ class CustomizationContext(WGCtx, CSModImpl):
             return
         elif self._vehicle.intCD == g_currentVehicle.item.intCD:
             return
-        for actualMode in CSMode.NAMES:
-            modes = self.getMode(actualMode)
+        for purchaseMode in CSMode.ALL:
+            modes = self.getMode(purchaseMode)
             for mode in modes.values():
                 if mode.isInited:
                     mode.onVehicleChangeStarted()

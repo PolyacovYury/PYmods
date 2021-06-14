@@ -37,7 +37,7 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
         while 0 <= idx < itemsCount:
             intCD = self.collection[idx]
             item = self.__service.getItemByCD(intCD)
-            if not self.__ctx.isBuy or not isItemLimitReached(item, outfits) or item.isStyleOnly:
+            if not self.__ctx.isPurchase or not isItemLimitReached(item, outfits) or item.isStyleOnly:
                 return item
             idx += shift
         return None
@@ -46,19 +46,19 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
         # noinspection PyUnresolvedReferences
         super(CustomizationCarouselDataProvider, self)._CustomizationCarouselDataProvider__initFilters()
         self.__carouselFilters[FilterTypes.USED_UP]._SimpleCarouselFilter__criteria ^= REQ_CRITERIA.CUSTOM(
-            lambda _: not self.__ctx.isBuy)
+            lambda _: not self.__ctx.isPurchase)
 
     def __createFilterCriteria(self):
         # noinspection PyUnresolvedReferences
         requirement = WGCarouselDP._CustomizationCarouselDataProvider__createFilterCriteria(self)
-        isBuy = self.__ctx.isBuy
+        isPurchase = self.__ctx.isPurchase
         groupIdx = self.__getSelectedGroupIdx()
         if groupIdx is not None:
             itemsData = self.__carouselCache.getItemsData()
             groupId = itemsData.groups.keys()[groupIdx]
             groupName = itemsData.groups[groupId]
             requirement = REQ_CRITERIA.CUSTOM(
-                lambda item: groupName in getGroupName(item, isBuy)) | RequestCriteria(*requirement.getConditions()[1:])
+                lambda item: groupName in getGroupName(item, isPurchase)) | RequestCriteria(*requirement.getConditions()[1:])
         return requirement
 
 
@@ -77,9 +77,9 @@ class CarouselCache(WGCache):
         carouselData = CarouselData()
         lastGroupID = None
         for item in filteredItems:
-            isBuy = self.__ctx.isBuy
-            groupName = getGroupName(item, isBuy)
-            group = item.groupID if isBuy else groupName
+            isPurchase = self.__ctx.isPurchase
+            groupName = getGroupName(item, isPurchase)
+            group = item.groupID if isPurchase else groupName
             if group != lastGroupID:
                 lastGroupID = group
                 bookmarkVO = CustomizationBookmarkVO(group, len(carouselData.items))
@@ -91,7 +91,7 @@ class CarouselCache(WGCache):
 
     def __initItemsData(self):
         self.__itemsData.clear()
-        if self.__ctx.isBuy:
+        if self.__ctx.isPurchase:
             requirement = createCustomizationBaseRequestCriteria(
                 g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.mode.getAppliedItems()
             ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
@@ -120,9 +120,9 @@ class CarouselCache(WGCache):
         for item in sortedItems:
             tabId = ITEM_TYPE_TO_TAB[item.itemTypeID]
             modeId = CustomizationModes.CUSTOM if tabId in customModeTabs else CustomizationModes.STYLED
-            groupName = getGroupName(item, self.__ctx.isBuy)
+            groupName = getGroupName(item, self.__ctx.isPurchase)
             for season in SeasonType.COMMON_SEASONS:
-                if not (item.season if self.__ctx.isBuy else getItemSeason(item)) & season:
+                if not (item.season if self.__ctx.isPurchase else getItemSeason(item)) & season:
                     continue
                 itemsDataStorage = self.__itemsData[modeId][season]
                 if not itemsDataStorage or tabId != itemsDataStorage.keys()[-1]:
@@ -161,7 +161,7 @@ class CarouselCache(WGCache):
                 items = sorted(set(allItems), key=CSComparisonKey)
                 groups = OrderedDict()
                 for item in items:
-                    groupName = getGroupName(item, self.__ctx.isBuy)
+                    groupName = getGroupName(item, self.__ctx.isPurchase)
                     for name in groupName.split(g_config.i18n['flashCol_group_separator']):
                         if name and name not in groups:
                             groups[name] = name

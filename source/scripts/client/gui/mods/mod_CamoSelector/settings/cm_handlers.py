@@ -27,7 +27,7 @@ class CustomizationItemCMHandler(WGCMHandler):
     def _generateOptions(self, ctx=None):
         result = super(CustomizationItemCMHandler, self)._generateOptions(ctx)
         item = self.itemsCache.items.getItemByCD(self._intCD)
-        if self.__ctx.isBuy:
+        if self.__ctx.isPurchase:
             if item.itemTypeID == GUI_ITEM_TYPE.STYLE and item.isEditable:
                 result[2]['initData']['enabled'] &= (
                         self.__ctx.mode.getItemInventoryCount(item) > 0 and self.__ctx.mode.getPurchaseLimit(item) > 0)

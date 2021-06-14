@@ -29,25 +29,25 @@ class CustomizationBottomPanel(CBP):
     def _populate(self):
         super(CustomizationBottomPanel, self)._populate()
         self.app.loadView(SFViewLoadParams('PY_CS_carousel_UI'))
-        self.__ctx.events.onActualModeChanged += self.__onActualModeChanged
+        self.__ctx.events.onPurchaseModeChanged += self.__onPurchaseModeChanged
 
     def _dispose(self):
-        self.__ctx.events.onActualModeChanged -= self.__onActualModeChanged
+        self.__ctx.events.onPurchaseModeChanged -= self.__onPurchaseModeChanged
         super(CustomizationBottomPanel, self)._dispose()
 
-    def __onActualModeChanged(self):
+    def __onPurchaseModeChanged(self):
         self._carouselDP.invalidateItems()
         self.__onModeChanged(self.__ctx.modeId, self.__ctx.modeId)
 
     def returnToStyledMode(self):
-        self.__changeMode(CSMode.BUY)
+        self.__changeMode(CSMode.PURCHASE)
 
     def switchMode(self, index):
         if index != 2:
             self.__changeMode(CSMode.FROM_BUTTONS[index])
 
     def __changeMode(self, modeId):
-        self.__ctx.changeActualMode(modeId, source=CustomizationModeSource.BOTTOM_PANEL)
+        self.__ctx.changePurchaseMode(modeId, source=CustomizationModeSource.BOTTOM_PANEL)
         self.__updatePopoverBtnIcon()
 
     def showGroupFromTab(self, tabIndex):
@@ -74,15 +74,15 @@ class CustomizationBottomPanel(CBP):
         tabsCounters = []
         visibleTabs = self.getVisibleTabs()
         season = self.__ctx.season
-        isBuy = self.__ctx.isBuy
+        isPurchase = self.__ctx.isPurchase
         _filter = self.__ctx.mode.style.isItemInstallable if self.__ctx.modeId == CustomizationModes.EDITABLE_STYLE else None
         for tabId in visibleTabs:
-            if not isBuy:
+            if not isPurchase:
                 tabsCounters.append(0)
                 continue
             itemTypes = CustomizationTabs.ITEM_TYPES[tabId]
             tabsCounters.append(vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes, season, _filter))
-        if self.__ctx.isBuy:
+        if self.__ctx.isPurchase:
             switchersCounter = 0
         else:
             switchersCounter = vehicle.getC11nItemsNoveltyCounter(proxy, getItemTypesAvailableForVehicle())
@@ -95,8 +95,8 @@ class CustomizationBottomPanel(CBP):
         data = super(CustomizationBottomPanel, self)._CustomizationBottomPanel__getSwitcherInitData()
         return dict(data, **{
             'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.INSTALL]],
-            'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.BUY]],
-            'selectedIndex': CSMode.BUTTONS[self.__ctx.actualMode] + int(self.__ctx.isBuy and data['isEditable']),
+            'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.PURCHASE]],
+            'selectedIndex': CSMode.BUTTONS[self.__ctx.purchaseMode] + int(self.__ctx.isPurchase and data['isEditable']),
             'rightEnabled': True
         })
 
@@ -108,7 +108,7 @@ class CustomizationBottomPanel(CBP):
 
     def _carouseItemWrapper(self, itemCD):
         VO = super(CustomizationBottomPanel, self)._carouseItemWrapper(itemCD)
-        if not self.__ctx.isBuy:
+        if not self.__ctx.isPurchase:
             item = self.service.getItemByCD(itemCD)
             VO['locked'] = False
             VO['isAlreadyUsed'] = False  # actually marks item.isUsedUp
@@ -156,7 +156,7 @@ class CustomizationBottomPanel(CBP):
         return tabsData, pluses
 
     def __scrollToNewItem(self):
-        if self.__ctx.isBuy:
+        if self.__ctx.isPurchase:
             itemTypes = CustomizationTabs.ITEM_TYPES[self.__ctx.mode.tabId]
             newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items), key=CSComparisonKey)
             for item in newItems:
@@ -168,7 +168,7 @@ class CustomizationBottomPanel(CBP):
             self.__scrollToItem(intCD, immediately=True)
 
     def __processBillDataPurchaseItems(self, purchaseItems):
-        with self.__ctx.overrideActualMode():
+        with self.__ctx.overridePurchaseMode():
             # noinspection PyUnresolvedReferences
             return super(
                 CustomizationBottomPanel, self)._CustomizationBottomPanel__processBillDataPurchaseItems(purchaseItems)

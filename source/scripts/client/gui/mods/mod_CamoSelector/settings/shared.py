@@ -12,10 +12,10 @@ from ..constants import SEASON_NAME_TO_TYPE
 
 
 class CSMode(object):
-    BUY, INSTALL = range(2)
-    NAMES = {BUY: 'buy', INSTALL: 'install'}
-    BUTTONS = {INSTALL: 0, BUY: 1}
-    FROM_BUTTONS = {0: INSTALL, 1: BUY}
+    PURCHASE, INSTALL = ALL = range(2)
+    NAMES = ['buy', 'install']
+    BUTTONS = [1, 0]
+    FROM_BUTTONS = [INSTALL, PURCHASE]
 
 
 def getItemSeason(item):
@@ -45,13 +45,13 @@ def CSComparisonKey(item, service=None):
                 texName = texName.rsplit('/', 1)[-1]
     return (TYPES_ORDER.index(item.itemTypeID) if item.itemTypeID in TYPES_ORDER else 0, not is3D,
             ItemTags.NATIONAL_EMBLEM not in item.tags, item.priceGroup == 'custom', item.isHidden, isVictim, not isGlobal,
-            len(nationIDs) != 1, getGroupName(item, service.getCtx().isBuy), item.isRare(),
+            len(nationIDs) != 1, getGroupName(item, service.getCtx().isPurchase), item.isRare(),
             0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), texName, item.id)
 
 
-def getGroupName(item, isBuy=False):
+def getGroupName(item, isPurchase=False):
     group = item.groupUserName
-    if isBuy:
+    if isPurchase:
         return group
     if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
         if item.modelsSet:

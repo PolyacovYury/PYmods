@@ -15,7 +15,7 @@ from .. import g_config
 
 class MainView(WGMainView):
     def __setNotificationCounters(self):
-        itemTypes = sh.getItemTypesAvailableForVehicle() if self.__ctx.isBuy else ()
+        itemTypes = sh.getItemTypesAvailableForVehicle() if self.__ctx.isPurchase else ()
         if not itemTypes:
             return self.as_setNotificationCountersS([0 for _ in SEASONS_ORDER])
         seasonCounters = {season: 0 for season in SEASONS_ORDER}
@@ -34,7 +34,7 @@ class MainView(WGMainView):
 
     # noinspection DuplicatedCode
     def as_setHeaderDataS(self, data):
-        if self.__ctx.isBuy and self.__ctx.mode.modeId == CustomizationModes.STYLED:
+        if self.__ctx.isPurchase and self.__ctx.mode.modeId == CustomizationModes.STYLED:
             showSpecialLabel = False
             counter = 0
             for intCD in self.__bottomPanel._carouselDP.collection:
