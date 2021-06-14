@@ -1,6 +1,7 @@
 import BigWorld
 from HangarVehicle import HangarVehicle
 from PYmodsCore import overrideMethod, refreshCurrentVehicle
+from common_tank_appearance import CommonTankAppearance
 from gui import SystemMessages
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
@@ -8,7 +9,7 @@ from gui.Scaleform.framework.entities.View import ViewKey
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.personality import ServicesLocator as SL
 from items.vehicles import CompositeVehicleDescriptor as CompVDesc
-from vehicle_systems import appearance_cache, camouflages
+from vehicle_systems import camouflages
 from vehicle_systems.tankStructure import TankPartNames
 from . import remods, g_config
 
@@ -82,13 +83,13 @@ def applyModelDesc(vDesc, modelDesc, modelsSet, playerName):
     vDesc.modelDesc = modelDesc
 
 
-@overrideMethod(appearance_cache._AppearanceCache, '__cacheApperance')
-def new_cacheAppearance(base, self, vId, info, *a, **k):
+@overrideMethod(CommonTankAppearance, 'prerequisites')
+def new_cacheAppearance(base, self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k):
     if g_config.data['enabled']:
-        outfit = camouflages.prepareBattleOutfit(info.outfitCD, info.typeDescr, vId)
-        modelDesc, playerName = getModelDescInfo(vId, info.typeDescr, 'battle')
-        applyModelDesc(info.typeDescr, modelDesc, outfit.modelsSet or 'default', playerName)
-    return base(self, vId, info, *a, **k)
+        outfit = camouflages.prepareBattleOutfit(outfitCD, typeDescriptor, vID)
+        modelDesc, playerName = getModelDescInfo(vID, typeDescriptor, 'battle')
+        applyModelDesc(typeDescriptor, modelDesc, outfit.modelsSet or 'default', playerName)
+    return base(self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k)
 
 
 @overrideMethod(HangarVehicleAppearance, '__startBuild')
@@ -101,7 +102,7 @@ def new_startBuild(base, self, vDesc, vState):
                 SystemMessages.pushMessage(g_config.i18n['UI_install_customization'], SystemMessages.SM_TYPE.Warning)
             vDesc.modelDesc = None
         else:
-            applyModelDesc(vDesc, modelDesc, self._HangarVehicleAppearance__outfit.modelsSet or 'default', playerName)
+            applyModelDesc(vDesc, modelDesc, self.outfit.modelsSet or 'default', playerName)
     return base(self, vDesc, vState)
 
 
