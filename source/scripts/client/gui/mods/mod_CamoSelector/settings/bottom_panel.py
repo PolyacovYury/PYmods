@@ -2,6 +2,7 @@ import BigWorld
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from frameworks.wulf import WindowLayer as WL
+from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
     CustomizationTabs, checkSlotsFilling, getItemTypesAvailableForVehicle, getEditableStylesExtraNotificationCounter)
@@ -108,27 +109,37 @@ class CustomizationBottomPanel(CBP):
 
     def _carouseItemWrapper(self, itemCD):
         VO = super(CustomizationBottomPanel, self)._carouseItemWrapper(itemCD)
-        if not self.__ctx.isPurchase:
-            item = self.service.getItemByCD(itemCD)
-            VO['locked'] = False
-            VO['isAlreadyUsed'] = False  # actually marks item.isUsedUp
-            VO['isDarked'] = False
-            VO['buyPrice'] = getItemPricesVO(ITEM_PRICE_EMPTY)[0]
-            VO['rentalInfoText'] = ''
-            if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
-                VO['editBtnEnabled'] = not item.modelsSet
-                VO['editableIcon'] = (
-                    backport.image(R.images.gui.maps.icons.customization.editable_small())
-                    if not item.modelsSet else
-                    backport.image(R.images.gui.maps.icons.customization.editable_small_disable())
-                )
-            else:
-                VO['editableIcon'] = ''
-                VO['editBtnEnabled'] = False
-            VO['noveltyCounter'] = 0
-            if '4278190335,4278255360,4294901760,4278190080' in VO['icon']:
-                VO['icon'] = '../../' + VO['icon'].split('"', 2)[1]
-            VO.pop('quantity', None)
+        if self.__ctx.isPurchase:
+            return VO
+        item = self.service.getItemByCD(itemCD)
+        VO['locked'] = False
+        VO['isAlreadyUsed'] = False  # actually marks item.isUsedUp
+        VO['isDarked'] = False
+        VO['buyPrice'] = getItemPricesVO(ITEM_PRICE_EMPTY)[0]
+        VO['rentalInfoText'] = ''
+        VO['showEditBtnHint'] = False
+        VO['showEditableHint'] = False
+        if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
+            VO['editBtnEnabled'] = not item.modelsSet
+            VO['editableIcon'] = (
+                backport.image(R.images.gui.maps.icons.customization.editable_small())
+                if not item.modelsSet else
+                backport.image(R.images.gui.maps.icons.customization.editable_small_disable())
+            )
+            VO['tooltip'] = (
+                makeHtmlString('html_templates:lobby/customization/notify', 'decal', {
+                    'value': g_config.i18n['flashCol_propertySheet_edit_notify']})
+                if not item.modelsSet
+                else g_config.i18n['flashCol_propertySheet_edit_disabled']
+            )
+        else:
+            VO['editableIcon'] = ''
+            VO['editBtnEnabled'] = False
+            VO['tooltip'] = ''
+        VO['noveltyCounter'] = 0
+        if '4278190335,4278255360,4294901760,4278190080' in VO['icon']:
+            VO['icon'] = '../../' + VO['icon'].split('"', 2)[1]
+        VO.pop('quantity', None)
         return VO
 
     def __getItemTabsData(self):
