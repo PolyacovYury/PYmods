@@ -87,6 +87,9 @@ class CustomizationContext(WGCtx, CSModImpl):
     def init(self, season=None, modeId=None, tabId=None):
         super(CustomizationContext, self).init(season, modeId, tabId)
         self.events.onPurchaseModeChanged = Event.Event(self.events._eventsManager)
+        styleCache = g_config.getOutfitCache().get('style', {})
+        applied = styleCache.get('applied', False)
+        isStyleInstalled = self._service.isStyleInstalled()
         for purchaseMode in CSMode.PURCHASE, CSMode.INSTALL:
             self.purchaseMode = purchaseMode
             self.getMode(purchaseMode, CustomizationModes.STYLED).start()
@@ -97,11 +100,9 @@ class CustomizationContext(WGCtx, CSModImpl):
             else:
                 custom.changeTab(tabId)
             self.__currentModeIds[purchaseMode] = self.__startModeIds[purchaseMode] = (
-                CustomizationModes.STYLED
-                if (
-                    self._service.isStyleInstalled() if self.isPurchase
-                    else g_config.getOutfitCache().get('style', {}).get('applied', False))
-                else CustomizationModes.CUSTOM
+                CustomizationModes.STYLED if (
+                    isStyleInstalled if self.isPurchase else (not styleCache and isStyleInstalled) or applied
+                ) else CustomizationModes.CUSTOM
             )
         self.purchaseMode = CSMode.INSTALL
         self.refreshOutfit()

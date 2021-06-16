@@ -43,6 +43,11 @@ def hasNoCamo(outfit):
     return not any(GUI_ITEM_TYPE.CAMOUFLAGE in slot.getTypes() and not slot.isEmpty() for slot in outfit.slots())
 
 
+def createEmptyOutfit(vDesc):
+    return dependency.instance(IGuiItemsFactory).createOutfit(
+        component=(CustomizationOutfit(decals=createNationalEmblemComponents(vDesc))), vehicleCD=vDesc.makeCompactDescr())
+
+
 def applyOutfitCache(outfit, seasonCache, clean=True):
     try:
         for itemTypeName, itemCache in seasonCache.items():
@@ -162,15 +167,15 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
                 else:
                     outfit = style.getOutfit(SEASON_NAME_TO_TYPE[seasonName]).copy()
             else:
-                outfit = Outfit()
+                outfit = createEmptyOutfit(vDesc)
                 outfit._id = 20000
-        else:
-            if outfit.modelsSet and any(v for k, v in vehCache.iteritems() if k != 'style'):
-                outfit = Outfit()
+        if not styleCache['applied']:  # could have changed in `if not style` above
+            if outfit.id and any(v for k, v in vehCache.iteritems() if k != 'style'):
+                outfit = createEmptyOutfit(vDesc)
             applyOutfitCache(outfit, vehCache.get(seasonName, {}))
         deleteEmpty(vehCache, isTurretCustomizable)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-    if outfit.modelsSet or outfit.id == 20000:
+    if outfit.id:  # don't touch styles. like, at all
         randomCache.clear()
     elif g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
         processRandomCamouflages(outfit, seasonName, randomCache, isTurretCustomizable, vID)
@@ -235,8 +240,7 @@ def new_prepareOutfit(base, self, *a, **kw):
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
         return outfit
     if not g_config.data['useBought']:
-        outfit = self.itemsFactory.createOutfit(
-            component=(CustomizationOutfit(decals=createNationalEmblemComponents(vDesc))), vehicleCD=vDesc.makeCompactDescr())
+        outfit = createEmptyOutfit(vDesc)
     seasonName = SEASON_TYPE_TO_NAME[SeasonType.fromArenaKind(BigWorld.player().arena.arenaType.vehicleCamouflageKind)]
     return applyOutfitInfo(outfit, seasonName, vDesc, g_config.arenaCamoCache.setdefault(self.id, {}),
                            self.id, self.id == BigWorld.player().playerVehicleID)
