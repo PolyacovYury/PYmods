@@ -45,8 +45,10 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
     def __initFilters(self):
         # noinspection PyUnresolvedReferences
         WGCarouselDP._CustomizationCarouselDataProvider__initFilters(self)
-        self.__carouselFilters[FilterTypes.USED_UP]._SimpleCarouselFilter__criteria ^= REQ_CRITERIA.CUSTOM(
+        usedUpFilter = self.__carouselFilters[FilterTypes.USED_UP]
+        usedUpFilter._SimpleCarouselFilter__criteria ^= REQ_CRITERIA.CUSTOM(
             lambda _: not self.__ctx.isPurchase)
+        usedUpFilter.update(True)
 
     def __getSelectedGroupIdx(self):
         purchaseMode = self.__ctx.purchaseMode
