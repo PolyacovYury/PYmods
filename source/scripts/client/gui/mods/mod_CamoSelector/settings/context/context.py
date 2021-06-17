@@ -1,3 +1,4 @@
+import BigWorld
 import Event
 import adisp
 from CurrentVehicle import g_currentVehicle
@@ -173,10 +174,12 @@ class CustomizationContext(WGCtx, CSModImpl):
         return False
 
     @async
-    def changeModeWithProgressionDecal(self, itemCD, scrollToItem=False):
+    def changeModeWithProgressionDecal(self, itemCD, level):
         if not self.isPurchase:
-            yield await(self.editStyle(None, callback=lambda: self.mode.changeTab(
-                CustomizationTabs.PROJECTION_DECALS, itemCD=itemCD if scrollToItem else None)))
+            yield await(self.editStyle(None, callback=lambda: (
+                self.mode.changeTab(CustomizationTabs.PROJECTION_DECALS),
+                self.events.onGetItemBackToHand(self._service.getItemByCD(itemCD), level, scrollToItem=True)
+            )))
             return
         goToEditableStyle = self.canEditStyle(itemCD)
         result = True
@@ -189,7 +192,12 @@ class CustomizationContext(WGCtx, CSModImpl):
             result = yield await(dialogs.showSimple(builder.build(parent=subview)))
         if not result:
             return
-        WGCtx.changeModeWithProgressionDecal(self, itemCD, scrollToItem)
+        WGCtx.changeModeWithProgressionDecal(self, itemCD)
+        item = self._service.getItemByCD(itemCD)
+        self.events.onGetItemBackToHand(item, level, scrollToItem=True)
+        noveltyCount = self._vehicle.getC11nItemNoveltyCounter(proxy=self._itemsCache.items, item=item)
+        if noveltyCount:
+            BigWorld.callback(0.0, lambda: self.resetItemsNovelty([item.intCD]))
 
     def getPurchaseItems(self):
         with self.overridePurchaseMode():

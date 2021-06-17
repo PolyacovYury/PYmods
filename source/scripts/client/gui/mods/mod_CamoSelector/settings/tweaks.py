@@ -13,7 +13,7 @@ from gui.customization.shared import getPurchaseMoneyState, isTransactionValid, 
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.lobby.customization.progressive_items_view.progressive_items_view import ProgressiveItemsView
-from helpers import dependency
+from helpers import dependency, func_utils
 from items.components import c11n_components as c11c
 from itertools import ifilter
 from shared_utils import first
@@ -132,3 +132,15 @@ def __setEachLevelInfo(base, self, model, item):
         level.progressBlock.setHideProgressBarAndString(True)
         level.setUnlocked(True)
         level.progressBlock.setUnlockCondition('')
+
+
+@overrideMethod(ProgressiveItemsView, '_onSelectItem')
+def _onSelectItem(base, self, args=None):
+    if not g_config.data['enabled']:
+        return base(self)
+    if args is not None:
+        intCD = int(args['intCD'])
+        level = int(args['level'])
+        ctx = self._ProgressiveItemsView__customizationService.getCtx()
+        func_utils.callback(0.0, ctx, 'changeModeWithProgressionDecal', intCD, level)
+    self.destroyWindow()
