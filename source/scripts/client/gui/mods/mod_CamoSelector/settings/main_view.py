@@ -10,10 +10,17 @@ from gui.shared.formatters import icons, text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from items.components.c11n_constants import EDITABLE_STYLE_STORAGE_DEPTH
+from .shared import CSMode
 from .. import g_config
 
 
 class MainView(WGMainView):
+    def _invalidate(self, *args, **kwargs):
+        callback = (args[0] or kwargs).get('callback')
+        if callback is not None:  # something special is happening
+            self.__ctx.changePurchaseMode(CSMode.PURCHASE)
+        WGMainView._invalidate(self, *args, **kwargs)
+
     def __setNotificationCounters(self):
         itemTypes = sh.getItemTypesAvailableForVehicle() if self.__ctx.isPurchase else ()
         if not itemTypes:
