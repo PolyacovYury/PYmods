@@ -36,6 +36,7 @@
     "flashCol_group_custom": "Свой",
     "flashCol_group_multinational": "Многонациональный",
     "flashCol_group_separator": " / ",
+    "flashCol_progressionDecal_changeMode_message": "Текущий стиль не может быть изменён.\nВы будете перемещены на вкладку декалей режима создания своего стиля.\nВы хотите продолжить?",
     "flashCol_propertySheet_edit_disabled": "Изменение трёхмерного стиля невозможно.",
     "flashCol_propertySheet_edit_message": "<b>Все</b> элементы внешнего вида для <b>текущего</b> сезона будут сняты.\nВы действительно хотите продолжить?",
     "flashCol_propertySheet_edit_notify": "Это действие заменит пользовательский внешний вид для <b>текущего</b> сезона. <b>Все</b> элементы будут сняты. Однако, вы <b>сможете</b> отменить эти изменения.",

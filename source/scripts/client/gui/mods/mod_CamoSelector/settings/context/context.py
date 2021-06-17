@@ -157,6 +157,22 @@ class CustomizationContext(WGCtx, CSModImpl):
         result = yield await(dialogs.showSimple(builder.build(parent=subview)))
         self.installStyleItemsToModifiedOutfit(result)
 
+    @async
+    def changeModeWithProgressionDecal(self, itemCD, scrollToItem=False):
+        goToEditableStyle = self.canEditStyle(itemCD)
+        result = True
+        if self.modeId in (CustomizationModes.STYLED, CustomizationModes.EDITABLE_STYLE) and not goToEditableStyle:
+            message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
+                'value': g_config.i18n['flashCol_progressionDecal_changeMode_message']})
+            builder = WarningDialogBuilder().setFormattedMessage(message)
+            builder.setMessagesAndButtons(R.strings.dialogs.crewSkins.skinWillBeRemoved)  # the most convenient
+            subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
+            result = yield await(dialogs.showSimple(builder.build(parent=subview)))
+        if not result:
+            return
+        self.changeMode(CustomizationModes.EDITABLE_STYLE if goToEditableStyle else CustomizationModes.CUSTOM)
+        self.mode.changeTab(CustomizationTabs.PROJECTION_DECALS, itemCD=itemCD if scrollToItem else None)
+
     def installStyleItemsToModifiedOutfit(self, proceed):
         if not proceed:
             return
