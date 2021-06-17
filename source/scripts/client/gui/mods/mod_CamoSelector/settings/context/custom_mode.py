@@ -41,29 +41,31 @@ class CustomMode(WGCustomMode):
                 for regionIdx in range(slot.capacity()):
                     slotData = slot.getSlotData(regionIdx)
                     if slotData and slotData.intCD:
-                        yield slotData.intCD, slotData.component, regionIdx, container, slot
+                        yield container, slot, regionIdx, slotData.intCD, slotData.component
                     else:
-                        yield None, None, regionIdx, container, slot
+                        yield container, slot, regionIdx, None, None
 
     def computeDiff(self, original, modified):
         seasonCache = {}
-        for intCD, component, regionIdx, container, slot in self.iterOutfit(original):
-            item = self._service.getItemByCD(intCD) if intCD is not None else None
-            slotType = item.itemTypeID if item is not None else ITEM_TYPE_TO_SLOT_TYPE.get(slot.getTypes()[0])
+        for container, slot, regionIdx, _, o_component in self.iterOutfit(original):
+            slotType = ITEM_TYPE_TO_SLOT_TYPE.get(slot.getTypes()[0])  # checks that this slot is not for attachments
             if slotType is None:
                 continue
-            typeName = GUI_ITEM_TYPE_NAMES[slotType]
             areaID = container.getAreaID()
-            slotId = C11nId(areaID, slotType, regionIdx)
-            reg = str(regionIdx)
-            m = getSlotDataFromSlot(modified, slotId)
+            m = getSlotDataFromSlot(modified, C11nId(areaID, slotType, regionIdx))
             area = Area.getName(areaID) if areaID != Area.MISC else 'misc'
-            if component if not m.intCD else not m.component.weak_eq(component):
-                seasonCache.setdefault(typeName, {}).setdefault(area, {})[reg] = (
-                    ({f: getattr(m.component, f) for f, fd in m.component.fields.items()
-                      if not fd.flags & (FieldFlags.DEPRECATED | FieldFlags.WEAK_EQUAL_IGNORED)}
-                     if not isinstance(m.component, EmptyComponent) else {'id': self._service.getItemByCD(m.intCD).id})
-                    if m.intCD else {'id': None})
+            seasonCache.setdefault(GUI_ITEM_TYPE_NAMES[slotType], {}).setdefault(area, {})[str(regionIdx)] = item_data = {}
+            if not m.intCD:
+                if o_component:
+                    item_data['id'] = None
+            elif not m.component.weak_eq(o_component):
+                if isinstance(m.component, EmptyComponent):
+                    item_data['id'] = self._service.getItemByCD(m.intCD).id
+                else:
+                    item_data.update({
+                        f: getattr(m.component, f) for f, fd in m.component.fields.items()
+                        if not fd.flags & (FieldFlags.DEPRECATED | FieldFlags.WEAK_EQUAL_IGNORED)})
+        deleteEmpty(seasonCache)
         return seasonCache
 
     def _isOutfitsModified(self):

@@ -51,11 +51,12 @@ def createEmptyOutfit(vDesc):
 def applyOutfitCache(outfit, seasonCache, clean=True):
     try:
         for itemTypeName, itemCache in seasonCache.items():
-            itemType = GUI_ITEM_TYPE_INDICES[itemTypeName]
-            itemDB = items.vehicles.g_cache.customization20().itemTypes[C11N_ITEM_TYPE_MAP[itemType]]
+            slotType = GUI_ITEM_TYPE_INDICES[itemTypeName]
+            itemDBs = items.vehicles.g_cache.customization20().itemTypes
+            itemDB = itemDBs[C11N_ITEM_TYPE_MAP[slotType]]
             for areaName, areaCache in itemCache.items():
                 areaId = (Area.MISC if areaName == 'misc' else TankPartNames.getIdx(areaName))
-                slot = outfit.getContainer(areaId).slotFor(itemType)
+                slot = outfit.getContainer(areaId).slotFor(slotType)
                 for regionIdx in areaCache.keys():
                     itemID = areaCache[regionIdx]['id']
                     if itemID is None:
@@ -64,13 +65,18 @@ def applyOutfitCache(outfit, seasonCache, clean=True):
                         elif clean:  # item is being deleted while not applied at all. possible change after last cache
                             del areaCache[regionIdx]  # so we remove an obsolete key
                         continue
+                    is_number = slotType == GUI_ITEM_TYPE.INSCRIPTION and 'number' in areaCache[regionIdx]
+                    if is_number:
+                        itemDB = itemDBs[C11N_ITEM_TYPE_MAP[GUI_ITEM_TYPE.PERSONAL_NUMBER]]
                     if itemID not in itemDB:
                         print g_config.ID + ': wrong item ID for %s, idx %s:' % (areaName, regionIdx), itemID
                         del areaCache[regionIdx]
+                        itemDB = itemDBs[C11N_ITEM_TYPE_MAP[slotType]]
                         continue
-                    component = emptyComponent(itemType)
+                    component = emptyComponent(slotType if not is_number else GUI_ITEM_TYPE.PERSONAL_NUMBER)
                     [setattr(component, k, v) for k, v in areaCache[regionIdx].items()]
                     slot.set(itemDB[itemID].compactDescr, int(regionIdx), component)
+                    itemDB = itemDBs[C11N_ITEM_TYPE_MAP[slotType]]
         outfit.invalidate()
     except AttributeError:
         __import__('pprint').pprint(seasonCache)
