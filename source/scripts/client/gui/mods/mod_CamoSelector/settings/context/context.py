@@ -14,6 +14,7 @@ from gui.impl.dialogs.builders import WarningDialogBuilder
 from gui.impl.gen import R
 from gui.shared.personality import ServicesLocator as SL
 from gui.shared.utils.decorators import process
+from items.components.c11n_constants import SeasonType
 from shared_utils import first
 from .custom_mode import CustomMode
 from .mod_impl import CSModImpl
@@ -146,7 +147,8 @@ class CustomizationContext(WGCtx, CSModImpl):
         if self.isPurchase:
             WGCtx.editStyle(self, intCD, source)
             return
-        if self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).getModifiedOutfit(self.season).isEmpty():
+        targetMode = self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM)
+        if all(targetMode.getModifiedOutfit(season).isEmpty() for season in SeasonType.COMMON_SEASONS):
             self.installStyleItemsToModifiedOutfit(True)
             return
         message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
@@ -176,8 +178,8 @@ class CustomizationContext(WGCtx, CSModImpl):
     def installStyleItemsToModifiedOutfit(self, proceed):
         if not proceed:
             return
-        self.__moddedModes[CustomizationModes.CUSTOM].installStyleItemsToModifiedOutfit(
-            self.season, self.__moddedModes[CustomizationModes.STYLED].getModifiedOutfit(self.season).copy())
+        self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).installStyleItemsToModifiedOutfit(
+            self.getMode(CSMode.INSTALL, CustomizationModes.STYLED).getModifiedOutfits())
         self.changeMode(CustomizationModes.CUSTOM, CustomizationTabs.CAMOUFLAGES)
 
     def getPurchaseItems(self):

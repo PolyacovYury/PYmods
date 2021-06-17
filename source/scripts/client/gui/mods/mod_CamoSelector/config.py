@@ -41,10 +41,10 @@ class ConfigInterface(PYmodsConfigInterface):
                 'If you proceed, you will be moved to custom mode\'s decal tab.\nDo you want to continue?'),
             'flashCol_propertySheet_edit_disabled': 'Style editing is disabled for 3D styles.',
             'flashCol_propertySheet_edit_message': (
-                '<b>All</b> installed items will be removed from <b>current</b> season.\nAre you sure you want to continue?'),
+                '<b>All</b> installed items will be removed from <b>ALL</b> seasons.\nAre you sure you want to continue?'),
             'flashCol_propertySheet_edit_notify': (
-                'This action will replace the custom outfit for <b>current</b> season. <b>All</b> items will be removed. '
-                'However, you <b>will</b> be able to cancel these changes.'),
+                'This action will replace custom outfits for <b>ALL</b> seasons.\n<b>All</b> items will be removed. '
+                'You <b>will</b> be able to cancel these changes.'),
             'flashCol_group_multinational': 'Multinational',
             'flashCol_group_custom': 'Custom',
             'flashCol_group_separator': ' / ',

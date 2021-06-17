@@ -24,8 +24,8 @@ class CustomMode(WGCustomMode):
         self._baseMode = baseMode
         self._cache = deepcopy(g_config.getHangarCache())
 
-    def installStyleItemsToModifiedOutfit(self, season, styleOutfit):
-        self._modifiedOutfits[season] = styleOutfit
+    def installStyleItemsToModifiedOutfit(self, styleOutfits):
+        self._modifiedOutfits = styleOutfits
         self._fitOutfits()
 
     def getItemInventoryCount(self, item, excludeBase=False):
