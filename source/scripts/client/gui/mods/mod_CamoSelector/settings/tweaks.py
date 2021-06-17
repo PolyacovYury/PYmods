@@ -12,6 +12,7 @@ from gui.customization import CustomizationService
 from gui.customization.shared import getPurchaseMoneyState, isTransactionValid, C11nId
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.impl.lobby.customization.progressive_items_view.progressive_items_view import ProgressiveItemsView
 from helpers import dependency
 from items.components import c11n_components as c11c
 from itertools import ifilter
@@ -24,7 +25,7 @@ from .. import g_config
 @overrideMethod(CustomizationService, '__loadCustomization')
 def __loadCustomization(base, self, vehInvID=None, callback=None, *a, **k):
     base(self, vehInvID, callback, *a, **k)
-    if (vehInvID is None or vehInvID == g_currentVehicle.item.invID) and callback is not None:
+    if g_config.data['enabled'] and (vehInvID is None or vehInvID == g_currentVehicle.item.invID) and callback is not None:
         self.getCtx().changePurchaseMode(CSMode.PURCHASE)
 
 
@@ -118,3 +119,16 @@ def __makeItemDataVO(base, itemData, isModified):
     if '4278190335,4278255360,4294901760,4278190080' in data['icon']:
         data['icon'] = '../../' + data['icon'].split('"', 2)[1]
     return data
+
+
+@overrideMethod(ProgressiveItemsView, '__setEachLevelInfo')
+def __setEachLevelInfo(base, self, model, item):
+    base(self, model, item)
+    if not g_config.data['enabled'] or self._ProgressiveItemsView__customizationService.getCtx().isPurchase:
+        return
+    for level in model.eachLevelInfo.getItems():
+        level.setLevelText('')
+        level.setInProgress(False)
+        level.progressBlock.setHideProgressBarAndString(True)
+        level.setUnlocked(True)
+        level.progressBlock.setUnlockCondition('')

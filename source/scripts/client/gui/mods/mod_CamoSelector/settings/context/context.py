@@ -143,24 +143,41 @@ class CustomizationContext(WGCtx, CSModImpl):
             self.purchaseMode = purchaseMode
 
     @async
-    def editStyle(self, intCD, source=None):
+    def editStyle(self, intCD, source=None, callback=None):
         if self.isPurchase:
             WGCtx.editStyle(self, intCD, source)
             return
         targetMode = self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM)
-        if all(targetMode.getModifiedOutfit(season).isEmpty() for season in SeasonType.COMMON_SEASONS):
-            self.installStyleItemsToModifiedOutfit(True)
+        proceed = True
+        if not all(targetMode.getModifiedOutfit(season).isEmpty() for season in SeasonType.COMMON_SEASONS):
+            message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
+                'value': g_config.i18n['flashCol_propertySheet_edit_message']})
+            builder = WarningDialogBuilder().setFormattedMessage(message)
+            builder.setMessagesAndButtons(R.strings.dialogs.crewSkins.skinWillBeRemoved)  # the most convenient
+            subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
+            proceed = yield await(dialogs.showSimple(builder.build(parent=subview)))
+        if not proceed:
             return
-        message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
-            'value': g_config.i18n['flashCol_propertySheet_edit_message']})
-        builder = WarningDialogBuilder().setFormattedMessage(message)
-        builder.setMessagesAndButtons(R.strings.dialogs.crewSkins.skinWillBeRemoved)  # the most convenient
-        subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
-        result = yield await(dialogs.showSimple(builder.build(parent=subview)))
-        self.installStyleItemsToModifiedOutfit(result)
+        self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).installStyleItemsToModifiedOutfit(
+            self.getMode(CSMode.INSTALL, CustomizationModes.STYLED).getModifiedOutfits())
+        self.changeMode(CustomizationModes.CUSTOM, CustomizationTabs.CAMOUFLAGES)
+        callback and callback()
+
+    def canEditStyle(self, itemCD):
+        if self.isPurchase:
+            return WGCtx.canEditStyle(self, itemCD)
+        if self.__modeId == CustomizationModes.STYLED:
+            outfit = self.mode.getModifiedOutfit()
+            if outfit is not None and outfit.style is not None:
+                return not outfit.modelsSet
+        return False
 
     @async
     def changeModeWithProgressionDecal(self, itemCD, scrollToItem=False):
+        if not self.isPurchase:
+            yield await(self.editStyle(None, callback=lambda: self.mode.changeTab(
+                CustomizationTabs.PROJECTION_DECALS, itemCD=itemCD if scrollToItem else None)))
+            return
         goToEditableStyle = self.canEditStyle(itemCD)
         result = True
         if self.modeId in (CustomizationModes.STYLED, CustomizationModes.EDITABLE_STYLE) and not goToEditableStyle:
@@ -172,15 +189,7 @@ class CustomizationContext(WGCtx, CSModImpl):
             result = yield await(dialogs.showSimple(builder.build(parent=subview)))
         if not result:
             return
-        self.changeMode(CustomizationModes.EDITABLE_STYLE if goToEditableStyle else CustomizationModes.CUSTOM)
-        self.mode.changeTab(CustomizationTabs.PROJECTION_DECALS, itemCD=itemCD if scrollToItem else None)
-
-    def installStyleItemsToModifiedOutfit(self, proceed):
-        if not proceed:
-            return
-        self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).installStyleItemsToModifiedOutfit(
-            self.getMode(CSMode.INSTALL, CustomizationModes.STYLED).getModifiedOutfits())
-        self.changeMode(CustomizationModes.CUSTOM, CustomizationTabs.CAMOUFLAGES)
+        WGCtx.changeModeWithProgressionDecal(self, itemCD, scrollToItem)
 
     def getPurchaseItems(self):
         with self.overridePurchaseMode():
