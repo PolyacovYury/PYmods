@@ -13,7 +13,14 @@ def checkKeys(keys, key=None):  # thx to P0LIR0ID
 def refreshCurrentVehicle():
     from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
     if g_currentPreviewVehicle.item:
-        g_currentPreviewVehicle.hangarSpace.updatePreviewVehicle(g_currentPreviewVehicle.item)
+        from frameworks.wulf import WindowLayer
+        from gui.shared.personality import ServicesLocator as SL
+        from gui.Scaleform.daapi.view.lobby.vehicle_preview.style_preview import VehicleStylePreview
+        outfit = None
+        sub_view = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
+        if isinstance(sub_view, VehicleStylePreview):
+            outfit = g_currentPreviewVehicle._CurrentPreviewVehicle__getPreviewOutfitByStyle(sub_view._style)
+        g_currentPreviewVehicle.hangarSpace.updatePreviewVehicle(g_currentPreviewVehicle.item, outfit)
     else:
         g_currentVehicle.refreshModel()
     from HeroTank import HeroTank

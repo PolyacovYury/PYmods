@@ -8,13 +8,14 @@ order = ('battles', 'frags', 'BonusBattles', 'marksOfMastery', 'mainGun', 'Broth
 def _getPossibleItemsForVehicle(self):
     customizationCache = vehicles.g_cache.customization20()
     vehicleType = self._vehicle.descriptor.type
-    items = [item for item in customizationCache.customizationWithProgression.itervalues()
-             if item.itemType == CustomizationType.PROJECTION_DECAL]
-    sortedItems = sorted(items, key=lambda i: (
-        next((j for j, tag in enumerate(order) if tag in i.progression.levels[1]['conditions'][0]['path'][1]), 100),
-        i.id
-    ))
-    return [item.compactDescr for item in sortedItems if item.filter.matchVehicleType(vehicleType)]
+    return [_item.compactDescr for _item in sorted(
+        [item for item in customizationCache.customizationWithProgression.itervalues()
+         if item.itemType == CustomizationType.PROJECTION_DECAL
+         and (item.filter is None or item.filter.matchVehicleType(vehicleType))],
+        key=lambda i: (
+            next((j for j, tag in enumerate(order) if tag in i.progression.levels[1]['conditions'][0]['path'][1]), 100),
+            i.id
+        ))]
 
 
 ProgressiveItemsView._getPossibleItemsForVehicle = _getPossibleItemsForVehicle
