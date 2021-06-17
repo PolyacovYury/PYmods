@@ -1,12 +1,14 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import loadJson
 from adisp import async
+from constants import CLIENT_COMMAND_SOURCES
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.context.styled_mode import StyledMode as WGStyledMode
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.SystemMessages import SM_TYPE
 from gui.customization.shared import __isTurretCustomizable as isTurretCustom
 from items.components.c11n_constants import SeasonType
+from vehicle_systems.camouflages import getStyleProgressionOutfit
 from ... import g_config
 from ...processors import deleteEmpty
 
@@ -17,6 +19,9 @@ class StyledMode(WGStyledMode):
         self._baseMode = baseMode
         self._moddedStyle = None
 
+    def changeAutoRent(self, source=CLIENT_COMMAND_SOURCES.UNDEFINED):
+        self._baseMode.changeAutoRent(source)
+
     def prolongRent(self, style):
         self._baseMode.prolongRent(style)
 
@@ -26,10 +31,10 @@ class StyledMode(WGStyledMode):
     def _removeHiddenFromOutfit(self, outfit, vehicleIntCD):
         pass
 
-    def safe_getOutfitFromStyle(self, style, season, vehicleCD):
+    def safe_getOutfitFromStyle(self, style, season, level, vehicleCD):
         if style is None:
-            return self._service.getEmptyOutfit()
-        return style.getOutfit(season, vehicleCD=vehicleCD).copy()
+            return self._service.getEmptyOutfitWithNationalEmblems(vehicleCD)
+        return getStyleProgressionOutfit(style.getOutfit(season, vehicleCD=vehicleCD).copy(), level, season)
 
     def _isOutfitsModified(self):
         vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
@@ -39,10 +44,17 @@ class StyledMode(WGStyledMode):
             self.__originalStyle = style
         else:
             self.__originalStyle = self._moddedStyle or style
+        old_level = self._originalOutfits[self.season].progressionLevel
+        new_level = self._modifiedOutfits[self.season].progressionLevel
         for season in SeasonType.COMMON_SEASONS:
-            self._originalOutfits[season] = self.safe_getOutfitFromStyle(self.__originalStyle, season, vehicleCD)
-            self._modifiedOutfits[season] = self.safe_getOutfitFromStyle(self.__modifiedStyle, season, vehicleCD)
-        return WGStyledMode._isOutfitsModified(self)
+            self._originalOutfits[season] = self.safe_getOutfitFromStyle(self.__originalStyle, season, old_level, vehicleCD)
+            self._modifiedOutfits[season] = self.safe_getOutfitFromStyle(self.__modifiedStyle, season, new_level, vehicleCD)
+        isStyleChanged = any(
+            (not self._originalOutfits[s].isEqual(self._modifiedOutfits[s]) for s in SeasonType.COMMON_SEASONS))
+        if self.__modifiedStyle and self.__modifiedStyle.isProgressive:
+            if self._originalOutfits[self.season].progressionLevel != self._modifiedOutfits[self.season].progressionLevel:
+                return True
+        return isStyleChanged
 
     def _fillOutfits(self):
         vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()

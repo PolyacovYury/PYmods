@@ -151,3 +151,26 @@ class CustomMode(WGCustomMode):
     def isPossibleToInstallItemForAllSeasons(self, slotId, intCD):
         return getItemSeason(self._service.getItemByCD(intCD)) == reduce(
             operator.ior, SeasonType.COMMON_SEASONS, SeasonType.UNDEFINED)
+
+    def __getItemProgressionLevel(self, item):
+        return item.getLatestOpenedProgressionLevel(g_currentVehicle.item) if self._ctx.isPurchase else item.getMaxProgressionLevel()
+
+    def __configureProjectionDecalComponentProgression(self, component, item, prevItem):
+        if not item.isProgressive:
+            component.progressionLevel = 0
+        achievedLevel = self.__getItemProgressionLevel(item)
+        if achievedLevel == -1:
+            component.progressionLevel = 0
+            return
+        if prevItem is not None and prevItem != item:
+            if not prevItem.isProgressive:
+                progressionLevel = 0
+            else:
+                prevLevel = component.progressionLevel
+                prevLevel = prevLevel or self.__getItemProgressionLevel(prevItem)
+                progressionLevel = min(prevLevel, achievedLevel)
+        else:
+            progressionLevel = min(self.__storedProgressionLevel, achievedLevel)
+        if progressionLevel == achievedLevel:
+            progressionLevel = 0
+        component.progressionLevel = progressionLevel
