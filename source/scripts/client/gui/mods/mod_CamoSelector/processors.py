@@ -230,8 +230,7 @@ def new_getActiveOutfit(base, self, vDesc):
             if vehicle:
                 outfit = vehicle.getOutfit(season)
     seasonName = SEASON_TYPE_TO_NAME[season]
-    outfit = outfit.copy() if outfit else self.customizationService.getEmptyOutfitWithNationalEmblems(
-        vehicleCD=vDesc.makeCompactDescr())
+    outfit = outfit.copy() if outfit else createEmptyOutfit(vDesc)
     seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(seasonName, {})
     return applyOutfitInfo(outfit, seasonName, vDesc, seasonCache)
 
