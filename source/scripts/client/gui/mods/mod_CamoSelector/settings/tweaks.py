@@ -126,6 +126,7 @@ def __setEachLevelInfo(base, self, model, item):
     base(self, model, item)
     if not g_config.data['enabled'] or self._ProgressiveItemsView__customizationService.getCtx().isPurchase:
         return
+    model.setCurrentLevel(model.getMaxLevel())
     for level in model.eachLevelInfo.getItems():
         level.setLevelText('')
         level.setInProgress(False)

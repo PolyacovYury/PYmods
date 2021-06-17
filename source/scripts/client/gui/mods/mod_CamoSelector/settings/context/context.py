@@ -176,10 +176,13 @@ class CustomizationContext(WGCtx, CSModImpl):
     @async
     def changeModeWithProgressionDecal(self, itemCD, level):
         if not self.isPurchase:
-            yield await(self.editStyle(None, callback=lambda: (
-                self.mode.changeTab(CustomizationTabs.PROJECTION_DECALS),
+            def onSuccess():
+                self.mode.changeTab(CustomizationTabs.PROJECTION_DECALS)
                 self.events.onGetItemBackToHand(self._service.getItemByCD(itemCD), level, scrollToItem=True)
-            )))
+            if self.modeId == CustomizationModes.STYLED:
+                yield await(self.editStyle(None, callback=onSuccess))
+            else:
+                onSuccess()
             return
         goToEditableStyle = self.canEditStyle(itemCD)
         result = True
