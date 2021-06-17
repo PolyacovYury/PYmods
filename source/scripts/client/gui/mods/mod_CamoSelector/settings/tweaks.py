@@ -1,6 +1,9 @@
 from PYmodsCore import overrideMethod
+from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION
 from gui.Scaleform.daapi.view.lobby.customization import (
     customization_style_info as si)
+from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_controller import (
+    CustomizationInscriptionController, _PRESS_ENTER_HINT_SHOWN_FIELD, _ENTER_NUMBER_HINT_SHOWN_FIELD)
 from gui.Scaleform.daapi.view.lobby.customization.popovers import C11nPopoverItemData, orderKey
 from gui.Scaleform.daapi.view.lobby.customization.popovers.custom_popover import CustomPopoverDataProvider
 from gui.Scaleform.daapi.view.lobby.customization.shared import getSlotDataFromSlot, ITEM_TYPE_TO_SLOT_TYPE
@@ -19,6 +22,14 @@ from .. import g_config
 @dependency.replace_none_kwargs(service=ICustomizationService)
 def isPersonalNumberAllowed(base, number, service=None):
     return (g_config.data['enabled'] and not service.getCtx().isPurchase) or base(number)
+
+
+@overrideMethod(CustomizationInscriptionController, '_populate')
+def new_InscriptionController_populate(base, self):
+    settings = AccountSettings.getSettings(CUSTOMIZATION_SECTION)
+    settings.update({_PRESS_ENTER_HINT_SHOWN_FIELD: 0, _ENTER_NUMBER_HINT_SHOWN_FIELD: 0})
+    AccountSettings.setSettings(CUSTOMIZATION_SECTION, settings)
+    base(self)
 
 
 @overrideMethod(si.CustomizationStyleInfo, '__makeButtonVO')

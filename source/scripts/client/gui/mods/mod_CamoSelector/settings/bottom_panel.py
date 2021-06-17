@@ -178,6 +178,12 @@ class CustomizationBottomPanel(CBP):
         if intCD is not None:
             self.__scrollToItem(intCD, immediately=True)
 
+    def __onEditableStylesHintsShown(self):
+        if not self.__ctx.isPurchase:
+            return self.__onEditableStylesHintsHidden(record=False)
+        # noinspection PyUnresolvedReferences
+        return CBP._CustomizationBottomPanel__onEditableStylesHintsShown(self)
+
     def __processBillDataPurchaseItems(self, purchaseItems):
         with self.__ctx.overridePurchaseMode():
             # noinspection PyUnresolvedReferences
