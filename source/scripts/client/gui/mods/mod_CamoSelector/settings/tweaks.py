@@ -1,3 +1,4 @@
+from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION
 from gui.Scaleform.daapi.view.lobby.customization import (
@@ -7,6 +8,7 @@ from gui.Scaleform.daapi.view.lobby.customization.customization_inscription_cont
 from gui.Scaleform.daapi.view.lobby.customization.popovers import C11nPopoverItemData, orderKey
 from gui.Scaleform.daapi.view.lobby.customization.popovers.custom_popover import CustomPopoverDataProvider
 from gui.Scaleform.daapi.view.lobby.customization.shared import getSlotDataFromSlot, ITEM_TYPE_TO_SLOT_TYPE
+from gui.customization import CustomizationService
 from gui.customization.shared import getPurchaseMoneyState, isTransactionValid, C11nId
 from gui.impl import backport
 from gui.impl.gen import R
@@ -15,7 +17,15 @@ from items.components import c11n_components as c11c
 from itertools import ifilter
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
+from .shared import CSMode
 from .. import g_config
+
+
+@overrideMethod(CustomizationService, '__loadCustomization')
+def __loadCustomization(base, self, vehInvID=None, callback=None, *a, **k):
+    base(self, vehInvID, callback, *a, **k)
+    if (vehInvID is None or vehInvID == g_currentVehicle.item.invID) and callback is not None:
+        self.getCtx().changePurchaseMode(CSMode.PURCHASE)
 
 
 @overrideMethod(c11c, 'isPersonalNumberAllowed')

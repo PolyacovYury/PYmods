@@ -15,12 +15,6 @@ from .. import g_config
 
 
 class MainView(WGMainView):
-    def _invalidate(self, *args, **kwargs):
-        callback = (args[0] or kwargs).get('callback')
-        if callback is not None:  # something special is happening
-            self.__ctx.changePurchaseMode(CSMode.PURCHASE)
-        WGMainView._invalidate(self, *args, **kwargs)
-
     def __setNotificationCounters(self):
         itemTypes = sh.getItemTypesAvailableForVehicle() if self.__ctx.isPurchase else ()
         if not itemTypes:
