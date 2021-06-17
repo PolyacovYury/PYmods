@@ -29,7 +29,7 @@ class MainView(WGMainView):
         self.as_setNotificationCountersS([seasonCounters[season] for season in SEASONS_ORDER])
 
     def onPressClearBtn(self):
-        super(MainView, self).onPressClearBtn()
+        WGMainView.onPressClearBtn(self)
         self.__ctx.cancelChanges()
 
     # noinspection DuplicatedCode
@@ -53,7 +53,7 @@ class MainView(WGMainView):
                     R.strings.vehicle_customization.savedStyles.label(), img=img, current=storedStylesCount,
                     max=EDITABLE_STYLE_STORAGE_DEPTH))
                 data['tankInfo'] = label
-        return super(MainView, self).as_setHeaderDataS(data)
+        return WGMainView.as_setHeaderDataS(self, data)
 
     def __selectFirstVisibleTab(self):
         visibleTabs = self.__bottomPanel.getVisibleTabs()

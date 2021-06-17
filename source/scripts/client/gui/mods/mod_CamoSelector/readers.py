@@ -17,7 +17,7 @@ STARTER_ITEM_ID = EMPTY_ITEM_ID + 1
 
 class ModdedCamouflageReader(CamouflageXmlReader):
     def _readFromXml(self, target, xmlCtx, section, cache=None):
-        super(ModdedCamouflageReader, self)._readFromXml(target, xmlCtx, section, cache)
+        CamouflageXmlReader._readFromXml(self, target, xmlCtx, section, cache)
         if not g_config.data['fullAlpha']:
             return
         for palette in target.palettes:

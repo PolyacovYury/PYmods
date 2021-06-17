@@ -25,7 +25,7 @@ class Options(object):
 
 class CustomizationItemCMHandler(WGCMHandler):
     def _generateOptions(self, ctx=None):
-        result = super(CustomizationItemCMHandler, self)._generateOptions(ctx)
+        result = WGCMHandler._generateOptions(self, ctx)
         item = self.itemsCache.items.getItemByCD(self._intCD)
         if self.__ctx.isPurchase:
             if item.itemTypeID == GUI_ITEM_TYPE.STYLE and item.isEditable:
@@ -71,13 +71,13 @@ class CustomizationItemCMHandler(WGCMHandler):
 
     def __getEditStyleBtn(self, item):
         # noinspection PyUnresolvedReferences
-        btn = super(CustomizationItemCMHandler, self)._CustomizationItemCMHandler__getEditStyleBtn(item)
+        btn = WGCMHandler._CustomizationItemCMHandler__getEditStyleBtn(self, item)
         btn['initData']['enabled'] = not item.modelsSet
         return btn
 
     def onOptionSelect(self, optionId):
         if optionId not in Options.ALL:
-            return super(CustomizationItemCMHandler, self).onOptionSelect(optionId)
+            return WGCMHandler.onOptionSelect(self, optionId)
         settings = self.__ctx.getItemSettings(self.itemsCache.items.getItemByCD(self._intCD))
         value = optionId.split('_')[1]
         if optionId in Options.SEASON:

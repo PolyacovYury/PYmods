@@ -44,7 +44,7 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
 
     def __initFilters(self):
         # noinspection PyUnresolvedReferences
-        super(CustomizationCarouselDataProvider, self)._CustomizationCarouselDataProvider__initFilters()
+        WGCarouselDP._CustomizationCarouselDataProvider__initFilters(self)
         self.__carouselFilters[FilterTypes.USED_UP]._SimpleCarouselFilter__criteria ^= REQ_CRITERIA.CUSTOM(
             lambda _: not self.__ctx.isPurchase)
 
@@ -78,7 +78,7 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
 
 class CarouselCache(WGCache):
     def getVisibleTabs(self):
-        visibleTabs = super(CarouselCache, self).getVisibleTabs()
+        visibleTabs = WGCache.getVisibleTabs(self)
         season, modeId = self.__ctx.season, self.__ctx.modeId
         if modeId != CustomizationModes.EDITABLE_STYLE:
             visibleTabs = (self.__itemsData[CustomizationModes.CUSTOM][season].keys(

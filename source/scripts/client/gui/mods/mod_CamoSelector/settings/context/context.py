@@ -39,7 +39,6 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.__moddedModes = {
             modeId: ModdedMode(self, modeId, self.__origModes[modeId])
             for modeId in (CustomizationModes.CUSTOM, CustomizationModes.STYLED)}
-        self.__switcherIgnored = False
 
     @property
     def isPurchase(self):
@@ -85,7 +84,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         return self.isPurchase and self.__isItemsOnAnotherVeh
 
     def init(self, season=None, modeId=None, tabId=None):
-        super(CustomizationContext, self).init(season, modeId, tabId)
+        WGCtx.init(self, season, modeId, tabId)
         self.events.onPurchaseModeChanged = Event.Event(self.events._eventsManager)
         styleCache = g_config.getOutfitCache().get('style', {})
         applied = styleCache.get('applied', False)
@@ -108,7 +107,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.refreshOutfit()
 
     def fini(self):
-        super(CustomizationContext, self).fini()
+        WGCtx.fini(self)
         for purchaseMode in CSMode.ALL:
             modes = self.getMode(purchaseMode)
             for mode in modes.values():
@@ -145,7 +144,7 @@ class CustomizationContext(WGCtx, CSModImpl):
     @async
     def editStyle(self, intCD, source=None):
         if self.isPurchase:
-            super(CustomizationContext, self).editStyle(intCD, source)
+            WGCtx.editStyle(self, intCD, source)
             return
         if self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).getModifiedOutfit(self.season).isEmpty():
             self.installStyleItemsToModifiedOutfit(True)
@@ -197,7 +196,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         result = CSModImpl.isOutfitsModified(self)
         for purchaseMode in CSMode.PURCHASE, CSMode.INSTALL:
             with self.overridePurchaseMode(purchaseMode):
-                result |= super(CustomizationContext, self).isOutfitsModified()
+                result |= WGCtx.isOutfitsModified(self)
         return result
 
     def __onCacheResync(self, *_):

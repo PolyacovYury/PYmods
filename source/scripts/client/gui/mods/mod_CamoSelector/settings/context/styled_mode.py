@@ -13,7 +13,7 @@ from ...processors import deleteEmpty
 
 class StyledMode(WGStyledMode):
     def __init__(self, ctx, baseMode):
-        super(StyledMode, self).__init__(ctx)
+        WGStyledMode.__init__(self, ctx)
         self._baseMode = baseMode
         self._moddedStyle = None
 
@@ -42,7 +42,7 @@ class StyledMode(WGStyledMode):
         for season in SeasonType.COMMON_SEASONS:
             self._originalOutfits[season] = self.safe_getOutfitFromStyle(self.__originalStyle, season, vehicleCD)
             self._modifiedOutfits[season] = self.safe_getOutfitFromStyle(self.__modifiedStyle, season, vehicleCD)
-        return super(StyledMode, self)._isOutfitsModified()
+        return WGStyledMode._isOutfitsModified(self)
 
     def _fillOutfits(self):
         vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
@@ -87,4 +87,4 @@ class StyledMode(WGStyledMode):
         return self._ctx.getPurchaseItems()
 
     def getModdedPurchaseItems(self):
-        return super(StyledMode, self).getPurchaseItems()
+        return WGStyledMode.getPurchaseItems(self)

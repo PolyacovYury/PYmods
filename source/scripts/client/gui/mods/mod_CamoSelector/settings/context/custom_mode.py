@@ -20,7 +20,7 @@ from ...processors import applyOutfitCache, deleteEmpty
 
 class CustomMode(WGCustomMode):
     def __init__(self, ctx, baseMode):
-        super(CustomMode, self).__init__(ctx)
+        WGCustomMode.__init__(self, ctx)
         self._baseMode = baseMode
         self._cache = deepcopy(g_config.getHangarCache())
 
@@ -33,7 +33,7 @@ class CustomMode(WGCustomMode):
 
     def _cancelChanges(self):
         self._cache.clear()
-        super(CustomMode, self)._cancelChanges()
+        WGCustomMode._cancelChanges(self)
 
     def iterOutfit(self, outfit):
         for container in outfit.containers():
@@ -130,7 +130,7 @@ class CustomMode(WGCustomMode):
         return self._ctx.getPurchaseItems()
 
     def getModdedPurchaseItems(self):
-        return super(CustomMode, self).getPurchaseItems()
+        return WGCustomMode.getPurchaseItems(self)
 
     def removeItemsFromSeason(self, season=None, filterMethod=None, refresh=True):
         season = season or self.season

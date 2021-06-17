@@ -28,13 +28,13 @@ from .. import g_config
 
 class CustomizationBottomPanel(CBP):
     def _populate(self):
-        super(CustomizationBottomPanel, self)._populate()
+        CBP._populate(self)
         self.app.loadView(SFViewLoadParams('PY_CS_carousel_UI'))
         self.__ctx.events.onPurchaseModeChanged += self.__onPurchaseModeChanged
 
     def _dispose(self):
         self.__ctx.events.onPurchaseModeChanged -= self.__onPurchaseModeChanged
-        super(CustomizationBottomPanel, self)._dispose()
+        CBP._dispose(self)
 
     def __onPurchaseModeChanged(self):
         self._carouselDP.invalidateItems()
@@ -93,7 +93,7 @@ class CustomizationBottomPanel(CBP):
 
     def __getSwitcherInitData(self):
         # noinspection PyUnresolvedReferences
-        data = super(CustomizationBottomPanel, self)._CustomizationBottomPanel__getSwitcherInitData()
+        data = CBP._CustomizationBottomPanel__getSwitcherInitData(self)
         return dict(data, **{
             'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.INSTALL]],
             'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.PURCHASE]],
@@ -103,12 +103,12 @@ class CustomizationBottomPanel(CBP):
 
     def __setBottomPanelBillData(self, *_):
         # noinspection PyUnresolvedReferences
-        super(CustomizationBottomPanel, self)._CustomizationBottomPanel__setBottomPanelBillData(*_)
+        CBP._CustomizationBottomPanel__setBottomPanelBillData(self, *_)
         outfitsModified = self.__ctx.isOutfitsModified()
         BigWorld.callback(0, self.__showBill if outfitsModified else self.__hideBill)
 
     def _carouseItemWrapper(self, itemCD):
-        VO = super(CustomizationBottomPanel, self)._carouseItemWrapper(itemCD)
+        VO = CBP._carouseItemWrapper(self, itemCD)
         if self.__ctx.isPurchase:
             return VO
         item = self.service.getItemByCD(itemCD)
@@ -181,13 +181,12 @@ class CustomizationBottomPanel(CBP):
     def __processBillDataPurchaseItems(self, purchaseItems):
         with self.__ctx.overridePurchaseMode():
             # noinspection PyUnresolvedReferences
-            return super(
-                CustomizationBottomPanel, self)._CustomizationBottomPanel__processBillDataPurchaseItems(purchaseItems)
+            return CBP._CustomizationBottomPanel__processBillDataPurchaseItems(self, purchaseItems)
 
 
 class CamoSelector_carousel(View):
     def _populate(self):
-        super(CamoSelector_carousel, self)._populate()
+        View._populate(self)
         BigWorld.callback(0, self.destroy)
         BigWorld.callback(0, self.app.containerManager.getContainer(WL.SUB_VIEW).getView()._MainView__bottomPanel.resetFilter)
 

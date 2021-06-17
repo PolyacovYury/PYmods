@@ -13,23 +13,23 @@ from .. import g_config
 
 class CustomizationPropertiesSheet(WGPropertiesSheet):
     def __init__(self):
-        super(CustomizationPropertiesSheet, self).__init__()
+        WGPropertiesSheet.__init__(self)
         self._isItemAppliedToAllSeasons = False
         self._isItemAppliedToAllParts = False
 
     def __applyToOtherAreas(self, installItem):
         installItem = self._isItemAppliedToAllParts = not self._isItemAppliedToAllParts
         # noinspection PyUnresolvedReferences
-        super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__applyToOtherAreas(installItem)
+        WGPropertiesSheet._CustomizationPropertiesSheet__applyToOtherAreas(self, installItem)
 
     def __applyToOtherSeasons(self):
         self._isItemAppliedToAll = self._isItemAppliedToAllSeasons  # restoration handled by __update
         # noinspection PyUnresolvedReferences
-        super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__applyToOtherSeasons()
+        WGPropertiesSheet._CustomizationPropertiesSheet__applyToOtherSeasons(self)
 
     def __updateItemAppliedToAllFlag(self):
         # noinspection PyUnresolvedReferences
-        super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__updateItemAppliedToAllFlag()
+        WGPropertiesSheet._CustomizationPropertiesSheet__updateItemAppliedToAllFlag(self)
         if self.__ctx.mode.tabId in CustomizationTabs.MODES[CustomizationModes.CUSTOM]:
             self._isItemAppliedToAllSeasons = self.__isItemAppliedToAllSeasons()
             self._isItemAppliedToAllParts = self.__isItemAppliedToAllRegions()
@@ -40,7 +40,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
     def __makePaintRenderersVOs(self):
         if self.__ctx.isPurchase:
             # noinspection PyUnresolvedReferences
-            return super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makePaintRenderersVOs()
+            return WGPropertiesSheet._CustomizationPropertiesSheet__makePaintRenderersVOs(self)
         return [
             self.__makeSetOnOtherSeasonsRendererVO(), self.__makeSetOnOtherTankPartsRendererVO()
         ]
@@ -48,7 +48,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
     def __makeCamouflageRenderersVOs(self):
         if self.__ctx.isPurchase:
             # noinspection PyUnresolvedReferences
-            return super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makeCamouflageRenderersVOs()
+            return WGPropertiesSheet._CustomizationPropertiesSheet__makeCamouflageRenderersVOs(self)
         return [
             self.__makeCamoColorRendererVO(), self.__makeScaleRendererVO(),
             self.__makeSetOnOtherSeasonsRendererVO(), self.__makeSetOnOtherTankPartsRendererVO()
@@ -56,7 +56,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
 
     def __makeStyleRenderersVOs(self):
         # noinspection PyUnresolvedReferences
-        renderers = super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makeStyleRenderersVOs()
+        renderers = WGPropertiesSheet._CustomizationPropertiesSheet__makeStyleRenderersVOs(self)
         if not self.__ctx.isPurchase:
             renderers[1:] = [self.__makeStyleEditRendererVO()]
         return renderers
@@ -65,7 +65,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         backup = self._isItemAppliedToAll
         self._isItemAppliedToAll = self._isItemAppliedToAllParts
         # noinspection PyUnresolvedReferences
-        result = super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makeSetOnOtherTankPartsRendererVO()
+        result = WGPropertiesSheet._CustomizationPropertiesSheet__makeSetOnOtherTankPartsRendererVO(self)
         self._isItemAppliedToAll = backup
         return result
 
@@ -91,7 +91,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         backup = self._isItemAppliedToAll
         self._isItemAppliedToAll = self._isItemAppliedToAllSeasons
         # noinspection PyUnresolvedReferences
-        result = super(CustomizationPropertiesSheet, self)._CustomizationPropertiesSheet__makeSetOnOtherSeasonsRendererVO()
+        result = WGPropertiesSheet._CustomizationPropertiesSheet__makeSetOnOtherSeasonsRendererVO(self)
         self._isItemAppliedToAll = backup
         return result
 
