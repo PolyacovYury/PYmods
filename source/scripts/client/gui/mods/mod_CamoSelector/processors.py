@@ -225,7 +225,7 @@ def new_getActiveOutfit(base, self, vDesc):
             g_tankActiveCamouflage[intCD] = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
         elif season in (SeasonType.UNDEFINED, SeasonType.EVENT):
             g_tankActiveCamouflage[intCD] = vehicle.getAnyOutfitSeason() if vehicle else SeasonType.SUMMER
-        if season not in (g_tankActiveCamouflage[intCD], SeasonType.UNDEFINED, SeasonType.EVENT):
+        if season != g_tankActiveCamouflage[intCD]:
             season = g_tankActiveCamouflage[intCD]
             if vehicle:
                 outfit = vehicle.getOutfit(season)
