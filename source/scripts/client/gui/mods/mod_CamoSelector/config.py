@@ -40,8 +40,9 @@ class ConfigInterface(PYmodsConfigInterface):
             'flashCol_progressionDecal_changeMode_message': (
                 'Current style can not be edited.\n'
                 'If you proceed, you will be moved to custom mode\'s decal tab.\nDo you want to continue?'),
+            'flash_propertySheet_edit_button': 'DISASSEMBLE STYLE',
             'flashCol_propertySheet_edit_title': 'Style disassembly',
-            'flashCol_propertySheet_edit_disabled': 'Style editing is disabled for 3D styles.',
+            'flashCol_propertySheet_edit_disabled': '3D styles can not be disassembled.',
             'flashCol_propertySheet_edit_message': (
                 '<b>All</b> installed items will be removed from <b>ALL</b> seasons.\nAre you sure you want to continue?'),
             'flashCol_propertySheet_edit_tooltip': (

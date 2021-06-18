@@ -38,6 +38,7 @@
     "flashCol_group_separator": " / ",
     "flashCol_progressionDecal_changeMode_message": "Текущий стиль не может быть изменён.\nВы будете перемещены на вкладку декалей режима создания своего стиля.\nВы хотите продолжить?",
     "flashCol_progressionDecal_changeMode_title": "Смена режима",
+    "flashCol_propertySheet_edit_button": "РАЗОБРАТЬ СТИЛЬ",
     "flashCol_propertySheet_edit_disabled": "Разборка трёхмерного стиля невозможна.",
     "flashCol_propertySheet_edit_message": "<b>ВСЕ</b> элементы внешнего вида для <b>ВСЕХ</b> сезонов будут сняты.\nВы действительно хотите продолжить?",
     "flashCol_propertySheet_edit_title": "Разборка стиля",

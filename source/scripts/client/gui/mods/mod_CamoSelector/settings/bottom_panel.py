@@ -120,23 +120,9 @@ class CustomizationBottomPanel(CBP):
         VO['rentalInfoText'] = ''
         VO['showEditBtnHint'] = False
         VO['showEditableHint'] = False
-        if item.itemTypeID != GUI_ITEM_TYPE.STYLE:
-            VO['editableIcon'] = ''
-            VO['editBtnEnabled'] = False
-            VO['tooltip'] = ''
-        else:
-            VO['editBtnEnabled'] = not item.modelsSet
-            VO['editableIcon'] = (
-                backport.image(R.images.gui.maps.icons.customization.editable_small())
-                if not item.modelsSet else
-                backport.image(R.images.gui.maps.icons.customization.editable_small_disable())
-            )
-            VO['tooltip'] = (
-                makeHtmlString('html_templates:lobby/customization/notify', 'decal', {
-                    'value': g_config.i18n['flashCol_propertySheet_edit_tooltip']})
-                if not item.modelsSet
-                else g_config.i18n['flashCol_propertySheet_edit_disabled']
-            )
+        VO['editableIcon'] = ''
+        VO['editBtnEnabled'] = False
+        VO['tooltip'] = ''
         if item.isProgressive:
             VO['progressionLevel'] = progressionLevel = 0
             VO['icon'] = getIcon(item, progressionLevel)
