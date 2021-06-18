@@ -72,7 +72,8 @@ class CustomizationItemCMHandler(WGCMHandler):
     def __getEditStyleBtn(self, item):
         # noinspection PyUnresolvedReferences
         btn = WGCMHandler._CustomizationItemCMHandler__getEditStyleBtn(self, item)
-        btn['initData']['enabled'] = not item.modelsSet
+        if not self.__ctx.isPurchase:
+            btn['initData']['enabled'] = not item.modelsSet
         return btn
 
     def onOptionSelect(self, optionId):
