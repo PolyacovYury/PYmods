@@ -15,6 +15,8 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.constants import CustomizationModes, CustomizationModeSource
+from gui.impl import backport
+from gui.impl.gen import R
 from gui.shared.formatters import getItemPricesVO
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
@@ -118,12 +120,17 @@ class CustomizationBottomPanel(CBP):
         VO['rentalInfoText'] = ''
         VO['showEditBtnHint'] = False
         VO['showEditableHint'] = False
-        VO['editableIcon'] = ''
         if item.itemTypeID != GUI_ITEM_TYPE.STYLE:
+            VO['editableIcon'] = ''
             VO['editBtnEnabled'] = False
             VO['tooltip'] = ''
         else:
             VO['editBtnEnabled'] = not item.modelsSet
+            VO['editableIcon'] = (
+                backport.image(R.images.gui.maps.icons.customization.editable_small())
+                if not item.modelsSet else
+                backport.image(R.images.gui.maps.icons.customization.editable_small_disable())
+            )
             VO['tooltip'] = (
                 makeHtmlString('html_templates:lobby/customization/notify', 'decal', {
                     'value': g_config.i18n['flashCol_propertySheet_edit_tooltip']})
