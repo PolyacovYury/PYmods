@@ -138,7 +138,7 @@ class CustomizationBottomPanel(CBP):
                 else g_config.i18n['flashCol_propertySheet_edit_disabled']
             )
         if item.isProgressive:
-            VO['progressionLevel'] = progressionLevel = 1
+            VO['progressionLevel'] = progressionLevel = 0
             VO['icon'] = getIcon(item, progressionLevel)
         VO['noveltyCounter'] = 0
         if '4278190335,4278255360,4294901760,4278190080' in VO['icon']:
