@@ -17,6 +17,22 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         self._isItemAppliedToAllSeasons = False
         self._isItemAppliedToAllParts = False
 
+    def onActionBtnClick(self, actionType, actionData):
+        if not self.__ctx.isPurchase and actionType == CA.CUSTOMIZATION_SHEET_ACTION_SWITCH_PROGRESSION_LVL:
+            currentProgressionLevel = self._currentItem.getMaxProgressionLevel()
+            if actionData == 0:
+                self.__displayedProgressionLevel += 1
+            elif actionData == 1:
+                self.__displayedProgressionLevel -= 1
+            self.__displayedProgressionLevel %= currentProgressionLevel
+            progression = self.__displayedProgressionLevel
+            if self.__displayedProgressionLevel == currentProgressionLevel:
+                progression = 0
+            self.__ctx.mode.changeItemProgression(self._attachedAnchor, progression)
+            self.as_setDataAndShowS(self.__makeVO())
+            return
+        WGPropertiesSheet.onActionBtnClick(self, actionType, actionData)
+
     def __applyToOtherAreas(self, installItem):
         installItem = self._isItemAppliedToAllParts = not self._isItemAppliedToAllParts
         # noinspection PyUnresolvedReferences
@@ -94,6 +110,13 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         result = WGPropertiesSheet._CustomizationPropertiesSheet__makeSetOnOtherSeasonsRendererVO(self)
         self._isItemAppliedToAll = backup
         return result
+
+    def __makeSwitchProgressionLevelRendererVO(self):
+        # noinspection PyUnresolvedReferences
+        VO = WGPropertiesSheet._CustomizationPropertiesSheet__makeSwitchProgressionLevelRendererVO(self)
+        if not self.__ctx.isPurchase:
+            VO['enabled'] = True
+        return VO
 
 
 @overrideMethod(WGPropertiesSheet, '__new__')
