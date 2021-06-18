@@ -34,7 +34,10 @@ class StyledMode(WGStyledMode):
     def safe_getOutfitFromStyle(self, style, season, level, vehicleCD):
         if style is None:
             return self._service.getEmptyOutfitWithNationalEmblems(vehicleCD)
-        return getStyleProgressionOutfit(style.getOutfit(season, vehicleCD=vehicleCD).copy(), level, season)
+        outfit = style.getOutfit(season, vehicleCD=vehicleCD).copy()
+        if style.isProgressive:
+            return getStyleProgressionOutfit(outfit, level, season)
+        return outfit
 
     def _isOutfitsModified(self):
         vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
@@ -44,16 +47,16 @@ class StyledMode(WGStyledMode):
             self.__originalStyle = style
         else:
             self.__originalStyle = self._moddedStyle or style
-        old_level = self._originalOutfits[self.season].progressionLevel
-        new_level = self._modifiedOutfits[self.season].progressionLevel
-        for season in SeasonType.COMMON_SEASONS:
-            self._originalOutfits[season] = self.safe_getOutfitFromStyle(self.__originalStyle, season, old_level, vehicleCD)
-            self._modifiedOutfits[season] = self.safe_getOutfitFromStyle(self.__modifiedStyle, season, new_level, vehicleCD)
-        isStyleChanged = any(
-            (not self._originalOutfits[s].isEqual(self._modifiedOutfits[s]) for s in SeasonType.COMMON_SEASONS))
-        if self.__modifiedStyle and self.__modifiedStyle.isProgressive:
-            if self._originalOutfits[self.season].progressionLevel != self._modifiedOutfits[self.season].progressionLevel:
-                return True
+        season = self.season
+        old_level = self._originalOutfits[season].progressionLevel
+        new_level = self._modifiedOutfits[season].progressionLevel
+        for _season in SeasonType.COMMON_SEASONS:
+            self._originalOutfits[_season] = self.safe_getOutfitFromStyle(self.__originalStyle, _season, old_level, vehicleCD)
+            self._modifiedOutfits[_season] = self.safe_getOutfitFromStyle(self.__modifiedStyle, _season, new_level, vehicleCD)
+        isStyleChanged = self.__originalStyle != self.__modifiedStyle
+        if (not isStyleChanged and self.__modifiedStyle and self.__modifiedStyle.isProgressive
+                and self._originalOutfits[season].progressionLevel != self._modifiedOutfits[season].progressionLevel):
+            return True
         return isStyleChanged
 
     def _fillOutfits(self):
@@ -73,6 +76,9 @@ class StyledMode(WGStyledMode):
                 outfit = self._baseMode.getModifiedOutfit(season).copy()
             else:
                 outfit = style.getOutfit(season, vehicleCD=vehicleCD).copy()
+            if outfit.style and outfit.style.isProgressive:
+                progressionLevel = styleCache.get('level', 1)
+                outfit = getStyleProgressionOutfit(outfit, progressionLevel, season)
             self._originalOutfits[season] = outfit.copy()
             self._modifiedOutfits[season] = outfit.copy()
 
@@ -82,12 +88,18 @@ class StyledMode(WGStyledMode):
         nation, vehName = vDesc.name.split(':')
         isTurretCustomisable = isTurretCustom(vDesc)
         vehCache = g_config.outfitCache.setdefault(nation, {}).setdefault(vehName, {})
-        if self.__originalStyle != self.__modifiedStyle or self._moddedStyle != self.__modifiedStyle or isModeChanged:
+        if self.__originalStyle != self.__modifiedStyle or self._moddedStyle != self.__modifiedStyle or (
+                self.__modifiedStyle and self.__modifiedStyle.isProgressive
+                and self._originalOutfits[self.season].progressionLevel != self._modifiedOutfits[self.season].progressionLevel
+        ) or isModeChanged:
             vehCache.setdefault('style', {}).update(
                 intCD=self.__modifiedStyle.intCD if self.__modifiedStyle else None, applied=True)
             if self.__modifiedStyle:
                 g_config.getHangarCache().clear()
                 deleteEmpty(g_config.hangarCamoCache)
+                progressionLevel = self.getStyleProgressionLevel()
+                if progressionLevel != -1:
+                    vehCache['style']['level'] = progressionLevel
             SystemMessages.pushI18nMessage(
                 MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
         deleteEmpty(vehCache, isTurretCustomisable)
