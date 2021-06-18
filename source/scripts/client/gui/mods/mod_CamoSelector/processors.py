@@ -105,10 +105,10 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
         slot = container.slotFor(GUI_ITEM_TYPE.CAMOUFLAGE)
         if not slot:
             continue
-        intCD = slot.getItemCD(0)
-        if not intCD:
+        itemCD = slot.getItemCD(0)
+        if not itemCD:
             continue
-        item = dependency.instance(IGuiItemsFactory).createCustomization(intCD)
+        item = dependency.instance(IGuiItemsFactory).createCustomization(itemCD)
         component = slot.getComponent(0)
         outfitItemIDs.add(item.id)
         outfitItems.add((item.id, component.palette, component.patternSize))
@@ -219,14 +219,14 @@ def new_getActiveOutfit(base, self, vDesc):
                 break
         else:
             vehicle = None
-        intCD = vDesc.type.compactDescr
-        season = g_tankActiveCamouflage.get(intCD, SeasonType.EVENT)
+        descCD = vDesc.type.compactDescr
+        season = g_tankActiveCamouflage.get(descCD, SeasonType.EVENT)
         if g_config.data['hangarCamoKind'] < 3:
-            g_tankActiveCamouflage[intCD] = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
+            g_tankActiveCamouflage[descCD] = SeasonType.fromArenaKind(g_config.data['hangarCamoKind'])
         elif season in (SeasonType.UNDEFINED, SeasonType.EVENT):
-            g_tankActiveCamouflage[intCD] = vehicle.getAnyOutfitSeason() if vehicle else SeasonType.SUMMER
-        if season != g_tankActiveCamouflage[intCD]:
-            season = g_tankActiveCamouflage[intCD]
+            g_tankActiveCamouflage[descCD] = vehicle.getAnyOutfitSeason() if vehicle else SeasonType.SUMMER
+        if season != g_tankActiveCamouflage[descCD]:
+            season = g_tankActiveCamouflage[descCD]
             if vehicle:
                 outfit = vehicle.getOutfit(season)
     seasonName = SEASON_TYPE_TO_NAME[season]
