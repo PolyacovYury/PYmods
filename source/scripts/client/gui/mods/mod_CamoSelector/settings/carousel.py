@@ -42,6 +42,10 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
             idx += shift
         return None
 
+    def clearFilter(self):
+        WGCarouselDP.clearFilter(self)
+        self.__carouselFilters[FilterTypes.USED_UP].update(True)
+
     def __initFilters(self):
         # noinspection PyUnresolvedReferences
         WGCarouselDP._CustomizationCarouselDataProvider__initFilters(self)
