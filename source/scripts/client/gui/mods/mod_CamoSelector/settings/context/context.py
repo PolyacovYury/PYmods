@@ -144,7 +144,7 @@ class CustomizationContext(WGCtx, CSModImpl):
             return
         targetMode = self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM)
         proceed = True
-        if not all(targetMode.getModifiedOutfit(season).isEmpty() for season in SeasonType.COMMON_SEASONS):
+        if not targetMode.isOutfitsEmpty():
             proceed = yield await(self.createConfirmDialog('flashCol_propertySheet_edit'))
         if not proceed:
             return
