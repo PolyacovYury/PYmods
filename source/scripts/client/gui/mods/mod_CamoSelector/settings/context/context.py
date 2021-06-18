@@ -5,15 +5,9 @@ from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from async import await, async
 from contextlib import contextmanager
-from frameworks.wulf import WindowLayer
-from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx, _logger
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
     CustomizationTabs, CustomizationModes)
-from gui.impl.dialogs import dialogs
-from gui.impl.dialogs.builders import WarningDialogBuilder
-from gui.impl.gen import R
-from gui.shared.personality import ServicesLocator as SL
 from gui.shared.utils.decorators import process
 from items.components.c11n_constants import SeasonType
 from shared_utils import first
@@ -151,12 +145,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         targetMode = self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM)
         proceed = True
         if not all(targetMode.getModifiedOutfit(season).isEmpty() for season in SeasonType.COMMON_SEASONS):
-            message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
-                'value': g_config.i18n['flashCol_propertySheet_edit_message']})
-            builder = WarningDialogBuilder().setFormattedMessage(message)
-            builder.setMessagesAndButtons(R.strings.dialogs.crewSkins.skinWillBeRemoved)  # the most convenient
-            subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
-            proceed = yield await(dialogs.showSimple(builder.build(parent=subview)))
+            proceed = yield await(self.createConfirmDialog('flashCol_propertySheet_edit'))
         if not proceed:
             return
         self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).installStyleItemsToModifiedOutfit(
@@ -187,12 +176,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         goToEditableStyle = self.canEditStyle(itemCD)
         result = True
         if self.modeId in (CustomizationModes.STYLED, CustomizationModes.EDITABLE_STYLE) and not goToEditableStyle:
-            message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
-                'value': g_config.i18n['flashCol_progressionDecal_changeMode_message']})
-            builder = WarningDialogBuilder().setFormattedMessage(message)
-            builder.setMessagesAndButtons(R.strings.dialogs.crewSkins.skinWillBeRemoved)  # the most convenient
-            subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
-            result = yield await(dialogs.showSimple(builder.build(parent=subview)))
+            result = yield await(self.createConfirmDialog('flashCol_progressionDecal_changeMode'))
         if not result:
             return
         WGCtx.changeModeWithProgressionDecal(self, itemCD)

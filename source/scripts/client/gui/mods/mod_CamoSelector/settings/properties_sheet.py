@@ -98,7 +98,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             'animatedTransition': True,
             'disableTooltip': g_config.i18n['flashCol_propertySheet_edit_disabled'],
             'notifyText': makeHtmlString('html_templates:lobby/customization/notify', 'decal', {
-                'value': g_config.i18n['flashCol_propertySheet_edit_notify']}),
+                'value': g_config.i18n['flashCol_propertySheet_edit_tooltip']}),
             'needNotify': enabled and (
                 not self.__ctx.getMode(CSMode.INSTALL, C11nModes.CUSTOM).getModifiedOutfit(self.__ctx.season).isEmpty()),
             'enabled': enabled}

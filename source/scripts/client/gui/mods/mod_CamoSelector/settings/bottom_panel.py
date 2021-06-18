@@ -128,7 +128,7 @@ class CustomizationBottomPanel(CBP):
             )
             VO['tooltip'] = (
                 makeHtmlString('html_templates:lobby/customization/notify', 'decal', {
-                    'value': g_config.i18n['flashCol_propertySheet_edit_notify']})
+                    'value': g_config.i18n['flashCol_propertySheet_edit_tooltip']})
                 if not item.modelsSet
                 else g_config.i18n['flashCol_propertySheet_edit_disabled']
             )

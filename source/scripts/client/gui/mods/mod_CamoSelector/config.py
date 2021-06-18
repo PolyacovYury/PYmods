@@ -36,13 +36,15 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_description': 'Camouflage selector',
             'flash_switcher_buy': 'PURCHASE',
             'flash_switcher_install': 'INSTALL',
+            'flashCol_progressionDecal_changeMode_title': 'Mode change',
             'flashCol_progressionDecal_changeMode_message': (
                 'Current style can not be edited.\n'
                 'If you proceed, you will be moved to custom mode\'s decal tab.\nDo you want to continue?'),
+            'flashCol_propertySheet_edit_title': 'Style disassembly',
             'flashCol_propertySheet_edit_disabled': 'Style editing is disabled for 3D styles.',
             'flashCol_propertySheet_edit_message': (
                 '<b>All</b> installed items will be removed from <b>ALL</b> seasons.\nAre you sure you want to continue?'),
-            'flashCol_propertySheet_edit_notify': (
+            'flashCol_propertySheet_edit_tooltip': (
                 'This action will replace custom outfits for <b>ALL</b> seasons.\n<b>All</b> items will be removed. '
                 'You <b>will</b> be able to cancel these changes.'),
             'flashCol_group_multinational': 'Multinational',
