@@ -33,10 +33,10 @@ class StyledMode(WGStyledMode):
 
     def safe_getOutfitFromStyle(self, style, season, level, vehicleCD):
         if style is None:
-            return self._service.getEmptyOutfitWithNationalEmblems(vehicleCD)
+            return self._service.getEmptyOutfit()
         outfit = style.getOutfit(season, vehicleCD=vehicleCD).copy()
         if style.isProgressive:
-            return getStyleProgressionOutfit(outfit, level, season)
+            return getStyleProgressionOutfit(outfit, level, season).copy()
         return outfit
 
     def _isOutfitsModified(self):
@@ -76,7 +76,7 @@ class StyledMode(WGStyledMode):
                 outfit = self._baseMode.getModifiedOutfit(season).copy()
             else:
                 outfit = style.getOutfit(season, vehicleCD=vehicleCD).copy()
-            if outfit.style and outfit.style.isProgressive:
+            if outfit.style and outfit.style.isProgression:
                 progressionLevel = styleCache.get('level', 1)
                 outfit = getStyleProgressionOutfit(outfit, progressionLevel, season)
             self._originalOutfits[season] = outfit.copy()

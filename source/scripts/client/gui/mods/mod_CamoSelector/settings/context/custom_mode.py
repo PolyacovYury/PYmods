@@ -158,6 +158,7 @@ class CustomMode(WGCustomMode):
     def __configureProjectionDecalComponentProgression(self, component, item, prevItem):
         if not item.isProgressive:
             component.progressionLevel = 0
+            return
         achievedLevel = self.__getItemProgressionLevel(item)
         if achievedLevel == -1:
             component.progressionLevel = 0
@@ -171,6 +172,6 @@ class CustomMode(WGCustomMode):
                 progressionLevel = min(prevLevel, achievedLevel)
         else:
             progressionLevel = min(self.__storedProgressionLevel, achievedLevel)
-        if progressionLevel == achievedLevel:
-            progressionLevel = 0
+        if progressionLevel == 0:  # stored level is 0
+            progressionLevel = 1
         component.progressionLevel = progressionLevel

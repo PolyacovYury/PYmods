@@ -4,6 +4,7 @@ from PYmodsCore import overrideMethod
 from frameworks.wulf import WindowLayer as WL
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
+from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import __getIcon as getIcon
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
     CustomizationTabs, checkSlotsFilling, getItemTypesAvailableForVehicle, getEditableStylesExtraNotificationCounter)
 from gui.Scaleform.framework import g_entitiesFactories, ViewSettings, ScopeTemplates as ST
@@ -14,8 +15,6 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.constants import CustomizationModes, CustomizationModeSource
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.shared.formatters import getItemPricesVO
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
@@ -131,6 +130,9 @@ class CustomizationBottomPanel(CBP):
                 if not item.modelsSet
                 else g_config.i18n['flashCol_propertySheet_edit_disabled']
             )
+        if item.isProgressive:
+            VO['progressionLevel'] = progressionLevel = 1
+            VO['icon'] = getIcon(item, progressionLevel)
         VO['noveltyCounter'] = 0
         if '4278190335,4278255360,4294901760,4278190080' in VO['icon']:
             VO['icon'] = '../../' + VO['icon'].split('"', 2)[1]

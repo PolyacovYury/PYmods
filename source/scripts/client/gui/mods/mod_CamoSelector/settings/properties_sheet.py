@@ -20,15 +20,14 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
     def onActionBtnClick(self, actionType, actionData):
         if not self.__ctx.isPurchase and actionType == CA.CUSTOMIZATION_SHEET_ACTION_SWITCH_PROGRESSION_LVL:
             currentProgressionLevel = self._currentItem.getMaxProgressionLevel()
+            self.__displayedProgressionLevel -= 1
             if actionData == 0:
                 self.__displayedProgressionLevel += 1
             elif actionData == 1:
                 self.__displayedProgressionLevel -= 1
             self.__displayedProgressionLevel %= currentProgressionLevel
-            progression = self.__displayedProgressionLevel
-            if self.__displayedProgressionLevel == currentProgressionLevel:
-                progression = 0
-            self.__ctx.mode.changeItemProgression(self._attachedAnchor, progression)
+            self.__displayedProgressionLevel += 1
+            self.__ctx.mode.changeItemProgression(self._attachedAnchor, self.__displayedProgressionLevel)
             self.as_setDataAndShowS(self.__makeVO())
             return
         WGPropertiesSheet.onActionBtnClick(self, actionType, actionData)
