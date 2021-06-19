@@ -8,6 +8,7 @@ from gui.Scaleform.daapi.view.lobby.customization.context.custom_mode import Cus
 from gui.Scaleform.daapi.view.lobby.customization.shared import ITEM_TYPE_TO_SLOT_TYPE, getSlotDataFromSlot
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.SystemMessages import SM_TYPE
+from gui.customization.constants import CustomizationModes
 from gui.customization.shared import SEASON_TYPE_TO_NAME, C11nId, __isTurretCustomizable as isTurretCustom
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from items.components.c11n_constants import SeasonType
@@ -68,16 +69,21 @@ class CustomMode(WGCustomMode):
         deleteEmpty(seasonCache)
         return seasonCache
 
+    def __getBaseOutfits(self):
+        with self._ctx.overridePurchaseMode():
+            return self._baseMode.getModifiedOutfits() if self._ctx.modeId == CustomizationModes.CUSTOM else (
+                {s: self._service.getEmptyOutfit() for s in SeasonType.COMMON_SEASONS})
+
     def _isOutfitsModified(self):
         vehCache = g_config.getOutfitCache()
-        fromOutfits = self._baseMode.getModifiedOutfits()
+        fromOutfits = self.__getBaseOutfits()
         self._cache.clear()
         for season in SeasonType.COMMON_SEASONS:
             seasonName = SEASON_TYPE_TO_NAME[season]
             original = self._originalOutfits[season]
             modified = self._modifiedOutfits[season]
             self._cache[seasonName] = self.computeDiff(original, modified)
-            fromOutfit = fromOutfits[season]
+            fromOutfit = fromOutfits[season].copy()
             applyOutfitCache(fromOutfit, vehCache.get(seasonName, {}), False)
             self._originalOutfits[season] = fromOutfit.copy()
             applyOutfitCache(fromOutfit, self._cache[seasonName])
@@ -88,7 +94,7 @@ class CustomMode(WGCustomMode):
     def _fillOutfits(self):
         vehCache = g_config.getOutfitCache()
         for season in SeasonType.COMMON_SEASONS:
-            fromOutfit = self._service.getCustomOutfit(season) or self._service.getEmptyOutfit()
+            fromOutfit = self._service.getCustomOutfit(season)
             seasonName = SEASON_TYPE_TO_NAME[season]
             applyOutfitCache(fromOutfit, vehCache.get(seasonName, {}), False)
             self._originalOutfits[season] = fromOutfit.copy()
@@ -101,8 +107,8 @@ class CustomMode(WGCustomMode):
         vDesc = g_currentVehicle.item.descriptor
         nation, vehName = vDesc.name.split(':')
         isTurretCustomisable = isTurretCustom(vDesc)
-        fromOutfits = self._baseMode.getModifiedOutfits()
         if self.isOutfitsModified() or isModeChanged:
+            fromOutfits = self.__getBaseOutfits()
             SystemMessages.pushI18nMessage(
                 MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
             cache = {}

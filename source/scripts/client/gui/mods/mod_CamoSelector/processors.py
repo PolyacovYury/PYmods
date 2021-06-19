@@ -181,7 +181,7 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, isPlayerVehicle=True
                 outfit = createEmptyOutfit(vDesc)
                 outfit._id = 20000
         if not styleCache['applied']:  # could have changed in `if not style` above
-            if outfit.id:
+            if outfit.id and any(v for k, v in vehCache.iteritems() if k != 'style'):
                 outfit = createEmptyOutfit(vDesc)
             applyOutfitCache(outfit, vehCache.get(seasonName, {}))
         deleteEmpty(vehCache, isTurretCustomizable)
