@@ -168,15 +168,20 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, isPlayerVehicle=True
         styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
         if styleCache['applied']:
             styleCD = styleCache['intCD']
+            level = styleCache.get('level', 1)
             if styleCD is not None:
                 style = dependency.instance(IGuiItemsFactory).createCustomization(styleCD)
                 if not style:
                     print g_config.ID + ': style', styleCD, 'for', vehicleName, 'deleted from game client.'
                     styleCache.update(intCD=None, applied=False)
+                    styleCache.pop('level', None)
+                elif outfit.id == style.id:
+                    if style.isProgressive and level != outfit.progressionLevel:
+                        outfit = getStyleProgressionOutfit(outfit, level, season)
                 else:
                     outfit = style.getOutfit(season, vehicleCD).copy()
                     if style.isProgressive:
-                        outfit = getStyleProgressionOutfit(outfit, styleCache.get('level', 1), season)
+                        outfit = getStyleProgressionOutfit(outfit, level, season)
             else:
                 outfit = createEmptyOutfit(vDesc)
                 outfit._id = 20000
