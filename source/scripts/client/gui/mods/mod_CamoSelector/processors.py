@@ -17,8 +17,9 @@ from items.components.c11n_constants import SeasonType
 from items.customizations import createNationalEmblemComponents, CustomizationOutfit
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from vehicle_outfit.containers import emptyComponent
-from vehicle_outfit.outfit import Outfit, Area
+from vehicle_outfit.outfit import Area
 from vehicle_systems.CompoundAppearance import CompoundAppearance
+from vehicle_systems.camouflages import getStyleProgressionOutfit
 from vehicle_systems.tankStructure import TankPartNames
 from . import g_config
 from .constants import SEASON_NAME_TO_TYPE
@@ -161,6 +162,7 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, isPlayerVehicle=True
         __import__('traceback').print_exc()
         isTurretCustomizable = False
     if isPlayerVehicle:
+        season = SEASON_NAME_TO_TYPE[seasonName]
         vehicleCD = vDesc.makeCompactDescr()
         vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
         styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
@@ -172,7 +174,9 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, isPlayerVehicle=True
                     print g_config.ID + ': style', styleCD, 'for', vehicleName, 'deleted from game client.'
                     styleCache.update(intCD=None, applied=False)
                 else:
-                    outfit = style.getOutfit(SEASON_NAME_TO_TYPE[seasonName], vehicleCD).copy()
+                    outfit = style.getOutfit(season, vehicleCD).copy()
+                    if style.isProgressive:
+                        outfit = getStyleProgressionOutfit(outfit, styleCache.get('level', 1), season)
             else:
                 outfit = createEmptyOutfit(vDesc)
                 outfit._id = 20000
