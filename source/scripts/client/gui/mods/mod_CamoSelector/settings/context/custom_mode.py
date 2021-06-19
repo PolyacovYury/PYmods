@@ -51,7 +51,7 @@ class CustomMode(WGCustomMode):
 
     def computeDiff(self, original, modified):
         seasonCache = {}
-        for container, slot, regionIdx, _, o_component in self.iterOutfit(original):
+        for container, slot, regionIdx, o_intCD, o_component in self.iterOutfit(original):
             slotType = ITEM_TYPE_TO_SLOT_TYPE.get(slot.getTypes()[0])  # checks that this slot is not for attachments
             if slotType is None:
                 continue
@@ -62,7 +62,7 @@ class CustomMode(WGCustomMode):
             if not m.intCD:
                 if o_component:
                     item_data['id'] = None
-            elif not m.component.weak_eq(o_component):
+            elif o_intCD != m.intCD or not m.component.weak_eq(o_component):
                 if isinstance(m.component, EmptyComponent):
                     item_data['id'] = self._service.getItemByCD(m.intCD).id
                 else:
