@@ -100,6 +100,8 @@ class StyledMode(WGStyledMode):
                 progressionLevel = self.getStyleProgressionLevel()
                 if progressionLevel != -1:
                     vehCache['style']['level'] = progressionLevel
+            else:
+                vehCache['style'].pop('level', None)
             SystemMessages.pushI18nMessage(
                 MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
         deleteEmpty(vehCache, isTurretCustomisable)

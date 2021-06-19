@@ -119,6 +119,8 @@ class CustomMode(WGCustomMode):
             deleteEmpty(g_config.hangarCamoCache)
             styleCache = g_config.getOutfitCache().get('style', {})
             styleCache.setdefault('intCD', None)
+            if styleCache['intCD'] is None:
+                styleCache.pop('level', None)
             styleCache['applied'] = False
             if styleCache != {'intCD': None, 'applied': False}:
                 cache['style'] = styleCache
