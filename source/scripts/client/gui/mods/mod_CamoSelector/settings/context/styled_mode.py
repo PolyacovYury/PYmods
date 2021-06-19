@@ -31,6 +31,9 @@ class StyledMode(WGStyledMode):
     def _removeHiddenFromOutfit(self, outfit, vehicleIntCD):
         pass
 
+    def _validateItem(self, item, slotId, season):
+        return []
+
     def safe_getOutfitFromStyle(self, style, season, level, vehicleCD):
         if style is None:
             return self._service.getEmptyOutfit()

@@ -36,6 +36,9 @@ class CustomMode(WGCustomMode):
         self._cache.clear()
         WGCustomMode._cancelChanges(self)
 
+    def _validateItem(self, item, slotId, season):
+        return []
+
     def iterOutfit(self, outfit):
         for container in outfit.containers():
             for slot in container.slots():
@@ -94,7 +97,7 @@ class CustomMode(WGCustomMode):
     def _fillOutfits(self):
         vehCache = g_config.getOutfitCache()
         for season in SeasonType.COMMON_SEASONS:
-            fromOutfit = self._service.getCustomOutfit(season)
+            fromOutfit = self.__getBaseOutfits()[season]
             seasonName = SEASON_TYPE_TO_NAME[season]
             applyOutfitCache(fromOutfit, vehCache.get(seasonName, {}), False)
             self._originalOutfits[season] = fromOutfit.copy()
@@ -162,7 +165,8 @@ class CustomMode(WGCustomMode):
             operator.ior, SeasonType.COMMON_SEASONS, SeasonType.UNDEFINED)
 
     def __getItemProgressionLevel(self, item):
-        return item.getLatestOpenedProgressionLevel(g_currentVehicle.item) if self._ctx.isPurchase else item.getMaxProgressionLevel()
+        return item.getMaxProgressionLevel() if not self._ctx.isPurchase else item.getLatestOpenedProgressionLevel(
+            g_currentVehicle.item)
 
     def __configureProjectionDecalComponentProgression(self, component, item, prevItem):
         if not item.isProgressive:

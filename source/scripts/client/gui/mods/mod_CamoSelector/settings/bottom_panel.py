@@ -105,8 +105,7 @@ class CustomizationBottomPanel(CBP):
     def __setBottomPanelBillData(self, *_):
         # noinspection PyUnresolvedReferences
         CBP._CustomizationBottomPanel__setBottomPanelBillData(self, *_)
-        outfitsModified = self.__ctx.isOutfitsModified()
-        BigWorld.callback(0, self.__showBill if outfitsModified else self.__hideBill)
+        BigWorld.callback(0, self.__showBill if self.__ctx.isOutfitsModified() else self.__hideBill)
 
     def _carouseItemWrapper(self, itemCD):
         VO = CBP._carouseItemWrapper(self, itemCD)
