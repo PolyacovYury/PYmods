@@ -128,6 +128,7 @@ class CustomMode(WGCustomMode):
             deleteEmpty(cache, isTurretCustomisable)
             deleteEmpty(g_config.outfitCache)
             loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
+            self._events.onItemsBought({}, [], [])
         callback(self)
 
     def getPurchaseItems(self):

@@ -197,7 +197,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.mode.unselectSlot()
         for purchaseMode in CSMode.PURCHASE, CSMode.INSTALL:
             with self.overridePurchaseMode(purchaseMode):
-                if not self.isPurchase or purchaseItems:
+                if not self.isPurchase or (purchaseItems and WGCtx.isOutfitsModified(self)):
                     yield self.mode.applyItems(purchaseItems, self.isModeChanged)
         self.applySettings()
         self.__onCacheResync()

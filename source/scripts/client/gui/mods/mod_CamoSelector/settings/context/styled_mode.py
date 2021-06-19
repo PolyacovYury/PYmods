@@ -104,6 +104,7 @@ class StyledMode(WGStyledMode):
                 vehCache['style'].pop('level', None)
             SystemMessages.pushI18nMessage(
                 MESSENGER.SERVICECHANNELMESSAGES_SYSMSG_CONVERTER_CUSTOMIZATIONS, type=SM_TYPE.Information)
+            self._events.onItemsBought({}, [], [])
         deleteEmpty(vehCache, isTurretCustomisable)
         deleteEmpty(g_config.outfitCache)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
