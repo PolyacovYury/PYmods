@@ -8,8 +8,9 @@ from contextlib import contextmanager
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx, _logger
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
     CustomizationTabs, CustomizationModes)
+from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
+from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.utils.decorators import process
-from items.components.c11n_constants import SeasonType
 from shared_utils import first
 from .custom_mode import CustomMode
 from .mod_impl import CSModImpl
@@ -101,6 +102,9 @@ class CustomizationContext(WGCtx, CSModImpl):
             )
         self.purchaseMode = CSMode.INSTALL
         self.refreshOutfit()
+        onLoaded = lambda e: (BigWorld.callback(0, self.refreshOutfit), g_eventBus.removeListener(
+            CameraRelatedEvents.VEHICLE_LOADING, onLoaded, EVENT_BUS_SCOPE.DEFAULT) if not e.ctx['started'] else None)
+        g_eventBus.addListener(CameraRelatedEvents.VEHICLE_LOADING, onLoaded, EVENT_BUS_SCOPE.DEFAULT)
 
     def fini(self):
         WGCtx.fini(self)
