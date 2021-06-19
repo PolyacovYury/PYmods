@@ -161,6 +161,7 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
         __import__('traceback').print_exc()
         isTurretCustomizable = False
     if isPlayerVehicle:
+        vehicleCD = vDesc.makeCompactDescr()
         vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
         styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
         if styleCache['applied']:
@@ -171,12 +172,12 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVe
                     print g_config.ID + ': style', styleCD, 'for', vehicleName, 'deleted from game client.'
                     styleCache.update(intCD=None, applied=False)
                 else:
-                    outfit = style.getOutfit(SEASON_NAME_TO_TYPE[seasonName]).copy()
+                    outfit = style.getOutfit(SEASON_NAME_TO_TYPE[seasonName], vehicleCD).copy()
             else:
                 outfit = createEmptyOutfit(vDesc)
                 outfit._id = 20000
         if not styleCache['applied']:  # could have changed in `if not style` above
-            if outfit.id and any(v for k, v in vehCache.iteritems() if k != 'style'):
+            if outfit.id:
                 outfit = createEmptyOutfit(vDesc)
             applyOutfitCache(outfit, vehCache.get(seasonName, {}))
         deleteEmpty(vehCache, isTurretCustomizable)
