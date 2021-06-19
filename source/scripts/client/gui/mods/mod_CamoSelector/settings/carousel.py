@@ -153,43 +153,6 @@ class CarouselCache(WGCache):
                         itemsData.groups[name] = name
                 itemsData.items.append(item)
 
-    def __initEditableStyleItemsData(self):
-        style = self.__ctx.mode.style
-        if CustomizationModes.EDITABLE_STYLE in self.__itemsData:
-            self.__itemsData[CustomizationModes.EDITABLE_STYLE].clear()
-        vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
-        itemsFilter = style.descriptor.isItemInstallable
-        for season in SeasonType.COMMON_SEASONS:
-            itemsDataStorage = self.__itemsData[CustomizationModes.CUSTOM][season]
-            styleBaseOutfit = style.getOutfit(season, vehicleCD)
-            styleBaseItems = [self.__service.getItemByCD(intCD) for intCD in styleBaseOutfit.items()]
-            for tabId, itemsData in itemsDataStorage.iteritems():
-                itemTypes = CustomizationTabs.ITEM_TYPES[tabId]
-                filteredItems = [item for item in itemsData.items if itemsFilter(item.descriptor)]
-                alternateItems = []
-                for itemType in itemTypes:
-                    c11nType = C11N_ITEM_TYPE_MAP[itemType]
-                    alternateItemIds = style.descriptor.alternateItems.get(c11nType, ())
-                    buf = [self.__service.getItemByID(itemType, itemId) for itemId in alternateItemIds]
-                    alternateItems.extend([i for i in buf if i.itemTypeID in itemTypes])
-
-                allItems = [item for item in filteredItems + alternateItems if item.season & season]
-                if not allItems:
-                    continue
-                baseItems = [item for item in styleBaseItems if item.itemTypeID in itemTypes and item.season & season]
-                allItems += baseItems
-                items = sorted(set(allItems), key=CSComparisonKey)
-                groups = OrderedDict()
-                for item in items:
-                    groupName = getGroupName(item, self.__ctx.isPurchase)
-                    for name in groupName.split(g_config.i18n['flashCol_group_separator']):
-                        if name and name not in groups:
-                            groups[name] = name
-
-                self.__itemsData[CustomizationModes.EDITABLE_STYLE][season][tabId] = ItemsData(items, groups)
-
-        self.__cachedEditableStyleId = style.id
-
 
 @overrideMethod(WGCarouselDP, '__new__')
 def new(base, cls, *a, **kw):
