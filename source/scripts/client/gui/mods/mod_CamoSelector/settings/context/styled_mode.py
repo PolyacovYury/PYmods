@@ -99,14 +99,19 @@ class StyledMode(WGStyledMode):
                 self.__modifiedStyle and self.__modifiedStyle.isProgressive
                 and self._originalOutfits[self.season].progressionLevel != self._modifiedOutfits[self.season].progressionLevel
         ) or isModeChanged:
-            vehCache.setdefault('style', {}).update(
-                intCD=self.__modifiedStyle.intCD if self.__modifiedStyle else None, applied=True)
+            vehCache.setdefault('style', {}).update(intCD=self.__modifiedStyle and self.__modifiedStyle.intCD, applied=True)
             if self.__modifiedStyle:
+                testCache = {'intCD': self._baseMode.modifiedStyle and self._baseMode.modifiedStyle.intCD, 'applied': True}
                 g_config.getHangarCache().clear()
                 deleteEmpty(g_config.hangarCamoCache)
                 progressionLevel = self.getStyleProgressionLevel()
                 if progressionLevel != -1:
                     vehCache['style']['level'] = progressionLevel
+                    origLevel = self._baseMode.getStyleProgressionLevel()
+                    if origLevel != -1:
+                        testCache['level'] = origLevel
+                if vehCache == {'style': testCache}:
+                    vehCache.pop('style', None)
             else:
                 vehCache['style'].pop('level', None)
             SystemMessages.pushI18nMessage(
