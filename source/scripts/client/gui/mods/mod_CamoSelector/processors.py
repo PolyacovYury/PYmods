@@ -152,7 +152,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
     random.seed()
 
 
-def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, vID=None, isPlayerVehicle=True):
+def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, isPlayerVehicle=True, vID=None):
     nationName, vehicleName = vDesc.name.split(':')
     try:
         isTurretCustomizable = isTurretCustom(vDesc)
@@ -233,7 +233,7 @@ def new_getActiveOutfit(base, self, vDesc):
     seasonName = SEASON_TYPE_TO_NAME[season]
     outfit = outfit.copy() if outfit else createEmptyOutfit(vDesc)
     seasonCache = g_config.hangarCamoCache.setdefault(nation, {}).setdefault(vehicleName, {}).setdefault(seasonName, {})
-    return applyOutfitInfo(outfit, seasonName, vDesc, seasonCache)
+    return applyOutfitInfo(outfit, seasonName, vDesc, seasonCache, isinstance(self, HangarVehicleAppearance))
 
 
 @overrideMethod(CompoundAppearance, '_prepareOutfit')
@@ -248,20 +248,18 @@ def new_prepareOutfit(base, self, *a, **kw):
     if not g_config.data['useBought']:
         outfit = createEmptyOutfit(vDesc)
     seasonName = SEASON_TYPE_TO_NAME[SeasonType.fromArenaKind(BigWorld.player().arena.arenaType.vehicleCamouflageKind)]
-    return applyOutfitInfo(outfit, seasonName, vDesc, g_config.arenaCamoCache.setdefault(self.id, {}),
-                           self.id, self.id == BigWorld.player().playerVehicleID)
+    return applyOutfitInfo(outfit, seasonName, vDesc, g_config.arenaCamoCache.setdefault(
+        self.id, {}), self.id == BigWorld.player().playerVehicleID, self.id)
 
 
 @overrideMethod(PlayerAvatar, 'onBecomePlayer')
 def new_onBecomePlayer(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
-    g_config.arenaCamoCache.clear()
-    g_config.collectCamouflageData()
+    g_config.arenaCamoCache.clear(), g_config.collectCamouflageData()
 
 
 @overrideMethod(Account, 'onBecomePlayer')
 def new_onBecomePlayer(base, self):
     base(self)
-    g_config.hangarCamoCache.clear()
-    g_config.collectCamouflageData()
+    g_config.hangarCamoCache.clear(), g_config.collectCamouflageData()
     g_config.teamCamo = dict.fromkeys(('ally', 'enemy'))
