@@ -10,6 +10,7 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import (
 from gui.Scaleform.framework import g_entitiesFactories, ViewSettings, ScopeTemplates as ST
 from gui.Scaleform.framework.entities.View import View
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from gui.Scaleform.locale.ACHIEVEMENTS import ACHIEVEMENTS
 from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
@@ -142,15 +143,25 @@ class CustomizationBottomPanel(CBP):
             slotsCount, filledSlotsCount = checkSlotsFilling(outfit, slotType)
             showPlus = filledSlotsCount < slotsCount
             tabsData.append({
-                'label': _ms(ITEM_TYPES.customizationPlural(itemTypeName)),
-                'icon': RES_ICONS.getCustomizationIcon(itemTypeName)
-                if slotType != GUI_ITEM_TYPE.STYLE else
-                RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_FULL_TANK,
+                'label': _ms(
+                    ACHIEVEMENTS.MARKSONGUN0
+                    if slotType == GUI_ITEM_TYPE.INSIGNIA else
+                    ITEM_TYPES.customizationPlural(itemTypeName)),
+                'icon': (
+                    RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_FULL_TANK
+                    if slotType == GUI_ITEM_TYPE.STYLE else
+                    RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_EDIT
+                    if slotType == GUI_ITEM_TYPE.INSIGNIA else
+                    RES_ICONS.getCustomizationIcon(itemTypeName)),
                 'tooltip': makeTooltip(
-                    ITEM_TYPES.customizationPlural(itemTypeName),
-                    TOOLTIPS.customizationItemTab(itemTypeName)
-                    if slotType != GUI_ITEM_TYPE.STYLE else
-                    VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL),
+                    ACHIEVEMENTS.MARKSONGUN0
+                    if slotType == GUI_ITEM_TYPE.INSIGNIA else
+                    _ms(ITEM_TYPES.customizationPlural(itemTypeName)),
+                    VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL
+                    if slotType == GUI_ITEM_TYPE.STYLE else
+                    None
+                    if slotType == GUI_ITEM_TYPE.INSIGNIA else
+                    TOOLTIPS.customizationItemTab(itemTypeName)),
                 'id': tabId})
             pluses.append(showPlus)
         return tabsData, pluses

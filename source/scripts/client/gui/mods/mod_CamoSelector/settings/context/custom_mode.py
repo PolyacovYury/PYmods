@@ -5,13 +5,15 @@ from adisp import async
 from copy import deepcopy
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.context.custom_mode import CustomMode as WGCustomMode
-from gui.Scaleform.daapi.view.lobby.customization.shared import ITEM_TYPE_TO_SLOT_TYPE, getSlotDataFromSlot
+from gui.Scaleform.daapi.view.lobby.customization.shared import (
+    ITEM_TYPE_TO_SLOT_TYPE, getSlotDataFromSlot, customizationSlotIdToUid, CustomizationSlotUpdateVO)
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.SystemMessages import SM_TYPE
 from gui.customization.constants import CustomizationModes
 from gui.customization.shared import SEASON_TYPE_TO_NAME, C11nId, __isTurretCustomizable as isTurretCustom
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
-from items.components.c11n_constants import SeasonType
+from helpers import func_utils
+from items.components.c11n_constants import SeasonType, SLOT_DEFAULT_ALLOWED_MODEL
 from items.customizations import EmptyComponent, FieldFlags
 from vehicle_outfit.outfit import Area
 from ..shared import getItemSeason
@@ -20,6 +22,8 @@ from ...processors import applyOutfitCache, deleteEmpty
 
 
 class CustomMode(WGCustomMode):
+    _tabs = WGCustomMode._tabs + (8,)
+
     def __init__(self, ctx, baseMode):
         WGCustomMode.__init__(self, ctx)
         self._baseMode = baseMode
@@ -29,8 +33,25 @@ class CustomMode(WGCustomMode):
         self._modifiedOutfits = styleOutfits
         self._fitOutfits()
 
+    def _selectInsignia(self, *_):
+        if self._tabId == 8:
+            func_utils.callback(0, self, 'selectSlot', C11nId(Area.GUN, GUI_ITEM_TYPE.INSIGNIA, 0))
+
+    def changeTab(self, tabId, itemCD=None):
+        if self._tabId != tabId == 8:
+            func_utils.callback(0, self, '_selectInsignia')
+        return WGCustomMode.changeTab(self, tabId, itemCD)
+
     def getItemInventoryCount(self, item, excludeBase=False):
         return 10  # should be enough to plaster any vehicle
+
+    def _onStart(self):
+        WGCustomMode._onStart(self)
+        self._events.onSeasonChanged += self._selectInsignia
+
+    def _onStop(self):
+        self._events.onSeasonChanged -= self._selectInsignia
+        WGCustomMode._onStop(self)
 
     def _cancelChanges(self):
         self._cache.clear()
@@ -94,6 +115,27 @@ class CustomMode(WGCustomMode):
         self._fitOutfits()
         return any(self._cache.values())
 
+    def _getAnchorVOs(self):
+        if self.slotType == GUI_ITEM_TYPE.INSIGNIA:
+            if not g_currentVehicle.isPresent():
+                return []
+            anchorVOs = []
+            areaId = Area.GUN
+            slot = self.currentOutfit.getContainer(areaId).slotFor(self.slotType)
+            for regionIdx, anchor in list(g_currentVehicle.item.getAnchors(GUI_ITEM_TYPE.PAINT, areaId))[:1]:
+                if anchor.hiddenForUser:
+                    continue
+                model = self.currentOutfit.modelsSet or SLOT_DEFAULT_ALLOWED_MODEL
+                if model not in anchor.compatibleModels:
+                    continue
+                slotId = C11nId(areaId, self.slotType, regionIdx)
+                intCD = slot.getItemCD(regionIdx)
+                uid = customizationSlotIdToUid(slotId)
+                anchorVO = CustomizationSlotUpdateVO(slotId=slotId._asdict(), itemIntCD=intCD, uid=uid)
+                anchorVOs.append(anchorVO._asdict())
+            return anchorVOs
+        return WGCustomMode._getAnchorVOs(self)
+
     def _fillOutfits(self):
         vehCache = g_config.getOutfitCache()
         for season in SeasonType.COMMON_SEASONS:
@@ -104,6 +146,11 @@ class CustomMode(WGCustomMode):
             applyOutfitCache(fromOutfit, self._cache.get(seasonName, {}))
             self._modifiedOutfits[season] = fromOutfit.copy()
         self._fitOutfits()
+
+    def getAnchorParams(self, slotId):
+        if slotId.slotType == GUI_ITEM_TYPE.INSIGNIA:
+            return WGCustomMode.getAnchorParams(self, C11nId(slotId.areaId, GUI_ITEM_TYPE.PAINT, slotId.regionIdx))
+        return WGCustomMode.getAnchorParams(self, slotId)
 
     @async
     def _applyItems(self, purchaseItems, isModeChanged, callback):
@@ -161,8 +208,8 @@ class CustomMode(WGCustomMode):
             self._events.onItemsRemoved()
 
     def isPossibleToInstallItemForAllSeasons(self, slotId, intCD):
-        return getItemSeason(self._service.getItemByCD(intCD)) == reduce(
-            operator.ior, SeasonType.COMMON_SEASONS, SeasonType.UNDEFINED)
+        return bool(getItemSeason(self._service.getItemByCD(intCD)) & reduce(
+            operator.ior, SeasonType.COMMON_SEASONS, SeasonType.UNDEFINED))
 
     def __getItemProgressionLevel(self, item):
         return item.getMaxProgressionLevel() if not self._ctx.isPurchase else item.getLatestOpenedProgressionLevel(

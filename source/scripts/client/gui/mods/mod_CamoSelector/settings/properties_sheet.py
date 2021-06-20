@@ -7,6 +7,7 @@ from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES 
 from gui.customization.constants import CustomizationModes as C11nModes, CustomizationModes
 from gui.impl import backport
 from gui.impl.gen import R
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from .shared import CSMode
 from .. import g_config
 
@@ -52,6 +53,16 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             self._isItemAppliedToAllSeasons = False
             self._isItemAppliedToAllParts = False
 
+    def __makeRenderersVOs(self):
+        slotType = self._attachedAnchor.slotType
+        if slotType == GUI_ITEM_TYPE.INSIGNIA:
+            renderers = self.__makeInsigniaRenderersVOs()
+            renderers.append(self.__makeRemoveRendererVO())
+            renderers.append(self.__makeCloseRendererVO())
+            return renderers
+        # noinspection PyUnresolvedReferences
+        return WGPropertiesSheet._CustomizationPropertiesSheet__makeRenderersVOs(self)
+
     def __makePaintRenderersVOs(self):
         if self.__ctx.isPurchase:
             # noinspection PyUnresolvedReferences
@@ -68,6 +79,16 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             self.__makeCamoColorRendererVO(), self.__makeScaleRendererVO(),
             self.__makeSetOnOtherSeasonsRendererVO(), self.__makeSetOnOtherTankPartsRendererVO()
         ]
+
+    def __makeInsigniaRenderersVOs(self):
+        seasonsVO = self.__makeSetOnOtherSeasonsRendererVO()
+        if self._isItemAppliedToAll:
+            tooltip = R.strings.vehicle_customization.propertySheet.actionBtn.removeFromAllMapsDisabled()
+        else:
+            tooltip = R.strings.vehicle_customization.propertySheet.actionBtn.applyToAllMapsDisabled()
+        seasonsVO['disableTooltip'] = backport.text(
+            tooltip, itemType=R.strings.vehicle_customization.propertySheet.actionBtn.forCurrentItem.modification)
+        return [seasonsVO]
 
     def __makeStyleRenderersVOs(self):
         # noinspection PyUnresolvedReferences

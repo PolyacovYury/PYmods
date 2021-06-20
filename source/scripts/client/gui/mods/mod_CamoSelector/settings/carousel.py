@@ -117,11 +117,13 @@ class CarouselCache(WGCache):
             ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
         else:
             requirement = REQ_CRITERIA.CUSTOM(lambda _i: _i.descriptor.parentGroup is not None and (
-                True if _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet else _i.mayInstall(g_currentVehicle.item)))
+                _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)))
         itemTypes = []
-        for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
+        for tabId, slotType in list(CustomizationTabs.SLOT_TYPES.iteritems()):
             if vehicleHasSlot(slotType):
                 itemTypes.extend(CustomizationTabs.ITEM_TYPES[tabId])
+        if self.__ctx._hangarSpace.space.getVehicleEntity().appearance._getThisVehicleDossierInsigniaRank():
+            itemTypes.append(GUI_ITEM_TYPE.INSIGNIA)
 
         allItems = []
         customizationCache = vehicles.g_cache.customization20().itemTypes
