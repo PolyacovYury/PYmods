@@ -1,6 +1,7 @@
 import BigWorld
 import Event
 import adisp
+from BWUtil import AsyncReturn
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from async import await, async
@@ -142,7 +143,7 @@ class CustomizationContext(WGCtx, CSModImpl):
             self.purchaseMode = purchaseMode
 
     @async
-    def editStyle(self, intCD, source=None, callback=None):
+    def editStyle(self, intCD, source=None):
         if self.isPurchase:
             WGCtx.editStyle(self, intCD, source)
             return
@@ -151,11 +152,11 @@ class CustomizationContext(WGCtx, CSModImpl):
         if not targetMode.isOutfitsEmpty():
             proceed = yield await(self.createConfirmDialog('flashCol_propertySheet_edit'))
         if not proceed:
-            return
+            raise AsyncReturn(False)
         self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).installStyleItemsToModifiedOutfit(
             self.getMode(CSMode.INSTALL, CustomizationModes.STYLED).getModifiedOutfits())
         self.changeMode(CustomizationModes.CUSTOM, CustomizationTabs.CAMOUFLAGES)
-        callback and callback()
+        raise AsyncReturn(True)
 
     def canEditStyle(self, itemCD):
         if self.isPurchase:
@@ -168,17 +169,12 @@ class CustomizationContext(WGCtx, CSModImpl):
 
     @async
     def changeModeWithProgressionDecal(self, itemCD, level):
-        if not self.isPurchase:
-            def onSuccess():
-                self.mode.changeTab(CustomizationTabs.PROJECTION_DECALS)
-                self.events.onGetItemBackToHand(self._service.getItemByCD(itemCD), level, scrollToItem=True)
-            if self.modeId == CustomizationModes.STYLED:
-                yield await(self.editStyle(None, callback=onSuccess))
-            else:
-                onSuccess()
-            return
         goToEditableStyle = self.canEditStyle(itemCD)
         result = True
+        if not self.isPurchase and self.modeId == CustomizationModes.STYLED and goToEditableStyle:
+            result = yield await(self.editStyle(None))
+        if not result:
+            return
         if self.modeId in (CustomizationModes.STYLED, CustomizationModes.EDITABLE_STYLE) and not goToEditableStyle:
             result = yield await(self.createConfirmDialog('flashCol_progressionDecal_changeMode'))
         if not result:
@@ -186,6 +182,8 @@ class CustomizationContext(WGCtx, CSModImpl):
         WGCtx.changeModeWithProgressionDecal(self, itemCD)
         item = self._service.getItemByCD(itemCD)
         self.events.onGetItemBackToHand(item, level, scrollToItem=True)
+        if not self.isPurchase:
+            return
         noveltyCount = self._vehicle.getC11nItemNoveltyCounter(proxy=self._itemsCache.items, item=item)
         if noveltyCount:
             BigWorld.callback(0.0, lambda: self.resetItemsNovelty([item.intCD]))
