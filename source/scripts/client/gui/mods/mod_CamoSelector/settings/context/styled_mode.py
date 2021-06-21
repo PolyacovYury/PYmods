@@ -34,12 +34,19 @@ class StyledMode(WGStyledMode):
     def _validateItem(self, item, slotId, season):
         return []
 
+    def changeStyleProgressionLevel(self, toLevel):
+        for seasonID in SeasonType.COMMON_SEASONS:
+            self._modifiedOutfits[seasonID] = getStyleProgressionOutfit(self._modifiedOutfits[seasonID], toLevel, seasonID)
+        self._fitOutfits(modifiedOnly=True)
+        self._ctx.refreshOutfit()
+        self._events.onComponentChanged(self.STYLE_SLOT, True)
+
     def safe_getOutfitFromStyle(self, vehicleCD, season, style, level, baseStyle, baseOutfit):
         if style is None:
             return self._service.getEmptyOutfit()
         if style == baseStyle:
             if style.isProgressive and level != baseOutfit.progressionLevel:
-                return getStyleProgressionOutfit(baseOutfit, level, season)
+                return getStyleProgressionOutfit(baseOutfit, level, season).copy()
             return baseOutfit.copy()
         outfit = style.getOutfit(season, vehicleCD=vehicleCD)
         if style.isProgressive:
@@ -62,9 +69,9 @@ class StyledMode(WGStyledMode):
                 vehicleCD, s, self.originalStyle, oldLevel, self._baseMode.originalStyle, self._baseMode.getOriginalOutfit(s))
             self._modifiedOutfits[s] = self.safe_getOutfitFromStyle(
                 vehicleCD, s, self.modifiedStyle, newLevel, self._baseMode.modifiedStyle, self._baseMode.getModifiedOutfit(s))
-        return self.__originalStyle != self.__modifiedStyle or (
+        return bool(self.__originalStyle != self.__modifiedStyle or (
                 self.__modifiedStyle and self.__modifiedStyle.isProgressive
-                and self._originalOutfits[season].progressionLevel != self._modifiedOutfits[season].progressionLevel)
+                and self._originalOutfits[season].progressionLevel != self._modifiedOutfits[season].progressionLevel))
 
     def _fillOutfits(self):
         vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
