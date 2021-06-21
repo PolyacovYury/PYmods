@@ -16,7 +16,7 @@ from helpers import func_utils
 from items.components.c11n_constants import SeasonType, SLOT_DEFAULT_ALLOWED_MODEL
 from items.customizations import EmptyComponent, FieldFlags
 from vehicle_outfit.outfit import Area
-from ..shared import getItemSeason
+from ..shared import getItemSeason, CSMode
 from ... import g_config
 from ...processors import applyOutfitCache, deleteEmpty
 
@@ -174,7 +174,8 @@ class CustomMode(WGCustomMode):
             deleteEmpty(g_config.getHangarCache(), isTurretCustomisable)
             deleteEmpty(g_config.hangarCamoCache)
             styleCache = g_config.getOutfitCache().get('style', {})
-            styleCache.setdefault('intCD', None)
+            orig_style = self._ctx.getMode(CSMode.PURCHASE, CustomizationModes.STYLED).modifiedStyle
+            styleCache.setdefault('intCD', orig_style and orig_style.intCD)
             if styleCache['intCD'] is None:
                 styleCache.pop('level', None)
             styleCache['applied'] = False
