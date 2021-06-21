@@ -20,13 +20,6 @@ from ..shared import CSMode
 from ... import g_config
 
 
-def ModdedMode(ctx, modeId, baseMode):
-    if modeId == CustomizationModes.CUSTOM:
-        return CustomMode(ctx, baseMode)
-    if modeId == CustomizationModes.STYLED:
-        return StyledMode(ctx, baseMode)
-
-
 class CustomizationContext(WGCtx, CSModImpl):
     def __init__(self):
         CSModImpl.__init__(self)
@@ -35,8 +28,8 @@ class CustomizationContext(WGCtx, CSModImpl):
         self.__currentModeIds = {CSMode.PURCHASE: None, CSMode.INSTALL: None}
         WGCtx.__init__(self)
         self.__moddedModes = {
-            modeId: ModdedMode(self, modeId, self.__origModes[modeId])
-            for modeId in (CustomizationModes.CUSTOM, CustomizationModes.STYLED)}
+            CustomizationModes.CUSTOM: CustomMode(self, self.__origModes[CustomizationModes.CUSTOM]),
+            CustomizationModes.STYLED: StyledMode(self, self.__origModes[CustomizationModes.STYLED])}
 
     @property
     def isPurchase(self):
