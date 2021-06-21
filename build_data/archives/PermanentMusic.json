@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/{GAME_VERSION}/PYmods/PermanentMusic.wotmod": "build/wotmods/PYmods/PermanentMusic.wotmod"
+    }
+}
