@@ -1,6 +1,5 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
-from collections import OrderedDict
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import (
     CustomizationBookmarkVO, CustomizationCarouselDataProvider as WGCarouselDP, CarouselData, CarouselCache as WGCache,
     ItemsData, FilterTypes)

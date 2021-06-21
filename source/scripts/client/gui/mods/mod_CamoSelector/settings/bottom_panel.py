@@ -2,7 +2,6 @@ import BigWorld
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from frameworks.wulf import WindowLayer as WL
-from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import __getIcon as getIcon
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
@@ -16,8 +15,6 @@ from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.constants import CustomizationModes, CustomizationModeSource
-from gui.impl import backport
-from gui.impl.gen import R
 from gui.shared.formatters import getItemPricesVO
 from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
@@ -180,6 +177,7 @@ class CustomizationBottomPanel(CBP):
 
     def __onEditableStylesHintsShown(self):
         if not self.__ctx.isPurchase:
+            # noinspection PyArgumentEqualDefault
             return self.__onEditableStylesHintsHidden(record=False)
         # noinspection PyUnresolvedReferences
         return CBP._CustomizationBottomPanel__onEditableStylesHintsShown(self)

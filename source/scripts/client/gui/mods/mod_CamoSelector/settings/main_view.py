@@ -10,7 +10,6 @@ from gui.shared.formatters import icons, text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from items.components.c11n_constants import EDITABLE_STYLE_STORAGE_DEPTH
-from .shared import CSMode
 from .. import g_config
 
 
