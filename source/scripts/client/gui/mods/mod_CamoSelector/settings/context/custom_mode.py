@@ -173,13 +173,14 @@ class CustomMode(WGCustomMode):
                             g_config.getHangarCache().get(seasonName, {}).get(typeName, {}).get(area, {}).pop(reg, None)
             deleteEmpty(g_config.getHangarCache(), isTurretCustomisable)
             deleteEmpty(g_config.hangarCamoCache)
+            deleteEmpty(cache, isTurretCustomisable)
             styleCache = g_config.getOutfitCache().get('style', {})
             orig_style = self._ctx.getMode(CSMode.PURCHASE, CustomizationModes.STYLED).modifiedStyle
             styleCache.setdefault('intCD', orig_style and orig_style.intCD)
             if styleCache['intCD'] is None:
                 styleCache.pop('level', None)
             styleCache['applied'] = False
-            if styleCache != {'intCD': None, 'applied': False}:
+            if styleCache != {'intCD': None, 'applied': False} and cache:
                 cache['style'] = styleCache
             g_config.outfitCache.setdefault(nation, {})[vehName] = cache
             deleteEmpty(cache, isTurretCustomisable)

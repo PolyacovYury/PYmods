@@ -3,10 +3,11 @@ from PYmodsCore import loadJson
 from adisp import async
 from constants import CLIENT_COMMAND_SOURCES
 from gui import SystemMessages
-from gui.Scaleform.daapi.view.lobby.customization.context.styled_mode import StyledMode as WGStyledMode
+from gui.Scaleform.daapi.view.lobby.customization.context.styled_mode import StyledMode as WGStyledMode, _logger
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.SystemMessages import SM_TYPE
 from gui.customization.shared import __isTurretCustomizable as isTurretCustom
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.components.c11n_constants import SeasonType
 from vehicle_systems.camouflages import getStyleProgressionOutfit
 from ... import g_config
@@ -44,6 +45,7 @@ class StyledMode(WGStyledMode):
     def safe_getOutfitFromStyle(self, vehicleCD, season, style, level, baseStyle, baseOutfit):
         if style is None:
             return self._service.getEmptyOutfit()
+        level = level or 1
         if style == baseStyle:
             if style.isProgressive and level != baseOutfit.progressionLevel:
                 return getStyleProgressionOutfit(baseOutfit, level, season).copy()
@@ -73,6 +75,17 @@ class StyledMode(WGStyledMode):
                 self.__modifiedStyle and self.__modifiedStyle.isProgressive
                 and self._originalOutfits[season].progressionLevel != self._modifiedOutfits[season].progressionLevel))
 
+    def _installItem(self, intCD, slotId, season=None, component=None):
+        item = self._service.getItemByCD(intCD)
+        if item.itemTypeID != GUI_ITEM_TYPE.STYLE:
+            _logger.warning(
+                'Wrong itemType: %s. Only styles could be installed in styled customization mode.', item.itemTypeID)
+            return False
+        self.__modifiedStyle = item
+        self.isOutfitsModified()
+        self._fitOutfits(modifiedOnly=True)
+        return True
+
     def _fillOutfits(self):
         vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
         vehCache = g_config.getOutfitCache()
@@ -86,7 +99,9 @@ class StyledMode(WGStyledMode):
         for season in SeasonType.COMMON_SEASONS:
             if style is None:
                 outfit = self._service.getEmptyOutfit()
-            elif self._moddedStyle is None or style == self._baseMode.originalStyle:
+            elif self._moddedStyle is None or (
+                    style == self._baseMode.originalStyle
+                    and self.getStyleProgressionLevel() == self._baseMode.getStyleProgressionLevel()):
                 outfit = self._baseMode.getModifiedOutfit(season).copy()
             else:
                 outfit = style.getOutfit(season, vehicleCD=vehicleCD).copy()

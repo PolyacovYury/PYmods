@@ -99,6 +99,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         onLoaded = lambda e: (BigWorld.callback(0, self.refreshOutfit), g_eventBus.removeListener(
             CameraRelatedEvents.VEHICLE_LOADING, onLoaded, EVENT_BUS_SCOPE.DEFAULT) if not e.ctx['started'] else None)
         g_eventBus.addListener(CameraRelatedEvents.VEHICLE_LOADING, onLoaded, EVENT_BUS_SCOPE.DEFAULT)
+        self.events.onPurchaseModeChanged()
 
     def fini(self):
         WGCtx.fini(self)
@@ -121,6 +122,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         newMode = self.mode
         newMode.start(self.mode.tabId, source=source)
         self.refreshOutfit()
+        BigWorld.callback(1, self.refreshOutfit)
         self.events.onBeforeModeChange()
         self.events.onPurchaseModeChanged()
         self.events.onModeChanged(newMode.modeId, prevMode.modeId)

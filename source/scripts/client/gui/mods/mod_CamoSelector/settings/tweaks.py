@@ -6,8 +6,10 @@ from gui.Scaleform.daapi.view.lobby.customization import (
 from gui.Scaleform.daapi.view.lobby.customization.context import custom_mode
 from gui.Scaleform.daapi.view.lobby.customization.popovers import C11nPopoverItemData, orderKey
 from gui.Scaleform.daapi.view.lobby.customization.popovers.custom_popover import CustomPopoverDataProvider
+from gui.Scaleform.daapi.view.lobby.customization.progression_styles.stage_switcher import StageSwitcherView
 from gui.Scaleform.daapi.view.lobby.customization.shared import getSlotDataFromSlot, ITEM_TYPE_TO_SLOT_TYPE
 from gui.customization import CustomizationService
+from gui.customization.constants import CustomizationModes
 from gui.customization.shared import getPurchaseMoneyState, isTransactionValid, C11nId
 from gui.impl import backport
 from gui.impl.gen import R
@@ -146,3 +148,49 @@ def _onSelectItem(base, self, args=None):
         ctx = self._ProgressiveItemsView__customizationService.getCtx()
         func_utils.callback(0.0, ctx, 'changeModeWithProgressionDecal', intCD, level)
     self.destroyWindow()
+
+
+def updateCSInfo(self, *_):
+    ctx = self._StageSwitcherView__ctx
+    if ctx.modeId != CustomizationModes.STYLED:
+        return
+    originalLevel = 1 if not ctx.isPurchase else (
+        ctx.mode.getOriginalOutfit().progressionLevel
+        if ctx.mode.originalStyle and ctx.mode.originalStyle.isProgressive else -1)
+    selectedLevel = ctx.mode.getStyleProgressionLevel()
+    with self.getViewModel().transaction() as model:
+        model.setCurrentLevel(originalLevel)
+        model.setSelectedLevel(selectedLevel)
+
+
+StageSwitcherView.updateCSInfo = updateCSInfo
+
+
+@overrideMethod(StageSwitcherView, '_initialize')
+def _initialize(base, self, *args, **kwargs):
+    base(self, *args, **kwargs)
+    if not g_config.data['enabled']:
+        return
+    self._StageSwitcherView__ctx.events.onPurchaseModeChanged += self.updateCSInfo
+    self._StageSwitcherView__ctx.events.onChangesCanceled += self.updateCSInfo
+
+
+@overrideMethod(StageSwitcherView, '_finalize')
+def _finalize(base, self):
+    if not g_config.data['enabled']:
+        return base(self)
+    self._StageSwitcherView__ctx.events.onChangesCanceled -= self.updateCSInfo
+    self._StageSwitcherView__ctx.events.onPurchaseModeChanged -= self.updateCSInfo
+    base(self)
+
+
+@overrideMethod(StageSwitcherView, '_onLoading')
+def new_onLoading(base, self, *args, **kwargs):
+    base(self, *args, **kwargs)
+    ctx = self._StageSwitcherView__ctx
+    if not g_config.data['enabled'] or ctx.isPurchase:
+        return
+    progressionLevel = ctx.mode.getStyleProgressionLevel()
+    with self.getViewModel().transaction() as model:
+        model.setCurrentLevel(1)
+        model.setSelectedLevel(progressionLevel)
