@@ -1,0 +1,17 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/LampLights/configs/hw_2020_lamps_front/**": "res/configs/PYmods/LampLights/configs/hw_2020_lamps_front/**",
+        "mods/configs/PYmods/LampLights/configs/hw_2020_lamps_rear/**": "res/configs/PYmods/LampLights/configs/hw_2020_lamps_rear/**",
+        "mods/configs/PYmods/LampLights/configs/hw_2020_light_particles_front/**": "res/configs/PYmods/LampLights/configs/hw_2020_light_particles_front/**",
+        "mods/configs/PYmods/LampLights/configs/hw_2020_light_particles_rear/**": "res/configs/PYmods/LampLights/configs/hw_2020_light_particles_rear/**",
+        "mods/configs/PYmods/LampLights/configs/hw_2020_lights_front/**": "res/configs/PYmods/LampLights/configs/hw_2020_lights_front/**",
+        "mods/configs/PYmods/LampLights/configs/hw_2020_lights_rear/**": "res/configs/PYmods/LampLights/configs/hw_2020_lights_rear/**",
+        "mods/configs/PYmods/LampLights/configs/hw_2020_mark_lamps/**": "res/configs/PYmods/LampLights/configs/hw_2020_mark_lamps/**",
+        "mods/configs/PYmods/LampLights/configs/hw_2020_stop_lamps/**": "res/configs/PYmods/LampLights/configs/hw_2020_stop_lamps/**",
+        "mods/configs/PYmods/LampLights/configs/hw_2020_turn_lamps_front/**": "res/configs/PYmods/LampLights/configs/hw_2020_turn_lamps_front/**",
+        "mods/configs/PYmods/LampLights/configs/hw_2020_turn_lamps_rear/**": "res/configs/PYmods/LampLights/configs/hw_2020_turn_lamps_rear/**",
+        "mods/configs/PYmods/LampLights/models/HeadLight_halloween_2020/**": "res/configs/PYmods/LampLights/models/HeadLight_halloween_2020/**"
+    }
+}

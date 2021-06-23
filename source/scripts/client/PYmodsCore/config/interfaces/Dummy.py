@@ -64,10 +64,18 @@ class DummyConfigInterface(object):
         """
         pass
 
+    def readData(self, quiet=True):
+        """
+        Is called upon mod loading and every time settings window is opened.
+        Loading main config data from main file should be placed here.
+        :param quiet: optional, if you have debug mode in your mod - this will be useful
+        """
+        pass
+
     def readCurrentSettings(self, quiet=True):
         """
         Is called upon mod loading and every time settings window is opened.
-        Loading config data from files should be placed here.
+        Loading additional config data should be placed here.
         :param quiet: optional, if you have debug mode in your mod - this will be useful
         """
         pass
@@ -84,15 +92,17 @@ class DummyConfigInterface(object):
         """
         A function to update mod template after config actions are complete.
         """
-        if self.MSAInstance is not None:
-            self.MSAInstance.config['templates'][self.ID] = self.template
-            self.MSAInstance.updateModSettings(self.ID, self.getData())
+        if self.MSAInstance is None:
+            return
+        self.MSAInstance.config['templates'][self.ID] = self.template
+        self.MSAInstance.updateModSettings(self.ID, self.getData())
 
     def onMSAPopulate(self):
         """
         Called when mod settings window is about to start opening.
         :return:
         """
+        self.readData()
         self.readCurrentSettings()
         self.updateMod()
 
@@ -120,7 +130,9 @@ class DummyConfigInterface(object):
         """
         self.migrateConfigs()
         self.registerSettings()
+        self.readData(False)
         self.readCurrentSettings(False)
+        self.updateMod()
 
 
 class DummyConfBlockInterface(DummyConfigInterface):
@@ -138,17 +150,20 @@ class DummyConfBlockInterface(DummyConfigInterface):
     def createTemplate(self, blockID=None):
         raise NotImplementedError('Template for block %s is not created' % blockID)
 
+    @property
+    def template(self):
+        return {blockID: self.createTemplate(blockID) for blockID in self.blockIDs}
+
     def onApplySettings(self, settings, blockID=None):
         raise NotImplementedError
 
-    def updateMod(self, blockID=''):
-        if self.MSAInstance is not None:
-            self.MSAInstance.updateModSettings(self.ID + blockID, self.getData(blockID))
-
-    def onMSAPopulate(self):
-        self.readCurrentSettings()
+    def updateMod(self):
+        if self.MSAInstance is None:
+            return
+        templates = self.template  # saves calls
         for blockID in self.blockIDs:
-            self.updateMod(blockID)
+            self.MSAInstance.config['templates'][self.ID + blockID] = templates[blockID]
+            self.MSAInstance.updateModSettings(self.ID + blockID, self.getData(blockID))
 
     def onButtonPress(self, vName, value, blockID=None):
         pass

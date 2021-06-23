@@ -1,0 +1,11 @@
+﻿{
+//  Информация о паке
+    "en": {
+        "name": "<b>Tank reversing signal air illumination models</b>",
+        "desc": "{attachTo} • Co-authors: Algiz, Wargaming"
+    },
+    "ru": {
+        "name": "<b>Модели, имитирующие засветку воздуха от сигналов заднего хода</b>",
+        "desc": "{attachTo} • Соавторы: Algiz, Wargaming"
+    }
+}

@@ -1,0 +1,10 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/LampLights/configs/hw_2020_lamps_front/**": "res/configs/PYmods/LampLights/configs/hw_2020_lamps_front/**",
+        "mods/configs/PYmods/LampLights/configs/hw_2020_lights_front/**": "res/configs/PYmods/LampLights/configs/hw_2020_lights_front/**",
+        "mods/configs/PYmods/LampLights/configs/hw_2020_light_particles_front/**": "res/configs/PYmods/LampLights/configs/hw_2020_light_particles_front/**",
+        "mods/configs/PYmods/LampLights/models/HeadLight_halloween_2020/**": "res/configs/PYmods/LampLights/models/HeadLight_halloween_2020/**"
+    }
+}

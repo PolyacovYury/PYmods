@@ -1,0 +1,11 @@
+﻿{
+//  Информация о паке
+    "en": {
+        "name": "<b>Hardpoint markers</b>",
+        "desc": "{attachTo} • Co-author: Algiz"
+    },
+    "ru": {
+        "name": "<b>Маркера точек крепления</b>",
+        "desc": "{attachTo} • Соавтор: Algiz"
+    }
+}

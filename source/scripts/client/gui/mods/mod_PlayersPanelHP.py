@@ -53,10 +53,10 @@ class PlayersPanelController(PYmodsConfigInterface):
                                                    ('always', 'toggle', 'holding')])],
                 'column2': [self.tb.createHotKey('toggle_key')]}
 
-    def readCurrentSettings(self, quiet=True):
+    def readData(self, quiet=True):
         for fieldName in self.data['textFields']:
             g_PlayersPanelAPI.delete(self.ID + fieldName)
-        super(PlayersPanelController, self).readCurrentSettings(quiet)
+        super(PlayersPanelController, self).readData(quiet)
         self.data['textFields'].update(self.loadDataJson().get('textFields', {}))
         self.displayed = not self.data['mode']
         for fieldName, fieldData in self.data['textFields'].iteritems():
@@ -163,8 +163,8 @@ else:
             return result
 
 
-    @overrideMethod(PlayerAvatar, 'vehicle_onEnterWorld')
-    def new_vehicle_onEnterWorld(base, self, vehicle):
+    @overrideMethod(PlayerAvatar, 'vehicle_onAppearanceReady')
+    def new_vehicle_onAppearanceReady(base, self, vehicle):
         result = base(self, vehicle)
         try:
             vehicleID = vehicle.id

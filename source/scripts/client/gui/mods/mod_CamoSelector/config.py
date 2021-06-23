@@ -119,22 +119,20 @@ class ConfigInterface(PYmodsConfigInterface):
         self.hangarCamoCache.clear()
 
     def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
         self.configFolders.clear()
         self.camouflages = {'remap': {}, 'custom': {}}
         self.outfitCache = loadJson(self.ID, 'outfitCache', self.outfitCache, self.configPath)
-        camoDirPath = '../' + self.configPath + 'camouflages'
-        camoDirKeys = getattr(ResMgr.openSection(camoDirPath), 'keys', lambda: [])()
-        for camoName in remDups(x for x in camoDirKeys if ResMgr.isDir(camoDirPath + '/' + x)):
-            fileName = self.configPath + 'camouflages/' + camoName + '/'
-            settings = loadJson(self.ID, 'settings', {}, fileName)
-            self.configFolders[camoName] = set(settings)
-            self.camouflages['custom'].update(settings)
-            loadJson(self.ID, 'settings', settings, fileName, True)
+        self.readConfigDir(quiet, dir_name='camouflages')
         settings = loadJson(self.ID, 'settings', {}, self.configPath)
         self.disable = settings.setdefault('disable', self.disable)
         self.camouflages['remap'] = {int(k): v for k, v in settings.setdefault('remap', {}).iteritems()}
         loadJson(self.ID, 'settings', settings, self.configPath, True)
+
+    def onReadConfig(self, quiet, dir_path, name, json_data, sub_dirs, names):
+        if name != 'settings':
+            return
+        self.configFolders[dir_path] = set(json_data)
+        self.camouflages['custom'].update(json_data)
 
     def migrateConfigs(self):
         camouflages = items.vehicles.g_cache.customization20().camouflages

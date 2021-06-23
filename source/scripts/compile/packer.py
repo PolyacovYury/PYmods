@@ -69,6 +69,16 @@ def pack_file(conf_name, out_path, v_str=None, v_date=None, force=False, quiet=F
     else:
         ch_print(conf_name, quiet, 'Unknown extension:', new_ext)
         return False
+    for path_key, path in data['files'].items():
+        if not path_key.endswith('**'):
+            continue
+        data['files'].pop(path_key)
+        path_key = path_key[:-3]
+        path = path[:-3]
+        for rootDir, _, fNames in os.walk(path):
+            for fName in fNames:
+                fullPath = os.path.join(rootDir, fName).replace(os.sep, '/')
+                data['files'][fullPath.replace(path, path_key)] = fullPath
     out_path = os.path.splitext(out_path)[0].decode('cp1251') + new_ext
     if os.path.isfile(out_path):
         if not force and check_identical(out_path, data['files'], v_str, quiet):

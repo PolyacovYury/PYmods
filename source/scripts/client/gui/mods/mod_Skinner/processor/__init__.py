@@ -1,10 +1,11 @@
 import BigWorld
 import traceback
 from PYmodsCore import overrideMethod
+from common_tank_appearance import CommonTankAppearance
 from gui import SystemMessages
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from items.vehicles import CompositeVehicleDescriptor
-from vehicle_systems import appearance_cache, camouflages
+from vehicle_systems import camouflages
 from vehicle_systems.tankStructure import TankPartNames
 from . import skins_dynamic, skins_static
 from .. import g_config
@@ -102,16 +103,16 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
     debugOutput(xmlName, vehName, playerName, modelsSet, staticDesc, dynamicDesc)
 
 
-@overrideMethod(appearance_cache._AppearanceCache, '__cacheApperance')
-def new_cacheAppearance(base, self, vId, info, *a, **k):
-    if g_config.data['enabled'] and getattr(info.typeDescr, 'modelDesc', None) is None:
-        outfit = camouflages.prepareBattleOutfit(info.outfitCD, info.typeDescr, vId)
-        vDesc_process(vId, info.typeDescr, 'battle', outfit.modelsSet or 'default')
-    return base(self, vId, info, *a, **k)
+@overrideMethod(CommonTankAppearance, 'prerequisites')
+def new_cacheAppearance(base, self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k):
+    if g_config.data['enabled'] and getattr(typeDescriptor, 'modelDesc', None) is None:
+        outfit = camouflages.prepareBattleOutfit(outfitCD, typeDescriptor, vID)
+        vDesc_process(vID, typeDescriptor, 'battle', outfit.modelsSet or 'default')
+    return base(self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k)
 
 
 @overrideMethod(HangarVehicleAppearance, '__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled'] and getattr(vDesc, 'modelDesc', None) is None:
-        vDesc_process(self.id, vDesc, 'hangar', self._HangarVehicleAppearance__outfit.modelsSet or 'default')
+        vDesc_process(self.id, vDesc, 'hangar', self.outfit.modelsSet or 'default')
     return base(self, vDesc, vState)

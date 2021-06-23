@@ -195,13 +195,12 @@ class ConfigInterface(PYmodsConfigInterface):
         if flashController is not None:
             flashController.onApplySettings()
 
-    def readCurrentSettings(self, quiet=True):
-        super(ConfigInterface, self).readCurrentSettings(quiet)
+    def readData(self, quiet=True):
+        super(ConfigInterface, self).readData(quiet)
         colour = self.data['textStyle']['colour']
         colours = self.colours.values()
         self.data['textColour'] = colours.index(colour) if colour in colours else 10
         self.data['textStyle']['colour'] = self.colours.values()[self.data['textColour']]
-        self.updateMod()
 
     def formatText(self, newText, isPlayer, isAlly, isSquadMan, names):
         colors = dict(
@@ -669,7 +668,7 @@ def new_onVehicleDestroyed(base, self):
     base(self)
 
 
-@overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '__readConfig')
+@overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '__readConfigs')
 def new_readConfig(base, self):
     base(self)
     if _config.data['enabled'] and _config.data['disStand']:

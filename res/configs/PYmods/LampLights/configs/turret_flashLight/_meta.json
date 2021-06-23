@@ -1,0 +1,11 @@
+﻿{
+//  Информация о паке
+    "en": {
+        "name": "<b>Tank flashlights</b>",
+        "desc": " • Police flashlights\n{attachTo} • Co-author: Algiz"
+    },
+    "ru": {
+        "name": "<b>Мигалки для танков</b>",
+        "desc": " • Полицейские проблесковые маячки\n{attachTo} • Соавтор: Algiz"
+    }
+}
