@@ -1,0 +1,11 @@
+﻿{
+//  Информация о паке
+    "en": {
+        "name": "<b>Tank headlights' lights</b>",
+        "desc": "{attachTo} • Co-author: Wargaming"
+    },
+    "ru": {
+        "name": "<b>Лучи от фар</b>",
+        "desc": "{attachTo} • Соавтор: Wargaming"
+    }
+}

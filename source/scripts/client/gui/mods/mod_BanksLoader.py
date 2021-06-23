@@ -8,9 +8,11 @@ import zipfile
 from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, events, curCV
 from PYmodsCore.config.interfaces.Simple import ConfigNoInterface
 from async import await, async
+from frameworks.wulf import WindowLayer
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.builders import WarningDialogBuilder
 from gui.impl.pub.dialog_window import DialogButtons as DButtons
+from gui.shared.personality import ServicesLocator as SL
 from helpers import getClientVersion
 
 
@@ -53,7 +55,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             'UI_restart_memory': ' • values <b>changed</b> for memory settings: ',
             'UI_restart_remap': ' • sections <b>changed</b> for settings: ',
             'UI_restart_wotmod': ' • configs <b>removed</b> from packages: ',
-         }
+        }
         super(ConfigInterface, self).init()
 
     def readCurrentSettings(self, quiet=True):
@@ -78,7 +80,11 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
         builder = WarningDialogBuilder().setFormattedMessage(dialogText).setFormattedTitle(self.i18n['UI_restart_header'])
         for ID, key in (DButtons.PURCHASE, 'restart'), (DButtons.RESEARCH, 'shutdown'), (DButtons.SUBMIT, 'close'):
             builder.addButton(ID, None, ID == DButtons.PURCHASE, rawLabel=self.i18n['UI_restart_button_%s' % key])
-        result = yield await(dialogs.show(builder.build()))
+        try:
+            parent = SL.appLoader.getApp().containerManager.getContainer(WindowLayer.VIEW).getView()
+        except (AttributeError, TypeError):
+            parent = None
+        result = yield await(dialogs.show(builder.build(parent)))
         if result.result == DButtons.PURCHASE:
             print self.ID + ': client restart confirmed.'
             BigWorld.savePreferences()

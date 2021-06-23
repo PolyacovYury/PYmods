@@ -1,0 +1,11 @@
+﻿{
+//  Информация о паке
+    "en": {
+        "name": "<b>Tank parking lights</b>",
+        "desc": "{attachTo}"
+    },
+    "ru": {
+        "name": "<b>Габаритные огни</b>",
+        "desc": "{attachTo}"
+    }
+}

@@ -2,12 +2,9 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/LampLights/configs/headLamps.json": "res/configs/PYmods/LampLights/configs/headLamps.json",
-        "mods/configs/PYmods/LampLights/configs/headLights.json": "res/configs/PYmods/LampLights/configs/headLights.json",
-        "mods/configs/PYmods/LampLights/configs/headLightsParticles.json": "res/configs/PYmods/LampLights/configs/headLightsParticles.json",
-        "mods/configs/PYmods/LampLights/models/HeadLight/HeadLight.dds": "res/configs/PYmods/LampLights/models/HeadLight/HeadLight.dds",
-        "mods/configs/PYmods/LampLights/models/HeadLight/HeadLight.model": "res/configs/PYmods/LampLights/models/HeadLight/HeadLight.model",
-        "mods/configs/PYmods/LampLights/models/HeadLight/HeadLight.primitives_processed": "res/configs/PYmods/LampLights/models/HeadLight/HeadLight.primitives_processed",
-        "mods/configs/PYmods/LampLights/models/HeadLight/HeadLight.visual_processed": "res/configs/PYmods/LampLights/models/HeadLight/HeadLight.visual_processed"
+        "mods/configs/PYmods/LampLights/configs/lamps_front/**": "res/configs/PYmods/LampLights/configs/lamps_front/**",
+        "mods/configs/PYmods/LampLights/configs/lights_front/**": "res/configs/PYmods/LampLights/configs/lights_front/**",
+        "mods/configs/PYmods/LampLights/configs/light_particles_front/**": "res/configs/PYmods/LampLights/configs/light_particles_front/**",
+        "mods/configs/PYmods/LampLights/models/HeadLight/**": "res/configs/PYmods/LampLights/models/HeadLight/**"
     }
 }

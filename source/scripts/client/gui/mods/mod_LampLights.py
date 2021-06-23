@@ -2,44 +2,43 @@
 import BigWorld
 import Keys
 import Math
-import ResMgr
-import glob
-import math_utils
 import os
 import traceback
 from Avatar import PlayerAvatar
-from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKeys, sendPanelMessage, Analytics, events
+from PYmodsCore import PYmodsConfigInterface, overrideMethod, checkKeys, sendPanelMessage, Analytics, events
+from PYmodsCore.config import smart_update
 from Vehicle import Vehicle
-from debug_utils import LOG_ERROR, LOG_NOTE
 from functools import partial
 from gui import SystemMessages
+from math import copysign
+from math_utils import createTranslationMatrix, createRotationMatrix, MatrixProviders as MP
 from vehicle_systems.CompoundAppearance import CompoundAppearance
-from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
-
-
-def listToTuple(seq):
-    return tuple(listToTuple(item) for item in seq) if isinstance(seq, list) else seq
+from vehicle_systems.tankStructure import TankNodeNames as TankNodes, TankPartNames as TankParts
 
 
 class ConfigInterface(PYmodsConfigInterface):
+    listToTuple = classmethod(lambda cls, seq: seq if not isinstance(seq, list) else tuple(cls.listToTuple(x) for x in seq))
+
     def __init__(self):
-        self.isTickRequired = True
-        self.configsDict = {}
-        self.isLampsVisible = True
-        self.modes = {'constant': [], 'stop': [], 'turn_left': [], 'turn_right': [], 'back': [], 'target': [], 'spot': []}
+        self.teams = ('player', 'platoon', 'ally', 'enemy')
+        self.lampsMeta = {}
+        self.lampsData = {}
+        self.lampsStorage = {}
+        self.fakeModelsStorage = {}
+        self.speedsStorage = {}
+        self.lampsVisible = True
+        self.tickRequired = True
+        self.isLogin = True
         super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '2.2.3.1 (%(file_compile_date)s)'
+        self.version = '3.0.0 (%(file_compile_date)s)'
         self.defaultKeys = {'hotkey': [Keys.KEY_F12]}
-        self.data = {'enabled': True,
-                     'enableAtStartup': True,
-                     'hotkey': self.defaultKeys['hotkey'],
-                     'enableMessage': True,
-                     'Debug': False,
-                     'DebugModel': False,
-                     'DebugPath': ''}
+        self.data = {
+            'enabled': True, 'enableAtStartup': True, 'hotkey': self.defaultKeys['hotkey'], 'enableMessage': True,
+            'Debug': False, 'DebugModel': False, 'DebugPath': '',
+        }
         self.i18n = {
             'UI_description': 'Lamp Lights Enabler',
             'UI_activLamps': 'Lamps ENABLED',
@@ -57,697 +56,536 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_meta_no_configs': 'No configs were loaded.',
             'UI_setting_meta_NDA': '{attachTo} • No data available or provided.',
             'UI_setting_meta_AND': ' and ',
-            'UI_setting_attachToPlayer': 'player tanks',
-            'UI_setting_attachToAlly': 'allies',
-            'UI_setting_attachToEnemy': 'enemies',
-            'UI_setting_attachTo': ' • Will be attached to ',
             'UI_serviceChannelPopUp': '<b>{author}<font color="#cc9933"> brought some light!</font></b>'}
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
-        sources = 0
-        models = 0
-        for confDict in self.configsDict.values():
-            for source in confDict:
-                if source not in ('enable', 'meta', 'attachToPlayer', 'attachToAlly', 'attachToEnemy'):
-                    if 'model' not in confDict[source]['type']:
-                        sources += 1
-                    else:
-                        models += 1
-
-        metaList = []
-        for fileName in sorted(self.configsDict.keys()):
-            attaches = tuple(self.i18n['UI_setting_' + key] if self.configsDict[fileName][key] else ''
-                             for key in ('attachToPlayer', 'attachToAlly', 'attachToEnemy'))
-            if all(attaches):
-                tooltipAttachTo = ''
-            else:
-                tooltipAttachTo = self.i18n['UI_setting_attachTo'] + self.i18n['UI_setting_meta_AND'].join(
-                    filter(None, attaches)) + '\n'
-            metaList.append('\n'.join((
-                self.configsDict[fileName]['meta']['name'], self.configsDict[fileName]['meta']['desc'].format(
-                    attachTo=tooltipAttachTo).rstrip())).rstrip())
-        metaStr = ('\n'.join(metaList)) if metaList else self.i18n['UI_setting_meta_no_configs']
-        capLabel = self.tb.createLabel('meta')
-        capLabel['text'] = self.tb.getLabel('caps').format(totalCfg=len(self.configsDict), totalSrc=sources, models=models)
-        capLabel['tooltip'] %= {'meta': metaStr}
+        models = sum(1 for v in self.lampsData.values() if 'model' in v['type'])
+        cntLabel = self.tb.createLabel('meta')
+        cntLabel['text'] = self.tb.getLabel('caps').format(
+            totalCfg=len(self.lampsMeta), totalSrc=len(self.lampsData) - models, models=models)
+        cntLabel['tooltip'] %= {'meta': '\n'.join(
+            ['\n'.join((self.lampsMeta[fileName]['name'], self.lampsMeta[fileName]['desc'].format(attachTo=''))).rstrip()
+             for fileName in sorted(self.lampsMeta.keys(), key=str.lower)]
+        ) or self.i18n['UI_setting_meta_no_configs']}
         return {'modDisplayName': self.i18n['UI_description'],
                 'enabled': self.data['enabled'],
                 'column1': [self.tb.createControl('enableAtStartup'),
-                            capLabel],
+                            cntLabel],
                 'column2': [self.tb.createHotKey('hotkey'),
                             self.tb.createControl('enableMessage')]}
 
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
-        self.isLampsVisible = self.data['enabled'] and self.data['enableAtStartup'] and self.isLampsVisible
+        self.lampsVisible = self.data['enabled'] and self.data['enableAtStartup'] and self.lampsVisible
 
-    def readConfDict(self, quiet, confdict, name, sourceModel=None, upperName=''):
-        for confKey, configDict in confdict.items():
-            if upperName:
-                confKey = upperName + '.' + confKey
-            if confKey in ('enable', 'meta', 'attachToPlayer', 'attachToAlly', 'attachToEnemy'):
-                continue
-            if any(confKey in curConfigsDict for curConfigsDict in self.configsDict.values()):
-                print self.ID + ':', name + '.json: overlap detected:', confKey, 'already exists.'
-                continue
-            model = None
-            if 'model' in configDict['type']:
-                try:
-                    model = BigWorld.Model(configDict['path'])
-                except StandardError:
-                    print 'LampLights: model path incorrect: %s' % configDict['path']
-                    continue
+    def onReadConfig(self, quiet, dir_path, name, json_data, sub_dirs, names):
+        if not dir_path:
+            names[:] = []
+            return
+        if '/' not in dir_path and name == '_meta':
+            if self.data['Debug']:
+                print self.ID + ': loading', dir_path + ':'
+            self.lampsMeta[dir_path] = meta = {'name': '<b>%s</b>' % dir_path, 'desc': self.i18n['UI_setting_meta_NDA']}
+            lang = self.lang
+            if lang not in json_data:
+                lang = 'en'
+            smart_update(meta, json_data.get(lang, {}))
+            return
+        if dir_path.partition('/')[0] not in self.lampsMeta:
+            sub_dirs[:] = []
+            names[:] = []
+            return
+        if not self.readLampConfig(quiet, dir_path, name, json_data) and name in sub_dirs:
+            sub_dirs.remove(name)
 
-            if not upperName:
-                if configDict['place'] not in ('leftFront', 'rightFront', 'leftRear', 'rightRear',
-                                               'hull', 'wheels_left', 'wheels_right', 'turret', 'spot'):
-                    LOG_ERROR('Unknown place of %s: %s.' % (confKey, configDict['place']))
-                    continue
-            else:
-                try:
-                    sourceModel.node(configDict['place'])
-                except ValueError:
-                    LOG_ERROR('Unknown place of %s: %s.' % (confKey, configDict['place']))
-                    continue
-            if not configDict['visible']:
-                if not quiet:
-                    print self.ID + ':', confKey, 'disabled in config.'
-                continue
-            self.configsDict[name][confKey] = confDict = {}
-            for key in ('type', 'place', 'mode', 'preRotate', 'postRotate', 'vect'):
-                confDict[key] = listToTuple(configDict[key])
-
-            for key in ('attachToPlayer', 'attachToAlly', 'attachToEnemy'):
-                confDict[key] = self.configsDict[name][key]
-
-            if confDict['mode'] not in self.modes:
-                print self.ID + ': unknown mode in', confKey, 'detected:', confDict['mode'] + '. This light will be off.'
-            else:
-                self.modes[confDict['mode']].append(confKey)
-            if 'model' not in confDict['type']:
-                for key in ('colour', 'bright', 'innerRadius', 'outerRadius', 'dur', 'cs'):
-                    confDict[key] = listToTuple(configDict[key])
-
-                if confDict['type'] == 'spotLight':
-                    confDict['ca'] = configDict['ca']
-            else:
-                confDict['path'] = configDict['path']
-                if 'subLights' in configDict:
-                    self.readConfDict(quiet, configDict['subLights'], name, sourceModel=model, upperName=confKey)
-            if self.data['Debug'] and not quiet:
-                print self.ID + ':', confKey, 'loaded.'
+    def readLampConfig(self, quiet, dir_path, name, json_data):
+        confID = dir_path + '/' + name
+        settings = {team: json_data.get(team, True) for team in self.teams}
+        settings.update({k: json_data.get(k, []) for k in ('include', 'exclude')})
+        parentID = dir_path
+        while parentID.count('/') > 1:
+            for team in self.teams:
+                settings[team] &= self.lampsData[parentID][team]
+            for k in ('include', 'exclude'):
+                settings[k] += self.lampsData[parentID][k]
+            parentID = os.path.dirname(parentID)
+        if not any(settings[team] for team in self.teams) and not quiet:
+            print self.ID + ':', confID, 'disabled'
+            return False
+        if self.data['Debug']:
+            print self.ID + ': loading', confID
+        if json_data['type'] == 'model':
+            try:
+                BigWorld.Model(json_data['path'])
+            except StandardError:
+                print self.ID + ':', confID, 'model path incorrect:', json_data['path']
+                return False
+        elif json_data['type'] not in ('omniLight', 'spotLight'):
+            print self.ID + ':', confID, 'unknown type:', json_data['type']
+            return False
+        root = json_data['root']
+        if confID.count('/') > 1:
+            try:
+                BigWorld.Model(self.lampsData[os.path.dirname(confID)]['path']).node(root)
+            except ValueError:
+                print self.ID + ':', confID, 'unknown root:', root
+                return False
+        elif root not in (
+                'front_left', 'front_right', 'back_left', 'back_right', 'wheels_left', 'wheels_right', 'roof', 'hull',
+                'spot', 'collide_front_left', 'collide_front_right', 'collide_back_left', 'collide_back_right'):
+            print self.ID + ':', confID, 'unknown root:', root
+            return False
+        if json_data['mode'] not in ('constant', 'stop', 'turn_left', 'turn_right', 'back', 'target', 'spot'):
+            print self.ID + ':', confID, 'unknown mode:', json_data['mode']
+            return False
+        keys = ('type', 'root', 'mode', 'preRotate', 'postRotate', 'position')
+        if json_data['type'] == 'model':
+            keys += ('path',)
+        else:
+            keys += ('colour', 'multiplier', 'innerRadius', 'outerRadius', 'castShadows')
+            if json_data['type'] == 'spotLight':
+                keys += ('coneAngle',)
+        self.lampsData[confID] = dict(settings, **{k: self.listToTuple(json_data[k]) for k in keys})
+        if self.data['Debug'] and not quiet:
+            print self.ID + ':', confID, 'loaded'
+        return True
 
     def readCurrentSettings(self, quiet=True):
-        self.configsDict.clear()
-        self.modes = {'constant': [], 'stop': [], 'turn_left': [], 'turn_right': [], 'back': [], 'target': [], 'spot': []}
+        self.lampsData.clear(), self.lampsMeta.clear()
         if self.data['DebugModel']:
-            if self.data['DebugPath']:
+            if not self.data['DebugPath']:
+                print self.ID + ': debug model disabled due to absence of DebugPath.'
+                self.data['DebugModel'] = False
+            else:
                 try:
                     _ = BigWorld.Model(self.data['DebugPath'])
                 except StandardError:
-                    LOG_ERROR('Debug model path incorrect: %s' % self.data['DebugPath'])
+                    print self.ID + ': debug model path incorrect:', self.data['DebugPath']
                     self.data['DebugModel'] = False
-
-            else:
-                LOG_NOTE('Debug disabled due to absence of DebugPath.')
-                self.data['DebugModel'] = False
-        if self.data['enabled']:
-            self.readConfigDir(quiet)
-            if not self.configsDict:
-                print 'LampLights has not loaded any configs. Are you sure you need this .pyc?'
-            if self.data['DebugModel'] and self.configsDict:
-                if self.data['Debug'] and not quiet:
-                    print 'LampLights: loading configs for Debug:'
-                for fileName, configsDict in self.configsDict.items():
-                    for confKey in configsDict.keys():
-                        if confKey in ('enable', 'meta', 'attachToPlayer', 'attachToAlly', 'attachToEnemy'):
-                            continue
-                        if configsDict.get(confKey + 'Debug') is None:
-                            if 'model' not in configsDict[confKey]['type']:
-                                self.configsDict[fileName][confKey + 'Debug'] = confDict = {}
-                                confDict['type'] = 'model'
-                                for key in ('place', 'preRotate', 'postRotate', 'vect', 'mode', 'attachToPlayer',
-                                            'attachToAlly', 'attachToEnemy'):
-                                    confDict[key] = listToTuple(configsDict[confKey][key])
-
-                                if confDict['mode'] not in self.modes:
-                                    print 'LampLights: unknown mode at %sDebug detected: %s. This light will be off.' \
-                                          % (confKey, confDict['mode'])
-                                else:
-                                    self.modes[confDict['mode']].append(confKey + 'Debug')
-
-                                confDict['path'] = self.data['DebugPath']
-                                if self.data['Debug'] and not quiet:
-                                    print 'LampLights: config for %sDebug loaded.' % confKey
-                        elif self.data['Debug'] and not quiet:
-                            print 'LampLights: debug assignment failure: %sDebug' % confKey
-
-        else:
-            LOG_NOTE('LampLights mod fully disabled via main config.')
-            self.isLampsVisible = False
-        self.isTickRequired = any(self.modes[key] for key in ('stop', 'turn_left', 'turn_right', 'back'))
-
-    def onReadConfig(self, quiet, dir_path, name, json_data, sub_dirs, names):
-        if not json_data['enable'] or not any(
-                x for x in (json_data.get(y, True) for y in ('attachToPlayer', 'attachToAlly', 'attachToEnemy'))):
+        if not self.data['enabled']:
             if not quiet:
-                print self.ID + ': config', name + '.json is disabled.'
+                print self.ID + ': mod fully disabled via main config'
+            self.lampsVisible = False
+            self.tickRequired = False
             return
-        if self.data['Debug']:
-            print self.ID + ': loading', name + '.json:'
-        self.configsDict[name] = configsDict = {}
-        configsDict['meta'] = metaDict = {'name': '<b>%s.json</b>' % name,
-                                          'desc': self.i18n['UI_setting_meta_NDA']}
-        metaDict['name'] = json_data.get('meta', {}).get(self.lang, {}).get('name', metaDict['name'])
-        metaDict['desc'] = json_data.get('meta', {}).get(self.lang, {}).get('desc', metaDict['desc'])
-        for key in ['attachToPlayer', 'attachToAlly', 'attachToEnemy']:
-            configsDict[key] = json_data.get(key, True)
-        self.readConfDict(quiet, json_data, name)
+        self.readConfigDir(quiet, recursive=True)
+        if not self.lampsData:
+            print self.ID + ': no configs loaded. Are you sure that you need this mod?'
+        elif self.data['DebugModel']:
+            if self.data['Debug'] and not quiet:
+                print self.ID + ': loading configs for Debug:'
+            for confID, data in self.lampsData.items():
+                newID = confID + 'Debug'
+                if newID in self.lampsData:
+                    if not quiet:
+                        print self.ID + ': debug assignment failed:', newID
+                    continue
+                if 'model' in data['type']:
+                    continue
+                self.lampsData[newID] = new_data = {}
+                new_data['type'] = 'model'
+                for key in ('root', 'preRotate', 'postRotate', 'position', 'mode') + self.teams:
+                    new_data[key] = data[key]
+                new_data['path'] = self.data['DebugPath']
+                if self.data['Debug'] and not quiet:
+                    print self.ID + ':', newID, 'loaded'
+        self.tickRequired = any(v['mode'] in ('stop', 'turn_left', 'turn_right', 'back') for v in self.lampsData.values())
 
     def onHotkeyPressed(self, event):
         if (not hasattr(BigWorld.player(), 'arena') or not self.data['enabled']
                 or not checkKeys(self.data['hotkey'], event.key) or not event.isKeyDown()):
             return
-        self.isLampsVisible = not self.isLampsVisible
-        if self.isLampsVisible:
+        self.lampsVisible = not self.lampsVisible
+        if self.lampsVisible:
+            sendPanelMessage(self.i18n['UI_activLamps'])
             self.readCurrentSettings(not self.data['Debug'])
             for vehicleID in BigWorld.player().arena.vehicles:
-                curVehicle = BigWorld.entity(vehicleID)
-                if curVehicle is not None and curVehicle.isAlive():
-                    lightsCreate(vehicleID, 'keyPress')
-
-            sendPanelMessage(self.i18n['UI_activLamps'])
+                vEntity = BigWorld.entity(vehicleID)
+                if vEntity is not None and vEntity.isAlive():
+                    createLamps(vehicleID, 'keyPress')
         else:
-            for vehicleID in lightDBDict.keys():
-                lightsDestroy(vehicleID, 'keyPress')
-
             sendPanelMessage(self.i18n['UI_deactivLamps'], 'Red')
+            for vehicleID in self.lampsStorage.keys():
+                destroyLamps(vehicleID, 'keyPress')
+
+    def load(self):
+        super(ConfigInterface, self).load()
+        if not self.data['enableMessage']:
+            return
+        LOGIN_TEXT_MESSAGE = self.i18n['UI_serviceChannelPopUp'].format(author='<font color="#DD7700">Polyacov_Yury</font>')
+
+        @events.LobbyView.populate.after
+        def new_Lobby_populate(*_, **__):
+            isRegistered = self.ID in getattr(self.MSAInstance, 'activeMods', ())
+            if self.isLogin and not isRegistered:
+                SystemMessages.pushMessage(LOGIN_TEXT_MESSAGE, type=SystemMessages.SM_TYPE.Information)
+                self.isLogin = False
 
 
-_config = ConfigInterface()
-if _config.data['enableMessage']:
-    isLogin = True
-    LOGIN_TEXT_MESSAGE = _config.i18n['UI_serviceChannelPopUp'].format(author='<font color="#DD7700">Polyacov_Yury</font>')
+g_config = ConfigInterface()
+statistic_mod = Analytics(g_config.ID, g_config.version, 'UA-76792179-2', g_config.lampsData)
+createFakeModel = lambda: BigWorld.Model('objects/fake_model.model')
 
 
-    @events.LobbyView.populate.after
-    def new_Lobby_populate(*_, **__):
-        global isLogin
-        isRegistered = _config.ID in getattr(_config.MSAInstance, 'activeMods', ())
-        if isLogin and not isRegistered:
-            SystemMessages.pushMessage(LOGIN_TEXT_MESSAGE, type=SystemMessages.SM_TYPE.Information)
-            isLogin = False
+def matrixFromNode(model, rootMatrix, nodeName):
+    node = model.node(nodeName)
+    if node is None:
+        return
+    return createTranslationMatrix(rootMatrix.applyPoint(node.position))
 
 
-def nodeWatcher(section, nodeName, upperMat=math_utils.createIdentityMatrix()):
-    retMat = None
-    for curName, curSect in section.items():
-        if curName == 'node':
-            returnMat = Math.Matrix()
-            returnMat.set(upperMat)
-            returnMat.postMultiply(curSect['transform'].asMatrix)
-            if curSect['identifier'].asString == nodeName:
-                return returnMat
-            retMat = nodeWatcher(curSect, nodeName, returnMat)
-            if retMat is not None:
-                return retMat
-
-    return retMat
-
-
-def findWheelNodes(vehicleID, place):
-    nodeList = []
-    nodeNamesList = []
-    vEntity = BigWorld.entity(vehicleID)
-    vDesc = vEntity.typeDescriptor
-    chassisSource = vDesc.chassis.models.undamaged
-    modelSec = ResMgr.openSection(chassisSource)
-    if modelSec is None:
-        print chassisSource
-        return [], []
-    sourceSecStr = modelSec['nodefullVisual'].asString
-    sourceSec = ResMgr.openSection(sourceSecStr + '.visual')
-    if sourceSec is None:
-        sourceSec = ResMgr.openSection(sourceSecStr + '.visual_processed')
-    if sourceSec is None:
-        print 'LampLights: visual not found for %s' % chassisSource
-        return [], []
-    for template in ('W_%s' % place, 'WD_%s' % place):
-        wheelsCount = 0
-        while True:
-            restoreMat = Math.Matrix()
-            transMat = nodeWatcher(sourceSec, template + str(wheelsCount))
-            if transMat is not None:
-                restoreMat.setTranslate(transMat.translation)
-                nodeList.append(restoreMat)
-                nodeNamesList.append(template + str(wheelsCount))
+def findWheelNodes(model, rootMatrix):
+    result = {'L': {}, 'R': {}}
+    for side, nodes in result.items():
+        for template in ('W_' + side, 'WD_' + side):
+            wheelsCount = 0
+            while True:
+                nodeName = template + str(wheelsCount)
+                node = matrixFromNode(model, rootMatrix, nodeName)
+                if node is None:
+                    break
+                nodes[nodeName] = node
                 wheelsCount += 1
-            else:
-                break
-    return [nodeList, nodeNamesList]
+    return result
 
 
-def computeTransform(confDict):
-    matDict = {'preRotate': math_utils.createIdentityMatrix(),
-               'postRotate': math_utils.createIdentityMatrix(),
-               'vect': math_utils.createIdentityMatrix()}
-    if any(isinstance(confDict[confKey][0], tuple) for confKey in matDict.keys()):
-        for confKey in matDict.keys():
-            if isinstance(confDict[confKey][0], tuple):
-                keyframes = []
-                for keyframe in confDict[confKey]:
-                    timeStamp, value = keyframe
-                    if 'vect' in confKey:
-                        Mat = math_utils.createTranslationMatrix(value)
-                    else:
-                        Mat = math_utils.createRotationMatrix(value)
-                    keyframes.append((timeStamp, Mat))
-                MatAn = Math.MatrixAnimation()
-                MatAn.keyframes = keyframes
-                MatAn.time = 0.0
-                MatAn.loop = True
-            elif 'vect' in confKey:
-                MatAn = math_utils.createTranslationMatrix(confDict[confKey])
-            else:
-                MatAn = math_utils.createRotationMatrix(confDict[confKey])
-            matDict[confKey] = MatAn
-
-        matProd = math_utils.MatrixProviders.product(matDict['vect'], matDict['postRotate'])
-        LightMat = math_utils.MatrixProviders.product(matDict['preRotate'], matProd)
-    else:
-        preRotate = math_utils.createRotationMatrix(confDict['preRotate'])
-        postRotate = math_utils.createRotationMatrix(confDict['postRotate'])
-        LightMat = math_utils.createTranslationMatrix(confDict['vect'])
-        LightMat.postMultiply(postRotate)
-        LightMat.preMultiply(preRotate)
-    return LightMat
+def computeTransform(data):
+    keys = ('preRotate', 'postRotate', 'position')
+    if not any(isinstance(data[key][0], tuple) for key in keys):
+        matrix = createTranslationMatrix(data['position'])
+        matrix.postMultiply(createRotationMatrix(data['postRotate']))
+        matrix.preMultiply(createRotationMatrix(data['preRotate']))
+        return matrix
+    matrices = {}
+    for key in keys:
+        createMatrix = createTranslationMatrix if key == 'position' else createRotationMatrix
+        frames = data[key]
+        if not isinstance(frames[0], tuple):
+            matrices[key] = createMatrix(frames)
+            continue
+        matrices[key] = anim = Math.MatrixAnimation()
+        anim.keyframes = map(lambda x: (x[0], createMatrix(x[1])), frames)
+        anim.time = 0.0
+        anim.loop = True
+    return MP.product(matrices['preRotate'], MP.product(matrices['position'], matrices['postRotate']))
 
 
-lightDBDict = {}
-fakesDict = {}
-fakeMotorsDict = {}
-
-
-# noinspection PyTypeChecker
-def lightsCreate(vehicleID, callPlace=''):
+def createLamps(vehicleID, caller, count=20):
     try:
-        vehicle = BigWorld.player().arena.vehicles[vehicleID]
         vEntity = BigWorld.entity(vehicleID)
         if vEntity is None:
             return
-        vDesc = vEntity.typeDescriptor
-        if vehicleID == BigWorld.player().playerVehicleID:
-            print 'LampLights: Create at %s' % callPlace
-        constNodesList = [TankNodeNames.TRACK_LEFT_UP_FRONT,
-                          TankNodeNames.TRACK_LEFT_UP_REAR,
-                          TankNodeNames.TRACK_RIGHT_UP_FRONT,
-                          TankNodeNames.TRACK_RIGHT_UP_REAR]
-        compoundModel = vEntity.appearance.compoundModel
-        nodeListML, nodeListNL = findWheelNodes(vehicleID, 'L')
-        nodeListMR, nodeListNR = findWheelNodes(vehicleID, 'R')
-        fakesDict[vehicleID] = fakeDict = {}
-        fakeMotorsDict[vehicleID] = fakeMotorDict = {}
-
-        sourcesDict = {TankPartNames.CHASSIS: None, TankPartNames.HULL: None}
-        for tankPartName in sourcesDict.keys():
-            curSource = getattr(vDesc, tankPartName).models.undamaged
-            modelSec = ResMgr.openSection(curSource)
-            if modelSec is None:
-                print 'LampLights: file not found:', curSource
-            sourceSecStr = modelSec['nodefullVisual'].asString
-            sourceSec = ResMgr.openSection(sourceSecStr + '.visual')
-            if sourceSec is None:
-                sourceSec = ResMgr.openSection(sourceSecStr + '.visual_processed')
-            if sourceSec is None:
-                print 'LampLights: visual not found for', curSource
-                print callPlace
+        pos = vEntity.position
+        if not BigWorld.wg_collideDynamic(vEntity.spaceID, pos - Math.Vector3(0, 10, 0), pos + Math.Vector3(0, 10, 0), 0, -1):
+            if g_config.data['Debug']:
+                print g_config.ID + ': user does not see world yet, rescheduling lamps creation for', vehicleID
+            if count:
+                BigWorld.callback(0.1, partial(createLamps, vehicleID, 'Vehicle.startVisual.rescheduled', count - 1))
             else:
-                sourcesDict[tankPartName] = sourceSec
-        HullMat = math_utils.createIdentityMatrix()
-        deHullMat = math_utils.createIdentityMatrix()
-        if sourcesDict[TankPartNames.CHASSIS] is not None:
-            deHullMat = nodeWatcher(sourcesDict[TankPartNames.CHASSIS], 'V')
-            deHullMat.invert()
-        for tankPartName in (TankPartNames.CHASSIS, TankPartNames.HULL):
-            fakeDict[tankPartName] = BigWorld.Model('objects/fake_model.model')
-            fakeDict[tankPartName + 'Root'] = BigWorld.Model('objects/fake_model.model')
-            compoundModel.node(TankPartNames.HULL).attach(fakeDict[tankPartName + 'Root'],
-                                                          HullMat if 'hull' in tankPartName else deHullMat)
-            if fakeMotorDict.get(tankPartName) not in tuple(fakeDict[tankPartName].motors):
-                fakeMotorDict[tankPartName] = BigWorld.Servo(fakeDict[tankPartName + 'Root'].matrix)
-                fakeDict[tankPartName].addMotor(fakeMotorDict[tankPartName])
-            if fakeDict[tankPartName] not in tuple(BigWorld.models()):
-                BigWorld.addModel(fakeDict[tankPartName])
-        for idx, node in enumerate(nodeListNL):
-            fakeDict[node] = BigWorld.Model('objects/fake_model.model')
-            fakeDict[TankPartNames.CHASSIS].node('', nodeListML[idx]).attach(fakeDict[node])
-
-        for idx, node in enumerate(nodeListNR):
-            fakeDict[node] = BigWorld.Model('objects/fake_model.model')
-            fakeDict[TankPartNames.CHASSIS].node('', nodeListMR[idx]).attach(fakeDict[node])
-
-        for node in constNodesList:
-            fakeDict[node] = BigWorld.Model('objects/fake_model.model')
-            restoreMat = math_utils.createIdentityMatrix()
-            transMat = None
-            isChassis = False
-            if sourcesDict[TankPartNames.HULL] is not None:
-                transMat = nodeWatcher(sourcesDict[TankPartNames.HULL], node)
-            if transMat is None and sourcesDict[TankPartNames.CHASSIS] is not None:
-                transMat = nodeWatcher(sourcesDict[TankPartNames.CHASSIS], node)
-                if transMat is None:
-                    transMat = nodeWatcher(sourcesDict[TankPartNames.CHASSIS], node.replace('Up', ''))
-                isChassis = True
-            if transMat is None and isChassis:  # wheeled
-                placed = node.split('_')[-1]
-                place, side = placed[:1], placed[1:]
-                template = 'HP_Wheel_%s_0%s_%s' % (place, '%s', side)
-                edge = None
-                if side == 'Front':
-                    edge = nodeWatcher(sourcesDict[TankPartNames.CHASSIS], template % 1)
-                else:
-                    for idx in xrange(1, 10):
-                        found = nodeWatcher(sourcesDict[TankPartNames.CHASSIS], template % idx)
-                        if found is None:
-                            break
-                        edge = found
-                if edge is not None:
-                    wheels = nodeListML if place == 'L' else nodeListMR
-                    sign = 1 if side == 'Front' else -1
-                    center = max(wheels, key=lambda x: x.translation.z * sign)
-                    rotator = Math.Matrix()
-                    rotator.setRotateX(-sign * 3.1415 * 3 / 4)
-                    transMat = Math.Matrix()
-                    transMat.setTranslate(center.applyPoint(rotator.applyPoint(edge.translation - center.translation)))
-            if transMat is None:
-                print _config.ID + ': restore Matrix not found for node', node, 'in', vDesc.hull.models.undamaged
-                print callPlace
-            else:
-                restoreMat.setTranslate(transMat.translation)
-            fakeDict[TankPartNames.HULL if not isChassis else TankPartNames.CHASSIS].node('', restoreMat).attach(
-                fakeDict[node])
-
-        fakeDict[TankPartNames.GUN + 'Root'] = BigWorld.Model('objects/fake_model.model')
-        compoundModel.node(TankPartNames.GUN).attach(fakeDict[TankPartNames.GUN + 'Root'])
-        fakeDict[TankPartNames.GUN] = BigWorld.Model('objects/fake_model.model')
-        if fakeMotorDict.get(TankPartNames.GUN) not in tuple(fakeDict[TankPartNames.GUN].motors):
-            fakeMotorDict[TankPartNames.GUN] = BigWorld.Servo(fakeDict[TankPartNames.GUN + 'Root'].matrix)
-            fakeDict[TankPartNames.GUN].addMotor(fakeMotorDict[TankPartNames.GUN])
-        if fakeDict[TankPartNames.GUN] not in tuple(BigWorld.models()):
-            BigWorld.addModel(fakeDict[TankPartNames.GUN])
-        fakeDict[TankPartNames.TURRET] = BigWorld.Model('objects/fake_model.model')
-        fakeDict[TankPartNames.TURRET + 'Root'] = BigWorld.Model('objects/fake_model.model')
-        fakeDict[TankPartNames.TURRET + 'RootRoot'] = BigWorld.Model('objects/fake_model.model')
-        hull_bbox_min, hull_bbox_max, _ = vDesc.hull.hitTester.bbox
-        turret_pos_on_hull = vDesc.hull.turretPositions[0]
-        turret_bbox_max = vDesc.turret.hitTester.bbox[1]
-        gun_pos_on_turret = vDesc.turret.gunPosition
-        gun_pos_on_hull = gun_pos_on_turret + turret_pos_on_hull
-        gun_bbox_max = vDesc.gun.hitTester.bbox[1]
-        if hull_bbox_max.y >= turret_pos_on_hull.y + turret_bbox_max.y:
-            observer_pos = Math.Vector3(0, hull_bbox_max.y, 0)
-            node = TankPartNames.HULL
-        elif gun_pos_on_turret.y + gun_bbox_max.y >= turret_bbox_max.y:
-            observer_pos = Math.Vector3(0, gun_bbox_max.y, 0)
-            node = TankPartNames.GUN
-        else:
-            observer_pos = Math.Vector3(0, turret_bbox_max.y, 0)
-            node = TankPartNames.TURRET
-        mat = Math.Matrix()
-        mat.setTranslate(observer_pos)
-        compoundModel.node(node).attach(fakeDict[TankPartNames.TURRET + 'RootRoot'])
-        if fakeMotorDict.get(TankPartNames.TURRET + 'Root') not in tuple(
-                fakeDict[TankPartNames.TURRET + 'Root'].motors):
-            fakeMotorDict[TankPartNames.TURRET + 'Root'] = BigWorld.Servo(
-                fakeDict[TankPartNames.TURRET + 'RootRoot'].matrix)
-            fakeDict[TankPartNames.TURRET + 'Root'].addMotor(fakeMotorDict[TankPartNames.TURRET + 'Root'])
-        if fakeDict[TankPartNames.TURRET + 'Root'] not in tuple(BigWorld.models()):
-            BigWorld.addModel(fakeDict[TankPartNames.TURRET + 'Root'])
-        fakeDict[TankPartNames.TURRET + 'Root'].node('', mat).attach(fakeDict[TankPartNames.TURRET])
-
-        hullLocalCenterY = (hull_bbox_min.y + hull_bbox_max.y) / 2.0
-        hullLocalCenterZ = (hull_bbox_min.z + hull_bbox_max.z) / 2.0
-        nodes = {'hullLocalPt1': Math.Vector3(0.0, hullLocalCenterY, hull_bbox_max.z),
-                 'hullLocalPt2': Math.Vector3(0.0, hullLocalCenterY, hull_bbox_min.z),
-                 'hullLocalPt3': Math.Vector3(hull_bbox_max.x, gun_pos_on_hull.y, hullLocalCenterZ),
-                 'hullLocalPt4': Math.Vector3(hull_bbox_min.x, gun_pos_on_hull.y, hullLocalCenterZ),
-                 'hullGunLocal': gun_pos_on_hull}
-        for node in nodes:
-            fakeDict[node] = BigWorld.Model('objects/fake_model.model')
-            fakeDict[TankPartNames.HULL].node('', math_utils.createTranslationMatrix(nodes[node])).attach(fakeDict[node])
-
-        lightDBDict.setdefault(vehicleID, {})
-        for configDict in _config.configsDict.values():
-            for name in sorted(configDict.keys()):
-                try:
-                    if name in ('enable', 'meta', 'attachToPlayer', 'attachToAlly', 'attachToEnemy'):
-                        continue
-                    confDict = configDict[name]
-                    needToAttach = \
-                        confDict['attachToPlayer'] and vehicleID == BigWorld.player().playerVehicleID or \
-                        confDict['attachToEnemy'] and vehicle['team'] != BigWorld.player().team or \
-                        confDict['attachToAlly'] and vehicleID != BigWorld.player().playerVehicleID and \
-                        vehicle['team'] == BigWorld.player().team
-                    if not needToAttach:
-                        continue
-                    nodeL = []
-                    if '.' in name:
-                        nodeL.append(confDict['place'])
-                    elif confDict['place'] == 'leftFront':
-                        nodeL.append(TankNodeNames.TRACK_LEFT_UP_FRONT)
-                    elif confDict['place'] == 'rightFront':
-                        nodeL.append(TankNodeNames.TRACK_RIGHT_UP_FRONT)
-                    elif confDict['place'] == 'leftRear':
-                        nodeL.append(TankNodeNames.TRACK_LEFT_UP_REAR)
-                    elif confDict['place'] == 'rightRear':
-                        nodeL.append(TankNodeNames.TRACK_RIGHT_UP_REAR)
-                    elif confDict['place'] == 'hull':
-                        nodeL.append(TankPartNames.HULL)
-                    elif confDict['place'] == 'turret':
-                        nodeL.append(TankPartNames.TURRET)
-                    elif confDict['place'] == 'spot':
-                        nodeL.extend([TankPartNames.TURRET, TankPartNames.GUN])
-                        nodeL.extend(['hullLocalPt%s' % num for num in xrange(1, 5)])
-                        nodeL.append('hullGunLocal')
-                    elif 'wheels' in confDict['place']:
-                        if 'left' in confDict['place']:
-                            nodeL.extend(nodeListNL)
-                        else:
-                            nodeL.extend(nodeListNR)
-
-                    nameTree = name.split('.')[:-1]
-                    namesList = []
-                    for curKey in lightDBDict[vehicleID].keys():
-                        curTree = curKey.split('.')
-                        if len(curTree) != len(nameTree) or any(
-                                upperName not in curTree[depth] for depth, upperName in
-                                enumerate(nameTree)):
-                            continue
-                        namesList.append(curKey + '.' + name.split('.')[-1])
-                    if not namesList:
-                        namesList = [name]
-                    for fullName in namesList:
-                        for node in nodeL:
-                            curName = fullName + ':' + node
-                            if 'model' not in confDict['type']:
-                                if confDict['type'] == 'spotLight':
-                                    LightSource = BigWorld.PySpotLight()
-                                    LightSource.coneAngle = confDict['ca']
-                                else:
-                                    LightSource = BigWorld.PyOmniLight()
-                                    if confDict['type'] != 'omniLight':
-                                        LOG_ERROR('Unknown type of %s: %s. Set to omniLight' % (name, confDict['type']))
-                                LightSource.innerRadius = confDict['innerRadius']
-                                LightSource.outerRadius = confDict['outerRadius']
-                                LightSource.castShadows = confDict['cs']
-                                LightSource.multiplier = confDict['bright']
-                                if isinstance(confDict['colour'][0], tuple):
-                                    if confDict['type'] != 'spotLight':
-                                        FrontLightShader = Math.Vector4Animation()
-                                        FrontLightShader.duration = confDict['dur']
-                                        FrontLightShader.keyframes = confDict['colour']
-                                        LightSource.colorAnimator = FrontLightShader
-                                    else:
-                                        LightSource.colour = confDict['colour'][0][1]
-                                else:
-                                    LightSource.colour = confDict['colour']
-                            else:
-                                LightSource = BigWorld.Model(confDict['path'])
-                            if '.' not in name:
-                                if node in fakeDict:
-                                    fakeNode = fakeDict[node].node('', computeTransform(confDict))
-                            else:
-                                if curName not in fakeDict:
-                                    fakeDict[curName] = BigWorld.Model('objects/fake_model.model')
-                                    lightDBDict[vehicleID][curName.rsplit('.', 1)[0]].node(node).attach(fakeDict[curName])
-                                fakeNode = fakeDict[curName].node('', computeTransform(confDict))
-                            if 'model' not in confDict['type']:
-                                # noinspection PyUnboundLocalVariable
-                                LightSource.source = fakeNode
-                            elif not LightSource.attached:
-                                fakeNode.attach(LightSource)
-                            lightVisible(LightSource, _config.isLampsVisible and name in _config.modes['constant'])
-                            lightDBDict[vehicleID][curName] = LightSource
-
-                except StandardError:
-                    traceback.print_exc()
-                    print name
-                    print callPlace
-                    print vDesc.name
-
+                print g_config.ID + ': lamps creation for', vehicleID, 'cancelled'
+            return
+        wheelNodes = buildSkeleton(vehicleID, vEntity, caller)
+        applyLamps(vehicleID, vEntity, wheelNodes, caller)
     except StandardError:
+        print g_config.ID + ': create: error in', caller
         traceback.print_exc()
-        print callPlace
 
 
-def lightVisible(obj, visible):
-    if isinstance(obj, BigWorld.Model):
-        obj.visible = visible
-    elif visible and obj.multiplier <= 1:
-        obj.multiplier *= 10000
-    elif not visible and obj.multiplier > 1:
-        obj.multiplier *= 0.0001
+def buildSkeleton(vehicleID, vEntity, caller):
+    g_config.fakeModelsStorage[vehicleID] = fakeModels = {}
+    vDesc = vEntity.typeDescriptor
+    compoundModel = vEntity.model
+    invertedEntityMatrix = Math.Matrix()
+    invertedEntityMatrix.set(vEntity.matrix)
+    invertedEntityMatrix.invert()
+    localHullMatrix = matrixFromNode(compoundModel, invertedEntityMatrix, TankParts.HULL)
+    invertedHullMatrix = Math.Matrix()
+    invertedHullMatrix.set(localHullMatrix)
+    invertedHullMatrix.invert()
+    invertedHullMatrix.preMultiply(invertedEntityMatrix)
+    globalHullMatrix = Math.Matrix()
+    globalHullMatrix.set(invertedHullMatrix)
+    globalHullMatrix.invert()
+
+    for partName in (TankParts.HULL, TankParts.GUN):
+        fakeModels[partName] = part = createFakeModel()
+        compoundModel.node(partName).attach(part)
+    hullRoot = fakeModels[TankParts.HULL]
+
+    wheelNodes = findWheelNodes(compoundModel, invertedHullMatrix)
+    for nodes in wheelNodes.values():
+        for nodeName, node in nodes.items():
+            fakeModels[nodeName] = wheel = createFakeModel()
+            hullRoot.node('', node).attach(wheel)
+
+    chassis_bbox_min, chassis_bbox_max, _ = vDesc.chassis.hitTester.bbox
+    hull_bbox_min, hull_bbox_max, _ = vDesc.hull.hitTester.bbox
+    turret_pos_on_hull = vDesc.hull.turretPositions[0]
+    turret_bbox_max = vDesc.turret.hitTester.bbox[1]
+    gun_pos_on_turret = vDesc.turret.gunPosition
+    gun_pos_on_hull = gun_pos_on_turret + turret_pos_on_hull
+    gun_bbox_max = vDesc.gun.hitTester.bbox[1]
+
+    hullLocalCenterY = (hull_bbox_min.y + hull_bbox_max.y) / 2.0
+    hullLocalCenterZ = (hull_bbox_min.z + hull_bbox_max.z) / 2.0
+    visionNodes = {
+        'hullLocalPt1': Math.Vector3(0.0, hullLocalCenterY, hull_bbox_max.z),
+        'hullLocalPt2': Math.Vector3(0.0, hullLocalCenterY, hull_bbox_min.z),
+        'hullLocalPt3': Math.Vector3(hull_bbox_max.x, gun_pos_on_hull.y, hullLocalCenterZ),
+        'hullLocalPt4': Math.Vector3(hull_bbox_min.x, gun_pos_on_hull.y, hullLocalCenterZ),
+        'hullGunLocal': gun_pos_on_hull}
+    for nodeName, node in visionNodes.items():
+        fakeModels[nodeName] = visionPoint = createFakeModel()
+        hullRoot.node('', createTranslationMatrix(node)).attach(visionPoint)
+
+    if hull_bbox_max.y >= turret_pos_on_hull.y + turret_bbox_max.y:
+        top_pos = Math.Vector3(0, hull_bbox_max.y, 0)
+        topNodeName = TankParts.HULL
+    elif gun_pos_on_turret.y + gun_bbox_max.y >= turret_bbox_max.y:
+        top_pos = Math.Vector3(0, gun_bbox_max.y, 0)
+        topNodeName = TankNodes.GUN_INCLINATION
+    else:
+        top_pos = Math.Vector3(0, turret_bbox_max.y, 0)
+        topNodeName = TankParts.TURRET
+    fakeModels['roof'] = roofModel = createFakeModel()
+    fakeModels['roofRoot'] = roofRootModel = createFakeModel()
+    compoundModel.node(topNodeName).attach(roofRootModel)  # compoundModels' nodes are not to be messed with
+    roofRootModel.node('', createTranslationMatrix(top_pos)).attach(roofModel)
+
+    vehicle_width = max(chassis_bbox_max.x - chassis_bbox_min.x, hull_bbox_max.x - hull_bbox_min.x)
+    off_front, off_back = hull_bbox_max.z, hull_bbox_min.z
+    off_side = 0.2 * vehicle_width
+
+    for nodeName, x, z in (
+            (TankNodes.TRACK_LEFT_UP_FRONT, -off_side, off_front), (TankNodes.TRACK_RIGHT_UP_FRONT, off_side, off_front),
+            (TankNodes.TRACK_LEFT_UP_REAR, -off_side, off_back), (TankNodes.TRACK_RIGHT_UP_REAR, off_side, off_back)):
+        fakeModels[nodeName] = corner = createFakeModel()
+        z_sign = copysign(1, z)
+        cornerMatrix = matrixFromNode(compoundModel, invertedHullMatrix, nodeName)
+        if cornerMatrix is None:
+            cornerMatrix = matrixFromNode(compoundModel, invertedHullMatrix, nodeName.replace('Up', ''))
+        if cornerMatrix is None:  # wheeled
+            wheel_center = max(wheelNodes[('L', 'R')[x > 0]].values(), key=lambda m: m.translation.z * z_sign)
+            offset = (localHullMatrix.translation.y + wheel_center.translation.y) / (2 ** 0.5)
+            cornerMatrix = createTranslationMatrix(wheel_center.translation + Math.Vector3(0, offset, offset * z_sign))
+        hullRoot.node('', cornerMatrix).attach(corner)
+
+        fakeModels['collide_' + nodeName] = collide = createFakeModel()
+        corner_y, corner_z = cornerMatrix.translation.y - 0.1 * z_sign, cornerMatrix.translation.z - 0.1 * z_sign
+        y_variants = (corner_y, 0.0)
+        if topNodeName == TankParts.HULL:
+            y_variants += (hullLocalCenterY,)
+        for y in y_variants:
+            start = globalHullMatrix.applyPoint(Math.Vector3(x, y, z + 2 * z_sign))  # Strv S1
+            endAt = globalHullMatrix.applyPoint(Math.Vector3(x, y, z - 2 * z_sign))  # T28
+            collision = BigWorld.wg_collideDynamic(vEntity.spaceID, start, endAt, 0, -1)
+            if collision is None:
+                continue
+            localCollision = (x, y, z - (collision[0] - 2) * z_sign)
+            hullRoot.node('', createTranslationMatrix(localCollision)).attach(collide)
+            break
+        else:  # T92 HMC has no behind
+            if g_config.data['Debug']:
+                print g_config.ID + ': error calculating collide point', nodeName, 'in', caller, 'for', vehicleID
+            hullRoot.node('', createTranslationMatrix((x, corner_y, corner_z))).attach(collide)
+    return wheelNodes
 
 
-def lightsDetach(vehicleID):
-    if vehicleID in lightDBDict:
-        for confKey in lightDBDict[vehicleID]:
-            if isinstance(lightDBDict[vehicleID][confKey], BigWorld.Model):
-                lightDBDict[vehicleID][confKey].visible = False
-            else:
-                lightVisible(lightDBDict[vehicleID][confKey], False)
-                lightDBDict[vehicleID][confKey].destroyLight()
-                lightDBDict[vehicleID][confKey] = None
+def applyLamps(vehicleID, vEntity, wheelNodes, caller):
+    vName = vEntity.typeDescriptor.name
+    ctx = BigWorld.player().guiSessionProvider.getCtx()
+    lamps = g_config.lampsStorage.setdefault(vehicleID, {})
+    fakeModels = g_config.fakeModelsStorage[vehicleID]
+    nodesForRoot = {
+        'front_left': (TankNodes.TRACK_LEFT_UP_FRONT,), 'front_right': (TankNodes.TRACK_RIGHT_UP_FRONT,),
+        'back_left': (TankNodes.TRACK_LEFT_UP_REAR,), 'back_right': (TankNodes.TRACK_RIGHT_UP_REAR,),
+        'collide_front_left': ('collide_' + TankNodes.TRACK_LEFT_UP_FRONT,),
+        'collide_front_right': ('collide_' + TankNodes.TRACK_RIGHT_UP_FRONT,),
+        'collide_back_left': ('collide_' + TankNodes.TRACK_LEFT_UP_REAR,),
+        'collide_back_right': ('collide_' + TankNodes.TRACK_RIGHT_UP_REAR,),
+        'wheels_left': wheelNodes['L'].keys(), 'wheels_right': wheelNodes['R'].keys(),
+        'roof': ('roof',), 'hull': (TankParts.HULL,),
+        'spot': ('roof', TankParts.GUN, 'hullGunLocal') + tuple('hullLocalPt%s' % num for num in xrange(1, 5)),
+    }
+    for name, data in sorted(g_config.lampsData.items(), key=lambda x: x[0]):
+        try:
+            if not (data['player'] if ctx.isCurrentPlayer(vehicleID) else
+                    (data['platoon'] if ctx.isSquadMan(vehicleID) else
+                    (data['ally'] if ctx.isAlly(vehicleID) else data['enemy']))):
+                continue
+            include, exclude = data['include'], data['exclude']
+            if include and vName not in include or exclude and vName in exclude:
+                continue
+            nodes = nodesForRoot[data['root']] if name.count('/') == 1 else (data['root'],)
+            parents = name.split('/')[:-1]
+            names = []
+            for existing in lamps.keys():
+                other_parents = existing.split('/')
+                if len(parents) != len(other_parents) or any(
+                        parentName != other_parents[depth].partition(':')[0] for depth, parentName in enumerate(parents)):
+                    continue
+                names.append(existing + '/' + name.split('/')[-1])
+            if not names:
+                names = [name]
+            for fullName in names:
+                for nodeName in nodes:
+                    parentNode = nodeName
+                    isRoot = fullName.count('/') == 1
+                    if not isRoot:
+                        parent, _, tail = fullName.rpartition('/')
+                        parentNode = parent + ':' + nodeName
+                        fullName = parentNode + '/' + tail
+                    elif len(nodes) != 1:
+                        fullName += ':' + nodeName
+                    if parentNode not in fakeModels:  # if isRoot: this is never called
+                        fakeModels[parentNode] = parentModel = createFakeModel()
+                        lamps[parentNode.rpartition(':')[0]][0].node(nodeName).attach(parentModel)
+                    fakeNode = fakeModels[parentNode].node('', computeTransform(data))
+                    lamp = buildLamp(data, fakeNode)
+                    setLampVisible(lamp, g_config.lampsVisible and data['mode'] == 'constant')
+                    lamps[fullName] = (lamp, data['mode'])
+
+        except StandardError:
+            print g_config.ID + ': error in', caller, 'while processing', name, 'for', vName
+            traceback.print_exc()
 
 
-def lightsDestroy(vehicleID, callPlace=''):
+def buildLamp(data, node):
+    if data['type'] == 'model':
+        lamp = BigWorld.Model(data['path'])
+        node.attach(lamp)
+        return lamp
+    keys = ('innerRadius', 'outerRadius', 'castShadows', 'multiplier')
+    if data['type'] == 'spotLight':
+        lamp = BigWorld.PySpotLight()
+        keys += ('coneAngle',)
+    else:
+        lamp = BigWorld.PyOmniLight()
+    for k in keys:
+        setattr(lamp, k, data[k])
+    lamp.source = node
+    if not isinstance(data['colour'][0], tuple):
+        lamp.colour = data['colour']
+        return lamp
+    if data['type'] == 'spotLight':
+        lamp.colour = data['colour'][0][1]
+        return lamp
+    colorAnimator = Math.Vector4Animation()
+    colorAnimator.keyframes = data['colour']
+    colorAnimator.duration = data['colour'][-1][0]
+    lamp.colorAnimator = colorAnimator
+    return lamp
+
+
+def setLampVisible(lamp, visible):
+    if isinstance(lamp, BigWorld.Model):
+        lamp.visible = visible
+    elif visible and lamp.multiplier <= 1:
+        lamp.multiplier *= 10000
+    elif not visible and lamp.multiplier > 1:
+        lamp.multiplier *= 0.0001
+
+
+def destroyLamps(vehicleID, caller=''):
     try:
-        if vehicleID == BigWorld.player().playerVehicleID:
-            print 'LampLights: Destroy at %s' % callPlace
-        if vehicleID in lightDBDict:
-            lightsDetach(vehicleID)
-            del lightDBDict[vehicleID]
-        if vehicleID in fakeMotorsDict:
-            fakeMotorDict = fakeMotorsDict[vehicleID]
-            for nodeName in fakeMotorDict:
-                try:
-                    BigWorld.delModel(fakesDict[vehicleID][nodeName])
-                except ValueError:
-                    traceback.print_exc()
-                    print nodeName
-                if fakeMotorDict[nodeName] in tuple(fakesDict[vehicleID][nodeName].motors):
-                    fakesDict[vehicleID][nodeName].delMotor(fakeMotorDict[nodeName])
-
-            del fakeMotorsDict[vehicleID]
-        if vehicleID in fakesDict:
-            del fakesDict[vehicleID]
+        lamps = g_config.lampsStorage.pop(vehicleID, {})
+        for (lamp, _) in lamps.values():
+            setLampVisible(lamp, False)
+            if not isinstance(lamp, BigWorld.Model):
+                lamp.destroyLight()
+        g_config.fakeModelsStorage.pop(vehicleID, None)
+        g_config.speedsStorage.pop(vehicleID, None)
     except StandardError:
+        print g_config.ID + ': destroy: error in', caller
         traceback.print_exc()
-        print callPlace
-
-
-statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-2', _config.configsDict)
-curSpeedsDict = {}
 
 
 @overrideMethod(Vehicle, 'startVisual')
-def new_startVisual(base, self):
-    base(self)
-    if self.isStarted and self.isAlive() and _config.data['enabled'] and _config.isLampsVisible:
-        BigWorld.callback(0.1, partial(lightsCreate, self.id, 'Vehicle.startVisual'))
+def new_startVisual(base, self, *a, **k):
+    base(self, *a, **k)
+    if self.isStarted and self.isAlive() and g_config.data['enabled'] and g_config.lampsVisible:
+        BigWorld.callback(0.1, partial(createLamps, self.id, 'Vehicle.startVisual'))
 
 
 @overrideMethod(Vehicle, 'stopVisual')
-def new_vehicle_onLeaveWorld(base, self, *args, **kwargs):
+def new_stopVisual(base, self, *a, **k):
     if self.isStarted:
-        lightsDestroy(self.id, 'Vehicle.stopVisual')
-    base(self, *args, **kwargs)
+        destroyLamps(self.id, 'Vehicle.stopVisual')
+    base(self, *a, **k)
 
 
 @overrideMethod(PlayerAvatar, 'leaveArena')
-def new_leaveArena(base, *a, **kw):
-    for vehID in lightDBDict.keys():
-        lightsDestroy(vehID, 'Avatar.leaveArena')
-    base(*a, **kw)
+def new_leaveArena(base, *a, **k):
+    for vehID in g_config.lampsStorage.keys():
+        destroyLamps(vehID, 'Avatar.leaveArena')
+    base(*a, **k)
 
 
 @overrideMethod(CompoundAppearance, 'onVehicleHealthChanged')
-def new_oVHC(base, self, *args, **kwargs):
-    vehicle = self._vehicle
-    if not vehicle.isAlive():
-        lightsDestroy(vehicle.id, 'oVHC_vehicle_not_isAlive')
-    base(self, *args, **kwargs)
+def new_oVHC(base, self, *a, **k):
+    if not self._vehicle.isAlive():
+        destroyLamps(self._vehicle.id, 'onVehicleHealthChanged')
+    base(self, *a, **k)
 
 
 @overrideMethod(CompoundAppearance, '_periodicUpdate')
-def new_periodicUpdate(base, self):
-    base(self)
-    if self._vehicle is None:
-        return
-    if not _config.data['enabled'] or not _config.isLampsVisible or not _config.isTickRequired:
+def new_periodicUpdate(base, self, *a, **k):
+    base(self, *a, **k)
+    if self._vehicle is None or not g_config.data['enabled'] or not g_config.lampsVisible or not g_config.tickRequired:
         return
     vehicleID = self._vehicle.id
-    if vehicleID not in lightDBDict:
+    lamps = g_config.lampsStorage.get(vehicleID)
+    if lamps is None:
         return
-    curSpeeds = curSpeedsDict.setdefault(vehicleID, {})
-    oldSpeed = curSpeeds.setdefault('curSpeed', 0.0)
-    speedValue = self._vehicle.filter.speedInfo.value
-    curSpeed = round(speedValue[0], 1)
-    curRSpeed = round(speedValue[1], 1)
-    doVisible = {'back': curSpeed < 0,
-                 'turn_left': curRSpeed != 0 and ((curRSpeed > 0) != (curSpeed >= 0)),
-                 'turn_right': curRSpeed != 0 and ((curRSpeed > 0) == (curSpeed >= 0)),
-                 'stop': abs(oldSpeed) - abs(curSpeed) > 0.6}
-    lightDB = lightDBDict[vehicleID]
-    for curKey in lightDB:
-        lightInstance = lightDB[curKey]
-        for modeName in doVisible:
-            for confKey in _config.modes[modeName]:
-                if confKey in curKey:
-                    lightVisible(lightInstance, doVisible[modeName])
-
-    curSpeeds['curSpeed'] = curSpeed
-    curSpeeds['curRSpeed'] = curRSpeed
+    speeds = g_config.speedsStorage.setdefault(vehicleID, {})
+    old_speed = speeds.setdefault('speed', 0.0)
+    speedInfo = self._vehicle.filter.speedInfo.value
+    speeds['speed'] = speed = round(speedInfo[0], 1)
+    speeds['rSpeed'] = rSpeed = round(speedInfo[1], 1)
+    visibleModes = {
+        'back': speed < 0,
+        'turn_left': rSpeed != 0 and ((rSpeed > 0) != (speed >= 0)),
+        'turn_right': rSpeed != 0 and ((rSpeed > 0) == (speed >= 0)),
+        'stop': abs(old_speed) - abs(speed) > 0.6}
+    for (lamp, mode) in lamps.values():
+        if mode in visibleModes:
+            setLampVisible(lamp, visibleModes[mode])
 
 
-def spotToggle(vehicleID, lightIdx, status):
-    if lightDBDict.get(vehicleID) is None:
+def spotToggle(vehicleID, lightIdx, visible):
+    if not g_config.lampsVisible:
         return
-    nodes = [TankPartNames.TURRET, TankPartNames.GUN]
-    nodes.extend(['hullLocalPt%s' % num for num in xrange(1, 5)])
-    nodes.append('hullGunLocal')
-    if _config.isLampsVisible:
-        for confKey in _config.modes['spot']:
-            for curKey in lightDBDict[vehicleID]:
-                if confKey in curKey and nodes[lightIdx] in curKey:
-                    lightVisible(lightDBDict[vehicleID][curKey], (
-                        status
-                        if not isinstance(lightDBDict[vehicleID][curKey], BigWorld.Model) or lightIdx not in (1, 6)
-                        else False))
+    lamps = g_config.lampsStorage.get(vehicleID)
+    if lamps is None:
+        return
+    nodes = ('roof', TankParts.GUN) + tuple('hullLocalPt%s' % num for num in xrange(1, 5)) + ('hullGunLocal',)
+    for fullName, (lamp, mode) in lamps.items():
+        if mode != 'spot':
+            continue
+        node = fullName.split('/')[1].split(':')[1]
+        if nodes[lightIdx] != node:
+            continue
+        setLampVisible(lamp, visible if not isinstance(lamp, BigWorld.Model) or lightIdx not in (1, 6) else False)
 
 
 @overrideMethod(PlayerAvatar, 'targetFocus')
-def new_targetFocus(base, self, entity):
-    base(self, entity)
-    if entity not in self._PlayerAvatar__vehicles:
+def new_targetFocus(base, self, entity, *a, **k):
+    base(self, entity, *a, **k)
+    if not g_config.lampsVisible or entity not in self._PlayerAvatar__vehicles:
         return
-    if _config.isLampsVisible:
-        for confKey in _config.modes['target']:
-            for vehicleID in lightDBDict:
-                for curKey in lightDBDict[vehicleID]:
-                    if confKey in curKey:
-                        lightVisible(lightDBDict[vehicleID][curKey], vehicleID == entity.id)
+    for vehicleID, lamps in g_config.lampsStorage.items():
+        for (lamp, mode) in lamps.values():
+            if mode == 'target':
+                setLampVisible(lamp, vehicleID == entity.id)
 
 
 @overrideMethod(PlayerAvatar, 'targetBlur')
-def new_targetBlur(base, self, prevEntity):
-    base(self, prevEntity)
-    if prevEntity not in self._PlayerAvatar__vehicles:
+def new_targetBlur(base, self, prevEntity, *a, **k):
+    base(self, prevEntity, *a, **k)
+    if not g_config.lampsVisible or prevEntity not in self._PlayerAvatar__vehicles:
         return
-    if _config.isLampsVisible:
-        for confKey in _config.modes['target']:
-            for vehicleID in lightDBDict:
-                for curKey in lightDBDict[vehicleID]:
-                    if confKey in curKey:
-                        lightVisible(lightDBDict[vehicleID][curKey], False)
+    for lamps in g_config.lampsStorage.values():
+        for (lamp, mode) in lamps.values():
+            if mode == 'target':
+                setLampVisible(lamp, False)

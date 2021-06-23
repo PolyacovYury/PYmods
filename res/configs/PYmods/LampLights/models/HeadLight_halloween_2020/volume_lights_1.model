@@ -1,0 +1,9 @@
+<volume_lights_1_FWD.model>
+  <materialNames></materialNames>
+  <visibilityBox>
+    <min>	-3.72198 -6.90645 -3.72198	</min>
+    <max>	3.72198 0.00292036 3.72198	</max>
+  </visibilityBox>
+  <nodelessVisual>	../mods/configs/PYmods/LampLights/models/HeadLight_halloween_2020/volume_lights_1	</nodelessVisual>
+  <decorative>	4	</decorative>
+</volume_lights_1_FWD.model>

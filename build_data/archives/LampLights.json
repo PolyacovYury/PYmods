@@ -3,7 +3,6 @@
     "ext": ".zip",
     "files": {
         "mods/configs/PYmods/LampLights/LampLights.json": "res/configs/PYmods/LampLights/LampLights.json",
-        "mods/configs/PYmods/LampLights/configs/modelDebug.json": "res/configs/PYmods/LampLights/configs/modelDebug.json",
         "mods/configs/PYmods/LampLights/i18n/en.json": "res/configs/PYmods/LampLights/i18n/en.json",
         "mods/configs/PYmods/LampLights/i18n/ru.json": "res/configs/PYmods/LampLights/i18n/ru.json",
         "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",

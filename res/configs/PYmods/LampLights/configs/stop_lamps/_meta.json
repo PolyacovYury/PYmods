@@ -1,0 +1,11 @@
+﻿{
+//  Информация о паке
+    "en": {
+        "name": "<b>Tank stop signal lights</b>",
+        "desc": "{attachTo}"
+    },
+    "ru": {
+        "name": "<b>Стоп-сигналы</b>",
+        "desc": "{attachTo}"
+    }
+}

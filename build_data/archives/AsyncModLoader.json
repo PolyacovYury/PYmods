@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/{GAME_VERSION}/PYmods/AsyncModLoader.wotmod": "build/wotmods/PYmods/AsyncModLoader.wotmod"
+    }
+}

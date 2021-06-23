@@ -1,0 +1,11 @@
+﻿{
+//  Информация о паке
+    "en": {
+        "name": "<b>Visibility points markers</b>",
+        "desc": "{attachTo} • Co-authors: spoter, Algiz"
+    },
+    "ru": {
+        "name": "<b>Маркеры габаритных точек</b>",
+        "desc": "{attachTo} • Соавторы: spoter, Algiz"
+    }
+}

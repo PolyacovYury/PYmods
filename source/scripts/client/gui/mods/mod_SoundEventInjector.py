@@ -115,7 +115,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             if not isinstance(orig, reloadType):  # None is not an instance too
                 if orig is not None:
                     print self.ID + ': changing type of reload effect %s. Might cause problems!' % sname
-                orig, desc = None, reloadType(sect)
+                orig, desc = None, reloadType(sect, effData['type'])
             for slot in reloadType.__slots__:
                 slotName = mismatchSlots.get(slot, slot)
                 if slotName in effData:
@@ -125,7 +125,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                     if slot in modifiers:
                         value = modifiers[slot](value)
                 sect.writeString(slotName, str(value))
-            new_desc = reloadType(sect)
+            new_desc = reloadType(sect, effData['type'])
             if orig is None:
                 g_cache._gunReloadEffects[sname] = new_desc
             else:  # set new attributes to existing descriptors, otherwise they don't update
@@ -156,15 +156,16 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                 typeData = effData[effType]
                 for effectDesc in res[effType][2]._EffectsList__effectDescList:
                     if isinstance(effectDesc, _TracerSoundEffectDesc):
-                        effectDesc._soundName = tuple((typeData.get(key, effectDesc._soundName[idx]),) for idx, key in
-                                                      enumerate(('wwsoundPC', 'wwsoundNPC')))
+                        effectDesc._soundName = tuple(
+                            tuple(filter(None, (typeData.get(key),))) or effectDesc._soundName[idx]
+                            for idx, key in enumerate(('wwsoundPC', 'wwsoundNPC')))
             for effType in (x for x in (tuple(x + 'Hit' for x in EFFECT_MATERIALS) + (
                     'armorBasicRicochet', 'armorRicochet', 'armorResisted', 'armorHit', 'armorCriticalHit')) if x in effData):
                 typeData = effData[effType]
                 for effectDesc in res[effType].effectsList._EffectsList__effectDescList:
                     if isinstance(effectDesc, _SoundEffectDesc):
                         effectDesc._impactNames = ImpactNames(*(
-                            typeData.get(key, getattr(effectDesc._impactNames, key))
+                            tuple(filter(None, (typeData.get(key),))) or getattr(effectDesc._impactNames, key)
                             for key in ('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC', 'impactFNPC_PC')))
         for vehicleType in g_cache._Cache__vehicles.itervalues():
             self.inject_vehicleType(vehicleType)
@@ -222,20 +223,22 @@ def new_vehicleType_init(base, self, *args, **kwargs):
     _config.inject_vehicleType(self)
 
 
-@overrideMethod(PlayerAvatar, '__initGUI')
+@overrideMethod(PlayerAvatar, '__initGUI')  # overrides initGUI instead of readConfigs because ProTanki
 def new_initGUI(base, self):
     result = base(self)
     events = self.soundNotifications._IngameSoundNotifications__events
+    new_categories = {'fx': 'fxEvent', 'voice': 'infEvent'}
+    new_additional = {'fxEvent': {'cooldownFx': 0}, 'infEvent': {'infChance': 100, 'cooldownEvent': 0}}
     notificationsData = _config.data['sound_notifications']
     for eventName, event in events.iteritems():
         override = notificationsData.get(eventName, {})
         for category, sound in override.iteritems():
-            if category not in event:
-                event[category] = {
-                    'sound': '', 'playRules': 0, 'timeout': 3.0, 'minTimeBetweenEvents': 0, 'shouldBindToPlayer': False}
-            event[category]['sound'] = sound
+            category = new_categories.get(category)
+            if not category:
+                continue
+            [event.setdefault(k, v) for k, v in new_additional[category].iteritems()]
+            event[category] = sound
 
-    self.soundNotifications._IngameSoundNotifications__events = events
     return result
 
 

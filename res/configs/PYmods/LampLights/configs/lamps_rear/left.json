@@ -1,0 +1,36 @@
+﻿{
+//  К кому присоединить данный источник
+    "player": true,
+    "platoon": true,
+    "ally": true,
+    "enemy": true,
+//  Тип источника: omniLight, spotLight, model
+    "type": "spotLight",
+//  Место расположения: front_left, front_right, back_left, back_right, wheels_left, wheels_right, roof, hull
+    "root": "collide_back_left",
+//  Режим работы: constant, stop, turn_left, turn_right, back, target
+    "mode": "back",
+//  Вращения осей координат в радианах Y X Z:
+//  вращение вектора без смещения координат
+    "preRotate": [0.0, 0.0, 0.0],
+//  вращение системы координат
+    "postRotate": [0.0, 0.0, 0.0],
+//  Сдвиги по осям координат [вправо/вверх/вперед)
+    "position": [0.0, 0.0, -1.5],
+//  Яркость
+    "multiplier": 250,
+//  Внутренний радиус
+    "innerRadius": 0.5,
+//  Внешний радиус
+    "outerRadius": 2.0,
+//  Угол между образующей и осью конуса в радианах
+    "coneAngle": 0.175,
+//  Отбрасывание теней
+    "castShadows": true,
+//  Цвет источника
+    "colour": [255, 255, 127.5, 0],
+//  Список машин, для которых устанавливается данный источник
+    "include": [], 
+//  Список машин, на которые данный источник НЕ устанавливается
+    "exclude": []
+}

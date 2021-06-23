@@ -1,0 +1,11 @@
+﻿{
+//  Информация о паке
+    "en": {
+        "name": "<b>Front tank turn signal lights</b>",
+        "desc": "{attachTo}"
+    },
+    "ru": {
+        "name": "<b>Передние поворотники</b>",
+        "desc": "{attachTo}"
+    }
+}

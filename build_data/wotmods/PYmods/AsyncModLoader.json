@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/scripts/client/gui/mods/AsyncModLoader.pyc": "build/scripts/client/gui/mods/AsyncModLoader.pyc",
+        "res/scripts/client/gui/mods/__init__.pyc": "build/scripts/client/gui/mods/AsyncModLoader_init.pyc"
+    }
+}

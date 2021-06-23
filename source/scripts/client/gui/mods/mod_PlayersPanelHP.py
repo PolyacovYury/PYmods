@@ -163,8 +163,8 @@ else:
             return result
 
 
-    @overrideMethod(PlayerAvatar, 'vehicle_onEnterWorld')
-    def new_vehicle_onEnterWorld(base, self, vehicle):
+    @overrideMethod(PlayerAvatar, 'vehicle_onAppearanceReady')
+    def new_vehicle_onAppearanceReady(base, self, vehicle):
         result = base(self, vehicle)
         try:
             vehicleID = vehicle.id
