@@ -14,6 +14,7 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.components.c11n_components import PaintItem
 from items.components.c11n_constants import ItemTags
 from items.vehicles import g_cache
+from vehicle_systems import camouflages
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 
@@ -146,8 +147,8 @@ class ConfigInterface(PYmodsConfigInterface):
         for databaseID in databaseIDs:
             vehicleID = player.guiSessionProvider.getCtx().getArenaDP().getVehIDByAccDBID(int(databaseID))
             vehicle = BigWorld.entity(vehicleID)
-            if vehicle is not None and vehicle.appearance is not None:
-                vehicle.appearance.setVehicle(vehicle)
+            if vehicle is not None and vehicle.appearance is not None and vehicle.appearance.fashions is not None:
+                camouflages.updateFashions(vehicle.appearance)
 
     def thread(self, databaseIDs):
         try:
