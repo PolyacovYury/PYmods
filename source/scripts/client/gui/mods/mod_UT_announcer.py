@@ -28,8 +28,8 @@ from string import Template
 
 class ConfigInterface(PYmodsConfigInterface):
     def __init__(self):
-        self.timerSounds = ('sndStart', 'snd5min', 'snd3min', 'snd2min', 'snd1min', 'snd30sec', 'snd10sec', 'snd5sec',
-                            'sndFinish')
+        self.timerSounds = (
+            'sndStart', 'snd5min', 'snd3min', 'snd2min', 'snd1min', 'snd30sec', 'snd10sec', 'snd5sec', 'sndFinish')
         self.colours = OrderedDict([
             ('UI_color_red', '#FF0000'), ('UI_color_nice_red', '#FA8072'), ('UI_color_chocolate', '#D3691E'),
             ('UI_color_orange', '#FFA500'), ('UI_color_gold', '#FFD700'), ('UI_color_cream', '#FCF5C8'),
@@ -48,24 +48,30 @@ class ConfigInterface(PYmodsConfigInterface):
         self.version = '2.4.2 (%(file_compile_date)s)'
         self.author += ' (orig by locastan)'
         # noinspection SpellCheckingInspection
-        self.data = {'enabled': True, 'battleTimer': True, 'firstOption': 4, 'allKill': 2,
-                     'checkMedals': 4, 'disStand': True, 'textLength': 3, 'textColour': 0, 'colourBlind': False,
-                     'textLock': True, 'delay': 3, 'logging': True,
-                     'sounds': {'firstBlood': 'firstblood', 'doubleKill': 'doublekill', 'tripleKill': 'triplekill',
-                                'ultraKill': 'ultrakill', 'multiKill': 'multikill', 'monsterKill': 'monsterkill',
-                                'killingSpree': 'killingspree', 'rampage': 'rampage', 'unstoppable': 'unstoppable',
-                                'godlike': 'godlike', 'stormTech': 'massacre', 'jackHammer': 'megakill',
-                                'combine': 'flakmaster', 'perforator': 'topgun', 'eagleEye': 'unreal',
-                                'kamikaze': 'kamikaze', 'bia': 'eradication', 'crucial': 'extermination',
-                                'ramKill': 'ramkill', 'payback': 'payback', 'denied': 'denied', 'sndStart': '',
-                                'snd5min': 't5min', 'snd3min': 't3min', 'snd2min': '', 'snd1min': 't1min',
-                                'snd30sec': 't30secs', 'snd10sec': '', 'snd5sec': 't5secs', 'sndFinish': ''},
-                     'textStyle': {'colour': '#2AB157', 'size': 25, 'font': '$FieldFont'},
-                     'textPosition': {'alignX': 'center', 'alignY': 'top', 'x': 0, 'y': 120},
-                     'textBackground': {'enabled': True, 'width': 530, 'height': 32,
-                                        'image': '../../scripts/client/gui/mods/mod_UT_announcer.png'},
-                     'textShadow': {'enabled': True, 'alpha': 1, 'angle': 90, 'color': '#000000',
-                                    'distance': 0, 'blurX': 2, 'blurY': 2, 'strength': 2, 'quality': 2}}
+        self.data = {
+            'enabled': True, 'battleTimer': True, 'firstOption': 4, 'allKill': 2,
+            'checkMedals': 4, 'disStand': True, 'textLength': 3, 'textColour': 0, 'colourBlind': False,
+            'textLock': True, 'delay': 3, 'logging': True,
+            'sounds': {
+                'firstBlood': 'firstblood', 'doubleKill': 'doublekill', 'tripleKill': 'triplekill',
+                'ultraKill': 'ultrakill', 'multiKill': 'multikill', 'monsterKill': 'monsterkill',
+                'killingSpree': 'killingspree', 'rampage': 'rampage', 'unstoppable': 'unstoppable',
+                'godlike': 'godlike', 'stormTech': 'massacre', 'jackHammer': 'megakill',
+                'combine': 'flakmaster', 'perforator': 'topgun', 'eagleEye': 'unreal',
+                'kamikaze': 'kamikaze', 'bia': 'eradication', 'crucial': 'extermination',
+                'ramKill': 'ramkill', 'payback': 'payback', 'denied': 'denied', 'sndStart': '',
+                'snd5min': 't5min', 'snd3min': 't3min', 'snd2min': '', 'snd1min': 't1min',
+                'snd30sec': 't30secs', 'snd10sec': '', 'snd5sec': 't5secs', 'sndFinish': ''},
+            'textStyle': {
+                'colour': '#2AB157', 'size': 25, 'font': '$FieldFont'},
+            'textPosition': {
+                'alignX': 'center', 'alignY': 'top', 'x': 0, 'y': 120},
+            'textBackground': {
+                'enabled': True, 'width': 530, 'height': 32,
+                'image': '../../scripts/client/gui/mods/mod_UT_announcer.png'},
+            'textShadow': {
+                'enabled': True, 'alpha': 1, 'angle': 90, 'color': '#000000',
+                'distance': 0, 'blurX': 2, 'blurY': 2, 'strength': 2, 'quality': 2}}
         self.i18n = {
             'UI_description': 'Time and frags announcer',
             'UI_setting_textColour_text': 'Battle text messages colour',
@@ -175,19 +181,22 @@ class ConfigInterface(PYmodsConfigInterface):
         medalsList = ('none', 'player', 'ally', 'enemy', 'all')
         allKey = 'UI_setting_allKill_'
         allList = ('none', 'bigger', 'every')
-        return {'modDisplayName': self.i18n['UI_description'],
-                'enabled': self.data['enabled'],
-                'column1': [self.tb.createStepper('textLength', 0, 5, 1),
-                            colourDropdown,
-                            self.tb.createControl('colourBlind'),
-                            self.tb.createControl('textLock'),
-                            self.tb.createSlider('delay', 0, 5, 0.1, '{{value}} ' + self.i18n['UI_setting_delay_seconds']),
-                            self.tb.createControl('logging')],
-                'column2': [self.tb.createOptions('firstOption', [self.i18n[firstKey + x] for x in firstList]),
-                            self.tb.createOptions('checkMedals', [self.i18n[medalsKey + x] for x in medalsList]),
-                            self.tb.createOptions('allKill', [self.i18n[allKey + x] for x in allList]),
-                            self.tb.createControl('battleTimer'),
-                            self.tb.createControl('disStand')]}
+        return {
+            'modDisplayName': self.i18n['UI_description'],
+            'enabled': self.data['enabled'],
+            'column1': [
+                self.tb.createStepper('textLength', 0, 5, 1),
+                colourDropdown,
+                self.tb.createControl('colourBlind'),
+                self.tb.createControl('textLock'),
+                self.tb.createSlider('delay', 0, 5, 0.1, '{{value}} ' + self.i18n['UI_setting_delay_seconds']),
+                self.tb.createControl('logging')],
+            'column2': [
+                self.tb.createOptions('firstOption', [self.i18n[firstKey + x] for x in firstList]),
+                self.tb.createOptions('checkMedals', [self.i18n[medalsKey + x] for x in medalsList]),
+                self.tb.createOptions('allKill', [self.i18n[allKey + x] for x in allList]),
+                self.tb.createControl('battleTimer'),
+                self.tb.createControl('disStand')]}
 
     def onApplySettings(self, settings):
         self.data['textStyle']['colour'] = self.colours.values()[settings['textColour']]
@@ -396,10 +405,11 @@ def LOG_NOTE(msg, *args):
 
 def killCheck(frags):
     # noinspection SpellCheckingInspection
-    options = {2: 'doubleKill', 3: 'tripleKill', 4: 'ultraKill', 5: 'multiKill', 6: 'monsterKill', 7: 'killingSpree',
-               8: 'rampage', 9: 'unstoppable', 10: 'godlike', 11: 'stormTech', 12: 'jackHammer', 13: 'combine',
-               14: 'perforator', 15: 'eagleEye',
-               20: 'ramKill', 30: 'kamikaze', 40: 'bia', 50: 'crucial', 60: 'denied', 70: 'payback'}
+    options = {
+        2: 'doubleKill', 3: 'tripleKill', 4: 'ultraKill', 5: 'multiKill', 6: 'monsterKill', 7: 'killingSpree',
+        8: 'rampage', 9: 'unstoppable', 10: 'godlike', 11: 'stormTech', 12: 'jackHammer', 13: 'combine',
+        14: 'perforator', 15: 'eagleEye', 20: 'ramKill', 30: 'kamikaze', 40: 'bia', 50: 'crucial', 60: 'denied',
+        70: 'payback'}
     if frags in options:
         soundMgr.addToQueue(options[frags])
 
@@ -460,28 +470,24 @@ def checkSquadKills(targetID, attackerID, reason):
             squadFrags += cStats[arena.UT['squadMan'][1]]['frags']
         LOG_NOTE('Squad frags:', squadFrags)
         if squadFrags >= 12:
-            LOG_NOTE('Squad frags >= 12')
-            if not arena.UT['Crucial']:
+            if arena.UT['Crucial']:
+                LOG_NOTE('Crucial already achieved.')
+            else:
                 callTextInit(_config.i18n['UI_message_crucial'], targetID, attackerID, None)
                 LOG_NOTE('Crucial detected!')
                 arena.UT['Crucial'] = True
                 killCheck(50)
-            else:
-                LOG_NOTE('Crucial already achieved.')
-        if not arena.UT['BiA'] and not arena.UT['BiAFail']:
-            if cStats[BigWorld.player().playerVehicleID]['frags'] >= 3 and cStats[arena.UT['squadMan'][0]]['frags'] >= 3:
-                LOG_NOTE('Two Platoon mates have each minimum 3 kills.')
-                if not arena.UT['squadMan'][1] or cStats[arena.UT['squadMan'][1]]['frags'] >= 3:
-                    callTextInit(_config.i18n['UI_message_bia'], targetID, attackerID, None)
-                    LOG_NOTE('BiA detected (%s Man platoon).' % (len(filter(None, arena.UT['squadMan'])) + 1))
-                    arena.UT['BiA'] = True
-                    killCheck(40)
-                else:
-                    LOG_NOTE('SquadMan 2 not 3 kills.')
-            else:
-                LOG_NOTE('Player or SquadMan 1 not 3 kills.')
-        else:
+        if arena.UT['BiA'] or arena.UT['BiAFail']:
             LOG_NOTE('Squad check complete.')
+        elif cStats[BigWorld.player().playerVehicleID]['frags'] < 3 or cStats[arena.UT['squadMan'][0]]['frags'] < 3:
+            LOG_NOTE('Player or SquadMan 1 not 3 kills.')
+        elif arena.UT['squadMan'][1] and cStats[arena.UT['squadMan'][1]]['frags'] < 3:
+            LOG_NOTE('SquadMan 2 not 3 kills.')
+        else:
+            callTextInit(_config.i18n['UI_message_bia'], targetID, attackerID, None)
+            LOG_NOTE('BiA detected (%s Man platoon).' % (len(filter(None, arena.UT['squadMan'])) + 1))
+            arena.UT['BiA'] = True
+            killCheck(40)
         firstCheck(targetID, attackerID, reason, True, None)
 
 
@@ -596,7 +602,7 @@ def firstCheck(targetID, attackerID, reason, squadChecked, killerID):
                 attacker['isPlayer'] and _config.data['checkMedals'] != 3 or
                 attacker['isAlly'] and not attacker['isPlayer'] and _config.data['checkMedals'] in (2, 4) or
                 not attacker['isAlly'] and _config.data['checkMedals'] >= 3) and checkMedals and (
-                    frags in (5, 6, 13, 14) or attacker['vehicle']['vehicleType'].level >= 5 and frags in (7, 8, 9, 10))):
+                frags in (5, 6, 13, 14) or attacker['vehicle']['vehicleType'].level >= 5 and frags in (7, 8, 9, 10))):
             callTextInit(_config.i18n['UI_message_frags_%s' % frags], targetID, attackerID, None)
             LOG_NOTE('Calling Medal killCheck function.', targetID, attackerID)
             LOG_NOTE('Medal checked frags:', frags)
@@ -669,13 +675,13 @@ def new_onVehicleDestroyed(base, self):
 
 
 @overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '__readConfigs')
-def new_readConfig(base, self):
+def new_readConfigs(base, self):
     base(self)
-    if _config.data['enabled'] and _config.data['disStand']:
-        eventsData = self._IngameSoundNotifications__events
-        for eventName, event in eventsData.iteritems():
-            if eventName in ('enemy_killed_by_player', 'enemy_killed'):
-                for category in event:
-                    event[category]['sound'] = ''
-
-        self._IngameSoundNotifications__events = eventsData
+    if not _config.data['enabled'] or not _config.data['disStand']:
+        return
+    eventsData = self._IngameSoundNotifications__events
+    for eventName in ('enemy_killed_by_player', 'enemy_killed'):
+        event = eventsData.get(eventName, {})
+        for category in ('infEvent', 'fxEvent'):
+            if category in event:
+                event[category] = ''
