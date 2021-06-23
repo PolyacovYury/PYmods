@@ -156,15 +156,16 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                 typeData = effData[effType]
                 for effectDesc in res[effType][2]._EffectsList__effectDescList:
                     if isinstance(effectDesc, _TracerSoundEffectDesc):
-                        effectDesc._soundName = tuple((typeData.get(key, effectDesc._soundName[idx]),) for idx, key in
-                                                      enumerate(('wwsoundPC', 'wwsoundNPC')))
+                        effectDesc._soundName = tuple(
+                            tuple(filter(None, (typeData.get(key),))) or effectDesc._soundName[idx]
+                            for idx, key in enumerate(('wwsoundPC', 'wwsoundNPC')))
             for effType in (x for x in (tuple(x + 'Hit' for x in EFFECT_MATERIALS) + (
                     'armorBasicRicochet', 'armorRicochet', 'armorResisted', 'armorHit', 'armorCriticalHit')) if x in effData):
                 typeData = effData[effType]
                 for effectDesc in res[effType].effectsList._EffectsList__effectDescList:
                     if isinstance(effectDesc, _SoundEffectDesc):
                         effectDesc._impactNames = ImpactNames(*(
-                            typeData.get(key, getattr(effectDesc._impactNames, key))
+                            tuple(filter(None, (typeData.get(key),))) or getattr(effectDesc._impactNames, key)
                             for key in ('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC', 'impactFNPC_PC')))
         for vehicleType in g_cache._Cache__vehicles.itervalues():
             self.inject_vehicleType(vehicleType)
