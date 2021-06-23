@@ -222,20 +222,22 @@ def new_vehicleType_init(base, self, *args, **kwargs):
     _config.inject_vehicleType(self)
 
 
-@overrideMethod(PlayerAvatar, '__initGUI')
+@overrideMethod(PlayerAvatar, '__initGUI')  # overrides initGUI instead of readConfigs because ProTanki
 def new_initGUI(base, self):
     result = base(self)
     events = self.soundNotifications._IngameSoundNotifications__events
+    new_categories = {'fx': 'fxEvent', 'voice': 'infEvent'}
+    new_additional = {'fxEvent': {'cooldownFx': 0}, 'infEvent': {'infChance': 100, 'cooldownEvent': 0}}
     notificationsData = _config.data['sound_notifications']
     for eventName, event in events.iteritems():
         override = notificationsData.get(eventName, {})
         for category, sound in override.iteritems():
-            if category not in event:
-                event[category] = {
-                    'sound': '', 'playRules': 0, 'timeout': 3.0, 'minTimeBetweenEvents': 0, 'shouldBindToPlayer': False}
-            event[category]['sound'] = sound
+            category = new_categories.get(category)
+            if not category:
+                continue
+            [event.setdefault(k, v) for k, v in new_additional[category].iteritems()]
+            event[category] = sound
 
-    self.soundNotifications._IngameSoundNotifications__events = events
     return result
 
 
