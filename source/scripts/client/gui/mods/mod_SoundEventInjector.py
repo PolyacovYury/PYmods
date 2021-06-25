@@ -1,23 +1,28 @@
 # -*- coding: utf-8 -*-
+import BigWorld
 import ResMgr
 import SoundGroups
 import nations
 import traceback
 from Avatar import PlayerAvatar
-from PYmodsCore import PYmodsConfigInterface, overrideMethod, Analytics
+from PYmodsCore import Analytics, PYmodsConfigInterface, overrideMethod
 from PYmodsCore.config.interfaces.Simple import ConfigNoInterface
-from ReloadEffect import ReloadEffectsType, _SimpleReloadDesc, _BarrelReloadDesc, _AutoReloadDesc, _DualGunReloadDesc
-from helpers.EffectsList import _SoundEffectDesc, _TracerSoundEffectDesc, ImpactNames, KeyPoint
+from ReloadEffect import ReloadEffectsType, _AutoReloadDesc, _BarrelReloadDesc, _DualGunReloadDesc, _SimpleReloadDesc
+from gui.IngameSoundNotifications import IngameSoundNotifications
+from helpers.EffectsList import ImpactNames, KeyPoint, _SoundEffectDesc, _TracerSoundEffectDesc
 from items.components.sound_components import WWTripleSoundConfig as SoundConfig
-from items.vehicles import g_cache, VehicleType, __readEffectsTimeLine as readEffectsTimeLine, _VEHICLE_TYPE_XML_PATH
+from items.vehicles import VehicleType, _VEHICLE_TYPE_XML_PATH, __readEffectsTimeLine as readEffectsTimeLine, g_cache
 from material_kinds import EFFECT_MATERIALS
 
-reloadTypes = {ReloadEffectsType.SIMPLE_RELOAD: _SimpleReloadDesc, ReloadEffectsType.BARREL_RELOAD: _BarrelReloadDesc,
-               ReloadEffectsType.AUTO_RELOAD: _AutoReloadDesc, ReloadEffectsType.DUALGUN_RELOAD: _DualGunReloadDesc}
-mismatchSlots = {'soundEvent': 'sound', 'shellDt': 'loopShellDt', 'shellDtLast': 'loopShellLastDt',
-                 'clipShellLoadT': 'clipShellLoadDuration', 'almostCompleteT': 'almostCompleteDuration'}
-modifiers = {'duration': (lambda x: x * 1000.0), 'shellDuration': (lambda x: x * 1000.0),
-             'clipShellLoadT': (lambda x: x * 1000.0), 'almostCompleteT': (lambda x: x * 1000.0)}
+reloadTypes = {
+    ReloadEffectsType.SIMPLE_RELOAD: _SimpleReloadDesc, ReloadEffectsType.BARREL_RELOAD: _BarrelReloadDesc,
+    ReloadEffectsType.AUTO_RELOAD: _AutoReloadDesc, ReloadEffectsType.DUALGUN_RELOAD: _DualGunReloadDesc}
+mismatchSlots = {
+    'soundEvent': 'sound', 'shellDt': 'loopShellDt', 'shellDtLast': 'loopShellLastDt',
+    'clipShellLoadT': 'clipShellLoadDuration', 'almostCompleteT': 'almostCompleteDuration'}
+modifiers = {
+    'duration': (lambda x: x * 1000.0), 'shellDuration': (lambda x: x * 1000.0),
+    'clipShellLoadT': (lambda x: x * 1000.0), 'almostCompleteT': (lambda x: x * 1000.0)}
 
 
 class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
@@ -29,9 +34,10 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.3.0 (%(file_compile_date)s)'
-        self.data = {'engines': {}, 'guns': {}, 'gun_effects': {}, 'gun_reload_effects': {}, 'shot_effects': {},
-                     'sound_notifications': {}}
+        self.version = '1.3.1 (%(file_compile_date)s)'
+        self.data = {
+            'engines': {}, 'guns': {}, 'gun_effects': {}, 'gun_reload_effects': {}, 'shot_effects': {},
+            'sound_notifications': {}}
         super(ConfigInterface, self).init()
 
     def loadLang(self):
@@ -164,9 +170,9 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                 typeData = effData[effType]
                 for effectDesc in res[effType].effectsList._EffectsList__effectDescList:
                     if isinstance(effectDesc, _SoundEffectDesc):
-                        effectDesc._impactNames = ImpactNames(*(
-                            tuple(filter(None, (typeData.get(key),))) or getattr(effectDesc._impactNames, key)
-                            for key in ('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC', 'impactFNPC_PC')))
+                        effectDesc._impactNames = ImpactNames(
+                            *(tuple(filter(None, (typeData.get(key),))) or getattr(effectDesc._impactNames, key)
+                              for key in ('impactNPC_PC', 'impactPC_NPC', 'impactNPC_NPC', 'impactFNPC_PC')))
         for vehicleType in g_cache._Cache__vehicles.itervalues():
             self.inject_vehicleType(vehicleType)
 
@@ -228,7 +234,9 @@ def new_initGUI(base, self):
     result = base(self)
     events = self.soundNotifications._IngameSoundNotifications__events
     new_categories = {'fx': 'fxEvent', 'voice': 'infEvent'}
-    new_additional = {'fxEvent': {'cooldownFx': 0}, 'infEvent': {'infChance': 100, 'cooldownEvent': 0}}
+    new_additional = {
+        'fxEvent': {'cooldownFx': 0},
+        'infEvent': {'infChance': 100, 'cooldownEvent': 0, 'queue': 1, 'lifetime': 5, 'priority': 0}}
     notificationsData = _config.data['sound_notifications']
     for eventName, event in events.iteritems():
         override = notificationsData.get(eventName, {})
@@ -237,9 +245,50 @@ def new_initGUI(base, self):
             if not category:
                 continue
             [event.setdefault(k, v) for k, v in new_additional[category].iteritems()]
-            event[category] = sound
+            if category == 'fxEvent':
+                if not isinstance(event[category], list):
+                    event[category] = [event[category]]
+                event[category].append(sound)
+            else:
+                event[category] = sound
+            if 'queue' in event and event['queue'] not in self.soundNotifications._IngameSoundNotifications__queues:
+                self.soundNotifications._IngameSoundNotifications__queues[event['queue']] = []
+                self.soundNotifications._IngameSoundNotifications__playingEvents[event['queue']] = None
 
     return result
+
+
+@overrideMethod(IngameSoundNotifications, 'play')
+def new_play(base, self, eventName, *a, **k):
+    event = _config.data['sound_notifications'].get(eventName, {})
+    for category in event:
+        if not self.isCategoryEnabled(category):
+            self._IngameSoundNotifications__enabledSoundCategories.add(category)
+    return base(self, eventName, *a, **k)
+
+
+@overrideMethod(IngameSoundNotifications, '__playFX')
+def new_playFX(___, self, eventName, vehicleID, position, *_, **__):
+    cooldown = self._IngameSoundNotifications__fxCooldowns
+    if eventName in cooldown and cooldown[eventName]:
+        return
+    eventData = self._IngameSoundNotifications__events.get(eventName, None)
+    if 'fxEvent' not in eventData or not self.isCategoryEnabled('fx'):
+        return
+    if float(eventData.get('cooldownFx', 0)) > 0:
+        cooldown[eventName] = {'time': float(eventData['cooldownFx'])}
+    events = eventData['fxEvent']
+    if not isinstance(events, list):
+        events = [events]
+    for event in events:
+        if vehicleID is not None:
+            vehicle = BigWorld.entity(vehicleID)
+            if vehicle:
+                SoundGroups.g_instance.playSoundPos(event, vehicle.position)
+        elif position is not None:
+            SoundGroups.g_instance.playSoundPos(event, position)
+        else:
+            SoundGroups.g_instance.playSound2D(event)
 
 
 @overrideMethod(PlayerAvatar, 'updateVehicleGunReloadTime')
