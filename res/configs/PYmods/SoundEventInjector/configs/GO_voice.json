@@ -7,8 +7,7 @@
             "voice": "target_captured_GO"
         },
         "target_lost": {
-            "voice": "target_lost_GO",
-            "fx": "target_lost_GO"
+            "voice": "target_lost_GO"
         },
         "target_unlocked": {
             "voice": "target_unlocked_GO"
@@ -175,41 +174,71 @@
         "observed_by_enemy": {
             "fx": "sixthsense_GO"
         },
-        "ibc_ping_attention": {
-            "voice": "minimap_attention_GO"
-        },
-        "ibc_ping_attention_npc": {
-            "voice": "minimap_attention_GO"
-        },
-        "ibc_ping_reply": {
-            "voice": "minimap_attention_GO"
-        },
-        "ibc_ping_reply_npc": {
-            "voice": "minimap_attention_GO"
-        },
-        "ibc_ping_request": {
-            "voice": "minimap_attention_GO"
-        },
-        "ibc_ping_request_npc": {
-            "voice": "minimap_attention_GO"
+        "ibc_marker_focused": {
+            "fx": "minimap_attention_GO"
         },
         "ibc_ping_action": {
-            "voice": "minimap_attention_GO"
+            "fx": "minimap_attention_GO"
         },
         "ibc_ping_action_npc": {
-            "voice": "minimap_attention_GO"
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_affirmative": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_affirmative_npc": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_attention": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_attention_npc": {
+            "fx": "minimap_attention_GO"
         },
         "ibc_ping_cancel": {
-            "voice": "minimap_attention_GO"
+            "fx": "minimap_attention_GO"
         },
         "ibc_ping_cancel_npc": {
-            "voice": "minimap_attention_GO"
+            "fx": "minimap_attention_GO"
         },
-        "ibc_marker_focused": {
-            "voice": "minimap_attention_GO"
+        "ibc_ping_help_me_ex": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_help_me_ex_npc": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_help_me_ex_reply": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_help_me_ex_reply_npc": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_reply": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_reply_npc": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_request": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_request_npc": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_retreat": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_retreat_npc": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_thanks": {
+            "fx": "minimap_attention_GO"
+        },
+        "ibc_ping_thanks_npc": {
+            "fx": "minimap_attention_GO"
         },
         "br_ability": {
-            "voice": "minimap_attention_GO"
+            "fx": "minimap_attention_GO"
         }
     }
 }
