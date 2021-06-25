@@ -15,6 +15,7 @@ from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
 from helpers import func_utils
 from items.components.c11n_constants import SeasonType, SLOT_DEFAULT_ALLOWED_MODEL
 from items.customizations import EmptyComponent, FieldFlags
+from items.vehicles import g_cache
 from vehicle_outfit.outfit import Area
 from ..shared import getItemSeason, CSMode
 from ... import g_config
@@ -93,10 +94,20 @@ class CustomMode(WGCustomMode):
         deleteEmpty(seasonCache)
         return seasonCache
 
+    def __addDefaultInsignia(self, outfit):
+        cache = g_cache.customization20()
+        if not outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).getItemCD():
+            outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).set(
+                cache.insignias[cache.defaultInsignias[
+                    g_currentVehicle.item.descriptor.type.customizationNationID]].compactDescr)
+
     def __getBaseOutfits(self):
         with self._ctx.overridePurchaseMode():
-            return self._baseMode.getModifiedOutfits() if self._ctx.modeId == CustomizationModes.CUSTOM else (
+            outfits = self._baseMode.getModifiedOutfits() if self._ctx.modeId == CustomizationModes.CUSTOM else (
                 {s: self._service.getEmptyOutfit() for s in SeasonType.COMMON_SEASONS})
+            for outfit in outfits.itervalues():
+                self.__addDefaultInsignia(outfit)
+            return outfits
 
     def _isOutfitsModified(self):
         vehCache = g_config.getOutfitCache()
@@ -107,7 +118,7 @@ class CustomMode(WGCustomMode):
             original = self._originalOutfits[season]
             modified = self._modifiedOutfits[season]
             self._cache[seasonName] = self.computeDiff(original, modified)
-            fromOutfit = fromOutfits[season].copy()
+            fromOutfit = fromOutfits[season]
             applyOutfitCache(fromOutfit, vehCache.get(seasonName, {}), False)
             self._originalOutfits[season] = fromOutfit.copy()
             applyOutfitCache(fromOutfit, self._cache[seasonName])
@@ -138,8 +149,9 @@ class CustomMode(WGCustomMode):
 
     def _fillOutfits(self):
         vehCache = g_config.getOutfitCache()
+        fromOutfits = self.__getBaseOutfits()
         for season in SeasonType.COMMON_SEASONS:
-            fromOutfit = self.__getBaseOutfits()[season]
+            fromOutfit = fromOutfits[season]
             seasonName = SEASON_TYPE_TO_NAME[season]
             applyOutfitCache(fromOutfit, vehCache.get(seasonName, {}), False)
             self._originalOutfits[season] = fromOutfit.copy()
@@ -151,6 +163,10 @@ class CustomMode(WGCustomMode):
         if slotId.slotType == GUI_ITEM_TYPE.INSIGNIA:
             return WGCustomMode.getAnchorParams(self, C11nId(slotId.areaId, GUI_ITEM_TYPE.PAINT, slotId.regionIdx))
         return WGCustomMode.getAnchorParams(self, slotId)
+
+    def _removeItem(self, slotId, season=None):
+        WGCustomMode._removeItem(self, slotId, season)
+        self.__addDefaultInsignia(self.getModifiedOutfit(season))
 
     @async
     def _applyItems(self, purchaseItems, isModeChanged, callback):

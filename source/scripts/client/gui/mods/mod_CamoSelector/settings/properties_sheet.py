@@ -1,13 +1,16 @@
+from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import (
-    CustomizationPropertiesSheet as WGPropertiesSheet)
+    CustomizationPropertiesSheet as WGPropertiesSheet,
+)
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES as CA
 from gui.customization.constants import CustomizationModes as C11nModes, CustomizationModes
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE
+from items.vehicles import g_cache
 from .shared import CSMode
 from .. import g_config
 
@@ -55,13 +58,24 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
 
     def __makeRenderersVOs(self):
         slotType = self._attachedAnchor.slotType
-        if slotType == GUI_ITEM_TYPE.INSIGNIA:
-            renderers = self.__makeInsigniaRenderersVOs()
-            renderers.append(self.__makeRemoveRendererVO())
-            renderers.append(self.__makeCloseRendererVO())
-            return renderers
-        # noinspection PyUnresolvedReferences
-        return WGPropertiesSheet._CustomizationPropertiesSheet__makeRenderersVOs(self)
+        if slotType != GUI_ITEM_TYPE.INSIGNIA:
+            # noinspection PyUnresolvedReferences
+            return WGPropertiesSheet._CustomizationPropertiesSheet__makeRenderersVOs(self)
+        itemTypeText = backport.text(
+            R.strings.vehicle_customization.propertySheet.actionBtn.forCurrentItem.modification())
+        seasonsVO = self.__makeSetOnOtherSeasonsRendererVO()
+        removeVO = self.__makeRemoveRendererVO()
+        removeVO['enabled'] = bool(self._currentItem) and self._currentItem.id != g_cache.customization20(
+        ).defaultInsignias[g_currentVehicle.item.descriptor.type.customizationNationID]
+        if self._isItemAppliedToAllSeasons:
+            seasonTooltip = R.strings.vehicle_customization.propertySheet.actionBtn.removeFromAllMapsDisabled()
+            seasonsVO['enabled'] = removeVO['enabled']
+        else:
+            seasonTooltip = R.strings.vehicle_customization.propertySheet.actionBtn.applyToAllMapsDisabled()
+        seasonsVO['disableTooltip'] = backport.text(seasonTooltip, itemType=itemTypeText)
+        removeVO['disableTooltip'] = backport.text(
+            R.strings.vehicle_customization.propertySheet.actionBtn.removeDisabled(), itemType=itemTypeText)
+        return [seasonsVO, removeVO, self.__makeCloseRendererVO()]
 
     def __makePaintRenderersVOs(self):
         if self.__ctx.isPurchase:
@@ -79,16 +93,6 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             self.__makeCamoColorRendererVO(), self.__makeScaleRendererVO(),
             self.__makeSetOnOtherSeasonsRendererVO(), self.__makeSetOnOtherTankPartsRendererVO()
         ]
-
-    def __makeInsigniaRenderersVOs(self):
-        seasonsVO = self.__makeSetOnOtherSeasonsRendererVO()
-        if self._isItemAppliedToAll:
-            tooltip = R.strings.vehicle_customization.propertySheet.actionBtn.removeFromAllMapsDisabled()
-        else:
-            tooltip = R.strings.vehicle_customization.propertySheet.actionBtn.applyToAllMapsDisabled()
-        seasonsVO['disableTooltip'] = backport.text(
-            tooltip, itemType=R.strings.vehicle_customization.propertySheet.actionBtn.forCurrentItem.modification)
-        return [seasonsVO]
 
     def __makeStyleRenderersVOs(self):
         # noinspection PyUnresolvedReferences
@@ -117,8 +121,9 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             'rendererLnk': CA.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
             'animatedTransition': True,
             'disableTooltip': g_config.i18n['flashCol_propertySheet_edit_disabled'],
-            'notifyText': makeHtmlString('html_templates:lobby/customization/notify', 'decal', {
-                'value': g_config.i18n['flashCol_propertySheet_edit_tooltip']}),
+            'notifyText': makeHtmlString(
+                'html_templates:lobby/customization/notify', 'decal', {
+                    'value': g_config.i18n['flashCol_propertySheet_edit_tooltip']}),
             'needNotify': enabled and not self.__ctx.getMode(CSMode.INSTALL, C11nModes.CUSTOM).isOutfitsEmpty(),
             'enabled': enabled}
 
