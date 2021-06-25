@@ -128,7 +128,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.configFolders.clear()
         self.camouflages = {'remap': {}, 'custom': {}}
         self.outfitCache = loadJson(self.ID, 'outfitCache', self.outfitCache, self.configPath)
-        self.readConfigDir(quiet, dir_name='camouflages')
+        self.readConfigDir(quiet, recursive=True, dir_name='camouflages')
         settings = loadJson(self.ID, 'settings', {}, self.configPath)
         self.disable = settings.setdefault('disable', self.disable)
         self.camouflages['remap'] = {int(k): v for k, v in settings.setdefault('remap', {}).iteritems()}
