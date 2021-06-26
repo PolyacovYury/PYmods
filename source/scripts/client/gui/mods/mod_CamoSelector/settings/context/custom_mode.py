@@ -72,6 +72,8 @@ class CustomMode(WGCustomMode):
                         yield container, slot, regionIdx, None, None
 
     def computeDiff(self, original, modified):
+        self.__addDefaultInsignia(original)
+        self.__addDefaultInsignia(modified)
         seasonCache = {}
         for container, slot, regionIdx, o_intCD, o_component in self.iterOutfit(original):
             slotType = ITEM_TYPE_TO_SLOT_TYPE.get(slot.getTypes()[0])  # checks that this slot is not for attachments
