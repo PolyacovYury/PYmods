@@ -72,12 +72,14 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
         requirement = WGCarouselDP._CustomizationCarouselDataProvider__createFilterCriteria(self)
         isPurchase = self.__ctx.isPurchase
         groupIdx = self.__getSelectedGroupIdx()
-        if groupIdx is not None:
+        if groupIdx is not None and groupIdx != -1:
             itemsData = self.__carouselCache.getItemsData()
             groupId = itemsData.groups.keys()[groupIdx]
             groupName = itemsData.groups[groupId]
             requirement = REQ_CRITERIA.CUSTOM(
                 lambda item: groupName in getGroupName(item, isPurchase)) | RequestCriteria(*requirement.getConditions()[1:])
+        if self.__ctx.mode.modeId == CustomizationModes.CUSTOM:
+            requirement = RequestCriteria(*requirement.getConditions()[:-1])  # gtfo with your isStyleOnly
         return requirement
 
 
