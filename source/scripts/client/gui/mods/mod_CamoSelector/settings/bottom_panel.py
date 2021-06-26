@@ -107,60 +107,49 @@ class CustomizationBottomPanel(CBP):
 
     def _carouseItemWrapper(self, itemCD):
         VO = CBP._carouseItemWrapper(self, itemCD)
+        if '4278190335,4278255360,4294901760,4278190080' in VO['icon']:
+            VO['icon'] = '../../' + VO['icon'].split('"', 2)[1]
+            VO['imageCached'] = False
         if self.__ctx.isPurchase:
+            VO['isDarked'] = VO['isAlreadyUsed']
             return VO
         item = self.service.getItemByCD(itemCD)
-        VO['locked'] = False
-        VO['isAlreadyUsed'] = False  # actually marks item.isUsedUp
-        VO['isDarked'] = False
+        VO['locked'] = VO['isAlreadyUsed'] = VO['isDarked'] = False
+        VO['showEditBtnHint'] = True
+        VO['showEditableHint'] = VO['editBtnEnabled'] = False
+        VO['rentalInfoText'] = VO['editableIcon'] = VO['tooltip'] = ''
         VO['buyPrice'] = getItemPricesVO(ITEM_PRICE_EMPTY)[0]
-        VO['rentalInfoText'] = ''
-        VO['showEditBtnHint'] = False
-        VO['showEditableHint'] = False
-        VO['editableIcon'] = ''
-        VO['editBtnEnabled'] = False
-        VO['tooltip'] = ''
         if item.isProgressive:
             VO['progressionLevel'] = progressionLevel = 0
             VO['icon'] = getIcon(item, progressionLevel)
         VO['noveltyCounter'] = 0
-        if '4278190335,4278255360,4294901760,4278190080' in VO['icon']:
-            VO['icon'] = '../../' + VO['icon'].split('"', 2)[1]
         VO.pop('quantity', None)
         return VO
 
     def __getItemTabsData(self):
         tabsData = []
         pluses = []
-        visibleTabs = self.getVisibleTabs()
         outfit = self.__ctx.mode.currentOutfit
-        for tabId in visibleTabs:
+        for tabId in self.getVisibleTabs():
             slotType = CustomizationTabs.SLOT_TYPES[tabId]
-            itemTypeName = GUI_ITEM_TYPE_NAMES[slotType]
             slotsCount, filledSlotsCount = checkSlotsFilling(outfit, slotType)
-            showPlus = filledSlotsCount < slotsCount
-            tabsData.append({
-                'label': _ms(
-                    ACHIEVEMENTS.MARKSONGUN0
-                    if slotType == GUI_ITEM_TYPE.INSIGNIA else
-                    ITEM_TYPES.customizationPlural(itemTypeName)),
-                'icon': (
-                    RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_FULL_TANK
-                    if slotType == GUI_ITEM_TYPE.STYLE else
-                    RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_EDIT
-                    if slotType == GUI_ITEM_TYPE.INSIGNIA else
-                    RES_ICONS.getCustomizationIcon(itemTypeName)),
-                'tooltip': makeTooltip(
-                    ACHIEVEMENTS.MARKSONGUN0
-                    if slotType == GUI_ITEM_TYPE.INSIGNIA else
-                    _ms(ITEM_TYPES.customizationPlural(itemTypeName)),
-                    VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL
-                    if slotType == GUI_ITEM_TYPE.STYLE else
-                    None
-                    if slotType == GUI_ITEM_TYPE.INSIGNIA else
-                    TOOLTIPS.customizationItemTab(itemTypeName)),
-                'id': tabId})
-            pluses.append(showPlus)
+            pluses.append(filledSlotsCount < slotsCount)
+            itemTypeName = GUI_ITEM_TYPE_NAMES[slotType]
+            pluralText = _ms(ITEM_TYPES.customizationPlural(itemTypeName)) if slotType != GUI_ITEM_TYPE.INSIGNIA else ''
+            tabsData.append(
+                {
+                    'label': _ms(ACHIEVEMENTS.MARKSONGUN0), 'id': tabId,
+                    'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_EDIT,
+                    'tooltip': makeTooltip(ACHIEVEMENTS.MARKSONGUN0)
+                } if slotType == GUI_ITEM_TYPE.INSIGNIA else {
+                    'label': pluralText, 'id': tabId,
+                    'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_FULL_TANK,
+                    'tooltip': makeTooltip(pluralText, VEHICLE_CUSTOMIZATION.DEFAULTSTYLE_LABEL)
+                } if slotType == GUI_ITEM_TYPE.STYLE else {
+                    'label': pluralText, 'id': tabId,
+                    'icon': RES_ICONS.getCustomizationIcon(itemTypeName),
+                    'tooltip': makeTooltip(pluralText, TOOLTIPS.customizationItemTab(itemTypeName))
+                })
         return tabsData, pluses
 
     def __scrollToNewItem(self):
