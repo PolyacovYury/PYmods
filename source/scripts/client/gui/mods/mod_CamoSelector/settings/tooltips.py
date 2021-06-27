@@ -1,12 +1,13 @@
-import nations
+import copy
 import os
-from PYmodsCore import overrideMethod
+from PYmodsCore import overrideMethod, remDups
 from gui.Scaleform.daapi.view.lobby.customization.tooltips import ElementTooltip
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.tooltips import formatters
 from helpers.i18n import makeString as _ms
-from items.vehicles import g_cache
+from items.vehicles import g_cache, getItemByCompactDescr
+from .shared import nationName
 
 insignia_names = {
     'wh': '#vehicle_customization:special_style/kv2_w',
@@ -32,10 +33,9 @@ def _packTitleBlock(base, self):
     if self._item.itemTypeID != GUI_ITEM_TYPE.INSIGNIA:
         return base(self)
     for nation_idx, item_id in g_cache.customization20().defaultInsignias.iteritems():
-        if item_id != self._item.id:
-            continue
-        title = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nation_idx])
-        break
+        if item_id == self._item.id:
+            title = nationName(nation_idx)
+            break
     else:
         texture = os.path.basename(self._item.getIconApplied(None))
         texture_id = texture.partition('_')[2].rpartition('_')[0]
@@ -51,6 +51,26 @@ def _packIconBlock(base, self, isHistorical=False, isDim=False):
             and '4278190335,4278255360,4294901760,4278190080' in data['data']['imagePath']):
         data['data']['imagePath'] = '../../' + data['data']['imagePath'].split('"', 2)[1]
     return data
+
+
+@overrideMethod(ElementTooltip, '_packSuitableBlock')
+def _packSuitableBlock(base, self):
+    if not self._item.descriptor.filter or not self._item.descriptor.filter.include:
+        return base(self)
+    backups = {}
+    for idx, node in enumerate(self._item.descriptor.filter.include):
+        if not node.vehicles:
+            continue
+        backups[idx] = copy.copy(node.nations)
+        if node.nations is None:
+            node.nations = []
+        for intCD in node.vehicles:
+            node.nations.append(getItemByCompactDescr(intCD).customizationNationID)
+        node.nations = remDups(node.nations)
+    result = base(self)
+    for idx, data in backups.items():
+        self._item.descriptor.filter.include[idx].nations = data
+    return result
 
 
 @overrideMethod(ElementTooltip, '_packAppliedBlock')
