@@ -12,6 +12,7 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency
 from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType, ItemTags, ProjectionDecalFormTags, CustomizationType
+from items.vehicles import getItemByCompactDescr
 from skeletons.gui.customization import ICustomizationService
 from vehicle_outfit.outfit import Area
 from .. import g_config
@@ -48,27 +49,55 @@ def getItemSeason(item):
     return reduce(operator.ior, (SEASON_NAME_TO_TYPE[x] for x in seasons), SeasonType.UNDEFINED)
 
 
+def _getVehicles(item):
+    nationIDs = set()
+    for filterNode in getattr(item.descriptor.filter, 'include', ()):
+        for intCD in (filterNode.vehicles or []):
+            nationIDs.add(getItemByCompactDescr(intCD).customizationNationID)
+    return list(nationIDs)
+
+
+def _getNations(item):
+    nationIDs = set()
+    if _getVehicles(item):
+        return list(nationIDs)
+    for filterNode in getattr(item.descriptor.filter, 'include', ()):
+        for n in (filterNode.nations or []):
+            nationIDs.add(n)
+    return list(nationIDs)
+
+
+def firstWord(fromString):
+    return re.sub(r'( [^ <>]+)(?![^ <>]*>)', '', fromString)
+
+
+def nationName(nationID):
+    return _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationID])
+
+
 @dependency.replace_none_kwargs(service=ICustomizationService)
 def CSComparisonKey(item, service=None):
-    nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
-    is3D, isVictim, isGlobal, texName = False, False, False, ''
+    tags, is3D, isVictim, clan, texName = item.tags, False, False, False, ''
+    nat_count, vehicles = len(_getNations(item)), _getVehicles(item)
     if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
         if item.modelsSet:
             is3D = True
-        if any('Victim' in tag for tag in item.tags):
+        if any('Victim' in tag for tag in tags):
             isVictim = True
     if item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
         if 'victim' in item.descriptor.userKey:
             isVictim = True
-        isGlobal = g_config.isCamoGlobal(item.descriptor)
+        clan = g_config.isCamoGlobal(item.descriptor) and not vehicles
         if item.priceGroup == 'camouflages 50g notInShop':
             texName = getattr(item, 'texture', '').lower()
             if '/' in texName:
                 texName = texName.rsplit('/', 1)[-1]
-    return (TYPES_ORDER.index(item.itemTypeID) if item.itemTypeID in TYPES_ORDER else 0, not is3D,
-            ItemTags.NATIONAL_EMBLEM not in item.tags, item.priceGroup == 'custom', item.isHidden, isVictim, not isGlobal,
-            len(nationIDs) != 1, getGroupName(item, service.getCtx().isPurchase), item.isRare(),
-            0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), texName, item.id)
+    return (
+        TYPES_ORDER.index(item.itemTypeID) if item.itemTypeID in TYPES_ORDER else 0, ItemTags.NATIONAL_EMBLEM not in tags,
+        not is3D, isVictim, item.priceGroup == 'custom', nat_count == 0,
+        (not (clan or vehicles), not clan, not vehicles) if not nat_count else (clan, nat_count != 1),
+        getGroupName(item, service.getCtx().isPurchase), not item.isHistorical(), texName, item.isRare(),
+        0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), item.id)
 
 
 def getGroupName(item, isPurchase=False):
@@ -83,14 +112,20 @@ def getGroupName(item, isPurchase=False):
     if item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
         if 'victim' in item.descriptor.userKey:
             group = _ms('#vehicle_customization:victim_style/default')
-    nationIDs = [n for filterNode in getattr(item.descriptor.filter, 'include', ()) for n in filterNode.nations or []]
+        if g_config.isCamoGlobal(item.descriptor):
+            group = firstWord(_ms('#vehicle_customization:camouflage/Clan_camouflage_01/label'))
     nation = ''
+    nationIDs = _getNations(item)
     if len(nationIDs) == 1:
-        nation = _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationIDs[0]])
-    elif len(nationIDs) > 1:
+        nation = nationName(nationIDs[0])
+    elif nationIDs:
         nation = g_config.i18n['flashCol_group_multinational']
+    vehicleNations = _getVehicles(item)
+    if vehicleNations:
+        group = _ms('#vehicle_customization:styles/unique_styles')
+        nation = nationName(vehicleNations[0])
     if group and nation:  # HangarPainter support
-        group = re.sub(r'( [^ <>]+)(?![^ <>]*>)', '', nation) + g_config.i18n['flashCol_group_separator'] + group
+        group = firstWord(nation) + g_config.i18n['flashCol_group_separator'] + group
     return group
 
 
