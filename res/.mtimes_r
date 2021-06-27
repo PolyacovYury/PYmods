@@ -514,12 +514,17 @@
 1620405437|configs/PYmods/VoiceOverrider/i18n/en.json
 1620405437|configs/PYmods/VoiceOverrider/i18n/ru.json
 1471690378|configs/PYmods/i18nDebugger/i18nDebugger.xml
+1624832012|flash/PersonalReserveStrengthFilter.swf
 1602759771|flash/PlayersPanelAPI.swf
 1592037066|flash/PlayersPanelAPI/PlayersPanelAPI.as3proj
 1602759765|flash/PlayersPanelAPI/src/polyacov_yury/views/battle/PlayersPanelAPI.as
 1582272942|flash/RemodEnabler.swf
 1582272941|flash/RemodEnablerUI/RemodEnablerUI.as
 1546896278|flash/RemodEnablerUI/RemodEnablerUI.as3proj
+1624824244|flash/ReservesStrengthFilterUI/PersonalReserveStrengthFilter.as3proj
+1624832003|flash/ReservesStrengthFilterUI/src/StorageCategoryPersonalReservesWithStrengthViewUI.as
+1624824200|flash/ReservesStrengthFilterUI/src/polyacov_yury/views/lobby/PersonalReserveStrengthFilterBlock.as
+1624826318|flash/ReservesStrengthFilterUI/src/polyacov_yury/views/lobby/PersonalReserveStrengthFilterLib.as
 1542296973|flash/Skinner.swf
 1542117372|flash/SkinnerUI/SkinnerUI.as
 1540474547|flash/SkinnerUI/SkinnerUI.as3proj

@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/scripts/client/gui/mods/mod_PersonalReserveStrengthFilter.pyc": "build/scripts/client/gui/mods/mod_PersonalReserveStrengthFilter.pyc",
+        "res/gui/flash/PersonalReserveStrengthFilter.swf": "res/flash/PersonalReserveStrengthFilter.swf"
+    }
+}
