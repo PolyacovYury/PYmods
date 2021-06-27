@@ -102,6 +102,7 @@ class CustomMode(WGCustomMode):
             outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).set(
                 cache.insignias[cache.defaultInsignias[
                     g_currentVehicle.item.descriptor.type.customizationNationID]].compactDescr)
+            outfit.gun.unpack(outfit.pack())
 
     def __getBaseOutfits(self):
         with self._ctx.overridePurchaseMode():

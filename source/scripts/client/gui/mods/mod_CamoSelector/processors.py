@@ -3,21 +3,20 @@ import items.vehicles
 import random
 from Account import Account
 from Avatar import PlayerAvatar
-from CurrentVehicle import g_currentVehicle, g_currentPreviewVehicle
+from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from HeroTank import _HeroTankAppearance
-from PYmodsCore import overrideMethod, loadJson
+from PYmodsCore import loadJson, overrideMethod
 from PlatoonTank import _PlatoonTankAppearance
 from gui import g_tankActiveCamouflage
-from gui.customization.shared import C11N_ITEM_TYPE_MAP, SEASON_TYPE_TO_NAME
-from gui.customization.shared import __isTurretCustomizable as isTurretCustom
+from gui.customization.shared import C11N_ITEM_TYPE_MAP, SEASON_TYPE_TO_NAME, __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
-from items.customizations import createNationalEmblemComponents, CustomizationOutfit
+from items.customizations import CustomizationOutfit, createNationalEmblemComponents
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
-from vehicle_outfit.containers import emptyComponent
 from vehicle_outfit.outfit import Area
+from vehicle_outfit.packers import pickPacker
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.camouflages import getStyleProgressionOutfit
 from vehicle_systems.tankStructure import TankPartNames
@@ -74,7 +73,7 @@ def applyOutfitCache(outfit, seasonCache, clean=True):
                         del areaCache[regionIdx]
                         itemDB = itemDBs[C11N_ITEM_TYPE_MAP[slotType]]
                         continue
-                    component = emptyComponent(slotType if not is_number else GUI_ITEM_TYPE.PERSONAL_NUMBER)
+                    component = pickPacker(slotType if not is_number else GUI_ITEM_TYPE.PERSONAL_NUMBER).getRawComponent()()
                     [setattr(component, k, v) for k, v in areaCache[regionIdx].items()]
                     slot.set(itemDB[itemID].compactDescr, int(regionIdx), component)
                     itemDB = itemDBs[C11N_ITEM_TYPE_MAP[slotType]]
