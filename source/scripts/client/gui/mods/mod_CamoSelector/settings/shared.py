@@ -12,7 +12,7 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from helpers import dependency
 from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import SeasonType, ItemTags, ProjectionDecalFormTags, CustomizationType
-from items.vehicles import getItemByCompactDescr
+from items.vehicles import g_cache, getItemByCompactDescr
 from skeletons.gui.customization import ICustomizationService
 from vehicle_outfit.outfit import Area
 from .. import g_config
@@ -57,6 +57,12 @@ def _getVehicles(item):
     return list(nationIDs)
 
 
+def getInsigniaNation(item):
+    for nation_idx, item_id in g_cache.customization20().defaultInsignias.iteritems():
+        if item_id == item.id:
+            return nation_idx
+
+
 def _getNations(item):
     nationIDs = set()
     if _getVehicles(item):
@@ -64,6 +70,10 @@ def _getNations(item):
     for filterNode in getattr(item.descriptor.filter, 'include', ()):
         for n in (filterNode.nations or []):
             nationIDs.add(n)
+    if item.itemTypeID == GUI_ITEM_TYPE.INSIGNIA:
+        nationID = getInsigniaNation(item)
+        if nationID is not None:
+            nationIDs.add(nationID)
     return list(nationIDs)
 
 
@@ -115,7 +125,7 @@ def getGroupName(item, isPurchase=False):
         if g_config.isCamoGlobal(item.descriptor):
             group = firstWord(_ms('#vehicle_customization:camouflage/Clan_camouflage_01/label'))
     nation = ''
-    nationIDs = _getNations(item)
+    nationIDs = _getNations(item) if item.itemTypeID != GUI_ITEM_TYPE.INSIGNIA else ()
     if len(nationIDs) == 1:
         nation = nationName(nationIDs[0])
     elif nationIDs:

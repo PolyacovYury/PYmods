@@ -6,8 +6,8 @@ from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.tooltips import formatters
 from helpers.i18n import makeString as _ms
-from items.vehicles import g_cache, getItemByCompactDescr
-from .shared import nationName
+from items.vehicles import getItemByCompactDescr
+from .shared import getInsigniaNation, nationName
 
 insignia_names = {
     'wh': '#vehicle_customization:special_style/kv2_w',
@@ -32,10 +32,9 @@ def _packItemBlocks(base, self, statsConfig):
 def _packTitleBlock(base, self):
     if self._item.itemTypeID != GUI_ITEM_TYPE.INSIGNIA:
         return base(self)
-    for nation_idx, item_id in g_cache.customization20().defaultInsignias.iteritems():
-        if item_id == self._item.id:
-            title = nationName(nation_idx)
-            break
+    nationID = getInsigniaNation(self._item)
+    if nationID is not None:
+        title = nationName(nationID)
     else:
         texture = os.path.basename(self._item.getIconApplied(None))
         texture_id = texture.partition('_')[2].rpartition('_')[0]
