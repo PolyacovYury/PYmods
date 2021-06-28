@@ -5,8 +5,9 @@ from frameworks.wulf import WindowLayer as WL
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import __getIcon as getIcon
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    CustomizationTabs, checkSlotsFilling, getItemTypesAvailableForVehicle, getEditableStylesExtraNotificationCounter)
-from gui.Scaleform.framework import g_entitiesFactories, ViewSettings, ScopeTemplates as ST
+    CustomizationTabs, checkSlotsFilling, getEditableStylesExtraNotificationCounter, getItemTypesAvailableForVehicle,
+)
+from gui.Scaleform.framework import ScopeTemplates as ST, ViewSettings, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import View
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.Scaleform.locale.ACHIEVEMENTS import ACHIEVEMENTS
@@ -14,14 +15,14 @@ from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.customization.constants import CustomizationModes, CustomizationModeSource
+from gui.customization.constants import CustomizationModeSource, CustomizationModes
 from gui.shared.formatters import getItemPricesVO
-from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
+from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.utils.functions import makeTooltip
 from helpers.i18n import makeString as _ms
 from shared_utils import first
-from .shared import CSMode, CSComparisonKey
+from .shared import CSComparisonKey, CSMode
 from .. import g_config
 
 
@@ -158,9 +159,12 @@ class CustomizationBottomPanel(CBP):
             newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items), key=CSComparisonKey)
             for item in newItems:
                 if item.itemTypeID in itemTypes and item.season & self.__ctx.season:
-                    self.__scrollToItem(item.intCD)
-                    return
-        intCD = first(self.carouselItems)
+                    return self.__scrollToItem(item.intCD, immediately=True)
+        items = self.carouselItems
+        for intCD in self.__ctx.mode.getAppliedItems(isOriginal=False):
+            if intCD in items:
+                return self.__scrollToItem(intCD, immediately=True)
+        intCD = first(items)
         if intCD is not None:
             self.__scrollToItem(intCD, immediately=True)
 
