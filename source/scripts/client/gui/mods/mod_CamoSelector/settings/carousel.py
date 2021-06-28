@@ -1,18 +1,20 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import (
-    CustomizationBookmarkVO, CustomizationCarouselDataProvider as WGCarouselDP, CarouselData, CarouselCache as WGCache,
-    ItemsData, FilterTypes)
+    CarouselCache as WGCache, CarouselData, CustomizationBookmarkVO, CustomizationCarouselDataProvider as WGCarouselDP,
+    FilterTypes, ItemsData,
+)
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    ITEM_TYPE_TO_TAB, CustomizationTabs, vehicleHasSlot, isItemLimitReached)
+    CustomizationTabs, ITEM_TYPE_TO_TAB, isItemLimitReached, vehicleHasSlot,
+)
 from gui.customization.constants import CustomizationModes
-from gui.customization.shared import createCustomizationBaseRequestCriteria, C11N_ITEM_TYPE_MAP
+from gui.customization.shared import C11N_ITEM_TYPE_MAP, createCustomizationBaseRequestCriteria
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.shared.utils.requesters.ItemsRequester import RequestCriteria
 from items import vehicles
-from items.components.c11n_constants import SeasonType, EMPTY_ITEM_ID
-from .shared import getItemSeason, CSComparisonKey, getGroupName
+from items.components.c11n_constants import EMPTY_ITEM_ID, SeasonType
+from .shared import CSComparisonKey, getGroupName, getItemSeason
 from .. import g_config
 
 
@@ -80,6 +82,9 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
                 lambda item: groupName in getGroupName(item, isPurchase)) | RequestCriteria(*requirement.getConditions()[1:])
         if self.__ctx.mode.modeId == CustomizationModes.CUSTOM:
             requirement = RequestCriteria(*requirement.getConditions()[:-1])  # gtfo with your isStyleOnly
+        requirement |= REQ_CRITERIA.CUSTOM(lambda item: item.intCD in self.__ctx.mode.getAppliedItems(False) or (
+            item.season if self.__ctx.isPurchase else getItemSeason(item)) & self.__ctx.season)
+
         return requirement
 
 
@@ -118,7 +123,7 @@ class CarouselCache(WGCache):
             ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
         else:
             requirement = REQ_CRITERIA.CUSTOM(lambda _i: _i.descriptor.parentGroup is not None and (
-                _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)))
+                    _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)))
         itemTypes = []
         for tabId, slotType in list(CustomizationTabs.SLOT_TYPES.iteritems()):
             if vehicleHasSlot(slotType):
@@ -145,8 +150,6 @@ class CarouselCache(WGCache):
             modeId = CustomizationModes.CUSTOM if tabId in customModeTabs else CustomizationModes.STYLED
             groupName = getGroupName(item, self.__ctx.isPurchase)
             for season in SeasonType.COMMON_SEASONS:
-                if not (item.season if self.__ctx.isPurchase else getItemSeason(item)) & season:
-                    continue
                 itemsDataStorage = self.__itemsData[modeId][season]
                 if not itemsDataStorage or tabId != itemsDataStorage.keys()[-1]:
                     itemsDataStorage[tabId] = ItemsData()

@@ -1,4 +1,3 @@
-import operator
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import loadJson
 from adisp import async
@@ -6,18 +5,19 @@ from copy import deepcopy
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.context.custom_mode import CustomMode as WGCustomMode
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    ITEM_TYPE_TO_SLOT_TYPE, getSlotDataFromSlot, customizationSlotIdToUid, CustomizationSlotUpdateVO)
+    CustomizationSlotUpdateVO, ITEM_TYPE_TO_SLOT_TYPE, customizationSlotIdToUid, getSlotDataFromSlot,
+)
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.SystemMessages import SM_TYPE
 from gui.customization.constants import CustomizationModes
-from gui.customization.shared import SEASON_TYPE_TO_NAME, C11nId, __isTurretCustomizable as isTurretCustom
-from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
+from gui.customization.shared import C11nId, SEASON_TYPE_TO_NAME, __isTurretCustomizable as isTurretCustom
+from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from helpers import func_utils
-from items.components.c11n_constants import SeasonType, SLOT_DEFAULT_ALLOWED_MODEL
+from items.components.c11n_constants import SLOT_DEFAULT_ALLOWED_MODEL, SeasonType
 from items.customizations import EmptyComponent, FieldFlags
 from items.vehicles import g_cache
 from vehicle_outfit.outfit import Area
-from ..shared import getItemSeason, CSMode
+from ..shared import CSMode
 from ... import g_config
 from ...processors import applyOutfitCache, deleteEmpty
 
@@ -228,9 +228,11 @@ class CustomMode(WGCustomMode):
             self._ctx.refreshOutfit(season)
             self._events.onItemsRemoved()
 
+    def isPossibleToInstallToAllTankAreas(self, intCD, slotType):
+        return True
+
     def isPossibleToInstallItemForAllSeasons(self, slotId, intCD):
-        return bool(getItemSeason(self._service.getItemByCD(intCD)) & reduce(
-            operator.ior, SeasonType.COMMON_SEASONS, SeasonType.UNDEFINED))
+        return True
 
     def __getItemProgressionLevel(self, item):
         return item.getMaxProgressionLevel() if not self._ctx.isPurchase else item.getLatestOpenedProgressionLevel(
