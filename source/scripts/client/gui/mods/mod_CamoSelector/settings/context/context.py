@@ -16,7 +16,7 @@ from shared_utils import first
 from .custom_mode import CustomMode
 from .mod_impl import CSModImpl
 from .styled_mode import StyledMode
-from ..shared import CSMode
+from ..shared import CSMode, createConfirmDialog
 from ... import g_config
 
 
@@ -145,7 +145,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         targetMode = self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM)
         proceed = True
         if not targetMode.isOutfitsEmpty():
-            proceed = yield await(self.createConfirmDialog('flashCol_propertySheet_edit'))
+            proceed = yield await(createConfirmDialog('flashCol_propertySheet_edit'))
         if not proceed:
             raise AsyncReturn(False)
         self.getMode(CSMode.INSTALL, CustomizationModes.CUSTOM).installStyleItemsToModifiedOutfit(
@@ -171,7 +171,7 @@ class CustomizationContext(WGCtx, CSModImpl):
         if not result:
             return
         if self.modeId in (CustomizationModes.STYLED, CustomizationModes.EDITABLE_STYLE) and not goToEditableStyle:
-            result = yield await(self.createConfirmDialog('flashCol_progressionDecal_changeMode'))
+            result = yield await(createConfirmDialog('flashCol_progressionDecal_changeMode'))
         if not result:
             return
         WGCtx.changeModeWithProgressionDecal(self, itemCD)

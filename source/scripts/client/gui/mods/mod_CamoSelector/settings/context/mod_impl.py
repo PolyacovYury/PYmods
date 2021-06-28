@@ -1,14 +1,7 @@
 import operator
 
-from BWUtil import AsyncReturn
 from PYmodsCore import loadJson
-from async import await, async
-from frameworks.wulf import WindowLayer
-from gui import SystemMessages, makeHtmlString
-from gui.impl.dialogs import dialogs
-from gui.impl.dialogs.builders import WarningDialogBuilder, _setupButtonsBasedOnRes
-from gui.impl.gen import R
-from gui.shared.personality import ServicesLocator as SL
+from gui import SystemMessages
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.SystemMessages import SM_TYPE
 from items.components.c11n_constants import SeasonType
@@ -73,13 +66,3 @@ class CSModImpl(object):
         if any(self._currentSettings.itervalues()):
             g_config.collectCamouflageData()
             SystemMessages.pushI18nMessage(g_config.i18n['flashCol_serviceMessage_settings'], type=SM_TYPE.Information)
-
-    @async
-    def createConfirmDialog(self, key):
-        message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
-            'value': g_config.i18n[key + '_message']})
-        builder = WarningDialogBuilder().setFormattedMessage(message).setFormattedTitle(g_config.i18n[key + '_title'])
-        _setupButtonsBasedOnRes(builder, R.strings.dialogs.common.confirm)  # the most convenient
-        subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
-        result = yield await(dialogs.showSimple(builder.build(parent=subview)))
-        raise AsyncReturn(result)

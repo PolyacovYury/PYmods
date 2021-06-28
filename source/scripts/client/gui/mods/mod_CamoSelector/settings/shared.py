@@ -1,17 +1,27 @@
 import nations
 import re
-from gui.Scaleform.daapi.view.lobby.customization import customization_properties_sheet, customization_carousel, popovers
-from gui.Scaleform.daapi.view.lobby.customization import vehicle_anchor_states, shared as lobby_shared
+from BWUtil import AsyncReturn
+from async import async, await
+from frameworks.wulf import WindowLayer
+from gui import makeHtmlString
+from gui.Scaleform.daapi.view.lobby.customization import (
+    customization_carousel, customization_properties_sheet, popovers, shared as lobby_shared, vehicle_anchor_states,
+)
 from gui.Scaleform.daapi.view.lobby.customization.context import custom_mode, editable_style_mode
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    TYPES_ORDER, CustomizationTabs, ITEM_TYPE_TO_TAB, ITEM_TYPE_TO_SLOT_TYPE)
+    CustomizationTabs, ITEM_TYPE_TO_SLOT_TYPE, ITEM_TYPE_TO_TAB, TYPES_ORDER,
+)
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.customization import shared as gui_shared
 from gui.customization.constants import CustomizationModes
+from gui.impl.dialogs import dialogs
+from gui.impl.dialogs.builders import WarningDialogBuilder, _setupButtonsBasedOnRes
+from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.personality import ServicesLocator as SL
 from helpers import dependency
 from helpers.i18n import makeString as _ms
-from items.components.c11n_constants import SeasonType, ItemTags, ProjectionDecalFormTags, CustomizationType
+from items.components.c11n_constants import CustomizationType, ItemTags, ProjectionDecalFormTags, SeasonType
 from items.vehicles import g_cache, getItemByCompactDescr
 from skeletons.gui.customization import ICustomizationService
 from vehicle_outfit.outfit import Area
@@ -150,3 +160,14 @@ def getAvailableRegions(areaId, slotType, vehicleDescr=None):
 old_getAvailableRegions = gui_shared.getAvailableRegions
 for obj in (gui_shared, lobby_shared, custom_mode, customization_properties_sheet, editable_style_mode):
     setattr(obj, 'getAvailableRegions', getAvailableRegions)
+
+
+@async
+def createConfirmDialog(key):
+    message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
+        'value': g_config.i18n[key + '_message']})
+    builder = WarningDialogBuilder().setFormattedMessage(message).setFormattedTitle(g_config.i18n[key + '_title'])
+    _setupButtonsBasedOnRes(builder, R.strings.dialogs.common.confirm)  # the most convenient
+    subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
+    result = yield await(dialogs.showSimple(builder.build(parent=subview)))
+    raise AsyncReturn(result)
