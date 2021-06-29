@@ -4,11 +4,11 @@ import adisp
 from BWUtil import AsyncReturn
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
-from async import await, async
+from async import async, await, await_callback, delay
 from contextlib import contextmanager
+from functools import partial
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx, _logger
-from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    CustomizationTabs, CustomizationModes)
+from gui.Scaleform.daapi.view.lobby.customization.shared import (CustomizationModes, CustomizationTabs)
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.utils.decorators import process
@@ -175,6 +175,16 @@ class CustomizationContext(WGCtx, CSModImpl):
         if not result:
             return
         WGCtx.changeModeWithProgressionDecal(self, itemCD)
+        entity = BigWorld.player().hangarSpace.getVehicleEntity()
+        if entity and entity.isVehicleLoaded:
+            yield await(delay(0))
+        else:
+            def delayer(callback):
+                onLoaded = lambda e: (BigWorld.callback(0, partial(callback, None)), g_eventBus.removeListener(
+                    CameraRelatedEvents.VEHICLE_LOADING, onLoaded, EVENT_BUS_SCOPE.DEFAULT) if not e.ctx['started'] else None)
+                g_eventBus.addListener(CameraRelatedEvents.VEHICLE_LOADING, onLoaded, EVENT_BUS_SCOPE.DEFAULT)
+
+            yield await_callback(delayer)()
         item = self._service.getItemByCD(itemCD)
         self.events.onGetItemBackToHand(item, level, scrollToItem=True)
         if not self.isPurchase:
