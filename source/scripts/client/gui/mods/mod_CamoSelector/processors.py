@@ -13,7 +13,7 @@ from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
 from helpers import dependency
 from items.components.c11n_constants import SeasonType
-from items.customizations import CustomizationOutfit, createNationalEmblemComponents
+from items.customizations import CustomizationOutfit, EmptyComponent, createNationalEmblemComponents
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from vehicle_outfit.outfit import Area
 from vehicle_outfit.packers import pickPacker
@@ -73,7 +73,9 @@ def applyOutfitCache(outfit, seasonCache, clean=True):
                         del areaCache[regionIdx]
                         itemDB = itemDBs[C11N_ITEM_TYPE_MAP[slotType]]
                         continue
-                    component = pickPacker(slotType if not is_number else GUI_ITEM_TYPE.PERSONAL_NUMBER).getRawComponent()()
+                    component = (
+                            pickPacker(slotType if not is_number else GUI_ITEM_TYPE.PERSONAL_NUMBER).getRawComponent()
+                            or EmptyComponent)()
                     [setattr(component, k, v) for k, v in areaCache[regionIdx].items()]
                     slot.set(itemDB[itemID].compactDescr, int(regionIdx), component)
                     itemDB = itemDBs[C11N_ITEM_TYPE_MAP[slotType]]
