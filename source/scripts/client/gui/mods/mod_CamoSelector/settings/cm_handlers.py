@@ -25,28 +25,19 @@ class Options(object):
 
 class CustomizationItemCMHandler(WGCMHandler):
     def _generateOptions(self, ctx=None):
-        result = WGCMHandler._generateOptions(self, ctx)
-        item = self.itemsCache.items.getItemByCD(self._intCD)
         if self.__ctx.isPurchase:
-            if item.itemTypeID == GUI_ITEM_TYPE.STYLE and item.isEditable:
-                result[2]['initData']['enabled'] &= (
-                        self.__ctx.mode.getItemInventoryCount(item) > 0 and self.__ctx.mode.getPurchaseLimit(item) > 0)
-            return result
-        # leave_tail = 1  # > 0
-        # to_remove = 2
-        # if item.isRentable:
-        #     to_remove += 1
-        # del result[-(to_remove + leave_tail) * 2 + 1:-leave_tail*2 + 1]
+            return WGCMHandler._generateOptions(self, ctx)
+        item = self.itemsCache.items.getItemByCD(self._intCD)
+        result = []
         if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
-            result[2:-1] = self.__separateItem(self.__getEditStyleBtn(item))
-        else:
-            del result[:-1]
+            result += self.__separateItem(self.__getStyleInfoBtn(item))
+        result.append(self.__getRemoveBtn(item))
         if item.itemTypeID != GUI_ITEM_TYPE.CAMOUFLAGE:
             return result
         getOptionLabel = lambda option: g_config.i18n['contextMenu_' + option]
         getOptionData = lambda option, remove=False, enabled=True: (
             option, getOptionLabel(option + ('_remove' if remove else '')), {'enabled': enabled})
-        setting = self.__ctx.getItemSettings(item)
+        setting = self.__ctx.mode.getItemSettings(item)
         getSeasonOptionData = lambda option, s: getOptionData(option, s in setting['season'], (
                 item.priceGroup == 'custom' or item.isHidden) and (len(setting['season']) != 1 or s not in setting['season']))
         mode = setting['random_mode']
@@ -69,17 +60,10 @@ class CustomizationItemCMHandler(WGCMHandler):
         )
         return result
 
-    def __getEditStyleBtn(self, item):
-        # noinspection PyUnresolvedReferences
-        btn = WGCMHandler._CustomizationItemCMHandler__getEditStyleBtn(self, item)
-        if not self.__ctx.isPurchase:
-            btn['initData']['enabled'] = not item.modelsSet
-        return btn
-
     def onOptionSelect(self, optionId):
         if optionId not in Options.ALL:
             return WGCMHandler.onOptionSelect(self, optionId)
-        settings = self.__ctx.getItemSettings(self.itemsCache.items.getItemByCD(self._intCD))
+        settings = self.__ctx.mode.getItemSettings(self.itemsCache.items.getItemByCD(self._intCD))
         value = optionId.split('_')[1]
         if optionId in Options.SEASON:
             seasons = settings['season']

@@ -2,7 +2,7 @@ from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import (
     CarouselCache as WGCache, CarouselData, CustomizationBookmarkVO, CustomizationCarouselDataProvider as WGCarouselDP,
-    FilterTypes, ItemsData,
+    FilterTypes, ItemsData, _logger,
 )
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
     CustomizationTabs, ITEM_TYPE_TO_TAB, isItemLimitReached, vehicleHasSlot,
@@ -20,13 +20,19 @@ from .. import g_config
 
 class CustomizationCarouselDataProvider(WGCarouselDP):
     def onModeChanged(self, modeId, prevModeId):
+        visibleTabs = self.getVisibleTabs()  # don't reset tab idx upon mode change, unless absolutely necessary
+        tabId = None
         if CustomizationModes.EDITABLE_STYLE in (modeId, prevModeId):
             self.clearFilter()
             self.__selectedGroup.clear()
             self.invalidateFilteredItems()
-        visibleTabs = self.getVisibleTabs()  # don't reset tab idx upon mode change, unless absolutely necessary
-        if self.__ctx.mode.tabId not in visibleTabs:
-            self.__ctx.mode.changeTab(visibleTabs[0])
+            if self.__ctx.mode.getDependenciesData():
+                if CustomizationTabs.CAMOUFLAGES in visibleTabs:
+                    tabId = CustomizationTabs.CAMOUFLAGES
+                else:
+                    _logger.warning('Style with dependencies have to open Camouflages tab, but this tab is not found!')
+        if self.__ctx.mode.tabId not in visibleTabs or tabId is not None:
+            self.__ctx.mode.changeTab(tabId or visibleTabs[0])
 
     def getNextItem(self, reverse):
         if self.__selectedItem.idx == -1:
@@ -38,7 +44,8 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
         while 0 <= idx < itemsCount:
             intCD = self.collection[idx]
             item = self.__service.getItemByCD(intCD)
-            if not self.__ctx.isPurchase or not isItemLimitReached(item, outfits) or item.isStyleOnly:
+            if (not self.__ctx.isPurchase or
+                    not isItemLimitReached(item, outfits) or item.isStyleOnly and not self.processDependentParams(item)[1]):
                 return item
             idx += shift
         return None
@@ -51,23 +58,8 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
         # noinspection PyUnresolvedReferences
         WGCarouselDP._CustomizationCarouselDataProvider__initFilters(self)
         usedUpFilter = self.__carouselFilters[FilterTypes.USED_UP]
-        usedUpFilter._SimpleCarouselFilter__criteria ^= REQ_CRITERIA.CUSTOM(
-            lambda _: not self.__ctx.isPurchase)
+        usedUpFilter._SimpleCarouselFilter__criteria ^= REQ_CRITERIA.CUSTOM(lambda _: not self.__ctx.isPurchase)
         usedUpFilter.update(True)
-
-    def __getSelectedGroupIdx(self):
-        purchaseMode = self.__ctx.purchaseMode
-        season, modeId, tabId = self.__ctx.season, self.__ctx.modeId, self.__ctx.mode.tabId
-        selectedGroup = self.__selectedGroup.get(purchaseMode, {}).get(modeId, {}).get(season, {}).get(tabId)
-        return selectedGroup
-
-    def __setSelectedGroupIdx(self, index=None):
-        purchaseMode = self.__ctx.purchaseMode
-        season, modeId, tabId = self.__ctx.season, self.__ctx.modeId, self.__ctx.mode.tabId
-        itemsData = self.__carouselCache.getItemsData()
-        if index is not None and index >= len(itemsData.groups):
-            index = None
-        self.__selectedGroup.setdefault(purchaseMode, {}).setdefault(modeId, {}).setdefault(season, {})[tabId] = index
 
     def __createFilterCriteria(self):
         # noinspection PyUnresolvedReferences
@@ -92,46 +84,49 @@ class CarouselCache(WGCache):
     def getVisibleTabs(self):
         visibleTabs = WGCache.getVisibleTabs(self)
         season, modeId = self.__ctx.season, self.__ctx.modeId
-        if modeId != CustomizationModes.EDITABLE_STYLE:
-            visibleTabs = (self.__itemsData[CustomizationModes.CUSTOM][season].keys(
-            ) + self.__itemsData[CustomizationModes.STYLED][season].keys())
+        if self.__ctx.isPurchase and modeId != CustomizationModes.EDITABLE_STYLE:
+            visibleTabs = sum((self.__itemsData[mode][season].keys() for mode in (
+                CustomizationModes.CUSTOM, CustomizationModes.STYLED)), [])
         return visibleTabs
 
     def __getCarouselData(self, season=None, modeId=None, tabId=None):
         itemsData = self.getItemsData(season, modeId, tabId)
         filteredItems = filter(self.__createFilterCriteria(), itemsData.items)
+        sortCriteria = self.__createSortCriteria()
+        if sortCriteria:
+            filteredItems.sort(key=sortCriteria)
         carouselData = CarouselData()
         lastGroupID = None
         for item in filteredItems:
+            carouselData.items.append(item.intCD)
+            carouselData.sizes.append(item.isWide())
+            if sortCriteria:
+                continue
             isPurchase = self.__ctx.isPurchase
             groupName = getGroupName(item, isPurchase)
             group = item.groupID if isPurchase else groupName
             if group != lastGroupID:
                 lastGroupID = group
-                bookmarkVO = CustomizationBookmarkVO(group, len(carouselData.items))
+                bookmarkVO = CustomizationBookmarkVO(group, len(carouselData.items) - 1)
                 carouselData.bookmarks.append(bookmarkVO._asdict())
-            carouselData.items.append(item.intCD)
-            carouselData.sizes.append(item.isWide())
-
         return carouselData
 
     def __initItemsData(self):
         self.__itemsData.clear()
-        if self.__ctx.isPurchase:
-            requirement = createCustomizationBaseRequestCriteria(
-                g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.mode.getAppliedItems()
-            ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
-        else:
-            requirement = REQ_CRITERIA.CUSTOM(lambda _i: _i.descriptor.parentGroup is not None and (
-                    _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)))
+        purchaseRequirement = createCustomizationBaseRequestCriteria(
+            g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.mode.getAppliedItems()
+        ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
+        moddedRequirement = REQ_CRITERIA.CUSTOM(lambda _i: _i.descriptor.parentGroup is not None and (
+                _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)))
         itemTypes = []
-        for tabId, slotType in list(CustomizationTabs.SLOT_TYPES.iteritems()):
+        for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
             if vehicleHasSlot(slotType):
                 itemTypes.extend(CustomizationTabs.ITEM_TYPES[tabId])
         if self.__ctx._hangarSpace.space.getVehicleEntity().appearance._getThisVehicleDossierInsigniaRank():
             itemTypes.append(GUI_ITEM_TYPE.INSIGNIA)
 
-        allItems = []
+        purchaseItems = []
+        moddedItems = []
         customizationCache = vehicles.g_cache.customization20().itemTypes
         cTypes = set((C11N_ITEM_TYPE_MAP[iType] for iType in itemTypes if iType in C11N_ITEM_TYPE_MAP))
         for cType in cTypes:
@@ -140,24 +135,31 @@ class CarouselCache(WGCache):
                     continue
                 intCD = vehicles.makeIntCompactDescrByID('customizationItem', cType, itemID)
                 item = self.__service.getItemByCD(intCD)
-                if requirement(item):
-                    allItems.append(item)
+                if purchaseRequirement(item):
+                    purchaseItems.append(item)
+                if moddedRequirement(item):
+                    moddedItems.append(item)
 
-        sortedItems = sorted(allItems, key=CSComparisonKey)
+        sortedPItems = sorted(purchaseItems, key=CSComparisonKey(True))
+        sortedMItems = sorted(moddedItems, key=CSComparisonKey(False))
         customModeTabs = CustomizationTabs.MODES[CustomizationModes.CUSTOM]
-        for item in sortedItems:
-            tabId = ITEM_TYPE_TO_TAB[item.itemTypeID]
-            modeId = CustomizationModes.CUSTOM if tabId in customModeTabs else CustomizationModes.STYLED
-            groupName = getGroupName(item, self.__ctx.isPurchase)
-            for season in SeasonType.COMMON_SEASONS:
-                itemsDataStorage = self.__itemsData[modeId][season]
-                if not itemsDataStorage or tabId != itemsDataStorage.keys()[-1]:
-                    itemsDataStorage[tabId] = ItemsData()
-                itemsData = itemsDataStorage.values()[-1]
-                for name in groupName.split(g_config.i18n['flashCol_group_separator']):
-                    if name and name not in itemsData.groups:
-                        itemsData.groups[name] = name
-                itemsData.items.append(item)
+        for idx, sortedItems in enumerate((sortedPItems, sortedMItems)):
+            for item in sortedItems:
+                tabId = ITEM_TYPE_TO_TAB[item.itemTypeID]
+                modeId = CustomizationModes.CAMO_SELECTOR if idx else (
+                    CustomizationModes.CUSTOM if tabId in customModeTabs else CustomizationModes.STYLED)
+                groupName = getGroupName(item, not idx)
+                for season in SeasonType.COMMON_SEASONS:
+                    if not idx and not item.season & season:
+                        continue
+                    itemsDataStorage = self.__itemsData[modeId][season]
+                    if not itemsDataStorage or tabId != itemsDataStorage.keys()[-1]:
+                        itemsDataStorage[tabId] = ItemsData()
+                    itemsData = itemsDataStorage.values()[-1]
+                    for name in groupName.split(g_config.i18n['flashCol_group_separator']):
+                        if name and name not in itemsData.groups:
+                            itemsData.groups[name] = name
+                    itemsData.items.append(item)
 
 
 @overrideMethod(WGCarouselDP, '__new__')

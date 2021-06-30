@@ -1,33 +1,29 @@
-from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION
 from gui.Scaleform.daapi.view.lobby.customization import (
-    customization_style_info as si, customization_inscription_controller as ic)
+    customization_inscription_controller as ic, customization_style_info as si,
+)
 from gui.Scaleform.daapi.view.lobby.customization.context import custom_mode
 from gui.Scaleform.daapi.view.lobby.customization.popovers import C11nPopoverItemData, orderKey
 from gui.Scaleform.daapi.view.lobby.customization.popovers.custom_popover import CustomPopoverDataProvider
+from gui.Scaleform.daapi.view.lobby.customization.popovers.editable_style_popover import EditableStylePopover
+from gui.Scaleform.daapi.view.lobby.customization.popovers.style_popover import StylePopoverDataProvider
 from gui.Scaleform.daapi.view.lobby.customization.progression_styles.stage_switcher import StageSwitcherView
-from gui.Scaleform.daapi.view.lobby.customization.shared import getSlotDataFromSlot, ITEM_TYPE_TO_SLOT_TYPE
-from gui.customization import CustomizationService
-from gui.customization.constants import CustomizationModes
-from gui.customization.shared import getPurchaseMoneyState, isTransactionValid, C11nId
+from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, ITEM_TYPE_TO_SLOT_TYPE, getSlotDataFromSlot
+from gui.customization.shared import C11nId, getPurchaseMoneyState, isTransactionValid
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.lobby.customization.progressive_items_view.progressive_items_view import ProgressiveItemsView
+from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items.Vehicle import Vehicle
+from gui.shared.gui_items.customization.slots import EmblemSlot
 from helpers import dependency, func_utils
 from items.components import c11n_components as c11c
 from itertools import ifilter
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
-from .shared import CSMode
+from vehicle_outfit.outfit import ANCHOR_TYPE_TO_SLOT_TYPE_MAP, Area
 from .. import g_config
-
-
-@overrideMethod(CustomizationService, '__loadCustomization')
-def __loadCustomization(base, self, vehInvID=None, callback=None, *a, **k):
-    base(self, vehInvID, callback, *a, **k)
-    if g_config.data['enabled'] and (vehInvID is None or vehInvID == g_currentVehicle.item.invID) and callback is not None:
-        self.getCtx().changePurchaseMode(CSMode.PURCHASE)
 
 
 @overrideMethod(custom_mode, 'isPersonalNumberAllowed')
@@ -117,8 +113,10 @@ def __getOriginalItemsData(base, self):
 
 
 @overrideMethod(CustomPopoverDataProvider, '__makeItemDataVO')
-def __makeItemDataVO(base, itemData, isModified):
-    data = base(itemData, isModified)
+@overrideMethod(StylePopoverDataProvider, '__makeItemDataVO')
+@overrideMethod(EditableStylePopover, '__makeItemDataVO')
+def __makeItemDataVO(base, itemData, *a, **k):
+    data = base(itemData, *a, **k)
     if '4278190335,4278255360,4294901760,4278190080' in data['icon']:
         data['icon'] = '../../' + data['icon'].split('"', 2)[1]
     return data
@@ -152,7 +150,7 @@ def _onSelectItem(base, self, args=None):
 
 def updateCSInfo(self, *_):
     ctx = self._StageSwitcherView__ctx
-    if ctx.modeId != CustomizationModes.STYLED:
+    if ctx.mode.tabId != CustomizationTabs.STYLES:
         return
     originalLevel = 1 if not ctx.isPurchase else (
         ctx.mode.getOriginalOutfit().progressionLevel
@@ -171,7 +169,7 @@ def _initialize(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
     if not g_config.data['enabled']:
         return
-    self._StageSwitcherView__ctx.events.onPurchaseModeChanged += self.updateCSInfo
+    self._StageSwitcherView__ctx.events.onModeChanged += self.updateCSInfo
     self._StageSwitcherView__ctx.events.onChangesCanceled += self.updateCSInfo
 
 
@@ -180,7 +178,7 @@ def _finalize(base, self):
     if not g_config.data['enabled']:
         return base(self)
     self._StageSwitcherView__ctx.events.onChangesCanceled -= self.updateCSInfo
-    self._StageSwitcherView__ctx.events.onPurchaseModeChanged -= self.updateCSInfo
+    self._StageSwitcherView__ctx.events.onModeChanged -= self.updateCSInfo
     base(self)
 
 
@@ -194,3 +192,19 @@ def new_onLoading(base, self, *args, **kwargs):
     with self.getViewModel().transaction() as model:
         model.setCurrentLevel(1)
         model.setSelectedLevel(progressionLevel)
+
+
+@overrideMethod(Vehicle, '__initAnchors')
+def new_initAnchors(base, self):
+    slotsAnchorsById, slotsAnchors = base(self)
+    slotsAnchors[GUI_ITEM_TYPE.INSIGNIA] = {area: {} for area in Area.ALL}
+    vehDescr = self._descriptor
+    for emblemSlot in vehDescr.gun.emblemSlots:
+        areaId = Area.GUN
+        slotType = ANCHOR_TYPE_TO_SLOT_TYPE_MAP.get(emblemSlot.type)
+        if slotType is not None:
+            regionIdx = len(slotsAnchors[slotType][areaId])
+            slot = EmblemSlot(emblemSlot, areaId, regionIdx)
+            slotsAnchors[slotType][areaId][regionIdx] = slot
+            slotsAnchorsById[emblemSlot.slotId] = slot
+    return slotsAnchorsById, slotsAnchors

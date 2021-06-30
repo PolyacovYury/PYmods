@@ -1,17 +1,15 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
-from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import (
     CustomizationPropertiesSheet as WGPropertiesSheet,
 )
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES as CA
-from gui.customization.constants import CustomizationModes as C11nModes, CustomizationModes
+from gui.customization.constants import CustomizationModes
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.vehicles import g_cache
-from .shared import CSMode
 from .. import g_config
 
 
@@ -98,7 +96,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         # noinspection PyUnresolvedReferences
         renderers = WGPropertiesSheet._CustomizationPropertiesSheet__makeStyleRenderersVOs(self)
         if not self.__ctx.isPurchase:
-            renderers[1:] = [self.__makeStyleEditRendererVO()]
+            renderers[1:] = []
         return renderers
 
     def __makeSetOnOtherTankPartsRendererVO(self):
@@ -108,24 +106,6 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         result = WGPropertiesSheet._CustomizationPropertiesSheet__makeSetOnOtherTankPartsRendererVO(self)
         self._isItemAppliedToAll = backup
         return result
-
-    def __makeStyleEditRendererVO(self):
-        enabled = not bool(self._currentStyle.modelsSet)
-        return {
-            'iconSrc': backport.image(R.images.gui.maps.icons.customization.property_sheet.idle.edit_style()),
-            'iconHoverSrc': backport.image(R.images.gui.maps.icons.customization.property_sheet.idle.edit_style_hover()),
-            'iconDisableSrc': backport.image(
-                R.images.gui.maps.icons.customization.property_sheet.disable.edit_style_disable()),
-            'actionBtnLabel': g_config.i18n['flash_propertySheet_edit_button'],
-            'actionType': CA.CUSTOMIZATION_SHEET_ACTION_EDIT_STYLE,
-            'rendererLnk': CA.CUSTOMIZATION_SHEET_BTN_RENDERER_UI,
-            'animatedTransition': True,
-            'disableTooltip': g_config.i18n['flashCol_propertySheet_edit_disabled'],
-            'notifyText': makeHtmlString(
-                'html_templates:lobby/customization/notify', 'decal', {
-                    'value': g_config.i18n['flashCol_propertySheet_edit_tooltip']}),
-            'needNotify': enabled and not self.__ctx.getMode(CSMode.INSTALL, C11nModes.CUSTOM).isOutfitsEmpty(),
-            'enabled': enabled}
 
     def __makeSetOnOtherSeasonsRendererVO(self):
         backup = self._isItemAppliedToAll

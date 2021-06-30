@@ -1,11 +1,15 @@
+from functools import partial
+
+import BigWorld
 import nations
 import re
 from BWUtil import AsyncReturn
+from VehicleStickers import SlotTypes
 from async import async, await
 from frameworks.wulf import WindowLayer
-from gui import makeHtmlString
+from gui import hangar_vehicle_appearance, makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization import (
-    customization_carousel, customization_properties_sheet, popovers, shared as lobby_shared, vehicle_anchor_states,
+    customization_carousel, customization_properties_sheet, popovers, shared as lobby_shared,
 )
 from gui.Scaleform.daapi.view.lobby.customization.context import custom_mode, editable_style_mode
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
@@ -14,9 +18,11 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import (
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.customization import shared as gui_shared
 from gui.customization.constants import CustomizationModes
+from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.builders import WarningDialogBuilder, _setupButtonsBasedOnRes
 from gui.impl.gen import R
+from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.personality import ServicesLocator as SL
 from helpers import dependency
@@ -24,16 +30,9 @@ from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import CustomizationType, ItemTags, ProjectionDecalFormTags, SeasonType
 from items.vehicles import g_cache, getItemByCompactDescr
 from skeletons.gui.customization import ICustomizationService
-from vehicle_outfit.outfit import Area
+from vehicle_outfit.outfit import ANCHOR_TYPE_TO_SLOT_TYPE_MAP, Area
 from .. import g_config
 from ..constants import SEASON_NAME_TO_TYPE
-
-
-class CSMode(object):
-    PURCHASE, INSTALL = ALL = range(2)
-    NAMES = ['buy', 'install']
-    BUTTONS = [1, 0]
-    FROM_BUTTONS = [INSTALL, PURCHASE]
 
 
 CustomizationTabs.INSIGNIA = 8
@@ -43,10 +42,22 @@ CustomizationTabs.SLOT_TYPES[CustomizationTabs.INSIGNIA] = GUI_ITEM_TYPE.INSIGNI
 CustomizationTabs.ITEM_TYPES[CustomizationTabs.INSIGNIA] = (GUI_ITEM_TYPE.INSIGNIA,)
 ITEM_TYPE_TO_TAB[GUI_ITEM_TYPE.INSIGNIA] = CustomizationTabs.INSIGNIA
 ITEM_TYPE_TO_SLOT_TYPE[GUI_ITEM_TYPE.INSIGNIA] = GUI_ITEM_TYPE.INSIGNIA
-vehicle_anchor_states.REGIONS_SLOTS += (GUI_ITEM_TYPE.INSIGNIA,)
 gui_shared.C11N_ITEM_TYPE_MAP[GUI_ITEM_TYPE.INSIGNIA] = CustomizationType.INSIGNIA
 TYPES_ORDER = (GUI_ITEM_TYPE.INSIGNIA,) + TYPES_ORDER
 customization_carousel.TYPES_ORDER = popovers.TYPES_ORDER = TYPES_ORDER
+ANCHOR_TYPE_TO_SLOT_TYPE_MAP[SlotTypes.INSIGNIA_ON_GUN] = GUI_ITEM_TYPE.INSIGNIA
+hangar_vehicle_appearance.SLOT_TYPES += (GUI_ITEM_TYPE.INSIGNIA,)
+CustomizationModes.CAMO_SELECTOR = 8
+CustomizationModes.ALL += (CustomizationModes.CAMO_SELECTOR,)
+
+
+def onVehicleLoadedOnce(handler):
+    entity = BigWorld.player().hangarSpace.getVehicleEntity()
+    if entity and entity.isVehicleLoaded:
+        return handler()
+    onLoaded = lambda e: (handler(), g_eventBus.removeListener(
+        CameraRelatedEvents.VEHICLE_LOADING, onLoaded, EVENT_BUS_SCOPE.DEFAULT) if not e.ctx['started'] else None)
+    g_eventBus.addListener(CameraRelatedEvents.VEHICLE_LOADING, onLoaded, EVENT_BUS_SCOPE.DEFAULT)
 
 
 def getItemSeason(item):
@@ -96,7 +107,9 @@ def nationName(nationID):
 
 
 @dependency.replace_none_kwargs(service=ICustomizationService)
-def CSComparisonKey(item, service=None):
+def CSComparisonKey(isPurchase, item=None, service=None):
+    if item is None:
+        return partial(CSComparisonKey, isPurchase)
     tags, is3D, isVictim, clan, texName = item.tags, False, False, False, ''
     nat_count, vehicles = len(_getNations(item)), _getVehicles(item)
     if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
@@ -112,8 +125,9 @@ def CSComparisonKey(item, service=None):
             texName = getattr(item, 'texture', '').lower()
             if '/' in texName:
                 texName = texName.rsplit('/', 1)[-1]
+    order = TYPES_ORDER if isPurchase else (GUI_ITEM_TYPE.STYLE,) + tuple(i for i in TYPES_ORDER if i != GUI_ITEM_TYPE.STYLE)
     return (
-        TYPES_ORDER.index(item.itemTypeID) if item.itemTypeID in TYPES_ORDER else 0, ItemTags.NATIONAL_EMBLEM not in tags,
+        order.index(item.itemTypeID) if item.itemTypeID in order else -1, ItemTags.NATIONAL_EMBLEM not in tags,
         not is3D, isVictim, item.priceGroup == 'custom', nat_count == 0,
         (not (clan or vehicles), not clan, not vehicles) if not nat_count else (clan, nat_count != 1),
         getGroupName(item, service.getCtx().isPurchase), not item.isHistorical(), texName, item.isRare(),

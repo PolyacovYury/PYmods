@@ -10,7 +10,7 @@ from ... import g_config
 from ...constants import SEASON_NAME_TO_TYPE, SelectionMode
 
 
-class CSModImpl(object):
+class ItemSettingsRemap(object):
     def __init__(self):
         self._currentSettings = {'custom': {}, 'remap': {}}
 
@@ -24,13 +24,6 @@ class CSModImpl(object):
         settings.setdefault('ally', origSettings.get('ally', True))
         settings.setdefault('enemy', origSettings.get('enemy', True))
         return settings
-
-    def isOutfitsModified(self):
-        self._cleanSettings()
-        return any(self._currentSettings.itervalues())
-
-    def cancelChanges(self):
-        self._currentSettings = {'custom': {}, 'remap': {}}
 
     def _cleanSettings(self):
         camouflages = g_cache.customization20().camouflages
@@ -66,3 +59,10 @@ class CSModImpl(object):
         if any(self._currentSettings.itervalues()):
             g_config.collectCamouflageData()
             SystemMessages.pushI18nMessage(g_config.i18n['flashCol_serviceMessage_settings'], type=SM_TYPE.Information)
+
+    def isOutfitsModified(self):
+        self._cleanSettings()
+        return any(self._currentSettings.itervalues())
+
+    def cancelChanges(self):
+        self._currentSettings = {'custom': {}, 'remap': {}}

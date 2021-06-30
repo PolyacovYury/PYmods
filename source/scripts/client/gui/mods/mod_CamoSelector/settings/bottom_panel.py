@@ -1,7 +1,10 @@
+from functools import partial
+
 import BigWorld
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from frameworks.wulf import WindowLayer as WL
+from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import __getIcon as getIcon
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
@@ -15,14 +18,14 @@ from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
-from gui.customization.constants import CustomizationModeSource, CustomizationModes
+from gui.customization.constants import CustomizationModes
 from gui.shared.formatters import getItemPricesVO
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.utils.functions import makeTooltip
 from helpers.i18n import makeString as _ms
 from shared_utils import first
-from .shared import CSComparisonKey, CSMode
+from .shared import CSComparisonKey
 from .. import g_config
 
 
@@ -30,35 +33,20 @@ class CustomizationBottomPanel(CBP):
     def _populate(self):
         CBP._populate(self)
         self.app.loadView(SFViewLoadParams('PY_CS_carousel_UI'))
-        self.__ctx.events.onPurchaseModeChanged += self.__onPurchaseModeChanged
-
-    def _dispose(self):
-        self.__ctx.events.onPurchaseModeChanged -= self.__onPurchaseModeChanged
-        CBP._dispose(self)
-
-    def __onPurchaseModeChanged(self):
-        self._carouselDP.invalidateItems()
-        self.__onModeChanged(self.__ctx.modeId, self.__ctx.modeId)
-
-    def returnToStyledMode(self):
-        self.__changeMode(CSMode.PURCHASE)
 
     def switchMode(self, index):
         if index != 2:
-            self.__changeMode(CSMode.FROM_BUTTONS[index])
-
-    def __changeMode(self, modeId):
-        self.__ctx.changePurchaseMode(modeId, source=CustomizationModeSource.BOTTOM_PANEL)
-        self.__updatePopoverBtnIcon()
+            modeId = self.__ctx.purchaseModeId
+            if modeId == CustomizationModes.EDITABLE_STYLE:
+                modeId = CustomizationModes.STYLED
+            self.__changeMode((CustomizationModes.CAMO_SELECTOR, modeId)[index])
 
     def showGroupFromTab(self, tabIndex):
-        if tabIndex == CustomizationTabs.STYLES and self.__ctx.modeId != CustomizationModes.STYLED:
-            self.__ctx.changeMode(CustomizationModes.STYLED, tabIndex, source=CustomizationModeSource.BOTTOM_PANEL)
+        if tabIndex == CustomizationTabs.STYLES and self.__ctx.isPurchase and self.__ctx.modeId != CustomizationModes.STYLED:
+            self.__changeMode(CustomizationModes.STYLED)
         elif tabIndex != CustomizationTabs.STYLES and self.__ctx.modeId == CustomizationModes.STYLED:
-            self.__ctx.changeMode(CustomizationModes.CUSTOM, tabIndex, source=CustomizationModeSource.BOTTOM_PANEL)
-        else:
-            self.__ctx.mode.changeTab(tabIndex)
-        self.__updatePopoverBtnIcon()
+            self.__changeMode(CustomizationModes.CUSTOM)
+        CBP.showGroupFromTab(self, tabIndex)
 
     def __updateTabs(self):
         tabsData, pluses = self.__getItemTabsData()
@@ -95,9 +83,10 @@ class CustomizationBottomPanel(CBP):
         # noinspection PyUnresolvedReferences
         data = CBP._CustomizationBottomPanel__getSwitcherInitData(self)
         return dict(data, **{
-            'leftLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.INSTALL]],
-            'rightLabel': g_config.i18n['flash_switcher_' + CSMode.NAMES[CSMode.PURCHASE]],
-            'selectedIndex': CSMode.BUTTONS[self.__ctx.purchaseMode] + int(self.__ctx.isPurchase and data['isEditable']),
+            'leftLabel': g_config.i18n['flash_switcher_install'],
+            'rightLabel': g_config.i18n['flash_switcher_buy'],
+            'selectedIndex': int(self.__ctx.isPurchase) + int(self.__ctx.isPurchase and data['isEditable']),
+            'popoverAlias': data['popoverAlias'] if self.__ctx.isPurchase else VIEW_ALIAS.CUSTOMIZATION_EDITED_KIT_POPOVER,
             'rightEnabled': True
         })
 
@@ -105,6 +94,8 @@ class CustomizationBottomPanel(CBP):
         # noinspection PyUnresolvedReferences
         CBP._CustomizationBottomPanel__setBottomPanelBillData(self, *_)
         BigWorld.callback(0, self.__showBill if self.__ctx.isOutfitsModified() else self.__hideBill)
+        BigWorld.callback(0, partial(self.as_setItemsPopoverBtnEnabledS, any(
+            d[1].isFilled() for d in self.__ctx.mode.currentOutfit.itemsFull())))
 
     def _carouseItemWrapper(self, itemCD):
         VO = CBP._carouseItemWrapper(self, itemCD)
@@ -156,7 +147,7 @@ class CustomizationBottomPanel(CBP):
     def __scrollToNewItem(self):
         if self.__ctx.isPurchase:
             itemTypes = CustomizationTabs.ITEM_TYPES[self.__ctx.mode.tabId]
-            newItems = sorted(g_currentVehicle.item.getNewC11nItems(g_currentVehicle.itemsCache.items), key=CSComparisonKey)
+            newItems = sorted(g_currentVehicle.item.getNewC11nItems(self.itemsCache.items), key=CSComparisonKey(True))
             for item in newItems:
                 if item.itemTypeID in itemTypes and item.season & self.__ctx.season:
                     return self.__scrollToItem(item.intCD, immediately=True)
@@ -175,10 +166,15 @@ class CustomizationBottomPanel(CBP):
         # noinspection PyUnresolvedReferences
         return CBP._CustomizationBottomPanel__onEditableStylesHintsShown(self)
 
-    def __processBillDataPurchaseItems(self, purchaseItems):
-        with self.__ctx.overridePurchaseMode():
-            # noinspection PyUnresolvedReferences
-            return CBP._CustomizationBottomPanel__processBillDataPurchaseItems(self, purchaseItems)
+    def __updateStageSwitcherVisibility(self):
+        newVisibility = False
+        if self.__ctx.mode.tabId == CustomizationTabs.STYLES:
+            styleItem = self.__ctx.mode.currentOutfit.style
+            if styleItem:
+                newVisibility = styleItem.isProgression
+        if self.__stageSwitcherVisibility != newVisibility:
+            self.__stageSwitcherVisibility = newVisibility
+            self.as_setStageSwitcherVisibilityS(self.__stageSwitcherVisibility)
 
 
 class CamoSelector_carousel(View):
