@@ -8,20 +8,23 @@ from HeroTank import _HeroTankAppearance
 from PYmodsCore import loadJson, overrideMethod
 from PlatoonTank import _PlatoonTankAppearance
 from gui import g_tankActiveCamouflage
+from gui.Scaleform.daapi.view.lobby.customization.shared import (
+    CustomizationTabs, fitOutfit, getEditableStyleOutfitDiff, getEditableStyleOutfitDiffComponent,
+)
 from gui.customization.shared import C11N_ITEM_TYPE_MAP, SEASON_TYPE_TO_NAME, __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
 from helpers import dependency
-from items.components.c11n_constants import SeasonType
+from items import makeIntCompactDescrByID
+from items.components.c11n_constants import CustomizationType, EMPTY_ITEM_ID, SeasonType
 from items.customizations import CustomizationOutfit, EmptyComponent, createNationalEmblemComponents
 from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from vehicle_outfit.outfit import Area
 from vehicle_outfit.packers import pickPacker
 from vehicle_systems.CompoundAppearance import CompoundAppearance
-from vehicle_systems.camouflages import getStyleProgressionOutfit
 from vehicle_systems.tankStructure import TankPartNames
 from . import g_config
-from .constants import SEASON_NAME_TO_TYPE
+from .constants import SEASON_NAME_TO_TYPE, getAvailableRegions
 
 try:
     import gui.mods.mod_statpaints  # camouflage removal should work even with CamoSelector, so it has to be imported first
@@ -43,43 +46,107 @@ def hasNoCamo(outfit):
     return not any(GUI_ITEM_TYPE.CAMOUFLAGE in slot.getTypes() and not slot.isEmpty() for slot in outfit.slots())
 
 
-def createEmptyOutfit(vDesc):
-    return dependency.instance(IGuiItemsFactory).createOutfit(
-        component=(CustomizationOutfit(decals=createNationalEmblemComponents(vDesc))), vehicleCD=vDesc.makeCompactDescr())
+def getStyleFromId(styleId):
+    styleCD = makeIntCompactDescrByID('customizationItem', CustomizationType.STYLE, styleId)
+    return dependency.instance(IGuiItemsFactory).createCustomization(styleCD)
 
 
-def applyOutfitCache(outfit, seasonCache, clean=True):
+def createEmptyOutfit(vDesc, diffComp=None):
+    component = CustomizationOutfit(decals=createNationalEmblemComponents(vDesc))
+    if diffComp is not None:
+        component = component.applyDiff(diffComp)
+    return dependency.instance(IGuiItemsFactory).createOutfit(component=component, vehicleCD=vDesc.makeCompactDescr())
+
+
+def applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean):
+    season = SEASON_NAME_TO_TYPE[seasonName]
+    vehicleCD = vDesc.makeCompactDescr()
+    itemDB = items.vehicles.g_cache.customization20().itemTypes[CustomizationType.STYLE]
+    styleInfo = seasonCache.get('style', {})
+    styleId = styleInfo.get('id')
+    if styleId is None:
+        return outfit
+    availableRegions = {areaId: {slotType: getAvailableRegions(
+        areaId, slotType, vDesc) for slotType in CustomizationTabs.SLOT_TYPES.itervalues()} for areaId in Area.ALL}
+    if styleId == EMPTY_ITEM_ID:
+        if not outfit.id:
+            if clean:  # item is being deleted while not applied at all. possible change after last cache
+                seasonCache.pop('style', None)  # so we remove an obsolete key
+            return outfit
+        style = getStyleFromId(outfit.id)
+        baseOutfit = style.getOutfit(season, vehicleCD=vehicleCD)
+        if style.isProgressive:
+            addOutfit = style.getAdditionalOutfit(outfit.progressionLevel, season, vehicleCD)
+            if addOutfit is not None:
+                baseOutfit = baseOutfit.patch(addOutfit)
+        fitOutfit(baseOutfit, availableRegions)
+        diffComp = getEditableStyleOutfitDiffComponent(outfit, baseOutfit)
+        diffComp.styleId = 0
+        outfit = createEmptyOutfit(vDesc, diffComp)
+        fitOutfit(outfit, availableRegions)
+        return outfit
+    if styleId not in itemDB:
+        print g_config.ID + ': style', styleId, 'for', vDesc.name, 'deleted from game client.'
+        seasonCache.pop('style', None)
+        return outfit
+    style = getStyleFromId(styleId)
+    style_season = SEASON_NAME_TO_TYPE[styleInfo.get('season', seasonName)]
+    outfit_level = outfit.progressionLevel if outfit.style and outfit.style.isProgression else 1
+    if outfit.id != styleId:
+        outfit = style.getOutfit(season, vehicleCD=vehicleCD)
+        outfit_level = outfit.progressionLevel if outfit.style and outfit.style.isProgression else 1
+    elif style_season != season:
+        baseOutfit = style.getOutfit(season, vehicleCD=vehicleCD)
+        if style.isProgressive:
+            addOutfit = style.getAdditionalOutfit(outfit.progressionLevel, season, vehicleCD)
+            if addOutfit is not None:
+                baseOutfit = baseOutfit.patch(addOutfit)
+        fitOutfit(baseOutfit, availableRegions)
+        outfit = style.getOutfit(style_season, vehicleCD=vehicleCD, diff=getEditableStyleOutfitDiff(outfit, baseOutfit))
+        outfit_level = outfit.progressionLevel if outfit.style and outfit.style.isProgression else 1
+    style_level = styleInfo.get('level', 1)
+    if style.isProgressive and outfit_level != style_level:
+        outfit = style.getStyleProgressionOutfit(outfit, style_level, style_season)
+    fitOutfit(outfit, availableRegions)
+    return outfit
+
+
+def applyOutfitCache(vDesc, outfit, seasonName, seasonCache, clean=True):
     try:
+        outfit = applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean)
+        itemDBs = items.vehicles.g_cache.customization20().itemTypes
         for itemTypeName, itemCache in seasonCache.items():
+            if itemTypeName == 'style':
+                continue
             slotType = GUI_ITEM_TYPE_INDICES[itemTypeName]
-            itemDBs = items.vehicles.g_cache.customization20().itemTypes
             itemDB = itemDBs[C11N_ITEM_TYPE_MAP[slotType]]
             for areaName, areaCache in itemCache.items():
-                areaId = (Area.MISC if areaName == 'misc' else TankPartNames.getIdx(areaName))
-                slot = outfit.getContainer(areaId).slotFor(slotType)
-                for regionIdx in areaCache.keys():
-                    itemID = areaCache[regionIdx]['id']
+                slot = outfit.getContainer(
+                    (Area.MISC if areaName == 'misc' else TankPartNames.getIdx(areaName))).slotFor(slotType)
+                for regionKey in areaCache.keys():
+                    itemID = areaCache[regionKey]['id']
                     if itemID is None:
-                        if slot.getItemCD(int(regionIdx)):
-                            slot.remove(int(regionIdx))
+                        if slot.getItemCD(int(regionKey)):
+                            slot.remove(int(regionKey))
                         elif clean:  # item is being deleted while not applied at all. possible change after last cache
-                            del areaCache[regionIdx]  # so we remove an obsolete key
+                            del areaCache[regionKey]  # so we remove an obsolete key
                         continue
-                    is_number = slotType == GUI_ITEM_TYPE.INSCRIPTION and 'number' in areaCache[regionIdx]
+                    is_number = slotType == GUI_ITEM_TYPE.INSCRIPTION and 'number' in areaCache[regionKey]
                     if is_number:
                         itemDB = itemDBs[C11N_ITEM_TYPE_MAP[GUI_ITEM_TYPE.PERSONAL_NUMBER]]
                     if itemID not in itemDB:
-                        print g_config.ID + ': wrong item ID for %s, idx %s:' % (areaName, regionIdx), itemID
-                        del areaCache[regionIdx]
+                        print g_config.ID + ':', itemTypeName, 'ID', itemID, 'on', areaName, 'region', regionKey, 'not found'
+                        del areaCache[regionKey]
                         itemDB = itemDBs[C11N_ITEM_TYPE_MAP[slotType]]
                         continue
                     component = (
                             pickPacker(slotType if not is_number else GUI_ITEM_TYPE.PERSONAL_NUMBER).getRawComponent()
                             or EmptyComponent)()
-                    [setattr(component, k, v) for k, v in areaCache[regionIdx].items()]
-                    slot.set(itemDB[itemID].compactDescr, int(regionIdx), component)
+                    [setattr(component, k, v) for k, v in areaCache[regionKey].items()]
+                    slot.set(itemDB[itemID].compactDescr, int(regionKey), component)
                     itemDB = itemDBs[C11N_ITEM_TYPE_MAP[slotType]]
         outfit.invalidate()
+        return outfit
     except AttributeError:
         __import__('pprint').pprint(seasonCache)
         raise
@@ -163,40 +230,13 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, isPlayerVehicle=True
         __import__('traceback').print_exc()
         isTurretCustomizable = False
     if isPlayerVehicle:
-        season = SEASON_NAME_TO_TYPE[seasonName]
-        vehicleCD = vDesc.makeCompactDescr()
         vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
-        styleCache = vehCache.get('style', {'intCD': None, 'applied': False})
-        if styleCache['applied']:
-            styleCD = styleCache['intCD']
-            level = styleCache.get('level', 1)
-            if styleCD is not None:
-                style = dependency.instance(IGuiItemsFactory).createCustomization(styleCD)
-                if not style:
-                    print g_config.ID + ': style', styleCD, 'for', vehicleName, 'deleted from game client.'
-                    styleCache.update(intCD=None, applied=False)
-                    styleCache.pop('level', None)
-                elif outfit.id == style.id:
-                    if style.isProgressive and level != outfit.progressionLevel:
-                        outfit = getStyleProgressionOutfit(outfit, level, season)
-                else:
-                    outfit = style.getOutfit(season, vehicleCD).copy()
-                    if style.isProgressive:
-                        outfit = getStyleProgressionOutfit(outfit, level, season)
-            else:
-                outfit = createEmptyOutfit(vDesc)
-                outfit._id = 20000
-        if not styleCache['applied']:  # could have changed in `if not style` above
-            if outfit.id and any(v for k, v in vehCache.iteritems() if k != 'style'):
-                outfit = createEmptyOutfit(vDesc)
-            applyOutfitCache(outfit, vehCache.get(seasonName, {}))
+        outfit = applyOutfitCache(vDesc, outfit, seasonName, vehCache.get(seasonName, {}))
         deleteEmpty(vehCache, isTurretCustomizable)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
-    if outfit.id:  # don't touch styles. like, at all
-        randomCache.clear()
-    elif g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
+    if g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
         processRandomCamouflages(outfit, seasonName, randomCache, isTurretCustomizable, vID)
-        applyOutfitCache(outfit, randomCache)
+        outfit = applyOutfitCache(vDesc, outfit, seasonName, randomCache)
     return outfit
 
 

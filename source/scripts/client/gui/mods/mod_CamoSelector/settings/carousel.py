@@ -114,7 +114,7 @@ class CarouselCache(WGCache):
     def __initItemsData(self):
         self.__itemsData.clear()
         purchaseRequirement = createCustomizationBaseRequestCriteria(
-            g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.mode.getAppliedItems()
+            g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.getMode().getAppliedItems()
         ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
         moddedRequirement = REQ_CRITERIA.CUSTOM(lambda _i: _i.descriptor.parentGroup is not None and (
                 _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)))

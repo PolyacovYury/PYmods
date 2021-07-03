@@ -4,13 +4,12 @@ from gui.Scaleform.daapi.view.lobby.customization import (
     customization_inscription_controller as ic, customization_style_info as si,
 )
 from gui.Scaleform.daapi.view.lobby.customization.context import custom_mode
-from gui.Scaleform.daapi.view.lobby.customization.popovers import C11nPopoverItemData, orderKey
 from gui.Scaleform.daapi.view.lobby.customization.popovers.custom_popover import CustomPopoverDataProvider
 from gui.Scaleform.daapi.view.lobby.customization.popovers.editable_style_popover import EditableStylePopover
 from gui.Scaleform.daapi.view.lobby.customization.popovers.style_popover import StylePopoverDataProvider
 from gui.Scaleform.daapi.view.lobby.customization.progression_styles.stage_switcher import StageSwitcherView
-from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, ITEM_TYPE_TO_SLOT_TYPE, getSlotDataFromSlot
-from gui.customization.shared import C11nId, getPurchaseMoneyState, isTransactionValid
+from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
+from gui.customization.shared import getPurchaseMoneyState, isTransactionValid
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.impl.lobby.customization.progressive_items_view.progressive_items_view import ProgressiveItemsView
@@ -19,7 +18,6 @@ from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.gui_items.customization.slots import EmblemSlot
 from helpers import dependency, func_utils
 from items.components import c11n_components as c11c
-from itertools import ifilter
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
 from vehicle_outfit.outfit import ANCHOR_TYPE_TO_SLOT_TYPE_MAP, Area
@@ -60,56 +58,6 @@ def new_makeButtonVO(base, self, style):
             enabled = isTransactionValid(moneyState, stylePrice)
     return si.ButtonVO(enabled=enabled, label=label, disabledTooltip=backport.text(
         R.strings.vehicle_customization.customization.buyDisabled.body()), visible=True)._asdict()
-
-
-@overrideMethod(CustomPopoverDataProvider, '__getModifiedItemsData')
-def __getModifiedItemsData(base, self):
-    if not g_config.data['enabled']:
-        return base(self)
-    itemData = {}
-    ctx = self._CustomPopoverDataProvider__ctx
-    if ctx.isPurchase:
-        purchaseItems = ctx.mode.getPurchaseItems()
-    else:
-        purchaseItems = ctx.mode.getModdedPurchaseItems()
-    purchaseItems = ifilter(lambda i: i.group == ctx.season, purchaseItems)
-    modifiedOutfit = ctx.mode.getModifiedOutfit()
-    originalOutfit = ctx.mode.getOriginalOutfit()
-    for pItem in purchaseItems:
-        if self._CustomPopoverDataProvider__isNonHistoric and pItem.item.isHistorical():
-            continue
-        slotId = C11nId(pItem.areaID, pItem.slotType, pItem.regionIdx)
-        modifiedSlotData = getSlotDataFromSlot(modifiedOutfit, slotId)
-        originalSlotData = getSlotDataFromSlot(originalOutfit, slotId)
-        if modifiedSlotData is None or originalSlotData is None or modifiedSlotData.isEqual(originalSlotData):
-            continue
-        key = (pItem.item.intCD, pItem.isFromInventory)
-        if key not in itemData:
-            itemData[key] = C11nPopoverItemData(item=pItem.item, isFromInventory=pItem.isFromInventory)
-        itemData[key].slotsIds.append(slotId._asdict())
-    return sorted(itemData.values(), key=orderKey)
-
-
-@overrideMethod(CustomPopoverDataProvider, '__getOriginalItemsData')
-def __getOriginalItemsData(base, self):
-    if not g_config.data['enabled']:
-        return base(self)
-    itemData = {}
-    ctx = self._CustomPopoverDataProvider__ctx
-    notModifiedOutfit = ctx.mode.getNotModifiedItems()
-    for intCD, _, regionIdx, container, _ in notModifiedOutfit.itemsFull():
-        item = self._CustomPopoverDataProvider__service.getItemByCD(intCD)
-        if ctx.isPurchase and item.isHiddenInUI():
-            continue
-        if self._CustomPopoverDataProvider__isNonHistoric and item.isHistorical():
-            continue
-        areaId = container.getAreaID()
-        slotType = ITEM_TYPE_TO_SLOT_TYPE[item.itemTypeID]
-        slotId = C11nId(areaId, slotType, regionIdx)
-        if intCD not in itemData:
-            itemData[intCD] = C11nPopoverItemData(item=item, isFromInventory=True)
-        itemData[intCD].slotsIds.append(slotId._asdict())
-    return sorted(itemData.values(), key=orderKey)
 
 
 @overrideMethod(CustomPopoverDataProvider, '__makeItemDataVO')

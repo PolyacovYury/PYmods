@@ -4,12 +4,14 @@ import items.vehicles
 import nations
 import os
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups, Analytics
+from PYmodsCore import Analytics, PYmodsConfigInterface, loadJson, refreshCurrentVehicle, remDups
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
-from gui.shared.gui_items import GUI_ITEM_TYPE_NAMES, GUI_ITEM_TYPE
-from items.components.c11n_constants import SeasonType, EMPTY_ITEM_ID
+from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
+from helpers import dependency
+from items.components.c11n_constants import EMPTY_ITEM_ID, SeasonType
+from skeletons.gui.shared.gui_items import IGuiItemsFactory
 from . import __date__, __modID__
-from .constants import SelectionMode, SEASON_NAME_TO_TYPE
+from .constants import SEASON_NAME_TO_TYPE, SelectionMode
 
 
 class ConfigInterface(PYmodsConfigInterface):
@@ -30,8 +32,9 @@ class ConfigInterface(PYmodsConfigInterface):
         self.ID = __modID__
         self.version = '3.0.0 (%s)' % __date__
         self.author += ' (thx to tratatank, Blither!)'
-        self.data = {'enabled': True, 'doRandom': True, 'useBought': True, 'hangarCamoKind': 0,
-                     'fullAlpha': False, 'disableWithDefault': False, 'fillEmptySlots': True, 'uniformOutfit': False}
+        self.data = {
+            'enabled': True, 'doRandom': True, 'useBought': True, 'hangarCamoKind': 0, 'fullAlpha': False,
+            'disableWithDefault': False, 'fillEmptySlots': True, 'uniformOutfit': False}
         self.i18n = {
             'UI_description': 'Camouflage selector',
             'flash_switcher_buy': 'PURCHASE',
@@ -100,16 +103,20 @@ class ConfigInterface(PYmodsConfigInterface):
             pass
 
     def createTemplate(self):
-        return {'modDisplayName': self.i18n['UI_description'],
-                'enabled': self.data['enabled'],
-                'column1': [self.tb.createOptions('hangarCamoKind', [
+        return {
+            'modDisplayName': self.i18n['UI_description'], 'enabled': self.data['enabled'],
+            'column1': [
+                self.tb.createOptions('hangarCamoKind', [
                     self.i18n['UI_setting_hangarCamo_' + x] for x in ('winter', 'summer', 'desert', 'random')]),
-                            self.tb.createControl('doRandom'),
-                            self.tb.createControl('disableWithDefault')],
-                'column2': [self.tb.createControl('fillEmptySlots'),
-                            self.tb.createControl('uniformOutfit'),
-                            self.tb.createControl('useBought'),
-                            self.tb.createControl('fullAlpha')]}
+                self.tb.createControl('doRandom'),
+                self.tb.createControl('disableWithDefault'),
+            ],
+            'column2': [
+                self.tb.createControl('fillEmptySlots'),
+                self.tb.createControl('uniformOutfit'),
+                self.tb.createControl('useBought'),
+                self.tb.createControl('fullAlpha'),
+            ]}
 
     def onMSADestroy(self):
         try:
@@ -167,7 +174,15 @@ class ConfigInterface(PYmodsConfigInterface):
             for veh in nat.values():
                 for season in veh.values():
                     if 'intCD' in season:  # style ID
-                        continue
+                        if season['applied']:
+                            for seasonName in SEASON_NAME_TO_TYPE:
+                                _season = veh.setdefault(seasonName, {})
+                                _season.setdefault('style', {})
+                                _season['style']['id'] = dependency.instance(IGuiItemsFactory).createCustomization(
+                                    season['intCD']).id if season['intCD'] else EMPTY_ITEM_ID
+                                if 'level' in season:
+                                    _season['style']['level'] = season['level']
+                        season.clear()
                     if 'camo' in season:
                         season[GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]] = season.pop('camo')
                     for typeName, tc in season.items():
@@ -179,7 +194,7 @@ class ConfigInterface(PYmodsConfigInterface):
                                     tc[part] = {'0': {'id': None}}
                                 else:
                                     tc[part] = {'0': {k: v for k, v in zip(('id', 'palette', 'patternSize'), tc[part])}}
-                        else:
+                        elif typeName != 'style':
                             for part in tc:
                                 for region in tc[part]:
                                     if tc[part][region] is None:

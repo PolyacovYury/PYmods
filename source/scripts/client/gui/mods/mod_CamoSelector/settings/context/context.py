@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import BigWorld
 import adisp
 from PYmodsCore import overrideMethod
@@ -15,6 +17,7 @@ from ... import g_config
 class CustomizationContext(WGCtx):
     def __init__(self):
         WGCtx.__init__(self)
+        self.__modes = OrderedDict(self.__modes)  # make sure that we get updated last
         self.__modes[CustomizationModes.CAMO_SELECTOR] = CamoSelectorMode(self)
         self.__purchaseModeId = None
 
@@ -26,8 +29,8 @@ class CustomizationContext(WGCtx):
     def purchaseModeId(self):
         return self.__purchaseModeId
 
-    def getMode(self, modeId):
-        return self.__modes[modeId]
+    def getMode(self, modeId=None):
+        return self.__modes[modeId or self.purchaseModeId]
 
     @property
     def isItemsOnAnotherVeh(self):
