@@ -21,9 +21,13 @@ class SelectionMode(object):
     INDICES = {v: k for k, v in NAMES.iteritems()}
 
 
-SEASON_NAME_TO_TYPE = {SEASONS_CONSTANTS.SUMMER: SeasonType.SUMMER, SEASONS_CONSTANTS.WINTER: SeasonType.WINTER,
-                       SEASONS_CONSTANTS.DESERT: SeasonType.DESERT}
+class VIEW_ALIAS(object):
+    CAMO_SELECTOR_KIT_POPOVER = 'CustomizationCamoSelectorKitPopover'
 
+
+SEASON_NAME_TO_TYPE = {
+    SEASONS_CONSTANTS.SUMMER: SeasonType.SUMMER, SEASONS_CONSTANTS.WINTER: SeasonType.WINTER,
+    SEASONS_CONSTANTS.DESERT: SeasonType.DESERT}
 
 CustomizationTabs.INSIGNIA = 8
 CustomizationTabs.ALL += (CustomizationTabs.INSIGNIA,)

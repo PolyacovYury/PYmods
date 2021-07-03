@@ -19,6 +19,7 @@
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/customization_mode.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/customization_mode.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/item_remap.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/item_remap.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/popover.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/popover.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/tooltips.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/tooltips.pyc",

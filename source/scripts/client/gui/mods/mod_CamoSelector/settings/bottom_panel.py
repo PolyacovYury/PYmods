@@ -4,7 +4,6 @@ import BigWorld
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from frameworks.wulf import WindowLayer as WL
-from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import __getIcon as getIcon
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
@@ -27,6 +26,7 @@ from helpers.i18n import makeString as _ms
 from shared_utils import first
 from .shared import CSComparisonKey
 from .. import g_config
+from ..constants import VIEW_ALIAS
 
 
 class CustomizationBottomPanel(CBP):
@@ -86,7 +86,7 @@ class CustomizationBottomPanel(CBP):
             'leftLabel': g_config.i18n['flash_switcher_install'],
             'rightLabel': g_config.i18n['flash_switcher_buy'],
             'selectedIndex': int(self.__ctx.isPurchase) + int(self.__ctx.isPurchase and data['isEditable']),
-            'popoverAlias': data['popoverAlias'] if self.__ctx.isPurchase else VIEW_ALIAS.CUSTOMIZATION_EDITED_KIT_POPOVER,
+            'popoverAlias': data['popoverAlias'] if self.__ctx.isPurchase else VIEW_ALIAS.CAMO_SELECTOR_KIT_POPOVER,
             'rightEnabled': True
         })
 
