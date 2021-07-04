@@ -72,11 +72,9 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
             groupName = itemsData.groups[groupId]
             requirement = REQ_CRITERIA.CUSTOM(
                 lambda item: groupName in getGroupName(item, isPurchase)) | RequestCriteria(*requirement.getConditions()[1:])
-        if self.__ctx.mode.modeId == CustomizationModes.CUSTOM:
-            requirement = RequestCriteria(*requirement.getConditions()[:-1])  # gtfo with your isStyleOnly
-        requirement |= REQ_CRITERIA.CUSTOM(lambda item: item.intCD in self.__ctx.mode.getAppliedItems(False) or (
-            item.season if self.__ctx.isPurchase else getItemSeason(item)) & self.__ctx.season)
-
+        if not isPurchase:
+            requirement |= REQ_CRITERIA.CUSTOM(lambda item: item.intCD in self.__ctx.mode.getAppliedItems(False) or (
+                item.season if self.__ctx.isPurchase else getItemSeason(item)) & self.__ctx.season)
         return requirement
 
 
