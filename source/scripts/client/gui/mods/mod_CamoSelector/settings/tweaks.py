@@ -21,6 +21,7 @@ from items.components import c11n_components as c11c
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
 from vehicle_outfit.outfit import ANCHOR_TYPE_TO_SLOT_TYPE_MAP, Area
+from .shared import fixIconPath
 from .. import g_config
 
 
@@ -65,8 +66,7 @@ def new_makeButtonVO(base, self, style):
 @overrideMethod(EditableStylePopover, '__makeItemDataVO')
 def __makeItemDataVO(base, itemData, *a, **k):
     data = base(itemData, *a, **k)
-    if '4278190335,4278255360,4294901760,4278190080' in data['icon']:
-        data['icon'] = '../../' + data['icon'].split('"', 2)[1]
+    data['icon'] = fixIconPath(data['icon'])
     return data
 
 

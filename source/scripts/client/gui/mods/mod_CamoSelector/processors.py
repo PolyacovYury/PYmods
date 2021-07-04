@@ -80,6 +80,7 @@ def applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean):
             if addOutfit is not None:
                 baseOutfit = baseOutfit.patch(addOutfit)
         fitOutfit(baseOutfit, availableRegions)
+        fitOutfit(outfit, availableRegions)
         diffComp = getEditableStyleOutfitDiffComponent(outfit, baseOutfit)
         diffComp.styleId = 0
         outfit = createEmptyOutfit(vDesc, diffComp)
@@ -102,6 +103,7 @@ def applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean):
             if addOutfit is not None:
                 baseOutfit = baseOutfit.patch(addOutfit)
         fitOutfit(baseOutfit, availableRegions)
+        fitOutfit(outfit, availableRegions)
         outfit = style.getOutfit(style_season, vehicleCD=vehicleCD, diff=getEditableStyleOutfitDiff(outfit, baseOutfit))
         outfit_level = outfit.progressionLevel if outfit.style and outfit.style.isProgression else 1
     style_level = styleInfo.get('level', 1)

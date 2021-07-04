@@ -1,7 +1,9 @@
 import BigWorld
 import nations
+import os
 import re
 from BWUtil import AsyncReturn
+from CurrentVehicle import g_currentVehicle
 from async import async, await
 from frameworks.wulf import WindowLayer
 from functools import partial
@@ -20,7 +22,7 @@ from items.components.c11n_constants import ItemTags, ProjectionDecalFormTags, S
 from items.vehicles import g_cache, getItemByCompactDescr
 from skeletons.gui.customization import ICustomizationService
 from .. import g_config
-from ..constants import SEASON_NAME_TO_TYPE, TYPES_ORDER
+from ..constants import SEASON_NAME_TO_TYPE, TYPES_ORDER, insignia_names
 
 
 def onVehicleLoadedOnce(handler):
@@ -54,6 +56,19 @@ def getInsigniaNation(item):
     for nation_idx, item_id in g_cache.customization20().defaultInsignias.iteritems():
         if item_id == item.id:
             return nation_idx
+
+
+def getInsigniaUserName(item):
+    if item.itemTypeID != GUI_ITEM_TYPE.INSIGNIA:
+        return item.userName
+    nationID = getInsigniaNation(item)
+    if nationID is not None:
+        title = nationName(nationID)
+    else:
+        texture = os.path.basename(item.getIconApplied(None))
+        texture_id = texture.partition('_')[2].rpartition('_')[0]
+        title = _ms(insignia_names[texture_id]) if texture_id in insignia_names else texture_id
+    return item.userName or title
 
 
 def _getNations(item):
@@ -144,3 +159,23 @@ def createConfirmDialog(key):
     subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
     result = yield await(dialogs.showSimple(builder.build(parent=subview)))
     raise AsyncReturn(result)
+
+
+def fixIconPath(icon):
+    if '4278190335,4278255360,4294901760,4278190080' in icon:
+        icon = '../../' + icon.split('"', 2)[1]
+    return icon
+
+
+def getDefaultItemCDs(vDesc):
+    cache = g_cache.customization20()
+    return (cache.decals[vDesc.type.defaultPlayerEmblemID].compactDescr,
+            cache.insignias[cache.defaultInsignias[vDesc.type.customizationNationID]].compactDescr)
+
+
+def addDefaultInsignia(*outfits):
+    for outfit in outfits:
+        outfit.invalidate()
+        if not outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).getItemCD():
+            outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).set(getDefaultItemCDs(g_currentVehicle.item.descriptor)[1])
+        outfit.gun.unpack(outfit.pack())  # insignia are bugged

@@ -56,3 +56,8 @@ def getAvailableRegions(areaId, slotType, vehicleDescr=None):
 old_getAvailableRegions = gui_shared.getAvailableRegions
 for obj in (gui_shared, lobby_shared, custom_mode, customization_properties_sheet, editable_style_mode):
     setattr(obj, 'getAvailableRegions', getAvailableRegions)
+
+insignia_names = {
+    'wh': '#vehicle_customization:special_style/kv2_w',
+    'chuck': '#vehicle_customization:special_style/ny_2021_chuck',
+}
