@@ -70,8 +70,8 @@ def _getNations(item):
     return list(nationIDs)
 
 
-def firstWord(fromString):
-    return re.sub(r'( [^ <>]+)(?![^ <>]*>)', '', fromString)
+def firstWord(fromString, replace_with=''):
+    return re.sub(r'( [^<>]*)(?![^ <>]*[> ])', replace_with, fromString)
 
 
 def nationName(nationID):
