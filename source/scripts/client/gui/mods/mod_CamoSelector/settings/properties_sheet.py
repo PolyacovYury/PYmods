@@ -6,7 +6,7 @@ from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
 from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES as CA
 from gui.customization.constants import CustomizationModes
-from gui.impl import backport
+from gui.impl.backport import text
 from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.vehicles import g_cache
@@ -59,8 +59,7 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         if slotType != GUI_ITEM_TYPE.INSIGNIA:
             # noinspection PyUnresolvedReferences
             return WGPropertiesSheet._CustomizationPropertiesSheet__makeRenderersVOs(self)
-        itemTypeText = backport.text(
-            R.strings.vehicle_customization.propertySheet.actionBtn.forCurrentItem.modification())
+        itemTypeText = text(R.strings.vehicle_customization.propertySheet.actionBtn.forCurrentItem.modification())
         seasonsVO = self.__makeSetOnOtherSeasonsRendererVO()
         removeVO = self.__makeRemoveRendererVO()
         removeVO['enabled'] = bool(self._currentItem) and self._currentItem.id != g_cache.customization20(
@@ -70,8 +69,8 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             seasonsVO['enabled'] = removeVO['enabled']
         else:
             seasonTooltip = R.strings.vehicle_customization.propertySheet.actionBtn.applyToAllMapsDisabled()
-        seasonsVO['disableTooltip'] = backport.text(seasonTooltip, itemType=itemTypeText)
-        removeVO['disableTooltip'] = backport.text(
+        seasonsVO['disableTooltip'] = text(seasonTooltip, itemType=itemTypeText)
+        removeVO['disableTooltip'] = text(
             R.strings.vehicle_customization.propertySheet.actionBtn.removeDisabled(), itemType=itemTypeText)
         return [seasonsVO, removeVO, self.__makeCloseRendererVO()]
 

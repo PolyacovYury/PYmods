@@ -10,6 +10,8 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import (
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.customization import shared as gui_shared
 from gui.customization.constants import CustomizationModes
+from gui.impl.backport import text
+from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.components.c11n_constants import CustomizationType, SeasonType
 from vehicle_outfit.outfit import ANCHOR_TYPE_TO_SLOT_TYPE_MAP, Area
@@ -58,6 +60,6 @@ for obj in (gui_shared, lobby_shared, custom_mode, customization_properties_shee
     setattr(obj, 'getAvailableRegions', getAvailableRegions)
 
 insignia_names = {
-    'wh': '#vehicle_customization:special_style/kv2_w',
-    'chuck': '#vehicle_customization:special_style/ny_2021_chuck',
+    'wh': text(R.strings.vehicle_customization.special_style.kv2_w()),
+    'chuck': text(R.strings.vehicle_customization.special_style.ny_2021_chuck()),
 }

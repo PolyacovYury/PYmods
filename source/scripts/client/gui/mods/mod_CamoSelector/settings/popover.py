@@ -11,7 +11,7 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import (
 from gui.Scaleform.daapi.view.meta.CustomizationEditedKitPopoverMeta import CustomizationEditedKitPopoverMeta
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, g_entitiesFactories
 from gui.customization.shared import AdditionalPurchaseGroups, C11nId, SEASONS_ORDER, SEASON_TYPE_TO_NAME
-from gui.impl import backport
+from gui.impl.backport import image, text
 from gui.impl.gen import R
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.events import ViewEventType
@@ -70,14 +70,14 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
             self.flashObject.clearBtn.enabled = value
 
     def __setHeader(self):
-        self.as_setHeaderS(text_styles.highTitle(backport.text(
-            R.strings.vehicle_customization.customization.kitPopover.title.items())))
+        self.as_setHeaderS(text_styles.highTitle(text(
+        R.strings.vehicle_customization.customization.kitPopover.title.items())))
         self.as_setHelpMessageS(
-            icons.makeImageTag(backport.image(R.images.gui.maps.icons.customization.edited_small()))
-            + text_styles.main(backport.text(R.strings.vehicle_customization.popover.editableStyle.editedItems())))
+            icons.makeImageTag(image(R.images.gui.maps.icons.customization.edited_small()))
+            + text_styles.main(text(R.strings.vehicle_customization.popover.editableStyle.editedItems())))
 
     def __setClearMessage(self):
-        self.as_showClearMessageS('' if not self.__ctx.mode.isOutfitsEmpty() else text_styles.main(backport.text(
+        self.as_showClearMessageS('' if not self.__ctx.mode.isOutfitsEmpty() else text_styles.main(text(
             R.strings.vehicle_customization.customization.itemsPopover.clear.message())))
 
     def __update(self, *_):
@@ -173,7 +173,7 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
                 text_styles.main('{} '.format(len(itemData.slotsIds))), 'isHistoric': item.isHistorical(), 'price': None,
             'isApplied': itemData.isBase, 'isWide': item.isWide(), 'itemsList': itemData.slotsIds,
             'isDim': item.isDim(), 'isEdited': not itemData.isBase, 'isDisabled': itemData.isRemoved,
-            'disabledLabel': text_styles.bonusPreviewText(backport.text(
+            'disabledLabel': text_styles.bonusPreviewText(text(
                 R.strings.vehicle_customization.popover.style.removed())), 'isRemovable': itemData.isRemovable,
             'seasonType': itemData.season, 'progressionLevel': int(itemData.isFromInventory)}
 

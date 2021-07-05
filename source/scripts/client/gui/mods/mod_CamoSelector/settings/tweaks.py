@@ -10,7 +10,7 @@ from gui.Scaleform.daapi.view.lobby.customization.popovers.style_popover import 
 from gui.Scaleform.daapi.view.lobby.customization.progression_styles.stage_switcher import StageSwitcherView
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
 from gui.customization.shared import getPurchaseMoneyState, isTransactionValid
-from gui.impl import backport
+from gui.impl.backport import text
 from gui.impl.gen import R
 from gui.impl.lobby.customization.progressive_items_view.progressive_items_view import ProgressiveItemsView
 from gui.shared.gui_items import GUI_ITEM_TYPE
@@ -48,16 +48,16 @@ def new_makeButtonVO(base, self, style):
     ctx = self._CustomizationStyleInfo__ctx
     if not ctx.isOutfitsModified():
         return None
-    label = backport.text(R.strings.vehicle_customization.commit.apply())
+    label = text(R.strings.vehicle_customization.commit.apply())
     enabled = True
     if ctx.isPurchase:
         stylePrice = style.getBuyPrice().price
         moneyState = getPurchaseMoneyState(stylePrice)
         purchaseItem = first(ctx.mode.getPurchaseItems())
         if purchaseItem is not None and not purchaseItem.isFromInventory:
-            label = backport.text(R.strings.vehicle_customization.commit.buy())
+            label = text(R.strings.vehicle_customization.commit.buy())
             enabled = isTransactionValid(moneyState, stylePrice)
-    return si.ButtonVO(enabled=enabled, label=label, disabledTooltip=backport.text(
+    return si.ButtonVO(enabled=enabled, label=label, disabledTooltip=text(
         R.strings.vehicle_customization.customization.buyDisabled.body()), visible=True)._asdict()
 
 

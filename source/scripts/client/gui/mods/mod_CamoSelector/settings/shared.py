@@ -10,6 +10,7 @@ from functools import partial
 from gui import makeHtmlString
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
+from gui.impl.backport import text
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.builders import WarningDialogBuilder, _setupButtonsBasedOnRes
 from gui.impl.gen import R
@@ -17,7 +18,6 @@ from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.personality import ServicesLocator as SL
 from helpers import dependency
-from helpers.i18n import makeString as _ms
 from items.components.c11n_constants import ItemTags, ProjectionDecalFormTags, SeasonType
 from items.vehicles import g_cache, getItemByCompactDescr
 from skeletons.gui.customization import ICustomizationService
@@ -65,9 +65,8 @@ def getInsigniaUserName(item):
     if nationID is not None:
         title = nationName(nationID)
     else:
-        texture = os.path.basename(item.getIconApplied(None))
-        texture_id = texture.partition('_')[2].rpartition('_')[0]
-        title = _ms(insignia_names[texture_id]) if texture_id in insignia_names else texture_id
+        texture_id = os.path.basename(item.getIconApplied(None)).partition('_')[2].rpartition('_')[0]
+        title = insignia_names.get(texture_id, texture_id)
     return item.userName or title
 
 
@@ -90,7 +89,7 @@ def firstWord(fromString, replace_with=''):
 
 
 def nationName(nationID):
-    return _ms('#vehicle_customization:repaint/%s_base_color' % nations.NAMES[nationID])
+    return text(R.strings.vehicle_customization.repaint.dyn(nations.NAMES[nationID] + '_base_color')())
 
 
 @dependency.replace_none_kwargs(service=ICustomizationService)
@@ -127,14 +126,14 @@ def getGroupName(item, isPurchase=False):
         return group
     if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
         if item.modelsSet:
-            group = _ms('#vehicle_customization:styles/unique_styles')
+            group = text(R.strings.vehicle_customization.styles.unique_styles())
         if any('Victim' in tag for tag in item.tags):
-            group = _ms('#vehicle_customization:victim_style/default')
+            group = text(R.strings.vehicle_customization.victim_style.default())
     if item.itemTypeID == GUI_ITEM_TYPE.CAMOUFLAGE:
         if 'victim' in item.descriptor.userKey:
-            group = _ms('#vehicle_customization:victim_style/default')
+            group = text(R.strings.vehicle_customization.victim_style.default())
         if g_config.isCamoGlobal(item.descriptor):
-            group = firstWord(_ms('#vehicle_customization:camouflage/Clan_camouflage_01/label'))
+            group = firstWord(text(R.strings.vehicle_customization.camouflage.Clan_camouflage_01.label()))
     nation = ''
     nationIDs = _getNations(item) if item.itemTypeID != GUI_ITEM_TYPE.INSIGNIA else ()
     if len(nationIDs) == 1:
@@ -143,7 +142,7 @@ def getGroupName(item, isPurchase=False):
         nation = g_config.i18n['flashCol_group_multinational']
     vehicleNations = _getVehicles(item)
     if vehicleNations:
-        group = _ms('#vehicle_customization:styles/unique_styles')
+        group = text(R.strings.vehicle_customization.styles.unique_styles())
         nation = nationName(vehicleNations[0])
     if group and nation:  # HangarPainter support
         group = firstWord(nation) + g_config.i18n['flashCol_group_separator'] + group

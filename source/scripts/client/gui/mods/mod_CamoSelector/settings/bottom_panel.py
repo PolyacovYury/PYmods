@@ -12,17 +12,16 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import (
 from gui.Scaleform.framework import ScopeTemplates as ST, ViewSettings, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import View
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
-from gui.Scaleform.locale.ACHIEVEMENTS import ACHIEVEMENTS
-from gui.Scaleform.locale.ITEM_TYPES import ITEM_TYPES
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.Scaleform.locale.TOOLTIPS import TOOLTIPS
 from gui.Scaleform.locale.VEHICLE_CUSTOMIZATION import VEHICLE_CUSTOMIZATION
 from gui.customization.constants import CustomizationModes
+from gui.impl.backport import text
+from gui.impl.gen import R
 from gui.shared.formatters import getItemPricesVO
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.utils.functions import makeTooltip
-from helpers.i18n import makeString as _ms
 from shared_utils import first
 from .shared import CSComparisonKey
 from .. import g_config
@@ -126,12 +125,13 @@ class CustomizationBottomPanel(CBP):
             slotsCount, filledSlotsCount = checkSlotsFilling(outfit, slotType)
             pluses.append(filledSlotsCount < slotsCount)
             itemTypeName = GUI_ITEM_TYPE_NAMES[slotType]
-            pluralText = _ms(ITEM_TYPES.customizationPlural(itemTypeName)) if slotType != GUI_ITEM_TYPE.INSIGNIA else ''
+            pluralText = text(
+                R.strings.item_types.customization.plural.dyn(itemTypeName)()) if slotType != GUI_ITEM_TYPE.INSIGNIA else ''
             tabsData.append(
                 {
-                    'label': _ms(ACHIEVEMENTS.MARKSONGUN0), 'id': tabId,
+                    'label': text(R.strings.achievements.marksOnGun0()), 'id': tabId,
                     'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_EDIT,
-                    'tooltip': makeTooltip(ACHIEVEMENTS.MARKSONGUN0)
+                    'tooltip': makeTooltip(text(R.strings.achievements.marksOnGun0()))
                 } if slotType == GUI_ITEM_TYPE.INSIGNIA else {
                     'label': pluralText, 'id': tabId,
                     'icon': RES_ICONS.MAPS_ICONS_CUSTOMIZATION_PROPERTY_SHEET_IDLE_ICON_FULL_TANK,
