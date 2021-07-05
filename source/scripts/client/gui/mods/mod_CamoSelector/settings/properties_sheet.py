@@ -1,15 +1,17 @@
 from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import (
-    CustomizationPropertiesSheet as WGPropertiesSheet,
+    CustomizationCamoSwatchVO, CustomizationPropertiesSheet as WGPropertiesSheet,
 )
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
-from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES as CA
+from gui.Scaleform.genConsts.CUSTOMIZATION_ALIASES import CUSTOMIZATION_ALIASES, CUSTOMIZATION_ALIASES as CA
 from gui.customization.constants import CustomizationModes
-from gui.impl.backport import text
+from gui.customization.shared import SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_NAME
+from gui.impl.backport import image, text
 from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.vehicles import g_cache
+from .shared import isStyleSeasoned
 from .. import g_config
 
 
@@ -34,6 +36,15 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
             return
         WGPropertiesSheet.onActionBtnClick(self, actionType, actionData)
 
+    @property
+    def _currentSlotData(self):
+        if not self.attached:
+            return
+        if self._attachedAnchor.slotType == GUI_ITEM_TYPE.STYLE:
+            return self.__ctx.mode.getSlotDataFromSlot(self._attachedAnchor)
+        # noinspection PyArgumentList
+        return WGPropertiesSheet._currentSlotData.fget(self)
+
     def __applyToOtherAreas(self, installItem):
         installItem = self._isItemAppliedToAllParts = not self._isItemAppliedToAllParts
         # noinspection PyUnresolvedReferences
@@ -47,11 +58,10 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
     def __updateItemAppliedToAllFlag(self):
         # noinspection PyUnresolvedReferences
         WGPropertiesSheet._CustomizationPropertiesSheet__updateItemAppliedToAllFlag(self)
+        self._isItemAppliedToAllSeasons = self.__isItemAppliedToAllSeasons()
         if self.__ctx.mode.tabId in CustomizationTabs.MODES[CustomizationModes.CUSTOM]:
-            self._isItemAppliedToAllSeasons = self.__isItemAppliedToAllSeasons()
             self._isItemAppliedToAllParts = self.__isItemAppliedToAllRegions()
         else:
-            self._isItemAppliedToAllSeasons = False
             self._isItemAppliedToAllParts = False
 
     def __makeRenderersVOs(self):
@@ -96,6 +106,10 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         renderers = WGPropertiesSheet._CustomizationPropertiesSheet__makeStyleRenderersVOs(self)
         if not self.__ctx.isPurchase:
             renderers[1:] = []
+            if self._currentStyle:
+                if isStyleSeasoned(self._currentStyle):
+                    renderers.append(self.__makeChangeSeasonRendererVO())
+                renderers.append(self.__makeSetOnOtherSeasonsRendererVO())
         return renderers
 
     def __makeSetOnOtherTankPartsRendererVO(self):
@@ -119,7 +133,23 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
         VO = WGPropertiesSheet._CustomizationPropertiesSheet__makeSwitchProgressionLevelRendererVO(self)
         if not self.__ctx.isPurchase:
             VO['enabled'] = True
+            VO['actionBtnLabel'] = text(
+                R.strings.vehicle_customization.propertySheet.actionBtn.switchProgression(),
+                current=self.__displayedProgressionLevel, total=self._currentItem.getMaxProgressionLevel())
         return VO
+
+    def __makeChangeSeasonRendererVO(self):
+        return {
+            'iconSrc': image(R.images.gui.maps.icons.customization.property_sheet.idle.icon_season()),
+            'iconHoverSrc': image(R.images.gui.maps.icons.customization.property_sheet.idle.icon_season_hover()),
+            'iconDisableSrc': image(R.images.gui.maps.icons.customization.property_sheet.disable.icon_season_disable()),
+            'actionType': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_ACTION_COLOR_CHANGE,
+            'rendererLnk': CUSTOMIZATION_ALIASES.CUSTOMIZATION_SHEET_SCALE_COLOR_RENDERER_UI,
+            'btnsBlockVO': [CustomizationCamoSwatchVO(
+                'CamoSelector/%s16x16.png' % SEASON_TYPE_TO_NAME[season], season == self.__ctx.mode.modifiedStyleSeason
+            )._asdict() for _, season in sorted(SEASON_IDX_TO_TYPE.items())],
+            'disableTooltip': '',
+            'enabled': True}
 
 
 @overrideMethod(WGPropertiesSheet, '__new__')

@@ -15,17 +15,19 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import (
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.customization.constants import CustomizationModes
 from gui.customization.shared import (
-    AdditionalPurchaseGroups, C11nId, PurchaseItem, SEASON_TYPE_TO_NAME, __isTurretCustomizable as isTurretCustom,
+    AdditionalPurchaseGroups, C11nId, PurchaseItem, SEASON_IDX_TO_TYPE, SEASON_TYPE_TO_NAME,
+    __isTurretCustomizable as isTurretCustom,
 )
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from helpers import dependency
 from items.components.c11n_constants import EMPTY_ITEM_ID, SeasonType
-from items.customizations import EmptyComponent, FieldFlags
+from items.customizations import DecalComponent, EmptyComponent, FieldFlags
 from skeletons.account_helpers.settings_core import ISettingsCore
+from vehicle_outfit.containers import SlotData
 from vehicle_outfit.outfit import Area
 from vehicle_systems.camouflages import getStyleProgressionOutfit
 from .item_remap import ItemSettingsRemap
-from ..shared import addDefaultInsignia, getDefaultItemCDs
+from ..shared import addDefaultInsignia, getDefaultItemCDs, isStyleSeasoned
 from ... import g_config
 from ...constants import SEASON_NAME_TO_TYPE
 from ...processors import applyOutfitCache, applyStyleOverride, createEmptyOutfit, deleteEmpty, getStyleFromId
@@ -143,6 +145,15 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
                 self.__modifiedStyles[season], self.getModifiedOutfit(season), season, self.__modifiedStyleSeasons[season],
                 self.getStyleProgressionLevel()))
 
+    def getSlotDataFromSlot(self, slotId, season=None):
+        season = season or self.season
+        outfit = self._modifiedOutfits[season]
+        if slotId.slotType != GUI_ITEM_TYPE.STYLE:
+            return getSlotDataFromSlot(outfit, slotId)
+        return SlotData() if not outfit.id else SlotData(
+            self.__modifiedStyles[season].intCD, DecalComponent(
+                outfit.id, self.__modifiedStyleSeasons[season], outfit.progressionLevel))
+
     def removeItems(self, onlyCurrent, *intCDs):  # only called from context menu, but still
         styles, others = [], []
         for intCD in intCDs:
@@ -190,13 +201,44 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         style = self.modifiedStyle
         if style is None:
             return
-        self._modifiedOutfits[self.season] = style.getOutfit(
-            self.season, vehicleCD=g_currentVehicle.item.descriptor.makeCompactDescr()).copy()
+        level = self.getStyleProgressionLevel()
+        outfit = style.getOutfit(self.season, vehicleCD=g_currentVehicle.item.descriptor.makeCompactDescr())
+        if level != -1:
+            outfit = getStyleProgressionOutfit(outfit, level, self.season)
+        self._modifiedOutfits[self.season] = outfit
         self.__modifiedStyleSeasons[self.season] = self.season
         self._fitOutfits(modifiedOnly=True)
         self._invalidateCache()
         self._ctx.refreshOutfit()
         self._ctx.events.onItemsRemoved()
+
+    def changeCamouflageColor(self, slotId, paletteIdx):
+        if slotId.slotType != GUI_ITEM_TYPE.STYLE:
+            return WGCustomMode.changeCamouflageColor(self, slotId, paletteIdx)
+        style = self.__modifiedStyles[self.season]
+        if not style or not isStyleSeasoned(style):
+            return
+        vDesc = g_currentVehicle.item.descriptor
+        vehicleCD = vDesc.makeCompactDescr()
+        level = self.getStyleProgressionLevel()
+        outfit = self._modifiedOutfits[self.season]
+        style_season = self.__modifiedStyleSeasons[self.season]
+        baseOutfit = style.getOutfit(style_season, vehicleCD=vehicleCD)
+        if level != -1:
+            addOutfit = style.getAdditionalOutfit(level, style_season, vehicleCD)
+            if addOutfit is not None:
+                baseOutfit = baseOutfit.patch(addOutfit)
+        fitOutfit(baseOutfit, getCurrentVehicleAvailableRegionsMap())
+        diffComp = getEditableStyleOutfitDiffComponent(outfit, baseOutfit)
+        self.__modifiedStyleSeasons[self.season] = newSeason = SEASON_IDX_TO_TYPE[paletteIdx]
+        outfit = style.getOutfit(newSeason, vehicleCD=vehicleCD, diff=diffComp.makeCompDescr())
+        if level != -1:
+            outfit = getStyleProgressionOutfit(outfit, level, newSeason)
+        self._modifiedOutfits[self.season] = outfit
+        self._fitOutfits(modifiedOnly=True)
+        self._invalidateCache()
+        self._ctx.refreshOutfit()
+        self._events.onComponentChanged(slotId, False)
 
     def _invalidateCache(self):
         vDesc = g_currentVehicle.item.descriptor
@@ -387,11 +429,13 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         elif modified.id != original.id:
             seasonCache['style'] = {'id': modified.id}
         if original_season != modified_season:
-            seasonCache['style']['id'] = modified.id
-            seasonCache['style']['season'] = SEASON_TYPE_TO_NAME[modified_season]
+            styleInfo = seasonCache.setdefault('style', {})
+            styleInfo['id'] = modified.id
+            styleInfo['season'] = SEASON_TYPE_TO_NAME[modified_season]
         if modified.style and modified.style.isProgression and original.progressionLevel != modified.progressionLevel:
-            seasonCache['style']['id'] = modified.id
-            seasonCache['style']['level'] = modified.progressionLevel
+            styleInfo = seasonCache.setdefault('style', {})
+            styleInfo['id'] = modified.id
+            styleInfo['level'] = modified.progressionLevel
         original = applyStyleOverride(
             g_currentVehicle.item.descriptor, original, SEASON_TYPE_TO_NAME[original_season], seasonCache, False)
         addDefaultInsignia(original, modified)

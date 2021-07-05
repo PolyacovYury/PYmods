@@ -176,3 +176,11 @@ def addDefaultInsignia(*outfits):
         if not outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).getItemCD():
             outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).set(getDefaultItemCDs(g_currentVehicle.item.descriptor)[1])
         outfit.gun.unpack(outfit.pack())  # insignia are bugged
+
+
+def isStyleSeasoned(style):
+    vehCD = g_currentVehicle.item.descriptor.makeCompactDescr()
+    outfit = style.getOutfit(SeasonType.SUMMER, vehCD)
+    return not (
+            outfit.isEqual(style.getOutfit(SeasonType.WINTER, vehCD))
+            and outfit.isEqual(style.getOutfit(SeasonType.DESERT, vehCD)))

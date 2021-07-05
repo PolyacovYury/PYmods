@@ -2,7 +2,7 @@
     "enabled": true,
     "ext": ".wotmod",
     "files": {
-        "res/gui/flash/CamoSelector.png": "res/res/gui/flash/CamoSelector.png",
+        "res/gui/flash/CamoSelector/**": "res/res/gui/flash/CamoSelector/**",
         "res/gui/flash/CamoSelector_carousel.swf": "res/flash/CamoSelector_carousel.swf",
         "res/scripts/client/gui/mods/mod_CamoSelector.pyc": "build/scripts/client/gui/mods/mod_CamoSelector.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/__init__.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/__init__.pyc",
