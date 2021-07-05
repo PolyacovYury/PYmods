@@ -12,9 +12,11 @@ class Options(object):
     MODE_RANDOM = 'selectionMode_random'
     MODE_TEAM = 'selectionMode_team'
     MODE_CHANGE = 'selectionMode_change'
+    SEASON_GROUP = 'season_group'
     SEASON_SUMMER = 'season_summer'
     SEASON_WINTER = 'season_winter'
     SEASON_DESERT = 'season_desert'
+    TEAM_GROUP = 'team_group'
     TEAM_ALLY = 'team_ally'
     TEAM_ENEMY = 'team_enemy'
     MODE = (MODE_OFF, MODE_TEAM, MODE_RANDOM)
@@ -38,25 +40,29 @@ class CustomizationItemCMHandler(WGCMHandler):
         getOptionData = lambda option, remove=False, enabled=True: (
             option, getOptionLabel(option + ('_remove' if remove else '')), {'enabled': enabled})
         setting = self.__ctx.mode.getItemSettings(item)
-        getSeasonOptionData = lambda option, s: getOptionData(option, s in setting['season'], (
-                item.priceGroup == 'custom' or item.isHidden) and (len(setting['season']) != 1 or s not in setting['season']))
+        getSeasonOptionData = lambda option, s: getOptionData(
+            option, s in setting['season'], len(setting['season']) != 1 or s not in setting['season'])
         mode = setting['random_mode']
         getTeamOptionData = lambda option, remove=False: getOptionData(option, remove, mode != SelectionMode.OFF)
-        sub, modeLabel = [], ''
+        modeSubs, modeLabel = [], ''
         for _mode, _option in zip(SelectionMode.ALL, Options.MODE):
             if mode != _mode:
-                sub.append(self._makeItem(_option, getOptionLabel(Options.MODE_CHANGE) + getOptionLabel(_option)))
+                modeSubs.append(self._makeItem(_option, getOptionLabel(Options.MODE_CHANGE) + getOptionLabel(_option)))
             else:
                 modeLabel = getOptionLabel(_option)
         result += (
-            self._makeItem(*getSeasonOptionData(Options.SEASON_SUMMER, SEASONS_CONSTANTS.SUMMER)),
-            self._makeItem(*getSeasonOptionData(Options.SEASON_WINTER, SEASONS_CONSTANTS.WINTER)),
-            self._makeItem(*getSeasonOptionData(Options.SEASON_DESERT, SEASONS_CONSTANTS.DESERT)),
+            self._makeItem(*getOptionData(Options.SEASON_GROUP), optSubMenu=[
+                self._makeItem(*getSeasonOptionData(Options.SEASON_SUMMER, SEASONS_CONSTANTS.SUMMER)),
+                self._makeItem(*getSeasonOptionData(Options.SEASON_WINTER, SEASONS_CONSTANTS.WINTER)),
+                self._makeItem(*getSeasonOptionData(Options.SEASON_DESERT, SEASONS_CONSTANTS.DESERT)),
+            ]),
             self._makeSeparator(),
-            self._makeItem(*getTeamOptionData(Options.TEAM_ALLY, setting['ally'])),
-            self._makeItem(*getTeamOptionData(Options.TEAM_ENEMY, setting['enemy'])),
+            self._makeItem(*getTeamOptionData(Options.TEAM_GROUP), optSubMenu=[
+                self._makeItem(*getTeamOptionData(Options.TEAM_ALLY, setting['ally'])),
+                self._makeItem(*getTeamOptionData(Options.TEAM_ENEMY, setting['enemy'])),
+            ]),
             self._makeSeparator(),
-            self._makeItem(Options.MODE_GROUP, getOptionLabel(Options.MODE_GROUP) + modeLabel, optSubMenu=sub),
+            self._makeItem(Options.MODE_GROUP, getOptionLabel(Options.MODE_GROUP) + modeLabel, optSubMenu=modeSubs),
         )
         return result
 
