@@ -8,7 +8,9 @@ from contextlib import contextmanager
 from functools import partial
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationModes, CustomizationTabs
+from gui.customization.shared import SEASON_TYPE_TO_NAME
 from gui.shared.utils.decorators import process
+from items.components.c11n_constants import EMPTY_ITEM_ID
 from .customization_mode import CustomMode as CamoSelectorMode
 from ..shared import createConfirmDialog, onVehicleLoadedOnce
 from ... import g_config
@@ -47,11 +49,10 @@ class CustomizationContext(WGCtx):
             self.mode.stop()
             self.__modeId = CustomizationModes.CAMO_SELECTOR
             outfitCache = g_config.getOutfitCache()
-            applied = outfitCache.get('style', {}).get('applied', False)
+            style_id = outfitCache.get(SEASON_TYPE_TO_NAME[self.season], {}).get('style', {}).get('id', EMPTY_ITEM_ID)
             isStyleInstalled = self._service.isStyleInstalled()
             self.mode.start(
-                CustomizationTabs.STYLES
-                if (not outfitCache and isStyleInstalled) or applied else CustomizationTabs.CAMOUFLAGES)
+                CustomizationTabs.STYLES if isStyleInstalled or style_id != EMPTY_ITEM_ID else CustomizationTabs.CAMOUFLAGES)
         self.refreshOutfit()
         onVehicleLoadedOnce(partial(BigWorld.callback, 0, self.refreshOutfit))
 
