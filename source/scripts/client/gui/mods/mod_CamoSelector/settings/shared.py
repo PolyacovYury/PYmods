@@ -8,7 +8,6 @@ from async import async, await
 from frameworks.wulf import WindowLayer
 from functools import partial
 from gui import makeHtmlString
-from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl.backport import text
 from gui.impl.dialogs import dialogs
@@ -37,11 +36,10 @@ def onVehicleLoadedOnce(handler):
 def getItemSeason(item):
     if item.itemTypeID != GUI_ITEM_TYPE.CAMOUFLAGE:
         return item.season
-    import operator
     name, key = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
-    cfg = g_config.camouflages[key].get(name, {})
-    seasons = cfg.get('season', []) or [x for x in SEASONS_CONSTANTS.SEASONS if SEASON_NAME_TO_TYPE[x] & item.season]
-    return reduce(operator.ior, (SEASON_NAME_TO_TYPE[x] for x in seasons), SeasonType.UNDEFINED)
+    seasons = g_config.camouflages[key].get(name, {}).get('season', [])
+    return item.season if not seasons else reduce(
+        __import__('operator').ior, (SEASON_NAME_TO_TYPE[x] for x in seasons), SeasonType.UNDEFINED)
 
 
 def _getVehicles(item):

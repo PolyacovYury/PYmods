@@ -1,3 +1,4 @@
+from collections import namedtuple
 from functools import partial
 
 import BigWorld
@@ -24,6 +25,9 @@ from .shared import addDefaultInsignia, fixIconPath, getDefaultItemCDs, getInsig
 from ..constants import TYPES_ORDER, VIEW_ALIAS
 
 
+PurchaseItemPlaceholder = namedtuple('NotPItem', 'item progressionLevel')
+
+
 class EditableStylePopover(CustomizationEditedKitPopoverMeta):
     __service = dependency.descriptor(ICustomizationService)
 
@@ -35,7 +39,10 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
         self.destroy()
 
     def remove(self, intCD, slotIds, season):
-        self.__ctx.mode.removeFromSlots([C11nId(**slotId.toDict()) for slotId in slotIds], season)
+        if season != AdditionalPurchaseGroups.UNASSIGNED_GROUP_ID:
+            return self.__ctx.mode.removeFromSlots([C11nId(**slotId.toDict()) for slotId in slotIds], season)
+        self.__ctx.mode.rollbackSettings(self.__service.getItemByCD(intCD))
+        self.__ctx.events.onCacheResync()
 
     def setToDefault(self):
         self.__ctx.mode.clearStyle()
@@ -71,7 +78,7 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
 
     def __setHeader(self):
         self.as_setHeaderS(text_styles.highTitle(text(
-        R.strings.vehicle_customization.customization.kitPopover.title.items())))
+            R.strings.vehicle_customization.customization.kitPopover.title.items())))
         self.as_setHelpMessageS(
             icons.makeImageTag(image(R.images.gui.maps.icons.customization.edited_small()))
             + text_styles.main(text(R.strings.vehicle_customization.popover.editableStyle.editedItems())))
@@ -107,22 +114,18 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
         self.as_setDefaultButtonEnabledS(not mode.currentOutfit.isEqual(baseOutfit))
 
     def __buildList(self):
-        data = []
-        if self.__ctx.mode.isOutfitsEmpty():
-            return data
-        vDesc = g_currentVehicle.item.descriptor
-        availableRegionsMap = getCurrentVehicleAvailableRegionsMap()
-        for season in (self.__ctx.season,) + tuple(s for s in SEASONS_ORDER if s != self.__ctx.season):
-            purchaseItems = self.__ctx.mode.getActualPurchaseItems(season)
-            data.extend(self.__getSeasonItemsData(purchaseItems, season, availableRegionsMap, vDesc))
-        return data
+        return [] if self.__ctx.mode.isOutfitsEmpty() else sum((self.__getSeasonItemsData(
+            self.__ctx.mode.getActualPurchaseItems(season), season, getCurrentVehicleAvailableRegionsMap())
+            for season in (self.__ctx.season,) + tuple(s for s in SEASONS_ORDER if s != self.__ctx.season)),
+            self.__getSettingsItemsData())
 
     @staticmethod
     def __getSeasonGroupVO(s):
         return {'isTitle': True, 'titleLabel': makeHtmlString(
             'html_templates:lobby/customization/StylePopoverSeasonName', SEASON_TYPE_TO_NAME[s], ctx={'align': 'CENTER'})}
 
-    def __getSeasonItemsData(self, purchaseItems, season, availableRegionsMap, vDesc):
+    def __getSeasonItemsData(self, purchaseItems, season, availableRegionsMap):
+        vDesc = g_currentVehicle.item.descriptor
         defCDs = getDefaultItemCDs(vDesc)
         items = {}
         for pItem in purchaseItems:
@@ -130,7 +133,8 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
             if pItem.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
                 continue
             if item.intCD not in items:
-                items[item.intCD] = C11nPopoverItemData(item=item, season=season, isBase=not pItem.isEdited, isRemovable=True)
+                items[item.intCD] = C11nPopoverItemData(
+                    item=pItem, season=season, isBase=not pItem.isEdited, isRemovable=True)
             slotId = C11nId(pItem.areaID, pItem.slotType, pItem.regionIdx)
             items[item.intCD].slotsIds.append(slotId._asdict())
 
@@ -143,13 +147,20 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
                     self.__makeItemDataVO(itemData) for itemData in sorted(items.values(), key=self.orderKey)]
             return []
         styleSeason = self.__ctx.mode.getModifiedStyleSeason(season)
-        baseOutfit = style.getOutfit(styleSeason, vehicleCD=vDesc.makeCompactDescr())
+        level = purchaseItems[0].progressionLevel
+        vehicleCD = vDesc.makeCompactDescr()
+        baseOutfit = style.getOutfit(styleSeason, vehicleCD=vehicleCD)
+        if level != -1:
+            addOutfit = style.getAdditionalOutfit(level, styleSeason, vehicleCD)
+            if addOutfit is not None:
+                baseOutfit = baseOutfit.patch(addOutfit)
         fitOutfit(baseOutfit, availableRegionsMap)
         addDefaultInsignia(baseOutfit)
         for intCD, _, regionIdx, container, _ in baseOutfit.itemsFull():
             item = self.__service.getItemByCD(intCD)
             if intCD not in items:
-                items[intCD] = C11nPopoverItemData(item=item, season=season, isBase=True, isRemovable=True, isRemoved=True)
+                items[intCD] = C11nPopoverItemData(
+                    item=PurchaseItemPlaceholder(item, -1), season=season, isBase=True, isRemovable=True, isRemoved=True)
             if items[intCD].isRemoved:
                 areaId = container.getAreaID()
                 slotType = ITEM_TYPE_TO_SLOT_TYPE[item.itemTypeID]
@@ -157,17 +168,21 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
                 items[intCD].slotsIds.append(slotId._asdict())
         items = {intCD: itemData for intCD, itemData in items.items()
                  if itemData.isRemoved or not itemData.isBase and intCD not in defCDs}
-        items[style.intCD] = C11nPopoverItemData(
-            item=style, season=season, isBase=True, isRemovable=True, isFromInventory=purchaseItems[0].progressionLevel)
+        items[style.intCD] = C11nPopoverItemData(item=purchaseItems[0], season=season, isBase=True, isRemovable=True)
         items[style.intCD].slotsIds.append(self.__ctx.mode.STYLE_SLOT._asdict())
         return [self.__getSeasonGroupVO(season)] + [
             self.__makeItemDataVO(itemData) for itemData in sorted(items.values(), key=self.orderKey)]
 
     @staticmethod
     def __makeItemDataVO(itemData):
-        item = itemData.item
+        pItem = itemData.item
+        item = pItem.item
+        item_name = getInsigniaUserName(item)
+        if item.itemTypeID == GUI_ITEM_TYPE.STYLE and pItem.component != itemData.season:
+            item_name += (' ' + text(
+                R.strings.vehicle_customization.customization.camouflage.dyn(SEASON_TYPE_TO_NAME[pItem.component])()))
         return {
-            'id': item.intCD, 'icon': fixIconPath(item.icon), 'userName': text_styles.main(getInsigniaUserName(item)),
+            'id': item.intCD, 'icon': fixIconPath(item.icon), 'userName': text_styles.main(item_name),
             'numItems':
                 '' if itemData.isRemoved or not itemData.isRemovable or item.itemTypeID == GUI_ITEM_TYPE.STYLE else
                 text_styles.main('{} '.format(len(itemData.slotsIds))), 'isHistoric': item.isHistorical(), 'price': None,
@@ -175,13 +190,40 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
             'isDim': item.isDim(), 'isEdited': not itemData.isBase, 'isDisabled': itemData.isRemoved,
             'disabledLabel': text_styles.bonusPreviewText(text(
                 R.strings.vehicle_customization.popover.style.removed())), 'isRemovable': itemData.isRemovable,
-            'seasonType': itemData.season, 'progressionLevel': int(itemData.isFromInventory)}
+            'seasonType': itemData.season, 'progressionLevel': pItem.progressionLevel}
 
     @staticmethod
     def orderKey(itemData):
-        item = itemData.item
+        item = itemData.item.item
         order = (GUI_ITEM_TYPE.STYLE,) + tuple(i for i in TYPES_ORDER if i != GUI_ITEM_TYPE.STYLE)
-        return not itemData.isBase, itemData.isRemovable, order.index(item.itemTypeID), item.intCD
+        return order.index(item.itemTypeID), not itemData.isBase, itemData.isRemovable, item.intCD
+
+    def __getSettingsItemsData(self):
+        result = []
+        for intCD, num in sorted(self.__ctx.mode.getChangedItemData().items()):
+            data = C11nPopoverItemData(
+                item=PurchaseItemPlaceholder(self.__service.getItemByCD(intCD), -1),
+                season=AdditionalPurchaseGroups.UNASSIGNED_GROUP_ID, isBase=True, isRemovable=True)
+            data.slotsIds = [{}] * num
+            result.append(self.__makeItemDataVO(data))
+        if not result:
+            return result
+        group_title = text(R.strings.settings.colorSettings.tab.customSettings())
+        try:
+            from helpers.i18n.hangarpainter import _config as _
+            group_title = "<font color='#%s'>%s</font>" % (_.data['colour'], group_title)
+        except ImportError:
+            pass
+        # noinspection SpellCheckingInspection
+        return [{
+            'isTitle': True,
+            'titleLabel': (
+                '<textformat indent="0" leftmargin="0" rightmargin="0" leading="1">'
+                '<p align="center"><font face="$fieldfont" size="14" color="#e9e2bf" kerning="0">'
+                '<img src="img://gui/maps/icons/buttons/settings.png"'
+                ' width="16" height="16" vspace="-3" align="baseline"> '
+                '%s</font></p></textformat>' % group_title)
+        }] + result
 
 
 popoverAlias = VIEW_ALIAS.CAMO_SELECTOR_KIT_POPOVER

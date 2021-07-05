@@ -119,7 +119,7 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
 
     def getStylePurchaseItems(self, style, modifiedOutfit, season, styleSeason, progressionLevel):
         purchaseItems = [PurchaseItem(
-            style, None, areaID=None, slotType=None, regionIdx=None, selected=True,
+            style, None, areaID=None, slotType=None, regionIdx=None, selected=True, component=styleSeason,
             group=AdditionalPurchaseGroups.STYLES_GROUP_ID, locked=True, progressionLevel=progressionLevel)]
         vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
         if style.isProgressive:
@@ -424,10 +424,10 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
                 if i and i not in defCDs:
                     return False
 
-        return True
+        return not ItemSettingsRemap.isOutfitsModified(self)
 
     def _isOutfitsModified(self):
-        return any(self._cache.values()) or ItemSettingsRemap.isOutfitsModified(self)
+        return ItemSettingsRemap.isOutfitsModified(self) or any(self._cache.values())
 
     def _getAnchorVOs(self):
         if self.tabId != CustomizationTabs.STYLES:
