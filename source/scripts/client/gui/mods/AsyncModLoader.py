@@ -47,7 +47,6 @@ def _new_start(self):
     loading.addTransition(ConditionTransition(lambda _: True), target=async_loading)
     start_state.addChildState(async_loading)
     machine.connect(_AsyncLoaderObserver(_const.stateID, weakref.proxy(SL.appLoader)))
-    print _const.alias + ': injected'
     machine.start()
 
 
@@ -82,7 +81,7 @@ class _AsyncLoaderView(ExternalFlashComponent, GameLoadingMeta):
     gameplay = dependency.descriptor(IGameplayLogic)
 
     def __init__(self):
-        print 'init'
+        self.__errorFiles = []
         super(_AsyncLoaderView, self).__init__(ExternalFlashSettings(
             'gameLoading', 'gameLoadingApp.swf', 'root.main', ROOT_SWF_CONSTANTS.GAME_LOADING_REGISTER_CALLBACK))
         self.createExternalComponent()
@@ -107,6 +106,11 @@ class _AsyncLoaderView(ExternalFlashComponent, GameLoadingMeta):
 
     def setProgress(self, progress):
         self.as_setProgressS(progress)
+
+    def addError(self, fileName):
+        self.__errorFiles.append(fileName)
+        self.as_setInfoS('<br>'.join(
+            "<font face='$FieldFont' color='#DD7700' size='16'>Mod import failed: %s</font>" % x for x in self.__errorFiles))
 
     def _updateStage(self):
         width, height = GUI.screenResolution()
