@@ -1,12 +1,15 @@
 import importlib
+import os
 import string
+import traceback
 
 import ResMgr
 from adisp import process
 from constants import IS_DEVELOPMENT
-from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_CURRENT_EXCEPTION, LOG_WARNING
+from debug_utils import LOG_DEBUG, LOG_ERROR
 from shared_utils import awaitNextFrame, forEach
 
+__file__ = 'scripts/client/gui/mods/__init__.pyc'
 _mods = {}
 if IS_DEVELOPMENT:
     _MOD_NAME_POSTFIX = '.py'
@@ -62,6 +65,7 @@ def _loadMods(path=None, package=None, view=None):
         if view:
             view.setProgress(idx / modsNum)
             yield awaitNextFrame()
+        mod = None
         try:
             moduleName = '%s.%s' % (package, scriptName.replace(_MOD_NAME_POSTFIX, ''))
             _mods[moduleName] = mod = importlib.import_module(moduleName)
@@ -69,8 +73,11 @@ def _loadMods(path=None, package=None, view=None):
             getattr(mod, 'init', lambda: None)()
         except Exception:
             success = False
-            LOG_WARNING('Could not import a gui mod', package, scriptName)
-            LOG_CURRENT_EXCEPTION()
+            print 'Could not import gui mod', scriptName
+            traceback.print_exc()
+            if view:
+                view.addError(os.path.basename(mod.__file__) if mod else scriptName)
+                yield awaitNextFrame()
     import BigWorld
     if not success:
         BigWorld.callback(0, BigWorld.quit)
