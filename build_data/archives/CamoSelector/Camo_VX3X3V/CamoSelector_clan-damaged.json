@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/clan-damaged/settings.json": "res/configs/PYmods/CamoSelector/camouflages/clan-damaged/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/clan-damaged/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/clan-damaged/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/clan-damaged/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/clan-damaged/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-damaged/**": "res/configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-damaged/**"
     }
 }

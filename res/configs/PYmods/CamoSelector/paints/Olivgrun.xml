@@ -1,9 +1,0 @@
-<settings>
-    <paint>
-        <userString>Olivgrun RAL 6003</userString>
-        <texture>	gui/maps/vehicles/repaints/china_base_color.png	</texture>
-        <color>	61 69 45 255	</color>
-        <gloss>	0.5	</gloss>
-        <metallic>	0.23	</metallic>
-    </paint>
-</settings>

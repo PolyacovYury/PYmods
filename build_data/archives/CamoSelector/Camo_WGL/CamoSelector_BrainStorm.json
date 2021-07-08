@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/BrainStorm/settings.json": "res/configs/PYmods/CamoSelector/camouflages/BrainStorm/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/BrainStorm/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/BrainStorm/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/BrainStorm/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/BrainStorm/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/BrainStorm/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/BrainStorm/**"
     }
 }

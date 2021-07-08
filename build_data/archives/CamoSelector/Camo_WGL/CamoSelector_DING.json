@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/DING/settings.json": "res/configs/PYmods/CamoSelector/camouflages/DING/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/DING/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/DING/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/DING/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/DING/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/DING/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/DING/**"
     }
 }

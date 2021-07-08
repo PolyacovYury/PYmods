@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/NAVI/settings.json": "res/configs/PYmods/CamoSelector/camouflages/NAVI/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/NAVI/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/NAVI/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/NAVI/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/NAVI/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/NAVI/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/NAVI/**"
     }
 }

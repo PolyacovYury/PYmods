@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/NSS/settings.json": "res/configs/PYmods/CamoSelector/camouflages/NSS/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/NSS/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/NSS/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/NSS/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/NSS/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/NSS/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/NSS/**"
     }
 }

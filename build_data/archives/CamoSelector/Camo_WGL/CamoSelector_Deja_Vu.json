@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/Deja_Vu/settings.json": "res/configs/PYmods/CamoSelector/camouflages/Deja_Vu/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/Deja_Vu/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/Deja_Vu/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/Deja_Vu/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/Deja_Vu/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/Deja_Vu/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/Deja_Vu/**"
     }
 }

@@ -1,8 +1,21 @@
 ﻿{
-    "disable": ["germany:Karl", "ussr:R00_T_50_2", "usa:A00_T110E5", "france:F00_AMX_50Foch_155", "france:F77_FCM_2C_HE2017", "france:F80_FCM_F1_Mle1940_HE2017"],
+    "custom": {},
+    "disable": [
+        "france:F43_AMC_35_SH",
+        "germany:G24_VK3002DB_SH",
+        "germany:G00_Bomber_SH",
+        "uk:GB107_Cavalier_SH",
+        "usa:A72_T25_2_SH",
+        "ussr:R46_KV-13_SH",
+        "france:F17_AMX_13_90_Halloween_event",
+        "uk:GB24_Centurion_Mk3_Halloween_event",
+        "usa:A100_T49_Halloween_event",
+        "usa:A66_M103_Halloween_event",
+        "ussr:R40_T-54_Halloween_event"
+    ],
     "remap": {
         "1": {
-            "random_mode": 0
+            "random_enabled": false
         },
         "15009": {
             "season": ["desert"]

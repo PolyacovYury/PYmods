@@ -2,8 +2,7 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/TeamsCamo02/settings.json": "res/configs/PYmods/CamoSelector/camouflages/TeamsCamo02/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/TeamsCamo02/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/TeamsCamo02/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/TeamsCamo02/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/TeamsCamo02/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo02_ally/**": "res/configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo02_ally/**",
+        "mods/configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo02_enemy/**": "res/configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo02_enemy/**"
     }
 }

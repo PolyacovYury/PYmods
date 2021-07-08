@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/WhiteTeam/settings.json": "res/configs/PYmods/CamoSelector/camouflages/WhiteTeam/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/WhiteTeam/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/WhiteTeam/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/WhiteTeam/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/WhiteTeam/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/WhiteTeam/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/WhiteTeam/**"
     }
 }

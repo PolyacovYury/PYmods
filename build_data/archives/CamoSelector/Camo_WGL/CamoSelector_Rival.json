@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/Rival/settings.json": "res/configs/PYmods/CamoSelector/camouflages/Rival/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/Rival/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/Rival/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/Rival/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/Rival/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/Rival/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/Rival/**"
     }
 }

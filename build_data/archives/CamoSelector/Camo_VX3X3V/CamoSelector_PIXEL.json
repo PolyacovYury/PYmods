@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/PIXEL/settings.json": "res/configs/PYmods/CamoSelector/camouflages/PIXEL/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/PIXEL/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/PIXEL/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/PIXEL/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/PIXEL/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/by VX3X3V/PIXEL/**": "res/configs/PYmods/CamoSelector/camouflages/by VX3X3V/PIXEL/**"
     }
 }

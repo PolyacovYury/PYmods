@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/KungFu/settings.json": "res/configs/PYmods/CamoSelector/camouflages/KungFu/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/KungFu/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/KungFu/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/KungFu/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/KungFu/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/KungFu/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/KungFu/**"
     }
 }

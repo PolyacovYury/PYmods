@@ -1,9 +1,0 @@
-<settings>
-    <paint>
-        <userString>Dunkelgelb RAL 7028</userString>
-        <texture>	gui/maps/vehicles/repaints/uk_color_03.png	</texture>
-        <color>	116 102 18 255	</color>
-        <gloss>	0.5	</gloss>
-        <metallic>	0.18	</metallic>
-    </paint>
-</settings>

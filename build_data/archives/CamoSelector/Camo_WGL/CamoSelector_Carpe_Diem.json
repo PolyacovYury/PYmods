@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/Carpe_Diem/settings.json": "res/configs/PYmods/CamoSelector/camouflages/Carpe_Diem/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/Carpe_Diem/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/Carpe_Diem/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/Carpe_Diem/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/Carpe_Diem/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/Carpe_Diem/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/Carpe_Diem/**"
     }
 }

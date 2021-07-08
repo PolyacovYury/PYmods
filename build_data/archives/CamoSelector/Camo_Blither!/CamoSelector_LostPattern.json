@@ -2,8 +2,7 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/LostPattern/settings.json": "res/configs/PYmods/CamoSelector/camouflages/LostPattern/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/LostPattern/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/LostPattern/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/LostPattern/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/LostPattern/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_ally/**": "res/configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_ally/**",
+        "mods/configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_enemy/**": "res/configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_enemy/**"
     }
 }

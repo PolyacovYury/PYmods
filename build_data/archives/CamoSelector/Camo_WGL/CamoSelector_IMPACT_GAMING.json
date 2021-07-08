@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/IMPACT_GAMING/settings.json": "res/configs/PYmods/CamoSelector/camouflages/IMPACT_GAMING/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/IMPACT_GAMING/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/IMPACT_GAMING/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/IMPACT_GAMING/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/IMPACT_GAMING/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/IMPACT_GAMING/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/IMPACT_GAMING/**"
     }
 }

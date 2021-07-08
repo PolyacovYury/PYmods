@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/eClipse/settings.json": "res/configs/PYmods/CamoSelector/camouflages/eClipse/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/eClipse/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/eClipse/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/eClipse/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/eClipse/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/eClipse/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/eClipse/**"
     }
 }

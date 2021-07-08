@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/Apex/settings.json": "res/configs/PYmods/CamoSelector/camouflages/Apex/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/Apex/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/Apex/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/Apex/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/Apex/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/Apex/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/Apex/**"
     }
 }

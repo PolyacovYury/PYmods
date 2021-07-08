@@ -2,8 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/Neo/settings.json": "res/configs/PYmods/CamoSelector/camouflages/Neo/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/Neo/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/Neo/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/Neo/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/Neo/texture.dds"
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/Neo/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/Neo/**"
     }
 }
