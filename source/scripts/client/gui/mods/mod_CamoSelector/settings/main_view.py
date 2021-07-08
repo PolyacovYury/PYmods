@@ -71,12 +71,7 @@ class MainView(WGMainView):
             insignia_text = text(R.strings.achievements.marksOnGun0()) + ': ' + text(
                 R.strings.achievements.marksOnGun.descr.param.label.num(
                     self.hangarSpace.space.getVehicleEntity().appearance._getThisVehicleDossierInsigniaRank())())
-            try:
-                from helpers.i18n.hangarpainter import _config as _
-                insignia_text = "<font color='#%s'>%s</font>" % (_.data['colour'], insignia_text)
-            except ImportError:
-                pass
-            return text_styles.bonusPreviewText(insignia_text)
+            return text_styles.bonusPreviewText(g_config.color_compat(insignia_text))
         typeName = GUI_ITEM_TYPE_NAMES[slotType]
         slotsCount, filledSlotsCount = checkSlotsFilling(self.__ctx.mode.currentOutfit, slotType)
         return (text_styles.bonusPreviewText if slotsCount == filledSlotsCount else text_styles.stats)(text(

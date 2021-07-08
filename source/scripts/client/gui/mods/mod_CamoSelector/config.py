@@ -95,14 +95,18 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def loadLang(self):
         super(ConfigInterface, self).loadLang()
+        for key in self.i18n:
+            if not key.startswith('flashCol_'):
+                continue
+            self.i18n[key] = self.color_compat(self.i18n[key])
+
+    @staticmethod
+    def color_compat(to_color):
         try:
             from helpers.i18n.hangarpainter import _config
-            for key in self.i18n:
-                if not key.startswith('flashCol_'):
-                    continue
-                self.i18n[key] = "<font color='#%s'>%s</font>" % (_config.data['colour'], self.i18n[key])
+            return "<font color='#%s'>%s</font>" % (_config.data['colour'], to_color)
         except ImportError:
-            pass
+            return to_color
 
     def createTemplate(self):
         return {

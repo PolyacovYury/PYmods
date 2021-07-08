@@ -22,8 +22,8 @@ from gui.shared.personality import ServicesLocator as SL
 from helpers import dependency
 from skeletons.gui.customization import ICustomizationService
 from .shared import addDefaultInsignia, fixIconPath, getDefaultItemCDs, getInsigniaUserName
+from .. import g_config
 from ..constants import TYPES_ORDER, VIEW_ALIAS
-
 
 PurchaseItemPlaceholder = namedtuple('NotPItem', 'item progressionLevel')
 
@@ -208,21 +208,16 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
             result.append(self.__makeItemDataVO(data))
         if not result:
             return result
-        group_title = text(R.strings.settings.colorSettings.tab.customSettings())
-        try:
-            from helpers.i18n.hangarpainter import _config as _
-            group_title = "<font color='#%s'>%s</font>" % (_.data['colour'], group_title)
-        except ImportError:
-            pass
+        group_title = g_config.color_compat(text(R.strings.settings.colorSettings.tab.customSettings()))
         # noinspection SpellCheckingInspection
         return [{
             'isTitle': True,
             'titleLabel': (
-                '<textformat indent="0" leftmargin="0" rightmargin="0" leading="1">'
-                '<p align="center"><font face="$fieldfont" size="14" color="#e9e2bf" kerning="0">'
-                '<img src="img://gui/maps/icons/buttons/settings.png"'
-                ' width="16" height="16" vspace="-3" align="baseline"> '
-                '%s</font></p></textformat>' % group_title)
+                    '<textformat indent="0" leftmargin="0" rightmargin="0" leading="1">'
+                    '<p align="center"><font face="$fieldfont" size="14" color="#e9e2bf" kerning="0">'
+                    '<img src="img://gui/maps/icons/buttons/settings.png"'
+                    ' width="16" height="16" vspace="-3" align="baseline"> '
+                    '%s</font></p></textformat>' % group_title)
         }] + result
 
 
