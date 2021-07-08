@@ -1,11 +1,10 @@
-from PYmodsCore import loadJson
 from gui import SystemMessages
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.SystemMessages import SM_TYPE
 from items.components.c11n_constants import CustomizationType, SeasonType
 from items.vehicles import g_cache, makeIntCompactDescrByID
 from ... import g_config
-from ...constants import SEASON_NAME_TO_TYPE, SelectionMode
+from ...constants import SEASON_NAME_TO_TYPE
 
 
 class ItemSettingsRemap(object):
@@ -13,50 +12,37 @@ class ItemSettingsRemap(object):
         self._currentSettings = {'custom': {}, 'remap': {}}
 
     def getItemSettings(self, item):
-        name, key = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
-        settings = self._currentSettings[key].setdefault(name, {})
-        origSettings = g_config.camouflages[key].get(name, {})
+        itemsKey, itemKey = g_config.getCamoKeys(item.id, item.descriptor)
+        origSettings = g_config.getCamoSettings(itemsKey, itemKey)
+        settings = self._currentSettings[itemsKey].setdefault(itemKey, {})
         settings.setdefault('season', [i for i in origSettings.get('season', [])] or [
             x for x in SEASONS_CONSTANTS.SEASONS if SEASON_NAME_TO_TYPE[x] & item.season])
-        settings.setdefault('random_mode', origSettings.get('random_mode', SelectionMode.RANDOM))
-        settings.setdefault('ally', origSettings.get('ally', True))
-        settings.setdefault('enemy', origSettings.get('enemy', True))
+        for key, default_value in g_config.defaults.items():
+            settings.setdefault(key, origSettings.get(key, default_value))
         settings.setdefault('id', item.id)
         return settings
 
     def _cleanSettings(self):
         camouflages = g_cache.customization20().camouflages
-        for key, settings in self._currentSettings.iteritems():
-            for ID, conf in settings.items():
-                orig = g_config.camouflages[key].get(ID, {})
-                if 'season' in conf:
+        for itemsKey, data in self._currentSettings.iteritems():
+            for itemKey, settings in data.items():
+                orig = g_config.getCamoSettings(itemsKey, itemKey)
+                if 'season' in settings:
                     if 'season' in orig:
-                        if orig['season'] == conf['season']:
-                            del conf['season']
-                    elif set(s for s in SeasonType.COMMON_SEASONS if camouflages[conf['id']].season & s) == set(
-                            SEASON_NAME_TO_TYPE[x] for x in conf['season']):
-                        del conf['season']
-                for team in ('ally', 'enemy'):
-                    if team in conf and orig.get(team, True) == conf[team]:
-                        del conf[team]
-                if 'random_mode' in conf and conf['random_mode'] == orig.get('random_mode', SelectionMode.RANDOM):
-                    del conf['random_mode']
-                if conf.keys() in ([], ['id']):
-                    del settings[ID]
+                        if orig['season'] == settings['season']:
+                            del settings['season']
+                    elif set(s for s in SeasonType.COMMON_SEASONS if camouflages[settings['id']].season & s) == set(
+                            SEASON_NAME_TO_TYPE[x] for x in settings['season']):
+                        del settings['season']
+                for key, default_value in g_config.defaults.items():
+                    if key in settings and orig.get(key, default_value) == settings[key]:
+                        del settings[key]
+                if settings.keys() in ([], ['id']):
+                    del data[itemKey]
 
     def applySettings(self):
         self._cleanSettings()
-        for itemsKey in self._currentSettings:
-            for name in self._currentSettings[itemsKey]:
-                g_config.camouflages[itemsKey].setdefault(name, {}).update(self._currentSettings[itemsKey][name])
-        if self._currentSettings['remap']:
-            newSettings = {'disable': g_config.disable, 'remap': g_config.camouflages['remap']}
-            loadJson(g_config.ID, 'settings', newSettings, g_config.configPath, True)
-        if self._currentSettings['custom']:
-            for confFolderName, camoNames in g_config.configFolders.items():
-                loadJson(
-                    g_config.ID, 'settings', {name: g_config.camouflages['custom'][name] for name in camoNames},
-                    g_config.configPath + 'camouflages/' + confFolderName + '/', True, False)
+        g_config.applyCamoSettings(self._currentSettings)
         if any(self._currentSettings.itervalues()):
             g_config.collectCamouflageData()
             SystemMessages.pushI18nMessage(g_config.i18n['flashCol_serviceMessage_settings'], type=SM_TYPE.Information)
@@ -72,22 +58,22 @@ class ItemSettingsRemap(object):
         self._cleanSettings()
         result = {}
         camouflages = g_cache.customization20().camouflages
-        for key, settings in self._currentSettings.iteritems():
-            for ID, conf in settings.items():
-                intCD = makeIntCompactDescrByID('customizationItem', CustomizationType.CAMOUFLAGE, conf['id'])
-                result[intCD] = len(conf) - 1
-                orig = g_config.camouflages[key].get(ID, {})
-                if 'season' not in conf:
+        for itemsKey, data in self._currentSettings.iteritems():
+            for itemKey, settings in data.items():
+                intCD = makeIntCompactDescrByID('customizationItem', CustomizationType.CAMOUFLAGE, settings['id'])
+                result[intCD] = len(settings) - 1
+                orig = g_config.getCamoSettings(itemsKey, itemKey)
+                if 'season' not in settings:
                     continue
                 result[intCD] -= 1
                 if 'season' in orig:
-                    result[intCD] += len(set(orig['season']).symmetric_difference(conf['season']))
+                    result[intCD] += len(set(orig['season']).symmetric_difference(settings['season']))
                 else:
                     result[intCD] += len(set(
-                        s for s in SeasonType.COMMON_SEASONS if camouflages[conf['id']].season & s
-                    ).symmetric_difference(SEASON_NAME_TO_TYPE[x] for x in conf['season']))
+                        season for season in SeasonType.COMMON_SEASONS if camouflages[settings['id']].season & season
+                    ).symmetric_difference(SEASON_NAME_TO_TYPE[x] for x in settings['season']))
         return result
 
     def rollbackSettings(self, item):
-        name, key = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
-        self._currentSettings[key].pop(name, {})
+        itemsKey, itemKey = g_config.getCamoKeys(item.id, item.descriptor)
+        self._currentSettings[itemsKey].pop(itemKey, {})

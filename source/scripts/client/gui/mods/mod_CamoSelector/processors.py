@@ -247,7 +247,7 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, isPlayerVehicle=True
 @overrideMethod(_PlatoonTankAppearance, '_getActiveOutfit')
 def new_getActiveOutfit(base, self, vDesc):
     outfit = base(self, vDesc)
-    if (not g_config.data['enabled'] or not vDesc or vDesc.name in g_config.disable or (
+    if (not g_config.data['enabled'] or not vDesc or vDesc.name in g_config.disabledVehicles or (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault'])):
         return outfit
     nation, vehicleName = vDesc.name.split(':')
@@ -294,7 +294,7 @@ def new_prepareOutfit(base, self, *a, **kw):
     vDesc = self.typeDescriptor
     if not vDesc:
         return outfit
-    if not g_config.data['enabled'] or vDesc.name in g_config.disable or (
+    if not g_config.data['enabled'] or vDesc.name in g_config.disabledVehicles or (
             vDesc.type.hasCustomDefaultCamouflage and g_config.data['disableWithDefault']):
         return outfit
     if not g_config.data['useBought']:

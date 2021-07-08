@@ -21,7 +21,7 @@ from items.components.c11n_constants import ItemTags, ProjectionDecalFormTags, S
 from items.vehicles import g_cache, getItemByCompactDescr
 from skeletons.gui.customization import ICustomizationService
 from .. import g_config
-from ..constants import SEASON_NAME_TO_TYPE, TYPES_ORDER, insignia_names
+from ..constants import CUSTOM_GROUP_NAME, SEASON_NAME_TO_TYPE, TYPES_ORDER, insignia_names
 
 
 def onVehicleLoadedOnce(handler):
@@ -37,7 +37,7 @@ def getItemSeason(item):
     if item.itemTypeID != GUI_ITEM_TYPE.CAMOUFLAGE:
         return item.season
     name, key = (item.descriptor.userKey, 'custom') if item.priceGroup == 'custom' else (item.id, 'remap')
-    seasons = g_config.camouflages[key].get(name, {}).get('season', [])
+    seasons = g_config.camo_settings[key].get(name, {}).get('season', [])
     return item.season if not seasons else reduce(
         __import__('operator').ior, (SEASON_NAME_TO_TYPE[x] for x in seasons), SeasonType.UNDEFINED)
 
@@ -112,7 +112,7 @@ def CSComparisonKey(isPurchase, item=None, service=None):
     order = TYPES_ORDER if isPurchase else (GUI_ITEM_TYPE.STYLE,) + tuple(i for i in TYPES_ORDER if i != GUI_ITEM_TYPE.STYLE)
     return (
         order.index(item.itemTypeID) if item.itemTypeID in order else -1, ItemTags.NATIONAL_EMBLEM not in tags,
-        not is3D, isVictim, item.priceGroup == 'custom', nat_count == 0,
+        not is3D, isVictim, item.priceGroup == CUSTOM_GROUP_NAME, nat_count == 0,
         (not (clan or vehicles), not clan, not vehicles) if not nat_count else (clan, nat_count != 1),
         getGroupName(item, service.getCtx().isPurchase), not item.isHistorical(), texName, item.isRare(),
         0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), item.id)

@@ -13,20 +13,16 @@ from gui.customization.constants import CustomizationModes
 from gui.impl.backport import text
 from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from items.components.c11n_constants import CustomizationType, SeasonType
+from items.components.c11n_constants import CustomizationType, EMPTY_ITEM_ID, SeasonType
 from vehicle_outfit.outfit import ANCHOR_TYPE_TO_SLOT_TYPE_MAP, Area
-
-
-class SelectionMode(object):
-    ALL = OFF, TEAM, RANDOM = range(3)
-    NAMES = {OFF: 'off', TEAM: 'team', RANDOM: 'random'}
-    INDICES = {v: k for k, v in NAMES.iteritems()}
 
 
 class VIEW_ALIAS(object):
     CAMO_SELECTOR_KIT_POPOVER = 'CustomizationCamoSelectorKitPopover'
 
 
+STARTER_ITEM_ID = EMPTY_ITEM_ID + 1
+CUSTOM_GROUP_NAME = intern('custom')
 SEASON_NAME_TO_TYPE = {
     SEASONS_CONSTANTS.SUMMER: SeasonType.SUMMER, SEASONS_CONSTANTS.WINTER: SeasonType.WINTER,
     SEASONS_CONSTANTS.DESERT: SeasonType.DESERT}

@@ -6,7 +6,6 @@ from gui.impl.backport import text
 from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from .. import g_config
-from ..constants import SelectionMode
 
 
 class Options(object):
@@ -23,7 +22,7 @@ class Options(object):
     TEAM_ALLY = 'team_ally'
     TEAM_ENEMY = 'team_enemy'
     REMOVE_FROM_OTHER = 'removeFromOther'
-    MODE = (MODE_OFF, MODE_TEAM, MODE_RANDOM)
+    MODE = (MODE_OFF, MODE_RANDOM, MODE_TEAM)
     SEASON = (SEASON_SUMMER, SEASON_WINTER, SEASON_DESERT)
     TEAM = (TEAM_ALLY, TEAM_ENEMY)
     ALL = MODE + SEASON + TEAM
@@ -45,11 +44,11 @@ class CustomizationItemCMHandler(WGCMHandler):
         setting = self.__ctx.mode.getItemSettings(self._item)
         getSeasonOptionData = lambda option, s: getOptionData(
             option, s in setting['season'], len(setting['season']) != 1 or s not in setting['season'])
-        mode = setting['random_mode']
-        getTeamOptionData = lambda option, remove=False: getOptionData(option, remove, mode != SelectionMode.OFF)
+        getTeamOptionData = lambda option, remove=False: getOptionData(option, remove, setting['random_enabled'])
+        active_mode_idx = setting['random_enabled'] and (setting['random_enabled'] + setting['random_team'])
         modeSubs, modeLabel = [], ''
-        for _mode, _option in zip(SelectionMode.ALL, Options.MODE):
-            if mode != _mode:
+        for idx, _option in enumerate(Options.MODE):
+            if idx != active_mode_idx:
                 modeSubs.append(self._makeItem(_option, getOptionLabel(Options.MODE_CHANGE) + getOptionLabel(_option)))
             else:
                 modeLabel = getOptionLabel(_option)
@@ -111,7 +110,9 @@ class CustomizationItemCMHandler(WGCMHandler):
             else:
                 seasons.remove(value)
         elif optionId in Options.MODE:
-            settings['random_mode'] = SelectionMode.INDICES[value]
+            idx = Options.MODE.index(optionId)
+            settings['random_enabled'] = idx > 0
+            settings['random_team'] = idx == 2
         elif optionId in Options.TEAM:
             settings[value] = not settings[value]
         self.__ctx.events.onCacheResync()
