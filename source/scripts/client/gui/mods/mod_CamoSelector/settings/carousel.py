@@ -19,6 +19,9 @@ from .. import g_config
 
 
 class CustomizationCarouselDataProvider(WGCarouselDP):
+    def getVisibleTabsForPurchase(self):
+        return self.__carouselCache.getVisibleTabsForPurchase()
+
     def onModeChanged(self, modeId, prevModeId):
         visibleTabs = self.getVisibleTabs()  # don't reset tab idx upon mode change, unless absolutely necessary
         tabId = None
@@ -80,12 +83,14 @@ class CustomizationCarouselDataProvider(WGCarouselDP):
 
 class CarouselCache(WGCache):
     def getVisibleTabs(self):
-        visibleTabs = WGCache.getVisibleTabs(self)
-        season, modeId = self.__ctx.season, self.__ctx.modeId
-        if self.__ctx.isPurchase and modeId != CustomizationModes.EDITABLE_STYLE:
-            visibleTabs = sum((self.__itemsData[mode][season].keys() for mode in (
-                CustomizationModes.CUSTOM, CustomizationModes.STYLED)), [])
-        return visibleTabs
+        if self.__ctx.isPurchase and self.__ctx.modeId != CustomizationModes.EDITABLE_STYLE:
+            return self.getVisibleTabsForPurchase()
+        return WGCache.getVisibleTabs(self)
+
+    def getVisibleTabsForPurchase(self):
+        self.__initCache()
+        return sum((self.__itemsData[mode][self.__ctx.season].keys() for mode in (
+            CustomizationModes.CUSTOM, CustomizationModes.STYLED)), [])
 
     def __getCarouselData(self, season=None, modeId=None, tabId=None):
         itemsData = self.getItemsData(season, modeId, tabId)
@@ -122,7 +127,6 @@ class CarouselCache(WGCache):
                 itemTypes.extend(CustomizationTabs.ITEM_TYPES[tabId])
         if self.__ctx._hangarSpace.space.getVehicleEntity().appearance._getThisVehicleDossierInsigniaRank():
             itemTypes.append(GUI_ITEM_TYPE.INSIGNIA)
-
         purchaseItems = []
         moddedItems = []
         customizationCache = vehicles.g_cache.customization20().itemTypes

@@ -86,7 +86,7 @@ class CustomizationBottomPanel(CBP):
             'rightLabel': g_config.i18n['flash_switcher_buy'],
             'selectedIndex': int(self.__ctx.isPurchase) + int(self.__ctx.isPurchase and data['isEditable']),
             'popoverAlias': data['popoverAlias'] if self.__ctx.isPurchase else VIEW_ALIAS.CAMO_SELECTOR_KIT_POPOVER,
-            'rightEnabled': True
+            'rightEnabled': bool(self._carouselDP.getVisibleTabsForPurchase())
         })
 
     def __setBottomPanelBillData(self, *_):
