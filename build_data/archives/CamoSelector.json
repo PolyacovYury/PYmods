@@ -1,5 +1,5 @@
 ﻿{
-    "enabled": false,
+    "enabled": true,
     "ext": ".zip",
     "files": {
         "mods/configs/PYmods/CamoSelector/CamoSelector.json": "res/configs/PYmods/CamoSelector/CamoSelector.json",
