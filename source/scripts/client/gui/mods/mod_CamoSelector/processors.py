@@ -24,7 +24,7 @@ from vehicle_outfit.packers import pickPacker
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankPartNames
 from . import g_config
-from .constants import SEASON_NAME_TO_TYPE, getAvailableRegions
+from .constants import CUSTOM_GROUP_NAME, SEASON_NAME_TO_TYPE, getAvailableRegions
 
 try:
     import gui.mods.mod_statpaints  # camouflage removal should work even with CamoSelector, so it has to be imported first
@@ -154,6 +154,17 @@ def applyOutfitCache(vDesc, outfit, seasonName, seasonCache, clean=True):
         raise
 
 
+def getRandomCamoID(camoIDs, requirement):
+    unchecked = list(camoIDs)
+    while unchecked:
+        result = random.choice(unchecked)
+        if not requirement(result):
+            unchecked.remove(result)
+        else:
+            return result
+    return random.choice(list(camoIDs))
+
+
 def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID=None):
     if not g_config.camoForSeason:
         g_config.collectCamouflageData()
@@ -161,8 +172,21 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
     if vID is not None:
         isAlly = BigWorld.player().guiSessionProvider.getArenaDP().getVehicleInfo(vID).team == BigWorld.player().team
         teamMode = 'ally' if isAlly else 'enemy'
+        requirement = lambda _i: True
     else:
         teamMode = None
+        # TODO: paid/unpaid changes here
+        # requirement = lambda _i: True  # paid
+        # the rest is for unpaid
+        from gui.customization.shared import createCustomizationBaseRequestCriteria
+        from gui.shared.utils.requesters import REQ_CRITERIA
+        itemRequirement = (createCustomizationBaseRequestCriteria(
+            g_currentVehicle.item, g_currentVehicle.item.eventsCache.questsProgress, ()
+        ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())) ^ REQ_CRITERIA.CUSTOM(
+            lambda _i: (_i.priceGroup == CUSTOM_GROUP_NAME)
+        )
+        requirement = lambda itemID: itemRequirement(g_currentVehicle.itemsCache.items.getItemByCD(makeIntCompactDescrByID(
+            'customizationItem', CustomizationType.CAMOUFLAGE, itemID)))
     random.seed(vID)
     camoID = None
     palette = None
@@ -200,7 +224,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
                 camoForSeason = g_config.camoForSeason[seasonName]
                 if teamMode is not None and camoForSeason[teamMode]:
                     if g_config.teamCamo[teamMode] is None:
-                        camoID = random.choice(camoForSeason[teamMode])
+                        camoID = getRandomCamoID(camoForSeason[teamMode], requirement)
                         item = camouflages[camoID]
                         patternSize = random.randrange(len(item.scales))
                         palette = random.randrange(len(item.palettes))
@@ -208,7 +232,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
                     else:
                         camoID, palette, patternSize = g_config.teamCamo[teamMode]
                 elif camoForSeason['random']:
-                    camoID = random.choice(camoForSeason['random'])
+                    camoID = getRandomCamoID(camoForSeason['random'], requirement)
                     item = camouflages[camoID]
                     patternSize = random.randrange(len(item.scales))
                     palette = random.randrange(len(item.palettes))

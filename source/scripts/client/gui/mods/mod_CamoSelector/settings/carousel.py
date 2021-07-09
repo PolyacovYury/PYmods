@@ -16,6 +16,8 @@ from items import vehicles
 from items.components.c11n_constants import EMPTY_ITEM_ID, SeasonType
 from .shared import CSComparisonKey, getGroupName, getItemSeason
 from .. import g_config
+# noinspection PyUnresolvedReferences
+from ..constants import CUSTOM_GROUP_NAME
 
 
 class CustomizationCarouselDataProvider(WGCarouselDP):
@@ -119,8 +121,15 @@ class CarouselCache(WGCache):
         purchaseRequirement = createCustomizationBaseRequestCriteria(
             g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.getMode().getAppliedItems()
         ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
-        moddedRequirement = REQ_CRITERIA.CUSTOM(lambda _i: _i.descriptor.parentGroup is not None and (
-                _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)))
+        # TODO: paid/unpaid changes here
+        moddedRequirement = REQ_CRITERIA.CUSTOM(
+            lambda _i: (_i.priceGroup == CUSTOM_GROUP_NAME)  # unpaid
+            # lambda _i: (  # paid
+            #         _i.descriptor.parentGroup is not None and  # paid, also bomb
+            #         _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)  # paid
+            # )  # paid
+        ) ^ purchaseRequirement  # unpaid
+        # )  # paid
         itemTypes = []
         for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
             if vehicleHasSlot(slotType):
