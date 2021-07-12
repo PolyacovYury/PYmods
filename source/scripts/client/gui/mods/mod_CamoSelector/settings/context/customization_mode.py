@@ -434,7 +434,7 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         if modified.style and modified.style.isProgression and original.progressionLevel != modified.progressionLevel:
             styleInfo = seasonCache.setdefault('style', {})
             styleInfo['id'] = modified.id
-            styleInfo['level'] = modified.progressionLevel
+            styleInfo['progressionLevel'] = modified.progressionLevel
         original = applyStyleOverride(
             g_currentVehicle.item.descriptor, original, SEASON_TYPE_TO_NAME[original_season], seasonCache, False)
         addDefaultInsignia(original, modified)

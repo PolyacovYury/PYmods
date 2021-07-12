@@ -32,15 +32,14 @@ def migrateOutfitsCache(self):
         for veh in nat.values():
             for season in veh.values():
                 if 'intCD' in season:  # style ID
-                    if season['applied']:
-                        style_id = dependency.instance(IGuiItemsFactory).createCustomization(
-                            season['intCD']).id if season['intCD'] else EMPTY_ITEM_ID
-                        for seasonName in SEASON_NAME_TO_TYPE:
-                            _season = veh.setdefault(seasonName, {})
-                            _season.setdefault('style', {})
-                            _season['style']['id'] = style_id
-                            if 'level' in season:
-                                _season['style']['level'] = season['level']
+                    style_id = dependency.instance(IGuiItemsFactory).createCustomization(
+                        season['intCD']).id if season['intCD'] and season['applied'] else EMPTY_ITEM_ID
+                    for seasonName in SEASON_NAME_TO_TYPE:
+                        _season = veh.setdefault(seasonName, {})
+                        _season.setdefault('style', {})
+                        _season['style']['id'] = style_id
+                        if 'level' in season:
+                            _season['style']['progressionLevel'] = season['level']
                     season.clear()
                 if 'camo' in season:
                     season[GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]] = season.pop('camo')
@@ -59,6 +58,8 @@ def migrateOutfitsCache(self):
                             for region in partData:
                                 if partData[region] is None:
                                     partData[region] = {'id': None}
+                    elif 'level' in typeData:
+                        typeData['progressionLevel'] = typeData.pop('level')
     loadJson(self.ID, 'outfitCache', outfitCache, self.configPath, True)
 
 

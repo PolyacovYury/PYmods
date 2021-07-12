@@ -106,7 +106,7 @@ def applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean):
         fitOutfit(outfit, availableRegions)
         outfit = style.getOutfit(style_season, vehicleCD=vehicleCD, diff=getEditableStyleOutfitDiff(outfit, baseOutfit))
         outfit_level = outfit.progressionLevel if outfit.style and outfit.style.isProgression else 1
-    style_level = styleInfo.get('level', 1)
+    style_level = styleInfo.get('progressionLevel', 1)
     if style.isProgressive and outfit_level != style_level:
         outfit = style.getStyleProgressionOutfit(outfit, style_level, style_season)
     fitOutfit(outfit, availableRegions)
