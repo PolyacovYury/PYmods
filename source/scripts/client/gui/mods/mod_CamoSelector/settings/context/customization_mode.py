@@ -455,7 +455,8 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
                 else:
                     item_data.update({
                         f: getattr(m.component, f) for f, fd in m.component.fields.items()
-                        if not fd.flags & (FieldFlags.DEPRECATED | FieldFlags.WEAK_EQUAL_IGNORED)})
+                        if (not fd.flags & (FieldFlags.DEPRECATED | FieldFlags.WEAK_EQUAL_IGNORED)
+                            and getattr(m.component, f) != fd.default)})
         deleteEmpty(seasonCache)
         return seasonCache
 
