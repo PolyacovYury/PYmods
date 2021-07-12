@@ -14,7 +14,7 @@ from gui.customization.shared import C11N_ITEM_TYPE_MAP, SEASON_TYPE_TO_NAME, __
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
 from items.components.c11n_constants import CustomizationType, EMPTY_ITEM_ID, SeasonType
-from items.customizations import CustomizationOutfit, EmptyComponent, createNationalEmblemComponents
+from items.customizations import CustomizationOutfit, EmptyComponent, InsigniaComponent, createNationalEmblemComponents
 from items.vehicles import g_cache
 from vehicle_outfit.outfit import Area, Outfit
 from vehicle_outfit.packers import pickPacker
@@ -55,8 +55,9 @@ def getDefaultItemCDs(vDesc):
 
 def addDefaultInsignia(*outfits):
     for outfit in outfits:
-        if not outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).getItemCD():
-            outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).set(getDefaultItemCDs(g_currentVehicle.item.descriptor)[1])
+        if not outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).getItemCD():  # emptyComponent for insignia is wrong
+            outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).set(
+                getDefaultItemCDs(g_currentVehicle.item.descriptor)[1], component=InsigniaComponent())
         outfit.invalidate()
 
 
@@ -111,7 +112,7 @@ def applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean):
     style_season = SEASON_NAME_TO_TYPE[styleInfo.get('season', seasonName)]
     outfit_level = outfit.progressionLevel if outfit.style and outfit.style.isProgression else 1
     if outfit.id != styleId:
-        outfit = style.getOutfit(season, vehicleCD=vehicleCD)
+        outfit = style.getOutfit(style_season, vehicleCD=vehicleCD)
         outfit_level = outfit.progressionLevel if style.isProgressive else 1
     elif style_season != season:
         baseOutfit = getOutfitFromStyle(style, vDesc, season, outfit.progressionLevel, availableRegions)
