@@ -144,7 +144,7 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
     def getActualPurchaseItems(self, season):
         return (
             self.getCustomPurchaseItems(season) if self.__modifiedStyles[season] is None else self.getStylePurchaseItems(
-                self.__modifiedStyles[season], self.getModifiedOutfit(season), season, self.__modifiedStyleSeasons[season],
+                self.__modifiedStyles[season], self._modifiedOutfits[season], season, self.__modifiedStyleSeasons[season],
                 self.getStyleProgressionLevel()))
 
     def getSlotDataFromSlot(self, slotId, season=None):
@@ -237,10 +237,14 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         self._ctx.refreshOutfit()
         self._events.onComponentChanged(slotId, False)
 
+    def _getBaseOutfits(self):
+        return self._ctx.getMode().getModifiedOutfits() if g_config.data['useBought'] else {
+            season: self._service.getEmptyOutfit() for season in SeasonType.COMMON_SEASONS}
+
     def _invalidateCache(self):
         vDesc = g_currentVehicle.item.descriptor
         vehCache = g_config.getOutfitCache()
-        fromOutfits = self._ctx.getMode().getModifiedOutfits()
+        fromOutfits = self._getBaseOutfits()
         self._cache.clear()
         for season in SeasonType.COMMON_SEASONS:
             seasonName = SEASON_TYPE_TO_NAME[season]
@@ -260,7 +264,7 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
 
     def _fillOutfits(self):
         vehCache = g_config.getOutfitCache()
-        baseOutfits = self._ctx.getMode().getModifiedOutfits()
+        baseOutfits = self._getBaseOutfits()
         vDesc = g_currentVehicle.item.descriptor
         for season in SeasonType.COMMON_SEASONS:
             seasonName = SEASON_TYPE_TO_NAME[season]
@@ -349,12 +353,12 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         isTurretCustomisable = isTurretCustom(vDesc)
         if not self.isOutfitsModified() and not isModeChanged:
             return callback(self)
-        fromOutfits = self._ctx.getMode().getModifiedOutfits()
+        fromOutfits = self._getBaseOutfits()
         cache = {}
         for season in SeasonType.COMMON_SEASONS:
             seasonName = SEASON_TYPE_TO_NAME[season]
             fromOutfit = fromOutfits[season]
-            toOutfit = self.getModifiedOutfit(season)
+            toOutfit = self._modifiedOutfits[season]
             addDefaultInsignia(fromOutfit, toOutfit)
             cache[seasonName] = seasonCache = self.computeCache(
                 fromOutfit, toOutfit,
