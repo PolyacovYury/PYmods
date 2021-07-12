@@ -1,3 +1,4 @@
+import ResMgr
 import os
 import traceback
 from .Dummy import DummyConfigInterface, DummyConfBlockInterface, DummySettingContainer
@@ -41,7 +42,7 @@ class ConfigBase(object):
 
     def readConfigDir(
             self, quiet, recursive=False, dir_name='configs', error_not_exist=True, make_dir=True, ordered=False,
-            encrypted=False, migrate=False):
+            encrypted=False, migrate=False, ext='.json'):
         configs_dir = self.configPath + dir_name + '/'
         if not os.path.isdir(configs_dir):
             if error_not_exist and not quiet:
@@ -49,34 +50,48 @@ class ConfigBase(object):
             if make_dir:
                 os.makedirs(configs_dir)
         for dir_path, sub_dirs, names in os.walk(configs_dir):
-            dir_path = dir_path.replace('\\', '/')
+            dir_path = dir_path.replace('\\', '/').decode('windows-1251').encode('utf-8')
             local_path = dir_path.replace(configs_dir, '')
-            names = sorted([x for x in names if x.endswith('.json')], key=str.lower)
+            names = sorted([x for x in names if x.endswith(ext)], key=str.lower)
             if not recursive:
                 sub_dirs[:] = []
             for name in names:
-                name = os.path.splitext(name)[0]
+                name = os.path.splitext(name)[0].decode('windows-1251').encode('utf-8')
                 json_data = {}
                 try:
-                    if ordered:
-                        json_data = loadJsonOrdered(self.ID, dir_path, name)
-                    else:
-                        json_data = loadJson(self.ID, name, json_data, dir_path, encrypted=encrypted)
+                    if ext == '.json':
+                        if ordered:
+                            json_data = loadJsonOrdered(self.ID, dir_path, name)
+                        else:
+                            json_data = loadJson(self.ID, name, json_data, dir_path, encrypted=encrypted)
+                    elif ext == '.xml':
+                        json_data = ResMgr.openSection('.' + dir_path + '/' + name + ext)
                 except StandardError:
                     traceback.print_exc()
                 if not json_data:
-                    print self.ID + ':', (local_path and (local_path + '/')) + name + '.json is invalid'
+                    print self.ID + ':', (dir_path and (dir_path + '/')) + name + ext, 'is invalid'
                     continue
-                if migrate:
-                    self.onMigrateConfig(quiet, dir_path, local_path, name, json_data, sub_dirs, names)
-                else:
-                    self.onReadConfig(quiet, local_path, name, json_data, sub_dirs, names)
+                try:
+                    if ext == '.json':
+                        if migrate:
+                            self.onMigrateConfig(quiet, dir_path, local_path, name, json_data, sub_dirs, names)
+                        else:
+                            self.onReadConfig(quiet, local_path, name, json_data, sub_dirs, names)
+                    elif ext == '.xml':
+                        self.onReadDataSection(quiet, dir_path, local_path, name, json_data, sub_dirs, names)
+                        ResMgr.purge('.' + dir_path + '/' + name + ext)
+                except StandardError:
+                    traceback.print_exc()
 
     def onMigrateConfig(self, quiet, path, dir_path, name, json_data, sub_dirs, names):
         """clearing sub_dirs and/or names using slice assignment breaks the corresponding loop"""
         pass
 
     def onReadConfig(self, quiet, dir_path, name, json_data, sub_dirs, names):
+        """clearing sub_dirs and/or names using slice assignment breaks the corresponding loop"""
+        pass
+
+    def onReadDataSection(self, quiet, path, dir_path, name, data_section, sub_dirs, names):
         """clearing sub_dirs and/or names using slice assignment breaks the corresponding loop"""
         pass
 
