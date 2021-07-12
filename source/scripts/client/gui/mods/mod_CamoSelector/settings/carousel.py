@@ -122,14 +122,11 @@ class CarouselCache(WGCache):
             g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.getMode().getAppliedItems()
         ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
         # TODO: paid/unpaid changes here
-        moddedRequirement = REQ_CRITERIA.CUSTOM(
-            lambda _i: (_i.priceGroup == CUSTOM_GROUP_NAME)  # unpaid
-            # lambda _i: (  # paid
-            #         _i.descriptor.parentGroup is not None and  # paid, also bomb
-            #         _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)  # paid
-            # )  # paid
-        ) ^ (purchaseRequirement | REQ_CRITERIA.CUSTOM(lambda _item: _item.buyCount > 0))  # unpaid
-        # )  # paid
+        moddedRequirement = REQ_CRITERIA.CUSTOMIZATION.PRICE_GROUP(CUSTOM_GROUP_NAME) ^ (  # unpaid
+                purchaseRequirement | REQ_CRITERIA.CUSTOM(lambda _item: _item.buyCount > 0))  # unpaid
+        # moddedRequirement = REQ_CRITERIA.CUSTOM(lambda _i: (  # paid
+        #         _i.descriptor.parentGroup is not None and  # paid, bomb
+        #         _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)))  # paid
         itemTypes = []
         for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
             if vehicleHasSlot(slotType):
