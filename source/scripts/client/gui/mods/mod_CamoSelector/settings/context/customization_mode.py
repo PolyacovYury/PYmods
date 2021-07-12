@@ -1,8 +1,7 @@
 from copy import deepcopy
 
-import BigWorld
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import loadJson
+from PYmodsCore import BigWorld_callback, loadJson
 from adisp import async
 from constants import CLIENT_COMMAND_SOURCES
 from gui import SystemMessages
@@ -91,11 +90,11 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
 
     def _selectInsignia(self, *_):
         if self._tabId == 8:
-            BigWorld.callback(0, lambda: self.selectSlot(C11nId(Area.GUN, GUI_ITEM_TYPE.INSIGNIA, 0)))
+            BigWorld_callback(0, self.selectSlot, C11nId(Area.GUN, GUI_ITEM_TYPE.INSIGNIA, 0))
 
     def changeTab(self, tabId, itemCD=None):
         if self._tabId != tabId == 8:
-            BigWorld.callback(0, self._selectInsignia)
+            BigWorld_callback(0, self._selectInsignia)
         WGCustomMode.changeTab(self, tabId, itemCD)
 
     def _onStart(self):

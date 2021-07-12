@@ -1,11 +1,9 @@
 from collections import OrderedDict
-
-import BigWorld
-import adisp
-from PYmodsCore import overrideMethod
-from async import async, await, await_callback
 from contextlib import contextmanager
-from functools import partial
+
+import adisp
+from PYmodsCore import BigWorld_callback, overrideMethod
+from async import async, await, await_callback
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationModes, CustomizationTabs, removeItemsFromOutfit
@@ -59,13 +57,13 @@ class CustomizationContext(WGCtx):
             self.mode.start(
                 CustomizationTabs.STYLES if isStyleInstalled or style_id != EMPTY_ITEM_ID else CustomizationTabs.CAMOUFLAGES)
         self.refreshOutfit()
-        onVehicleLoadedOnce(partial(BigWorld.callback, 0, self.refreshOutfit))
+        onVehicleLoadedOnce(BigWorld_callback, 0, self.refreshOutfit)
 
     def changeMode(self, modeId, tabId=None, source=None):
         if modeId != CustomizationModes.CAMO_SELECTOR:
             self.__purchaseModeId = modeId
         WGCtx.changeMode(self, modeId, tabId, source)
-        onVehicleLoadedOnce(partial(BigWorld.callback, 0, self.refreshOutfit))
+        onVehicleLoadedOnce(BigWorld_callback, 0, self.refreshOutfit)
 
     @contextmanager
     def overrideMode(self, desired=CustomizationModes.CAMO_SELECTOR):
@@ -85,15 +83,14 @@ class CustomizationContext(WGCtx):
         if not result:
             return
         WGCtx.changeModeWithProgressionDecal(self, itemCD)
-        yield await_callback(
-            lambda callback: onVehicleLoadedOnce(partial(BigWorld.callback, 0, partial(callback, None))))()
+        yield await_callback(lambda callback: onVehicleLoadedOnce(BigWorld_callback, 0, callback, None))()
         item = self._service.getItemByCD(itemCD)
         self.events.onGetItemBackToHand(item, level, scrollToItem=True)
         if not self.isPurchase:
             return
         noveltyCount = self._vehicle.getC11nItemNoveltyCounter(proxy=self._itemsCache.items, item=item)
         if noveltyCount:
-            BigWorld.callback(0.0, lambda: self.resetItemsNovelty([item.intCD]))
+            BigWorld_callback(0, self.resetItemsNovelty, [item.intCD])
 
     def getPurchaseItems(self):
         mode = self.__modes[self.__purchaseModeId]

@@ -1,8 +1,5 @@
-from functools import partial
-
-import BigWorld
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import overrideMethod
+from PYmodsCore import BigWorld_callback, overrideMethod
 from frameworks.wulf import WindowLayer as WL
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import __getIcon as getIcon
@@ -92,8 +89,8 @@ class CustomizationBottomPanel(CBP):
     def __setBottomPanelBillData(self, *_):
         # noinspection PyUnresolvedReferences
         CBP._CustomizationBottomPanel__setBottomPanelBillData(self, *_)
-        BigWorld.callback(0, self.__showBill if self.__ctx.isOutfitsModified() else self.__hideBill)
-        BigWorld.callback(0, partial(self.as_setItemsPopoverBtnEnabledS, not self.__ctx.mode.isOutfitsEmpty()))
+        BigWorld_callback(0, self.__showBill if self.__ctx.isOutfitsModified() else self.__hideBill)
+        BigWorld_callback(0, self.as_setItemsPopoverBtnEnabledS, not self.__ctx.mode.isOutfitsEmpty())
 
     def _carouseItemWrapper(self, itemCD):
         VO = CBP._carouseItemWrapper(self, itemCD)
@@ -179,8 +176,8 @@ class CustomizationBottomPanel(CBP):
 class CamoSelector_carousel(View):
     def _populate(self):
         View._populate(self)
-        BigWorld.callback(0, self.destroy)
-        BigWorld.callback(0, self.app.containerManager.getContainer(WL.SUB_VIEW).getView()._MainView__bottomPanel.resetFilter)
+        BigWorld_callback(0, self.destroy)
+        BigWorld_callback(0, self.app.containerManager.getContainer(WL.SUB_VIEW).getView()._MainView__bottomPanel.resetFilter)
 
     @staticmethod
     def py_log(*args):

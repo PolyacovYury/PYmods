@@ -1,4 +1,4 @@
-from PYmodsCore import overrideMethod
+from PYmodsCore import BigWorld_callback, overrideMethod
 from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION
 from gui.Scaleform.daapi.view.lobby.customization import (
     customization_inscription_controller as ic, customization_style_info as si,
@@ -16,7 +16,7 @@ from gui.impl.lobby.customization.progressive_items_view.progressive_items_view 
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.Vehicle import Vehicle
 from gui.shared.gui_items.customization.slots import EmblemSlot
-from helpers import dependency, func_utils
+from helpers import dependency
 from items.components import c11n_components as c11c
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
@@ -85,14 +85,12 @@ def __setEachLevelInfo(base, self, model, item):
 
 
 @overrideMethod(ProgressiveItemsView, '_onSelectItem')
-def _onSelectItem(base, self, args=None):
+@dependency.replace_none_kwargs(service=ICustomizationService)
+def _onSelectItem(base, self, args=None, service=None):
     if not g_config.data['enabled']:
         return base(self)
     if args is not None:
-        intCD = int(args['intCD'])
-        level = int(args['level'])
-        ctx = self._ProgressiveItemsView__customizationService.getCtx()
-        func_utils.callback(0.0, ctx, 'changeModeWithProgressionDecal', intCD, level)
+        BigWorld_callback(0, service.getCtx().changeModeWithProgressionDecal, int(args['intCD']), int(args['level']))
     self.destroyWindow()
 
 

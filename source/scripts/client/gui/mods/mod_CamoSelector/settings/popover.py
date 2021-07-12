@@ -1,8 +1,7 @@
 from collections import namedtuple
-from functools import partial
 
-import BigWorld
 from CurrentVehicle import g_currentVehicle
+from PYmodsCore import BigWorld_callback
 from frameworks.wulf import WindowLayer
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.popovers import C11nPopoverItemData
@@ -96,7 +95,7 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
     def __updateClearStyleButton(self):
         mode = self.__ctx.mode
         style = mode.modifiedStyle
-        BigWorld.callback(0, partial(self.as_setClearButtonEnabledS, style is not None))  # must run after flash invalidate()
+        BigWorld_callback(0, self.as_setClearButtonEnabledS, style is not None)  # must run after flash invalidate()
         if not style:
             return self.as_setDefaultButtonEnabledS(False)
         if mode.modifiedStyleSeason != mode.season:

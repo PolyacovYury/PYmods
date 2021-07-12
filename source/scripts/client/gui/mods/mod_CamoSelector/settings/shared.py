@@ -24,11 +24,11 @@ from .. import g_config
 from ..constants import CUSTOM_GROUP_NAME, SEASON_NAME_TO_TYPE, TYPES_ORDER, insignia_names
 
 
-def onVehicleLoadedOnce(handler):
+def onVehicleLoadedOnce(handler, *a, **k):
     entity = BigWorld.player().hangarSpace.getVehicleEntity()
     if entity and entity.isVehicleLoaded:
-        return handler()
-    onLoaded = lambda e: (handler(), g_eventBus.removeListener(
+        return handler(*a, **k)
+    onLoaded = lambda e: (handler(*a, **k), g_eventBus.removeListener(
         CameraRelatedEvents.VEHICLE_LOADING, onLoaded, EVENT_BUS_SCOPE.DEFAULT) if not e.ctx['started'] else None)
     g_eventBus.addListener(CameraRelatedEvents.VEHICLE_LOADING, onLoaded, EVENT_BUS_SCOPE.DEFAULT)
 
