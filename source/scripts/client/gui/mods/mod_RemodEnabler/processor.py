@@ -2,17 +2,16 @@ import BigWorld
 from HangarVehicle import HangarVehicle
 from PYmodsCore import overrideMethod, refreshCurrentVehicle
 from common_tank_appearance import CommonTankAppearance
-from constants import VEHICLE_MODE
 from gui import SystemMessages
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.personality import ServicesLocator as SL
-from items.vehicles import CompositeVehicleDescriptor as CompVDesc, g_cache
+from items.vehicles import CompositeVehicleDescriptor as CompVDesc
 from vehicle_systems import camouflages
 from vehicle_systems.tankStructure import TankPartNames
-from . import remods, g_config
+from . import g_config, remods
 
 
 def debugOutput(xmlName, vehName, playerName, modelsSet, modelDesc):

@@ -1,7 +1,7 @@
 import Math
 import copy
 from items.components import chassis_components as cc
-from items.components.shared_components import Camouflage, ModelStatesPaths, NodesAndGroups
+from items.components.shared_components import ModelStatesPaths, NodesAndGroups
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
 
