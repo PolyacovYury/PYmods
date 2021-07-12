@@ -16,10 +16,8 @@ from gui.impl.gen import R
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.personality import ServicesLocator as SL
-from helpers import dependency
 from items.components.c11n_constants import ItemTags, ProjectionDecalFormTags, SeasonType
 from items.vehicles import g_cache, getItemByCompactDescr
-from skeletons.gui.customization import ICustomizationService
 from .. import g_config
 from ..constants import CUSTOM_GROUP_NAME, SEASON_NAME_TO_TYPE, TYPES_ORDER, insignia_names
 
@@ -90,8 +88,7 @@ def nationName(nationID):
     return text(R.strings.vehicle_customization.repaint.dyn(nations.NAMES[nationID] + '_base_color')())
 
 
-@dependency.replace_none_kwargs(service=ICustomizationService)
-def CSComparisonKey(isPurchase, item=None, service=None):
+def CSComparisonKey(isPurchase, item=None):
     if item is None:
         return partial(CSComparisonKey, isPurchase)
     tags, is3D, isVictim, clan, texName = item.tags, False, False, False, ''
@@ -114,7 +111,7 @@ def CSComparisonKey(isPurchase, item=None, service=None):
         order.index(item.itemTypeID) if item.itemTypeID in order else -1, ItemTags.NATIONAL_EMBLEM not in tags,
         not is3D, isVictim, item.priceGroup == CUSTOM_GROUP_NAME, nat_count == 0,
         (not (clan or vehicles), not clan, not vehicles) if not nat_count else (clan, nat_count != 1),
-        getGroupName(item, service.getCtx().isPurchase), not item.isHistorical(), texName, item.isRare(),
+        getGroupName(item, isPurchase), not item.isHistorical(), texName, item.isRare(),
         0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), item.id)
 
 
@@ -162,19 +159,6 @@ def fixIconPath(icon):
     if '4278190335,4278255360,4294901760,4278190080' in icon:
         icon = '../../' + icon.split('"', 2)[1]
     return icon
-
-
-def getDefaultItemCDs(vDesc):
-    cache = g_cache.customization20()
-    return (cache.decals[vDesc.type.defaultPlayerEmblemID].compactDescr,
-            cache.insignias[cache.defaultInsignias[vDesc.type.customizationNationID]].compactDescr)
-
-
-def addDefaultInsignia(*outfits):
-    for outfit in outfits:
-        if not outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).getItemCD():
-            outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).set(getDefaultItemCDs(g_currentVehicle.item.descriptor)[1])
-        outfit.invalidate()
 
 
 def isStyleSeasoned(style):

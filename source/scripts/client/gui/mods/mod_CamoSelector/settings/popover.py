@@ -5,9 +5,7 @@ from PYmodsCore import BigWorld_callback
 from frameworks.wulf import WindowLayer
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.popovers import C11nPopoverItemData
-from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    ITEM_TYPE_TO_SLOT_TYPE, fitOutfit, getCurrentVehicleAvailableRegionsMap,
-)
+from gui.Scaleform.daapi.view.lobby.customization.shared import ITEM_TYPE_TO_SLOT_TYPE, getCurrentVehicleAvailableRegionsMap
 from gui.Scaleform.daapi.view.meta.CustomizationEditedKitPopoverMeta import CustomizationEditedKitPopoverMeta
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, g_entitiesFactories
 from gui.customization.shared import AdditionalPurchaseGroups, C11nId, SEASONS_ORDER, SEASON_TYPE_TO_NAME
@@ -20,9 +18,10 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.personality import ServicesLocator as SL
 from helpers import dependency
 from skeletons.gui.customization import ICustomizationService
-from .shared import addDefaultInsignia, fixIconPath, getDefaultItemCDs, getInsigniaUserName
+from .shared import fixIconPath, getInsigniaUserName
 from .. import g_config
 from ..constants import TYPES_ORDER, VIEW_ALIAS
+from ..processors import getDefaultItemCDs, getOutfitFromStyle
 
 PurchaseItemPlaceholder = namedtuple('NotPItem', 'item progressionLevel')
 
@@ -102,15 +101,8 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
             return self.as_setDefaultButtonEnabledS(True)
         level = mode.getStyleProgressionLevel()
         vDesc = g_currentVehicle.item.descriptor
-        vehicleCD = vDesc.makeCompactDescr()
-        baseOutfit = style.getOutfit(mode.season, vehicleCD)
-        if level != -1:
-            addOutfit = style.getAdditionalOutfit(level, mode.season, vehicleCD)
-            if addOutfit is not None:
-                baseOutfit = baseOutfit.patch(addOutfit)
-        fitOutfit(baseOutfit, getCurrentVehicleAvailableRegionsMap())
-        addDefaultInsignia(baseOutfit)
-        self.as_setDefaultButtonEnabledS(not mode.currentOutfit.isEqual(baseOutfit))
+        self.as_setDefaultButtonEnabledS(not mode.currentOutfit.isEqual(
+            getOutfitFromStyle(style, vDesc, mode.season, level, getCurrentVehicleAvailableRegionsMap())))
 
     def __buildList(self):
         return [] if self.__ctx.mode.isOutfitsEmpty() else sum((self.__getSeasonItemsData(
@@ -145,16 +137,9 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
                 return [self.__getSeasonGroupVO(season)] + [
                     self.__makeItemDataVO(itemData) for itemData in sorted(items.values(), key=self.orderKey)]
             return []
-        styleSeason = self.__ctx.mode.getModifiedStyleSeason(season)
-        level = purchaseItems[0].progressionLevel
-        vehicleCD = vDesc.makeCompactDescr()
-        baseOutfit = style.getOutfit(styleSeason, vehicleCD=vehicleCD)
-        if level != -1:
-            addOutfit = style.getAdditionalOutfit(level, styleSeason, vehicleCD)
-            if addOutfit is not None:
-                baseOutfit = baseOutfit.patch(addOutfit)
-        fitOutfit(baseOutfit, availableRegionsMap)
-        addDefaultInsignia(baseOutfit)
+        baseOutfit = getOutfitFromStyle(
+            style, vDesc, self.__ctx.mode.getModifiedStyleSeason(season),
+            purchaseItems[0].progressionLevel, availableRegionsMap)
         for intCD, _, regionIdx, container, _ in baseOutfit.itemsFull():
             item = self.__service.getItemByCD(intCD)
             if intCD not in items:
