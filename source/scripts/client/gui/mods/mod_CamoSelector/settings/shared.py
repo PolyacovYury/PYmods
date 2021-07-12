@@ -172,10 +172,9 @@ def getDefaultItemCDs(vDesc):
 
 def addDefaultInsignia(*outfits):
     for outfit in outfits:
-        outfit.invalidate()
         if not outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).getItemCD():
             outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).set(getDefaultItemCDs(g_currentVehicle.item.descriptor)[1])
-        outfit.gun.unpack(outfit.pack())  # insignia are bugged
+        outfit.invalidate()
 
 
 def isStyleSeasoned(style):
