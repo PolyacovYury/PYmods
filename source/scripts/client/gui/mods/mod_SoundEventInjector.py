@@ -246,6 +246,8 @@ def new_initGUI(base, self):
                 continue
             [event.setdefault(k, v) for k, v in new_additional[category].iteritems()]
             if category == 'fxEvent':
+                if category not in event:
+                    event[category] = []
                 if not isinstance(event[category], list):
                     event[category] = [event[category]]
                 event[category].append(sound)
