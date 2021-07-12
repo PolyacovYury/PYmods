@@ -14,11 +14,10 @@ import ResMgr
 import SoundGroups
 import os
 import traceback
-from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod, events
+from PYmodsCore import BigWorld_callback, PYmodsConfigInterface, Analytics, overrideMethod, events
 from collections import OrderedDict
 from constants import ARENA_PERIOD, ARENA_GUI_TYPE
 from debug_utils import LOG_ERROR
-from functools import partial
 from gui import IngameSoundNotifications
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import BattleEndWarningPanel
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
@@ -286,7 +285,7 @@ class FlashController(object):
         if not (_config.data['enabled'] and _config.data['textLength']):
             return
         if self.isTextAdding:
-            BigWorld.callback(0.1, partial(self.addText, text))
+            BigWorld_callback(0.1, self.addText, text)
             return
         LOG_NOTE('adding text: ' + text)
         styleConf = _config.data['textStyle']
@@ -303,8 +302,8 @@ class FlashController(object):
         if _config.data['textBackground']['enabled']:
             g_guiFlash.updateComponent(self.ID + '.image%s' % idx, {'alpha': 1.0}, {'duration': 0.5})
         self.isTextAdding = True
-        BigWorld.callback(0.5, self.onTextAddingComplete)
-        self.callbacks.append(BigWorld.callback(_config.data['delay'] + 0.5, self.removeFirstText))
+        BigWorld_callback(0.5, self.onTextAddingComplete)
+        self.callbacks.append(BigWorld_callback(_config.data['delay'] + 0.5, self.removeFirstText))
 
     def onTextAddingComplete(self):
         self.isTextAdding = False
@@ -324,7 +323,7 @@ class FlashController(object):
 
     def removeFirstText(self):
         if self.isTextRemoving:
-            BigWorld.callback(0.1, self.removeFirstText)
+            BigWorld_callback(0.1, self.removeFirstText)
             return
         if self.texts:
             LOG_NOTE('removing first text')
@@ -345,7 +344,7 @@ class FlashController(object):
             g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'y': bgConf['height'] * (idx - 1)}, {'duration': 0.5})
             if bgConf['enabled']:
                 g_guiFlash.updateComponent(self.ID + '.image%s' % idx, {'y': bgConf['height'] * (idx - 1)}, {'duration': 0.5})
-        BigWorld.callback(0.5, self.onTextRemovalComplete)
+        BigWorld_callback(0.5, self.onTextRemovalComplete)
 
 
 flashController = None
@@ -377,7 +376,7 @@ class SoundManager(object):
         if not self.queue:
             return
         if self.isPlayingSound:
-            BigWorld.callback(0.1, self.playFirstEvent)
+            BigWorld_callback(0.1, self.playFirstEvent)
             return
         eventName = self.queue.pop(0)
         if eventName not in _config.sounds:
@@ -388,7 +387,7 @@ class SoundManager(object):
         LOG_NOTE(eventName + ' playing')
         _config.sounds[eventName].play()
         self.isPlayingSound = True
-        BigWorld.callback(0.6, self.onSoundPlayed)
+        BigWorld_callback(0.6, self.onSoundPlayed)
 
     def onSoundPlayed(self):
         self.isPlayingSound = False
@@ -670,7 +669,7 @@ def new_onVehicleDestroyed(base, self):
     if _config.data['enabled'] and not hasattr(BigWorld.player().arena, 'UT'):
         initial()
         checkSquadMan()
-        BigWorld.player().arena.killerCallBackId = BigWorld.callback(0.5, checkOwnKiller)
+        BigWorld.player().arena.killerCallBackId = BigWorld_callback(0.5, checkOwnKiller)
     base(self)
 
 

@@ -3,8 +3,7 @@ import BigWorld
 import Keys
 import Vehicle
 import traceback
-from PYmodsCore import Sound, PYmodsConfigInterface, pickRandomPart, sendChatMessage, checkKeys, Analytics
-from functools import partial
+from PYmodsCore import BigWorld_callback, Sound, PYmodsConfigInterface, pickRandomPart, sendChatMessage, checkKeys, Analytics
 from gui.battle_control import avatar_getter
 
 
@@ -62,7 +61,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.data[vName] = int(value)
         SoundLoop(False)
         SoundLoop(True)
-        self.soundCallback = BigWorld.callback(3.0, partial(SoundLoop, False))
+        self.soundCallback = BigWorld_callback(3, SoundLoop, False)
 
     def onMSADestroy(self):
         SoundLoop(False)

@@ -7,8 +7,7 @@ import threading
 import traceback
 import urllib2
 from ClientArena import ClientArena
-from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod
-from functools import partial
+from PYmodsCore import Analytics, BigWorld_callback, PYmodsConfigInterface, overrideMethod
 from gui.Scaleform.battle_entry import BattleEntry
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.components.c11n_components import PaintItem
@@ -138,12 +137,12 @@ class ConfigInterface(PYmodsConfigInterface):
                     self.pending.discard(databaseID)
         for databaseID in databaseIDs:
             self.pending.discard(databaseID)
-        BigWorld.callback(0, partial(self.updatePaints, databaseIDs))
+        BigWorld_callback(0, self.updatePaints, databaseIDs)
 
     def updatePaints(self, databaseIDs):
         player = BigWorld.player()
         if not hasattr(player, 'guiSessionProvider'):
-            return BigWorld.callback(1, partial(self.updatePaints, databaseIDs))
+            return BigWorld_callback(1, self.updatePaints, databaseIDs)
         for databaseID in databaseIDs:
             vehicleID = player.guiSessionProvider.getCtx().getArenaDP().getVehIDByAccDBID(int(databaseID))
             vehicle = BigWorld.entity(vehicleID)

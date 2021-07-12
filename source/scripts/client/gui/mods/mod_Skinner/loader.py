@@ -11,11 +11,10 @@ import glob
 import os
 import shutil
 import traceback
-from PYmodsCore import remDups, loadJson, events, curCV
+from PYmodsCore import BigWorld_callback, remDups, loadJson, events, curCV
 from account_helpers.settings_core.settings_constants import GAME
 from adisp import AdispException, async, process
 from async import await, async as async2
-from functools import partial
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
@@ -53,7 +52,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         super(SkinnerLoading, self)._populate()
         self.callMethod.set(self.__callMethod)
         self.__initTexts()
-        BigWorld.callback(0, self.loadSkins)
+        BigWorld_callback(0, self.loadSkins)
 
     def __initTexts(self):
         self.updateTitle(g_config.i18n['UI_loading_header_CRC32'])
@@ -113,7 +112,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         if self.restart:
             self.call_restart()
         elif self.doLogin:
-            BigWorld.callback(0.1, partial(doLogin, self.app))
+            BigWorld_callback(0.1, doLogin, self.app)
         self.destroy()
 
     @staticmethod
@@ -149,8 +148,8 @@ class SkinnerLoading(LoginQueueWindowMeta):
             pr.disable()
             pr.print_stats('time')
         print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
-        BigWorld.callback(1, partial(SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team'))
-        BigWorld.callback(2, self.onWindowClose)
+        BigWorld_callback(1, SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team')
+        BigWorld_callback(2, self.onWindowClose)
         SkinnerLoading.skinsChecked = True
         self.loginView.update()
 
@@ -178,7 +177,7 @@ def doLogin(app):
 
 
 modelsDir = curCV + '/vehicles/skins/models/'
-delay_call = lambda cb, *a: BigWorld.callback(0, partial(cb, a[0] if len(a) == 1 else a))  # a may be an empty tuple
+delay_call = lambda cb, *a: BigWorld_callback(0, cb, a[0] if len(a) == 1 else a)  # a may be an empty tuple
 g_entitiesFactories.addSettings(GroupedViewSettings(
     'SkinnerLoading', SkinnerLoading, 'LoginQueueWindow.swf', WL.TOP_WINDOW, '', None, ST.DEFAULT_SCOPE, canClose=False))
 
@@ -412,4 +411,4 @@ def new_Login_populate(self, *_, **__):
         'memberMeVisible': self._loginMode.rememberPassVisible,
         'isIgrCredentialsReset': GUI_SETTINGS.igrCredentialsReset,
         'showRecoveryLink': not GUI_SETTINGS.isEmpty('recoveryPswdURL')})
-    BigWorld.callback(3, partial(self.app.loadView, SFViewLoadParams('SkinnerLoading'), self))
+    BigWorld_callback(3, self.app.loadView, SFViewLoadParams('SkinnerLoading'), self)
