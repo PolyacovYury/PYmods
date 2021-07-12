@@ -182,7 +182,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
         from gui.shared.utils.requesters import REQ_CRITERIA
         itemRequirement = (createCustomizationBaseRequestCriteria(
             g_currentVehicle.item, g_currentVehicle.item.eventsCache.questsProgress, ()
-        ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())) ^ REQ_CRITERIA.CUSTOM(
+        ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI() and _item.buyCount > 0)) ^ REQ_CRITERIA.CUSTOM(
             lambda _i: (_i.priceGroup == CUSTOM_GROUP_NAME)
         )
         requirement = lambda itemID: itemRequirement(g_currentVehicle.itemsCache.items.getItemByCD(makeIntCompactDescrByID(

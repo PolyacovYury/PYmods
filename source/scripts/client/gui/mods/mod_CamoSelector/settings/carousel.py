@@ -128,7 +128,7 @@ class CarouselCache(WGCache):
             #         _i.descriptor.parentGroup is not None and  # paid, also bomb
             #         _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)  # paid
             # )  # paid
-        ) ^ purchaseRequirement  # unpaid
+        ) ^ (purchaseRequirement | REQ_CRITERIA.CUSTOM(lambda _item: _item.buyCount > 0))  # unpaid
         # )  # paid
         itemTypes = []
         for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
