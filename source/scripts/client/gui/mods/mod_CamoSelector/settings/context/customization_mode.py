@@ -101,9 +101,15 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
     def _onStart(self):
         WGCustomMode._onStart(self)
         self._events.onSeasonChanged += self._selectInsignia
+        self._events.onComponentChanged += self._invalidateCache
+        self._events.onItemsRemoved += self._invalidateCache
+        self._events.onItemInstalled += self._invalidateCache
         self._invalidateCache()
 
     def _onStop(self):
+        self._events.onItemInstalled -= self._invalidateCache
+        self._events.onItemsRemoved -= self._invalidateCache
+        self._events.onComponentChanged -= self._invalidateCache
         self._events.onSeasonChanged -= self._selectInsignia
         WGCustomMode._onStop(self)
 
@@ -189,7 +195,6 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         self._modifiedOutfits[self.season] = changeOutfitStyleData(
             outfit, self.modifiedStyle, styleSeason, (outfit.progressionLevel, toLevel))
         self._fitOutfits(modifiedOnly=True)
-        self._invalidateCache()
         self._ctx.refreshOutfit()
         self._events.onComponentChanged(self.STYLE_SLOT, True)
 
@@ -204,7 +209,6 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         self._modifiedOutfits[self.season] = getOutfitFromStyle(self.modifiedStyle, self.season, outfit.progressionLevel)
         self.__modifiedStyleSeasons[self.season] = self.season
         self._fitOutfits(modifiedOnly=True)
-        self._invalidateCache()
         self._ctx.refreshOutfit()
         self._ctx.events.onItemsRemoved()
 
@@ -220,7 +224,6 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         self._modifiedOutfits[self.season] = changeOutfitStyleData(
             outfit, style, (styleSeason, newSeason), outfit.progressionLevel)
         self._fitOutfits(modifiedOnly=True)
-        self._invalidateCache()
         self._ctx.refreshOutfit()
         self._events.onComponentChanged(slotId, False)
 
@@ -228,7 +231,7 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         return self._ctx.getMode().getModifiedOutfits() if g_config.data['useBought'] else {
             season: self._service.getEmptyOutfit() for season in SeasonType.COMMON_SEASONS}
 
-    def _invalidateCache(self):
+    def _invalidateCache(self, *_, **__):
         vDesc = g_currentVehicle.item.descriptor
         vehCache = g_config.getOutfitCache()
         fromOutfits = self._getBaseOutfits()
@@ -264,7 +267,6 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
             self.__modifiedStyles[season] = getStyleFromId(outfit.id) if outfit.id else None
             self.__originalStyleSeasons[season] = self.__modifiedStyleSeasons[season] = SEASON_NAME_TO_TYPE[
                 seasonCache.get('style', {}).get('season', seasonName)]
-        self._invalidateCache()
 
     def _preserveState(self):
         WGCustomMode._preserveState(self)
@@ -280,17 +282,10 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
             self.__modifiedStyles[season] = self._service.getItemByID(GUI_ITEM_TYPE.STYLE, styleId) if styleId else None
         self._invalidateCache()
 
-    def installItem(self, intCD, slotId, season=None, component=None, refresh=True):
-        result = WGCustomMode.installItem(self, intCD, slotId, season, component, refresh)
-        self._invalidateCache()
-        return result
-
     def _installItem(self, intCD, slotId, season=None, component=None):
         item = self._service.getItemByCD(intCD)
         if item.itemTypeID != GUI_ITEM_TYPE.STYLE:
-            result = WGCustomMode._installItem(self, intCD, slotId, season, component)
-            self._invalidateCache()
-            return result
+            return WGCustomMode._installItem(self, intCD, slotId, season, component)
         season = season or self.season
         if self.__modifiedStyles[season] == item and component is None:
             return False
@@ -303,7 +298,6 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         self.__modifiedStyles[season] = item
         self.__modifiedStyleSeasons[season] = season
         self._fitOutfits(modifiedOnly=True)
-        self._invalidateCache()
         return True
 
     def _removeItem(self, slotId, season=None):
@@ -321,7 +315,6 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
             outfit = self._modifiedOutfits[season]
             multiSlot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
             multiSlot.remove(slotId.regionIdx)
-        self._invalidateCache()
 
     @async
     def _applyItems(self, purchaseItems, isModeChanged, callback):
