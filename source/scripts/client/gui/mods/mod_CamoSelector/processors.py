@@ -156,14 +156,19 @@ def _applyRegionCache(itemDBs, itemTypeName, slotType, slot, areaName, areaCache
         return
     if slotType == GUI_ITEM_TYPE.INSCRIPTION and 'number' in areaCache[regionKey]:
         slotType = GUI_ITEM_TYPE.PERSONAL_NUMBER
-    itemDB = itemDBs[C11N_ITEM_TYPE_MAP[slotType]]
+    cType = C11N_ITEM_TYPE_MAP[slotType]
+    itemDB = itemDBs[cType]
+    if isinstance(itemID, basestring):
+        itemID = g_config.modded_lookup_name[cType].get(itemID, itemID)
     if itemID not in itemDB:
         print g_config.ID + ':', itemTypeName, 'ID', itemID, 'on', areaName, 'region', regionKey, 'not found'
         del areaCache[regionKey]
         return
+    item = itemDB[itemID]
+    areaCache[regionKey]['id'] = g_config.getItemKeys(itemID, item)[1]
     component = (pickPacker(slotType).getRawComponent() or EmptyComponent)()
     [setattr(component, k, v) for k, v in areaCache[regionKey].items()]
-    slot.set(itemDB[itemID].compactDescr, int(regionKey), component)
+    slot.set(item.compactDescr, int(regionKey), component)
 
 
 def getRandomCamoID(camoIDs, requirement):

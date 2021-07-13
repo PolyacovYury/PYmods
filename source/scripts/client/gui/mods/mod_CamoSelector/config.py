@@ -5,7 +5,7 @@ from CurrentVehicle import g_currentVehicle
 from PYmodsCore import Analytics, PYmodsConfigInterface, loadJson, overrideMethod, refreshCurrentVehicle
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from items import _xml as ix, makeIntCompactDescrByID as makeCD, vehicles as iv
-from items.components import c11n_components as cc, c11n_constants as consts, shared_components
+from items.components import c11n_components as cc, c11n_constants as consts, shared_components as sc
 from items.readers.c11n_readers import __xmlReaders as def_readers
 from . import __date__, __modID__, migrator
 from .constants import CUSTOM_GROUP_NAME, SEASON_NAME_TO_TYPE, STARTER_ITEM_ID
@@ -28,6 +28,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.allowed_names = tuple(k.lower() for k, v in consts.CustomizationNamesToTypes.items() if v in self.allowed_types)
         self.modded_items = {itemType: {} for itemType in self.allowed_types}
         self.modded_groups = {}
+        self.modded_lookup_name = {itemType: {} for itemType in self.allowed_types}
         self.defaults = {
             'random_enabled': True, 'random_team': False, 'ally': True, 'enemy': True, 'season': SEASONS_CONSTANTS.SEASONS[:]}
         super(ConfigInterface, self).__init__()
@@ -43,7 +44,7 @@ class ConfigInterface(PYmodsConfigInterface):
         nation, vehicle = g_currentVehicle.item.descriptor.name.split(':')
         return self.hangarCamoCache.get(nation, {}).get(vehicle, {})
 
-    def getCamoKeys(self, itemID, item):
+    def getItemKeys(self, itemID, item):
         return ('custom', item.i18n.longDescriptionSpecialKey) if item.priceGroup == CUSTOM_GROUP_NAME else ('remap', itemID)
 
     def getCamoSettings(self, itemsKey, itemName):
@@ -195,10 +196,11 @@ class ConfigInterface(PYmodsConfigInterface):
         priceGroup = self.modded_groups[itemCls]
         item = itemCls(priceGroup)
         self.modded_readers[itemCls]._readFromXml(item, (((None, self.ID), item_type), item_name), data_section)
-        item.i18n = shared_components.I18nExposedComponent(user_name, self.color_compat(description), item_name)
+        item.i18n = sc.I18nExposedComponent(self.color_compat(user_name), self.color_compat(description), item_name)
         item.id = max(storage or (STARTER_ITEM_ID,)) + 1
         cache = iv.g_cache.customization20()
         cache.itemTypes[cType][item.id] = storage[item.id] = item
+        self.modded_lookup_name[cType][item_name] = item.id
         item.priceGroupTags = cache.priceGroups[STARTER_ITEM_ID].tags
         iv._copyPriceForItem(priceGroup.compactDescr, item.compactDescr, True)
         if cType != consts.CustomizationType.CAMOUFLAGE:
@@ -232,7 +234,7 @@ class ConfigInterface(PYmodsConfigInterface):
             prototype.priceGroup = CUSTOM_GROUP_NAME
             prototype.historical = False
             prototype.tags |= frozenset((consts.ItemTags.HIDDEN_IN_UI,))
-            prototype.i18n = shared_components.I18nExposedComponent(self.i18n['flashCol_group_custom'], '')
+            prototype.i18n = sc.I18nExposedComponent(self.i18n['flashCol_group_custom'], '')
 
     def applyCamoSettings(self, currentSettings):
         for itemsKey, itemsSettings in currentSettings.items():
@@ -257,7 +259,7 @@ class ConfigInterface(PYmodsConfigInterface):
         for camoID, camo in iv.g_cache.customization20().camouflages.iteritems():
             if camoID == consts.EMPTY_ITEM_ID:
                 continue
-            cfg = self.getCamoSettings(*self.getCamoKeys(camoID, camo))
+            cfg = self.getCamoSettings(*self.getItemKeys(camoID, camo))
             if not cfg.get('random_enabled', True):
                 continue
             for seasonName in cfg.get('season', []) or [

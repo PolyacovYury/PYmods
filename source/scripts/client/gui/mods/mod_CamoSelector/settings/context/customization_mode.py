@@ -437,13 +437,15 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
                 if o_component:
                     item_data['id'] = None
             elif o_intCD != m.intCD or not m.component.weak_eq(o_component):
+                item = self._service.getItemByCD(m.intCD)
                 if isinstance(m.component, EmptyComponent):
-                    item_data['id'] = self._service.getItemByCD(m.intCD).id
+                    item_data['id'] = item.id
                 else:
                     item_data.update({
                         f: getattr(m.component, f) for f, fd in m.component.fields.items()
                         if (not fd.flags & (FieldFlags.DEPRECATED | FieldFlags.WEAK_EQUAL_IGNORED)
                             and getattr(m.component, f) != fd.default)})
+                item_data['id'] = g_config.getItemKeys(item.id, item.descriptor)[1]
         deleteEmpty(seasonCache)
         return seasonCache
 

@@ -12,7 +12,7 @@ class ItemSettingsRemap(object):
         self._currentSettings = {'custom': {}, 'remap': {}}
 
     def getItemSettings(self, item):
-        itemsKey, itemKey = g_config.getCamoKeys(item.id, item.descriptor)
+        itemsKey, itemKey = g_config.getItemKeys(item.id, item.descriptor)
         origSettings = g_config.getCamoSettings(itemsKey, itemKey)
         settings = self._currentSettings[itemsKey].setdefault(itemKey, {})
         settings.setdefault('season', [i for i in origSettings.get('season', [])] or [
@@ -75,5 +75,5 @@ class ItemSettingsRemap(object):
         return result
 
     def rollbackSettings(self, item):
-        itemsKey, itemKey = g_config.getCamoKeys(item.id, item.descriptor)
+        itemsKey, itemKey = g_config.getItemKeys(item.id, item.descriptor)
         self._currentSettings[itemsKey].pop(itemKey, {})
