@@ -82,7 +82,10 @@ class CustomizationContext(WGCtx):
             result = yield await(createConfirmDialog('flashCol_progressionDecal_changeMode'))
         if not result:
             return
-        WGCtx.changeModeWithProgressionDecal(self, itemCD)
+        if self.isPurchase:
+            WGCtx.changeModeWithProgressionDecal(self, itemCD)
+        else:
+            self.mode.changeTab(CustomizationTabs.PROJECTION_DECALS)
         yield await_callback(lambda callback: onVehicleLoadedOnce(BigWorld_callback, 0, callback, None))()
         item = self._service.getItemByCD(itemCD)
         self.events.onGetItemBackToHand(item, level, scrollToItem=True)
