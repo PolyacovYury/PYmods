@@ -56,6 +56,9 @@ class CustomizationContext(WGCtx):
             isStyleInstalled = self._service.isStyleInstalled()
             self.mode.start(
                 CustomizationTabs.STYLES if isStyleInstalled or style_id != EMPTY_ITEM_ID else CustomizationTabs.CAMOUFLAGES)
+            # TODO: paid/unpaid changes here
+            from ..shared import createDonationDialog  # unpaid
+            onVehicleLoadedOnce(BigWorld_callback, 0, createDonationDialog)  # unpaid
         self.refreshOutfit()
         onVehicleLoadedOnce(BigWorld_callback, 0, self.refreshOutfit)
 

@@ -7,12 +7,12 @@ from CurrentVehicle import g_currentVehicle
 from async import async, await
 from frameworks.wulf import WindowLayer
 from functools import partial
-from gui import makeHtmlString
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl.backport import text
 from gui.impl.dialogs import dialogs
-from gui.impl.dialogs.builders import WarningDialogBuilder, _setupButtonsBasedOnRes
+from gui.impl.dialogs.builders import InfoDialogBuilder, WarningDialogBuilder, _setupButtonsBasedOnRes
 from gui.impl.gen import R
+from gui.impl.pub.dialog_window import DialogButtons as DButtons
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.personality import ServicesLocator as SL
@@ -146,13 +146,29 @@ def getGroupName(item, isPurchase=False):
 
 @async
 def createConfirmDialog(key):
-    message = makeHtmlString('html_templates:lobby/customization/dialog', 'decal', {
-        'value': g_config.i18n[key + '_message']})
-    builder = WarningDialogBuilder().setFormattedMessage(message).setFormattedTitle(g_config.i18n[key + '_title'])
+    builder = WarningDialogBuilder().setFormattedMessage(
+        g_config.i18n[key + '_message']).setFormattedTitle(g_config.i18n[key + '_title'])
     _setupButtonsBasedOnRes(builder, R.strings.dialogs.common.confirm)  # the most convenient
     subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
     result = yield await(dialogs.showSimple(builder.build(parent=subview)))
     raise AsyncReturn(result)
+
+
+@async
+def createDonationDialog():
+    if hasattr(createDonationDialog, 'shown'):
+        return
+    createDonationDialog.shown = True
+    builder = InfoDialogBuilder().setFormattedTitle(
+        g_config.i18n['flashCol_freeVersion_title']).setFormattedMessage(g_config.i18n['flashCol_freeVersion_message'])
+    for ID, key in (DButtons.PURCHASE, 'patreon'), (DButtons.RESEARCH, 'boosty'), (DButtons.CANCEL, 'close'):
+        builder.addButton(ID, None, ID == DButtons.PURCHASE, rawLabel=g_config.i18n['flash_freeVersion_button_%s' % key])
+    subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
+    result = yield await(dialogs.show(builder.build(parent=subview)))
+    if result.result == DButtons.PURCHASE:
+        BigWorld.wg_openWebBrowser('https://www.patreon.com/polyacov_yury/')
+    elif result.result == DButtons.RESEARCH:
+        BigWorld.wg_openWebBrowser('https://boosty.to/polyacov_yury/')
 
 
 def fixIconPath(icon):

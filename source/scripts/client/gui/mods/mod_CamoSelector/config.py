@@ -65,6 +65,16 @@ class ConfigInterface(PYmodsConfigInterface):
             'flashCol_progressionDecal_changeMode_message': (
                 'Current style can not be edited.\n'
                 'If you proceed, you will be moved to custom mode\'s decal tab.\nDo you want to continue?'),
+            'flashCol_freeVersion_title': 'CamoSelector: free version',
+            'flashCol_freeVersion_message': (
+                'You are using the free version.\n'
+                'Install mode is only capable of installing items added into the game using config files\n'
+                'and elements available for purchase for current vehicle.\n'
+                'Patreon/Boosty subscribers have access to the extended version,\n'
+                'which is able to install ANY customization elements for free.'),
+            'flash_freeVersion_button_boosty': 'Open Boosty in browser',
+            'flash_freeVersion_button_close': 'Close',
+            'flash_freeVersion_button_patreon': 'Open Patreon in browser',
             'flashCol_group_multinational': 'Multinational',
             'flashCol_group_custom': 'Custom',
             'flashCol_group_separator': ' / ',
