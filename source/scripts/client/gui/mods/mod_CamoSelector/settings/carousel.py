@@ -126,7 +126,7 @@ class CarouselCache(WGCache):
                 purchaseRequirement | REQ_CRITERIA.CUSTOM(lambda _item: _item.buyCount > 0))  # unpaid
         # moddedRequirement = REQ_CRITERIA.CUSTOM(lambda _i: (  # paid
         #         _i.descriptor.parentGroup is not None and  # paid, bomb
-        #         _i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item)))  # paid
+        #         (_i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item))))  # paid
         itemTypes = []
         for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
             if vehicleHasSlot(slotType):
