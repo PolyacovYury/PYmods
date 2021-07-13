@@ -1,11 +1,10 @@
 from collections import namedtuple
 
-from CurrentVehicle import g_currentVehicle
 from PYmodsCore import BigWorld_callback
 from frameworks.wulf import WindowLayer
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.popovers import C11nPopoverItemData
-from gui.Scaleform.daapi.view.lobby.customization.shared import ITEM_TYPE_TO_SLOT_TYPE, getCurrentVehicleAvailableRegionsMap
+from gui.Scaleform.daapi.view.lobby.customization.shared import ITEM_TYPE_TO_SLOT_TYPE
 from gui.Scaleform.daapi.view.meta.CustomizationEditedKitPopoverMeta import CustomizationEditedKitPopoverMeta
 from gui.Scaleform.framework import GroupedViewSettings, ScopeTemplates, g_entitiesFactories
 from gui.customization.shared import AdditionalPurchaseGroups, C11nId, SEASONS_ORDER, SEASON_TYPE_TO_NAME
@@ -95,18 +94,13 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
         mode = self.__ctx.mode
         style = mode.modifiedStyle
         BigWorld_callback(0, self.as_setClearButtonEnabledS, style is not None)  # must run after flash invalidate()
-        if not style:
-            return self.as_setDefaultButtonEnabledS(False)
-        if mode.modifiedStyleSeason != mode.season:
-            return self.as_setDefaultButtonEnabledS(True)
-        level = mode.getStyleProgressionLevel()
-        vDesc = g_currentVehicle.item.descriptor
-        self.as_setDefaultButtonEnabledS(not mode.currentOutfit.isEqual(
-            getOutfitFromStyle(style, vDesc, mode.season, level, getCurrentVehicleAvailableRegionsMap())))
+        self.as_setDefaultButtonEnabledS(bool(style) and (
+                mode.modifiedStyleSeason != mode.season
+                or not mode.currentOutfit.isEqual(getOutfitFromStyle(style, mode.season, mode.getStyleProgressionLevel()))))
 
     def __buildList(self):
         return [] if self.__ctx.mode.isOutfitsEmpty() else sum((self.__getSeasonItemsData(
-            self.__ctx.mode.getActualPurchaseItems(season), season, getCurrentVehicleAvailableRegionsMap())
+            self.__ctx.mode.getActualPurchaseItems(season), season)
             for season in (self.__ctx.season,) + tuple(s for s in SEASONS_ORDER if s != self.__ctx.season)),
             self.__getSettingsItemsData())
 
@@ -115,13 +109,12 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
         return {'isTitle': True, 'titleLabel': makeHtmlString(
             'html_templates:lobby/customization/StylePopoverSeasonName', SEASON_TYPE_TO_NAME[s], ctx={'align': 'CENTER'})}
 
-    def __getSeasonItemsData(self, purchaseItems, season, availableRegionsMap):
-        vDesc = g_currentVehicle.item.descriptor
-        defCDs = getDefaultItemCDs(vDesc)
+    def __getSeasonItemsData(self, purchaseItems, season):
+        defCDs = getDefaultItemCDs()
         items = {}
         for pItem in purchaseItems:
             item = pItem.item
-            if pItem.group == AdditionalPurchaseGroups.STYLES_GROUP_ID:
+            if pItem.group == AdditionalPurchaseGroups.STYLES_GROUP_ID or item.itemTypeID not in ITEM_TYPE_TO_SLOT_TYPE:
                 continue
             if item.intCD not in items:
                 items[item.intCD] = C11nPopoverItemData(
@@ -138,10 +131,11 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
                     self.__makeItemDataVO(itemData) for itemData in sorted(items.values(), key=self.orderKey)]
             return []
         baseOutfit = getOutfitFromStyle(
-            style, vDesc, self.__ctx.mode.getModifiedStyleSeason(season),
-            purchaseItems[0].progressionLevel, availableRegionsMap)
+            style, self.__ctx.mode.getModifiedStyleSeason(season), purchaseItems[0].progressionLevel)
         for intCD, _, regionIdx, container, _ in baseOutfit.itemsFull():
             item = self.__service.getItemByCD(intCD)
+            if item.itemTypeID not in ITEM_TYPE_TO_SLOT_TYPE:
+                continue
             if intCD not in items:
                 items[intCD] = C11nPopoverItemData(
                     item=PurchaseItemPlaceholder(item, -1), season=season, isBase=True, isRemovable=True, isRemoved=True)

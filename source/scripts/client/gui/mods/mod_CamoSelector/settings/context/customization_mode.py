@@ -8,8 +8,7 @@ from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
 from gui.Scaleform.daapi.view.lobby.customization.context.custom_mode import CustomMode as WGCustomMode
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    CustomizationSlotUpdateVO, CustomizationTabs, ITEM_TYPE_TO_SLOT_TYPE, customizationSlotIdToUid,
-    getCurrentVehicleAvailableRegionsMap, getEditableStyleOutfitDiffComponent, getSlotDataFromSlot,
+    CustomizationSlotUpdateVO, CustomizationTabs, ITEM_TYPE_TO_SLOT_TYPE, customizationSlotIdToUid, getSlotDataFromSlot,
 )
 from gui.Scaleform.locale.MESSENGER import MESSENGER
 from gui.customization.constants import CustomizationModes
@@ -24,14 +23,13 @@ from items.customizations import DecalComponent, EmptyComponent, FieldFlags
 from skeletons.account_helpers.settings_core import ISettingsCore
 from vehicle_outfit.containers import SlotData
 from vehicle_outfit.outfit import Area
-from vehicle_systems.camouflages import getStyleProgressionOutfit
 from .item_remap import ItemSettingsRemap
 from ..shared import isStyleSeasoned
 from ... import g_config
 from ...constants import SEASON_NAME_TO_TYPE
 from ...processors import (
-    addDefaultInsignia, applyOutfitCache, applyStyleOverride, createEmptyOutfit, deleteEmpty, getDefaultItemCDs,
-    getOutfitFromStyle, getStyleFromId,
+    addDefaultInsignia, applyOutfitCache, applyStyleOverride, changeOutfitStyleData, createEmptyOutfit, deleteEmpty,
+    getDefaultItemCDs, getOutfitFromStyle, getStyleFromId,
 )
 
 
@@ -125,11 +123,9 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         purchaseItems = [PurchaseItem(
             style, None, areaID=None, slotType=None, regionIdx=None, selected=True, component=styleSeason,
             group=AdditionalPurchaseGroups.STYLES_GROUP_ID, locked=True, progressionLevel=progressionLevel)]
-        vehicleCD = g_currentVehicle.item.descriptor.makeCompactDescr()
-        baseOutfit = style.getOutfit(styleSeason, vehicleCD)
-        if progressionLevel != -1:
-            baseOutfit = getStyleProgressionOutfit(baseOutfit, progressionLevel, season)
-        addDefaultInsignia(baseOutfit, modifiedOutfit)
+        baseOutfit = getOutfitFromStyle(style, styleSeason, progressionLevel)
+        addDefaultInsignia(baseOutfit)
+        addDefaultInsignia(modifiedOutfit)
         for intCD, component, regionIdx, container, _ in modifiedOutfit.itemsFull():
             item = self._service.getItemByCD(intCD)
             slotType = ITEM_TYPE_TO_SLOT_TYPE.get(item.itemTypeID)
@@ -190,12 +186,8 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
     def changeStyleProgressionLevel(self, toLevel):
         styleSeason = self.__modifiedStyleSeasons[self.season]
         outfit = self._modifiedOutfits[self.season]
-        vDesc = g_currentVehicle.item.descriptor
-        baseOutfit = getOutfitFromStyle(
-            self.modifiedStyle, vDesc, styleSeason, outfit.progressionLevel, getCurrentVehicleAvailableRegionsMap())
-        diffComp = getEditableStyleOutfitDiffComponent(outfit, baseOutfit)
-        self._modifiedOutfits[self.season] = getStyleProgressionOutfit(
-            outfit, toLevel, styleSeason).patch(createEmptyOutfit(vDesc, diffComp))
+        self._modifiedOutfits[self.season] = changeOutfitStyleData(
+            outfit, self.modifiedStyle, styleSeason, (outfit.progressionLevel, toLevel))
         self._fitOutfits(modifiedOnly=True)
         self._invalidateCache()
         self._ctx.refreshOutfit()
@@ -208,11 +200,8 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         style = self.modifiedStyle
         if style is None:
             return
-        level = self.getStyleProgressionLevel()
-        outfit = style.getOutfit(self.season, vehicleCD=g_currentVehicle.item.descriptor.makeCompactDescr())
-        if level != -1:
-            outfit = getStyleProgressionOutfit(outfit, level, self.season)
-        self._modifiedOutfits[self.season] = outfit
+        outfit = self._modifiedOutfits[self.season]
+        self._modifiedOutfits[self.season] = getOutfitFromStyle(self.modifiedStyle, self.season, outfit.progressionLevel)
         self.__modifiedStyleSeasons[self.season] = self.season
         self._fitOutfits(modifiedOnly=True)
         self._invalidateCache()
@@ -225,18 +214,11 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         style = self.__modifiedStyles[self.season]
         if not style or not isStyleSeasoned(style):
             return
-        vDesc = g_currentVehicle.item.descriptor
-        vehicleCD = vDesc.makeCompactDescr()
-        level = self.getStyleProgressionLevel()
         outfit = self._modifiedOutfits[self.season]
-        baseOutfit = getOutfitFromStyle(
-            style, vDesc, self.__modifiedStyleSeasons[self.season], level, getCurrentVehicleAvailableRegionsMap())
+        styleSeason = self.__modifiedStyleSeasons[self.season]
         self.__modifiedStyleSeasons[self.season] = newSeason = SEASON_IDX_TO_TYPE[paletteIdx]
-        outfit = style.getOutfit(
-            newSeason, vehicleCD=vehicleCD, diff=getEditableStyleOutfitDiffComponent(outfit, baseOutfit).makeCompDescr())
-        if level != -1:
-            outfit = getStyleProgressionOutfit(outfit, level, newSeason)
-        self._modifiedOutfits[self.season] = outfit
+        self._modifiedOutfits[self.season] = changeOutfitStyleData(
+            outfit, style, (styleSeason, newSeason), outfit.progressionLevel)
         self._fitOutfits(modifiedOnly=True)
         self._invalidateCache()
         self._ctx.refreshOutfit()
@@ -312,21 +294,14 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         season = season or self.season
         if self.__modifiedStyles[season] == item and component is None:
             return False
-        vDesc = g_currentVehicle.item.descriptor
-        vehicleCD = vDesc.makeCompactDescr()
         outfit = self._modifiedOutfits[season]
-        availableRegions = getCurrentVehicleAvailableRegionsMap()
-        baseOutfit = getOutfitFromStyle(
-            self.__modifiedStyles[season], vDesc, self.__modifiedStyleSeasons[season],
-            outfit.progressionLevel, availableRegions)
-        diffComp = getEditableStyleOutfitDiffComponent(outfit, baseOutfit)
-        diffComp.styleId = item.id
+        old_style = self.__modifiedStyles[season]
+        old_season = self.__modifiedStyleSeasons[season]
+        self._modifiedOutfits[season] = changeOutfitStyleData(
+            outfit, (old_style, item), (old_season, season), (
+                outfit.progressionLevel, component.progressionLevel if component else 1))
         self.__modifiedStyles[season] = item
         self.__modifiedStyleSeasons[season] = season
-        outfit = item.getOutfit(season, vehicleCD=vehicleCD, diff=diffComp.makeCompDescr())
-        if item.isProgressive:
-            outfit = getStyleProgressionOutfit(outfit, component.progressionLevel if component else 1, season)
-        self._modifiedOutfits[season] = outfit
         self._fitOutfits(modifiedOnly=True)
         self._invalidateCache()
         return True
@@ -334,14 +309,11 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
     def _removeItem(self, slotId, season=None):
         season = season or self.season
         if slotId == self.STYLE_SLOT:
-            vDesc = g_currentVehicle.item.descriptor
             outfit = self._modifiedOutfits[season]
-            baseOutfit = getOutfitFromStyle(
-                self.__modifiedStyles[season], vDesc, self.__modifiedStyleSeasons[season],
-                outfit.progressionLevel, getCurrentVehicleAvailableRegionsMap())
-            diffComp = getEditableStyleOutfitDiffComponent(outfit, baseOutfit)
-            diffComp.styleId = 0
-            self._modifiedOutfits[season] = createEmptyOutfit(vDesc, diffComp)
+            style = self.__modifiedStyles[season]
+            styleSeason = self.__modifiedStyleSeasons[season]
+            self._modifiedOutfits[season] = changeOutfitStyleData(
+                outfit, (style, None), (styleSeason, season), (outfit.progressionLevel, 1))
             self.__modifiedStyles[season] = None
             self.__modifiedStyleSeasons[season] = season
             self._fitOutfits(modifiedOnly=True)
@@ -365,7 +337,8 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
             seasonName = SEASON_TYPE_TO_NAME[season]
             fromOutfit = fromOutfits[season]
             toOutfit = self._modifiedOutfits[season]
-            addDefaultInsignia(fromOutfit, toOutfit)
+            addDefaultInsignia(fromOutfit)
+            addDefaultInsignia(toOutfit)
             cache[seasonName] = seasonCache = self.computeCache(
                 fromOutfit, toOutfit,
                 self.__originalStyleSeasons[season], self.__modifiedStyleSeasons[season])
@@ -430,7 +403,8 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
             styleInfo['progressionLevel'] = modified.progressionLevel
         original = applyStyleOverride(
             g_currentVehicle.item.descriptor, original, SEASON_TYPE_TO_NAME[original_season], seasonCache, False)
-        addDefaultInsignia(original, modified)
+        addDefaultInsignia(original)
+        addDefaultInsignia(modified)
         for container, slot, regionIdx, o_intCD, o_component in self.iterOutfit(original):
             slotType = ITEM_TYPE_TO_SLOT_TYPE.get(slot.getTypes()[0])  # checks that this slot is not for attachments
             if slotType is None:
@@ -456,7 +430,7 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         return seasonCache
 
     def _isOutfitsEmpty(self):
-        defCDs = getDefaultItemCDs(g_currentVehicle.item.descriptor)
+        defCDs = getDefaultItemCDs()
         for season in SeasonType.COMMON_SEASONS:
             outfit = self._modifiedOutfits[season]
             for i in outfit.items():

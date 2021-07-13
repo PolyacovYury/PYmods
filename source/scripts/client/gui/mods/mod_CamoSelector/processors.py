@@ -48,18 +48,18 @@ def getStyleFromId(styleId):
     return g_currentVehicle.itemsCache.items.getItem(GUI_ITEM_TYPE.CUSTOMIZATION, CustomizationType.STYLE, styleId)
 
 
-def getDefaultItemCDs(vDesc):
+def getDefaultItemCDs(vDesc=None):
+    vDesc = vDesc or g_currentVehicle.item.descriptor
     cache = g_cache.customization20()
     return (cache.decals[vDesc.type.defaultPlayerEmblemID].compactDescr,
             cache.insignias[cache.defaultInsignias[vDesc.type.customizationNationID]].compactDescr)
 
 
-def addDefaultInsignia(*outfits):
-    for outfit in outfits:
-        if not outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).getItemCD():  # emptyComponent for insignia is wrong
-            outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).set(
-                getDefaultItemCDs(g_currentVehicle.item.descriptor)[1], component=InsigniaComponent())
-        outfit.invalidate()
+def addDefaultInsignia(outfit, vDesc=None):
+    vDesc = vDesc or g_currentVehicle.item.descriptor
+    if not outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).getItemCD():  # emptyComponent for insignia is wrong
+        outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).set(getDefaultItemCDs(vDesc)[1], component=InsigniaComponent())
+    outfit.invalidate()
 
 
 def createEmptyOutfit(vDesc, diffComp=None):
@@ -67,64 +67,64 @@ def createEmptyOutfit(vDesc, diffComp=None):
     if diffComp is not None:
         component = component.applyDiff(diffComp)
     outfit = Outfit(component=component, vehicleCD=vDesc.makeCompactDescr())
-    addDefaultInsignia(outfit)
+    addDefaultInsignia(outfit, vDesc)
     return outfit
 
 
-def getOutfitFromStyle(style, vDesc, season, level, availableRegions):
+def changeOutfitStyleData(outfit, style, season, level, vDesc=None):
+    vDesc = vDesc or g_currentVehicle.item.descriptor
+    old_style, new_style, old_season, new_season, old_level, new_level = style, style, season, season, level, level
+    if isinstance(style, tuple):
+        old_style, new_style = style
+    if isinstance(season, tuple):
+        old_season, new_season = season
+    if isinstance(level, tuple):
+        old_level, new_level = level
+    baseOutfit = getOutfitFromStyle(old_style, old_season, old_level, vDesc)
+    diffComp = getEditableStyleOutfitDiffComponent(outfit, baseOutfit)
+    diffComp.styleId = new_style.id if new_style else 0
+    outfit = getOutfitFromStyle(new_style, new_season, new_level, vDesc)
+    return outfit.patch(createEmptyOutfit(vDesc, diffComp))
+
+
+def getOutfitFromStyle(style, season, level, vDesc=None):
+    vDesc = vDesc or g_currentVehicle.item.descriptor
     vehicleCD = vDesc.makeCompactDescr()
     if style is None:
         baseOutfit = createEmptyOutfit(vDesc)
     else:
         baseOutfit = style.getOutfit(season, vehicleCD=vehicleCD)
         if style.isProgressive:
-            addOutfit = style.getAdditionalOutfit(level, season, vehicleCD)
-            if addOutfit is not None:
-                baseOutfit = baseOutfit.patch(addOutfit)
-    fitOutfit(baseOutfit, availableRegions)
-    addDefaultInsignia(baseOutfit)
+            baseOutfit = getStyleProgressionOutfit(baseOutfit, level, season)
+    fitOutfit(baseOutfit, {areaId: {
+        slotType: getAvailableRegions(areaId, slotType, vDesc) for slotType in CustomizationTabs.SLOT_TYPES.itervalues()}
+        for areaId in Area.ALL})
+    addDefaultInsignia(baseOutfit, vDesc)
     return baseOutfit
 
 
 def applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean):
-    season = SEASON_NAME_TO_TYPE[seasonName]
-    vehicleCD = vDesc.makeCompactDescr()
-    itemDB = g_cache.customization20().itemTypes[CustomizationType.STYLE]
+    old_style = getStyleFromId(outfit.id) if outfit.id else None
+    old_season = SEASON_NAME_TO_TYPE[seasonName]
+    old_level = outfit.progressionLevel if outfit.style and outfit.style.isProgression else 1
     styleInfo = seasonCache.get('style', {})
     styleId = styleInfo.get('id')
     if styleId is None:
         return outfit
-    availableRegions = {areaId: {slotType: getAvailableRegions(
-        areaId, slotType, vDesc) for slotType in CustomizationTabs.SLOT_TYPES.itervalues()} for areaId in Area.ALL}
     if styleId == EMPTY_ITEM_ID:
         if not outfit.id:
             if clean:  # item is being deleted while not applied at all. possible change after last cache
                 seasonCache.pop('style', None)  # so we remove an obsolete key
             return outfit
-        baseOutfit = getOutfitFromStyle(getStyleFromId(outfit.id), vDesc, season, outfit.progressionLevel, availableRegions)
-        diffComp = getEditableStyleOutfitDiffComponent(outfit, baseOutfit)
-        diffComp.styleId = 0
-        return createEmptyOutfit(vDesc, diffComp)
-    if styleId not in itemDB:
+        return changeOutfitStyleData(outfit, (old_style, None), old_season, old_level, vDesc)
+    if styleId not in g_cache.customization20().itemTypes[CustomizationType.STYLE]:
         print g_config.ID + ': style', styleId, 'for', vDesc.name, 'deleted from game client.'
         seasonCache.pop('style', None)
         return outfit
-    style = getStyleFromId(styleId)
-    style_season = SEASON_NAME_TO_TYPE[styleInfo.get('season', seasonName)]
-    outfit_level = outfit.progressionLevel if outfit.style and outfit.style.isProgression else 1
-    if outfit.id != styleId:
-        outfit = style.getOutfit(style_season, vehicleCD=vehicleCD)
-        outfit_level = outfit.progressionLevel if style.isProgressive else 1
-    elif style_season != season:
-        baseOutfit = getOutfitFromStyle(style, vDesc, season, outfit.progressionLevel, availableRegions)
-        outfit = style.getOutfit(
-            style_season, vehicleCD=vehicleCD, diff=getEditableStyleOutfitDiffComponent(outfit, baseOutfit).makeCompDescr())
-        outfit_level = outfit.progressionLevel if style.isProgressive else 1
-    style_level = styleInfo.get('progressionLevel', 1)
-    if style.isProgressive and outfit_level != style_level:
-        outfit = getStyleProgressionOutfit(outfit, style_level, style_season)
-    fitOutfit(outfit, availableRegions)
-    return outfit
+    new_style = getStyleFromId(styleId)
+    new_season = SEASON_NAME_TO_TYPE[styleInfo.get('season', seasonName)]
+    new_level = styleInfo.get('progressionLevel', 1)
+    return changeOutfitStyleData(outfit, (old_style, new_style), (old_season, new_season), (old_level, new_level), vDesc)
 
 
 def applyOutfitCache(vDesc, outfit, seasonName, seasonCache, clean=True):
