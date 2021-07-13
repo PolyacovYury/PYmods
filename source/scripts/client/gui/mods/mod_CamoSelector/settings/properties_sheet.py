@@ -58,10 +58,11 @@ class CustomizationPropertiesSheet(WGPropertiesSheet):
     def __updateItemAppliedToAllFlag(self):
         # noinspection PyUnresolvedReferences
         WGPropertiesSheet._CustomizationPropertiesSheet__updateItemAppliedToAllFlag(self)
-        self._isItemAppliedToAllSeasons = self.__isItemAppliedToAllSeasons()
         if self.__ctx.mode.tabId in CustomizationTabs.MODES[CustomizationModes.CUSTOM]:
+            self._isItemAppliedToAllSeasons = self.__isItemAppliedToAllSeasons()
             self._isItemAppliedToAllParts = self.__isItemAppliedToAllRegions()
         else:
+            self._isItemAppliedToAllSeasons = not self.__ctx.isPurchase and self.__isItemAppliedToAllSeasons()
             self._isItemAppliedToAllParts = False
 
     def __makeRenderersVOs(self):
