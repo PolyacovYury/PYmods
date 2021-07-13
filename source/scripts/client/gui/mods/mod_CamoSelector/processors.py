@@ -19,6 +19,7 @@ from items.vehicles import g_cache
 from vehicle_outfit.outfit import Area, Outfit
 from vehicle_outfit.packers import pickPacker
 from vehicle_systems.CompoundAppearance import CompoundAppearance
+from vehicle_systems.camouflages import getStyleProgressionOutfit
 from vehicle_systems.tankStructure import TankPartNames
 from . import g_config
 from .constants import CUSTOM_GROUP_NAME, SEASON_NAME_TO_TYPE, getAvailableRegions
@@ -121,7 +122,7 @@ def applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean):
         outfit_level = outfit.progressionLevel if style.isProgressive else 1
     style_level = styleInfo.get('progressionLevel', 1)
     if style.isProgressive and outfit_level != style_level:
-        outfit = style.getStyleProgressionOutfit(outfit, style_level, style_season)
+        outfit = getStyleProgressionOutfit(outfit, style_level, style_season)
     fitOutfit(outfit, availableRegions)
     return outfit
 

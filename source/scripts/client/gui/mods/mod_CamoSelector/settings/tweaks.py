@@ -115,16 +115,26 @@ def _initialize(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
     if not g_config.data['enabled']:
         return
-    self._StageSwitcherView__ctx.events.onModeChanged += self.updateCSInfo
-    self._StageSwitcherView__ctx.events.onChangesCanceled += self.updateCSInfo
+    events = self._StageSwitcherView__ctx.events
+    events.onModeChanged += self.updateCSInfo
+    events.onTabChanged += self.updateCSInfo
+    events.onSeasonChanged += self.updateCSInfo
+    events.onChangesCanceled += self.updateCSInfo
+    events.onItemsRemoved += self.updateCSInfo
+    events.onItemInstalled += self.updateCSInfo
 
 
 @overrideMethod(StageSwitcherView, '_finalize')
 def _finalize(base, self):
     if not g_config.data['enabled']:
         return base(self)
-    self._StageSwitcherView__ctx.events.onChangesCanceled -= self.updateCSInfo
-    self._StageSwitcherView__ctx.events.onModeChanged -= self.updateCSInfo
+    events = self._StageSwitcherView__ctx.events
+    events.onItemInstalled -= self.updateCSInfo
+    events.onItemsRemoved -= self.updateCSInfo
+    events.onChangesCanceled -= self.updateCSInfo
+    events.onSeasonChanged -= self.updateCSInfo
+    events.onTabChanged -= self.updateCSInfo
+    events.onModeChanged -= self.updateCSInfo
     base(self)
 
 
@@ -138,6 +148,20 @@ def new_onLoading(base, self, *args, **kwargs):
     with self.getViewModel().transaction() as model:
         model.setCurrentLevel(1)
         model.setSelectedLevel(progressionLevel)
+
+
+@overrideMethod(StageSwitcherView, '__onChange')
+def new_onChange(_, self, *args):
+    if not args or args[0]['selectedLevel'] is None:
+        return
+    selectedLevel = int(args[0]['selectedLevel'])
+    with self.viewModel.transaction() as tx:
+        tx.setSelectedLevel(args[0]['selectedLevel'])
+    ctx = self._StageSwitcherView__ctx
+    if ctx is not None and ctx.mode.tabId == CustomizationTabs.STYLES:
+        ctx.mode.changeStyleProgressionLevel(selectedLevel)
+    else:
+        self._StageSwitcherView__customizationService.changeStyleProgressionLevelPreview(selectedLevel)
 
 
 @overrideMethod(Vehicle, '__initAnchors')
