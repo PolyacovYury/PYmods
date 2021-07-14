@@ -101,17 +101,27 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
     def _onStart(self):
         WGCustomMode._onStart(self)
         self._events.onSeasonChanged += self._selectInsignia
-        self._events.onComponentChanged += self._invalidateCache
-        self._events.onItemsRemoved += self._invalidateCache
-        self._events.onItemInstalled += self._invalidateCache
+        self._events.onComponentChanged += self._onComponentChanged
+        self._events.onItemsRemoved += self._onItemsRemoved
+        self._events.onItemInstalled += self._onItemInstalled
         self._invalidateCache()
 
     def _onStop(self):
-        self._events.onItemInstalled -= self._invalidateCache
-        self._events.onItemsRemoved -= self._invalidateCache
-        self._events.onComponentChanged -= self._invalidateCache
+        self._events.onItemInstalled -= self._onItemInstalled
+        self._events.onItemsRemoved -= self._onItemsRemoved
+        self._events.onComponentChanged -= self._onComponentChanged
         self._events.onSeasonChanged -= self._selectInsignia
         WGCustomMode._onStop(self)
+
+    # noinspection PyUnusedLocal
+    def _onItemInstalled(self, item, slotId, season, component):
+        self._invalidateCache(season)
+
+    def _onItemsRemoved(self, *_, **__):
+        self._invalidateCache()
+
+    def _onComponentChanged(self, *_, **__):
+        self._invalidateCache(self.season)
 
     def getPurchaseItems(self):
         with self._ctx.overrideMode(self._ctx.purchaseModeId):
@@ -230,23 +240,23 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         return self._ctx.getMode().getModifiedOutfits() if g_config.data['useBought'] else {
             season: self._service.getEmptyOutfit() for season in SeasonType.COMMON_SEASONS}
 
-    def _invalidateCache(self, *_, **__):
+    def _invalidateCache(self, season=None):
         vDesc = g_currentVehicle.item.descriptor
         vehCache = g_config.getOutfitCache()
         fromOutfits = self._getBaseOutfits()
-        self._cache.clear()
-        for season in SeasonType.COMMON_SEASONS:
-            seasonName = SEASON_TYPE_TO_NAME[season]
+        seasons = (season,) if season else SeasonType.COMMON_SEASONS
+        for _season in seasons:
+            seasonName = SEASON_TYPE_TO_NAME[_season]
             self._cache[seasonName] = self.computeCache(
-                self._originalOutfits[season], self._modifiedOutfits[season],
-                self.__originalStyleSeasons[season], self.__modifiedStyleSeasons[season])
-            outfit = fromOutfits[season].copy()
+                self._originalOutfits[_season], self._modifiedOutfits[_season],
+                self.__originalStyleSeasons[_season], self.__modifiedStyleSeasons[_season])
+            outfit = fromOutfits[_season].copy()
             outfit = applyOutfitCache(vDesc, outfit, seasonName, vehCache.get(seasonName, {}), False)
-            self._originalOutfits[season] = outfit
-            self.__originalStyles[season] = getStyleFromId(outfit.id) if outfit.id else None
+            self._originalOutfits[_season] = outfit
+            self.__originalStyles[_season] = getStyleFromId(outfit.id) if outfit.id else None
             outfit = applyOutfitCache(vDesc, outfit, seasonName, self._cache[seasonName])
-            self._modifiedOutfits[season] = outfit
-            self.__modifiedStyles[season] = getStyleFromId(outfit.id) if outfit.id else None
+            self._modifiedOutfits[_season] = outfit
+            self.__modifiedStyles[_season] = getStyleFromId(outfit.id) if outfit.id else None
         self._fitOutfits()
 
     def _fillOutfits(self):
