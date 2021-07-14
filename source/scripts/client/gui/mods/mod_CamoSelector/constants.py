@@ -1,3 +1,4 @@
+from CurrentVehicle import g_currentVehicle
 from VehicleStickers import SlotTypes
 from gui import hangar_vehicle_appearance
 from gui.Scaleform.daapi.view.lobby.customization import (
@@ -41,14 +42,31 @@ ANCHOR_TYPE_TO_SLOT_TYPE_MAP[SlotTypes.INSIGNIA_ON_GUN] = GUI_ITEM_TYPE.INSIGNIA
 hangar_vehicle_appearance.SLOT_TYPES += (GUI_ITEM_TYPE.INSIGNIA,)
 CustomizationModes.CAMO_SELECTOR = 8
 CustomizationModes.ALL += (CustomizationModes.CAMO_SELECTOR,)
+_cache = {}
 
 
-def getAvailableRegions(areaId, slotType, vehicleDescr=None):
+def do_getAvailableRegions(areaId, slotType, vehicleDescr=None):
     if slotType == GUI_ITEM_TYPE.INSIGNIA:
         if areaId != Area.GUN:
             return ()
         return old_getAvailableRegions(areaId, GUI_ITEM_TYPE.PAINT, vehicleDescr)[:1]
     return old_getAvailableRegions(areaId, slotType, vehicleDescr)
+
+
+def getAvailableRegions(areaId, slotType, vehicleDescr=None):
+    if vehicleDescr is None:
+        if not g_currentVehicle.isPresent():
+            return ()
+        vehicleDescr = g_currentVehicle.item.descriptor
+    vehicleCD = vehicleDescr.makeCompactDescr()
+    cache = _cache.get(vehicleCD)
+    if cache is None:
+        _cache.clear()
+        _cache[vehicleCD] = cache = {}
+    result = cache.get((areaId, slotType))
+    if result is None:
+        result = cache[(areaId, slotType)] = do_getAvailableRegions(areaId, slotType, vehicleDescr)
+    return result
 
 
 old_getAvailableRegions = gui_shared.getAvailableRegions
