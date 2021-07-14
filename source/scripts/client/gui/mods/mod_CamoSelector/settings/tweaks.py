@@ -2,13 +2,14 @@ from PYmodsCore import BigWorld_callback, overrideMethod
 from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION
 from gui.Scaleform.daapi.view.lobby.customization import (
     customization_inscription_controller as ic, customization_style_info as si,
+    vehicle_anchor_states as vas, vehicle_anchors_updater as vau,
 )
 from gui.Scaleform.daapi.view.lobby.customization.context import custom_mode
 from gui.Scaleform.daapi.view.lobby.customization.popovers.custom_popover import CustomPopoverDataProvider
 from gui.Scaleform.daapi.view.lobby.customization.popovers.editable_style_popover import EditableStylePopover
 from gui.Scaleform.daapi.view.lobby.customization.popovers.style_popover import StylePopoverDataProvider
 from gui.Scaleform.daapi.view.lobby.customization.progression_styles.stage_switcher import StageSwitcherView
-from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs
+from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, isSlotFilled
 from gui.customization.shared import getPurchaseMoneyState, isTransactionValid
 from gui.impl.backport import text
 from gui.impl.gen import R
@@ -21,7 +22,7 @@ from items.components import c11n_components as c11c
 from shared_utils import first
 from skeletons.gui.customization import ICustomizationService
 from vehicle_outfit.outfit import ANCHOR_TYPE_TO_SLOT_TYPE_MAP, Area
-from .shared import fixIconPath
+from .shared import fixIconPath, isSlotLocked
 from .. import g_config
 
 
@@ -64,14 +65,14 @@ def new_makeButtonVO(base, self, style):
 @overrideMethod(CustomPopoverDataProvider, '__makeItemDataVO')
 @overrideMethod(StylePopoverDataProvider, '__makeItemDataVO')
 @overrideMethod(EditableStylePopover, '__makeItemDataVO')
-def __makeItemDataVO(base, itemData, *a, **k):
+def new_makeItemDataVO(base, itemData, *a, **k):
     data = base(itemData, *a, **k)
     data['icon'] = fixIconPath(data['icon'])
     return data
 
 
 @overrideMethod(ProgressiveItemsView, '__setEachLevelInfo')
-def __setEachLevelInfo(base, self, model, item):
+def new_setEachLevelInfo(base, self, model, item):
     base(self, model, item)
     if not g_config.data['enabled'] or self._ProgressiveItemsView__customizationService.getCtx().isPurchase:
         return
@@ -86,7 +87,7 @@ def __setEachLevelInfo(base, self, model, item):
 
 @overrideMethod(ProgressiveItemsView, '_onSelectItem')
 @dependency.replace_none_kwargs(service=ICustomizationService)
-def _onSelectItem(base, self, args=None, service=None):
+def new_onSelectItem(base, self, args=None, service=None):
     if not g_config.data['enabled']:
         return base(self)
     if args is not None:
@@ -111,7 +112,7 @@ StageSwitcherView.updateCSInfo = updateCSInfo
 
 
 @overrideMethod(StageSwitcherView, '_initialize')
-def _initialize(base, self, *args, **kwargs):
+def new_initialize(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
     if not g_config.data['enabled']:
         return
@@ -125,7 +126,7 @@ def _initialize(base, self, *args, **kwargs):
 
 
 @overrideMethod(StageSwitcherView, '_finalize')
-def _finalize(base, self):
+def new_finalize(base, self):
     if not g_config.data['enabled']:
         return base(self)
     events = self._StageSwitcherView__ctx.events
@@ -178,3 +179,35 @@ def new_initAnchors(base, self):
             slotsAnchors[slotType][areaId][regionIdx] = slot
             slotsAnchorsById[emblemSlot.slotId] = slot
     return slotsAnchorsById, slotsAnchors
+
+
+@overrideMethod(vas.Anchor, 'updateState')
+def new_updateState(_, self):
+    ctx = self._Anchor__ctx
+    outfit = ctx.mode.getModifiedOutfit(ctx.season)
+    if isSlotFilled(outfit, self.slotId):
+        newState = vas.UnselectedFilledState(self)
+    elif isSlotLocked(outfit, self.slotId):
+        newState = vas.LockedState(self)
+    else:
+        newState = vas.UnselectedEmptyState(self)
+    if self.stateID != newState.stateID:
+        self.changeState(newState)
+
+
+# noinspection PyUnusedLocal
+@overrideMethod(vau.VehicleAnchorsUpdater, '__onItemInstalled')
+def new_onItemInstalled(base, self, item, slotId, season, component):
+    processedAnchors = self._VehicleAnchorsUpdater__processedAnchors
+    anchor = processedAnchors.get(slotId)
+    if anchor is not None:
+        anchor.state.onItemInstalled()
+    outfit = self._VehicleAnchorsUpdater__ctx.mode.currentOutfit
+    for slotId, anchor in processedAnchors.iteritems():
+        if isSlotLocked(outfit, slotId):
+            anchor.state.onLocked()
+        else:
+            anchor.state.onUnlocked()
+
+    self._VehicleAnchorsUpdater__changeAnchorsStates()
+    self._VehicleAnchorsUpdater__updateAnchorsVisability()

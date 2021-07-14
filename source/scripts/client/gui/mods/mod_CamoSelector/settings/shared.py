@@ -16,7 +16,9 @@ from gui.impl.pub.dialog_window import DialogButtons as DButtons
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.personality import ServicesLocator as SL
-from items.components.c11n_constants import ItemTags, ProjectionDecalFormTags, SeasonType
+from items.components.c11n_constants import (
+    ApplyArea, ItemTags, MAX_PROJECTION_DECALS_PER_AREA, ProjectionDecalFormTags, SeasonType,
+)
 from items.vehicles import g_cache, getItemByCompactDescr
 from .. import g_config
 from ..constants import CUSTOM_GROUP_NAME, SEASON_NAME_TO_TYPE, TYPES_ORDER, insignia_names
@@ -183,3 +185,19 @@ def isStyleSeasoned(style):
     return not (
             outfit.isEqual(style.getOutfit(SeasonType.WINTER, vehCD))
             and outfit.isEqual(style.getOutfit(SeasonType.DESERT, vehCD)))
+
+
+def isSlotLocked(outfit, slotId):
+    if slotId.slotType != GUI_ITEM_TYPE.PROJECTION_DECAL:
+        return False
+    limit = MAX_PROJECTION_DECALS_PER_AREA
+    slot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
+    regions = slot.getRegions()
+    getAreaId = lambda _regionIdx: g_currentVehicle.item.getAnchorBySlotId(slotId.slotType, slotId.areaId, _regionIdx).showOn
+    filledRegions = {areaId: [] for areaId in ApplyArea.USER_PAINT_ALLOWED_REGIONS}
+    for region, _, __ in slot.items():
+        regionIdx = regions.index(region)
+        areaId = getAreaId(regionIdx)
+        filledRegions[areaId].append(regionIdx)
+    filledRegions = filledRegions[getAreaId(slotId.regionIdx)]
+    return len(filledRegions) >= limit and slotId.regionIdx not in filledRegions

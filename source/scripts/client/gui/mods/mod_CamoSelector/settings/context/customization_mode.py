@@ -24,7 +24,7 @@ from skeletons.account_helpers.settings_core import ISettingsCore
 from vehicle_outfit.containers import SlotData
 from vehicle_outfit.outfit import Area
 from .item_remap import ItemSettingsRemap
-from ..shared import isStyleSeasoned
+from ..shared import isSlotLocked, isStyleSeasoned
 from ... import g_config
 from ...constants import SEASON_NAME_TO_TYPE
 from ...processors import (
@@ -130,8 +130,7 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
             style, None, areaID=None, slotType=None, regionIdx=None, selected=True, component=styleSeason,
             group=AdditionalPurchaseGroups.STYLES_GROUP_ID, locked=True, progressionLevel=progressionLevel)]
         baseOutfit = getOutfitFromStyle(style, styleSeason, progressionLevel)
-        addDefaultInsignia(baseOutfit)
-        addDefaultInsignia(modifiedOutfit)
+        modifiedOutfit = addDefaultInsignia(modifiedOutfit)
         for intCD, component, regionIdx, container, _ in modifiedOutfit.itemsFull():
             item = self._service.getItemByCD(intCD)
             slotType = ITEM_TYPE_TO_SLOT_TYPE.get(item.itemTypeID)
@@ -241,14 +240,12 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
             self._cache[seasonName] = self.computeCache(
                 self._originalOutfits[season], self._modifiedOutfits[season],
                 self.__originalStyleSeasons[season], self.__modifiedStyleSeasons[season])
-            outfit = fromOutfits[season]
-            addDefaultInsignia(outfit)
+            outfit = fromOutfits[season].copy()
             outfit = applyOutfitCache(vDesc, outfit, seasonName, vehCache.get(seasonName, {}), False)
-            self._originalOutfits[season] = outfit.copy()
+            self._originalOutfits[season] = outfit
             self.__originalStyles[season] = getStyleFromId(outfit.id) if outfit.id else None
             outfit = applyOutfitCache(vDesc, outfit, seasonName, self._cache[seasonName])
-            addDefaultInsignia(outfit)
-            self._modifiedOutfits[season] = outfit.copy()
+            self._modifiedOutfits[season] = outfit
             self.__modifiedStyles[season] = getStyleFromId(outfit.id) if outfit.id else None
         self._fitOutfits()
 
@@ -260,10 +257,10 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
             seasonName = SEASON_TYPE_TO_NAME[season]
             seasonCache = vehCache.get(seasonName, {})
             outfit = applyOutfitCache(vDesc, baseOutfits[season], seasonName, seasonCache, False)
-            self._originalOutfits[season] = outfit.copy()
+            self._originalOutfits[season] = outfit
             self.__originalStyles[season] = getStyleFromId(outfit.id) if outfit.id else None
             outfit = applyOutfitCache(vDesc, outfit, seasonName, self._cache.get(seasonName, {}))
-            self._modifiedOutfits[season] = outfit.copy()
+            self._modifiedOutfits[season] = outfit
             self.__modifiedStyles[season] = getStyleFromId(outfit.id) if outfit.id else None
             self.__originalStyleSeasons[season] = self.__modifiedStyleSeasons[season] = SEASON_NAME_TO_TYPE[
                 seasonCache.get('style', {}).get('season', seasonName)]
@@ -284,12 +281,17 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
 
     def _installItem(self, intCD, slotId, season=None, component=None):
         item = self._service.getItemByCD(intCD)
-        if item.itemTypeID != GUI_ITEM_TYPE.STYLE:
-            return WGCustomMode._installItem(self, intCD, slotId, season, component)
         season = season or self.season
+        outfit = self._modifiedOutfits[season]
+        if item.itemTypeID != GUI_ITEM_TYPE.STYLE:
+            if isSlotLocked(outfit, slotId):
+                return False
+            component = component or self._getComponent(item, slotId)
+            multiSlot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
+            multiSlot.set(item.intCD, idx=slotId.regionIdx, component=component)
+            return True
         if self.__modifiedStyles[season] == item and component is None:
             return False
-        outfit = self._modifiedOutfits[season]
         old_style = self.__modifiedStyles[season]
         old_season = self.__modifiedStyleSeasons[season]
         self._modifiedOutfits[season] = changeOutfitStyleData(
@@ -328,10 +330,8 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         cache = {}
         for season in SeasonType.COMMON_SEASONS:
             seasonName = SEASON_TYPE_TO_NAME[season]
-            fromOutfit = fromOutfits[season]
-            toOutfit = self._modifiedOutfits[season]
-            addDefaultInsignia(fromOutfit)
-            addDefaultInsignia(toOutfit)
+            fromOutfit = addDefaultInsignia(fromOutfits[season])
+            toOutfit = addDefaultInsignia(self._modifiedOutfits[season])
             cache[seasonName] = seasonCache = self.computeCache(
                 fromOutfit, toOutfit,
                 self.__originalStyleSeasons[season], self.__modifiedStyleSeasons[season])
@@ -396,8 +396,7 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
             styleInfo['progressionLevel'] = modified.progressionLevel
         original = applyStyleOverride(
             g_currentVehicle.item.descriptor, original, SEASON_TYPE_TO_NAME[original_season], seasonCache, False)
-        addDefaultInsignia(original)
-        addDefaultInsignia(modified)
+        modified = addDefaultInsignia(modified)
         for container, slot, regionIdx, o_intCD, o_component in self.iterOutfit(original):
             slotType = ITEM_TYPE_TO_SLOT_TYPE.get(slot.getTypes()[0])  # checks that this slot is not for attachments
             if slotType is None:

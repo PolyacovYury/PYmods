@@ -57,18 +57,17 @@ def getDefaultItemCDs(vDesc=None):
 
 def addDefaultInsignia(outfit, vDesc=None):
     vDesc = vDesc or g_currentVehicle.item.descriptor
-    if not outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).getItemCD():  # emptyComponent for insignia is wrong
-        outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA).set(getDefaultItemCDs(vDesc)[1], component=InsigniaComponent())
-    outfit.invalidate()
+    insignia_slot = outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA)
+    if not insignia_slot.getItemCD():
+        insignia_slot.set(getDefaultItemCDs(vDesc)[1], component=InsigniaComponent())  # emptyComponent for insignia is wrong
+    return outfit.copy()
 
 
 def createEmptyOutfit(vDesc, diffComp=None):
     component = CustomizationOutfit(decals=createNationalEmblemComponents(vDesc))
     if diffComp is not None:
         component = component.applyDiff(diffComp)
-    outfit = Outfit(component=component, vehicleCD=vDesc.makeCompactDescr())
-    addDefaultInsignia(outfit, vDesc)
-    return outfit
+    return addDefaultInsignia(Outfit(component=component, vehicleCD=vDesc.makeCompactDescr()), vDesc)
 
 
 def changeOutfitStyleData(outfit, style, season, level, vDesc=None):
@@ -99,8 +98,7 @@ def getOutfitFromStyle(style, season, level, vDesc=None):
     fitOutfit(baseOutfit, {areaId: {
         slotType: getAvailableRegions(areaId, slotType, vDesc) for slotType in CustomizationTabs.SLOT_TYPES.itervalues()}
         for areaId in Area.ALL})
-    addDefaultInsignia(baseOutfit, vDesc)
-    return baseOutfit
+    return addDefaultInsignia(baseOutfit, vDesc)
 
 
 def applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean):
@@ -110,17 +108,17 @@ def applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean):
     styleInfo = seasonCache.get('style', {})
     styleId = styleInfo.get('id')
     if styleId is None:
-        return outfit
+        return addDefaultInsignia(outfit)
     if styleId == EMPTY_ITEM_ID:
         if not outfit.id:
             if clean:  # item is being deleted while not applied at all. possible change after last cache
                 seasonCache.pop('style', None)  # so we remove an obsolete key
-            return outfit
+            return addDefaultInsignia(outfit)
         return changeOutfitStyleData(outfit, (old_style, None), old_season, old_level, vDesc)
     if styleId not in g_cache.customization20().itemTypes[CustomizationType.STYLE]:
         print g_config.ID + ': style', styleId, 'for', vDesc.name, 'deleted from game client.'
         seasonCache.pop('style', None)
-        return outfit
+        return addDefaultInsignia(outfit)
     new_style = getStyleFromId(styleId)
     new_season = SEASON_NAME_TO_TYPE[styleInfo.get('season', seasonName)]
     new_level = styleInfo.get('progressionLevel', 1)

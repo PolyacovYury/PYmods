@@ -74,7 +74,7 @@ class MainView(WGMainView):
             return text_styles.bonusPreviewText(g_config.color_compat(insignia_text))
         typeName = GUI_ITEM_TYPE_NAMES[slotType]
         slotsCount, filledSlotsCount = checkSlotsFilling(self.__ctx.mode.currentOutfit, slotType)
-        return (text_styles.bonusPreviewText if slotsCount == filledSlotsCount else text_styles.stats)(text(
+        return (text_styles.stats if slotsCount < filledSlotsCount else text_styles.bonusPreviewText)(text(
             R.strings.vehicle_customization.customization.header.counter.dyn(typeName)(),
             filled=filledSlotsCount, available=slotsCount))
 
