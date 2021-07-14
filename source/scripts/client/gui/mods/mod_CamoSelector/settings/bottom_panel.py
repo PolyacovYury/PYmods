@@ -56,24 +56,17 @@ class CustomizationBottomPanel(CBP):
     def __setNotificationCounters(self):
         vehicle = g_currentVehicle.item
         proxy = g_currentVehicle.itemsCache.items
-        tabsCounters = []
-        visibleTabs = self.getVisibleTabs()
         season = self.__ctx.season
         isPurchase = self.__ctx.isPurchase
         _filter = self.__ctx.mode.style.isItemInstallable if self.__ctx.modeId == CustomizationModes.EDITABLE_STYLE else None
-        for tabId in visibleTabs:
-            if not isPurchase:
-                tabsCounters.append(0)
-                continue
-            itemTypes = CustomizationTabs.ITEM_TYPES[tabId]
-            tabsCounters.append(vehicle.getC11nItemsNoveltyCounter(proxy, itemTypes, season, _filter))
-        if self.__ctx.isPurchase:
-            switchersCounter = 0
-        else:
-            switchersCounter = vehicle.getC11nItemsNoveltyCounter(proxy, getItemTypesAvailableForVehicle())
-            styles = self._carouselDP.getItemsData(season, CustomizationModes.STYLED, CustomizationTabs.STYLES)
-            switchersCounter += getEditableStylesExtraNotificationCounter(styles)
-        self.as_setNotificationCountersS({'tabsCounters': tabsCounters, 'switchersCounter': switchersCounter})
+        styles = self._carouselDP.getItemsData(season, CustomizationModes.STYLED, CustomizationTabs.STYLES)
+        self.as_setNotificationCountersS({'tabsCounters': [
+            0 if not isPurchase else (
+                    vehicle.getC11nItemsNoveltyCounter(proxy, CustomizationTabs.ITEM_TYPES[tabId], season, _filter)
+                    + (0 if tabId != CustomizationTabs.STYLES else getEditableStylesExtraNotificationCounter(styles)))
+            for tabId in self.getVisibleTabs()], 'switchersCounter': (
+            0 if isPurchase else vehicle.getC11nItemsNoveltyCounter(
+                proxy, getItemTypesAvailableForVehicle()) + getEditableStylesExtraNotificationCounter(styles))})
 
     def __getSwitcherInitData(self):
         # noinspection PyUnresolvedReferences
