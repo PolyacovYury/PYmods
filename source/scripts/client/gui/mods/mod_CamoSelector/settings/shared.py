@@ -7,6 +7,7 @@ from CurrentVehicle import g_currentVehicle
 from async import async, await
 from frameworks.wulf import WindowLayer
 from functools import partial
+from gui.customization.shared import AREA_ID_BY_REGION
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl.backport import text
 from gui.impl.dialogs import dialogs
@@ -16,10 +17,9 @@ from gui.impl.pub.dialog_window import DialogButtons as DButtons
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.personality import ServicesLocator as SL
-from items.components.c11n_constants import (
-    ApplyArea, ItemTags, MAX_PROJECTION_DECALS_PER_AREA, ProjectionDecalFormTags, SeasonType,
-)
+from items.components.c11n_constants import ItemTags, MAX_PROJECTION_DECALS_PER_AREA, ProjectionDecalFormTags, SeasonType
 from items.vehicles import g_cache, getItemByCompactDescr
+from vehicle_outfit.outfit import Area
 from .. import g_config
 from ..constants import CUSTOM_GROUP_NAME, SEASON_NAME_TO_TYPE, TYPES_ORDER, insignia_names
 
@@ -193,11 +193,14 @@ def isSlotLocked(outfit, slotId):
     limit = MAX_PROJECTION_DECALS_PER_AREA
     slot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
     regions = slot.getRegions()
-    getAreaId = lambda _regionIdx: g_currentVehicle.item.getAnchorBySlotId(slotId.slotType, slotId.areaId, _regionIdx).showOn
-    filledRegions = {areaId: [] for areaId in ApplyArea.USER_PAINT_ALLOWED_REGIONS}
+    getShowOn = lambda _regionIdx: g_currentVehicle.item.getAnchorBySlotId(slotId.slotType, slotId.areaId, _regionIdx).showOn
+    getAreaIds = lambda _showOn: set(areaId for _region, areaId in AREA_ID_BY_REGION.items() if _region & _showOn)
+    filledRegions = {areaId: [] for areaId in Area.TANK_PARTS}
     for region, _, __ in slot.items():
         regionIdx = regions.index(region)
-        areaId = getAreaId(regionIdx)
-        filledRegions[areaId].append(regionIdx)
-    filledRegions = filledRegions[getAreaId(slotId.regionIdx)]
-    return len(filledRegions) >= limit and slotId.regionIdx not in filledRegions
+        for areaId in getAreaIds(getShowOn(regionIdx)):
+            filledRegions[areaId].append(regionIdx)
+    areaIds = getAreaIds(getShowOn(slotId.regionIdx))
+    return any(
+        len(_filledRegions) >= limit and slotId.regionIdx not in _filledRegions
+        for areaId, _filledRegions in filledRegions.items() if areaId in areaIds)
