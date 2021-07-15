@@ -108,17 +108,17 @@ def applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean):
     styleInfo = seasonCache.get('style', {})
     styleId = styleInfo.get('id')
     if styleId is None:
-        return addDefaultInsignia(outfit)
+        return addDefaultInsignia(outfit, vDesc)
     if styleId == EMPTY_ITEM_ID:
         if not outfit.id:
             if clean:  # item is being deleted while not applied at all. possible change after last cache
                 seasonCache.pop('style', None)  # so we remove an obsolete key
-            return addDefaultInsignia(outfit)
+            return addDefaultInsignia(outfit, vDesc)
         return changeOutfitStyleData(outfit, (old_style, None), old_season, old_level, vDesc)
     if styleId not in g_cache.customization20().itemTypes[CustomizationType.STYLE]:
         print g_config.ID + ': style', styleId, 'for', vDesc.name, 'deleted from game client.'
         seasonCache.pop('style', None)
-        return addDefaultInsignia(outfit)
+        return addDefaultInsignia(outfit, vDesc)
     new_style = getStyleFromId(styleId)
     new_season = SEASON_NAME_TO_TYPE[styleInfo.get('season', seasonName)]
     new_level = styleInfo.get('progressionLevel', 1)
