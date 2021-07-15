@@ -22,6 +22,7 @@
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/popover.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/popover.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/stage_switcher.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/stage_switcher.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/tooltips.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/tooltips.pyc",
         "res/scripts/client/gui/mods/mod_CamoSelector/settings/tweaks.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/tweaks.pyc"
     }
