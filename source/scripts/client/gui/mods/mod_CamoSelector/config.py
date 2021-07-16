@@ -242,7 +242,7 @@ class ConfigInterface(PYmodsConfigInterface):
             group.itemPrototype = prototype = itemCls()
             prototype.season = consts.SeasonType.ALL
             prototype.priceGroup = CUSTOM_GROUP_NAME
-            prototype.historical = False
+            prototype.customizationDisplayType = 0
             prototype.tags |= frozenset((consts.ItemTags.HIDDEN_IN_UI,))
             prototype.i18n = sc.I18nExposedComponent(self.i18n['flashCol_group_custom'], '')
 

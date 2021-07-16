@@ -168,7 +168,8 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
             'id': item.intCD, 'icon': fixIconPath(item.icon), 'userName': text_styles.main(item_name),
             'numItems':
                 '' if itemData.isRemoved or not itemData.isRemovable or item.itemTypeID == GUI_ITEM_TYPE.STYLE else
-                text_styles.main('{} '.format(len(itemData.slotsIds))), 'isHistoric': item.isHistorical(), 'price': None,
+                text_styles.main('{} '.format(len(itemData.slotsIds))),
+            'customizationDisplayType': item.customizationDisplayType(), 'price': None,
             'isApplied': itemData.isBase, 'isWide': item.isWide(), 'itemsList': itemData.slotsIds,
             'isDim': item.isDim(), 'isEdited': not itemData.isBase, 'isDisabled': itemData.isRemoved,
             'disabledLabel': text_styles.bonusPreviewText(text(

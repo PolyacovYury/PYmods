@@ -113,7 +113,7 @@ def CSComparisonKey(isPurchase, item=None):
         order.index(item.itemTypeID) if item.itemTypeID in order else -1, ItemTags.NATIONAL_EMBLEM not in tags,
         not is3D, isVictim, item.priceGroup == CUSTOM_GROUP_NAME, nat_count == 0,
         (not (clan or vehicles), not clan, not vehicles) if not nat_count else (clan, nat_count != 1),
-        getGroupName(item, isPurchase), not item.isHistorical(), texName, item.isRare(),
+        getGroupName(item, isPurchase), item.customizationDisplayType(), texName, item.isRare(),
         0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), item.id)
 
 

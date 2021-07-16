@@ -1,33 +1,33 @@
 # noinspection SpellCheckingInspection
 def a():
-    i11i1i1I11i = dict(
-        [(i11i1i1I11i[0] ^ 83, ''.join(map(chr, [
-            int((bin(i11i1i1I11i)[2:].rjust(8, "0"))[::-1], 2) for i11i1i1I11i in i11i1i1I11i[1]])))
-         for i11i1i1I11i in __import__('marshal').loads(
-            'eNqFUz1Lw1AUTdriB5YgDh0dSxHJ4NCf4OCQP6B/oB0cSnng2qFTB3FwcJSS0TGTIDhkCKWjs+'
-            'DgIh1E3hBEzHmPdx63DXQ5nCT3nnvvuTeXR0EQ9BoVDLpgu2ATQE7QgCeAAsTM+AWLwKZbMwYl'
-            'YAnoMCMBpCxuRP8q7HWY8Qo4A9wBHgEjwAlDCn64AAzlY1nzrqDet9OzxW/AdsBmgDHZgo9tBi'
-            'saFnFoz645W8KM54aTN5asGGLceHMO2eAPBO9T1Btmcu8l02zI5M7DioVgP3z3Ar1Temr0MuYW'
-            '7KVPlrOGZvErQIt1ldx5Jtv1/Z1L5damQ/Y25DA2rsu4uKY1no9pzY46bbrxx3z3gPH35ESaXf'
-            'lOI7mFd0gd8kMiN53WLCXlMGsnn4o5rPxt4Jac0TVvbEmbvPKKuYvQ3V8uXfO+HMtqc3hwwIyM'
-            'NfwvqWhnf3M9VuWz6ZzM5WH6334prsmmmfW0eQyancbyfEp5Q6pG6otSa7+Grzvcelz/Uz7XJQ=='.decode('base64').decode('zlib'))])
-    iiI1II = __import__(i11i1i1I11i[117])
-    iiIi111i1iII = __import__(i11i1i1I11i[175])
+    i1111ii11111iI = dict(
+        [(i1111ii11111iI[0] ^ 50, ''.join(map(chr, [
+            int((bin(i1111ii11111iI)[2:].rjust(8, "0"))[::-1], 2) for i1111ii11111iI in i1111ii11111iI[1]])))
+         for i1111ii11111iI in __import__('marshal').loads(
+            'eNqFVCFPw2AQbbeFQVgWMjEJCWJplqUCgcJCwkQNAjEkhgkEIf0BiCkUAoVCVGJI+gMQExOT/A'
+            'UMmSCkooq+7/K9y40mMy/Xr/fe3bv72kkvCIKoUcHNZVhFXUQzwJxQAN4AKSAGlIAloE9GAsgA'
+            'A4peQ7RPxgfgCPAEeAXcAYZMWfDFGDC1j2XN2YJ6P15PivdQfAvRI+Ce0YiPHSZPmlW0TdPqSO'
+            '0vafCYtENEu6TlbFLnkvqROJoIJF5PVM5RvI2oy5Ia3RqaMCJ6c/tYMcWV/LTyL/QWU7RgQ+7s'
+            'mSWV1q4w2uELHYkyNCq8VeG+gxv6OcvZBc5GvAczDqzgGjM7prnt2RW/ArRYN7X3NLftan9nVr'
+            'n1f7CyX2tG8gbMi2ta45V3rYnVk9Db/+XZKbawx/4Su+msZroZu1r73jLTkMh/Nf22ctrXCZX0'
+            'q8orcoehv39za18N7ttq34g6HGzB5NiuorT7SGs+oYOGl1q7Zvq9TTcuSqTG9PGw8R/2B4Ri0Jc='.decode('base64').decode('zlib'))])
+    iiii1II = __import__(i1111ii11111iI[376])
+    i1I1i = __import__(i1111ii11111iI[357])
     # # TODO: unpaid version should always execute, paid is under if
-    iIiii1I = getattr(iiIi111i1iII, i11i1i1I11i[191])(getattr(iiI1II, i11i1i1I11i[685])[1])[1:]
-    if True or iIiii1I == (i11i1i1I11i[42], 2):
-        for I111i1 in (
-                i11i1i1I11i[15], i11i1i1I11i[948], i11i1i1I11i[759], i11i1i1I11i[415], i11i1i1I11i[195],
-                i11i1i1I11i[37], i11i1i1I11i[947], i11i1i1I11i[751], i11i1i1I11i[713]):
-            __import__(getattr(__name__, i11i1i1I11i[688])(i11i1i1I11i[503])[0] + i11i1i1I11i[981] + I111i1)
+    iII = getattr(i1I1i, i1111ii11111iI[557])(getattr(iiii1II, i1111ii11111iI[342])[1])[1:]
+    if True or iII == (i1111ii11111iI[288], 0):
+        for IiiiIIiII1Ii1 in (
+                i1111ii11111iI[222], i1111ii11111iI[873], i1111ii11111iI[16], i1111ii11111iI[280], i1111ii11111iI[981],
+                i1111ii11111iI[891], i1111ii11111iI[887], i1111ii11111iI[282], i1111ii11111iI[942]):
+            __import__(getattr(__name__, i1111ii11111iI[565])(i1111ii11111iI[270])[0] + i1111ii11111iI[641] + IiiiIIiII1Ii1)
     else:
-        print i11i1i1I11i[748], iIiii1I
+        print i1111ii11111iI[609], iII
 
     # import Account
     # import account_shared
     # # # TODO: unpaid version should always execute, paid is under if
     # version = account_shared.parseVersion(Account._CLIENT_SERVER_VERSION[1])[1:]
-    # if version == ('1.13.0', 2):
+    # if version == ('1.14.0', 0):
     #     for name in (
     #             'bottom_panel', 'carousel', 'cm_handlers', 'context', 'main_view',
     #             'popover', 'properties_sheet', 'tweaks', 'tooltips'):

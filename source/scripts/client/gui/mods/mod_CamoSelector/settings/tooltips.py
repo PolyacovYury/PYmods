@@ -9,7 +9,7 @@ from .shared import fixIconPath, getInsigniaUserName
 
 
 @overrideMethod(ElementTooltip, '_packItemBlocks')
-def _packItemBlocks(base, self, statsConfig):
+def _packItemBlocks(base, self, statsConfig, *a, **k):
     ctx = self._ElementTooltip__ctx
     if ctx and not ctx.isPurchase:
         statsConfig.buyPrice = False
@@ -18,29 +18,29 @@ def _packItemBlocks(base, self, statsConfig):
         statsConfig.showBonus = False
         if self._item.isProgressive:
             self._progressionLevel = self._progressionLevel or 1
-    return base(self, statsConfig)
+    return base(self, statsConfig, *a, **k)
 
 
 @overrideMethod(ElementTooltip, '_packTitleBlock')
-def _packTitleBlock(base, self):
+def _packTitleBlock(base, self, *a, **k):
     if self._item.itemTypeID != GUI_ITEM_TYPE.INSIGNIA:
-        return base(self)
+        return base(self, *a, **k)
     return formatters.packTitleDescBlock(
         title=text_styles.highTitle(getInsigniaUserName(self._item)), descPadding=formatters.packPadding(top=-5))
 
 
 @overrideMethod(ElementTooltip, '_packIconBlock')
-def _packIconBlock(base, self, isHistorical=False, isDim=False):
-    data = base(self, isHistorical, isDim)
+def _packIconBlock(base, self, *a, **k):
+    data = base(self, *a, **k)
     if data and 'data' in data and 'imagePath' in data['data']:
         data['data']['imagePath'] = fixIconPath(data['data']['imagePath'])
     return data
 
 
 @overrideMethod(ElementTooltip, '_packSuitableBlock')
-def _packSuitableBlock(base, self):
+def _packSuitableBlock(base, self, *a, **k):
     if not self._item.descriptor.filter or not self._item.descriptor.filter.include:
-        return base(self)
+        return base(self, *a, **k)
     backups = {}
     for idx, node in enumerate(self._item.descriptor.filter.include):
         if not node.vehicles:
@@ -51,7 +51,7 @@ def _packSuitableBlock(base, self):
         for intCD in node.vehicles:
             node.nations.append(getItemByCompactDescr(intCD).customizationNationID)
         node.nations = remDups(node.nations)
-    result = base(self)
+    result = base(self, *a, **k)
     for idx, data in backups.items():
         self._item.descriptor.filter.include[idx].nations = data
     return result
@@ -59,6 +59,6 @@ def _packSuitableBlock(base, self):
 
 @overrideMethod(ElementTooltip, '_packAppliedBlock')
 @overrideMethod(ElementTooltip, '_packSpecialBlock')
-def _packBlock(base, self):
+def _packBlock(base, self, *a, **k):
     ctx = self._ElementTooltip__ctx
-    return None if ctx and not ctx.isPurchase else base(self)
+    return None if ctx and not ctx.isPurchase else base(self, *a, **k)
