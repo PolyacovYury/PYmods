@@ -45,7 +45,7 @@ def hasNoCamo(outfit):
 
 
 def getStyleFromId(styleId):
-    return g_currentVehicle.itemsCache.items.getItem(GUI_ITEM_TYPE.CUSTOMIZATION, CustomizationType.STYLE, styleId)
+    return HangarVehicleAppearance.itemsFactory.createCustomization(g_cache.customization20().styles[styleId].compactDescr)
 
 
 def getDefaultItemCDs(vDesc=None):
