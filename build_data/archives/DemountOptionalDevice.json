@@ -1,7 +1,0 @@
-{
-    "enabled": true,
-    "ext": ".zip",
-    "files": {
-        "mods/{GAME_VERSION}/PYmods/DemountOptionalDevice.wotmod": "build/wotmods/PYmods/DemountOptionalDevice.wotmod"
-    }
-}

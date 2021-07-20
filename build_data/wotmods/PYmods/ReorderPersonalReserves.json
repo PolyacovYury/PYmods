@@ -1,7 +1,0 @@
-﻿{
-    "enabled": true,
-    "ext": ".wotmod",
-    "files": {
-        "res/scripts/client/gui/mods/mod_ReorderPersonalReserves.pyc": "build/scripts/client/gui/mods/mod_ReorderPersonalReserves.pyc"
-    }
-}
