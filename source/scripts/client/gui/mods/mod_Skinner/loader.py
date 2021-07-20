@@ -160,7 +160,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
                 and time.time() - os.path.getmtime(g_config.configPath + 'skinsCache.json') < 60 * 60 * 6):
             print g_config.ID + ': skins checksum was checked recently, trusting the user on this one'
             SkinnerLoading.skinsChecked = True
-        return g_config.data['enabled'] and g_config.skinsData['models'] and not SkinnerLoading.skinsChecked
+        return g_config.data['enabled'] and g_config.skinsData['whitelists'] and not SkinnerLoading.skinsChecked
 
 
 def doLogin(app):
@@ -189,11 +189,14 @@ def enumLen(arr, cond=None):
         yield arrLen, idx, elem
 
 
-def iterSection(sect, numbers=True, depth=1):
+def iterSection(sect, numbers=True, depth=1, filters=(None,)):
     subs = [] if sect is None else remDups(sect.keys())
+    predicate = filters[-depth]
+    if predicate is not None:
+        subs = filter(predicate, subs)
     for sub in (enumLen if numbers else zip)(subs):
         if depth > 1:
-            for _sub in iterSection(sect[sub[-1]], numbers, depth - 1):
+            for _sub in iterSection(sect[sub[-1]], numbers, depth - 1, filters[1:]):
                 yield sub + _sub
         else:
             yield sub + (sect[sub[-1]],)
@@ -207,7 +210,7 @@ def checkSkinFiles(callback):
     CRC32cache = g_config.skinsCache['CRC32']
     skinsPath = 'vehicles/skins/textures/'
     rootSect = ResMgr.openSection(skinsPath)
-    if rootSect is None or not rootSect.keys() or not g_config.skinsData['models']:
+    if rootSect is None or not rootSect.keys() or not g_config.skinsData['whitelists']:
         print g_config.ID + ': skins folder is empty'
         delay_call(callback, texReplaced, vehSkins)
         return
@@ -219,13 +222,11 @@ def checkSkinFiles(callback):
         SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_skinPack'] % os.path.basename(skinName))
         skinCRC32 = 0
         packSect = rootSect[skinName]['vehicles']
-        for natLen, natNum, nation, vehLen, vehNum, vehName, vehSect in iterSection(packSect, depth=2):
+        for natLen, natNum, nation, vehLen, vehNum, vehName, vehSect in iterSection(packSect, depth=2, filters=(None, None)):
             vehSkins.setdefault('/'.join((nation, vehName)).lower(), []).append(skinName)
             texPrefix = '/'.join(('vehicles', nation, vehName))
             textures = ['/'.join((texPrefix, texName)) for texName in remDups(vehSect.keys()) if texName.endswith('.dds')]
-            for subName, subSect in iterSection(vehSect, False):
-                if not subName.startswith('_') or '.' in subName:
-                    continue
+            for subName, subSect in iterSection(vehSect, False, filters=((lambda x: x.startswith('_') and '.' not in x),)):
                 for styleName, styleSect in iterSection(subSect, False):
                     vehSkins.setdefault('/'.join((nation, vehName, styleName)).lower(), []).append(skinName)
                     textures.extend('/'.join((texPrefix, subName, styleName, texName))
@@ -285,7 +286,7 @@ def checkMeta(texReplaced, callback):
         print g_config.ID + ': models dir not found'
     elif skinsModelsMissing:
         print g_config.ID + ': models dir is empty'
-    found = bool(g_config.skinsData['models'])
+    found = bool(g_config.skinsData['whitelists'])
     if found:
         if clientIsNew:
             SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_changed_version'])
@@ -308,12 +309,12 @@ def unpackModels(vehSkins, callback):
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
     print g_config.ID + ': unpacking vehicle models'
-    for nation, nationSect in iterSection(ResMgr.openSection('vehicles'), False):
-        if '.' in nation or nation in ('skins', 'remods'):  # idk about any else, it also pretty much doesn't matter
-            continue
+    for nation, nationSect in iterSection(  # idk about any else, it also pretty much doesn't matter
+            ResMgr.openSection('vehicles'), False, filters=((lambda x: '.' not in x and x not in ('skins', 'remods')),)):
         SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_unpacking'] % ('vehicles/' + nation))
         for vehLen, vehNum, vehName, vehSect in iterSection(nationSect):
-            for dirName, dirSect in iterSection(vehSect, False):
+            for dirName, dirSect in iterSection(
+                    vehSect, False, filters=((lambda x: x == 'normal' or x.startswith('_') and '.' not in x),)):
                 yield unpackVehDir(vehSkins, nation, vehName, dirName, dirSect, ())
             if SkinnerLoading.callMethod('updateProgress', int(100 * vehNum / vehLen)):
                 yield awaitNextFrame()
@@ -329,19 +330,18 @@ def unpackVehDir(vehSkins, nation, vehName, dirName, dirSect, style, callback):
             print g_config.ID + ': detected styles directory inside style directory:',
             print nation, vehName, style, dirName
         else:
-            for styleName, _dirName, _dirSect in iterSection(dirSect, False, 2):
+            for styleName, _dirName, _dirSect in iterSection(dirSect, False, 2, (
+                    None, (lambda x: x == 'normal' or x.startswith('_') and '.' not in x),)):
                 yield unpackVehDir(vehSkins, nation, vehName, _dirName, _dirSect, (dirName, styleName))
                 yield awaitNextFrame()
     if dirName != 'normal':
         delay_call(callback)
         return
     for skinName in vehSkins.get('/'.join((nation, vehName) + style[1:]).lower(), []):
-        for lod, fName, fSect in iterSection(dirSect, False, 2):
-            ext = os.path.splitext(fName)[1]
-            if ext not in ('.model', '.visual', '.visual_processed', '.vt'):
-                continue
+        for lod, fName, fSect in iterSection(dirSect, False, 2, (
+                None, (lambda x: os.path.splitext(x)[1] in ('.model', '.visual', '.visual_processed', '.vt')),)):
             unpackNormal('/'.join(('vehicles', nation, vehName) + style + (dirName, lod, fName)), fSect, skinName)
-            if ext == '.vt':
+            if os.path.splitext(fName)[1] == '.vt':
                 yield awaitNextFrame()
     delay_call(callback)
 
@@ -358,43 +358,56 @@ def unpackNormal(oldPath, oldSection, skinName):
             newFile.write(oldSection.asBinary)
         return
     newSection = ResMgr.openSection(newPath, True)
+    dynSection = ResMgr.openSection('_dynamic'.join(os.path.splitext(newPath)), True)
     newSection.copy(oldSection)
-    sections = [newSection]
-    if 'hassis' in newPath:
-        dynSection = ResMgr.openSection(newPath.replace('hassis', 'hassis_dynamic'), True)
-        dynSection.copy(oldSection)
-        sections.append(dynSection)
-    for idx, section in enumerate(sections):
+    dynSection.copy(oldSection)
+    for idx, section in enumerate((newSection, dynSection)):
         if '.model' in ext:
             if section.has_key('parent'):
                 parent = skinDir + section['parent'].asString
                 if idx:
-                    parent = parent.replace('hassis', 'hassis_dynamic')
+                    parent = '_dynamic'.join(os.path.splitext(parent))
                 section.writeString('parent', parent.replace('\\', '/'))
             visualPath = skinDir + section['nodefullVisual'].asString
             if idx:
-                visualPath = visualPath.replace('hassis', 'hassis_dynamic')
+                visualPath = '_dynamic'.join(os.path.splitext(visualPath))
             section.writeString('nodefullVisual', visualPath.replace('\\', '/'))
         elif '.visual' in ext:
-            for sub in (sub for name, sect in section.items() if name == 'renderSet'
-                        for s_name, sub in sect['geometry'].items() if s_name == 'primitiveGroup'):
-                hasTracks = False
-                for name, prop in sub['material'].items():
-                    if name != 'property' or not prop.has_key('Texture'):
+            for root_name, sect in section.items():
+                if root_name == 'node' and idx:
+                    rename_nodes(sect)
+                if root_name != 'renderSet':
+                    continue
+                for s_name, sub in sect['geometry'].items():
+                    if s_name != 'primitiveGroup':
                         continue
-                    newTexture = texDir + prop['Texture'].asString
-                    if idx and 'tracks' in newTexture and prop.asString == 'diffuseMap':
-                        newTexture = 'vehicles/skins/tracks/track_AM.dds'
-                        hasTracks = True
-                    if ResMgr.isFile(newTexture):
-                        prop.writeString('Texture', newTexture.replace('\\', '/'))
-                if hasTracks:
+                    hasTracks = False
                     for name, prop in sub['material'].items():
-                        if name == 'property' and prop.asString == 'g_useNormalPackDXT1':
-                            prop.writeString('Bool', 'true')
+                        if name != 'property' or not prop.has_key('Texture'):
+                            continue
+                        newTexture = texDir + prop['Texture'].asString
+                        if idx and 'tracks' in newTexture and prop.asString == 'diffuseMap':
+                            newTexture = 'vehicles/skins/tracks/track_AM.dds'
+                            hasTracks = True
+                        if ResMgr.isFile(newTexture):
+                            prop.writeString('Texture', newTexture.replace('\\', '/'))
+                    if hasTracks:
+                        for name, prop in sub['material'].items():
+                            if name == 'property' and prop.asString == 'g_useNormalPackDXT1':
+                                prop.writeString('Bool', 'true')
             if section['primitivesName'] is None:
                 section.writeString('primitivesName', oldPath)
         section.save()
+
+
+def rename_nodes(section):
+    for sect in section.values():
+        if sect.name == 'identifier':
+            nodeName = sect.asString
+            if nodeName != 'Scene Root' and not nodeName.endswith('BlendBone'):
+                sect.asString = nodeName + '_disabled'
+        elif sect.name == 'node':
+            rename_nodes(sect)
 
 
 @events.LoginView.populate.before

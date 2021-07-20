@@ -11,17 +11,19 @@ from . import skins_dynamic, skins_static
 from .. import g_config
 
 
-def skins_find(curVehName, modelsSet, currentTeam, skinType):
-    if not g_config.skinsData['models']:
-        return
-    for curSName in g_config.skinsData['priorities'][skinType][currentTeam]:
-        curPRecord = g_config.skinsData['models'][curSName]
-        if (curVehName + '/' + modelsSet).lower() not in curPRecord['whitelist']:
-            continue
-        return curPRecord
+def skins_find(vehicleName, modelsSet, team):
+    for skinType in ('static', 'dynamic'):
+        if not g_config.skinsData['whitelists']:
+            yield
+        for skinName in g_config.skinsData['priorities'][skinType][team]:
+            if (vehicleName + '/' + modelsSet).lower() in g_config.skinsData['whitelists'][skinName]:
+                yield skinName
+                break
+        else:
+            yield
 
 
-def debugOutput(xmlName, vehName, playerName, modelsSet, staticDesc, dynamicDesc):
+def debugOutput(xmlName, vehName, playerName, modelsSet, staticSkin=None, dynamicSkin=None):
     if not g_config.data['isDebug']:
         return
     traceback.print_stack()
@@ -31,40 +33,31 @@ def debugOutput(xmlName, vehName, playerName, modelsSet, staticDesc, dynamicDesc
         header += ', player: ' + playerName
     if modelsSet != 'default':
         header += ', modelsSet: ' + modelsSet
-    if staticDesc is not None:
-        info.append('static skinDesc: ' + staticDesc['name'])
-    if dynamicDesc is not None:
-        info.append('dynamic skinDesc: ' + dynamicDesc['name'])
+    if staticSkin is not None:
+        info.append('static skinDesc: ' + staticSkin)
+    if dynamicSkin is not None:
+        info.append('dynamic skinDesc: ' + dynamicSkin)
     if info:
         print header, 'processed:', ', '.join(info)
     else:
         print header, 'processed.'
 
 
-def vDesc_process(vehicleID, vDesc, mode, modelsSet):
-    currentTeam = 'enemy'
-    if mode == 'battle':
+def vDesc_process(vehicleID, vDesc, is_hangar, modelsSet):
+    if is_hangar:
+        team = g_config.currentTeam
+        playerName = None
+    else:
         player = BigWorld.player()
         vehInfoVO = player.guiSessionProvider.getArenaDP().getVehicleInfo(vehicleID)
         playerName = vehInfoVO.player.name
-        if vehicleID == player.playerVehicleID:
-            currentTeam = 'player'
-        elif vehInfoVO.team == player.team:
-            currentTeam = 'ally'
-    elif mode == 'hangar':
-        currentTeam = g_config.currentTeam
-        playerName = None
-    else:
-        return
-    xmlName = vDesc.name.split(':')[1].lower()
-    staticDesc = None
-    dynamicDesc = None
+        team = 'player' if vehicleID == player.playerVehicleID else 'ally' if vehInfoVO.team == player.team else 'enemy'
     vDesc.installComponent(vDesc.chassis.compactDescr)
     vDesc.installComponent(vDesc.gun.compactDescr)
     if len(vDesc.type.hulls) == 1:
         vDesc.hull = vDesc.type.hulls[0]
-    for descr in (vDesc,) if not isinstance(vDesc, CompositeVehicleDescriptor) else (
-            vDesc.defaultVehicleDescr, vDesc.siegeVehicleDescr):
+    for descr in (vDesc,) if not isinstance(
+            vDesc, CompositeVehicleDescriptor) else (vDesc.defaultVehicleDescr, vDesc.siegeVehicleDescr):
         for partName in TankPartNames.ALL + ('engine',):
             try:
                 setattr(descr, partName, getattr(descr, partName).copy())
@@ -74,45 +67,47 @@ def vDesc_process(vehicleID, vDesc, mode, modelsSet):
             except StandardError:
                 traceback.print_exc()
                 print partName
-    message = None
-    vehNation, vehName = vDesc.chassis.models.undamaged.split('/')[1:3]
-    vehDefNation = vDesc.chassis.hitTester.bspModelName.split('/')[1]
-    if g_config.skinsData['models']:
+        xmlName = descr.name.split(':')[1].lower()
+        modelsSetDir = modelsSet
+        if modelsSet != 'default':
+            vehNation, vehName, _, modelsSetDir = descr.chassis.modelsSets[modelsSet].undamaged.split('/')[1:5]
+        else:
+            vehNation, vehName = descr.chassis.models.undamaged.split('/')[1:3]
+        vehDefNation = descr.chassis.hitTester.bspModelName.split('/')[1]
+        if not g_config.skinsData['whitelists']:
+            return debugOutput(xmlName, vehName, playerName, modelsSetDir)
+        message, staticSkin, dynamicSkin = None, None, None
         if vehNation == vehDefNation:
-            dynamicDesc = skins_find(vehName, modelsSet, currentTeam, 'dynamic')
-            if dynamicDesc is not None:
-                skins_dynamic.create(vehicleID, vDesc, modelsSet, dynamicDesc['name'], mode == 'hangar' and (
-                        g_config.dynamicSkinEnabled and g_config.collisionMode != 2))
+            staticSkin, dynamicSkin = skins_find(vehName, modelsSetDir, team)
+            if dynamicSkin is not None:
+                skins_dynamic.apply(descr, modelsSet, dynamicSkin)
                 if g_config.dynamicSkinEnabled and not g_config.collisionMode:
-                    message = g_config.i18n['UI_install_skin_dynamic'] + '<b>' + dynamicDesc['name'] + '</b>.'
-            else:
-                skins_dynamic.destroy(vehicleID)
-            staticDesc = skins_find(vehName, modelsSet, currentTeam, 'static')
-            if staticDesc is not None:
-                skins_static.apply(vDesc, modelsSet, staticDesc['name'])
+                    message = g_config.i18n['UI_install_skin_dynamic'] + '<b>' + dynamicSkin + '</b>.'
+            if staticSkin is not None:
+                skins_static.apply(descr, modelsSet, staticSkin)
         elif g_config.data['isDebug']:
             print g_config.ID + ': unknown vehicle nation for', vehName + ':', vehNation
         if g_config.data['isDebug'] and (
-                dynamicDesc is None or not g_config.dynamicSkinEnabled) and not g_config.collisionMode:
-            if staticDesc is not None:
-                message = g_config.i18n['UI_install_skin'] + '<b>' + staticDesc['name'] + '</b>.'
+                dynamicSkin is None or not g_config.dynamicSkinEnabled) and not g_config.collisionMode:
+            if staticSkin is not None:
+                message = g_config.i18n['UI_install_skin'] + '<b>' + staticSkin + '</b>.'
             else:
                 message = g_config.i18n['UI_install_default']
-    if message is not None and mode == 'hangar':
-        SystemMessages.pushMessage('temp_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
-    debugOutput(xmlName, vehName, playerName, modelsSet, staticDesc, dynamicDesc)
+        if message is not None and is_hangar:
+            SystemMessages.pushMessage('temp_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
+        debugOutput(xmlName, vehName, playerName, modelsSetDir, staticSkin, dynamicSkin)
 
 
 @overrideMethod(CommonTankAppearance, 'prerequisites')
-def new_cacheAppearance(base, self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k):
+def new_prerequisites(base, self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k):
     if g_config.data['enabled'] and getattr(typeDescriptor, 'modelDesc', None) is None:
         outfit = camouflages.prepareBattleOutfit(outfitCD, typeDescriptor, vID)
-        vDesc_process(vID, typeDescriptor, 'battle', outfit.modelsSet or 'default')
+        vDesc_process(vID, typeDescriptor, False, outfit.modelsSet or 'default')
     return base(self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k)
 
 
 @overrideMethod(HangarVehicleAppearance, '__startBuild')
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled'] and getattr(vDesc, 'modelDesc', None) is None:
-        vDesc_process(self.id, vDesc, 'hangar', self.outfit.modelsSet or 'default')
+        vDesc_process(self.id, vDesc, True, self.outfit.modelsSet or 'default')
     return base(self, vDesc, vState)

@@ -1,62 +1,87 @@
+import Math
+import ResMgr
+import math_utils
+import os
 import traceback
 from Avatar import PlayerAvatar
 from PYmodsCore import overrideMethod
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
+from vehicle_systems import model_assembler
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
-from . import attached_models
 from .. import g_config
 
 
-def create(vehicleID, vDesc, modelsSet, sname, visible=False):
-    try:
-        resList = []
-        for partName in TankPartNames.ALL:
-            modelPath = getattr(vDesc, partName).modelsSets[modelsSet].undamaged.replace(
-                'vehicles/', 'vehicles/skins/models/%s/vehicles/' % sname)
-            if partName == TankPartNames.CHASSIS:
-                modelPath = modelPath.replace('Chassis', 'Chassis_dynamic')
-            elif partName == TankPartNames.GUN:
-                partName = TankNodeNames.GUN_INCLINATION
-            resList.append((modelPath, partName))
-        if resList:
-            attached_models.create(vehicleID, 'skins_dynamic', 'attach_scale', resList, visible)
-    except StandardError:
-        traceback.print_exc()
-        print vDesc.name
+def apply(vDesc, modelsSet, skinName):
+    vDesc.dynamicSkinnerData = data = []
+    for partName in TankPartNames.ALL:
+        try:
+            nodeName = partName
+            modelPath = 'vehicles/skins/models/' + skinName + '/' + '_dynamic'.join(
+                os.path.splitext(getattr(vDesc, partName).modelsSets[modelsSet].undamaged))
+            if not ResMgr.isFile(modelPath):
+                print g_config.ID + ': skin model not found:', modelPath
+                continue
+            if partName == TankPartNames.HULL:
+                nodeName = 'V'
+            if partName == TankPartNames.GUN:
+                nodeName = TankNodeNames.GUN_INCLINATION
+            data.append((partName, nodeName, modelPath, partName == TankPartNames.CHASSIS))
+        except StandardError:
+            print vDesc.name
+            traceback.print_exc()
 
 
-def attach(vehicleID, visible=False):
-    attached_models.attach(vehicleID, 'skins_dynamic', visible)
+@overrideMethod(model_assembler, 'prepareCompoundAssembler')
+def prepareCompoundAssembler(
+        base, vehicleDesc, modelsSetParams, spaceID, isTurretDetached=False, lodIdx=model_assembler._DEFAULT_LOD_INDEX,
+        skipMaterials=False, renderMode=None):
+    result = base(vehicleDesc, modelsSetParams, spaceID, isTurretDetached, lodIdx, skipMaterials, renderMode)
+    data = getattr(vehicleDesc, 'dynamicSkinnerData', None) or ()
+    for partName, nodeName, modelPath, needs_scale in data if modelsSetParams.state == 'undamaged' else ():
+        scaleMatrix = math_utils.createIdentityMatrix()
+        if needs_scale:
+            scaleMatrix.setScale(Math.Vector3(1.01))
+        result.addPart(modelPath, nodeName, g_config.ID + partName, scaleMatrix)
+    return result
 
 
-def destroy(vehicleID):
-    attached_models.detach(vehicleID, 'destroy', 'skins_dynamic')
+def switchDynamicPartsVisible(model, visible):
+    if model is None:
+        return
+    for part in TankPartNames.ALL:
+        nodeNames = (part, g_config.ID + part)
+        nodes = tuple(model.node(node) for node in nodeNames)
+        if None in nodes:
+            continue
+        handles = partHandle, moddedPartHandle = (model.findPartHandleByNode(node) for node in nodes)
+        if 0xffffffff in handles:
+            continue
+        if part != TankPartNames.CHASSIS:
+            model.setPartVisible(partHandle, not visible)
+        model.setPartVisible(moddedPartHandle, visible)
 
 
 @overrideMethod(HangarVehicleAppearance, '__setupModel')
 def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
-    attach(self._HangarVehicleAppearance__vEntity.id,
-           g_config.dynamicSkinEnabled and g_config.collisionMode != 2)
+    switchDynamicPartsVisible(self.compoundModel, g_config.dynamicSkinEnabled and g_config.collisionMode != 2)
 
 
 @overrideMethod(PlayerAvatar, 'targetFocus')
 def new_targetFocus(base, self, entity):
-    base(self, entity)
-    if entity in self._PlayerAvatar__vehicles:
+    for vehicle in self.vehicles:
         try:
-            for vehicleID in attached_models.dynamic_db:
-                attached_models.detach(vehicleID, modID='skins_dynamic', visible=vehicleID == entity.id)
+            switchDynamicPartsVisible(vehicle.model, vehicle.id == entity.id)
         except StandardError:
             traceback.print_exc()
+    base(self, entity)
 
 
 @overrideMethod(PlayerAvatar, 'targetBlur')
 def new_targetBlur(base, self, prevEntity):
     base(self, prevEntity)
-    if prevEntity in self._PlayerAvatar__vehicles:
+    for vehicle in self.vehicles:
         try:
-            for vehicleID in attached_models.dynamic_db:
-                attached_models.detach(vehicleID, modID='skins_dynamic')
+            switchDynamicPartsVisible(vehicle.model, False)
         except StandardError:
             traceback.print_exc()
