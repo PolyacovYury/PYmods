@@ -1,9 +1,6 @@
-from CurrentVehicle import g_currentVehicle
 from PYmodsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_cm_handlers import CustomizationItemCMHandler as WGCMHandler
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
-from gui.impl.backport import text
-from gui.impl.gen import R
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from .. import g_config
 
@@ -31,7 +28,7 @@ class Options(object):
 class CustomizationItemCMHandler(WGCMHandler):
     def _generateOptions(self, ctx=None):
         if self.__ctx.isPurchase:
-            return WGCMHandler._generateOptions(self, ctx) + self.__getRemoveFromOtherVehicles()
+            return WGCMHandler._generateOptions(self, ctx)
         result = []
         if self._item.itemTypeID == GUI_ITEM_TYPE.STYLE:
             result += self.__separateItem(self.__getStyleInfoBtn(self._item))
@@ -68,37 +65,7 @@ class CustomizationItemCMHandler(WGCMHandler):
         )
         return result
 
-    def __getRemoveFromOtherVehicles(self):  # mostly stolen from tooltips code
-        if self._item.isStyleOnly:
-            return []
-        appliedCount = 0
-        vehicle = g_currentVehicle.item
-        if self._item.itemTypeID != GUI_ITEM_TYPE.STYLE:
-            appliedCount = self.__ctx.mode.getItemAppliedCount(self._item)
-        elif vehicle is not None:
-            currentStyleDesc = self.__ctx.mode.currentOutfit.style
-            isApplied = currentStyleDesc is not None and self._item.id == currentStyleDesc.id
-            appliedCount = int(isApplied)
-        vehicles = {
-            vehicleCD: self.itemsCache.items.getItemByCD(vehicleCD).shortUserName
-            for vehicleCD in set(self._item.getInstalledVehicles())}
-        item_filter = self._item.descriptor.filter
-        if (self._item.mayApply or appliedCount > 0 or not vehicles or vehicle.intCD in vehicles
-                or item_filter is not None and not item_filter.match(vehicle.descriptor)):
-            return []
-        groupLabel = text(R.strings.vehicle_customization.propertySheet.actionBtn.clear())
-        if len(vehicles) == 1:
-            vehicleCD, vehName = vehicles.popitem()
-            return self.__separateItem(self._makeItem(
-                Options.REMOVE_FROM_OTHER + '_' + str(vehicleCD), groupLabel + ' ' + vehName))[::-1]
-        return self.__separateItem(self._makeItem(Options.REMOVE_FROM_OTHER, groupLabel, optSubMenu=[
-            self._makeItem(Options.REMOVE_FROM_OTHER + '_' + str(vehicleCD), vehName)
-            for vehicleCD, vehName in sorted(vehicles, key=lambda x: x[1])
-        ]))[::-1]
-
     def onOptionSelect(self, optionId):
-        if optionId.startswith(Options.REMOVE_FROM_OTHER):
-            return self.__ctx.removeFromOtherVehicle(int(optionId.split('_')[1]), self._item)
         if optionId not in Options.ALL:
             return WGCMHandler.onOptionSelect(self, optionId)
         settings = self.__ctx.mode.getItemSettings(self._item)

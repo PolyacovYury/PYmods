@@ -4,16 +4,11 @@ from contextlib import contextmanager
 import adisp
 from PYmodsCore import BigWorld_callback, overrideMethod
 from async import async, await, await_callback
-from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx
-from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationModes, CustomizationTabs, removeItemsFromOutfit
+from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationModes, CustomizationTabs
 from gui.customization.shared import SEASON_TYPE_TO_NAME
-from gui.impl.backport import text
-from gui.impl.gen import R
-from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.processors.common import OutfitApplier
 from gui.shared.utils.decorators import process
-from items.components.c11n_constants import CUSTOM_STYLE_POOL_ID, EMPTY_ITEM_ID, SeasonType
+from items.components.c11n_constants import EMPTY_ITEM_ID
 from .customization_mode import CustomMode as CamoSelectorMode
 from ..shared import createConfirmDialog, onVehicleLoadedOnce
 from ... import g_config
@@ -131,48 +126,6 @@ class CustomizationContext(WGCtx):
             with self.overrideMode(modeId):
                 result |= WGCtx.isOutfitsModified(self)
         return result
-
-    def getCustomOutfit(self, vehicleCD, season):  # from service
-        outfitsPool = self._itemsCache.items.inventory.getC11nOutfitsFromPool(vehicleCD)
-        if not outfitsPool:
-            return self._service.getEmptyOutfit()
-        styleId, outfits = outfitsPool[0]
-        if styleId != CUSTOM_STYLE_POOL_ID:
-            return self._service.getEmptyOutfit()
-        return self._service.itemsFactory.createOutfit(
-            strCompactDescr=outfits.get(season, ''),
-            vehicleCD=self._itemsCache.items.inventory.getItemData(vehicleCD).compDescr)
-
-    @process('customizationApply')
-    def removeFromOtherVehicle(self, vehicleCD, item):
-        self._itemsCache.onSyncCompleted -= self.__onCacheResync
-        try:
-            vehicle = self._itemsCache.items.getItemByCD(vehicleCD)
-            if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
-                result = yield OutfitApplier(vehicle, ((self._service.getEmptyOutfit(), SeasonType.ALL),)).request()
-                self.handleResult(result)
-                return
-            requestData = []
-            for season in SeasonType.COMMON_SEASONS:
-                originalOutfit = self.getCustomOutfit(vehicleCD, season)
-                outfit = originalOutfit.copy()
-                removeItemsFromOutfit(outfit, lambda i: i.intCD == item.intCD)
-                if not outfit.isEqual(originalOutfit):
-                    requestData.append((outfit, season))
-            if requestData:
-                result = yield OutfitApplier(vehicle, requestData).request()
-                self.handleResult(result)
-        finally:
-            self.__onCacheResync()
-            self._itemsCache.onSyncCompleted += self.__onCacheResync
-
-    def handleResult(self, result):
-        if result.userMsg:
-            SystemMessages.pushI18nMessage(result.userMsg, type=result.sysMsgType)
-        if result.success:
-            return SystemMessages.pushMessage(text(
-                R.strings.messenger.serviceChannelMessages.sysMsg.customization.remove()), SystemMessages.SM_TYPE.Information)
-        print g_config.ID + ': failed to purchase customization outfits.'
 
 
 @overrideMethod(WGCtx, '__new__')
