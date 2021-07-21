@@ -232,6 +232,8 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
         if areaName in seasonCache:
             if seasonCache[areaName]:
                 camoID, palette, patternSize = [seasonCache[areaName]['0'][k] for k in ('id', 'palette', 'patternSize')]
+                if isinstance(camoID, basestring):
+                    camoID = g_config.modded_lookup_name[CustomizationType.CAMOUFLAGE].get(camoID, camoID)
         elif camoID is None or not g_config.data['uniformOutfit'] or not canBeUniform:
             camoForSeason = g_config.camoForSeason[seasonName]
             if teamMode is None or not camoForSeason[teamMode]:
