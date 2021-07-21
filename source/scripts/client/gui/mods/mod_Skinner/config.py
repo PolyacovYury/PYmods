@@ -194,6 +194,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         priorities[tankType].append(sname)
                 if self.data['isDebug']:
                     print self.ID + ': config for', sname, 'loaded.'
+        crash_list = self.skinsData['whitelists'].pop('white_crash', None)
         for sname in self.settings.keys():
             if sname not in self.skinsData['whitelists']:
                 del self.settings[sname]
@@ -205,6 +206,8 @@ class ConfigInterface(PYmodsConfigInterface):
                 for sname in self.skinsData['priorities'][skinType][key]:
                     if sname not in self.skinsData['whitelists']:
                         self.skinsData['priorities'][skinType][key].remove(sname)
+        if crash_list is not None:
+            self.skinsData['whitelists']['white_crash'] = crash_list
         loadJson(self.ID, 'skinsPriority', self.skinsData['priorities'], self.configPath, True, quiet=quiet)
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
 

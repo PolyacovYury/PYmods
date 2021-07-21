@@ -1,13 +1,14 @@
 import BigWorld
 import traceback
+from DetachedTurret import DetachedTurret
 from PYmodsCore import overrideMethod
 from common_tank_appearance import CommonTankAppearance
 from gui import SystemMessages
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from items.vehicles import CompositeVehicleDescriptor
-from vehicle_systems import camouflages
+from vehicle_systems.camouflages import prepareBattleOutfit
 from vehicle_systems.tankStructure import TankPartNames
-from . import skins_dynamic, skins_static
+from . import skins_crash, skins_dynamic, skins_static
 from .. import g_config
 
 
@@ -85,6 +86,7 @@ def vDesc_process(vehicleID, vDesc, is_hangar, modelsSet):
                     message = g_config.i18n['UI_install_skin_dynamic'] + '<b>' + dynamicSkin + '</b>.'
             if staticSkin is not None:
                 skins_static.apply(descr, modelsSet, staticSkin)
+            skins_crash.apply(descr, modelsSet)
         elif g_config.data['isDebug']:
             print g_config.ID + ': unknown vehicle nation for', vehName + ':', vehNation
         if g_config.data['isDebug'] and (
@@ -101,9 +103,27 @@ def vDesc_process(vehicleID, vDesc, is_hangar, modelsSet):
 @overrideMethod(CommonTankAppearance, 'prerequisites')
 def new_prerequisites(base, self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k):
     if g_config.data['enabled'] and getattr(typeDescriptor, 'modelDesc', None) is None:
-        outfit = camouflages.prepareBattleOutfit(outfitCD, typeDescriptor, vID)
+        self._CommonTankAppearance__typeDesc = typeDescriptor
+        self._CommonTankAppearance__vID = vID
+        outfit = self._prepareOutfit(outfitCD)
         vDesc_process(vID, typeDescriptor, False, outfit.modelsSet or 'default')
     return base(self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k)
+
+
+@overrideMethod(CommonTankAppearance, '_onRequestModelsRefresh')
+def new_onRequestModelsRefresh(base, self, *a, **k):
+    if g_config.data['enabled'] and getattr(self.typeDescriptor, 'modelDesc', None) is None:
+        vDesc_process(self.id, self.typeDescriptor, False, self.outfit.modelsSet or 'default')
+    return base(self, *a, **k)
+
+
+@overrideMethod(DetachedTurret, '__prepareModelAssembler')
+def new_prepareModelAssembler(base, self, *a, **k):
+    typeDescriptor = self._DetachedTurret__vehDescr
+    if g_config.data['enabled'] and getattr(typeDescriptor, 'modelDesc', None) is None:
+        outfit = prepareBattleOutfit(self.outfitCD, typeDescriptor, self.vehicleID)
+        vDesc_process(self.vehicleID, typeDescriptor, False, outfit.modelsSet or 'default')
+    return base(self, *a, **k)
 
 
 @overrideMethod(HangarVehicleAppearance, '__startBuild')

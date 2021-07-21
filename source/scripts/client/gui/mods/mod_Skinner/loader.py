@@ -309,13 +309,18 @@ def unpackModels(vehSkins, callback):
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
     print g_config.ID + ': unpacking vehicle models'
+    to_process = ('normal',)
+    present_crash_tex = {
+        x: ResMgr.isFile('vehicles/skins/textures/white_crash/all/all/%s_crash.dds' % x) for x in ('track', 'tank')}
+    if any(present_crash_tex):
+        to_process += ('crash',)
     for nation, nationSect in iterSection(  # idk about any else, it also pretty much doesn't matter
             ResMgr.openSection('vehicles'), False, filters=((lambda x: '.' not in x and x not in ('skins', 'remods')),)):
         SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_unpacking'] % ('vehicles/' + nation))
         for vehLen, vehNum, vehName, vehSect in iterSection(nationSect):
             for dirName, dirSect in iterSection(
-                    vehSect, False, filters=((lambda x: x == 'normal' or x.startswith('_') and '.' not in x),)):
-                yield unpackVehDir(vehSkins, nation, vehName, dirName, dirSect, ())
+                    vehSect, False, filters=((lambda x: x in to_process or x.startswith('_') and '.' not in x),)):
+                yield unpackVehDir(vehSkins, nation, vehName, to_process, present_crash_tex, dirName, dirSect, ())
             if SkinnerLoading.callMethod('updateProgress', int(100 * vehNum / vehLen)):
                 yield awaitNextFrame()
         SkinnerLoading.callMethod('onBarComplete')
@@ -324,29 +329,40 @@ def unpackModels(vehSkins, callback):
 
 @async
 @process
-def unpackVehDir(vehSkins, nation, vehName, dirName, dirSect, style, callback):
+def unpackVehDir(vehSkins, nation, vehName, to_process, crash_tex, dirName, dirSect, style, callback):
     if dirName.startswith('_') and '.' not in dirName:
         if style:
             print g_config.ID + ': detected styles directory inside style directory:',
             print nation, vehName, style, dirName
         else:
             for styleName, _dirName, _dirSect in iterSection(dirSect, False, 2, (
-                    None, (lambda x: x == 'normal' or x.startswith('_') and '.' not in x),)):
-                yield unpackVehDir(vehSkins, nation, vehName, _dirName, _dirSect, (dirName, styleName))
+                    None, (lambda x: x in ('normal', 'crash') or x.startswith('_') and '.' not in x),)):
+                yield unpackVehDir(vehSkins, nation, vehName, to_process, crash_tex, _dirName, _dirSect, (dirName, styleName))
                 yield awaitNextFrame()
-    if dirName != 'normal':
+    if dirName not in to_process:
         delay_call(callback)
         return
-    for skinName in vehSkins.get('/'.join((nation, vehName) + style[1:]).lower(), []):
-        for lod, fName, fSect in iterSection(dirSect, False, 2, (
-                None, (lambda x: os.path.splitext(x)[1] in ('.model', '.visual', '.visual_processed', '.vt')),)):
-            unpackNormal('/'.join(('vehicles', nation, vehName) + style + (dirName, lod, fName)), fSect, skinName)
+    is_crash = dirName == 'crash'
+    for skinName in (('white_crash',) if is_crash else
+                     vehSkins.get('/'.join((nation, vehName) + style[1:]).lower(), [])):
+        ext = ('.model', '.visual', '.visual_processed', '.vt')
+        if is_crash:
+            ext = ext[:-1]
+        for lod, fName, fSect in iterSection(dirSect, False, 2, (None, (lambda x: os.path.splitext(x)[1] in ext),)):
+            if is_crash:
+                if 'hassis' in fName:  # chassis, but C may or may not be capitalised
+                    if not crash_tex['track']:
+                        continue
+                elif not crash_tex['tank']:
+                    continue
+            unpackModel(
+                '/'.join(('vehicles', nation, vehName) + style + (dirName, lod, fName)), fSect, skinName, is_crash)
             if os.path.splitext(fName)[1] == '.vt':
                 yield awaitNextFrame()
     delay_call(callback)
 
 
-def unpackNormal(oldPath, oldSection, skinName):
+def unpackModel(oldPath, oldSection, skinName, is_crash):
     skinDir = modelsDir.replace(curCV + '/', '') + skinName + '/'
     texDir = skinDir.replace('models', 'textures')
     newPath = ResMgr.resolveToAbsolutePath('./' + skinDir + oldPath)
@@ -358,20 +374,27 @@ def unpackNormal(oldPath, oldSection, skinName):
             newFile.write(oldSection.asBinary)
         return
     newSection = ResMgr.openSection(newPath, True)
-    dynSection = ResMgr.openSection('_dynamic'.join(os.path.splitext(newPath)), True)
     newSection.copy(oldSection)
-    dynSection.copy(oldSection)
-    for idx, section in enumerate((newSection, dynSection)):
+    sections = [newSection]
+    if not is_crash:
+        dynSection = ResMgr.openSection('_dynamic'.join(os.path.splitext(newPath)), True)
+        dynSection.copy(oldSection)
+        sections.append(dynSection)
+    for idx, section in enumerate(sections):
         if '.model' in ext:
             if section.has_key('parent'):
                 parent = skinDir + section['parent'].asString
                 if idx:
                     parent = '_dynamic'.join(os.path.splitext(parent))
                 section.writeString('parent', parent.replace('\\', '/'))
-            visualPath = skinDir + section['nodefullVisual'].asString
-            if idx:
-                visualPath = '_dynamic'.join(os.path.splitext(visualPath))
-            section.writeString('nodefullVisual', visualPath.replace('\\', '/'))
+            for key in ('nodelessVisual', 'nodefullVisual'):
+                sub = section[key]
+                if sub is None:
+                    continue
+                visualPath = skinDir + sub.asString
+                if idx:
+                    visualPath = '_dynamic'.join(os.path.splitext(visualPath))
+                section.writeString(key, visualPath.replace('\\', '/'))
         elif '.visual' in ext:
             for root_name, sect in section.items():
                 if root_name == 'node' and idx:
@@ -383,12 +406,18 @@ def unpackNormal(oldPath, oldSection, skinName):
                         continue
                     hasTracks = False
                     for name, prop in sub['material'].items():
+                        if name == 'fx' and prop.asString == 'shaders/std_effects/PBS_tank_crash.fx':
+                            prop.asString = 'shaders/std_effects/PBS_tank.fx'
                         if name != 'property' or not prop.has_key('Texture'):
                             continue
-                        newTexture = texDir + prop['Texture'].asString
-                        if idx and 'tracks' in newTexture and prop.asString == 'diffuseMap':
+                        oldTexture = prop['Texture'].asString
+                        newTexture = texDir + oldTexture
+                        if idx and prop.asString == 'diffuseMap' and 'tracks' in oldTexture:
                             newTexture = 'vehicles/skins/tracks/track_AM.dds'
                             hasTracks = True
+                        if is_crash and prop.asString in ('excludeMaskAndAOMap', 'diffuseMap'):
+                            newTexture = 'vehicles/skins/textures/white_crash/all/all/%s_crash.dds' % (
+                                'track' if 'track' in oldTexture else 'inside' if 'inside' in oldTexture else 'tank')
                         if ResMgr.isFile(newTexture):
                             prop.writeString('Texture', newTexture.replace('\\', '/'))
                     if hasTracks:
