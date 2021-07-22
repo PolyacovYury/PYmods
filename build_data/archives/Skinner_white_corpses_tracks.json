@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/{GAME_VERSION}/Skinner_skins/white_corpses_tracks.wotmod": "build/wotmods/Skinner_skins/white_corpses_tracks.wotmod"
+    }
+}
