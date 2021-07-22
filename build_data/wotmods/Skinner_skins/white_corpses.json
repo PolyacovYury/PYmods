@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/vehicles/skins/textures/white_crash/all/all/inside_crash.dds": "res/res/vehicles/skins/textures/white_crash/all/all/inside_crash.dds",
+        "res/vehicles/skins/textures/white_crash/all/all/tank_crash.dds": "res/res/vehicles/skins/textures/white_crash/all/all/tank_crash.dds"
+    }
+}

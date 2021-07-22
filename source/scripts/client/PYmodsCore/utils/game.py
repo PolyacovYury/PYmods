@@ -1,7 +1,11 @@
 import BigWorld
 from functools import partial
 
-__all__ = ('sendPanelMessage', 'checkKeys', 'refreshCurrentVehicle', 'Sound',)
+__all__ = ('BigWorld_callback', 'sendPanelMessage', 'checkKeys', 'refreshCurrentVehicle', 'Sound',)
+
+
+def BigWorld_callback(delay, func, *a, **k):
+    return BigWorld.callback(delay, partial(func, *a, **k))
 
 
 def checkKeys(keys, key=None):  # thx to P0LIR0ID

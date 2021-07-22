@@ -5,10 +5,11 @@ import Math
 import os
 import traceback
 from Avatar import PlayerAvatar
-from PYmodsCore import PYmodsConfigInterface, overrideMethod, checkKeys, sendPanelMessage, Analytics, events
+from PYmodsCore import (
+    BigWorld_callback, PYmodsConfigInterface, overrideMethod, checkKeys, sendPanelMessage, Analytics, events,
+)
 from PYmodsCore.config import smart_update
 from Vehicle import Vehicle
-from functools import partial
 from gui import SystemMessages
 from math import copysign
 from math_utils import createTranslationMatrix, createRotationMatrix, MatrixProviders as MP
@@ -281,7 +282,7 @@ def createLamps(vehicleID, caller, count=20):
             if g_config.data['Debug']:
                 print g_config.ID + ': user does not see world yet, rescheduling lamps creation for', vehicleID
             if count:
-                BigWorld.callback(0.1, partial(createLamps, vehicleID, 'Vehicle.startVisual.rescheduled', count - 1))
+                BigWorld_callback(0.1, createLamps, vehicleID, 'Vehicle.startVisual.rescheduled', count - 1)
             else:
                 print g_config.ID + ': lamps creation for', vehicleID, 'cancelled'
             return
@@ -505,7 +506,7 @@ def destroyLamps(vehicleID, caller=''):
 def new_startVisual(base, self, *a, **k):
     base(self, *a, **k)
     if self.isStarted and self.isAlive() and g_config.data['enabled'] and g_config.lampsVisible:
-        BigWorld.callback(0.1, partial(createLamps, self.id, 'Vehicle.startVisual'))
+        BigWorld_callback(0.1, createLamps, self.id, 'Vehicle.startVisual')
 
 
 @overrideMethod(Vehicle, 'stopVisual')
