@@ -1,5 +1,5 @@
 ﻿{
-    "enabled": true,
+    "enabled": false,
     "ext": ".wotmod",
     "files": {
         "res/gui/flash/CamoSelector.png": "res/res/gui/flash/CamoSelector.png",
