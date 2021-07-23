@@ -65,7 +65,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def createTemplate(self):
         return {
-            'modDisplayName': self.i18n['UI_description'], 'enabled': self.data['enabled'],
+            'modDisplayName': self.i18n['name'], 'enabled': self.data['enabled'],
             'column1': [
                 self.tb.createControl('removeFromOther_devices'),
                 self.tb.createControl('sort_personalReserves'),
