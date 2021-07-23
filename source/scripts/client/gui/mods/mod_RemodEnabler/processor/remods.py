@@ -9,6 +9,8 @@ from .. import g_config
 
 
 class VehicleTypeProxy(object):  # I would tear off the hands that made me write this crap
+    __slots__ = ('_vDesc', '_type')
+
     def __init__(self, vDesc):  # see items.vehicles.Cache.vehicle() and VehicleType.__init__() for details
         self._vDesc = vDesc  # all this just to break the attribute link
         self._type = vDesc.type  # holy shit
@@ -17,7 +19,7 @@ class VehicleTypeProxy(object):  # I would tear off the hands that made me write
         value = getattr(self._type, item)
         if item != 'camouflage':
             return value
-        modelDesc = getattr(self._vDesc, 'modelDesc', None)
+        modelDesc = self._vDesc.chassis.modelsSets.get('RemodEnabler_modelDesc', None)
         if modelDesc is None or modelDesc.camouflage is None:
             return value
         new_value = modelDesc.camouflage

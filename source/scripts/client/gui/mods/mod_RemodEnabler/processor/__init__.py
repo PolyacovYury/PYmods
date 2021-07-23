@@ -79,7 +79,7 @@ def applyModelDesc(vDesc, modelDesc, outfit, playerName):
     if message is not None and playerName is None:
         SystemMessages.pushMessage('temp_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
     debugOutput(xmlName, vehName, playerName, outfit.modelsSet or 'default', modelDesc)
-    vDesc.modelDesc = modelDesc
+    vDesc.chassis.modelsSets['RemodEnabler_modelDesc'] = modelDesc
 
 
 @overrideMethod(CommonTankAppearance, 'prerequisites')
@@ -108,9 +108,10 @@ def new_startBuild(base, self, vDesc, vState):
         modelDesc, playerName = getModelDescInfo(self.id, vDesc, 'hangar')
         view = SL.appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOBBY_CUSTOMIZATION))
         if view is not None:
-            if modelDesc is not None and getattr(vDesc, 'modelDesc', None) is not None:
+            if modelDesc is not None and vDesc.chassis.modelsSets.get('RemodEnabler_modelDesc', None) is not None:
                 SystemMessages.pushMessage(g_config.i18n['UI_install_customization'], SystemMessages.SM_TYPE.Warning)
-            modelDesc = vDesc.modelDesc = None
+            modelDesc = None
+            vDesc.chassis.modelsSets.pop('RemodEnabler_modelDesc', None)
         applyModelDesc(vDesc, modelDesc, self.outfit, playerName)
     return base(self, vDesc, vState)
 

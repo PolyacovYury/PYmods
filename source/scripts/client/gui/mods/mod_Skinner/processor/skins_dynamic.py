@@ -12,7 +12,7 @@ from .. import g_config
 
 
 def apply(vDesc, modelsSet, skinName):
-    vDesc.dynamicSkinnerData = data = []
+    vDesc.chassis.modelsSets['Skinner_dynamicData'] = data = []
     for partName in TankPartNames.ALL:
         try:
             nodeName = partName
@@ -36,7 +36,7 @@ def prepareCompoundAssembler(
         base, vehicleDesc, modelsSetParams, spaceID, isTurretDetached=False, lodIdx=model_assembler._DEFAULT_LOD_INDEX,
         skipMaterials=False, renderMode=None):
     result = base(vehicleDesc, modelsSetParams, spaceID, isTurretDetached, lodIdx, skipMaterials, renderMode)
-    data = getattr(vehicleDesc, 'dynamicSkinnerData', None) or ()
+    data = vehicleDesc.chassis.modelsSets.get('Skinner_dynamicData', ())
     for partName, nodeName, modelPath, needs_scale in data if modelsSetParams.state == 'undamaged' else ():
         scaleMatrix = math_utils.createIdentityMatrix()
         if needs_scale:

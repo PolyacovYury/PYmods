@@ -344,7 +344,7 @@ class RemodEnablerUI(AbstractWindowView):
         if not vehName:
             self.py_sendMessage('', '', 'vehicleAdd', 'notSupported')
             return default
-        modelDesc = getattr(vDesc, 'modelDesc', None)
+        modelDesc = vDesc.chassis.modelsSets.get('RemodEnabler_modelDesc', None)
         if modelDesc is not None:
             remod_name = modelDesc.name
             self.newRemodData = ResMgr.openSection('.' + g_config.configPath + 'remods/' + remod_name + '.xml')
