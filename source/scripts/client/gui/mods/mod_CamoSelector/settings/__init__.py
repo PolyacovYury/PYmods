@@ -19,7 +19,7 @@ def a():
         for I111i1 in (
                 i11i1i1I11i[15], i11i1i1I11i[948], i11i1i1I11i[759], i11i1i1I11i[415], i11i1i1I11i[195],
                 i11i1i1I11i[37], i11i1i1I11i[947], i11i1i1I11i[751], i11i1i1I11i[713]):
-            __import__(getattr(__name__, i11i1i1I11i[688])[i11i1i1I11i[503]][0] + i11i1i1I11i[981] + I111i1)
+            __import__(getattr(__name__, i11i1i1I11i[688])(i11i1i1I11i[503])[0] + i11i1i1I11i[981] + I111i1)
     else:
         print i11i1i1I11i[748], iIiii1I
 
@@ -31,7 +31,7 @@ def a():
     #     for name in (
     #             'bottom_panel', 'carousel', 'cm_handlers', 'context', 'main_view',
     #             'popover', 'properties_sheet', 'tweaks', 'tooltips'):
-    #         __import__(__name__.partition['/'][0] + '.' + name)
+    #         __import__(__name__.partition('/')[0] + '.' + name)
     # else:
     #     print 'CamoSelector: incompatible version detected:', version
 
