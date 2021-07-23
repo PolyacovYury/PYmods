@@ -159,6 +159,11 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
         if item.itemTypeID == GUI_ITEM_TYPE.STYLE and pItem.component != itemData.season:
             item_name += (' ' + text(
                 R.strings.vehicle_customization.customization.camouflage.dyn(SEASON_TYPE_TO_NAME[pItem.component])()))
+        try:
+            item.icon
+        except StandardError:
+            print g_config.ID + ': failed to get icon for', item.intCD
+            raise
         return {
             'id': item.intCD, 'icon': fixIconPath(item.icon), 'userName': text_styles.main(item_name),
             'numItems':
