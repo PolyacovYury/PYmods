@@ -174,7 +174,7 @@ def createDonationDialog():
 
 
 def fixIconPath(icon):
-    if '4278190335,4278255360,4294901760,4278190080' in icon:
+    if '4278190335,4278255360,4294901760,' in icon:
         icon = '../../' + icon.split('"', 2)[1]
     return icon
 
