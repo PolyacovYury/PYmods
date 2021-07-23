@@ -5,13 +5,7 @@
         "res/gui/flash/Skinner.png": "res/res/gui/flash/Skinner.png",
         "res/gui/flash/Skinner.swf": "res/flash/Skinner.swf",
         "res/scripts/client/gui/mods/mod_Skinner.pyc": "build/scripts/client/gui/mods/mod_Skinner.pyc",
-        "res/scripts/client/gui/mods/mod_Skinner/__init__.pyc": "build/scripts/client/gui/mods/mod_Skinner/__init__.pyc",
-        "res/scripts/client/gui/mods/mod_Skinner/config.pyc": "build/scripts/client/gui/mods/mod_Skinner/config.pyc",
-        "res/scripts/client/gui/mods/mod_Skinner/loader.pyc": "build/scripts/client/gui/mods/mod_Skinner/loader.pyc",
-        "res/scripts/client/gui/mods/mod_Skinner/processor/__init__.pyc": "build/scripts/client/gui/mods/mod_Skinner/processor/__init__.pyc",
-        "res/scripts/client/gui/mods/mod_Skinner/processor/attached_models.pyc": "build/scripts/client/gui/mods/mod_Skinner/processor/attached_models.pyc",
-        "res/scripts/client/gui/mods/mod_Skinner/processor/skins_dynamic.pyc": "build/scripts/client/gui/mods/mod_Skinner/processor/skins_dynamic.pyc",
-        "res/scripts/client/gui/mods/mod_Skinner/processor/skins_static.pyc": "build/scripts/client/gui/mods/mod_Skinner/processor/skins_static.pyc",
+        "res/scripts/client/gui/mods/mod_Skinner/**": "build/scripts/client/gui/mods/mod_Skinner/**",
         "res/vehicles/skins/tracks/track_AM.dds": "res/res/vehicles/skins/tracks/track_AM.dds"
     }
 }

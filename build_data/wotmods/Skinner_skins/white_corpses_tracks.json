@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/vehicles/skins/textures/white_crash/all/all/track_crash.dds": "res/res/vehicles/skins/textures/white_crash/all/all/track_crash.dds"
+    }
+}

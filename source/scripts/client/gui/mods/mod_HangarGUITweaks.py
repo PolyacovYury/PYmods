@@ -1,5 +1,5 @@
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import overrideMethod
+from PYmodsCore import PYmodsConfigInterface, overrideMethod
 from adisp import process
 from debug_utils import LOG_ERROR
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE
@@ -28,10 +28,63 @@ credits_tiers = (50, 25)
 decal_order = ('battles', 'frags', 'BonusBattles', 'marksOfMastery', 'mainGun', 'BrothersInArms',)
 
 
+class ConfigInterface(PYmodsConfigInterface):
+    def init(self):
+        self.ID = '%(mod_ID)s'
+        self.version = '1.0.0 (%(file_compile_date)s)'
+        self.data = {
+            'enabled': True, 'showCompatibles': True,
+            'removeFromOther_devices': True, 'removeFromOther_customization': True,
+            'sort_progressionDecals': True, 'sort_personalReserves': True,
+        }
+        self.i18n = {
+            'name': 'Hangar GUI Tweaks',
+            'UI_setting_showCompatibles_text': 'Show compatible vehicles for modules in tech tree',
+            'UI_setting_showCompatibles_tooltip': (
+                'This setting adds the list of compatible vehicles into tooltips of vehicle modules, '
+                'removing the need to open the info window to see it.'),
+            'UI_setting_removeFromOther_customization_text': 'Add option to remove a customization from other vehicle',
+            'UI_setting_removeFromOther_customization_tooltip': (
+                'This setting adds a context menu option to take off the customization item from another vehicle.\n'
+                'The option is only added for items that can\'t be installed on current vehicle without removing it '
+                'from another one.'),
+            'UI_setting_removeFromOther_devices_text': 'Add option to remove an optional device from other vehicle',
+            'UI_setting_removeFromOther_devices_tooltip': (
+                'This setting adds a context menu option to take off the optional device from another vehicle.\n'
+                'The option is only added for items that can\'t be installed on current vehicle without removing it '
+                'from another one.'),
+            'UI_setting_sort_personalReserves_text': 'Change sorting of personal reserves in Storage view',
+            'UI_setting_sort_personalReserves_tooltip': (
+                'This setting changes sorting priority of personal reserves from type-tier-time to tier-type-time.\n'
+                'In other words, all the best personal reserves are displayed first.'),
+            'UI_setting_sort_progressionDecals_text': 'Change sorting of progression decals in Customization view',
+            'UI_setting_sort_progressionDecals_tooltip': (
+                'This setting changes sorting order of progression decals to make easier ones appear first in the list.'),
+        }
+        super(ConfigInterface, self).init()
+
+    def createTemplate(self):
+        return {
+            'modDisplayName': self.i18n['name'], 'enabled': self.data['enabled'],
+            'column1': [
+                self.tb.createControl('removeFromOther_devices'),
+                self.tb.createControl('sort_personalReserves'),
+                self.tb.createControl('showCompatibles'),
+            ],
+            'column2': [
+                self.tb.createControl('removeFromOther_customization'),
+                self.tb.createControl('sort_progressionDecals'),
+            ]}
+
+
+g_config = ConfigInterface()
+
+
 @overrideMethod(ModuleContext, 'getStatsConfiguration')
 def new_getStatsConfiguration(base, self, item):
     value = base(self, item)
-    value.showCompatibles = True
+    if g_config.data['enabled'] and g_config.data['showCompatibles']:
+        value.showCompatibles = True
     return value
 
 
@@ -39,6 +92,8 @@ def new_getStatsConfiguration(base, self, item):
 def new_generateOptions(base, self, ctx=None):
     result = base(self, ctx)
     _ctx = self._CustomizationItemCMHandler__ctx
+    if not (g_config.data['enabled'] and g_config.data['removeFromOther_customization']):
+        return result
     if not getattr(_ctx, 'isPurchase', True) or self._item.isStyleOnly:
         return result
     appliedCount = 0  # mostly stolen from tooltips code
@@ -110,6 +165,8 @@ def handleResult(result):
 @overrideMethod(OptDeviceItemContextMenu, '_generateOptions')
 def new_generateOptions(base, self, ctx, *a, **k):
     result = base(self, ctx, *a, **k)
+    if not (g_config.data['enabled'] and g_config.data['removeFromOther_devices']):
+        return result
     if not self._isDisabled:  # mostly stolen from tooltips code
         return result
     item = self._getItem()
@@ -148,7 +205,9 @@ def item_tier(item):
 
 
 @overrideMethod(StorageCategoryPersonalReservesView, '__sort')
-def new_sort(_, __, a, b):
+def new_sort(base, self, a, b, *_a, **k):
+    if not (g_config.data['enabled'] and g_config.data['sort_personalReserves']):
+        return base(self, a, b, *_a, **k)
     return cmp(item_tier(a), item_tier(b)) or cmp(BOOSTERS_ORDERS[a.boosterType], BOOSTERS_ORDERS[b.boosterType]) or cmp(
         b.effectTime, a.effectTime)
 
@@ -161,7 +220,7 @@ def new_getPossibleItemsForVehicle(_, self):
         [item for item in customizationCache.customizationWithProgression.itervalues()
          if item.itemType == CustomizationType.PROJECTION_DECAL
          and (item.filter is None or item.filter.matchVehicleType(vehicleType))],
-        key=lambda i: (
+        key=(lambda i: (
             next((j for j, tag in enumerate(decal_order) if tag in i.progression.levels[1]['conditions'][0]['path'][1]), 100),
             i.id
-        ))]
+        ) if g_config.data['enabled'] and g_config.data['sort_progressionDecals'] else i.id))]

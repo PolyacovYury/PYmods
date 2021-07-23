@@ -26,7 +26,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.settings = {}
         self.skinsCache = {'CRC32': '', 'version': ''}
         self.skinsData = {
-            'models': {},
+            'whitelists': {},
             'priorities': {skinType: {'player': [], 'ally': [], 'enemy': []} for skinType in ('static', 'dynamic')}}
         self.isModAdded = False
         self.dynamicSkinEnabled = False
@@ -35,7 +35,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = __modID__
-        self.version = '1.1.4 (%s)' % __date__
+        self.version = '1.2.0 (%s)' % __date__
         self.defaultKeys = {'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
         self.data = {'enabled': True,
@@ -119,7 +119,8 @@ class ConfigInterface(PYmodsConfigInterface):
     def onApplySettings(self, settings):
         super(ConfigInterface, self).onApplySettings(settings)
         if self.isModAdded:
-            g_modsListApi.updateModification(id='SkinnerUI', enabled=self.data['enabled'] and bool(self.skinsData['models']))
+            g_modsListApi.updateModification(
+                id='SkinnerUI', enabled=self.data['enabled'] and bool(self.skinsData['whitelists']))
 
     def migrateConfigs(self):
         settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
@@ -159,15 +160,18 @@ class ConfigInterface(PYmodsConfigInterface):
         skinDirSect = ResMgr.openSection('vehicles/skins/textures/')
         for sname in () if skinDirSect is None else remDups(skinDirSect.keys()):
             confDict = self.settings.setdefault(sname, self.defaultSkinConfig)
-            self.skinsData['models'][sname] = pRecord = {'name': sname, 'whitelist': set()}
+            self.skinsData['whitelists'][sname] = whitelist = set()
             vehiclesDirSect = skinDirSect[sname]['vehicles']
             for curNation in [] if vehiclesDirSect is None else remDups(vehiclesDirSect.keys()):
                 nationDirSect = vehiclesDirSect[curNation]
                 for vehicleName in [] if nationDirSect is None else remDups(nationDirSect.keys()):
                     vehDirSect = nationDirSect[vehicleName]
                     sections = {'default': vehDirSect}
-                    modelsSetsSect = vehDirSect['_skins']
-                    if modelsSetsSect is not None:
+                    skinsSects = remDups(vehDirSect.keys())
+                    for sectName in skinsSects:
+                        if not sectName.startswith('_'):
+                            continue
+                        modelsSetsSect = vehDirSect[sectName]
                         for modelsSet, modelsSetSect in modelsSetsSect.items():
                             sections[modelsSet] = modelsSetSect
                     for modelsSet, modelsSetSect in sections.items():
@@ -175,7 +179,7 @@ class ConfigInterface(PYmodsConfigInterface):
                         if any(texName.endswith('.dds') for texName in (
                                 ([] if modelsSetSect is None else remDups(modelsSetSect.keys())) +
                                 ([] if tracksDirSect is None else remDups(tracksDirSect.keys())))):
-                            pRecord['whitelist'].add((vehicleName + '/' + modelsSet).lower())
+                            whitelist.add((vehicleName + '/' + modelsSet).lower())
                         elif self.data['isDebug']:
                             print self.ID + ':', vehicleName, 'folder from', sname, 'pack is empty.'
             for skinType in ('static', 'dynamic'):
@@ -190,17 +194,20 @@ class ConfigInterface(PYmodsConfigInterface):
                         priorities[tankType].append(sname)
                 if self.data['isDebug']:
                     print self.ID + ': config for', sname, 'loaded.'
+        crash_list = self.skinsData['whitelists'].pop('white_crash', None)
         for sname in self.settings.keys():
-            if sname not in self.skinsData['models']:
+            if sname not in self.skinsData['whitelists']:
                 del self.settings[sname]
-        if not self.skinsData['models']:
+        if not self.skinsData['whitelists']:
             if not quiet:
                 print self.ID + ': no skin packs found, skin module standing down.'
         for skinType in self.skinsData['priorities']:
             for key in self.skinsData['priorities'][skinType]:
                 for sname in self.skinsData['priorities'][skinType][key]:
-                    if sname not in self.skinsData['models']:
+                    if sname not in self.skinsData['whitelists']:
                         self.skinsData['priorities'][skinType][key].remove(sname)
+        if crash_list is not None:
+            self.skinsData['whitelists']['white_crash'] = crash_list
         loadJson(self.ID, 'skinsPriority', self.skinsData['priorities'], self.configPath, True, quiet=quiet)
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
 
@@ -220,14 +227,14 @@ class ConfigInterface(PYmodsConfigInterface):
                          ScopeTemplates.GLOBAL_SCOPE, False))
         self.isModAdded = g_modsListApi.addModification(
             id='SkinnerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
-            icon='gui/flash/Skinner.png', enabled=self.data['enabled'] and bool(self.skinsData['models']), login=True,
+            icon='gui/flash/Skinner.png', enabled=self.data['enabled'] and bool(self.skinsData['whitelists']), login=True,
             lobby=True, callback=lambda: (
                     SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.TOP_WINDOW).getViewCount()
                     or SL.appLoader.getDefLobbyApp().loadView(SFViewLoadParams('SkinnerUI')))) != NotImplemented
 
     def onHotkeyPressed(self, event):
         if (not hasattr(BigWorld.player(), 'databaseID') or not self.data['enabled'] or not event.isKeyDown()
-                or self.isMSAOpen or not self.skinsData['models']):
+                or self.isMSAOpen or not self.skinsData['whitelists']):
             return
         if checkKeys(self.data['ChangeViewHotkey'], event.key):
             try:
