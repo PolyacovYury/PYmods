@@ -6,6 +6,7 @@ from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from HeroTank import _HeroTankAppearance
 from PYmodsCore import loadJson, overrideMethod
 from PlatoonTank import _PlatoonTankAppearance
+from copy import deepcopy
 from gui import g_tankActiveCamouflage
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
     CustomizationTabs, fitOutfit, getEditableStyleOutfitDiffComponent,
@@ -13,7 +14,7 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import (
 from gui.customization.shared import C11N_ITEM_TYPE_MAP, SEASON_TYPE_TO_NAME, __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
-from items.components.c11n_constants import CustomizationType, EMPTY_ITEM_ID, SeasonType
+from items.components.c11n_constants import CustomizationType, EMPTY_ITEM_ID, ItemTags, SeasonType
 from items.customizations import CustomizationOutfit, EmptyComponent, InsigniaComponent, createNationalEmblemComponents
 from items.vehicles import g_cache
 from vehicle_outfit.outfit import Area, Outfit
@@ -92,7 +93,10 @@ def getOutfitFromStyle(style, season, level, vDesc=None):
     if style is None:
         baseOutfit = createEmptyOutfit(vDesc)
     else:
-        baseOutfit = style.getOutfit(season, vehicleCD=vehicleCD)
+        component = deepcopy(style.descriptor.outfits[season])
+        if ItemTags.ADD_NATIONAL_EMBLEM in style.tags:
+            component.decals.extend(createNationalEmblemComponents(vDesc))
+        baseOutfit = Outfit(component=component, vehicleCD=vehicleCD)
         if style.isProgressive:
             baseOutfit = getStyleProgressionOutfit(baseOutfit, level, season)
     fitOutfit(baseOutfit, {areaId: {
