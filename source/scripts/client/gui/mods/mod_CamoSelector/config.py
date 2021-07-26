@@ -293,7 +293,7 @@ class ModdedCamouflageItem(cc.CamouflageItem):
     @property
     def palettes(self):
         if g_config.data['fullAlpha'] and not self.__copying:
-            return [color | 0xFF000000 for color in self.__palettes]
+            return tuple([color | 0xFF000000 for color in palette] for palette in self.__palettes)
         return self.__palettes
 
     @palettes.setter
