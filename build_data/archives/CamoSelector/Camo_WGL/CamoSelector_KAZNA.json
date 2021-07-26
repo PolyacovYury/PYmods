@@ -1,9 +1,0 @@
-﻿{
-    "enabled": true,
-    "ext": ".zip",
-    "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/KAZNA/settings.json": "res/configs/PYmods/CamoSelector/camouflages/KAZNA/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/KAZNA/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/KAZNA/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/KAZNA/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/KAZNA/texture.dds"
-    }
-}

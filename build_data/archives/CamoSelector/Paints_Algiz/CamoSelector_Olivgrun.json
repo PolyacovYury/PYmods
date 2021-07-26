@@ -1,7 +1,0 @@
-﻿{
-    "enabled": true,
-    "ext": ".zip",
-    "files": {
-        "mods/configs/PYmods/CamoSelector/paints/Olivgrun.xml": "res/configs/PYmods/CamoSelector/paints/Olivgrun.xml"
-    }
-}

@@ -1,9 +1,0 @@
-﻿{
-    "enabled": true,
-    "ext": ".zip",
-    "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/o7/settings.json": "res/configs/PYmods/CamoSelector/camouflages/o7/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/o7/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/o7/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/o7/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/o7/texture.dds"
-    }
-}
