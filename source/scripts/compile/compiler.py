@@ -118,7 +118,7 @@ def main():
                 if os.path.isdir(arg):
                     success &= compile_dir(arg, max_levels, d_dir, o_dir, force, quiet)
                 else:
-                    success &= compile_file(arg, d_dir, o_dir, force, quiet)
+                    success &= compile_file(arg, d_dir + os.path.basename(arg), o_dir + os.path.basename(arg), force, quiet)
         else:
             print 'One or more arguments required to compile'
             success = False

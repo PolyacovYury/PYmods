@@ -1,9 +1,0 @@
-﻿{
-    "enabled": true,
-    "ext": ".zip",
-    "files": {
-        "mods/configs/PYmods/CamoSelector/camouflages/LOL_Team/settings.json": "res/configs/PYmods/CamoSelector/camouflages/LOL_Team/settings.json",
-        "mods/configs/PYmods/CamoSelector/camouflages/LOL_Team/settings.xml": "res/configs/PYmods/CamoSelector/camouflages/LOL_Team/settings.xml",
-        "mods/configs/PYmods/CamoSelector/camouflages/LOL_Team/texture.dds": "res/configs/PYmods/CamoSelector/camouflages/LOL_Team/texture.dds"
-    }
-}
