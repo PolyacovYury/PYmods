@@ -44,6 +44,8 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
         pass
 
     def readData(self, quiet=True):
+        for data in self.data.values():
+            data.clear()
         self.effectsXml = ResMgr.openSection(self.effectsXmlPath)
         self.readConfigDir(quiet)
         print self.ID + ': loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
