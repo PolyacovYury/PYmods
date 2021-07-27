@@ -214,8 +214,8 @@ class ConfigInterface(PYmodsConfigInterface):
     @property
     def collisionMode(self):
         try:
-            from gui.mods.mod_remodenabler import g_config as re_config
-            return re_config.collisionMode
+            from gui.mods.mod_hangarcollision import g_config as hc_config
+            return hc_config.collisionMode
         except ImportError:
             return 0
 

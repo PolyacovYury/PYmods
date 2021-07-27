@@ -8,6 +8,5 @@ try:
 except ImportError:
     pass
 import processor
-import collision
 
 statistic_mod = Analytics(g_config.ID, g_config.version, 'UA-76792179-4')

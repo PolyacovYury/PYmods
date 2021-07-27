@@ -43,7 +43,6 @@ class ConfigInterface(PYmodsConfigInterface):
         self.settings = {}
         self.modelsData = {'models': {}, 'selected': {'player': {}, 'ally': {}, 'enemy': {}}}
         self.isModAdded = False
-        self.collisionMode = 0
         self.currentTeam = self.teams[0]
         self.previewRemod = None
         super(ConfigInterface, self).__init__()
@@ -52,14 +51,16 @@ class ConfigInterface(PYmodsConfigInterface):
         self.ID = __modID__
         self.version = '3.1.0 (%s)' % __date__
         self.author += ' (thx to atacms)'
-        self.defaultKeys = {'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
-                            'SwitchRemodHotkey': [Keys.KEY_F3, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
-                            'CollisionHotkey': [Keys.KEY_F4, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
-        self.data = {'enabled': True,
-                     'isDebug': True,
-                     'ChangeViewHotkey': self.defaultKeys['ChangeViewHotkey'],
-                     'CollisionHotkey': self.defaultKeys['CollisionHotkey'],
-                     'SwitchRemodHotkey': self.defaultKeys['SwitchRemodHotkey']}
+        self.defaultKeys = {
+            'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
+            'SwitchRemodHotkey': [Keys.KEY_F3, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
+        }
+        self.data = {
+            'enabled': True,
+            'isDebug': True,
+            'ChangeViewHotkey': self.defaultKeys['ChangeViewHotkey'],
+            'SwitchRemodHotkey': self.defaultKeys['SwitchRemodHotkey']
+        }
         self.i18n = {
             'UI_description': 'Remod Enabler',
             'UI_flash_header': 'Remods setup',
@@ -106,17 +107,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_ChangeViewHotkey_tooltip': (
                 'This hotkey will switch the preview mode in hangar.\n<b>Available modes:</b>\n'
                 ' • Player tank\n • Ally tank\n • Enemy tank'),
-            'UI_setting_CollisionHotkey_text': 'Collision view switch hotkey',
-            'UI_setting_CollisionHotkey_tooltip': (
-                '<b>WARNING: this module is non-functional. Apologies for the inconvenience.</b>\n'
-                'This hotkey will switch collision preview mode in hangar.\n'
-                '<b>Available modes:</b>\n • OFF\n • Model replace\n • Model add'),
             'UI_setting_SwitchRemodHotkey_text': 'Remod switch hotkey',
             'UI_setting_SwitchRemodHotkey_tooltip': 'This hotkey will cycle through all remods.',
-            'UI_collision_compare_enable': '<b>RemodEnabler:</b>\nEnabling collision comparison mode.',
-            'UI_collision_compare_disable': '<b>RemodEnabler:</b>\nDisabling collision comparison mode.',
-            'UI_collision_enable': '<b>RemodEnabler:</b>\nEnabling collision mode.',
-            'UI_collision_unavailable': '<b>RemodEnabler:</b>\nCollision displaying is currently not supported.',
             'UI_install_customization': '<b>RemodEnabler:</b>\nRemods are not displayed when customization is open.',
             'UI_install_remod': '<b>RemodEnabler:</b>\nRemod installed: ',
             'UI_install_default': '<b>RemodEnabler:</b>\nDefault model applied.',
@@ -130,12 +122,23 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
-        return {'modDisplayName': self.i18n['UI_description'],
-                'enabled': self.data['enabled'],
-                'column1': [self.tb.createHotKey('ChangeViewHotkey'),
-                            self.tb.createHotKey('CollisionHotkey')],
-                'column2': [self.tb.createHotKey('SwitchRemodHotkey'),
-                            self.tb.createControl('isDebug')]}
+        return {
+            'modDisplayName': self.i18n['UI_description'], 'enabled': self.data['enabled'],
+            'column1': [
+                self.tb.createHotKey('ChangeViewHotkey'),
+                self.tb.createControl('isDebug'),
+            ],
+            'column2': [
+                self.tb.createHotKey('SwitchRemodHotkey'),
+            ]}
+
+    @property
+    def collisionMode(self):
+        try:
+            from gui.mods.mod_hangarcollision import g_config as hc_config
+            return hc_config.collisionMode
+        except ImportError:
+            return 0
 
     def onMSADestroy(self):
         refreshCurrentVehicle()
@@ -310,25 +313,6 @@ class ConfigInterface(PYmodsConfigInterface):
             else:
                 selected[vehName] = ''
             loadJson(self.ID, 'remodsCache', self.modelsData['selected'], self.configPath, True, quiet=not self.data['isDebug'])
-            refreshCurrentVehicle()
-        if checkKeys(self.data['CollisionHotkey'], event.key):
-            SM.pushMessage('temp_SM' + self.i18n['UI_collision_unavailable'], SM.SM_TYPE.CustomizationForGold)
-            return
-            # noinspection PyUnreachableCode
-            self.collisionMode += 1
-            self.collisionMode %= 3
-            if self.collisionMode == 0:
-                debugMsg = 'disabling collision displaying'
-                msg = self.i18n['UI_collision_compare_disable']
-            elif self.collisionMode == 2:
-                debugMsg = 'enabling collision display comparison mode'
-                msg = self.i18n['UI_collision_compare_enable']
-            else:
-                debugMsg = 'enabling collision display'
-                msg = self.i18n['UI_collision_enable']
-            if self.data['isDebug']:
-                print self.ID + ':', debugMsg
-            SM.pushMessage('temp_SM' + msg, SM.SM_TYPE.CustomizationForGold)
             refreshCurrentVehicle()
 
 
