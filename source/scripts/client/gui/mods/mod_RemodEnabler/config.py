@@ -13,8 +13,6 @@ from gui.Scaleform.framework.entities.abstract.AbstractWindowView import Abstrac
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared.personality import ServicesLocator as SL
 from items.components.chassis_components import SplineConfig
-from items.components.component_constants import ALLOWED_EMBLEM_SLOTS as AES
-from items.components.shared_components import EmblemSlot
 from items.vehicles import g_cache
 from vehicle_systems.tankStructure import TankPartNames
 from . import __date__, __modID__
@@ -22,23 +20,12 @@ from . import __date__, __modID__
 
 class ConfigInterface(PYmodsConfigInterface):
     teams = ('player', 'ally', 'enemy')
-    # noinspection PyUnusedLocal
-    modelDescriptor = property(lambda self: {
-        'name': '', 'message': '', 'whitelist': [],
-        'chassis': {'undamaged': '', 'emblemSlots': [], 'AODecals': [], 'hullPosition': [], 'soundID': ''},
-        'hull': {'undamaged': '', 'emblemSlots': [], 'exhaust': {'nodes': [], 'pixie': ''},
-                 'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
-        'turret': {'undamaged': '', 'emblemSlots': [],
-                   'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
-        'gun': {'undamaged': '', 'emblemSlots': [], 'soundID': '', 'drivenJoints': None,
-                'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}},
-        'engine': {'soundID': ''},
-        'common': {'camouflage': {'exclusionMask': '', 'tiling': [1.0, 1.0, 0.0, 0.0]}}})
 
     def __init__(self):
         self.settings = {}
         self.modelsData = {}
         self.selectedData = {k: {} for k in self.teams}
+        self.emptyModelDesc = None
         self.isModAdded = False
         self.currentTeam = self.teams[0]
         self.previewRemod = None
@@ -149,7 +136,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.settings = loadJson(self.ID, 'settings', self.settings, self.configPath)
         self.modelsData.clear()
         self.selectedData = loadJson(self.ID, 'remodsCache', self.selectedData, self.configPath)
-        self.readConfigDir(quiet, recursive=True, dir_name='remods')
+        self.readConfigDir(quiet, recursive=True, dir_name='remods', ext='.xml')
         changed_xmlNames = set()
         for remod_name in self.settings.keys():
             if remod_name not in self.modelsData:
@@ -177,9 +164,16 @@ class ConfigInterface(PYmodsConfigInterface):
         loadJson(self.ID, 'remodsCache', self.selectedData, self.configPath, True, quiet=quiet)
         loadJson(self.ID, 'settings', self.settings, self.configPath, True, quiet=quiet)
 
-    # noinspection PyTypeChecker
-    def onReadConfig(self, quiet, dir_path, name, json_data, sub_dirs, names):
+    def onReadDataSection(self, quiet, path, dir_path, name, data_section, sub_dirs, names):
+        from .readers import readModelDesc, ModelDesc
+        if self.emptyModelDesc is None:
+            self.emptyModelDesc = ModelDesc()
+            self.emptyModelDesc.chassis.generalWheelsAnimatorConfig = ''  # has to not be None
         remod_name = (dir_path and (dir_path + '/')) + name
+        modelDesc = ModelDesc()
+        modelDesc.name = remod_name
+        readModelDesc((None, remod_name), data_section, modelDesc)
+        self.modelsData[remod_name] = modelDesc  # don't put it there right away
         old_settings = None
         old_setting_names = [_name for _name in self.settings if _name == name]
         if old_setting_names and remod_name not in old_setting_names:
@@ -188,67 +182,16 @@ class ConfigInterface(PYmodsConfigInterface):
                 print 'skipping settings migration'
             else:
                 old_settings = self.settings.pop(old_setting_names[0])
-        settings = self.settings.setdefault(remod_name, old_settings or {team: json_data[team] for team in self.teams})
-        self.modelsData[remod_name] = descr = self.modelDescriptor
-        descr['name'] = remod_name
-        descr['message'] = json_data.get('message', '')
-        settings['whitelist'] = descr['whitelist'] = whitelist = remDups(
-            x.strip() for x in settings.get('whitelist', json_data['whitelist']) if x.strip())
+        settings = self.settings.setdefault(
+            remod_name, old_settings or {team: getattr(modelDesc, team) for team in self.teams})
+        settings['whitelist'] = modelDesc.whitelist = whitelist = remDups(
+            x.strip() for x in settings.get('whitelist', modelDesc.whitelist) if x.strip())
         for xmlName in whitelist:
             for team in self.selectedData:
                 if xmlName not in self.selectedData[team] or self.selectedData[team][xmlName] is None:
                     self.selectedData[team][xmlName] = remod_name if settings[team] else None
         if self.data['isDebug']:
             print self.LOG, 'whitelist for', remod_name + ':', whitelist
-        for key, data in descr.iteritems():
-            if key in ('name', 'message', 'whitelist'):
-                continue
-            if key == 'common':
-                confSubDict = json_data
-            else:
-                confSubDict = json_data.get(key)
-            if not confSubDict:
-                continue
-            if 'undamaged' in data:
-                data['undamaged'] = confSubDict['undamaged']
-            if 'AODecals' in data and 'AODecals' in confSubDict and 'hullPosition' in confSubDict:
-                data['AODecals'] = []
-                for subList in confSubDict['AODecals']:
-                    m = Math.Matrix()
-                    for strNum, row in enumerate(subList):
-                        for colNum, elemNum in enumerate(row):
-                            m.setElement(strNum, colNum, elemNum)
-                    data['AODecals'].append(m)
-                data['hullPosition'] = confSubDict['hullPosition']
-            if 'camouflage' in data and 'exclusionMask' in confSubDict.get('camouflage', {}):
-                data['camouflage']['exclusionMask'] = confSubDict['camouflage']['exclusionMask']
-                if 'tiling' in confSubDict['camouflage']:
-                    data['camouflage']['tiling'] = confSubDict['camouflage']['tiling']
-            elif key == 'common' and self.data['isDebug']:
-                print self.LOG, 'default camomask not found for', remod_name
-            if 'emblemSlots' in data:
-                data['emblemSlots'] = slots = []
-                for subDict in confSubDict.get('emblemSlots', ()):
-                    if subDict['type'] not in AES:
-                        print self.LOG, 'not supported emblem slot type:', subDict['type'] + ', expected:', AES
-                        continue
-                    subDict.update({k: Math.Vector3(subDict[k]) for k in ('rayStart', 'rayEnd', 'rayUp')})
-                    slots.append(EmblemSlot(**subDict))
-            if 'exhaust' in data and 'exhaust' in confSubDict:
-                if 'nodes' in confSubDict['exhaust']:
-                    data['exhaust']['nodes'] = confSubDict['exhaust']['nodes']
-                if 'pixie' in confSubDict['exhaust']:
-                    data['exhaust']['pixie'] = confSubDict['exhaust']['pixie']
-            if key == 'chassis':
-                for k in (
-                        'traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackSplineParams',
-                        'leveredSuspension', 'chassisLodDistance',):
-                    data[k] = confSubDict[k]
-            for k in ('soundID', 'drivenJoints'):
-                if k in data and k in confSubDict:
-                    data[k] = confSubDict[k]
-        if self.data['isDebug']:
-            print self.LOG, 'config for', remod_name, 'loaded.'
 
     def migrateConfigs(self):
         from .migrators import migrateConfigs
@@ -402,10 +345,10 @@ class RemodEnablerUI(AbstractWindowView):
             return default
         modelDesc = getattr(vDesc, 'modelDesc', None)
         if modelDesc is not None:
-            remod_name = modelDesc['name']
+            remod_name = modelDesc.name
             self.newRemodData = loadJsonOrdered(g_config.ID, g_config.configPath + 'remods/', remod_name)
             return dict(
-                name=remod_name, message=modelDesc['message'], vehicleName=vehName, whitelist=modelDesc['whitelist'],
+                name=remod_name, message=modelDesc.message, vehicleName=vehName, whitelist=modelDesc.whitelist,
                 **{k: g_config.settings[remod_name][k] for k in g_config.teams})
         try:
             data = self.newRemodData

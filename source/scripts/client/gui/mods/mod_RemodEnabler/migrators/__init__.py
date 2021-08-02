@@ -1,5 +1,6 @@
-from PYmodsCore import loadJson
-from . import json_update, remod_json_update
+import os
+
+from . import json_update, remod_json_update, remod_json_to_xml
 
 
 def migrateConfigs(g_config):
@@ -8,4 +9,5 @@ def migrateConfigs(g_config):
 
 def migrateRemod(g_config, path, name, json_data):
     new_conf = remod_json_update.migrateRemod(g_config, json_data)
-    loadJson(g_config.ID, name, new_conf, path, True, sort_keys=False)
+    remod_json_to_xml.save_as_xml(g_config, path, name, new_conf)
+    os.remove(path + '/' + name + '.json')
