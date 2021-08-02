@@ -186,7 +186,7 @@ class ConfigInterface(PYmodsConfigInterface):
         remod_name = (dir_path and (dir_path + '/')) + name
         selectedData = self.modelsData['selected']
         old_settings = None
-        old_setting_names = [_name for _name in self.settings if _name in remod_name]
+        old_setting_names = [_name for _name in self.settings if _name == name]
         if old_setting_names and remod_name not in old_setting_names:
             if len(old_setting_names) > 1:
                 print self.ID + ': multiple settings for remod', remod_name + ':', old_setting_names,
