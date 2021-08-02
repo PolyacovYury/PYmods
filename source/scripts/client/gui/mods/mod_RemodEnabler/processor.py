@@ -1,6 +1,10 @@
 import BigWorld
+import Event
+import Math
+import math_utils
 from HangarVehicle import HangarVehicle
 from PYmodsCore import overrideMethod, refreshCurrentVehicle
+from VehicleGunRotator import MatrixAnimator
 from common_tank_appearance import CommonTankAppearance
 from gui import SystemMessages
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
@@ -8,6 +12,7 @@ from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView
 from gui.Scaleform.framework.entities.View import ViewKey
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.personality import ServicesLocator as SL
+from gui.simple_turret_rotator import SimpleTurretRotator as WGRotator, logger
 from items.vehicles import CompositeVehicleDescriptor as CompVDesc
 from vehicle_systems import camouflages
 from vehicle_systems.tankStructure import TankPartNames
@@ -112,3 +117,35 @@ def new_populate(base, self, *a, **kw):
         BigWorld.callback(0, refreshCurrentVehicle)
         BigWorld.callback(0.2, self._MainView__onVehicleChanged)
     return base(self, *a, **kw)
+
+
+class SimpleTurretRotator(WGRotator):
+    def __init__(
+            self, compoundModel=None, currTurretYaw=0.0, _=Math.Vector3(0.0, 0.0, 0.0), __=0.0,
+            easingCls=math_utils.Easing.linearEasing):
+        self.__isStarted = False
+        self.__turretYaw = self.__targetTurretYaw = currTurretYaw
+        self.__rotationTime = 0.0
+        self.__timerID = None
+        self.__turretMatrixAnimator = MatrixAnimator()
+        self.__easingCls = easingCls
+        self.__easing = None
+        if compoundModel is not None:
+            self.__updateTurretMatrix(currTurretYaw, 0.0)
+            compoundModel.node(TankPartNames.TURRET, self.__turretMatrixAnimator.matrix)
+        else:
+            logger.error('CompoundModel is not set!')
+        self._eventsManager = Event.EventManager()
+        self.onTurretRotationStarted = Event.Event(self._eventsManager)
+        self.onTurretRotated = Event.Event(self._eventsManager)
+
+    def __updateTurretMatrix(self, yaw, time):
+        m = Math.Matrix()
+        m.setRotateY(yaw)
+        self.__turretMatrixAnimator.update(m, time)
+        self.__turretYaw = yaw
+
+
+@overrideMethod(WGRotator, '__new__')
+def new(base, _, *a, **kw):
+    return base(SimpleTurretRotator, *a, **kw)
