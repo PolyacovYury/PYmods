@@ -163,7 +163,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
         if not self.modelsData['models']:
             if not quiet:
-                print self.ID + ': no configs found, model module standing down.'
+                print self.LOG, 'no configs found, model module standing down.'
         for team, teamData in selectedData.items():
             for xmlName in teamData.keys():
                 if xmlName not in changed_xmlNames:
@@ -189,7 +189,7 @@ class ConfigInterface(PYmodsConfigInterface):
         old_setting_names = [_name for _name in self.settings if _name == name]
         if old_setting_names and remod_name not in old_setting_names:
             if len(old_setting_names) > 1:
-                print self.ID + ': multiple settings for remod', remod_name + ':', old_setting_names,
+                print self.LOG, 'multiple settings for remod', remod_name + ':', old_setting_names,
                 print 'skipping settings migration'
             else:
                 old_settings = self.settings.pop(old_setting_names[0])
@@ -204,7 +204,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 if xmlName not in selectedData[team] or selectedData[team][xmlName] is None:
                     selectedData[team][xmlName] = remod_name if settings[team] else None
         if self.data['isDebug']:
-            print self.ID + ': whitelist for', remod_name + ':', whitelist
+            print self.LOG, 'whitelist for', remod_name + ':', whitelist
         for key, data in descr.iteritems():
             if key in ('name', 'message', 'whitelist'):
                 continue
@@ -230,12 +230,12 @@ class ConfigInterface(PYmodsConfigInterface):
                 if 'tiling' in confSubDict['camouflage']:
                     data['camouflage']['tiling'] = confSubDict['camouflage']['tiling']
             elif key == 'common' and self.data['isDebug']:
-                print self.ID + ': default camomask not found for', remod_name
+                print self.LOG, 'default camomask not found for', remod_name
             if 'emblemSlots' in data:
                 data['emblemSlots'] = slots = []
                 for subDict in confSubDict.get('emblemSlots', ()):
                     if subDict['type'] not in AES:
-                        print g_config.ID + ': not supported emblem slot type:', subDict['type'] + ', expected:', AES
+                        print self.LOG, 'not supported emblem slot type:', subDict['type'] + ', expected:', AES
                         continue
                     subDict.update({k: Math.Vector3(subDict[k]) for k in ('rayStart', 'rayEnd', 'rayUp')})
                     slots.append(EmblemSlot(**subDict))
@@ -251,7 +251,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 if k in data and k in confSubDict:
                     data[k] = confSubDict[k]
         if self.data['isDebug']:
-            print self.ID + ': config for', remod_name, 'loaded.'
+            print self.LOG, 'config for', remod_name, 'loaded.'
 
     def migrateConfigs(self):
         from .config_converter import migrateConfigs
@@ -292,7 +292,7 @@ class ConfigInterface(PYmodsConfigInterface):
             except ImportError:
                 _ = None
             if self.data['isDebug']:
-                print self.ID + ': changing display mode to', self.currentTeam
+                print self.LOG, 'changing display mode to', self.currentTeam
             SM.pushMessage(
                 'temp_SM%s<b>%s</b>' % (self.i18n['UI_mode'], self.i18n['UI_mode_' + self.currentTeam]),
                 SM.SM_TYPE.Warning)

@@ -19,7 +19,7 @@ def apply(vDesc, modelsSet, skinName):
             modelPath = 'vehicles/skins/models/' + skinName + '/' + '_dynamic'.join(
                 os.path.splitext(getattr(vDesc, partName).modelsSets[modelsSet].undamaged))
             if not ResMgr.isFile(modelPath):
-                print g_config.ID + ': skin model not found:', modelPath
+                print g_config.LOG, 'skin model not found:', modelPath
                 continue
             if partName == TankPartNames.HULL:
                 nodeName = 'V'

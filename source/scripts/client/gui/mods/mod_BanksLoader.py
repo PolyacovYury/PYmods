@@ -68,7 +68,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             return
         if not any(self.editedBanks.itervalues()):
             return
-        print self.ID + ': requesting client restart...'
+        print self.LOG, 'requesting client restart...'
         reasons = []
         if self.data['debug']:
             reasons = [
@@ -86,15 +86,15 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             parent = None
         result = yield await(dialogs.show(builder.build(parent)))
         if result.result == DButtons.PURCHASE:
-            print self.ID + ': client restart confirmed.'
+            print self.LOG, 'client restart confirmed.'
             BigWorld.savePreferences()
             BigWorld.restartGame()
         elif result.result == DButtons.RESEARCH:
-            print self.ID + ': client shut down.'
+            print self.LOG, 'client shut down.'
             BigWorld.savePreferences()
             BigWorld.quit()
         elif result.result == DButtons.SUBMIT:
-            print self.ID + ': client restart declined.'
+            print self.LOG, 'client restart declined.'
             self.was_declined = True
 
     @staticmethod
@@ -158,7 +158,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                                     fileInfo.extra = ''
                                     zip_new.writestr(fileInfo, zip_orig.read(fileName))
             if cleaned:
-                print self.ID + ': config renamed for package', os.path.basename(filePath)
+                print self.LOG, 'config renamed for package', os.path.basename(filePath)
                 order_changed |= _filePath not in order and not order.append(_filePath)
                 BL_present = True
                 if os.path.isfile(new_filePath):
@@ -181,7 +181,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
         while True:
             orig_engine = ResMgr.openSection('engine_config.xml')
             if orig_engine is None:
-                print _config.ID + ': ERROR: engine_config.xml not found'
+                print _config.LOG, 'ERROR: engine_config.xml not found'
                 return
             path = curCV + '/' + 'engine_config.xml'
             if not os.path.isfile(path):
@@ -189,7 +189,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             if (orig_engine.has_key('BanksLoader_gameVersion')
                     and orig_engine['BanksLoader_gameVersion'].asString == getClientVersion()):
                 break
-            print self.ID + ': client version change detected'
+            print self.LOG, 'client version change detected'
             self.version_changed = True
             try:
                 os.remove(path)
@@ -241,7 +241,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             if name != struct['key'] or not all(sect.has_key(x) for x in struct['keys']):
                 if is_orig:
                     self.editedBanks['remap'].add(key)
-                    print self.ID + ': cleaned wrong section for setting', key
+                    print self.LOG, 'cleaned wrong section for setting', key
                 continue
             data = {x: sect[x].asString for x in struct['keys']}
             if struct['data']:
@@ -265,7 +265,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
         audio_mods_new = ResMgr.openSection(mediaPath + '/audio_mods_edited.xml', True)
         audio_mods_banks = []
         if audio_mods is None:
-            print _config.ID + ': audio_mods.xml not found, will be created if needed'
+            print _config.LOG, 'audio_mods.xml not found, will be created if needed'
         data_structure = [
             {'name': 'events', 'key': 'event', 'keys': ('name', 'mod'), 'data': ()},
             {'name': 'switches', 'key': 'switch', 'keys': ('name', 'mod'),
@@ -285,7 +285,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             bankName = path.replace('.xml', '.bnk')
             if sect is None:
                 bankFiles['ignore'].add(bankName)
-                print self.ID + ': error while reading', path
+                print self.LOG, 'error while reading', path
                 continue
             bankData = banksData[bankName] = {}
             for struct in data_structure:
@@ -298,7 +298,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
         for bankSect in audio_mods['loadBanks'].values():
             bankName = bankSect.asString or getattr(bankSect['name'], 'asString', None)
             if bankName not in bankFiles['audio_mods_allowed']:
-                print self.ID + ': clearing audio_mods section for bank', bankName
+                print self.LOG, 'clearing audio_mods section for bank', bankName
                 self.editedBanks['delete'].append(bankName)
             elif bankName not in audio_mods_banks:
                 audio_mods_banks.append(bankName)
@@ -312,7 +312,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             if data_old[key] != data_new.setdefault(key, []):
                 self.editedBanks['remap'].add(key)
             if key in self.editedBanks['remap']:
-                print self.ID + ': creating section for setting', key
+                print self.LOG, 'creating section for setting', key
             self.create_sect_from_data(audio_mods_new[key], data_new[key], struct)
         return audio_mods_new
 
@@ -322,7 +322,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             if value is not None and value.asInt != int(self.data[mgrKey]):
                 self.editedBanks['memory'].append(mgrKey)
                 soundMgr.writeInt(mgrKey, self.data[mgrKey])
-                print self.ID + ': changing value for memory setting:', mgrKey
+                print self.LOG, 'changing value for memory setting:', mgrKey
 
     def manageProfileMemorySettings(self, profile_type, profile):
         poolKeys = {'memoryManager': ('defaultPool', 'lowEnginePool', 'streamingPool', 'IOPoolSize'),
@@ -334,7 +334,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                 if value is not None and value.asInt != int(self.data[poolValue]):
                     self.editedBanks['memory'].append(poolValue)
                     profile[poolKey].writeInt(poolValue, self.data[poolValue])
-                    print self.ID + ': changing value for', profile_type, 'memory setting:', poolValue
+                    print self.LOG, 'changing value for', profile_type, 'memory setting:', poolValue
 
     def manageProfileBanks(self, profile_type, profile, bankFiles):
         exist = set()
@@ -346,15 +346,15 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                     continue
                 bankName = bank['name'].asString
                 if bankName not in bankFiles['all'] or bankName in bankFiles['audio_mods_allowed']:
-                    print self.ID + ': clearing', profile_type, 'section for missing bank', bankName
+                    print self.LOG, 'clearing', profile_type, 'section for missing bank', bankName
                     self.editedBanks['delete'].append(bankName)
                     section.deleteSection(bank)
                 elif bankFiles['section'].get(bankName, name) != name:
-                    print self.ID + ': deleting', profile_type, 'section from', name, 'for bank', bankName
+                    print self.LOG, 'deleting', profile_type, 'section from', name, 'for bank', bankName
                     self.editedBanks['section'].append(bankName)
                     section.deleteSection(bank)
                 elif bankName in bankFiles['mods'] and bankName in exist:
-                    print self.ID + ': clearing', profile_type, 'section duplicate for bank', bankName
+                    print self.LOG, 'clearing', profile_type, 'section duplicate for bank', bankName
                     self.editedBanks['delete'].append(bankName)
                     section.deleteSection(bank)
                 else:
@@ -363,7 +363,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
         for bankName in sorted(bankFiles['mods']):
             if not any(bankName in bankFiles[x] for x in ('orig', 'ignore', 'audio_mods_allowed')) and bankName not in exist:
                 sectName = bankFiles['section'].get(bankName, 'SFX_soundbanks_loadonce')
-                print self.ID + ': creating', profile_type, 'section in', sectName, 'for bank', bankName
+                print self.LOG, 'creating', profile_type, 'section in', sectName, 'for bank', bankName
                 if bankName in self.editedBanks['delete']:
                     self.editedBanks['delete'].remove(bankName)
                     self.editedBanks['move'].append(bankName)

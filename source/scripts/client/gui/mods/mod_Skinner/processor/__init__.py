@@ -29,7 +29,7 @@ def debugOutput(xmlName, vehName, playerName, modelsSet, staticSkin=None, dynami
         return
     traceback.print_stack()
     info = []
-    header = g_config.ID + ': %s (%s)' % (xmlName, vehName)
+    header = g_config.LOG, '%s (%s)' % (xmlName, vehName)
     if playerName is not None:
         header += ', player: ' + playerName
     if modelsSet != 'default':
@@ -88,7 +88,7 @@ def vDesc_process(vehicleID, vDesc, is_hangar, modelsSet):
                 skins_static.apply(descr, modelsSet, staticSkin)
             skins_crash.apply(descr, modelsSet)
         elif g_config.data['isDebug']:
-            print g_config.ID + ': unknown vehicle nation for', vehName + ':', vehNation
+            print g_config.LOG, 'unknown vehicle nation for', vehName + ':', vehNation
         if g_config.data['isDebug'] and (
                 dynamicSkin is None or not g_config.dynamicSkinEnabled) and not g_config.collisionMode:
             if staticSkin is not None:

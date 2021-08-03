@@ -48,7 +48,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             data.clear()
         self.effectsXml = ResMgr.openSection(self.effectsXmlPath)
         self.readConfigDir(quiet)
-        print self.ID + ': loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
+        print self.LOG, 'loaded configs:', ', '.join(x + '.json' for x in sorted(self.confList))
         self.injectEffects()
         self.effectsXml = None
 
@@ -57,13 +57,13 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
         for itemType, itemsDict in json_data.iteritems():
             if itemType not in self.data:
                 if not quiet:
-                    print self.ID + ': invalid item type in', name + ':', itemType
+                    print self.LOG, 'invalid item type in', name + ':', itemType
                 continue
             itemsData = self.data[itemType]
             if itemType in ('engines', 'guns'):
                 for nationName, nationData in itemsDict.iteritems():
                     if nationName.split(':')[0] not in nations.NAMES:
-                        print self.ID + ': unknown nation in', itemType, 'in', name + ':', nationName
+                        print self.LOG, 'unknown nation in', itemType, 'in', name + ':', nationName
                         continue
                     for itemName in nationData:
                         itemsData.setdefault(nationName, {}).setdefault(itemName, {}).update(nationData[itemName])
@@ -73,21 +73,21 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             if itemType == 'gun_effects':
                 for itemName, itemData in itemsDict.iteritems():
                     if 'origin' not in itemData:
-                        print self.ID + ':', name + ':', itemName, 'has no origin'
+                        print self.LOG, name + ':', itemName, 'has no origin'
                         continue
                     origin = itemData['origin']
                     if origin not in self.effectsXml.keys():
-                        print self.ID + ':', name + ':', itemName, 'has unknown origin:', origin
+                        print self.LOG, name + ':', itemName, 'has unknown origin:', origin
                         continue
                     itemName = intern(itemName)
                     for key in itemData.keys():
                         if key not in ('origin', 'timeline', 'effects'):
-                            print self.ID + ':', name + ': incorrect key', key, 'in', itemName, 'ignored'
+                            print self.LOG, name + ': incorrect key', key, 'in', itemName, 'ignored'
                             itemData.pop(key, None)
                     if 'effects' in itemData:
                         for key in itemData['effects'].keys():
                             if key != 'shotSound':
-                                print self.ID + ':', name + ': only shotSound effects are supported,', key, 'ignored'
+                                print self.LOG, name + ': only shotSound effects are supported,', key, 'ignored'
                                 itemData['effects'].pop(key)
                     itemsData.setdefault(itemName, {}).update(itemData)
 
@@ -116,13 +116,13 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                             for idx, key in enumerate(('wwsoundPC', 'wwsoundNPC')))
         for sname, effData in self.data['gun_reload_effects'].iteritems():
             if effData['type'] not in reloadTypes:
-                print self.ID + ': wrong reload effect type:', effData['type'], 'available:', sorted(reloadTypes.keys())
+                print self.LOG, 'wrong reload effect type:', effData['type'], 'available:', sorted(reloadTypes.keys())
                 continue
             reloadType = reloadTypes[effData['type']]
             orig, desc, sect = g_cache._gunReloadEffects.get(sname, None), None, ResMgr.DataSection()
             if not isinstance(orig, reloadType):  # None is not an instance too
                 if orig is not None:
-                    print self.ID + ': changing type of reload effect %s. Might cause problems!' % sname
+                    print self.LOG, 'changing type of reload effect %s. Might cause problems!' % sname
                 orig, desc = None, reloadType(sect, effData['type'])
             for slot in reloadType.__slots__:
                 slotName = mismatchSlots.get(slot, slot)
@@ -204,21 +204,21 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             if is_new_list:
                 gun.effects = g_cache._gunEffects.get(effectsData[0], gun.effects)
             else:
-                print self.ID + ': item %s needs %s effects as list but one string was provided. Skipping...' % (
+                print self.LOG, 'item %s needs %s effects as list but one string was provided. Skipping...' % (
                     gun.name, len(gun.effects))
             return
         if not is_new_list:
             gun.effects = g_cache._gunEffects.get(effectsData, gun.effects)
             return
         if len(gun.effects) != len(effectsData):
-            print self.ID + ': item %s needs %s effects as list but %s were provided. Skipping...' % (
+            print self.LOG, 'item %s needs %s effects as list but %s were provided. Skipping...' % (
                 gun.name, len(gun.effects), len(effectsData))
             return
         effects = []
         for effectName in effectsData:
             gun_effect = g_cache._gunEffects.get(effectName)
             if gun_effect is None:
-                print self.ID + ': gun effect', effectName, 'not found'
+                print self.LOG, 'gun effect', effectName, 'not found'
             else:
                 effects.append(gun_effect)
         if len(effects) == len(gun.effects):

@@ -130,6 +130,7 @@ class JSONLoader:
 
     @classmethod
     def loadJson(cls, ID, name, oldConfig, path, save=False, rewrite=True, quiet=False, encrypted=False, sort_keys=True):
+        LOG = ID + ':'
         config_new = oldConfig
         oldConfig = cls.stringed_ints(oldConfig)
         if not os.path.exists(path):
@@ -139,7 +140,7 @@ class JSONLoader:
         new_path = '%s%s.json' % (path, name)
         if not os.path.isfile(new_path):
             if not save:
-                print ID + ': ERROR: Config not found, creating default:', new_path
+                print LOG, 'ERROR: Config not found, creating default:', new_path
             cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
             return config_new
         if not save:
@@ -167,14 +168,14 @@ class JSONLoader:
             return config_new
         write_lines = cls.byte_ify(cls.json_dumps(read_data, sort_keys)).split('\n')
         if not quiet:
-            print ID + ': updating config:', new_path
+            print LOG, 'updating config:', new_path
         for lineNum, (comment, insert) in sorted(read_excluded.iteritems(), key=lambda x: x[0]):
             if not insert:
                 if lineNum < len(write_lines):
                     write_lines[lineNum] += comment
                     continue
                 else:
-                    print ID + ': config', new_path, 'update warning: comment on line', lineNum, 'went beyond updated file'
+                    print LOG, 'config', new_path, 'update warning: comment on line', lineNum, 'went beyond updated file'
             write_lines.insert(lineNum, comment)
         cls.json_file_write(new_path, '\n'.join(write_lines), encrypted)
         return config_new

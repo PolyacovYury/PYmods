@@ -23,7 +23,7 @@ def debugOutput(xmlName, vehName, playerName, modelsSet, modelDesc):
     if not g_config.data['isDebug']:
         return
     info = ''
-    header = g_config.ID + ': %s (%s)' % (xmlName, vehName)
+    header = g_config.LOG, '%s (%s)' % (xmlName, vehName)
     if playerName is not None:
         header += ', player: ' + playerName
     if modelsSet != 'default':
@@ -54,7 +54,7 @@ def getModelDescInfo(vehicleID, vDesc, mode):
     xmlName = vDesc.name.split(':')[1].lower()
     modelDesc = g_config.findModelDesc(xmlName, currentTeam, isinstance(BigWorld.entity(vehicleID), HangarVehicle))
     if modelDesc is not None and vDesc.chassis.generalWheelsAnimatorConfig is not None:
-        print g_config.ID + ':', (
+        print g_config.LOG, (
             'WARNING: wheeled vehicles are NOT processed. At least until WG moves params processing out of Vehicular.')
         if xmlName in modelDesc['whitelist']:
             modelDesc['whitelist'].remove(xmlName)

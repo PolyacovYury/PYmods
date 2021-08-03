@@ -20,11 +20,11 @@ def apply(vDesc, modelsSet):
             part.modelsSets[modelsSet] = ModelStatesPaths(models.undamaged, path_destroyed, models.exploded)
             part.models = part.modelsSets['default']
         else:
-            print g_config.ID + ': skin model not found:', path_destroyed
+            print g_config.LOG, 'skin model not found:', path_destroyed
         models = part.modelsSets[modelsSet]
         path_exploded = 'vehicles/skins/models/white_crash/' + models.exploded
         if ResMgr.isFile(path_exploded):
             part.modelsSets[modelsSet] = ModelStatesPaths(models.undamaged, models.destroyed, path_exploded)
             part.models = part.modelsSets['default']
         else:
-            print g_config.ID + ': skin model not found:', path_exploded
+            print g_config.LOG, 'skin model not found:', path_exploded

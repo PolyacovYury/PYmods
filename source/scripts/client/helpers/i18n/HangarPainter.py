@@ -94,9 +94,9 @@ class ConfigInterface(PYmodsConfigInterface):
             loadJson(self.ID, 'blacklist', webConf, self.configPath, True)
         except urllib2.URLError as e:
             if hasattr(e, 'reason'):
-                print self.ID + ': blacklists config download failed:', e.reason
+                print self.LOG, 'blacklists config download failed:', e.reason
             elif hasattr(e, 'code'):
-                print self.ID + ': GitHub internal error:', e.code
+                print self.LOG, 'GitHub internal error:', e.code
         super(ConfigInterface, self).load()
 
     def registerHotkeys(self):
@@ -146,7 +146,7 @@ def i18n_hook_makeString(key, *args, **kw):
         else:
             return translation
     except StandardError:
-        print _config.ID + ': error at', key
+        print _config.LOG, 'error at', key
         traceback.print_exc()
         return old_makeString(key, *args, **kw)
 

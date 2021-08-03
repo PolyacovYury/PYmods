@@ -70,7 +70,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 debugMsg = 'enabling collision display'
                 msg = self.i18n['collision_enable']
             if self.data['debug']:
-                print self.ID + ':', debugMsg
+                print self.LOG, debugMsg
             SM.pushMessage('temp_SM' + msg, SM.SM_TYPE.CustomizationForGold)
             refreshCurrentVehicle()
 
@@ -125,7 +125,7 @@ def new_setupModel(base, self, buildIdx):
                 self.collisionLoaded = False
                 failList.append(modelName if modelName else partName)
         if failList:
-            print g_config.ID + ': collision load failed: models not found', failList
+            print g_config.LOG, 'collision load failed: models not found', failList
         if not self.collisionLoaded:
             return
         # Getting offset matrices
@@ -136,7 +136,7 @@ def new_setupModel(base, self, buildIdx):
             hullMP, fullChassisMP)
         for idx in xrange(len(vDesc.hull.turretPositions)):
             if idx:
-                print g_config.ID + ': WARNING: multiple turrets are present!', vDesc.name
+                print g_config.LOG, 'WARNING: multiple turrets are present!', vDesc.name
                 break
             turretOffset = math_utils.createTranslationMatrix(vDesc.hull.turretPositions[idx])
             gunOffset = math_utils.createTranslationMatrix(vDesc.turret.gunPosition)
@@ -167,7 +167,7 @@ def new_setupModel(base, self, buildIdx):
                 scaleMat.setScale((0.001, 0.001, 0.001))
                 compoundModel.node(moduleName, scaleMat)
             else:
-                print g_config.ID + ': model rescale for', moduleName, 'failed'
+                print g_config.LOG, 'model rescale for', moduleName, 'failed'
 
 
 class GUIBox(object):
