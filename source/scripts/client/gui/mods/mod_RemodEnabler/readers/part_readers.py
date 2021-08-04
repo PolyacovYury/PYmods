@@ -52,6 +52,8 @@ def readGun(xmlCtx, section, item):
     item.animateEmblemSlots = section.readBool('animateEmblemSlots', True)
     if section.has_key('drivenJoints'):
         item.drivenJoints = vehicles._readDrivenJoints(xmlCtx, section, 'drivenJoints')
+    else:
+        item.drivenJoints = 'void'
     pickFrom = getOrigItem(xmlCtx, section, 'gun')
     if pickFrom is not None:
         item.effects = pickFrom.effects
@@ -111,7 +113,7 @@ def readChassis(xmlCtx, section, item):  # told ya
 
     item.drivingWheelsSizes = (frontWheelSize, rearWheelSize)
     item.traces = chassis_readers.readTraces(xmlCtx, section, item.topRightCarryingPoint[0], vehicles.g_cache)
-    item.tracks = chassis_readers.readTrackBasicParams(xmlCtx, section, vehicles.g_cache)
+    item.tracks = chassis_readers.readTrackBasicParams(xmlCtx, section, vehicles.g_cache) or 'void'
     groundGroups, groundNodes, groundNodesActivePostmortem, lodSettings = chassis_readers.readGroundNodesAndGroups(
         xmlCtx, section, vehicles.g_cache)
     item.groundNodes = shared_components.NodesAndGroups(
@@ -119,9 +121,9 @@ def readChassis(xmlCtx, section, item):  # told ya
     item.trackNodes = shared_components.NodesAndGroups(
         nodes=chassis_readers.readTrackNodes(xmlCtx, section), groups=component_constants.EMPTY_TUPLE,
         activePostmortem=False, lodSettings=None)
-    item.trackSplineParams = chassis_readers.readTrackSplineParams(xmlCtx, section)
-    item.splineDesc = chassis_readers.readSplineConfig(xmlCtx, section, vehicles.g_cache)
-    item.leveredSuspension = chassis_readers.readLeveredSuspension(xmlCtx, section, vehicles.g_cache)
+    item.trackSplineParams = chassis_readers.readTrackSplineParams(xmlCtx, section) or 'void'
+    item.splineDesc = chassis_readers.readSplineConfig(xmlCtx, section, vehicles.g_cache) or 'void'
+    item.leveredSuspension = chassis_readers.readLeveredSuspension(xmlCtx, section, vehicles.g_cache) or 'void'
     item.physicalTracks = physicalTracksDict = {}
     physicalTracksSection = section['physicalTracks']
     for k in ('left', 'right') if physicalTracksSection is not None else ():

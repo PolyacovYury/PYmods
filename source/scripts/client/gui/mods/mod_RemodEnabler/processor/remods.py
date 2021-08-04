@@ -45,6 +45,8 @@ def apply(vDesc, modelDesc, modelsSet):
                     if isinstance(remodAttr[0], list):
                         vehicleAttr[0].nodes = remodAttr[0]
                         continue
+                if remodAttr == 'void':
+                    remodAttr = emptyAttr
                 setattr(vehiclePart, attr, remodAttr)
     if modelDesc.chassis.AODecals:
         vDesc.chassis.AODecals = copy.deepcopy(vDesc.chassis.AODecals)

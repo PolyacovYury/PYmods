@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 import BigWorld
 import Keys
-import Math
+import ResMgr
 import traceback
-from PYmodsCore import PYmodsConfigInterface, checkKeys, loadJson, loadJsonOrdered, objToDict, refreshCurrentVehicle, remDups
+from PYmodsCore import PYmodsConfigInterface, checkKeys, loadJson, objToDict, refreshCurrentVehicle, remDups
 from PYmodsCore.delayed import g_modsListApi, showI18nDialog
-from collections import OrderedDict
 from functools import partial
 from gui import SystemMessages as SM
 from gui.Scaleform.framework import ScopeTemplates as ST, ViewSettings, WindowLayer as WL, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
 from gui.shared.personality import ServicesLocator as SL
-from items.components.chassis_components import SplineConfig
-from items.vehicles import g_cache
+from items.components.component_constants import ALLOWED_EMBLEM_SLOTS as AES
+from items.vehicles import _VEHICLE_TYPE_XML_PATH
 from vehicle_systems.tankStructure import TankPartNames
 from . import __date__, __modID__
 
@@ -261,7 +260,7 @@ class ConfigInterface(PYmodsConfigInterface):
 class RemodEnablerUI(AbstractWindowView):
     def __init__(self, ctx=None):
         super(RemodEnablerUI, self).__init__(ctx)
-        self.newRemodData = OrderedDict()
+        self.newRemodData = None
 
     def _populate(self):
         super(RemodEnablerUI, self)._populate()
@@ -346,56 +345,74 @@ class RemodEnablerUI(AbstractWindowView):
         modelDesc = getattr(vDesc, 'modelDesc', None)
         if modelDesc is not None:
             remod_name = modelDesc.name
-            self.newRemodData = loadJsonOrdered(g_config.ID, g_config.configPath + 'remods/', remod_name)
+            self.newRemodData = ResMgr.openSection('.' + g_config.configPath + 'remods/' + remod_name + '.xml')
             return dict(
                 name=remod_name, message=modelDesc.message, vehicleName=vehName, whitelist=modelDesc.whitelist,
                 **{k: g_config.settings[remod_name][k] for k in g_config.teams})
         try:
-            data = self.newRemodData
-            data.clear()
-            data['message'] = default['message']
-            for team in g_config.teams:
-                data[team] = default[team]
-            data['whitelist'] = default['whitelist']
-            for key in TankPartNames.ALL + ('engine',):
-                data[key] = OrderedDict()
+            orig_data = ResMgr.openSection(_VEHICLE_TYPE_XML_PATH + '/'.join(vDesc.name.split(':')) + '.xml')
+            data = self.newRemodData = ResMgr.DataSection()
+            data.writeString('message', default['message'])
+            data.write('message', default['message'])
+            for k in g_config.teams:
+                data.writeBool(k, default[k])
+            data.writeString('whitelist', ' '.join(default['whitelist']))
             modelsSet = appearance.outfit.modelsSet or 'default'
-            for key in TankPartNames.ALL:
-                data[key]['undamaged'] = getattr(vDesc, key).modelsSets[modelsSet].undamaged
-            chassis = data['chassis']
-            from .processor.remods import chassis_params
-            for key in chassis_params + ('chassisLodDistance',):
-                obj = _asDict(getattr(vDesc.chassis, key))
-                chassis[key] = obj
-            modelsSets = chassis['splineDesc']['segmentModelSets']
-            chassis['splineDesc']['segmentModelSets'] = modelsSets.get(modelsSet, modelsSets['default'])
-            chassis['hullPosition'] = vDesc.chassis.hullPosition.list()
-            chassis['AODecals'] = [[[decal.get(strIdx, colIdx) for colIdx in xrange(3)] for strIdx in xrange(4)]
-                                   for decal in vDesc.chassis.AODecals]
-            for partName in ('gun', 'chassis', 'engine'):
-                data[partName]['soundID'] = getattr(vDesc, partName).name
-            data['gun']['drivenJoints'] = vDesc.gun.drivenJoints
-            pixieID = ''
-            for key, value in g_cache._customEffects['exhaust'].iteritems():
-                if value == vDesc.hull.customEffects[0]._selectorDesc:
-                    pixieID = key
-                    break
-            data['hull']['exhaust'] = {'nodes': list(vDesc.hull.customEffects[0].nodes), 'pixie': pixieID}
-            exclMask = vDesc.type.camouflage.exclusionMask
-            if exclMask:
-                camouflage = data['camouflage'] = OrderedDict()
-                camouflage['exclusionMask'] = exclMask
-                camouflage['tiling'] = vDesc.type.camouflage.tiling
-            for partName in TankPartNames.ALL[1:]:
-                part = getattr(vDesc, partName)
-                exclMask = part.camouflage.exclusionMask if hasattr(part, 'camouflage') else ''
-                if exclMask:
-                    camouflage = data[partName]['camouflage'] = OrderedDict()
-                    camouflage['exclusionMask'] = exclMask
-                    camouflage['tiling'] = part.camouflage.tiling
-            for partName in TankPartNames.ALL:
-                part = getattr(vDesc, partName)
-                data[partName]['emblemSlots'] = [_asDict(slot) for slot in part.emblemSlots]
+            for partName, sectNames, path in zip((
+                    TankPartNames.ALL + ('engine',)
+            ), (
+                    ('traces', 'tracks', 'wheels', 'drivingWheels', 'hullPosition', 'topRightCarryingPoint', 'AODecals',
+                     'groundNodes', 'splineDesc', 'trackThickness', 'trackNodes', 'leveredSuspension', 'physicalTracks'),
+                    ('hangarShadowTexture', 'AODecals', 'exhaust'),
+                    ('multiGun', 'showEmblemsOnGun', 'AODecals', 'ceilless',
+                     'wwturretRotatorSoundManual', 'turretDetachmentEffects'),
+                    ('animateEmblemSlots', 'drivenJoints', 'effects', 'reloadEffect', 'impulse', 'recoil'),
+                    (),
+            ), (
+                    'chassis/' + vDesc.chassis.name,
+                    'hull',
+                    'turrets0/' + vDesc.turret.name,
+                    'turrets0/' + vDesc.turret.name + '/guns/' + vDesc.gun.name,
+                    '',
+            )):
+                part = data.createSection(partName)
+                orig_part = orig_data[path]
+                for sectName in sectNames and ('undamaged', 'destroyed', 'exploded'):
+                    part.writeString('models/' + sectName, getattr(getattr(vDesc, partName).modelsSets[modelsSet], sectName))
+                for sectName in sectNames and (sectNames + ('emblemSlots', 'customizationSlots', 'camouflage')):
+                    orig = orig_part[sectName]
+                    if orig is None:  # DO NOT BOOL-TEST THIS
+                        continue
+                    desc = part.createSection(sectName)
+                    desc.copy(orig)
+                    if sectName == 'splineDesc':
+                        modelSets = orig['modelSets']
+                        if modelsSet != 'default' and modelSets is not None:
+                            modelSet = modelSets[modelsSet]
+                            if modelSet is not None:
+                                for n in ('segmentModelLeft', 'segmentModelRight', 'segment2ModelLeft', 'segment2ModelRight'):
+                                    if modelSet.has_key(n):
+                                        (desc.createSection(n) if not desc.has_key(n) else desc[n]).copy(modelSet[n])
+                                    elif desc.has_key(n):
+                                        desc.deleteSection(n)
+                        if desc.has_key('modelSets'):
+                            desc.deleteSection('modelSets')
+                    if sectName == 'physicalTracks':
+                        for sect in desc.values():
+                            modelSets = sect['modelSets']
+                            if modelSets is not None:
+                                modelSet = modelSets[modelsSet]
+                                if modelSet is not None:
+                                    sect['mainSegment']['model'].copy(modelSet['mainSegmentModel'])
+                                sect.deleteSection(modelSets)
+                    if sectName == 'customizationSlots':
+                        for sect in list(desc.values()):
+                            if sect.readString('slotType') not in AES:
+                                desc.deleteSection(sect)
+                    if not desc.asString and not desc.values():
+                        part.deleteSection(desc)
+                if partName != 'hull':
+                    part.writeString('soundID', vDesc.name.split(':')[0] + ':' + getattr(vDesc, partName).name)
         except StandardError:
             SM.pushMessage('temp_SM' + g_config.i18n['UI_flash_remodCreate_error'], SM.SM_TYPE.Warning)
             traceback.print_exc()
@@ -408,38 +425,20 @@ class RemodEnablerUI(AbstractWindowView):
                 return
             from collections import OrderedDict
             data = self.newRemodData
-            data['message'] = settings.message
+            data.writeString('message', settings.message)
             for team in g_config.teams:
-                data[team] = getattr(settings, team)
-            data['whitelist'] = settings.whitelist
-            loadJson(g_config.ID, str(settings.name), data, g_config.configPath + 'remods/', True, False, sort_keys=False)
+                data.writeBool(team, getattr(settings, team))
+            data.writeString('whitelist', ' '.join(settings.whitelist))
+            temp = ResMgr.DataSection()
+            temp.copy(data)
+            new_data = ResMgr.openSection('.' + g_config.configPath + 'remods/' + settings.name + '.xml', True)
+            new_data.copy(temp)
+            new_data.save()
             g_config.readCurrentSettings()
             SM.pushMessage('temp_SM' + g_config.i18n['UI_flash_remodCreate_success'], SM.SM_TYPE.CustomizationForGold)
         except StandardError:
             SM.pushMessage('temp_SM' + g_config.i18n['UI_flash_remodCreate_error'], SM.SM_TYPE.Warning)
             traceback.print_exc()
-
-
-def _asDict(obj):
-    if isinstance(obj, SplineConfig):
-        result = OrderedDict()
-        result['segmentModelSets'] = OrderedDict((setName, OrderedDict((
-            ('left', obj.segmentModelLeft(setName)),
-            ('right', obj.segmentModelRight(setName)),
-            ('secondLeft', obj.segment2ModelLeft(setName)),
-            ('secondRight', obj.segment2ModelRight(setName))))) for setName in sorted(obj._SplineConfig__segmentModelSets))
-        for attrName in obj.__slots__[1:]:
-            attrName = attrName.strip('_')
-            result[attrName] = getattr(obj, attrName)
-        return result
-    elif hasattr(obj, '_fields'):
-        return OrderedDict(zip(obj._fields, (_asDict(x) for x in obj)))
-    elif isinstance(obj, (Math.Vector3, Math.Vector2)):
-        return obj.list()
-    elif isinstance(obj, (list, tuple)):
-        return [_asDict(x) for x in obj]
-    else:
-        return obj
 
 
 g_config = ConfigInterface()
