@@ -1,10 +1,9 @@
-import fnmatch
-import os
-from PYmodsCore import remDups, loadJson, loadJsonOrdered
-from collections import namedtuple, OrderedDict
+from collections import OrderedDict, namedtuple
+
 from items.components.shared_components import EmblemSlot
 from items.readers.shared_readers import __customizationSlotIdRanges as customizationSlotIdRanges
 from vehicle_systems.tankStructure import TankPartNames
+from .json_update import migrateSettings
 
 Wheel = namedtuple('Wheel', ('isLeft', 'radius', 'nodeName', 'isLeading', 'leadingSyncAngle'))
 WheelGroup = namedtuple('WheelGroup', ('isLeft', 'template', 'count', 'startIndex', 'radius'))
@@ -25,75 +24,42 @@ defaultEmblemSlot = EmblemSlot(
     [0, 0, 0], [0, 0, 0], [0, 0, 0], 0.0, False, 'clan', False, True, None, 0, True)
 
 
-def migrateSettings(g_config, old_data, new_data):
-    whitelist = []
-    for team in g_config.teams:
-        had_WL = (team + 'Whitelist') in old_data
-        old_WL = (x.strip() for x in old_data.pop(team + 'Whitelist', '').split(',') if x.strip())
-        new_data[team] = new_data.get(team, old_data.pop('swap' + team.capitalize(), True) and (not had_WL or bool(old_WL)))
-        whitelist.extend(old_WL)
-    new_data['whitelist'] = sorted(remDups(whitelist + new_data.get('whitelist', [])))
+# noinspection PyUnresolvedReferences
+def migrateRemod(g_config, json_data):
+    new_conf = OrderedDict()
+    new_conf['message'] = json_data.get('authorMessage', json_data.get('message', ''))
+    migrateSettings(g_config, json_data, new_conf)
+    for key, val in json_data.items():
+        if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key:
+            continue
+        if key in TankPartNames.ALL and 'emblemSlots' in val:
+            emblemSlots = []
+            for data in val['emblemSlots']:
+                slotData = OrderedDict()
+                emblemSlots.append(slotData)
+                for k, v in zip(defaultEmblemSlot._fields, defaultEmblemSlot):
+                    if k in data:
+                        v = data[k]
+                    elif k == 'slotId':
+                        v = customizationSlotIdRanges[key][data['type']][0]
+                    slotData[k] = v
+            val['emblemSlots'][:] = emblemSlots
+        if key == 'engine':
+            val = OrderedDict((k, v) for k, v in val.iteritems() if 'wwsound' not in k)
+        if key == 'gun':
+            val = OrderedDict((k, v) for k, v in val.iteritems() if 'ffect' not in k)
+            if 'drivenJoints' not in val:
+                val['drivenJoints'] = None
+        if key == 'hull':
+            if 'exhaust' in val and 'nodes' in val['exhaust'] and isinstance(val['exhaust']['nodes'], basestring):
+                val['exhaust']['nodes'] = val['exhaust']['nodes'].split()
+        if key == 'chassis':
+            val = migrate_chassis_config(val)
+        new_conf[key] = val
+    return new_conf
 
 
-def migrateConfigs(g_config):
-    settings = loadJson(g_config.ID, 'settings', g_config.settings, g_config.configPath)
-    if settings and 'remods' in settings:
-        for sname, remodData in settings['remods'].items():
-            if not remodData.pop('enabled', True):
-                print g_config.ID + ': WARNING! Disabled remod detected:', sname + (
-                    '. Remod disabling is not supported anymore, delete unneeded remods. '
-                    'If game crashed - this is, probably, the reason.')
-            migrateSettings(g_config, remodData, remodData)
-        loadJson(g_config.ID, 'settings', settings['remods'], g_config.configPath, True)
-
-    selectedData = loadJson(g_config.ID, 'remodsCache', g_config.modelsData['selected'], g_config.configPath)
-    for key in selectedData.keys():
-        if not key.islower():
-            selectedData[key.lower()] = selectedData.pop(key)
-        if key.lower() == 'remod':
-            del selectedData[key.lower()]
-    loadJson(g_config.ID, 'remodsCache', selectedData, g_config.configPath, True)
-
-    for root, _, fNames in os.walk(g_config.configPath + 'remods/'):
-        for fName in fnmatch.filter(fNames, '*.json'):
-            sname = os.path.splitext(fName)[0]
-            old_conf = loadJsonOrdered(g_config.ID, root, sname)
-            if not old_conf:
-                print g_config.ID + ': error while reading', fName + '.'
-                continue
-            new_conf = OrderedDict()
-            new_conf['message'] = old_conf.get('authorMessage', old_conf.get('message', ''))
-            migrateSettings(g_config, old_conf, new_conf)
-            for key, val in old_conf.items():
-                if key in ('authorMessage',) or 'Whitelist' in key or 'swap' in key:
-                    continue
-                if key in TankPartNames.ALL and 'emblemSlots' in val:
-                    emblemSlots = []
-                    for data in val['emblemSlots']:
-                        slotData = OrderedDict()
-                        emblemSlots.append(slotData)
-                        for k, v in zip(defaultEmblemSlot._fields, defaultEmblemSlot):
-                            if k in data:
-                                v = data[k]
-                            elif k == 'slotId':
-                                v = customizationSlotIdRanges[key][data['type']][0]
-                            slotData[k] = v
-                    val['emblemSlots'][:] = emblemSlots
-                if key == 'engine':
-                    val = OrderedDict((k, v) for k, v in val.iteritems() if 'wwsound' not in k)
-                if key == 'gun':
-                    val = OrderedDict((k, v) for k, v in val.iteritems() if 'ffect' not in k)
-                    if 'drivenJoints' not in val:
-                        val['drivenJoints'] = None
-                if key == 'hull':
-                    if 'exhaust' in val and 'nodes' in val['exhaust'] and isinstance(val['exhaust']['nodes'], basestring):
-                        val['exhaust']['nodes'] = val['exhaust']['nodes'].split()
-                if key == 'chassis':
-                    val = migrate_chassis_config(val)
-                new_conf[key] = val
-            loadJson(g_config.ID, sname, new_conf, root, True, sort_keys=False)
-
-
+# noinspection PyTypeChecker
 def migrate_chassis_config(config):  # please send data['chassis'] here
     new_config = OrderedDict()
     for key in config:

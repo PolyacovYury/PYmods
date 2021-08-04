@@ -1,32 +1,17 @@
-package  {
-	import flash.display.DisplayObject;
+package polyacov_yury.views.lobby.remod_enabler {
 	import flash.display.InteractiveObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.text.TextField;
-	import flash.text.TextFormat;
-	import net.wg.gui.components.controls.ButtonIconNormal;
-	import net.wg.gui.components.controls.CheckBox;
 	import net.wg.gui.components.controls.DropdownMenu;
-	import net.wg.gui.components.controls.InfoIcon;
-	import net.wg.gui.components.controls.LabelControl;
-	import net.wg.gui.components.controls.RadioButton;
 	import net.wg.gui.components.controls.SoundButtonEx;
-	import net.wg.gui.components.controls.TextInput;
 	import net.wg.infrastructure.base.AbstractWindowView;
 	import scaleform.clik.constants.InvalidationType;
-	import scaleform.clik.controls.ButtonGroup;
-	import scaleform.clik.core.UIComponent;
 	import scaleform.clik.data.DataProvider;
 	import scaleform.clik.events.ListEvent;
-	import scaleform.gfx.TextFieldEx;
 
 	public class RemodEnablerUI extends AbstractWindowView {
-		private static const SCROLL_ITEM_LIMIT: int = 9;
 		private const teams: Array = ["player", "ally", "enemy"];
-		private var heightMargin:int = 54;
-		private var widthMargin:int = 25;
 		
 		private var texts:Object;
 		private var settings:Object;
@@ -36,39 +21,37 @@ package  {
 		private var updating:Boolean = false;
 		private var currentVehicleName:String;
 		
-		private var remodSetupBtn:SoundButtonEx;
-		private var remodCreateBtn:SoundButtonEx;
+		private var remodSetupBtn:*;
+		private var remodCreateBtn:*;
 		
-		private var backBtn:SoundButtonEx;
-		private var saveBtn:SoundButtonEx;
+		private var backBtn:*;
+		private var saveBtn:*;
 		
-		private var addBtn:SoundButtonEx;
-		private var removeBtn:SoundButtonEx;
+		private var addBtn:*;
+		private var removeBtn:*;
 		
 		private var remodNameArray: Array;
 		private var currentRemods: Array;
 		
-		private var remodNameDropdown:DropdownMenu;
-		private var whitelistDropdown:DropdownMenu;
+		private var remodNameDropdown:*;
+		private var whitelistDropdown:*;
 		
-		private var useForLabel:MovieClip;
-		private var useForAllyLabel:MovieClip;
-		private var useForEnemyLabel:MovieClip;
-		private var useForPlayerLabel:MovieClip;
-		private var allyCB:MovieClip;
-		private var enemyCB:MovieClip;
-		private var playerCB:MovieClip;
+		private var useForLabel:*;
+		private var useForAllyLabel:*;
+		private var useForEnemyLabel:*;
+		private var useForPlayerLabel:*;
+		private var allyCB:*;
+		private var enemyCB:*;
+		private var playerCB:*;
 		
-		private var nameBox:MovieClip;
-		private var messageBox:MovieClip;
+		private var nameBox:*;
+		private var messageBox:*;
 		
 		public var py_printLog:Function;
 		public var py_onRequestSettings:Function;
 		public var py_onSaveSettings:Function;
-		public var py_onShowRemod:Function;
+		public var py_showRemod:Function;
 		public var py_onCreateRemod:Function;
-		public var py_onModelRestore:Function;
-		public var py_getCurrentVehicleName:Function;
 		public var py_getRemodData:Function;
 		public var py_onRequestRemodDelete:Function;
 		public var py_checkSettings:Function;
@@ -94,152 +77,13 @@ package  {
 			this.mode = "closing";
 			return this.py_checkSettings(this.settings, this.cache);
 		}
-		
-		private function createButton(label: String, x: int, y: int, handler: Function, width: int = 125, height:int = 23, big:Boolean = false, type: String = "ButtonNormal"): SoundButtonEx {
-			var Button:SoundButtonEx = App.utils.classFactory.getComponent(type, SoundButtonEx);
-			Button.width = width;
-			Button.height = height;
-			Button.x = x;
-			Button.y = y;
-			Button.label = label;
-			Button.enabled = enabled;
-			if (big) {
-				Button.constraintsDisabled = true;
-				var tf: TextFormat = Button.textField.getTextFormat();
-				tf.size = 28;
-				Button.textField.setTextFormat(tf);
-			}
-			Button.addEventListener(MouseEvent.CLICK, handler, false, 0, true);
-			Button.validateNow();
-			this.addChild(Button);
-			return Button;
-		}
 
-		private function createLabel(text: String, tooltip: String, x: int, y: int): MovieClip {
-			var _loc3_: UIComponent = new UIComponent();
-			var _loc4_: LabelControl = LabelControl(App.utils.classFactory.getComponent("LabelControl", LabelControl));
-			_loc4_.width = 240;
-			_loc4_.text = text;
-			if (tooltip) {
-				_loc4_.toolTip = tooltip;
-				_loc4_.infoIcoType = InfoIcon.TYPE_INFO;
-			}
-			_loc3_.addChild(_loc4_);
-			_loc4_.validateNow();
-			var lb: MovieClip = new MovieClip();
-			lb.addChild(_loc3_);
-			lb["label"] = _loc4_;
-			lb.y = y;
-			lb.x = x;
-			return lb;
-		}
-
-		private function createCheckBox(text: String, tooltip: String, x: int, y: int, callback: Function, width: int = 240): MovieClip {
-			var cb: CheckBox = null;
-			var checkboxUI: UIComponent = new UIComponent();
-			cb = CheckBox(App.utils.classFactory.getComponent("CheckBox", CheckBox));
-			cb.label = text;
-			cb.selected = false;
-			cb.toolTip = tooltip;
-			cb.infoIcoType = !! tooltip ? InfoIcon.TYPE_INFO : "";
-			cb.width = width;
-			cb.invalidateSize();
-			cb.invalidateState();
-			cb.invalidateData();
-			cb.validateNow();
-			if (callback != null) {
-				cb.addEventListener(Event.SELECT, callback);}
-			checkboxUI.addChild(cb);
-			var result: MovieClip = new MovieClip();
-			result.addChild(checkboxUI);
-			result.cb = cb;
-			result.x = x;
-			result.y = y;
-			this.addChild(result);
-			return result;
-		}
-		
-		private function applyDropdownLimits(bar:*, counts:int): void {
-			var dropdown:DropdownMenu = bar as DropdownMenu;
-			if (counts > SCROLL_ITEM_LIMIT) {
-				dropdown["componentInspectorSetting"] = true;
-				dropdown.scrollBar = "ScrollBar";
-				dropdown.rowCount = SCROLL_ITEM_LIMIT;
-				dropdown.inspectableThumbOffset = {"top": 0,"bottom": 0};
-				dropdown["componentInspectorSetting"] = false;
-			} else {
-				dropdown.rowCount = counts;
-			}
-		}
-		
-		private function createDropdown(x: int, y: int, callback: Function, width:int=223): DropdownMenu {
-			var dropdown: DropdownMenu = App.utils.classFactory.getComponent("DropdownMenuUI", DropdownMenu);
-			dropdown.itemRenderer = App.utils.classFactory.getClass("DropDownListItemRendererSound");
-			dropdown.dropdown = "DropdownMenu_ScrollingList";
-			dropdown.menuDirection = "down";
-			dropdown.menuMargin = 1;
-			//dropdown.menuRowsFixed = false;
-			//dropdown.menuWrapping = "normal";
-			//dropdown.scrollBar = "";
-			dropdown.showEmptyItems = false;
-			dropdown.x = x;
-			dropdown.y = y;
-			dropdown.width = width;
-			dropdown.menuWidth = width + 1;
-			//dropdown.menuRowsFixed = true;
-			//dropdown.soundId = "";
-			//dropdown.soundType = "dropDownMenu";
-			//dropdown.autoSize = "none";
-			dropdown.enabled = true;
-			dropdown.enableInitCallback = false;
-			dropdown.focusable = true;
-			dropdown.addEventListener(ListEvent.INDEX_CHANGE, callback, false, 0, true);
-			//dropdown["componentInspectorSetting"] = false;
-			this.addChild(dropdown);
-			dropdown.validateNow();
-			return dropdown;
-		}
-
-		private function createTextInput(param1: String = "", param2: String = "", param3: String = "", x: int = 0, y: int = 0, param4: Boolean = false): MovieClip {
-			var lb: DisplayObject = null;
-			var _loc5_: UIComponent = new UIComponent();
-			var _loc6_: Number = !! param1 ? Number(16) : Number(0);
-			if (param1) {
-				lb = this.createLabel(param1, param2, 0, 0);
-				_loc5_.addChild(lb);
-			}
-			var textInput: TextInput = TextInput(App.utils.classFactory.getComponent("TextInput", TextInput));
-			TextFieldEx.setNoTranslate(textInput.textField, true);
-			textInput.y = _loc6_;
-			textInput.width = 273;
-			textInput.text = param3;
-			textInput.displayAsPassword = param4;
-			_loc5_.addChild(textInput);
-			var _loc8_: MovieClip = new MovieClip();
-			_loc8_.addChild(_loc5_);
-			_loc8_.x = x + 8;
-			_loc8_.y = y + 8;
-			_loc8_["value"] = textInput;
-			return _loc8_;
-		}
-
-		private function changeWindow(header: String, width:int, height: int): void {
-			App.utils.focusHandler.setFocus(this);
-			if (window) {
-				window.title = header;
-				window.height = this.heightMargin + height;
-				window.width = this.widthMargin + width;
-			}
-			this.height = height;
-			this.width = width;
-			this.invalidate(InvalidationType.SIZE);
-		}
-
-		public function as_updateData(texts: Object, settings: Object, cache: Object): void {
-			this.texts = texts;
-			this.settings = settings;
-			this.cache = cache;
-			this.currentVehicleName = this.py_getCurrentVehicleName();
+		private function requestSettings(): void {
+			var data:Array = this.py_onRequestSettings();
+			this.texts = data[0];
+			this.settings = data[1];
+			this.cache = data[2];
+			this.currentVehicleName = data[3];
 			this.remodNameArray = [];
 			for (var name: String in this.settings) {
 				this.remodNameArray.push(name);
@@ -249,18 +93,17 @@ package  {
 
 		public function initSimpleMenu(): void {
 			try {
-				this.py_onRequestSettings();
+				this.requestSettings();
 				this.removeButtons();
 				this.removeChildren();
 				this.mode = "simple";
-				this.remodNameDropdown = this.createDropdown(8, 8, this.remodNameDropdownChange, 273);
-				this.useForLabel = this.createLabel(this.texts.useFor_header_text, "", 8, 38);
-				this.addChild(this.useForLabel);
-				this.playerCB = this.createCheckBox(this.texts.useFor_player_text, "", 8, 58, this.UFPCBChange);
-				this.allyCB = this.createCheckBox(this.texts.useFor_ally_text, "", 8, 78, this.UFACBChange);
-				this.enemyCB = this.createCheckBox(this.texts.useFor_enemy_text, "", 8, 98, this.UFECBChange);
-				this.addBtn = this.createButton(this.texts.addBtn, 8, 123, this.addBtnClick);
-				this.removeBtn = this.createButton(this.texts.removeBtn, 153, 123, this.removeBtnClick);
+				this.remodNameDropdown = this.addChild(view_utils.createDropdown(8, 8, this.remodNameDropdownChange, 273));
+				this.useForLabel = this.addChild(view_utils.createLabel(this.texts.useFor_header_text, "", 8, 38));
+				this.playerCB = this.addChild(view_utils.createCheckBox(this.texts.useFor_player_text, "", 8, 58, this.UFPCBChange));
+				this.allyCB = this.addChild(view_utils.createCheckBox(this.texts.useFor_ally_text, "", 8, 78, this.UFACBChange));
+				this.enemyCB = this.addChild(view_utils.createCheckBox(this.texts.useFor_enemy_text, "", 8, 98, this.UFECBChange));
+				this.addBtn = this.addChild(view_utils.createButton(this.texts.addBtn, 8, 123, this.addBtnClick));
+				this.removeBtn = this.addChild(view_utils.createButton(this.texts.removeBtn, 153, 123, this.removeBtnClick));
 				this.addBottomButtons(153);
 				this.calculateSimpleMenuData();
 			} catch (error: Error) {
@@ -278,7 +121,7 @@ package  {
 		}
 
 		private function calculateSimpleMenuData(): void {
-			this.changeWindow(this.texts.header_simple + this.currentVehicleName, 290, 183);
+			view_utils.changeWindow(this, this.texts.header_simple + this.currentVehicleName, 290, 183);
 			var names:Array = new Array();
 			var iter:int = 0;
 			this.currentRemods = [];
@@ -294,8 +137,9 @@ package  {
 				names.push({label: this.texts.notFound, data:0})
 			}
 			this.remodNameDropdown.enabled = !isEmpty;
+			this.addBtn.enabled = !(this.remodNameArray.length == this.currentRemods.length);
 			this.removeBtn.enabled = !isEmpty;
-			this.applyDropdownLimits(this.remodNameDropdown, names.length);
+			view_utils.applyDropdownLimits(this.remodNameDropdown, names.length);
 			this.remodNameDropdown.dataProvider = new DataProvider(names);
 			if (!this.remodNameDropdown.selectedIndex) {
 				this.remodNameDropdownChange(null);}
@@ -304,27 +148,27 @@ package  {
 
 		public function initMainMenu(): void {
 			try {
-				this.py_onRequestSettings();
+				this.requestSettings();
 				this.removeChildren();
 				this.mode = "advanced_menu";
-				this.changeWindow(this.texts.header_main, 240, 113);
-				this.remodSetupBtn = this.createButton(this.texts.remodSetupBtn, 8, 8, this.remodSetupBtnClick, 223, 32, true);
-				this.remodCreateBtn = this.createButton(this.texts.remodCreateBtn, 8, 45, this.remodCreateBtnClick, 223, 32, true);
+				view_utils.changeWindow(this, this.texts.header_main, 240, 113);
+				this.remodSetupBtn = this.addChild(view_utils.createButton(this.texts.remodSetupBtn, 8, 8, this.remodSetupBtnClick, 223, 32, true));
+				this.remodCreateBtn = this.addChild(view_utils.createButton(this.texts.remodCreateBtn, 8, 45, this.remodCreateBtnClick, 223, 32, true));
 				this.remodSetupBtn.enabled = Boolean(this.remodNameArray.length);
-				this.backBtn = this.createButton(this.texts.backBtn, 8, 88, this.backBtnClick, 100);
+				this.backBtn = this.addChild(view_utils.createButton(this.texts.backBtn, 8, 88, this.backBtnClick, 100));
 			} catch (error: Error) {
 				this.py_printLog(error.getStackTrace());
 			}
 		}
 
 		private function addBottomButtons(y: int = 202): void {
-			this.backBtn = this.createButton("", 8, y, this.backBtnClick);
+			this.backBtn = this.addChild(view_utils.createButton("", 8, y, this.backBtnClick));
 			if (this.mode == "simple") {
 				this.backBtn.label = this.texts.advancedBtn;
 			} else {
 				this.backBtn.label = this.texts.backBtn;
 			}
-			this.saveBtn = this.createButton("", 153, y, this.saveBtnClick, 125, 23, false, "ButtonRed");
+			this.saveBtn = this.addChild(view_utils.createButton("", 153, y, this.saveBtnClick, 125, 23, false, "ButtonRed"));
 			if (this.mode == "simple_add") {
 				this.saveBtn.label = this.texts.addBtn;
 			} else {
@@ -341,12 +185,12 @@ package  {
 		private function removeMenuButtons(): void {
 			if (this.remodSetupBtn != null) {
 				this.remodSetupBtn.removeEventListener(MouseEvent.CLICK, this.remodSetupBtnClick);
-				this.remodSetupBtn.dispose();
+				this.removeChild(this.remodSetupBtn);
 				this.remodSetupBtn = null;
 			}
 			if (this.remodCreateBtn != null) {
 				this.remodCreateBtn.removeEventListener(MouseEvent.CLICK, this.remodCreateBtnClick);
-				this.remodCreateBtn.dispose();
+				this.removeChild(this.remodCreateBtn);
 				this.remodCreateBtn = null;
 			}
 		}
@@ -354,12 +198,12 @@ package  {
 		private function removeARButtons(): void {
 			if (this.addBtn != null) {
 				this.addBtn.removeEventListener(MouseEvent.CLICK, this.addBtnClick);
-				this.addBtn.dispose();
+				this.removeChild(this.addBtn);
 				this.addBtn = null;
 			}
 			if (this.removeBtn != null) {
 				this.removeBtn.removeEventListener(MouseEvent.CLICK, this.removeBtnClick);
-				this.removeBtn.dispose();
+				this.removeChild(this.removeBtn);
 				this.removeBtn = null;
 			}
 		}
@@ -367,12 +211,12 @@ package  {
 		private function removeBottomButtons(): void {
 			if (this.backBtn != null) {
 				this.backBtn.removeEventListener(MouseEvent.CLICK, this.backBtnClick);
-				this.backBtn.dispose();
+				this.removeChild(this.backBtn);
 				this.backBtn = null;
 			}
 			if (this.saveBtn != null) {
 				this.saveBtn.removeEventListener(MouseEvent.CLICK, this.saveBtnClick);
-				this.saveBtn.dispose();
+				this.removeChild(this.saveBtn);
 				this.saveBtn = null;
 			}
 		}
@@ -382,15 +226,14 @@ package  {
 				this.removeButtons();
 				this.removeChildren();
 				this.mode = "advanced_setup";
-				this.changeWindow(this.texts.header_setup, 290, 178);
-				this.remodNameDropdown = this.createDropdown(8, 8, this.remodNameDropdownChange, 273);
-				this.useForLabel = this.createLabel(this.texts.useFor_header_text, "",  9, 37);
-				this.addChild(this.useForLabel);
-				this.playerCB = this.createCheckBox(this.texts.useFor_player_text, "", 8, 57, this.UFPCBChange);
-				this.allyCB = this.createCheckBox(this.texts.useFor_ally_text, "", 8, 77, this.UFACBChange);
-				this.enemyCB = this.createCheckBox(this.texts.useFor_enemy_text, "", 8, 97, this.UFECBChange);
-				this.addBtn = this.createButton(this.texts.addBtn, 184, 120, this.addBtnClick, 95);
-				this.whitelistDropdown = this.createDropdown(8, 118, this.whitelistDropdownChange, 172);
+				view_utils.changeWindow(this, this.texts.header_setup, 290, 178);
+				this.remodNameDropdown = this.addChild(view_utils.createDropdown(8, 8, this.remodNameDropdownChange, 273));
+				this.useForLabel = this.addChild(view_utils.createLabel(this.texts.useFor_header_text, "",  9, 37));
+				this.playerCB = this.addChild(view_utils.createCheckBox(this.texts.useFor_player_text, "", 8, 57, this.UFPCBChange));
+				this.allyCB = this.addChild(view_utils.createCheckBox(this.texts.useFor_ally_text, "", 8, 77, this.UFACBChange));
+				this.enemyCB = this.addChild(view_utils.createCheckBox(this.texts.useFor_enemy_text, "", 8, 97, this.UFECBChange));
+				this.addBtn = this.addChild(view_utils.createButton(this.texts.addBtn, 184, 120, this.addBtnClick, 95));
+				this.whitelistDropdown = this.addChild(view_utils.createDropdown(8, 118, this.whitelistDropdownChange, 172));
 				this.whitelistDropdown.validateNow();
 				this.addBottomButtons(153);
 				var names:Array = [];
@@ -400,7 +243,7 @@ package  {
 					iter++;
 				}
 
-				this.applyDropdownLimits(this.remodNameDropdown, names.length);
+				view_utils.applyDropdownLimits(this.remodNameDropdown, names.length);
 				this.remodNameDropdown.dataProvider = new DataProvider(names);
 				if (!this.remodNameDropdown.selectedIndex) {
 					this.remodNameDropdownChange(null);
@@ -415,24 +258,21 @@ package  {
 			this.removeButtons();
 			this.removeChildren();
 			this.mode = "advanced_create";
-			this.changeWindow(this.texts.header_create, 290, 228);
+			view_utils.changeWindow(this, this.texts.header_create, 290, 228);
 			this.newSettings = this.py_getRemodData();
-			this.nameBox = this.createTextInput(this.texts.remodCreate_name_text, "{HEADER}" + this.texts.remodCreate_name_text + "{/HEADER}{BODY}" + this.texts.remodCreate_name_tooltip + "{/BODY}", this.newSettings.name, 0, -2);
+			this.nameBox = this.addChild(view_utils.createTextInput(this.texts.remodCreate_name_text, "{HEADER}" + this.texts.remodCreate_name_text + "{/HEADER}{BODY}" + this.texts.remodCreate_name_tooltip + "{/BODY}", this.newSettings.name, 0, -2));
 			this.nameBox["value"].addEventListener(Event.CHANGE, this.onInputChange);
-			this.addChild(this.nameBox);
-			this.messageBox = this.createTextInput(this.texts.remodCreate_message_text, "{HEADER}" + this.texts.remodCreate_message_text + "{/HEADER}{BODY}" + this.texts.remodCreate_message_tooltip + "{/BODY}", this.newSettings.message, 0, 40);
+			this.messageBox = this.addChild(view_utils.createTextInput(this.texts.remodCreate_message_text, "{HEADER}" + this.texts.remodCreate_message_text + "{/HEADER}{BODY}" + this.texts.remodCreate_message_tooltip + "{/BODY}", this.newSettings.message, 0, 40));
 			this.messageBox["value"].addEventListener(Event.CHANGE, this.onInputChange);
-			this.addChild(this.messageBox);
-			this.useForLabel = this.createLabel(this.texts.useFor_header_text, "",  8, 88);
-			this.addChild(this.useForLabel);
-			this.playerCB = this.createCheckBox(this.texts.useFor_player_text, "", 8, 108, this.UFPCBChange);
+			this.useForLabel = this.addChild(view_utils.createLabel(this.texts.useFor_header_text, "",  8, 88));
+			this.playerCB = this.addChild(view_utils.createCheckBox(this.texts.useFor_player_text, "", 8, 108, this.UFPCBChange));
 			this.playerCB.cb.selected = this.newSettings.player;
-			this.allyCB = this.createCheckBox(this.texts.useFor_ally_text, "", 8, 128, this.UFACBChange);
+			this.allyCB = this.addChild(view_utils.createCheckBox(this.texts.useFor_ally_text, "", 8, 128, this.UFACBChange));
 			this.allyCB.cb.selected = this.newSettings.ally;
-			this.enemyCB = this.createCheckBox(this.texts.useFor_enemy_text, "", 8, 148, this.UFECBChange);
+			this.enemyCB = this.addChild(view_utils.createCheckBox(this.texts.useFor_enemy_text, "", 8, 148, this.UFECBChange));
 			this.enemyCB.cb.selected = this.newSettings.enemy;
-			this.addBtn = this.createButton(this.texts.addBtn, 184, 168, this.addBtnClick, 95);
-			this.whitelistDropdown = this.createDropdown(8, 166, this.whitelistDropdownChange, 172);
+			this.addBtn = this.addChild(view_utils.createButton(this.texts.addBtn, 184, 168, this.addBtnClick, 95));
+			this.whitelistDropdown = this.addChild(view_utils.createDropdown(8, 166, this.whitelistDropdownChange, 172));
 			this.whitelistDropdown.validateNow();
 			this.addBottomButtons(198);
 			this.provideWhitelistData();
@@ -447,7 +287,7 @@ package  {
 			var name: String;
 			if (this.mode == "simple" || this.mode == "simple_add") {
 				name = this.currentRemods[this.remodNameDropdown.selectedIndex];
-				this.py_onShowRemod(name);
+				this.py_showRemod(name);
 				this.updating = true;
 				for each (var team: String in this.teams) {
 					this[team + "CB"].cb.selected = this.remodNameDropdown.enabled && Boolean(this.cache[team][this.currentVehicleName] == name);
@@ -456,7 +296,7 @@ package  {
 				this.updating = false;
 			} else if (this.mode == "advanced_setup") {
 				name = this.remodNameArray[this.remodNameDropdown.selectedIndex];
-				this.py_onShowRemod(name);
+				this.py_showRemod(name);
 				this.allyCB.cb.selected = this.settings[name].ally;
 				this.enemyCB.cb.selected = this.settings[name].enemy;
 				this.playerCB.cb.selected = this.settings[name].player;
@@ -477,7 +317,7 @@ package  {
 			for each (var name:String in WLArray) {
 				names.push({label: name, data: iter});
 				iter++;}
-			this.applyDropdownLimits(this.whitelistDropdown, names.length);
+			view_utils.applyDropdownLimits(this.whitelistDropdown, names.length);
 			this.whitelistDropdown.dataProvider = new DataProvider(names);
 			this.whitelistDropdown.selectedIndex = 0;
 			this.whitelistDropdown.addEventListener(ListEvent.INDEX_CHANGE, this.whitelistDropdownChange, false, 0, true);
@@ -490,7 +330,7 @@ package  {
 				this.removeBottomButtons();
 				this.remodNameDropdown.enabled = false;
 				this.remodNameDropdownChange(null);
-				this.whitelistDropdown = this.createDropdown(8, 123, this.whitelistDropdownChange, 273);
+				this.whitelistDropdown = this.addChild(view_utils.createDropdown(8, 123, this.whitelistDropdownChange, 273));
 				this.addBottomButtons(153);
 				
 				var names:Array = [];
@@ -513,7 +353,7 @@ package  {
 				}
 				this.whitelistDropdown.enabled = !isEmpty;
 				this.saveBtn.enabled = false;
-				this.applyDropdownLimits(this.whitelistDropdown, names.length);
+				view_utils.applyDropdownLimits(this.whitelistDropdown, names.length);
 				this.whitelistDropdown.dataProvider = new DataProvider(names);
 				if (!this.whitelistDropdown.selectedIndex) {
 					this.whitelistDropdownChange(null);}
@@ -548,7 +388,7 @@ package  {
 			if (this.mode == "simple_add") {
 				this.saveBtn.enabled = Boolean(this.whitelistDropdown.selectedIndex != 0);
 				if (this.whitelistDropdown.selectedIndex != 0) {
-					this.py_onShowRemod(this.currentRemods[this.whitelistDropdown.selectedIndex - 1]);
+					this.py_showRemod(this.currentRemods[this.whitelistDropdown.selectedIndex - 1]);
 				}
 			} else {
 				if (this.whitelistDropdown.selectedIndex == 0) {
@@ -591,11 +431,10 @@ package  {
 			if (this.mode == "simple_add") {
 				this.mode = "simple";
 				this.whitelistDropdown.removeEventListener(ListEvent.INDEX_CHANGE, this.whitelistDropdownChange);
-				this.whitelistDropdown.dispose();
 				this.removeChild(this.whitelistDropdown);
 				this.whitelistDropdown = null;
-				this.addBtn = this.createButton(this.texts.addBtn, 8, 123, this.addBtnClick);
-				this.removeBtn = this.createButton(this.texts.removeBtn, 153, 123, this.removeBtnClick);
+				this.addBtn = this.addChild(view_utils.createButton(this.texts.addBtn, 8, 123, this.addBtnClick));
+				this.removeBtn = this.addChild(view_utils.createButton(this.texts.removeBtn, 153, 123, this.removeBtnClick));
 				this.removeBottomButtons();
 				this.addBottomButtons(153);
 				this.calculateSimpleMenuData();
@@ -614,7 +453,7 @@ package  {
 			if (this.mode == "closing") {
 				this.onWindowCloseS();
 			} else {
-				this.py_onModelRestore();
+				this.py_showRemod(null);
 				this.removeBottomButtons();
 				this.initMainMenu();
 			}
@@ -635,7 +474,7 @@ package  {
 				this.backBtnClick(null);
 			} else if (this.mode == "advanced_create") {
 				this.py_onCreateRemod(this.newSettings);
-				this.py_onRequestSettings();
+				this.requestSettings();
 			} else {
 				this.py_onSaveSettings(this.settings, this.cache);
 			}
@@ -666,66 +505,62 @@ package  {
 		public function as_onRemodDeleteConfirmed(vehicleName: String, remodName: String, proceed: Boolean): void {
 			var team: String;
 			if (this.mode == "simple") {
-				if (proceed) {
-					var backupVehicle: String = this.currentVehicleName;
-					this.currentVehicleName = vehicleName;
-					this.calculateSimpleMenuData();
-					if (this.currentRemods.indexOf(remodName) != -1) {
-						this.currentRemods.splice(this.currentRemods.indexOf(remodName), 1);
-					}
-					var whitelist: Array = this.settings[remodName].whitelist
-					if (whitelist.indexOf(this.currentVehicleName) != -1) {
-						whitelist.splice(whitelist.indexOf(this.currentVehicleName), 1);
-					}
-					for each (team in this.teams) {
-						if (this.cache[team][this.currentVehicleName] == remodName) {
-							if (Boolean(this.currentRemods.length)) {
-								this.cache[team][this.currentVehicleName] = "";
-							} else {
-								delete(this.cache[team][this.currentVehicleName]);
-							}
-						}
-					}
-					this.currentVehicleName = backupVehicle;
-					this.calculateSimpleMenuData();
+				if (!proceed) return;
+				var backupVehicle: String = this.currentVehicleName;
+				this.currentVehicleName = vehicleName;
+				this.calculateSimpleMenuData();
+				if (this.currentRemods.indexOf(remodName) != -1) {
+					this.currentRemods.splice(this.currentRemods.indexOf(remodName), 1);
 				}
-			} else {
-				if (proceed) {
-					var name:String;
-					var nameArray:Array;
-					if (this.mode == "advanced_setup") {
-						name = this.remodNameArray[this.remodNameDropdown.selectedIndex];
-						nameArray = this.settings[name].whitelist;
-					} else {
-						name = this.nameBox.value.text;
-						nameArray = this.newSettings.whitelist;
-					}
-					var vehIdx:int = this.whitelistDropdown.selectedIndex;
-					if (vehIdx != 0) {
-						if (this.mode == "advanced_setup") {
-							var compatibleRemods: Array = [];
-							for each (var remodName:String in this.remodNameArray) {
-								if (this.settings[remodName].whitelist.indexOf(nameArray[vehIdx - 1]) >= 0) {
-									compatibleRemods.push(remodName);
-								}
-							}
-							for each (team in this.teams) {
-								if (this.cache[team][nameArray[vehIdx - 1]] == name) {
-									if (Boolean(compatibleRemods.length)) {
-										this.cache[team][nameArray[vehIdx - 1]] = "";
-									} else {
-										delete(this.cache[team][nameArray[vehIdx - 1]]);
-									}
-								}
-							}
-						}
-						this.py_sendMessage(nameArray[vehIdx - 1], name, "vehicleDelete", "success");
-						nameArray.splice(vehIdx - 1, 1);
+				var whitelist: Array = this.settings[remodName].whitelist
+				if (whitelist.indexOf(this.currentVehicleName) != -1) {
+					whitelist.splice(whitelist.indexOf(this.currentVehicleName), 1);
+				}
+				for each (team in this.teams) {
+					if (!Boolean(this.currentRemods.length)) {
+						delete(this.cache[team][this.currentVehicleName]);
+					} else if (this.cache[team][this.currentVehicleName] == remodName) {
+						this.cache[team][this.currentVehicleName] = "";
 					}
 				}
-				this.whitelistDropdown.selectedIndex = 0;
-				this.provideWhitelistData();
+				this.currentVehicleName = backupVehicle;
+				this.calculateSimpleMenuData();
+				return;
 			}
+			if (proceed) {
+				var name:String;
+				var nameArray:Array;
+				if (this.mode == "advanced_setup") {
+					name = this.remodNameArray[this.remodNameDropdown.selectedIndex];
+					nameArray = this.settings[name].whitelist;
+				} else {
+					name = this.nameBox.value.text;
+					nameArray = this.newSettings.whitelist;
+				}
+				var vehIdx:int = this.whitelistDropdown.selectedIndex;
+				if (vehIdx != 0) {
+					if (this.mode == "advanced_setup") {
+						var compatibleRemods: Array = [];
+						for each (var remodName:String in this.remodNameArray) {
+							if (this.settings[remodName].whitelist.indexOf(nameArray[vehIdx - 1]) >= 0) {
+								compatibleRemods.push(remodName);
+							}
+						}
+						for each (team in this.teams) {
+							if (this.cache[team][nameArray[vehIdx - 1]] != name) continue;
+							if (Boolean(compatibleRemods.length)) {
+								this.cache[team][nameArray[vehIdx - 1]] = "";
+							} else {
+								delete(this.cache[team][nameArray[vehIdx - 1]]);
+							}
+						}
+					}
+					this.py_sendMessage(nameArray[vehIdx - 1], name, "vehicleDelete", "success");
+					nameArray.splice(vehIdx - 1, 1);
+				}
+			}
+			this.whitelistDropdown.selectedIndex = 0;
+			this.provideWhitelistData();
 		}
 
 		private function UFPCBChange(param1: Event): void {

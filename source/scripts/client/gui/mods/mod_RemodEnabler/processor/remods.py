@@ -32,24 +32,29 @@ def apply(vDesc, modelDesc, modelsSet):
         elif key == 'tracks':
             obj = cc.TrackBasicParams(**obj)
         elif key == 'wheels':
-            obj = cc.WheelsConfig(groups=tuple(cc.WheelGroup(**d) for d in obj['groups']),
-                                  wheels=tuple(cc.Wheel(**d) for d in obj['wheels']))
+            obj = cc.WheelsConfig(
+                groups=tuple(cc.WheelGroup(**d) for d in obj['groups']),
+                wheels=tuple(cc.Wheel(**d) for d in obj['wheels']))
         elif key == 'groundNodes':
-            obj = NodesAndGroups(nodes=tuple(cc.GroundNode(**d) for d in obj['nodes']),
-                                 groups=tuple(cc.GroundNodeGroup(**d) for d in obj['groups']),
-                                 activePostmortem=obj['activePostmortem'], lodSettings=obj['lodSettings'])
+            obj = NodesAndGroups(
+                nodes=tuple(cc.GroundNode(**d) for d in obj['nodes']),
+                groups=tuple(cc.GroundNodeGroup(**d) for d in obj['groups']),
+                activePostmortem=obj['activePostmortem'], lodSettings=obj['lodSettings'])
         elif key == 'trackNodes':
-            obj = NodesAndGroups(nodes=tuple(cc.TrackNode(**d) for d in obj['nodes']), groups=(),
-                                 activePostmortem=obj['activePostmortem'], lodSettings=obj['lodSettings'])
+            obj = NodesAndGroups(
+                nodes=tuple(cc.TrackNode(**d) for d in obj['nodes']), groups=(),
+                activePostmortem=obj['activePostmortem'], lodSettings=obj['lodSettings'])
         elif key == 'splineDesc':
-            obj = cc.SplineConfig(({modelsSet: cc.SplineSegmentModelSet(**obj['segmentModelSets'])} or None),
-                                  **{k: v for k, v in obj.items() if k != 'segmentModelSets'})
+            obj = cc.SplineConfig(
+                ({modelsSet: cc.SplineSegmentModelSet(**obj['segmentModelSets'])} or None),
+                **{k: v for k, v in obj.items() if k != 'segmentModelSets'})
         elif key == 'trackSplineParams':
             obj = cc.TrackSplineParams(**obj)
         elif key == 'leveredSuspension':
             if obj is not None:
-                obj = cc.LeveredSuspensionConfig(([cc.SuspensionLever(**d) for d in obj['levers']] or None),
-                                                 **{k: v for k, v in obj.items() if k != 'levers'})
+                obj = cc.LeveredSuspensionConfig(
+                    ([cc.SuspensionLever(**d) for d in obj['levers']] or None),
+                    **{k: v for k, v in obj.items() if k != 'levers'})
         setattr(vDesc.chassis, key, obj)
     vDesc.chassis.chassisLodDistance = modelDesc['chassis']['chassisLodDistance']
     vDesc.chassis.physicalTracks = {}
