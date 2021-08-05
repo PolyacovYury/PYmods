@@ -56,7 +56,7 @@ def getModelDescInfo(vehicleID, vDesc, mode):
         BigWorld.entity(vehicleID), HangarVehicle))), playerName
 
 
-def applyModelDesc(vDesc, modelDesc, modelsSet, playerName):
+def applyModelDesc(vDesc, modelDesc, outfit, playerName):
     xmlName = vDesc.name.split(':')[1].lower()
     vDesc.installComponent(vDesc.chassis.compactDescr)
     vDesc.installComponent(vDesc.gun.compactDescr)
@@ -71,14 +71,14 @@ def applyModelDesc(vDesc, modelDesc, modelsSet, playerName):
                 part = getattr(descr, partName)
                 if getattr(part, 'modelsSets', None) is not None:
                     part.modelsSets = part.modelsSets.copy()
-            remods.apply(descr, modelDesc, modelsSet)
+            remods.apply(descr, modelDesc, outfit)
         if not g_config.collisionMode:
             message = g_config.i18n['UI_install_remod'] + '<b>' + modelDesc.name + '</b>.'
             if modelDesc.message:
                 message += '\n' + modelDesc.message
     if message is not None and playerName is None:
         SystemMessages.pushMessage('temp_SM' + message, SystemMessages.SM_TYPE.CustomizationForGold)
-    debugOutput(xmlName, vehName, playerName, modelsSet, modelDesc)
+    debugOutput(xmlName, vehName, playerName, outfit.modelsSet or 'default', modelDesc)
     vDesc.modelDesc = modelDesc
 
 
@@ -89,7 +89,8 @@ def new_prerequisites(base, self, typeDescriptor, vID, health, isCrewActive, isT
         self._CommonTankAppearance__vID = vID
         outfit = self._prepareOutfit(outfitCD)
         modelDesc, playerName = getModelDescInfo(vID, typeDescriptor, 'battle')
-        applyModelDesc(typeDescriptor, modelDesc, outfit.modelsSet or 'default', playerName)
+        applyModelDesc(typeDescriptor, modelDesc, outfit, playerName)
+        outfitCD = outfit.pack().makeCompDescr()
     return base(self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k)
 
 
@@ -97,7 +98,7 @@ def new_prerequisites(base, self, typeDescriptor, vID, health, isCrewActive, isT
 def new_onRequestModelsRefresh(base, self, *a, **k):
     if g_config.data['enabled']:
         modelDesc, playerName = getModelDescInfo(self.id, self.typeDescriptor, 'battle')
-        applyModelDesc(self.typeDescriptor, modelDesc, self.outfit.modelsSet or 'default', playerName)
+        applyModelDesc(self.typeDescriptor, modelDesc, self.outfit, playerName)
     return base(self, *a, **k)
 
 
@@ -110,7 +111,7 @@ def new_startBuild(base, self, vDesc, vState):
             if modelDesc is not None and getattr(vDesc, 'modelDesc', None) is not None:
                 SystemMessages.pushMessage(g_config.i18n['UI_install_customization'], SystemMessages.SM_TYPE.Warning)
             modelDesc = vDesc.modelDesc = None
-        applyModelDesc(vDesc, modelDesc, self.outfit.modelsSet or 'default', playerName)
+        applyModelDesc(vDesc, modelDesc, self.outfit, playerName)
     return base(self, vDesc, vState)
 
 

@@ -1,4 +1,5 @@
-from items import ITEM_TYPES, _xml, vehicle_items
+from items import ITEM_TYPES, _xml, customizations as c11n, vehicle_items
+from items.customizations import CustomizationOutfit
 from .common import readCamouflage
 from .part_readers import readChassis, readEngine, readGun, readHull, readTurret
 
@@ -14,11 +15,16 @@ def readModelDesc(xmlCtx, section, item):
         if subsection is not None:
             reader((xmlCtx, attr), subsection, getattr(item, attr))
     readCamouflage(xmlCtx, section, item)
+    item.outfit['hide_materials'] = _xml.readStringOrEmpty(xmlCtx, section, 'outfit/hide_materials')
+    item.outfit['component'] = c11n.ComponentXmlDeserializer(c11n._CUSTOMIZATION_CLASSES).decode(
+        c11n.CustomizationOutfit.customType, (xmlCtx, 'outfit'), section['outfit']
+    ) if section.has_key('outfit') else CustomizationOutfit()
 
 
 class ModelDesc(object):
     __slots__ = (
-        'name', 'message', 'player', 'ally', 'enemy', 'whitelist', 'chassis', 'hull', 'gun', 'turret', 'engine', 'camouflage')
+        'name', 'message', 'player', 'ally', 'enemy', 'whitelist',
+        'chassis', 'hull', 'gun', 'turret', 'engine', 'camouflage', 'outfit')
 
     def __init__(self):
         for slot in self.__slots__:
@@ -29,3 +35,4 @@ class ModelDesc(object):
                 ('chassis', ITEM_TYPES.vehicleChassis), ('hull', None),
                 ('turret', ITEM_TYPES.vehicleTurret), ('gun', ITEM_TYPES.vehicleGun), ('engine', ITEM_TYPES.vehicleEngine)):
             setattr(self, attr, createItem(itemType))
+        self.outfit = {}

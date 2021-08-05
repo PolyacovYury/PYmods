@@ -13,7 +13,7 @@ def readEmblemSlots(xmlCtx, section, item):
     if section.has_key('emblemSlots'):
         item.emblemSlots, _ = shared_readers.readEmblemSlots(xmlCtx, section, 'emblemSlots')
     elif section.has_key('customizationSlots'):
-        item.emblemSlots, _ = shared_readers.readCustomizationSlots(xmlCtx, section, 'customizationSlots')
+        item.emblemSlots, item.slotsAnchors = shared_readers.readCustomizationSlots(xmlCtx, section, 'customizationSlots')
 
 
 def readCamouflage(xmlCtx, section, item):

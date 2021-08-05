@@ -10,9 +10,11 @@ from gui import SystemMessages as SM
 from gui.Scaleform.framework import ScopeTemplates as ST, ViewSettings, WindowLayer as WL, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams
+from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.personality import ServicesLocator as SL
-from items.components.component_constants import ALLOWED_EMBLEM_SLOTS as AES
+from items.components.component_constants import ALLOWED_EMBLEM_SLOTS as AES, ALLOWED_MISC_SLOTS as AMS
 from items.vehicles import _VEHICLE_TYPE_XML_PATH
+from items.writers.c11n_writers import ComponentXmlSerializer
 from vehicle_systems.tankStructure import TankPartNames
 from . import __date__, __modID__
 
@@ -357,7 +359,8 @@ class RemodEnablerUI(AbstractWindowView):
             for k in g_config.teams:
                 data.writeBool(k, default[k])
             data.writeString('whitelist', ' '.join(default['whitelist']))
-            modelsSet = appearance.outfit.modelsSet or 'default'
+            outfit = appearance.outfit
+            modelsSet = outfit.modelsSet or 'default'
             for partName, sectNames, path in zip((
                     TankPartNames.ALL + ('engine',)
             ), (
@@ -407,12 +410,33 @@ class RemodEnablerUI(AbstractWindowView):
                                 sect.deleteSection(modelSets)
                     if sectName == 'customizationSlots':
                         for sect in list(desc.values()):
-                            if sect.readString('slotType') not in AES:
+                            if sect.readString('slotType') not in AES + AMS:
                                 desc.deleteSection(sect)
                     if not desc.asString and not desc.values():
                         part.deleteSection(desc)
                 if partName != 'hull':
                     part.writeString('soundID', vDesc.name.split(':')[0] + ':' + getattr(vDesc, partName).name)
+            hide_materials = []
+            level = outfit.progressionLevel
+            if level != 0:
+                outfit = appearance._HangarVehicleAppearance__getStyleProgressionOutfitData(outfit)
+                for levelId, levelConfig in outfit.style.styleProgressions.iteritems():
+                    if levelId != level:
+                        hide_materials.extend(levelConfig.get('materials', []))
+            newOutfit = outfit.__class__(vehicleCD=outfit.vehicleCD)
+            for itemTypeID in (GUI_ITEM_TYPE.ATTACHMENT, GUI_ITEM_TYPE.SEQUENCE):
+                newOutfit.misc.setSlotFor(itemTypeID, outfit.misc.slotFor(itemTypeID))
+            if not newOutfit.isEmpty() or hide_materials:
+                part = data.createSection('outfit')
+                if not newOutfit.isEmpty():
+                    component = newOutfit.pack()
+                    component.styleProgressionLevel = 0
+                    ComponentXmlSerializer().encode(part, component)
+                    for desc in part.values():
+                        if not desc.keys():
+                            part.deleteSection(desc)
+                if hide_materials:
+                    part.writeString('hide_materials', ' '.join(hide_materials))
         except StandardError:
             SM.pushMessage('temp_SM' + g_config.i18n['UI_flash_remodCreate_error'], SM.SM_TYPE.Warning)
             traceback.print_exc()
