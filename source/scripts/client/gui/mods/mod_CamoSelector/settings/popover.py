@@ -162,7 +162,7 @@ class EditableStylePopover(CustomizationEditedKitPopoverMeta):
         try:
             item.icon
         except StandardError:
-            print g_config.ID + ': failed to get icon for', item.intCD
+            print g_config.LOG, 'failed to get icon for', item.intCD
             raise
         return {
             'id': item.intCD, 'icon': fixIconPath(item.icon), 'userName': text_styles.main(item_name),

@@ -192,7 +192,7 @@ class ConfigInterface(PYmodsConfigInterface):
         item_type, _, item_name = dir_path.partition('/')
         item_type = item_type[:-1]
         if item_type not in self.allowed_names:
-            print self.ID + ': unknown item type:', item_type
+            print self.LOG, 'unknown item type:', item_type
             return
         description = ''
         user_name = item_name

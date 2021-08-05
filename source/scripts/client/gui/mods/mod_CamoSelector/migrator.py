@@ -74,7 +74,7 @@ def migrateRemapSettings(self, camoData):
             camoID = int(camoName)
         except ValueError:
             if camoName not in camoData:
-                print self.ID + ': unknown camouflage for remapping:', camoName
+                print self.LOG, 'unknown camouflage for remapping:', camoName
                 continue
             for newID in camoData[camoName]['ids']:
                 newConf = migrateCamoConf(self, newID, camoConf.copy(), camouflages, True)
@@ -82,7 +82,7 @@ def migrateRemapSettings(self, camoData):
                     conf[newID] = newConf
             continue
         if camoID not in camouflages:
-            print self.ID + ': unknown camouflage for remapping:', camoName
+            print self.LOG, 'unknown camouflage for remapping:', camoName
             continue
         newConf = migrateCamoConf(self, camoID, camoConf, camouflages, True)
         if newConf:
@@ -121,7 +121,7 @@ def migrateSeasons(self, key, conf, itemSeason=None):
     actualSeason = SeasonType.UNDEFINED
     for season in conf['season']:
         if season not in SEASON_NAME_TO_TYPE:
-            print self.ID + ': unknown season name for camouflage', key + ':', season
+            print self.LOG, 'unknown season name for camouflage', key + ':', season
             conf['season'].remove(season)
         else:
             actualSeason |= SEASON_NAME_TO_TYPE[season]

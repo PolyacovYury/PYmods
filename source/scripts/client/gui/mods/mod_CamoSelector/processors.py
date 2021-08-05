@@ -120,7 +120,7 @@ def applyStyleOverride(vDesc, outfit, seasonName, seasonCache, clean):
             return addDefaultInsignia(outfit, vDesc)
         return changeOutfitStyleData(outfit, (old_style, None), old_season, old_level, vDesc)
     if styleId not in g_cache.customization20().itemTypes[CustomizationType.STYLE]:
-        print g_config.ID + ': style', styleId, 'for', vDesc.name, 'deleted from game client.'
+        print g_config.LOG, 'style', styleId, 'for', vDesc.name, 'deleted from game client.'
         seasonCache.pop('style', None)
         return addDefaultInsignia(outfit, vDesc)
     new_style = getStyleFromId(styleId)
@@ -164,7 +164,7 @@ def _applyRegionCache(itemDBs, itemTypeName, slotType, slot, areaName, areaCache
     if isinstance(itemID, basestring):
         itemID = g_config.modded_lookup_name[cType].get(itemID, itemID)
     if itemID not in itemDB:
-        print g_config.ID + ':', itemTypeName, 'ID', itemID, 'on', areaName, 'region', regionKey, 'not found'
+        print g_config.LOG, itemTypeName, 'ID', itemID, 'on', areaName, 'region', regionKey, 'not found'
         del areaCache[regionKey]
         return
     item = itemDB[itemID]
@@ -270,7 +270,7 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, isPlayerVehicle=True
     try:
         isTurretCustomizable = isTurretCustom(vDesc)
     except ValueError:
-        print g_config.ID + ': turret customization check for', vehicleName, 'failed:'
+        print g_config.LOG, 'turret customization check for', vehicleName, 'failed:'
         __import__('traceback').print_exc()
         isTurretCustomizable = False
     if isPlayerVehicle:
