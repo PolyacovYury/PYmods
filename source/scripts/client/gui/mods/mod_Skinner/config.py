@@ -31,6 +31,8 @@ class ConfigInterface(PYmodsConfigInterface):
         self.isModAdded = False
         self.dynamicSkinEnabled = False
         self.currentTeam = self.teams[0]
+        self.present_crash_tex = {
+            x: ResMgr.isFile('vehicles/skins/textures/white_crash/all/all/%s_crash.dds' % x) for x in ('track', 'tank')}
         super(ConfigInterface, self).__init__()
 
     def init(self):
