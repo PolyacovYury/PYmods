@@ -195,14 +195,15 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
         requirement = lambda _i: True
     else:
         teamMode = None
+        from gui.shared.utils.requesters import REQ_CRITERIA
         # TODO: paid/unpaid changes here
-        # requirement = lambda _i: True  # paid
+        # requirement = REQ_CRITERIA.EMPTY  # paid
         # the rest is for unpaid
         from gui.customization.shared import createCustomizationBaseRequestCriteria
-        from gui.shared.utils.requesters import REQ_CRITERIA
-        itemRequirement = (createCustomizationBaseRequestCriteria(
+        itemRequirement = ((createCustomizationBaseRequestCriteria(
             g_currentVehicle.item, g_currentVehicle.item.eventsCache.questsProgress, ()
-        ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI() and _item.buyCount > 0)) ^ REQ_CRITERIA.CUSTOM(
+        ) if g_currentVehicle.item else REQ_CRITERIA.EMPTY) | REQ_CRITERIA.CUSTOM(
+            lambda _item: not _item.isHiddenInUI() and _item.buyCount > 0)) ^ REQ_CRITERIA.CUSTOM(
             lambda _i: (_i.priceGroup == CUSTOM_GROUP_NAME)
         )
         requirement = lambda itemID: itemRequirement(g_currentVehicle.itemsCache.items.getItem(
