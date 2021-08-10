@@ -10,6 +10,7 @@ from gui.Scaleform.daapi.view.meta.GameLoadingMeta import GameLoadingMeta
 from gui.Scaleform.genConsts.ROOT_SWF_CONSTANTS import ROOT_SWF_CONSTANTS
 from gui.app_loader.observers import AppLoaderObserver
 from gui.app_loader.settings import APP_NAME_SPACE
+from gui.app_loader.spaces import IntroVideoSpace
 from gui.shared.personality import ServicesLocator as SL
 from gui.shared.utils import graphics
 from gui.shared.utils.decorators import ReprInjector
@@ -50,6 +51,14 @@ def _new_start(self):
     machine.start()
 
 
+def new_showGUI(self, appFactory, appNS, appState):
+    old_showGUI(self, appFactory, appNS, appState)
+    if appState == ApplicationStateID.INITIALIZED:
+        appFactory.goToIntroVideo(appNS)
+
+
+old_showGUI = IntroVideoSpace.showGUI
+IntroVideoSpace.showGUI = new_showGUI
 GameplayLogic.start = _new_start
 
 
