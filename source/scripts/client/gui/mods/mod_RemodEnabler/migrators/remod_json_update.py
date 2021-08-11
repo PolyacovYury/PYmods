@@ -153,7 +153,7 @@ def migrate_chassis_config(config):  # please send data['chassis'] here
                     ('secondRight', obj.pop('segment2ModelRight', ''))))
             elif 'default' in obj['segmentModelSets']:
                 obj['segmentModelSets'] = obj['segmentModelSets']['default']
-            if not isinstance(obj['leftDesc'], list):  # 1.5 -> 1.6
+            if not isinstance(obj['leftDesc'], (list, tuple)):  # 1.5 -> 1.6
                 data = [obj.pop('segmentLength'), obj.pop('segmentOffset'), obj.pop('segment2Offset')]
                 obj['leftDesc'] = [[obj['leftDesc'], 0] + data]
                 obj['rightDesc'] = [[obj['rightDesc'], 0] + data]

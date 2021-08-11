@@ -90,7 +90,7 @@ class ConfigInterface(PYmodsConfigInterface):
     def load(self):
         try:
             webConf_url = 'https://gist.githubusercontent.com/PolyacovYury/220e5da411d78e598687b23ab130e922/raw/'
-            webConf = config.json_reader.JSONLoader.byte_ify(json.loads(urllib2.urlopen(webConf_url).read()))
+            webConf = config.json_reader.JSONLoader.json_loads(urllib2.urlopen(webConf_url).read())
             loadJson(self.ID, 'blacklist', webConf, self.configPath, True)
         except urllib2.URLError as e:
             if hasattr(e, 'reason'):

@@ -11,9 +11,11 @@ def remDups(seq):  # Dave Kirby, order preserving
 def objToDict(obj):
     if isinstance(obj, list):
         return [objToDict(o) for o in obj]
-    elif hasattr(obj, 'toDict'):
+    if isinstance(obj, tuple):
+        return tuple(objToDict(o) for o in obj)
+    if hasattr(obj, 'toDict'):
         return {k: objToDict(v) for k, v in obj.toDict().iteritems()}
-    elif isinstance(obj, dict):  # just in case
+    if isinstance(obj, dict):  # just in case
         return {k: objToDict(v) for k, v in obj.iteritems()}
     return obj
 

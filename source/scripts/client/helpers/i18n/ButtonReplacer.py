@@ -69,7 +69,7 @@ class ConfigInterface(PYmodsConfigInterface):
             texts = section.setdefault('texts', [])
             text = data['text']
             if section['mode'] == 'single':
-                if isinstance(text, list):
+                if isinstance(text, (list, tuple)):
                     text = ''.join(x for x in text if x)
                 texts.append(text.rstrip())
             else:
