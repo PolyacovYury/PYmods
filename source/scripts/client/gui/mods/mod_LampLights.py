@@ -86,7 +86,7 @@ class ConfigInterface(PYmodsConfigInterface):
             return
         if '/' not in dir_path and name == '_meta':
             if self.data['Debug']:
-                print self.ID + ': loading', dir_path + ':'
+                print self.LOG, 'loading', dir_path + ':'
             self.lampsMeta[dir_path] = meta = {'name': '<b>%s</b>' % dir_path, 'desc': self.i18n['UI_setting_meta_NDA']}
             lang = self.lang
             if lang not in json_data:
@@ -112,33 +112,33 @@ class ConfigInterface(PYmodsConfigInterface):
                 settings[k] += self.lampsData[parentID][k]
             parentID = os.path.dirname(parentID)
         if not any(settings[team] for team in self.teams) and not quiet:
-            print self.ID + ':', confID, 'disabled'
+            print self.LOG, confID, 'disabled'
             return False
         if self.data['Debug']:
-            print self.ID + ': loading', confID
+            print self.LOG, 'loading', confID
         if json_data['type'] == 'model':
             try:
                 BigWorld.Model(json_data['path'])
             except StandardError:
-                print self.ID + ':', confID, 'model path incorrect:', json_data['path']
+                print self.LOG, confID, 'model path incorrect:', json_data['path']
                 return False
         elif json_data['type'] not in ('omniLight', 'spotLight'):
-            print self.ID + ':', confID, 'unknown type:', json_data['type']
+            print self.LOG, confID, 'unknown type:', json_data['type']
             return False
         root = json_data['root']
         if confID.count('/') > 1:
             try:
                 BigWorld.Model(self.lampsData[os.path.dirname(confID)]['path']).node(root)
             except ValueError:
-                print self.ID + ':', confID, 'unknown root:', root
+                print self.LOG, confID, 'unknown root:', root
                 return False
         elif root not in (
                 'front_left', 'front_right', 'back_left', 'back_right', 'wheels_left', 'wheels_right', 'roof', 'hull',
                 'spot', 'collide_front_left', 'collide_front_right', 'collide_back_left', 'collide_back_right'):
-            print self.ID + ':', confID, 'unknown root:', root
+            print self.LOG, confID, 'unknown root:', root
             return False
         if json_data['mode'] not in ('constant', 'stop', 'turn_left', 'turn_right', 'back', 'target', 'spot'):
-            print self.ID + ':', confID, 'unknown mode:', json_data['mode']
+            print self.LOG, confID, 'unknown mode:', json_data['mode']
             return False
         keys = ('type', 'root', 'mode', 'preRotate', 'postRotate', 'position')
         if json_data['type'] == 'model':
@@ -149,38 +149,38 @@ class ConfigInterface(PYmodsConfigInterface):
                 keys += ('coneAngle',)
         self.lampsData[confID] = dict(settings, **{k: self.listToTuple(json_data[k]) for k in keys})
         if self.data['Debug'] and not quiet:
-            print self.ID + ':', confID, 'loaded'
+            print self.LOG, confID, 'loaded'
         return True
 
     def readCurrentSettings(self, quiet=True):
         self.lampsData.clear(), self.lampsMeta.clear()
         if self.data['DebugModel']:
             if not self.data['DebugPath']:
-                print self.ID + ': debug model disabled due to absence of DebugPath.'
+                print self.LOG, 'debug model disabled due to absence of DebugPath.'
                 self.data['DebugModel'] = False
             else:
                 try:
                     _ = BigWorld.Model(self.data['DebugPath'])
                 except StandardError:
-                    print self.ID + ': debug model path incorrect:', self.data['DebugPath']
+                    print self.LOG, 'debug model path incorrect:', self.data['DebugPath']
                     self.data['DebugModel'] = False
         if not self.data['enabled']:
             if not quiet:
-                print self.ID + ': mod fully disabled via main config'
+                print self.LOG, 'mod fully disabled via main config'
             self.lampsVisible = False
             self.tickRequired = False
             return
         self.readConfigDir(quiet, recursive=True)
         if not self.lampsData:
-            print self.ID + ': no configs loaded. Are you sure that you need this mod?'
+            print self.LOG, 'no configs loaded. Are you sure that you need this mod?'
         elif self.data['DebugModel']:
             if self.data['Debug'] and not quiet:
-                print self.ID + ': loading configs for Debug:'
+                print self.LOG, 'loading configs for Debug:'
             for confID, data in self.lampsData.items():
                 newID = confID + 'Debug'
                 if newID in self.lampsData:
                     if not quiet:
-                        print self.ID + ': debug assignment failed:', newID
+                        print self.LOG, 'debug assignment failed:', newID
                     continue
                 if 'model' in data['type']:
                     continue
@@ -190,7 +190,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     new_data[key] = data[key]
                 new_data['path'] = self.data['DebugPath']
                 if self.data['Debug'] and not quiet:
-                    print self.ID + ':', newID, 'loaded'
+                    print self.LOG, newID, 'loaded'
         self.tickRequired = any(v['mode'] in ('stop', 'turn_left', 'turn_right', 'back') for v in self.lampsData.values())
 
     def onHotkeyPressed(self, event):
@@ -280,16 +280,16 @@ def createLamps(vehicleID, caller, count=20):
         pos = vEntity.position
         if not BigWorld.wg_collideDynamic(vEntity.spaceID, pos - Math.Vector3(0, 10, 0), pos + Math.Vector3(0, 10, 0), 0, -1):
             if g_config.data['Debug']:
-                print g_config.ID + ': user does not see world yet, rescheduling lamps creation for', vehicleID
+                print g_config.LOG, 'user does not see world yet, rescheduling lamps creation for', vehicleID
             if count:
                 BigWorld_callback(0.1, createLamps, vehicleID, 'Vehicle.startVisual.rescheduled', count - 1)
             else:
-                print g_config.ID + ': lamps creation for', vehicleID, 'cancelled'
+                print g_config.LOG, 'lamps creation for', vehicleID, 'cancelled'
             return
         wheelNodes = buildSkeleton(vehicleID, vEntity, caller)
         applyLamps(vehicleID, vEntity, wheelNodes, caller)
     except StandardError:
-        print g_config.ID + ': create: error in', caller
+        print g_config.LOG, 'create: error in', caller
         traceback.print_exc()
 
 
@@ -388,7 +388,7 @@ def buildSkeleton(vehicleID, vEntity, caller):
             break
         else:  # T92 HMC has no behind
             if g_config.data['Debug']:
-                print g_config.ID + ': error calculating collide point', nodeName, 'in', caller, 'for', vehicleID
+                print g_config.LOG, 'error calculating collide point', nodeName, 'in', caller, 'for', vehicleID
             hullRoot.node('', createTranslationMatrix((x, corner_y, corner_z))).attach(collide)
     return wheelNodes
 
@@ -448,7 +448,7 @@ def applyLamps(vehicleID, vEntity, wheelNodes, caller):
                     lamps[fullName] = (lamp, data['mode'])
 
         except StandardError:
-            print g_config.ID + ': error in', caller, 'while processing', name, 'for', vName
+            print g_config.LOG, 'error in', caller, 'while processing', name, 'for', vName
             traceback.print_exc()
 
 
@@ -498,7 +498,7 @@ def destroyLamps(vehicleID, caller=''):
         g_config.fakeModelsStorage.pop(vehicleID, None)
         g_config.speedsStorage.pop(vehicleID, None)
     except StandardError:
-        print g_config.ID + ': destroy: error in', caller
+        print g_config.LOG, 'destroy: error in', caller
         traceback.print_exc()
 
 

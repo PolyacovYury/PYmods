@@ -1,12 +1,81 @@
 import BigWorld
 import GUI
+import Keys
 import Math
 import material_kinds
 import math_utils
-from PYmodsCore import overrideMethod
+from PYmodsCore import PYmodsConfigInterface, checkKeys, overrideMethod
+from gui import SystemMessages as SM
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems.tankStructure import TankPartNames
-from . import g_config
+
+
+class ConfigInterface(PYmodsConfigInterface):
+    def __init__(self):
+        self.collisionMode = 0
+        super(ConfigInterface, self).__init__()
+
+    def init(self):
+        self.defaultKeys = {
+            'CollisionHotkey': [Keys.KEY_F4, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]
+        }
+        self.data = {
+            'enabled': True,
+            'debug': True,
+            'CollisionHotkey': self.defaultKeys['CollisionHotkey'],
+        }
+        self.i18n = {
+            'name': 'Hangar Collision',
+            'UI_setting_CollisionHotkey_text': 'Collision view switch hotkey',
+            'UI_setting_CollisionHotkey_tooltip': (
+                '<b>WARNING: this module is non-functional. Apologies for the inconvenience.</b>\n'
+                'This hotkey will switch collision preview mode in hangar.\n'
+                '<b>Available modes:</b>\n • OFF\n • Model replace\n • Model add'),
+            'UI_setting_debug_text': 'Enable extended log printing',
+            'UI_setting_debug_tooltip': 'If enabled, your python.log will be harassed with mod\'s debug information.',
+            'collision_compare_enable': '<b>RemodEnabler:</b>\nEnabling collision comparison mode.',
+            'collision_compare_disable': '<b>RemodEnabler:</b>\nDisabling collision comparison mode.',
+            'collision_enable': '<b>RemodEnabler:</b>\nEnabling collision mode.',
+            'collision_unavailable': 'Collision displaying is currently not supported.',
+        }
+
+    def createTemplate(self):
+        return {
+            'modDisplayName': self.i18n['name'], 'enabled': self.data['enabled'],
+            'column1': [
+                self.tb.createHotKey('CollisionHotkey'),
+            ],
+            'column2': [
+                self.tb.createControl('debug'),
+            ]}
+
+    def onHotkeyPressed(self, event):
+        if (not hasattr(BigWorld.player(), 'databaseID') or not self.data['enabled'] or not event.isKeyDown()
+                or self.isMSAOpen):
+            return
+        if checkKeys(self.data['CollisionHotkey'], event.key):
+            SM.pushMessage('temp_SM<b>%s:</b>\n%s' % (
+                self.i18n['name'], self.i18n['collision_unavailable']), SM.SM_TYPE.Warning)
+            return
+            # noinspection PyUnreachableCode
+            self.collisionMode += 1
+            self.collisionMode %= 3
+            if self.collisionMode == 0:
+                debugMsg = 'disabling collision displaying'
+                msg = self.i18n['collision_compare_disable']
+            elif self.collisionMode == 2:
+                debugMsg = 'enabling collision display comparison mode'
+                msg = self.i18n['collision_compare_enable']
+            else:
+                debugMsg = 'enabling collision display'
+                msg = self.i18n['collision_enable']
+            if self.data['debug']:
+                print self.LOG, debugMsg
+            SM.pushMessage('temp_SM' + msg, SM.SM_TYPE.CustomizationForGold)
+            refreshCurrentVehicle()
+
+
+g_config = ConfigInterface()
 
 
 def clearCollision(self):
@@ -56,7 +125,7 @@ def new_setupModel(base, self, buildIdx):
                 self.collisionLoaded = False
                 failList.append(modelName if modelName else partName)
         if failList:
-            print g_config.ID + ': collision load failed: models not found', failList
+            print g_config.LOG, 'collision load failed: models not found', failList
         if not self.collisionLoaded:
             return
         # Getting offset matrices
@@ -67,7 +136,7 @@ def new_setupModel(base, self, buildIdx):
             hullMP, fullChassisMP)
         for idx in xrange(len(vDesc.hull.turretPositions)):
             if idx:
-                print g_config.ID + ': WARNING: multiple turrets are present!', vDesc.name
+                print g_config.LOG, 'WARNING: multiple turrets are present!', vDesc.name
                 break
             turretOffset = math_utils.createTranslationMatrix(vDesc.hull.turretPositions[idx])
             gunOffset = math_utils.createTranslationMatrix(vDesc.turret.gunPosition)
@@ -98,7 +167,7 @@ def new_setupModel(base, self, buildIdx):
                 scaleMat.setScale((0.001, 0.001, 0.001))
                 compoundModel.node(moduleName, scaleMat)
             else:
-                print g_config.ID + ': model rescale for', moduleName, 'failed'
+                print g_config.LOG, 'model rescale for', moduleName, 'failed'
 
 
 class GUIBox(object):

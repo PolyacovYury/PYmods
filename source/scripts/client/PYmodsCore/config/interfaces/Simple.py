@@ -21,6 +21,7 @@ class ConfigBase(object):
         self.configPath = ''
         self.langPath = ''
 
+    LOG = property(lambda self: self.ID + ':')
     loadDataJson = lambda self, *a, **kw: loadJson(self.ID, self.ID, self.data, self.configPath, *a, **kw)
     writeDataJson = lambda self, *a, **kw: loadJson(self.ID, self.ID, self.data, self.configPath, True, False, *a, **kw)
     loadLangJson = lambda self, *a, **kw: loadJson(self.ID, self.lang, self.i18n, self.langPath, *a, **kw)
@@ -46,7 +47,7 @@ class ConfigBase(object):
         configs_dir = self.configPath + dir_name + '/'
         if not os.path.isdir(configs_dir):
             if error_not_exist and not quiet:
-                print self.ID + ': config directory not found:', configs_dir
+                print self.LOG, 'config directory not found:', configs_dir
             if make_dir:
                 os.makedirs(configs_dir)
         for dir_path, sub_dirs, names in os.walk(configs_dir):
@@ -66,10 +67,10 @@ class ConfigBase(object):
                             json_data = loadJson(self.ID, name, json_data, dir_path, encrypted=encrypted)
                     elif ext == '.xml':
                         json_data = ResMgr.openSection('.' + dir_path + '/' + name + ext)
-                except StandardError:
+                except Exception:
                     traceback.print_exc()
                 if not json_data:
-                    print self.ID + ':', (dir_path and (dir_path + '/')) + name + ext, 'is invalid'
+                    print self.LOG, (dir_path and (dir_path + '/')) + name + ext, 'is invalid'
                     continue
                 try:
                     if ext == '.json':
@@ -80,7 +81,7 @@ class ConfigBase(object):
                     elif ext == '.xml':
                         self.onReadDataSection(quiet, dir_path, local_path, name, json_data, sub_dirs, names)
                         ResMgr.purge('.' + dir_path + '/' + name + ext)
-                except StandardError:
+                except Exception:
                     traceback.print_exc()
 
     def onMigrateConfig(self, quiet, path, dir_path, name, json_data, sub_dirs, names):
@@ -102,7 +103,7 @@ class ConfigBase(object):
         try:
             self.onHotkeyPressed(event)
         except StandardError:
-            print self.ID + ': ERROR at onHotkeyPressed'
+            print self.LOG, 'ERROR at onHotkeyPressed'
             traceback.print_exc()
 
     def onHotkeyPressed(self, event):

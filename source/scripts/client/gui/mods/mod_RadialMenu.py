@@ -382,7 +382,7 @@ def new_updateMenu(base, self):
             hotkey = 0
             keys = command.hotKeys
             if keys:
-                hotKeys = [x for x in keys if not isinstance(x, list)]
+                hotKeys = [x for x in keys if not isinstance(x, (list, tuple))]
                 if not hotKeys:
                     hotKeys = keys[0]
                 hotkey = hotKeys[0] if len(hotKeys) == 1 else 0

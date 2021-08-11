@@ -1,0 +1,11 @@
+﻿{
+    "UI_setting_CollisionHotkey_text": "Collision view switch hotkey",
+    "UI_setting_CollisionHotkey_tooltip": "<b>WARNING: this module is non-functional. Apologies for the inconvenience.</b>\nThis hotkey will switch collision preview mode in hangar.\n<b>Available modes:</b>\n • OFF\n • Model replace\n • Model add",
+    "UI_setting_isDebug_text": "Enable extended log printing",
+    "UI_setting_isDebug_tooltip": "If enabled, your python.log will be harassed with mod's debug information.",
+    "collision_compare_disable": "Disabling collision comparison mode.",
+    "collision_compare_enable": "Enabling collision comparison mode.",
+    "collision_enable": "Enabling collision mode.",
+    "collision_unavailable": "Collision displaying is currently not supported.",
+    "name": "Hangar Collision"
+}

@@ -31,7 +31,7 @@ def processHotKeys(data, keys, mode):
         process = lambda key: SPECIAL_TO_KEYS.get(key) or add(BigWorld.keyToString(key))
     else:
         assert False, 'unknown hotkey conversion mode'
-    make = lambda keySet: [make(key) if isinstance(key, list) else process(key) for key in keySet]
+    make = lambda keySet: [make(key) if isinstance(key, (list, tuple)) else process(key) for key in keySet]
     for dataKey in keys:  # configs have 'Key', code checks for 'key'. >_<
         newKey = dataKey.replace('key', 'Key')
         if (newKey if mode == 'read' else dataKey) not in data:

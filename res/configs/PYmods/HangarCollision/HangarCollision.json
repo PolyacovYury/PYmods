@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+//  Клавиши, переключающие режим просмотра схем бронирования танков
+    "CollisionHotKey": ["KEY_F4", ["KEY_LCONTROL", "KEY_RCONTROL"]],
+//  Расширенный вывод в лог
+    "debug": false
+}
