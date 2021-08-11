@@ -107,7 +107,7 @@ def setCameraLocation(settings):
     cfg = hangarCFG()
     dependency.instance(IHangarSpace).space.setCameraLocation(
         cfg[settings['target_pos'] + 'cam_start_target_pos'], Math.Vector3(*settings['pivot_pos']) if isinstance(
-            settings['pivot_pos'], list) else cfg[settings['pivot_pos'] + 'cam_pivot_pos'],
+            settings['pivot_pos'], (list, tuple)) else cfg[settings['pivot_pos'] + 'cam_pivot_pos'],
         math.radians(settings['angles'][0]), math.radians(settings['angles'][1]), settings['dist'],
         None, True)
 

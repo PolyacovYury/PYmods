@@ -147,7 +147,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         if g_config.data['isDebug']:
             pr.disable()
             pr.print_stats('time')
-        print g_config.ID + ': total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
+        print g_config.LOG, 'total models check time:', datetime.timedelta(seconds=round(time.time() - jobStartTime))
         BigWorld_callback(1, SoundGroups.g_instance.playSound2D, 'enemy_sighted_for_team')
         BigWorld_callback(2, self.onWindowClose)
         SkinnerLoading.skinsChecked = True
@@ -158,7 +158,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         if (not g_config.data['isDebug'] and not SkinnerLoading.skinsChecked
                 and g_config.skinsCache['version'] == getClientVersion()
                 and time.time() - os.path.getmtime(g_config.configPath + 'skinsCache.json') < 60 * 60 * 6):
-            print g_config.ID + ': skins checksum was checked recently, trusting the user on this one'
+            print g_config.LOG, 'skins checksum was checked recently, trusting the user on this one'
             SkinnerLoading.skinsChecked = True
         return g_config.data['enabled'] and g_config.skinsData['whitelists'] and not SkinnerLoading.skinsChecked
 
@@ -211,10 +211,10 @@ def checkSkinFiles(callback):
     skinsPath = 'vehicles/skins/textures/'
     rootSect = ResMgr.openSection(skinsPath)
     if rootSect is None or not rootSect.keys() or not g_config.skinsData['whitelists']:
-        print g_config.ID + ': skins folder is empty'
+        print g_config.LOG, 'skins folder is empty'
         delay_call(callback, texReplaced, vehSkins)
         return
-    print g_config.ID + ': listing', skinsPath, 'for CRC32'
+    print g_config.LOG, 'listing', skinsPath, 'for CRC32'
     SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_skins'])
     CRC32 = 0
     resultList = []
@@ -238,14 +238,14 @@ def checkSkinFiles(callback):
             yield awaitNextFrame()
         SkinnerLoading.callMethod('onBarComplete')
         if skinCRC32 in resultList:
-            print g_config.ID + ': detected duplicate skins pack:', skinName.replace(os.sep, '/')
+            print g_config.LOG, 'detected duplicate skins pack:', skinName.replace(os.sep, '/')
             continue
         CRC32 ^= skinCRC32
         resultList.append(skinCRC32)
     if str(CRC32) == CRC32cache:
-        print g_config.ID + ': textures were not changed'
+        print g_config.LOG, 'textures were not changed'
     else:
-        print g_config.ID + ': textures were', ('reinstalled' if CRC32cache is None else 'changed')
+        print g_config.LOG, 'textures were', ('reinstalled' if CRC32cache is None else 'changed')
         g_config.skinsCache['CRC32'] = str(CRC32)
         texReplaced = True
     ResMgr.purge(skinsPath)
@@ -278,14 +278,14 @@ def checkMeta(texReplaced, callback):
     lastVersion = g_config.skinsCache['version']
     clientIsNew = getClientVersion() != lastVersion
     if not lastVersion:
-        print g_config.ID + ': client version cache not found'
+        print g_config.LOG, 'client version cache not found'
     elif clientIsNew:
-        print g_config.ID + ': client version changed'
+        print g_config.LOG, 'client version changed'
     skinsModelsMissing = not next(glob.iglob(modelsDir + '*'), False)  # directory does not exist or is empty
     if not os.path.isdir(modelsDir):
-        print g_config.ID + ': models dir not found'
+        print g_config.LOG, 'models dir not found'
     elif skinsModelsMissing:
-        print g_config.ID + ': models dir is empty'
+        print g_config.LOG, 'models dir is empty'
     found = bool(g_config.skinsData['whitelists'])
     if found:
         if clientIsNew:
@@ -298,7 +298,7 @@ def checkMeta(texReplaced, callback):
         if not os.path.isdir(modelsDir):
             os.makedirs(modelsDir)
     elif os.path.isdir(modelsDir):
-        print g_config.ID + ': no skins found, deleting', modelsDir
+        print g_config.LOG, 'no skins found, deleting', modelsDir
         yield deleteModelFiles(modelsDir)
     delay_call(callback, found and (clientIsNew or skinsModelsMissing or texReplaced))
 
@@ -308,7 +308,7 @@ def checkMeta(texReplaced, callback):
 def unpackModels(vehSkins, callback):
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
-    print g_config.ID + ': unpacking vehicle models'
+    print g_config.LOG, 'unpacking vehicle models'
     to_process = ('normal',)
     present_crash_tex = {
         x: ResMgr.isFile('vehicles/skins/textures/white_crash/all/all/%s_crash.dds' % x) for x in ('track', 'tank')}
@@ -332,7 +332,7 @@ def unpackModels(vehSkins, callback):
 def unpackVehDir(vehSkins, nation, vehName, to_process, crash_tex, dirName, dirSect, style, callback):
     if dirName.startswith('_') and '.' not in dirName:
         if style:
-            print g_config.ID + ': detected styles directory inside style directory:',
+            print g_config.LOG, 'detected styles directory inside style directory:',
             print nation, vehName, style, dirName
         else:
             for styleName, _dirName, _dirSect in iterSection(dirSect, False, 2, (

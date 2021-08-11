@@ -31,11 +31,13 @@ class ConfigInterface(PYmodsConfigInterface):
         self.isModAdded = False
         self.dynamicSkinEnabled = False
         self.currentTeam = self.teams[0]
+        self.present_crash_tex = {
+            x: ResMgr.isFile('vehicles/skins/textures/white_crash/all/all/%s_crash.dds' % x) for x in ('track', 'tank')}
         super(ConfigInterface, self).__init__()
 
     def init(self):
         self.ID = __modID__
-        self.version = '1.2.0 (%s)' % __date__
+        self.version = '1.2.1 (%s)' % __date__
         self.defaultKeys = {'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
                             'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
         self.data = {'enabled': True,
@@ -156,7 +158,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.skinsCache.update(loadJson(self.ID, 'skinsCache', self.skinsCache, self.configPath))
         self.skinsData['priorities'] = loadJson(self.ID, 'skinsPriority', self.skinsData['priorities'], self.configPath)
         if self.data['isDebug']:
-            print self.ID + ': loading skin configs:'
+            print self.LOG, 'loading skin configs:'
         skinDirSect = ResMgr.openSection('vehicles/skins/textures/')
         for sname in () if skinDirSect is None else remDups(skinDirSect.keys()):
             confDict = self.settings.setdefault(sname, self.defaultSkinConfig)
@@ -181,26 +183,26 @@ class ConfigInterface(PYmodsConfigInterface):
                                 ([] if tracksDirSect is None else remDups(tracksDirSect.keys())))):
                             whitelist.add((vehicleName + '/' + modelsSet).lower())
                         elif self.data['isDebug']:
-                            print self.ID + ':', vehicleName, 'folder from', sname, 'pack is empty.'
+                            print self.LOG, vehicleName, 'folder from', sname, 'pack is empty.'
             for skinType in ('static', 'dynamic'):
                 priorities = self.skinsData['priorities'][skinType]
                 for tankType in priorities:
                     if not confDict[skinType][tankType]:
                         if self.data['isDebug']:
-                            print self.ID + ':', tankType, 'swapping in', sname, 'disabled.'
+                            print self.LOG, tankType, 'swapping in', sname, 'disabled.'
                         if sname in priorities[tankType]:
                             priorities[tankType].remove(sname)
                     elif sname not in priorities[tankType]:
                         priorities[tankType].append(sname)
                 if self.data['isDebug']:
-                    print self.ID + ': config for', sname, 'loaded.'
+                    print self.LOG, 'config for', sname, 'loaded.'
         crash_list = self.skinsData['whitelists'].pop('white_crash', None)
         for sname in self.settings.keys():
             if sname not in self.skinsData['whitelists']:
                 del self.settings[sname]
         if not self.skinsData['whitelists']:
             if not quiet:
-                print self.ID + ': no skin packs found, skin module standing down.'
+                print self.LOG, 'no skin packs found, skin module standing down.'
         for skinType in self.skinsData['priorities']:
             for key in self.skinsData['priorities'][skinType]:
                 for sname in self.skinsData['priorities'][skinType][key]:
@@ -214,8 +216,8 @@ class ConfigInterface(PYmodsConfigInterface):
     @property
     def collisionMode(self):
         try:
-            from gui.mods.mod_remodenabler import g_config as re_config
-            return re_config.collisionMode
+            from gui.mods.mod_hangarcollision import g_config as hc_config
+            return hc_config.collisionMode
         except ImportError:
             return 0
 
@@ -245,7 +247,7 @@ class ConfigInterface(PYmodsConfigInterface):
                 newModeNum = (self.teams.index(self.currentTeam) + 1) % len(self.teams)
                 self.currentTeam = self.teams[newModeNum]
                 if self.data['isDebug']:
-                    print self.ID + ': changing display mode to', self.currentTeam
+                    print self.LOG, 'changing display mode to', self.currentTeam
                 SystemMessages.pushMessage(
                     'temp_SM%s<b>%s</b>' % (self.i18n['UI_mode'], self.i18n['UI_mode_' + self.currentTeam]),
                     SystemMessages.SM_TYPE.Warning)

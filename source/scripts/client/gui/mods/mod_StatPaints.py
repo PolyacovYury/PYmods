@@ -112,7 +112,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     self.attempts[databaseID] = 0
                 self.attempts[databaseID] += 1
                 if self.attempts[databaseID] > 100:
-                    print self.ID + ': could not load info for databaseID', databaseID
+                    print self.LOG, 'could not load info for databaseID', databaseID
                     self.failed.add(databaseID)
                     del self.attempts[databaseID]
                     continue

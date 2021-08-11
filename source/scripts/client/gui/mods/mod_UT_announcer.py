@@ -399,7 +399,7 @@ soundMgr = SoundManager()
 
 def LOG_NOTE(msg, *args):
     if _config.data['logging']:
-        print _config.ID + ':', msg, (('(%s)' % ', '.join('%s' % arg for arg in args)) if args else '')
+        print _config.LOG, msg, (('(%s)' % ', '.join('%s' % arg for arg in args)) if args else '')
 
 
 def killCheck(frags):

@@ -42,6 +42,17 @@ class JSONEncoder(json.JSONEncoder):
             return str(o)
 
 
+class JSONObjectDecoder(json.JSONDecoder):
+    def __init__(self, *a, **k):
+        super(JSONObjectDecoder, self).__init__(*a, **k)
+        self.old_parse_array = self.parse_array
+        self.parse_array = self.new_parse_array
+
+    def new_parse_array(self, *a, **k):
+        values, end = self.old_parse_array(*a, **k)
+        return tuple(values), end
+
+
 class JSONLoader:
     @classmethod
     def byte_ify(cls, inputs, ignore_dicts=False):  # https://stackoverflow.com/a/33571117
@@ -95,6 +106,12 @@ class JSONLoader:
         except (UnicodeEncodeError, binascii.Error, zlib.error):
             return line, False
 
+    @classmethod
+    def json_loads(cls, data, ordered=False):
+        if ordered:  # noinspection PyTypeChecker
+            return cls.byte_ify(json.loads(data, cls=JSONObjectDecoder, object_pairs_hook=OrderedDict))
+        return cls.byte_ify(json.loads(data, cls=JSONObjectDecoder, object_hook=cls.byte_ify), ignore_dicts=True)
+
     @staticmethod
     def json_dumps(conf, sort):  # noinspection PyArgumentEqualDefault
         return json.dumps(
@@ -130,6 +147,7 @@ class JSONLoader:
 
     @classmethod
     def loadJson(cls, ID, name, oldConfig, path, save=False, rewrite=True, quiet=False, encrypted=False, sort_keys=True):
+        LOG = ID + ':'
         config_new = oldConfig
         oldConfig = cls.stringed_ints(oldConfig)
         if not os.path.exists(path):
@@ -139,7 +157,7 @@ class JSONLoader:
         new_path = '%s%s.json' % (path, name)
         if not os.path.isfile(new_path):
             if not save:
-                print ID + ': ERROR: Config not found, creating default:', new_path
+                print LOG, 'ERROR: Config not found, creating default:', new_path
             cls.json_file_write(new_path, cls.json_dumps(oldConfig, sort_keys), encrypted)
             return config_new
         if not save:
@@ -147,7 +165,7 @@ class JSONLoader:
             if not success:
                 return config_new
             try:
-                config_new = cls.byte_ify(json.loads(data, object_hook=cls.byte_ify), ignore_dicts=True)
+                config_new = cls.json_loads(data)
             except StandardError:
                 print new_path
                 traceback.print_exc()
@@ -155,7 +173,7 @@ class JSONLoader:
         read_contents, read_excluded, success = cls.json_file_read(new_path, encrypted)
         if not success:
             read_contents = cls.json_dumps(oldConfig, sort_keys)
-        read_data = cls.byte_ify(json.loads(read_contents, object_pairs_hook=OrderedDict))  # maintains ordering
+        read_data = cls.json_loads(read_contents, True)  # maintains ordering
         if rewrite:
             updated = read_data != oldConfig
             read_data = oldConfig
@@ -165,16 +183,15 @@ class JSONLoader:
             sort_keys = False
         if not updated:
             return config_new
-        write_lines = cls.byte_ify(cls.json_dumps(read_data, sort_keys)).split('\n')
+        write_lines = cls.json_dumps(read_data, sort_keys).split('\n')
         if not quiet:
-            print ID + ': updating config:', new_path
+            print LOG, 'updating config:', new_path
         for lineNum, (comment, insert) in sorted(read_excluded.iteritems(), key=lambda x: x[0]):
             if not insert:
                 if lineNum < len(write_lines):
                     write_lines[lineNum] += comment
                     continue
-                else:
-                    print ID + ': config', new_path, 'update warning: comment on line', lineNum, 'went beyond updated file'
+                print LOG, 'config', new_path, 'update warning: comment on line', lineNum, 'went beyond updated file'
             write_lines.insert(lineNum, comment)
         cls.json_file_write(new_path, '\n'.join(write_lines), encrypted)
         return config_new
@@ -194,7 +211,7 @@ class JSONLoader:
         if not success:
             return config_new
         try:
-            config_new = cls.byte_ify(json.loads(data, object_pairs_hook=OrderedDict))
+            config_new = cls.json_loads(data, True)
         except StandardError:
             print new_path
             traceback.print_exc()

@@ -50,9 +50,9 @@ class ConfigInterface(PYmodsConfigInterface):
         self.readConfigDir(quiet)
         if not quiet:
             if self.meta:
-                print self.ID + ': loaded configs:', ', '.join(self.meta)
+                print self.LOG, 'loaded configs:', ', '.join(self.meta)
             else:
-                print self.ID + ': no configs loaded'
+                print self.LOG, 'no configs loaded'
         for data in self.textData.itervalues():
             data['texts'] = remDups(data['texts'])
 
@@ -69,7 +69,7 @@ class ConfigInterface(PYmodsConfigInterface):
             texts = section.setdefault('texts', [])
             text = data['text']
             if section['mode'] == 'single':
-                if isinstance(text, list):
+                if isinstance(text, (list, tuple)):
                     text = ''.join(x for x in text if x)
                 texts.append(text.rstrip())
             else:
@@ -96,7 +96,7 @@ def i18n_hook_makeString(key, *args, **kwargs):
         mode = g_config.textData[key]['mode']
         texts = g_config.textData[key]['texts']
         if not texts:
-            print g_config.ID + ': empty text list for key', key
+            print g_config.LOG, 'empty text list for key', key
         elif mode == 'single':
             g_config.textCache[key], g_config.textId[key] = texts[0], 0
         elif mode in ('circle', 'random'):
