@@ -46,7 +46,7 @@ def migrateOutfitsCache(self):
                 for typeName, typeData in season.items():
                     if typeName == GUI_ITEM_TYPE_NAMES[GUI_ITEM_TYPE.CAMOUFLAGE]:
                         for part, partData in typeData.items():
-                            if not isinstance(partData, list):
+                            if not isinstance(partData, (list, tuple)):
                                 continue
                             typeData[part] = {}
                             if not partData:
