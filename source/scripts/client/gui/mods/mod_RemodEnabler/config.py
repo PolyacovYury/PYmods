@@ -34,7 +34,7 @@ class ConfigInterface(PYmodsConfigInterface):
 
     def init(self):
         self.ID = __modID__
-        self.version = '3.1.0 (%s)' % __date__
+        self.version = '3.2.0 (%s)' % __date__
         self.author += ' (thx to atacms)'
         self.defaultKeys = {
             'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
@@ -49,8 +49,8 @@ class ConfigInterface(PYmodsConfigInterface):
         self.i18n = {
             'UI_description': 'Remod Enabler',
             'UI_flash_header': 'Remods setup',
-            'UI_flash_header_tooltip': "Extended setup for RemodEnabler by "
-                                       "<font color='#DD7700'><b>Polyacov_Yury</b></font>",
+            'UI_flash_header_tooltip': (
+                "Extended setup for RemodEnabler by <font color='#DD7700'><b>Polyacov_Yury</b></font>"),
             'UI_flash_header_simple': 'Remods for ',
             'UI_flash_header_main': 'Advanced settings',
             'UI_flash_header_setup': 'Remods setup',
@@ -60,8 +60,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_remodCreate_name_text': 'Remod name',
             'UI_flash_remodCreate_name_tooltip': 'Remod unique ID and config file name.',
             'UI_flash_remodCreate_message_text': 'Author message',
-            'UI_flash_remodCreate_message_tooltip': 'This message is displayed in hangar every time the remod is selected.'
-                                                    '\nLeave blank if not required.',
+            'UI_flash_remodCreate_message_tooltip': (
+                'This message is displayed in hangar every time the remod is selected.\nLeave blank if not required.'),
             'UI_flash_remodCreate_name_empty': '<b>Remod creation failed:</b>\nname is empty.',
             'UI_flash_remodCreate_error': '<b>Remod creation failed:</b>\ncheck python.log for additional information.',
             'UI_flash_remodCreate_success': '<b>Remod created successfully</b>.',
@@ -76,8 +76,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_flash_remodAdd_success': 'Remod <b>%s</b> installed on <b>%s</b>.',
             'UI_flash_vehicleAdd_success': 'Vehicle added to <b>%s</b> whitelist: <b>%s</b>',
             'UI_flash_vehicleAdd_dupe': 'Vehicle already in <b>%s</b> whitelist: <b>%s</b>',
-            'UI_flash_vehicleAdd_notSupported':
-                'Vehicle can\'t be added to <b>%s</b> whitelist:%s is not supported by RemodEnabler.',
+            'UI_flash_vehicleAdd_notSupported': (
+                'Vehicle can\'t be added to <b>%s</b> whitelist:%s is not supported by RemodEnabler.'),
             'UI_flash_addBtn': 'Add',
             'UI_flash_removeBtn': 'Remove',
             'UI_flash_backBtn': 'Back',
@@ -97,9 +97,6 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_install_customization': '<b>RemodEnabler:</b>\nRemods are not displayed when customization is open.',
             'UI_install_remod': '<b>RemodEnabler:</b>\nRemod installed: ',
             'UI_install_default': '<b>RemodEnabler:</b>\nDefault model applied.',
-            'UI_install_wheels_unsupported':
-                '<b>RemodEnabler:</b>\nWARNING: wheeled vehicles are NOT processed. '
-                'At least until WG moves params processing out of Vehicular, which is an inaccessible part of game engine.',
             'UI_mode': '<b>RemodEnabler:</b>\nCurrent display mode: ',
             'UI_mode_player': 'player tank preview',
             'UI_mode_ally': 'ally tank preview',
