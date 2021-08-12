@@ -26,15 +26,11 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.5.0 (%(file_compile_date)s)'
+        self.version = '1.5.1 (%(file_compile_date)s)'
         self.author += ' and Ekspoint'
-        self.data = {'defaultPool': 36,
-                     'lowEnginePool': 10,
-                     'memoryLimit': 250,
-                     'streamingPool': 8,
-                     'IOPoolSize': 8,
-                     'max_voices': 110,
-                     'debug': False}
+        self.data = {
+            'defaultPool': 36, 'lowEnginePool': 10, 'memoryLimit': 250, 'streamingPool': 8, 'IOPoolSize': 8,
+            'max_voices': 110, 'debug': False}
         self.i18n = {
             'UI_restart_header': 'Banks Loader by PY: restart',
             'UI_restart_reason_new': 'You have installed new audio mods, so the game config was changed.',
@@ -109,8 +105,8 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
             os.rename(oldModName, oldModName + '1')
 
     def check_wotmods(self, mediaPath):
-        modsRoot = '.' + curCV.replace('res_', '') + '/'
-        load_order_xml = modsRoot + 'load_order.xml'
+        modsRoot = curCV.replace('res_', '') + '/'
+        load_order_xml = '.' + modsRoot + 'load_order.xml'
         BLMarker = '_BanksLoaded'
         order_changed = False
         BL_present = False
@@ -142,31 +138,32 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                 order_changed |= _filePath not in order and not order.append(_filePath)
                 BL_present = True
                 continue
-            cleaned = False
             with zipfile.ZipFile(filePath) as zip_orig:
                 fileNames = zip_orig.namelist()
-                if audio_mods_xml in fileNames:
-                    cleaned = True
-                    self.editedBanks['wotmod'].append(os.path.basename(filePath))
-                    bankFiles = [x for x in fileNames if x.startswith('res/' + mediaPath) and x.endswith('.bnk')]
-                    if bankFiles:
-                        with zipfile.ZipFile(new_filePath, 'w') as zip_new:
-                            for fileInfo in zip_orig.infolist():
-                                fileName = fileInfo.filename
-                                if fileName == audio_mods_xml:
-                                    fileInfo.filename = bankFiles[0].replace('.bnk', '.xml')
-                                    fileInfo.extra = ''
-                                    zip_new.writestr(fileInfo, zip_orig.read(fileName))
-            if cleaned:
-                print self.LOG, 'config renamed for package', os.path.basename(filePath)
-                order_changed |= _filePath not in order and not order.append(_filePath)
-                BL_present = True
-                if os.path.isfile(new_filePath):
-                    try:
-                        stat = os.stat(filePath)
-                        os.utime(new_filePath, (stat.st_atime, stat.st_mtime))
-                    except StandardError:
-                        traceback.print_exc()
+                if audio_mods_xml not in fileNames:
+                    continue
+                self.editedBanks['wotmod'].append(os.path.basename(filePath))
+                bankFiles = [x for x in fileNames if x.startswith('res/' + mediaPath) and x.endswith('.bnk')]
+                if not bankFiles:
+                    print self.LOG, _filePath, 'contains audio_mods.xml but no banks. Handle this manually, please.'
+                    continue
+                with zipfile.ZipFile(new_filePath, 'w') as zip_new:
+                    for fileInfo in zip_orig.infolist():
+                        fileName = fileInfo.filename
+                        if fileName != audio_mods_xml:
+                            continue
+                        fileInfo.filename = bankFiles[0].replace('.bnk', '.xml')
+                        fileInfo.extra = ''
+                        zip_new.writestr(fileInfo, zip_orig.read(fileName))
+            print self.LOG, 'config renamed for package', os.path.basename(filePath)
+            order_changed |= _filePath not in order and not order.append(_filePath)
+            BL_present = True
+            if os.path.isfile(new_filePath):
+                try:
+                    stat = os.stat(filePath)
+                    os.utime(new_filePath, (stat.st_atime, stat.st_mtime))
+                except StandardError:
+                    traceback.print_exc()
         if BL_present:
             order.append(BLaM)
         order_changed |= was_BLaM != BL_present
