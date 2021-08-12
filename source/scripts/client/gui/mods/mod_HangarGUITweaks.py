@@ -208,7 +208,7 @@ def item_tier(item):
 def new_sort(base, self, a, b, *_a, **k):
     if not (g_config.data['enabled'] and g_config.data['sort_personalReserves']):
         return base(self, a, b, *_a, **k)
-    return cmp(item_tier(a), item_tier(b)) or cmp(BOOSTERS_ORDERS[a.boosterType], BOOSTERS_ORDERS[b.boosterType]) or cmp(
+    return int(a.count <= 1) or cmp(item_tier(a), item_tier(b)) or cmp(BOOSTERS_ORDERS[a.boosterType], BOOSTERS_ORDERS[b.boosterType]) or cmp(
         b.effectTime, a.effectTime)
 
 
