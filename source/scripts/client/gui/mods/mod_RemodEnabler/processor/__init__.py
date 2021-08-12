@@ -14,7 +14,6 @@ from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.personality import ServicesLocator as SL
 from gui.simple_turret_rotator import SimpleTurretRotator as WGRotator, logger
 from items.vehicles import CompositeVehicleDescriptor as CompVDesc
-from vehicle_systems import camouflages
 from vehicle_systems.tankStructure import TankPartNames
 from . import remods
 from .. import g_config
