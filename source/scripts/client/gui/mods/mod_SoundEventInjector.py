@@ -198,7 +198,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                     item.reloadEffect = g_cache._gunReloadEffects.get(itemData['reloadEffect'], item.reloadEffect)
 
     def overrideGunEffects(self, gun, effectsData):
-        is_old_list = isinstance(gun.effects, (list, tuple))
+        is_old_list = isinstance(gun.effects, list)
         is_new_list = isinstance(effectsData, (list, tuple))
         if is_old_list != is_new_list:
             if is_new_list:
