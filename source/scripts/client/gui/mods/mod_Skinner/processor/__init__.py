@@ -110,7 +110,7 @@ def new_prerequisites(base, self, typeDescriptor, vID, health, isCrewActive, isT
         isDamaged = self.damageState.isCurrentModelDamaged
         callback = getattr(self, '_CompoundAppearance__requestModelsRefresh', None)
         if isDamaged and callback is not None and not getattr(BigWorld.player(), 'initCompleted', False):
-            BigWorld_callback(0, callback)
+            BigWorld_callback(1, callback)
         else:
             self._CommonTankAppearance__typeDesc = typeDescriptor
             self._CommonTankAppearance__vID = vID
