@@ -34,7 +34,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.3.1 (%(file_compile_date)s)'
+        self.version = '1.3.2 (%(file_compile_date)s)'
         self.data = {
             'engines': {}, 'guns': {}, 'gun_effects': {}, 'gun_reload_effects': {}, 'shot_effects': {},
             'sound_notifications': {}}
@@ -228,7 +228,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
 @overrideMethod(VehicleType, '__init__')
 def new_vehicleType_init(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
-    _config.inject_vehicleType(self)
+    g_config.inject_vehicleType(self)
 
 
 @overrideMethod(PlayerAvatar, '__initGUI')  # overrides initGUI instead of readConfigs because ProTanki
@@ -239,14 +239,16 @@ def new_initGUI(base, self):
     new_additional = {
         'fxEvent': {'cooldownFx': 0},
         'infEvent': {'infChance': 100, 'cooldownEvent': 0, 'queue': 1, 'lifetime': 5, 'priority': 0}}
-    notificationsData = _config.data['sound_notifications']
-    for eventName, event in events.iteritems():
-        override = notificationsData.get(eventName, {})
+    notificationsData = g_config.data['sound_notifications']
+    for eventName, override in notificationsData.iteritems():
+        event = events.get(eventName)
+        if event is None:
+            print g_config.LOG, 'sound_notifications event', eventName, 'not found'
+            continue
         for category, sound in override.iteritems():
-            category = new_categories.get(category)
-            if not category:
-                continue
-            [event.setdefault(k, v) for k, v in new_additional[category].iteritems()]
+            category = new_categories.get(category, category)
+            if category in new_additional:
+                [event.setdefault(k, v) for k, v in new_additional[category].iteritems()]
             if category == 'fxEvent':
                 if category not in event:
                     event[category] = []
@@ -264,7 +266,7 @@ def new_initGUI(base, self):
 
 @overrideMethod(IngameSoundNotifications, 'play')
 def new_play(base, self, eventName, *a, **k):
-    event = _config.data['sound_notifications'].get(eventName, {})
+    event = g_config.data['sound_notifications'].get(eventName, {})
     for category in event:
         if not self.isCategoryEnabled(category):
             self._IngameSoundNotifications__enabledSoundCategories.add(category)
@@ -300,12 +302,12 @@ def updateVehicleGunReloadTime(base, self, vehicleID, timeLeft, baseTime):
     if (self._PlayerAvatar__prevGunReloadTimeLeft != timeLeft and timeLeft == 0.0
             and not self.guiSessionProvider.shared.vehicleState.isInPostmortem):
         try:
-            if 'fx' in _config.data['sound_notifications'].get('gun_reloaded', {}):
-                SoundGroups.g_instance.playSound2D(_config.data['sound_notifications']['gun_reloaded']['fx'])
+            if 'fx' in g_config.data['sound_notifications'].get('gun_reloaded', {}):
+                SoundGroups.g_instance.playSound2D(g_config.data['sound_notifications']['gun_reloaded']['fx'])
         except StandardError:
             traceback.print_exc()
     base(self, vehicleID, timeLeft, baseTime)
 
 
-_config = ConfigInterface()
-statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-13', _config.confList)
+g_config = ConfigInterface()
+statistic_mod = Analytics(g_config.ID, g_config.version, 'UA-76792179-13', g_config.confList)
