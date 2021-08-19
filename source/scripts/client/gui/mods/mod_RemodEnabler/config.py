@@ -359,7 +359,7 @@ class RemodEnablerUI(AbstractWindowView):
             outfit = appearance.outfit
             modelsSet = outfit.modelsSet or 'default'
             for partName, sectNames, path in zip((
-                    TankPartNames.ALL + ('engine',)
+                    TankPartNames.ALL + ('engine', 'camouflage')
             ), (
                     ('traces', 'tracks', 'wheels', 'drivingWheels', 'hullPosition', 'topRightCarryingPoint', 'AODecals',
                      'groundNodes', 'splineDesc', 'trackThickness', 'trackNodes', 'leveredSuspension', 'physicalTracks'),
@@ -368,15 +368,19 @@ class RemodEnablerUI(AbstractWindowView):
                      'wwturretRotatorSoundManual', 'turretDetachmentEffects'),
                     ('animateEmblemSlots', 'drivenJoints', 'effects', 'reloadEffect', 'impulse', 'recoil'),
                     (),
+                    ('tiling', 'exclusionMask', 'density', 'aoTextureSize'),
             ), (
                     'chassis/' + vDesc.chassis.name,
                     'hull',
                     'turrets0/' + vDesc.turret.name,
                     'turrets0/' + vDesc.turret.name + '/guns/' + vDesc.gun.name,
                     '',
+                    'camouflage',
             )):
                 part = data.createSection(partName)
                 orig_part = orig_data[path]
+                if sectNames and orig_part is None:
+                    continue
                 for sectName in sectNames and ('undamaged', 'destroyed', 'exploded'):
                     part.writeString('models/' + sectName, getattr(getattr(vDesc, partName).modelsSets[modelsSet], sectName))
                 for sectName in sectNames and (sectNames + ('emblemSlots', 'customizationSlots', 'camouflage')):

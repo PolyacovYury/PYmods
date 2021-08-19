@@ -25,6 +25,12 @@ class VehicleTypeProxy(object):  # I would tear off the hands that made me write
         new_value = modelDesc.camouflage
         return value._replace(**{field: getattr(new_value, field) or getattr(value, field) for field in value._fields})
 
+    def __setattr__(self, key, value):
+        if key in self.__slots__:
+            super(VehicleTypeProxy, self).__setattr__(key, value)
+        else:
+            setattr(self._type, key, value)
+
 
 def apply(vDesc, modelDesc, outfit):
     modelsSet = outfit.modelsSet or 'default'
