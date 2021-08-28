@@ -1,6 +1,7 @@
 ﻿{
     "UI_setting_music_default": "Стандартная",
     "UI_setting_music_offspring": "The Offspring",
+    "UI_setting_music_sabaton": "Sabaton",
     "UI_setting_music_text": "Режим музыки",
     "UI_setting_voice_20_Amway921": "RU-20: Amway921",
     "UI_setting_voice_20_AwesomeEpicGuys": "EU-20: AwesomeEpicGuys",
@@ -44,6 +45,7 @@
     "UI_setting_voice_racer_en": "Гонщик (EN)",
     "UI_setting_voice_racer_ru": "Гонщик (RU)",
     "UI_setting_voice_sabaton": "Sabaton",
+    "UI_setting_voice_sabaton21": "Sabaton 2.0",
     "UI_setting_voice_text": "Режим голосового оповещения",
     "UI_setting_voice_valkyrie_female": "Valkyrie Chronicles: женский",
     "UI_setting_voice_valkyrie_male": "Valkyrie Chronicles: мужской",

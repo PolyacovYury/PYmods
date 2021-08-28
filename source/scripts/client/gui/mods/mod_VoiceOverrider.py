@@ -44,8 +44,12 @@ class ConfigInterface(PYmodsConfigInterface):
             VoiceMode('21_SummerTiger', 'bb21_asia2_Summertiger'), VoiceMode('21_Maharlika', 'bb21_asia3_Maharlika'),
             VoiceMode('gup_jp_commander', 'gup_jp_commander'), VoiceMode('gup_jp_crew', 'gup_jp_crew'),
             VoiceMode('duke', 'duke'), VoiceMode('cobra', 'cobra'), VoiceMode('gagarin21', 'gagarin21'),
+            VoiceMode('sabaton21', 'sabaton21_specialVoice'),
         ]
-        self.music_modes = [MusicMode('default', 'default'), MusicMode('offspring', 'offspringArenaMusic')]
+        self.music_modes = [
+            MusicMode('default', 'default'),
+            MusicMode('offspring', 'offspringArenaMusic'), MusicMode('sabaton', 'sabatonArenaMusic'),
+        ]
         super(ConfigInterface, self).__init__()
 
     def init(self):
@@ -58,6 +62,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_music_text': 'Ingame music mode',
             'UI_setting_music_default': 'Default',
             'UI_setting_music_offspring': 'The Offspring',
+            'UI_setting_music_sabaton': 'Sabaton',
             'UI_setting_voice_text': 'Ingame voice messages mode',
             'UI_setting_voice_default_male': 'Default: male',
             'UI_setting_voice_default_female': 'Default: female',
@@ -66,6 +71,7 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_setting_voice_valkyrie_male': 'Valkyrie Chronicles: male',
             'UI_setting_voice_valkyrie_female': 'Valkyrie Chronicles: female',
             'UI_setting_voice_sabaton': 'Sabaton',
+            'UI_setting_voice_sabaton21': 'Sabaton 2.0',
             'UI_setting_voice_buffon': 'Buffon',
             'UI_setting_voice_offspring': 'The Offspring',
             'UI_setting_voice_celebrity2021_ru': 'Chuck Norris (RU)',
