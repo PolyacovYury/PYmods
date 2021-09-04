@@ -49,18 +49,27 @@ def getStyleFromId(styleId):
     return HangarVehicleAppearance.itemsFactory.createCustomization(g_cache.customization20().styles[styleId].compactDescr)
 
 
-def getDefaultItemCDs(vDesc=None):
+def getDefaultEmblemCD(vDesc=None):
     vDesc = vDesc or g_currentVehicle.item.descriptor
     cache = g_cache.customization20()
-    return (cache.decals[vDesc.type.defaultPlayerEmblemID].compactDescr,
-            cache.insignias[cache.defaultInsignias[vDesc.type.customizationNationID]].compactDescr)
+    return cache.decals[vDesc.type.defaultPlayerEmblemID].compactDescr
+
+
+def getDefaultInsigniaCD(vDesc=None):
+    vDesc = vDesc or g_currentVehicle.item.descriptor
+    cache = g_cache.customization20()
+    return cache.insignias[cache.defaultInsignias[vDesc.type.customizationNationID]].compactDescr
+
+
+def getDefaultItemCDs(vDesc=None):
+    return getDefaultEmblemCD(vDesc), getDefaultInsigniaCD(vDesc)
 
 
 def addDefaultInsignia(outfit, vDesc=None):
     vDesc = vDesc or g_currentVehicle.item.descriptor
     insignia_slot = outfit.gun.slotFor(GUI_ITEM_TYPE.INSIGNIA)
     if not insignia_slot.getItemCD():
-        insignia_slot.set(getDefaultItemCDs(vDesc)[1], component=InsigniaComponent())  # emptyComponent for insignia is wrong
+        insignia_slot.set(getDefaultInsigniaCD(vDesc), component=InsigniaComponent())  # emptyComponent for insignia is wrong
     return outfit.copy()
 
 
