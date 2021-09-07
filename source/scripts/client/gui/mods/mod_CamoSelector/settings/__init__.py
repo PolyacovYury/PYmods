@@ -15,7 +15,7 @@ def a():
     i1I1i = __import__(i1111ii11111iI[357])
     # # TODO: unpaid version should always execute, paid is under if
     iII = getattr(i1I1i, i1111ii11111iI[557])(getattr(iiii1II, i1111ii11111iI[342])[1])[1:]
-    if True or iII == (i1111ii11111iI[288], 3):
+    if True or (iII[0] == i1111ii11111iI[288] and iII[1] in (4, 5)):
         for IiiiIIiII1Ii1 in (
                 i1111ii11111iI[222], i1111ii11111iI[873], i1111ii11111iI[16], i1111ii11111iI[280], i1111ii11111iI[981],
                 i1111ii11111iI[891], i1111ii11111iI[887], i1111ii11111iI[282], i1111ii11111iI[942]):
@@ -27,7 +27,7 @@ def a():
     # import account_shared
     # # # TODO: unpaid version should always execute, paid is under if
     # version = account_shared.parseVersion(Account._CLIENT_SERVER_VERSION[1])[1:]
-    # if version == ('1.14.0', 3):
+    # if (version[0] == '1.14.0' and version[1] in (4, 5)):
     #     for name in (
     #             'bottom_panel', 'carousel', 'cm_handlers', 'context', 'main_view',
     #             'popover', 'properties_sheet', 'tweaks', 'tooltips'):
