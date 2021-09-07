@@ -43,10 +43,15 @@
     "flashCol_progressionDecal_changeMode_message": "Current style can not be edited.\nIf you proceed, you will be moved to custom mode's decal tab.\nDo you want to continue?",
     "flashCol_progressionDecal_changeMode_title": "Mode change",
     "flashCol_serviceMessage_settings": "Customization element settings changed.",
+    "flashCol_wrongVersion_message": "Incompatible game version detected: %(version)s build %(build)s.\nModified functionality was disabled to prevent game malfunction.\nPlease, report the fact of this message appearing in the comments\nunder the Patreon/Boosty post <b>where you downloaded the mod from</b>.\nDon't forget to include the version and the build number listed above!",
+    "flashCol_wrongVersion_title": "CamoSelector: incompatible game version",
     "flash_freeVersion_button_boosty": "Open Boosty in browser",
     "flash_freeVersion_button_close": "Close",
     "flash_freeVersion_button_patreon": "Open Patreon in browser",
     "flash_propertySheet_edit_action": "Edit style",
     "flash_switcher_buy": "PURCHASE",
-    "flash_switcher_install": "INSTALL"
+    "flash_switcher_install": "INSTALL",
+    "flash_wrongVersion_button_boosty": "Open Boosty in browser",
+    "flash_wrongVersion_button_close": "Close",
+    "flash_wrongVersion_button_patreon": "Open Patreon in browser"
 }

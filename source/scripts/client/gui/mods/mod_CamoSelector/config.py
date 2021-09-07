@@ -75,6 +75,16 @@ class ConfigInterface(PYmodsConfigInterface):
             'flash_freeVersion_button_boosty': 'Open Boosty in browser',
             'flash_freeVersion_button_close': 'Close',
             'flash_freeVersion_button_patreon': 'Open Patreon in browser',
+            'flashCol_wrongVersion_title': 'CamoSelector: incompatible game version',
+            'flashCol_wrongVersion_message': (
+                'Incompatible game version detected: %(version)s build %(build)s.\n'
+                'Modified functionality was disabled to prevent game malfunction.\n'
+                'Please, report the fact of this message appearing in the comments\n'
+                'under the Patreon/Boosty post <b>where you downloaded the mod from</b>.\n'
+                'Don\'t forget to include the version and the build number listed above!'),
+            'flash_wrongVersion_button_boosty': 'Open Boosty in browser',
+            'flash_wrongVersion_button_close': 'Close',
+            'flash_wrongVersion_button_patreon': 'Open Patreon in browser',
             'flashCol_group_multinational': 'Multinational',
             'flashCol_group_custom': 'Custom',
             'flashCol_group_separator': ' / ',

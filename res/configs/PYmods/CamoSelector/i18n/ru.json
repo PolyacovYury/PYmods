@@ -43,10 +43,15 @@
     "flashCol_progressionDecal_changeMode_message": "Текущий стиль не может быть изменён.\nВы будете перемещены на вкладку декалей режима создания своего стиля.\nВы хотите продолжить?",
     "flashCol_progressionDecal_changeMode_title": "Смена режима",
     "flashCol_serviceMessage_settings": "Изменены настройки элементов внешнего вида.",
+    "flashCol_wrongVersion_message": "Обнаружена несовместимая версия игры: %(version)s, сборка № %(build)s.\nФункционал мода отключен для предотвращения нарушений в работе игры.\nПожалуйста, сообщите о факте появления данного сообщения в комментариях\nк посту на Patreon/Boosty, <b>из которого вы скачивали мод</b>.\nНе забудьте написать версию и номер сборки, указанные выше!",
+    "flashCol_wrongVersion_title": "CamoSelector: несовместимая версия игры",
     "flash_freeVersion_button_boosty": "Открыть Boosty в браузере",
     "flash_freeVersion_button_close": "Понятно",
     "flash_freeVersion_button_patreon": "Открыть Patreon в браузере",
     "flash_propertySheet_edit_action": "Изменить стиль",
     "flash_switcher_buy": "ПОКУПКА",
-    "flash_switcher_install": "УСТАНОВКА"
+    "flash_switcher_install": "УСТАНОВКА",
+    "flash_wrongVersion_button_boosty": "Открыть Boosty в браузере",
+    "flash_wrongVersion_button_close": "Понятно",
+    "flash_wrongVersion_button_patreon": "Открыть Patreon в браузере"
 }

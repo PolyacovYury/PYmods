@@ -173,6 +173,24 @@ def createDonationDialog():
         BigWorld.wg_openWebBrowser('https://boosty.to/polyacov_yury/')
 
 
+@async
+def createVersionDialog(version):
+    if hasattr(createVersionDialog, 'shown'):
+        return
+    createVersionDialog.shown = True
+    builder = InfoDialogBuilder().setFormattedTitle(
+        g_config.i18n['flashCol_wrongVersion_title']).setFormattedMessage(
+        g_config.i18n['flashCol_wrongVersion_message'] % dict(zip(('version', 'build'), version)))
+    for ID, key in (DButtons.PURCHASE, 'patreon'), (DButtons.RESEARCH, 'boosty'), (DButtons.CANCEL, 'close'):
+        builder.addButton(ID, None, ID == DButtons.PURCHASE, rawLabel=g_config.i18n['flash_wrongVersion_button_%s' % key])
+    subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
+    result = yield await(dialogs.show(builder.build(parent=subview)))
+    if result.result == DButtons.PURCHASE:
+        BigWorld.wg_openWebBrowser('https://www.patreon.com/polyacov_yury/')
+    elif result.result == DButtons.RESEARCH:
+        BigWorld.wg_openWebBrowser('https://boosty.to/polyacov_yury/')
+
+
 def fixIconPath(icon):
     if '4278190335,4278255360,4294901760,' in icon:
         icon = '../../' + icon.split('"', 2)[1]
