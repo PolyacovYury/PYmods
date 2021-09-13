@@ -12,6 +12,7 @@ from gui.IngameSoundNotifications import IngameSoundNotifications
 from helpers.EffectsList import ImpactNames, KeyPoint, _SoundEffectDesc, _TracerSoundEffectDesc
 from items.components.sound_components import WWTripleSoundConfig as SoundConfig
 from items.vehicles import VehicleType, _VEHICLE_TYPE_XML_PATH, __readEffectsTimeLine as readEffectsTimeLine, g_cache
+from itertools import chain
 from material_kinds import EFFECT_MATERIALS
 
 reloadTypes = {
@@ -124,7 +125,10 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                 if orig is not None:
                     print self.LOG, 'changing type of reload effect %s. Might cause problems!' % sname
                 orig, desc = None, reloadType(sect, effData['type'])
-            for slot in reloadType.__slots__:
+            desc_slots = chain.from_iterable(getattr(cls, '__slots__', ()) for cls in reloadType.__mro__)
+            for slot in desc_slots:
+                if slot == '_intuitionOverrides':
+                    continue
                 slotName = mismatchSlots.get(slot, slot)
                 if slotName in effData:
                     value = effData[slotName]
@@ -133,11 +137,24 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                     if slot in modifiers:
                         value = modifiers[slot](value)
                 sect.writeString(slotName, str(value))
+            desc_overrides = (orig or desc)._intuitionOverrides
+            data_overrides = effData.get('intuition_overrides', {})
+            for slot in desc_slots:
+                slotName = mismatchSlots.get(slot, slot)
+                if slotName in data_overrides:
+                    value = data_overrides[slotName]
+                else:
+                    if slot not in desc_overrides:
+                        continue
+                    value = desc_overrides[slot]
+                    if slot in modifiers:
+                        value = modifiers[slot](value)
+                sect.writeString('intuition_overrides/' + slotName, str(value))
             new_desc = reloadType(sect, effData['type'])
             if orig is None:
                 g_cache._gunReloadEffects[sname] = new_desc
             else:  # set new attributes to existing descriptors, otherwise they don't update
-                [setattr(orig, slot, getattr(new_desc, slot)) for slot in reloadType.__slots__]
+                [setattr(orig, slot, getattr(new_desc, slot)) for slot in desc_slots]
         for item_type, items_storage in (('engines', g_cache._Cache__engines), ('guns', g_cache._Cache__guns)):
             for nationID, nation_items in enumerate(items_storage):
                 nationData = self.data[item_type].get(nations.NAMES[nationID])
