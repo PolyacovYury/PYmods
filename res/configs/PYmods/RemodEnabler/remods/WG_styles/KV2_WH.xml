@@ -1,0 +1,312 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Wargaming </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> r152_kv2_w r77_kv2 </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/russian/R77_KV2/_skins/WH/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> FAR </lodDist>
+			<bufferPrefs> largeTank </bufferPrefs>
+			<textureSet> ussr_01 </textureSet>
+			<size> 0.480000 0.760000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.312220 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -1.500000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> true </isLeft>
+				<template> WD_L </template>
+				<radius> 0.201895 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.295000 </radius>
+				<count> 6 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> WD_R </template>
+				<radius> 0.201969 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.295000 </radius>
+				<count> 6 </count>
+			</group>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.340000 </radius>
+				<syncAngle> 27.000000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L4 </name>
+				<radius> 0.416713 </radius>
+				<syncAngle> 22.500000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.340000 </radius>
+				<syncAngle> 27.000000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R4 </name>
+				<radius> 0.416713 </radius>
+				<syncAngle> 22.500000 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L4 </drivingWheels>
+		<hullPosition> 0.000000 1.065930 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 6 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.100000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 6 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.100000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> 0.000000 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.090000 </maxAmplitude>
+			<maxOffset> 0.090000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.100000 </forwardElastK>
+				<backwardElastK> 0.800000 </backwardElastK>
+				<rightSibling> Track_VT_R1 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<backwardElastK> 1.200000 </backwardElastK>
+				<leftSibling> Track_VT_R0 </leftSibling>
+				<rightSibling> Track_VT_R2 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.900000 </forwardElastK>
+				<backwardElastK> 1.600000 </backwardElastK>
+				<leftSibling> Track_VT_R1 </leftSibling>
+				<rightSibling> Track_VT_R3 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.800000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<leftSibling> Track_VT_R2 </leftSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.100000 </forwardElastK>
+				<backwardElastK> 0.800000 </backwardElastK>
+				<rightSibling> Track_VT_L1 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<backwardElastK> 1.200000 </backwardElastK>
+				<leftSibling> Track_VT_L0 </leftSibling>
+				<rightSibling> Track_VT_L2 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.900000 </forwardElastK>
+				<backwardElastK> 1.600000 </backwardElastK>
+				<leftSibling> Track_VT_L1 </leftSibling>
+				<rightSibling> Track_VT_L3 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.800000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<leftSibling> Track_VT_L2 </leftSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/russian/R77_KV2/track/segment.model </segmentModelLeft>
+			<segmentModelRight> vehicles/russian/R77_KV2/track/segment.model </segmentModelRight>
+			<segment2ModelLeft> vehicles/russian/R77_KV2/track/segment.model </segment2ModelLeft>
+			<segment2ModelRight> vehicles/russian/R77_KV2/track/segment.model </segment2ModelRight>
+			<left> vehicles/russian/R77_KV2/track/left.track </left>
+			<right> vehicles/russian/R77_KV2/track/right.track </right>
+			<segmentLength> 0.153000 </segmentLength>
+			<segmentOffset> 0.110000 </segmentOffset>
+			<lodDist> SPLINE_TRACK </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals>
+			<decal>
+				<transform>
+					<row0> 4.661800 -0.000000 -0.000000 </row0>
+					<row1> -0.000000 1.438970 -0.000000 </row1>
+					<row2> 0.000000 0.000000 8.388200 </row2>
+					<row3> -0.000000 0.000000 0.000000 </row3>
+				</transform>
+			</decal>
+		</AODecals>
+		<soundID> ussr:Chassis_KV2_W </soundID>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/russian/R77_KV2/_skins/WH/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> -0.400665 0.180118 2.594410 </rayStart>
+				<rayEnd> -0.400665 -0.001617 2.510910 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.280000 </size>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 HP_Track_Exhaus_2 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/russian/R77_KV2/_skins/WH/normal/lod0/Turret_02.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> -1.017500 0.707676 -1.291850 </rayStart>
+				<rayEnd> -0.618988 0.707676 -1.257410 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.320000 </size>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> 1.012580 0.709128 -1.297390 </rayStart>
+				<rayEnd> 0.614064 0.709128 -1.262950 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.320000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34000 </slotId>
+				<rayStart> 1.076810 0.680380 -0.565868 </rayStart>
+				<rayEnd> 0.678299 0.680377 -0.531437 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.880000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34001 </slotId>
+				<rayStart> -1.076810 0.680380 -0.565868 </rayStart>
+				<rayEnd> -0.678299 0.680377 -0.531437 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.880000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/russian/R77_KV2/_skins/WH/normal/lod0/Gun_05.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> 0.000323 0.044363 1.384640 </rayStart>
+				<rayEnd> -0.067813 0.086912 1.384640 </rayEnd>
+				<rayUp> 0.119000 0.119000 5.000000 </rayUp>
+				<size> 0.618000 </size>
+			</slot>
+		</customizationSlots>
+		<soundID> ussr:_152mm_M-10_W </soundID>
+	</gun>
+	<engine>
+		<soundID> ussr:V-5_W </soundID>
+	</engine>
+</root>

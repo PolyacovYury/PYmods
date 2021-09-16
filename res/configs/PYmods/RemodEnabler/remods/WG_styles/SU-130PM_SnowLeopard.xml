@@ -1,0 +1,301 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Wargaming </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> r159_su_130pm </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/russian/R159_SU_130PM/_skins/SnowLeopard/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> MEDIUM </lodDist>
+			<bufferPrefs> mediumTank </bufferPrefs>
+			<textureSet> ussr_01 </textureSet>
+			<size> 0.700000 0.550000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.319720 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -3.000000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> false </isLeft>
+				<template> WD_R </template>
+				<radius> 0.127329 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.314000 </radius>
+				<count> 6 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> WD_L </template>
+				<radius> 0.127329 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.314000 </radius>
+				<count> 6 </count>
+			</group>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.352791 </radius>
+				<syncAngle> 21.176500 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R4 </name>
+				<radius> 0.247225 </radius>
+				<syncAngle> 21.176500 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.352791 </radius>
+				<syncAngle> 21.176500 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L4 </name>
+				<radius> 0.247225 </radius>
+				<syncAngle> 21.176500 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L4 </drivingWheels>
+		<hullPosition> 0.000000 0.860812 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 6 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.100000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 6 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.100000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> -0.014205 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.080000 </maxAmplitude>
+			<maxOffset> 0.080000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.800000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.600000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.400000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.800000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.600000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.400000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/russian/R159_SU_130PM/track/segment.model </segmentModelLeft>
+			<segmentModelRight> vehicles/russian/R159_SU_130PM/track/segment.model </segmentModelRight>
+			<left> vehicles/russian/R159_SU_130PM/track/left.track </left>
+			<right> vehicles/russian/R159_SU_130PM/track/right.track </right>
+			<segmentLength> 0.105431 </segmentLength>
+			<segmentOffset> 0.365169 </segmentOffset>
+			<lodDist> SPLINE_TRACK </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals>
+			<decal>
+				<transform>
+					<row0> 4.030480 -0.000000 -0.000000 </row0>
+					<row1> -0.000000 1.342020 0.000000 </row1>
+					<row2> -0.000000 0.000000 5.652850 </row2>
+					<row3> 0.000000 0.000000 0.000000 </row3>
+				</transform>
+			</decal>
+		</AODecals>
+		<soundID> ussr:Chassis_R159_SU_130PM </soundID>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/russian/R159_SU_130PM/_skins/SnowLeopard/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> -0.231991 0.457088 2.359580 </rayStart>
+				<rayEnd> -0.231991 0.266691 2.298350 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.400000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/russian/R159_SU_130PM/_skins/SnowLeopard/normal/lod0/Turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> -0.962441 1.112050 -0.113512 </rayStart>
+				<rayEnd> -0.769113 1.111960 -0.164742 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.300000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34000 </slotId>
+				<rayStart> -0.886762 0.695273 -0.141308 </rayStart>
+				<rayEnd> -0.848116 0.695228 -0.151627 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.629000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> 0.962465 1.121170 -0.113584 </rayStart>
+				<rayEnd> 0.769138 1.121090 -0.164814 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.300000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34001 </slotId>
+				<rayStart> 0.869442 0.679287 -0.076508 </rayStart>
+				<rayEnd> 0.830796 0.679242 -0.086826 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.629000 </size>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/russian/R159_SU_130PM/_skins/SnowLeopard/normal/lod0/Gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> 0.169000 0.117000 2.169390 </rayStart>
+				<rayEnd> -0.070132 -0.786757 2.129630 </rayEnd>
+				<rayUp> 0.122000 0.000000 0.000000 </rayUp>
+				<size> 0.730000 </size>
+			</slot>
+		</customizationSlots>
+		<soundID> ussr:_130mm_M_65S </soundID>
+	</gun>
+	<engine>
+		<soundID> ussr:V_54_105 </soundID>
+	</engine>
+</root>

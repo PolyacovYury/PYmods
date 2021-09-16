@@ -1,0 +1,316 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Wargaming </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> g112_kanonenjagdpanzer_105 </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/german/G112_KanonenJagdPanzer_105/_skin/KanonenPanter/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> FAR </lodDist>
+			<bufferPrefs> mediumTank </bufferPrefs>
+			<textureSet> usa_01 </textureSet>
+			<size> 0.550000 0.480000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.268390 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -2.150000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> true </isLeft>
+				<template> WD_L </template>
+				<radius> 0.130384 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.344735 </radius>
+				<count> 5 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> WD_R </template>
+				<radius> 0.130384 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.344735 </radius>
+				<count> 5 </count>
+			</group>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.295000 </radius>
+				<syncAngle> 25.714300 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L4 </name>
+				<radius> 0.369049 </radius>
+				<syncAngle> 25.714300 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.295000 </radius>
+				<syncAngle> 25.714300 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R4 </name>
+				<radius> 0.369049 </radius>
+				<syncAngle> 25.714300 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L4 </drivingWheels>
+		<hullPosition> 0.000000 1.009240 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 5 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.070000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 5 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.070000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> -0.002900 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.100000 </maxAmplitude>
+			<maxOffset> 0.100000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+				<offset> -0.064000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.800000 </forwardElastK>
+				<backwardElastK> 1.800000 </backwardElastK>
+				<offset> -0.039000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.064000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 2.500000 </backwardElastK>
+				<offset> -0.064000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+				<offset> -0.064000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.800000 </forwardElastK>
+				<backwardElastK> 1.800000 </backwardElastK>
+				<offset> -0.039000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.064000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 2.500000 </backwardElastK>
+				<offset> -0.064000 </offset>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/german/G112_KanonenJagdPanzer_105/track/segment_1.model </segmentModelLeft>
+			<segmentModelRight> vehicles/german/G112_KanonenJagdPanzer_105/track/segment_1.model </segmentModelRight>
+			<segment2ModelLeft> vehicles/german/G112_KanonenJagdPanzer_105/track/segment_2.model </segment2ModelLeft>
+			<segment2ModelRight> vehicles/german/G112_KanonenJagdPanzer_105/track/segment_2.model </segment2ModelRight>
+			<left> vehicles/german/G112_KanonenJagdPanzer_105/track/left.track </left>
+			<right> vehicles/german/G112_KanonenJagdPanzer_105/track/right.track </right>
+			<segmentLength> 0.143000 </segmentLength>
+			<segmentOffset> 0.258000 </segmentOffset>
+			<segment2Offset> 0.067000 </segment2Offset>
+			<lodDist> SPLINE_TRACK </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals>
+			<decal>
+				<transform>
+					<row0> 4.471280 -0.000000 0.000000 </row0>
+					<row1> -0.000000 1.186720 0.000000 </row1>
+					<row2> 0.000000 -0.000000 8.395640 </row2>
+					<row3> 0.000000 -0.000000 -0.000001 </row3>
+				</transform>
+			</decal>
+		</AODecals>
+		<soundID> germany:Chassis_G112_KanonenJagdPanzer_105 </soundID>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/german/G112_KanonenJagdPanzer_105/_skin/KanonenPanter/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> -0.795688 0.574604 2.327000 </rayStart>
+				<rayEnd> -0.795688 0.529991 2.286880 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.240000 </size>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 13000 </slotId>
+				<rayStart> -1.403390 0.541171 0.382211 </rayStart>
+				<rayEnd> -1.233850 0.435076 0.382206 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.240000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 14000 </slotId>
+				<rayStart> -1.406780 0.535563 1.196790 </rayStart>
+				<rayEnd> -1.237340 0.429318 1.196760 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.520000 </size>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 13001 </slotId>
+				<rayStart> 1.403390 0.541171 0.382211 </rayStart>
+				<rayEnd> 1.233850 0.435076 0.382206 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.240000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 14001 </slotId>
+				<rayStart> 1.406780 0.535563 1.196790 </rayStart>
+				<rayEnd> 1.237340 0.429318 1.196760 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.520000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/german/G112_KanonenJagdPanzer_105/_skin/KanonenPanter/normal/lod0/Turret_01.model </undamaged>
+		</models>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/german/G112_KanonenJagdPanzer_105/_skin/KanonenPanter/normal/lod0/Gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> -0.000000 0.077954 3.707710 </rayStart>
+				<rayEnd> 0.068571 0.091999 3.707710 </rayEnd>
+				<rayUp> 0.104000 0.104000 5.000000 </rayUp>
+				<size> 0.700000 </size>
+			</slot>
+		</customizationSlots>
+		<soundID> germany:_105mm_BK_L7 </soundID>
+	</gun>
+	<engine>
+		<soundID> germany:MB-837-Aa_A </soundID>
+	</engine>
+</root>
