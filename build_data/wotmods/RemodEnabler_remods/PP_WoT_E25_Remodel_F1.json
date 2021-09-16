@@ -2,17 +2,6 @@
     "enabled": true,
     "ext": ".wotmod",
     "files": {
-        "res/vehicles/remods/G48_E-25_F1/E-25_hull_01_AM.dds": "res/res/vehicles/remods/G48_E-25_F1/E-25_hull_01_AM.dds",
-        "res/vehicles/remods/G48_E-25_F1/E-25_hull_01_AM_hd.dds": "res/res/vehicles/remods/G48_E-25_F1/E-25_hull_01_AM_hd.dds",
-        "res/vehicles/remods/G48_E-25_F1/E-25_hull_01_ANM.dds": "res/res/vehicles/remods/G48_E-25_F1/E-25_hull_01_ANM.dds",
-        "res/vehicles/remods/G48_E-25_F1/E-25_hull_01_ANM_hd.dds": "res/res/vehicles/remods/G48_E-25_F1/E-25_hull_01_ANM_hd.dds",
-        "res/vehicles/remods/G48_E-25_F1/E-25_hull_01_AO.dds": "res/res/vehicles/remods/G48_E-25_F1/E-25_hull_01_AO.dds",
-        "res/vehicles/remods/G48_E-25_F1/E-25_hull_01_AO_hd.dds": "res/res/vehicles/remods/G48_E-25_F1/E-25_hull_01_AO_hd.dds",
-        "res/vehicles/remods/G48_E-25_F1/E-25_hull_01_GMM.dds": "res/res/vehicles/remods/G48_E-25_F1/E-25_hull_01_GMM.dds",
-        "res/vehicles/remods/G48_E-25_F1/E-25_hull_01_GMM_hd.dds": "res/res/vehicles/remods/G48_E-25_F1/E-25_hull_01_GMM_hd.dds",
-        "res/vehicles/remods/G48_E-25_F1/normal/lod0/Hull.model": "res/res/vehicles/remods/G48_E-25_F1/normal/lod0/Hull.model",
-        "res/vehicles/remods/G48_E-25_F1/normal/lod0/Hull.primitives_processed": "res/res/vehicles/remods/G48_E-25_F1/normal/lod0/Hull.primitives_processed",
-        "res/vehicles/remods/G48_E-25_F1/normal/lod0/Hull.visual_processed": "res/res/vehicles/remods/G48_E-25_F1/normal/lod0/Hull.visual_processed",
-        "res/vehicles/remods/G48_E-25_F1/normal/lod0/Hull.vt": "res/res/vehicles/remods/G48_E-25_F1/normal/lod0/Hull.vt"
+        "res/vehicles/remods/G48_E-25_F1/**": "res/res/vehicles/remods/G48_E-25_F1/**"
     }
 }
