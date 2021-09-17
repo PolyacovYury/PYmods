@@ -8,8 +8,8 @@
     {
         "angles": [-18.0, -6.0],
         "dist": 8.5,
-        "pivot_pos": "preview_",
-        "target_pos": "preview_"
+        "pivot_pos": "",
+        "target_pos": ""
     },
     {
         "angles": [100.0, -25.0],
@@ -20,7 +20,7 @@
     {
         "angles": [162.0, -6.0],
         "dist": 8.5,
-        "pivot_pos": "preview_",
-        "target_pos": "preview_"
+        "pivot_pos": "",
+        "target_pos": ""
     }
 ]

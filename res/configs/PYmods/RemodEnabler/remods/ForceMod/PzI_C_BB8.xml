@@ -1,0 +1,341 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Hellinger </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> g63_pzi_ausf_c </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/remods/ForceMod/G63_PzI_ausf_C/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> FAR </lodDist>
+			<bufferPrefs> smallTank </bufferPrefs>
+			<textureSet> germany_02 </textureSet>
+			<size> 0.440000 0.320000 </size>
+		</traces>
+		<topRightCarryingPoint> 0.796184 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -3.500000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.337116 </radius>
+				<count> 5 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.337116 </radius>
+				<count> 5 </count>
+			</group>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.317952 </radius>
+				<syncAngle> 17.142900 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L1 </name>
+				<radius> 0.278462 </radius>
+				<syncAngle> 17.142900 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.317952 </radius>
+				<syncAngle> 17.142900 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R1 </name>
+				<radius> 0.278462 </radius>
+				<syncAngle> 17.142900 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L1 </drivingWheels>
+		<hullPosition> 0.000000 0.811695 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 5 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.060000 </minOffset>
+				<maxOffset> 0.060000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 5 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.060000 </minOffset>
+				<maxOffset> 0.060000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> -0.003800 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.050000 </maxAmplitude>
+			<maxOffset> 0.050000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<offset> -0.082000 </offset>
+				<rightSibling> Track_VT_L1 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.800000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.126000 </offset>
+				<leftSibling> Track_VT_L0 </leftSibling>
+				<rightSibling> Track_VT_L2 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.600000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.111000 </offset>
+				<leftSibling> Track_VT_L1 </leftSibling>
+				<rightSibling> Track_VT_L3 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.400000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.087000 </offset>
+				<leftSibling> Track_VT_L2 </leftSibling>
+				<rightSibling> Track_VT_L4 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L4 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.200000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.060000 </offset>
+				<leftSibling> Track_VT_L3 </leftSibling>
+				<rightSibling> Track_VT_L5 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L5 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.041000 </offset>
+				<leftSibling> Track_VT_L4 </leftSibling>
+				<rightSibling> Track_VT_L6 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L6 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.045000 </offset>
+				<leftSibling> Track_VT_L5 </leftSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<backwardElastK> 2.000000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<backwardElastK> 2.000000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<offset> -0.082000 </offset>
+				<rightSibling> Track_VT_R1 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.800000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.126000 </offset>
+				<leftSibling> Track_VT_R0 </leftSibling>
+				<rightSibling> Track_VT_R2 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.600000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.111000 </offset>
+				<leftSibling> Track_VT_R1 </leftSibling>
+				<rightSibling> Track_VT_R3 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.400000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.087000 </offset>
+				<leftSibling> Track_VT_R2 </leftSibling>
+				<rightSibling> Track_VT_R4 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R4 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.200000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.060000 </offset>
+				<leftSibling> Track_VT_R3 </leftSibling>
+				<rightSibling> Track_VT_R5 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R5 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.041000 </offset>
+				<leftSibling> Track_VT_R4 </leftSibling>
+				<rightSibling> Track_VT_R6 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R6 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.045000 </offset>
+				<leftSibling> Track_VT_R5 </leftSibling>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/german/G63_PzI_ausf_C/track/segment.model </segmentModelLeft>
+			<segmentModelRight> vehicles/german/G63_PzI_ausf_C/track/segment.model </segmentModelRight>
+			<left> vehicles/german/G63_PzI_ausf_C/track/left.track </left>
+			<right> vehicles/german/G63_PzI_ausf_C/track/right.track </right>
+			<segmentLength> 0.085000 </segmentLength>
+			<segmentOffset> 0.193000 </segmentOffset>
+			<lodDist> MEDIUM </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals/>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/remods/ForceMod/G63_PzI_ausf_C/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> 0.415139 0.483585 1.266060 </rayStart>
+				<rayEnd> 0.415133 0.416974 0.871643 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.219000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 14000 </slotId>
+				<rayStart> -0.011149 0.283530 1.672130 </rayStart>
+				<rayEnd> -0.011149 -0.092342 1.535310 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.580000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/remods/ForceMod/G63_PzI_ausf_C/normal/lod0/Turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> -0.602458 0.248831 0.281154 </rayStart>
+				<rayEnd> -0.230516 0.112672 0.225307 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.165000 </size>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> 0.602458 0.248831 0.281154 </rayStart>
+				<rayEnd> 0.230516 0.112672 0.225307 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.165000 </size>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/remods/ForceMod/G63_PzI_ausf_C/normal/lod0/Gun_02.model </undamaged>
+		</models>
+	</gun>
+</root>

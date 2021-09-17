@@ -1,0 +1,381 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Wargaming </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> pl08_50tp_prototyp </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/poland/Pl08_50TP_prototyp/_skins/WingedHussar/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> MEDIUM </lodDist>
+			<bufferPrefs> mediumTank </bufferPrefs>
+			<textureSet> ussr_01 </textureSet>
+			<size> 0.620000 0.820000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.397160 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -1.900000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.406000 </radius>
+				<count> 6 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.406000 </radius>
+				<count> 6 </count>
+			</group>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.281720 </radius>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R1 </name>
+				<radius> 0.445060 </radius>
+				<syncAngle> 25.714300 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.281720 </radius>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L1 </name>
+				<radius> 0.445060 </radius>
+				<syncAngle> 25.714300 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L1 </drivingWheels>
+		<hullPosition> 0.000000 1.055380 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 6 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.070000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 6 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.070000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> -0.026819 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.050000 </maxAmplitude>
+			<maxOffset> 0.050000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.600000 </forwardElastK>
+				<backwardElastK> 0.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.600000 </forwardElastK>
+				<backwardElastK> 0.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.300000 </forwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.300000 </forwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<rightSibling> Track_VT_L4 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L4 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_L3 </leftSibling>
+				<rightSibling> Track_VT_L5 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L5 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_L4 </leftSibling>
+				<rightSibling> Track_VT_L6 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L6 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_L5 </leftSibling>
+				<rightSibling> Track_VT_L7 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L7 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_L6 </leftSibling>
+				<rightSibling> Track_VT_L8 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L8 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_L7 </leftSibling>
+				<rightSibling> Track_VT_L9 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L9 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_L8 </leftSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<rightSibling> Track_VT_R1 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R0 </leftSibling>
+				<rightSibling> Track_VT_R2 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R1 </leftSibling>
+				<rightSibling> Track_VT_R3 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R2 </leftSibling>
+				<rightSibling> Track_VT_R4 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R4 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R3 </leftSibling>
+				<rightSibling> Track_VT_R5 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R5 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R4 </leftSibling>
+				<rightSibling> Track_VT_R6 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R6 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R5 </leftSibling>
+				<rightSibling> Track_VT_R7 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R7 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R6 </leftSibling>
+				<rightSibling> Track_VT_R8 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R8 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R7 </leftSibling>
+				<rightSibling> Track_VT_R9 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R9 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R8 </leftSibling>
+				<rightSibling> Track_VT_R10 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R10 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R9 </leftSibling>
+				<rightSibling> Track_VT_R11 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R11 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R10 </leftSibling>
+				<rightSibling> Track_VT_R12 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R12 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<leftSibling> Track_VT_R11 </leftSibling>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/poland/Pl08_50TP_prototyp/track/segment.model </segmentModelLeft>
+			<segmentModelRight> vehicles/poland/Pl08_50TP_prototyp/track/segment.model </segmentModelRight>
+			<left> vehicles/poland/Pl08_50TP_prototyp/track/left.track </left>
+			<right> vehicles/poland/Pl08_50TP_prototyp/track/right.track </right>
+			<segmentLength> 0.179520 </segmentLength>
+			<segmentOffset> 0.224747 </segmentOffset>
+			<lodDist> SPLINE_TRACK </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals>
+			<decal>
+				<transform>
+					<row0> 5.330500 -0.000005 -0.000060 </row0>
+					<row1> -0.000003 1.342040 0.005794 </row1>
+					<row2> -0.000089 0.015771 7.766090 </row2>
+					<row3> 0.000000 0.000000 0.000036 </row3>
+				</transform>
+			</decal>
+		</AODecals>
+		<soundID> poland:Chassis_Pl08_50TP_prototyp </soundID>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/poland/Pl08_50TP_prototyp/_skins/WingedHussar/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> 0.278515 0.163175 2.345930 </rayStart>
+				<rayEnd> 0.240110 -0.028559 2.303940 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.280000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 14000 </slotId>
+				<rayStart> -1.965000 -0.212265 -0.454414 </rayStart>
+				<rayEnd> -1.765000 -0.212265 -0.454414 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.650000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 14001 </slotId>
+				<rayStart> 1.965000 -0.212265 -0.454414 </rayStart>
+				<rayEnd> 1.765000 -0.212265 -0.454414 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.650000 </size>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 HP_Track_Exhaus_2 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/poland/Pl08_50TP_prototyp/_skins/WingedHussar/normal/lod0/Turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> -0.734943 0.461263 1.087370 </rayStart>
+				<rayEnd> -0.595097 0.375001 0.973345 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.280000 </size>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> 0.734943 0.461263 1.087370 </rayStart>
+				<rayEnd> 0.595097 0.375001 0.973345 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.280000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/poland/Pl08_50TP_prototyp/_skins/WingedHussar/normal/lod0/Gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> 0.000000 -0.006180 1.463360 </rayStart>
+				<rayEnd> 0.829676 -0.377305 1.447750 </rayEnd>
+				<rayUp> 0.096000 0.000000 0.000000 </rayUp>
+				<size> 0.492000 </size>
+			</slot>
+		</customizationSlots>
+		<soundID> poland:_122_mm_wz_43_50 </soundID>
+	</gun>
+	<engine>
+		<soundID> poland:W_12_5 </soundID>
+	</engine>
+</root>

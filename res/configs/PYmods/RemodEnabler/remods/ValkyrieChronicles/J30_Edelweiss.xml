@@ -1,0 +1,294 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Wargaming </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist/>
+	<chassis>
+		<models>
+			<undamaged> vehicles/remods/ValkyrieChronicles/J30_Edelweiss/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> FAR </lodDist>
+			<bufferPrefs> mediumTank </bufferPrefs>
+			<textureSet> germany_02 </textureSet>
+			<size> 0.650000 0.620000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.268560 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -1.650000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> false </isLeft>
+				<template> WD_R </template>
+				<radius> 0.192788 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.273673 </radius>
+				<count> 6 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> WD_L </template>
+				<radius> 0.192788 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.273673 </radius>
+				<count> 6 </count>
+			</group>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.514795 </radius>
+				<syncAngle> 22.500000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R4 </name>
+				<radius> 0.459158 </radius>
+				<syncAngle> 22.500000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.514795 </radius>
+				<syncAngle> 22.500000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L4 </name>
+				<radius> 0.459158 </radius>
+				<syncAngle> 22.500000 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L4 </drivingWheels>
+		<hullPosition> 0.000000 1.375870 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 6 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.100000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 6 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.100000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> -0.023700 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.100000 </maxAmplitude>
+			<maxOffset> 0.100000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<backwardElastK> 2.000000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<backwardElastK> 2.000000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.500000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.123000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.123000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.600000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.123000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.300000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.123000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.500000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.123000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.123000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.600000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.123000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.300000 </forwardElastK>
+				<backwardElastK> 0.750000 </backwardElastK>
+				<offset> -0.123000 </offset>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/remods/ValkyrieChronicles/J30_Edelweiss/track/segment.model </segmentModelLeft>
+			<segmentModelRight> vehicles/remods/ValkyrieChronicles/J30_Edelweiss/track/segment.model </segmentModelRight>
+			<left> vehicles/remods/ValkyrieChronicles/J30_Edelweiss/track/left.track </left>
+			<right> vehicles/remods/ValkyrieChronicles/J30_Edelweiss/track/right.track </right>
+			<segmentLength> 0.180000 </segmentLength>
+			<segmentOffset> 0.144000 </segmentOffset>
+			<lodDist> SPLINE_TRACK </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals/>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/remods/ValkyrieChronicles/J30_Edelweiss/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> 0.731018 0.121257 2.736230 </rayStart>
+				<rayEnd> 0.731018 -0.036035 2.612700 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.300000 </size>
+			</slot>
+			<slot>
+				<slotType> fixedEmblem </slotType>
+				<slotId> 17000 </slotId>
+				<rayStart> -1.725050 0.210214 0.965741 </rayStart>
+				<rayEnd> -1.659300 0.209237 0.959979 </rayEnd>
+				<rayUp> -0.004590 0.998630 -0.052129 </rayUp>
+				<emblemId> 3501 </emblemId>
+				<size> 0.249000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+			<slot>
+				<slotType> fixedEmblem </slotType>
+				<slotId> 17001 </slotId>
+				<rayStart> 1.786300 0.190632 0.957354 </rayStart>
+				<rayEnd> 1.601030 0.187879 0.941114 </rayEnd>
+				<rayUp> 0.006127 0.997565 -0.069479 </rayUp>
+				<emblemId> 3501 </emblemId>
+				<size> 0.255000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 HP_Track_Exhaus_2 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/remods/ValkyrieChronicles/J30_Edelweiss/normal/lod0/Turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> fixedEmblem </slotType>
+				<slotId> 37000 </slotId>
+				<rayStart> -0.652515 0.389731 0.914683 </rayStart>
+				<rayEnd> -0.476146 0.311055 0.862676 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<emblemId> 3502 </emblemId>
+				<size> 0.454000 </size>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/remods/ValkyrieChronicles/J30_Edelweiss/normal/lod0/Gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> 0.000000 0.000002 1.601070 </rayStart>
+				<rayEnd> 0.343085 -0.152283 1.579390 </rayEnd>
+				<rayUp> 0.131000 0.124000 5.000000 </rayUp>
+				<size> 0.370000 </size>
+			</slot>
+		</customizationSlots>
+	</gun>
+</root>

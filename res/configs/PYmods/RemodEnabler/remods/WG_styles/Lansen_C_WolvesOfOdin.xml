@@ -1,0 +1,314 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Wargaming </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> s26_lansen_c </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/sweden/S26_Lansen_C/_skins/WolvesOfOdin/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> MEDIUM </lodDist>
+			<bufferPrefs> mediumTank </bufferPrefs>
+			<textureSet> ussr_01 </textureSet>
+			<size> 0.500000 0.550000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.191700 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -2.350000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> true </isLeft>
+				<template> WD_L </template>
+				<radius> 0.110147 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.315156 </radius>
+				<count> 5 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> WD_R </template>
+				<radius> 0.110147 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.315156 </radius>
+				<count> 5 </count>
+			</group>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.353257 </radius>
+				<syncAngle> 18.000000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L4 </name>
+				<radius> 0.315579 </radius>
+				<syncAngle> 18.000000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.353257 </radius>
+				<syncAngle> 18.000000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R4 </name>
+				<radius> 0.315579 </radius>
+				<syncAngle> 18.000000 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L4 </drivingWheels>
+		<hullPosition> 0.000000 0.846637 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 5 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.060000 </minOffset>
+				<maxOffset> 0.060000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 5 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.060000 </minOffset>
+				<maxOffset> 0.060000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> -0.018519 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.100000 </maxAmplitude>
+			<maxOffset> 0.100000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<backwardElastK> 2.000000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<backwardElastK> 2.000000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.500000 </forwardElastK>
+				<backwardElastK> 0.700000 </backwardElastK>
+				<offset> -0.077778 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.100000 </forwardElastK>
+				<backwardElastK> 0.700000 </backwardElastK>
+				<offset> -0.054167 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 0.500000 </backwardElastK>
+				<offset> -0.093056 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.300000 </forwardElastK>
+				<backwardElastK> 0.600000 </backwardElastK>
+				<offset> -0.126389 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.500000 </forwardElastK>
+				<backwardElastK> 0.700000 </backwardElastK>
+				<offset> -0.077778 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.100000 </forwardElastK>
+				<backwardElastK> 0.700000 </backwardElastK>
+				<offset> -0.054167 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 0.500000 </backwardElastK>
+				<offset> -0.093056 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1300.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.300000 </forwardElastK>
+				<backwardElastK> 0.600000 </backwardElastK>
+				<offset> -0.126389 </offset>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/sweden/S26_Lansen_C/track/segment.model </segmentModelLeft>
+			<segmentModelRight> vehicles/sweden/S26_Lansen_C/track/segment.model </segmentModelRight>
+			<left> vehicles/sweden/S26_Lansen_C/track/left.track </left>
+			<right> vehicles/sweden/S26_Lansen_C/track/right.track </right>
+			<segmentLength> 0.097500 </segmentLength>
+			<segmentOffset> 0.074534 </segmentOffset>
+			<lodDist> SPLINE_TRACK </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals>
+			<decal>
+				<transform>
+					<row0> 3.537350 0.000000 -0.000000 </row0>
+					<row1> -0.000000 1.342020 -0.000000 </row1>
+					<row2> 0.000000 0.000000 5.608250 </row2>
+					<row3> 0.000000 0.000000 -0.000024 </row3>
+				</transform>
+			</decal>
+		</AODecals>
+		<soundID> sweden:Chassis_S26_Lansen_C </soundID>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/sweden/S26_Lansen_C/_skins/WolvesOfOdin/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> 0.409234 0.290440 2.163780 </rayStart>
+				<rayEnd> 0.409234 0.102796 2.094570 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.350000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 HP_Track_Exhaus_2 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/sweden/S26_Lansen_C/_skins/WolvesOfOdin/normal/lod0/Turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> -0.720945 0.499155 0.549076 </rayStart>
+				<rayEnd> -0.569252 0.408413 0.455507 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.300000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34000 </slotId>
+				<rayStart> -0.848760 0.220214 0.612377 </rayStart>
+				<rayEnd> -0.697068 0.129472 0.518808 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.614525 </size>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> 0.719785 0.490075 0.548076 </rayStart>
+				<rayEnd> 0.568992 0.398462 0.453904 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.300000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34001 </slotId>
+				<rayStart> 0.839556 0.220292 0.627223 </rayStart>
+				<rayEnd> 0.687864 0.129551 0.533654 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.614525 </size>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/sweden/S26_Lansen_C/_skins/WolvesOfOdin/normal/lod0/Gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> 0.000000 0.000000 2.513160 </rayStart>
+				<rayEnd> 0.000000 0.000000 1.000000 </rayEnd>
+				<rayUp> 0.096500 0.000000 0.000000 </rayUp>
+				<size> 0.700000 </size>
+			</slot>
+		</customizationSlots>
+		<soundID> sweden:_105mm_lvkan_L_53 </soundID>
+	</gun>
+	<engine>
+		<soundID> sweden:Volvo_V8B </soundID>
+	</engine>
+</root>

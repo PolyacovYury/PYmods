@@ -1,0 +1,335 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Wargaming </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> gb93_caernarvon_ax </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/british/GB93_Caernarvon_AX/_skins/RoyalCorps/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> MEDIUM </lodDist>
+			<bufferPrefs> mediumTank </bufferPrefs>
+			<textureSet> ussr_01 </textureSet>
+			<size> 0.650000 0.860000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.518130 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -1.550000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> false </isLeft>
+				<template> WD_R </template>
+				<radius> 0.137500 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 4 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.239226 </radius>
+				<count> 8 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> WD_L </template>
+				<radius> 0.137500 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 4 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.239513 </radius>
+				<count> 8 </count>
+			</group>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.428109 </radius>
+				<syncAngle> 18.947399 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R5 </name>
+				<radius> 0.441854 </radius>
+				<syncAngle> 18.947399 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.428109 </radius>
+				<syncAngle> 18.947399 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L5 </name>
+				<radius> 0.441854 </radius>
+				<syncAngle> 18.947399 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L5 </drivingWheels>
+		<hullPosition> 0.000000 1.204470 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 8 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.130000 </minOffset>
+				<maxOffset> 0.100000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 8 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.130000 </minOffset>
+				<maxOffset> 0.100000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> -0.003400 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.140000 </maxAmplitude>
+			<maxOffset> 0.140000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.850000 </forwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.850000 </forwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.710000 </forwardElastK>
+				<backwardElastK> 0.860000 </backwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.710000 </forwardElastK>
+				<backwardElastK> 0.860000 </backwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 1.930000 </backwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 1.930000 </backwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 1.930000 </backwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L4 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 1.930000 </backwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.920000 </forwardElastK>
+				<backwardElastK> 1.980000 </backwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.920000 </forwardElastK>
+				<backwardElastK> 1.980000 </backwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.920000 </forwardElastK>
+				<backwardElastK> 1.980000 </backwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.920000 </forwardElastK>
+				<backwardElastK> 1.980000 </backwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R4 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.920000 </forwardElastK>
+				<offset> -0.036000 </offset>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/british/GB93_Caernarvon_AX/track/segment.model </segmentModelLeft>
+			<segmentModelRight> vehicles/british/GB93_Caernarvon_AX/track/segment.model </segmentModelRight>
+			<left> vehicles/british/GB93_Caernarvon_AX/track/left.track </left>
+			<right> vehicles/british/GB93_Caernarvon_AX/track/right.track </right>
+			<segmentLength> 0.136000 </segmentLength>
+			<segmentOffset> 0.216000 </segmentOffset>
+			<lodDist> SPLINE_TRACK </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals>
+			<decal>
+				<transform>
+					<row0> 4.099340 0.000000 0.000000 </row0>
+					<row1> 0.000000 1.342020 -0.000000 </row1>
+					<row2> 0.000000 -0.000000 7.820070 </row2>
+					<row3> 0.000147 -0.000001 -0.000168 </row3>
+				</transform>
+			</decal>
+		</AODecals>
+		<soundID> uk:Chassis_GB93_Caernarvon_AX </soundID>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/british/GB93_Caernarvon_AX/_skins/RoyalCorps/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> -0.725230 0.399561 2.854300 </rayStart>
+				<rayEnd> -0.725273 0.226598 2.753880 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.300000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 14000 </slotId>
+				<rayStart> -2.089410 0.030574 0.317180 </rayStart>
+				<rayEnd> -1.889420 0.030544 0.317180 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.558000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 14001 </slotId>
+				<rayStart> 2.089410 0.030574 0.317180 </rayStart>
+				<rayEnd> 1.889420 0.030544 0.317180 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.558000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 HP_Track_Exhaus_2 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/british/GB93_Caernarvon_AX/_skins/RoyalCorps/normal/lod0/Turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> -1.135450 0.661533 -0.750218 </rayStart>
+				<rayEnd> -1.037190 0.658959 -0.731821 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.260000 </size>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> 1.182170 0.464919 -0.535662 </rayStart>
+				<rayEnd> 1.083550 0.461814 -0.519388 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.260000 </size>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/british/GB93_Caernarvon_AX/_skins/RoyalCorps/normal/lod0/Gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> -0.012848 -0.003335 1.530000 </rayStart>
+				<rayEnd> 0.069231 0.014268 1.536110 </rayEnd>
+				<rayUp> 0.107000 0.000000 0.000000 </rayUp>
+				<size> 0.367000 </size>
+			</slot>
+		</customizationSlots>
+		<soundID> uk:_20pdr_Gun_Type_B_1 </soundID>
+	</gun>
+	<engine>
+		<soundID> uk:Rolls_Royce_Griffon_A </soundID>
+	</engine>
+</root>

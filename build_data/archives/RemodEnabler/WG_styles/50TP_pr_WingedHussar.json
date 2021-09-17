@@ -2,6 +2,6 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/50TP_pr_WingedHussar.json": "res/configs/PYmods/RemodEnabler/remods/WG_styles/50TP_pr_WingedHussar.json"
+        "mods/configs/PYmods/RemodEnabler/remods/WG_styles/50TP_pr_WingedHussar.xml": "res/configs/PYmods/RemodEnabler/remods/WG_styles/50TP_pr_WingedHussar.xml"
     }
 }

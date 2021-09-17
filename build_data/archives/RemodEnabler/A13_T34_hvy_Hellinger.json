@@ -2,7 +2,7 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/RemodEnabler/remods/a13_t34_hvy_Hellinger.json": "res/configs/PYmods/RemodEnabler/remods/a13_t34_hvy_Hellinger.json",
+        "mods/configs/PYmods/RemodEnabler/remods/a13_t34_hvy_Hellinger.xml": "res/configs/PYmods/RemodEnabler/remods/a13_t34_hvy_Hellinger.xml",
         "mods/{GAME_VERSION}/RemodEnabler_remods/A13_T34_hvy_Hellinger.wotmod": "build/wotmods/RemodEnabler_remods/A13_T34_hvy_Hellinger.wotmod",
         "mods/{GAME_VERSION}/RemodEnabler_remods/A_Equipment_textures.wotmod": "build/wotmods/RemodEnabler_remods/A_Equipment_textures.wotmod"
     }

@@ -2,8 +2,8 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/RemodEnabler/remods/Waffentragger_Borsig_Algiz.json": "res/configs/PYmods/RemodEnabler/remods/Waffentragger_Borsig_Algiz.json",
-        "mods/configs/PYmods/RemodEnabler/remods/Waffentragger_Borsig_goodman12.json": "res/configs/PYmods/RemodEnabler/remods/Waffentragger_Borsig_goodman12.json",
+        "mods/configs/PYmods/RemodEnabler/remods/Waffentragger_Borsig_Algiz.xml": "res/configs/PYmods/RemodEnabler/remods/Waffentragger_Borsig_Algiz.xml",
+        "mods/configs/PYmods/RemodEnabler/remods/Waffentragger_Borsig_goodman12.xml": "res/configs/PYmods/RemodEnabler/remods/Waffentragger_Borsig_goodman12.xml",
         "mods/{GAME_VERSION}/RemodEnabler_remods/A_Equipment_textures.wotmod": "build/wotmods/RemodEnabler_remods/A_Equipment_textures.wotmod",
         "mods/{GAME_VERSION}/RemodEnabler_remods/G99_RhB_Waffentrager_Algiz.wotmod": "build/wotmods/RemodEnabler_remods/G99_RhB_Waffentrager_Algiz.wotmod",
         "mods/{GAME_VERSION}/RemodEnabler_remods/G99_RhB_Waffentrager_goodman12.wotmod": "build/wotmods/RemodEnabler_remods/G99_RhB_Waffentrager_goodman12.wotmod"

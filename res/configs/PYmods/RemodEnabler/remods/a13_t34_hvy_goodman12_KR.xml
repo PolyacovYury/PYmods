@@ -1,0 +1,270 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Goodman12, &#208;&#156;&#208;&#176;&#209;&#129;&#209;&#130;&#208;&#181;&#209;&#128;&#209;&#129;&#208;&#186;&#208;&#176;&#209;&#143; &#208;&#147;&#209;&#131;&#208;&#180;&#208;&#188;&#208;&#176;&#208;&#189;&#208;&#176;. </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> a13_t34_hvy </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> FAR </lodDist>
+			<bufferPrefs> largeTank </bufferPrefs>
+			<textureSet> usa_03 </textureSet>
+			<size> 0.650000 0.720000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.479790 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -2.000000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> false </isLeft>
+				<template> WD_R </template>
+				<radius> 0.183551 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 7 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.328672 </radius>
+				<count> 8 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> WD_L </template>
+				<radius> 0.183551 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 7 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.329800 </radius>
+				<count> 8 </count>
+			</group>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.330001 </radius>
+				<syncAngle> 24.000000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> false </isLeading>
+				<name> WD_R8 </name>
+				<radius> 0.144764 </radius>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R9 </name>
+				<radius> 0.368924 </radius>
+				<syncAngle> 24.000000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.330001 </radius>
+				<syncAngle> 24.000000 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> false </isLeading>
+				<name> WD_L8 </name>
+				<radius> 0.144764 </radius>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L9 </name>
+				<radius> 0.368924 </radius>
+				<syncAngle> 24.000000 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L9 </drivingWheels>
+		<hullPosition> 0.000000 1.115560 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 8 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.073771 </minOffset>
+				<maxOffset> 0.073771 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 8 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.073771 </minOffset>
+				<maxOffset> 0.073771 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> 0.002100 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.100000 </maxAmplitude>
+			<maxOffset> 0.100000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1248.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<offset> -0.017000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1248.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1248.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.900000 </forwardElastK>
+				<backwardElastK> 1.370000 </backwardElastK>
+				<offset> -0.017000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1248.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1248.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<offset> -0.017000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1248.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.900000 </forwardElastK>
+				<backwardElastK> 1.370000 </backwardElastK>
+				<offset> -0.017000 </offset>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment1.model </segmentModelLeft>
+			<segmentModelRight> vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment1_R.model </segmentModelRight>
+			<segment2ModelLeft> vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment2.model </segment2ModelLeft>
+			<segment2ModelRight> vehicles/remods/a13_t34_hvy_goodman12_KR/track/segment2_R.model </segment2ModelRight>
+			<left> vehicles/remods/a13_t34_hvy_goodman12_KR/track/left.track </left>
+			<right> vehicles/remods/a13_t34_hvy_goodman12_KR/track/right.track </right>
+			<segmentLength> 0.141000 </segmentLength>
+			<segmentOffset> 0.103000 </segmentOffset>
+			<segment2Offset> 0.073000 </segment2Offset>
+			<lodDist> MEDIUM </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals>
+			<decal>
+				<transform>
+					<row0> 4.980680 0.000000 0.000000 </row0>
+					<row1> 0.000000 1.623570 0.000000 </row1>
+					<row2> 0.000000 0.000000 10.430600 </row2>
+					<row3> 0.000000 0.000000 0.000001 </row3>
+				</transform>
+			</decal>
+		</AODecals>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> 0.002706 0.052706 3.341190 </rayStart>
+				<rayEnd> -0.002510 -0.268260 3.102550 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.290000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie> diesel_large </pixie>
+			<nodes> HP_Track_Exhaus_1 HP_Track_Exhaus_2 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> 1.205520 0.815632 -1.170840 </rayStart>
+				<rayEnd> 1.007890 0.796599 -1.146720 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.300000 </size>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> -1.170120 0.818005 -1.139470 </rayStart>
+				<rayEnd> -1.071530 0.806350 -1.127420 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.300000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34000 </slotId>
+				<rayStart> 1.357690 0.770281 0.112205 </rayStart>
+				<rayEnd> 1.161120 0.752444 0.079949 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.700000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34001 </slotId>
+				<rayStart> -1.360820 0.777315 -0.054956 </rayStart>
+				<rayEnd> -1.161580 0.760157 -0.051383 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.700000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/remods/a13_t34_hvy_goodman12_KR/normal/lod0/gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> -0.000334 -0.011168 2.971110 </rayStart>
+				<rayEnd> -0.044010 -0.063409 2.966210 </rayEnd>
+				<rayUp> 0.149000 0.138000 5.000000 </rayUp>
+				<size> 0.900000 </size>
+			</slot>
+		</customizationSlots>
+	</gun>
+	<camouflage>
+		<exclusionMask> vehicles/remods/a13_t34_hvy_goodman12_KR/T34_hvy_CM.dds </exclusionMask>
+	</camouflage>
+</root>

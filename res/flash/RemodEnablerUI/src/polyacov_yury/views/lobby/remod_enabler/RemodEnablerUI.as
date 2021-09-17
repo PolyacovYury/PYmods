@@ -1,4 +1,5 @@
 package polyacov_yury.views.lobby.remod_enabler {
+	import mx.utils.ObjectUtil;
 	import flash.display.InteractiveObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
@@ -88,7 +89,13 @@ package polyacov_yury.views.lobby.remod_enabler {
 			for (var name: String in this.settings) {
 				this.remodNameArray.push(name);
 			}
-			this.remodNameArray.sort(Array.CASEINSENSITIVE);
+			this.remodNameArray.sort(sorting_predicate);
+		}
+
+		private function sorting_predicate(a:String, b: String): int {
+			var result: int = (int(a.indexOf("/") >= 0) - int(b.indexOf("/") >= 0));
+			if (result !== 0) return result;
+			return ObjectUtil.stringCompare(a, b, true);
 		}
 
 		public function initSimpleMenu(): void {
