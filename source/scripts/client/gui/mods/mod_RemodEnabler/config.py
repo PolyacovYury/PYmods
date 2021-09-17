@@ -214,7 +214,7 @@ class ConfigInterface(PYmodsConfigInterface):
         super(ConfigInterface, self).registerSettings()
         # noinspection PyArgumentList
         g_entitiesFactories.addSettings(ViewSettings(
-            'RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', WL.WINDOW, None, ST.GLOBAL_SCOPE, False, isModal=True))
+            'RemodEnablerUI', RemodEnablerUI, 'RemodEnabler.swf', WL.WINDOW, None, ST.GLOBAL_SCOPE, False))
         self.isModAdded = g_modsListApi.addModification(
             id='RemodEnablerUI', name=self.i18n['UI_flash_header'], description=self.i18n['UI_flash_header_tooltip'],
             icon='gui/flash/RemodEnabler.png', enabled=self.data['enabled'], login=False, lobby=True, callback=lambda: (

@@ -2,7 +2,7 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/RemodEnabler/remods/G56_E-100_Algiz.json": "res/configs/PYmods/RemodEnabler/remods/G56_E-100_Algiz.json",
+        "mods/configs/PYmods/RemodEnabler/remods/G56_E-100_Algiz.xml": "res/configs/PYmods/RemodEnabler/remods/G56_E-100_Algiz.xml",
         "mods/{GAME_VERSION}/RemodEnabler_remods/A_Equipment_textures.wotmod": "build/wotmods/RemodEnabler_remods/A_Equipment_textures.wotmod",
         "mods/{GAME_VERSION}/RemodEnabler_remods/Algiz_shared_textures.wotmod": "build/wotmods/RemodEnabler_remods/Algiz_shared_textures.wotmod",
         "mods/{GAME_VERSION}/RemodEnabler_remods/G56_E-100_Algiz.wotmod": "build/wotmods/RemodEnabler_remods/G56_E-100_Algiz.wotmod"

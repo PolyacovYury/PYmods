@@ -15,27 +15,27 @@
     "paint_enemy_gun": true,
     "removeCamouflages": true,
     "scale": {
-        "2020": {
+        "2963": {
             "color": [133, 30, 27, 255],
             "gloss": 0.509,
             "metallic": 0.203
         },
-        "4185": {
+        "4910": {
             "color": [119, 84, 19, 255],
             "gloss": 0.509,
             "metallic": 0.23
         },
-        "6340": {
+        "6985": {
             "color": [118, 106, 20, 255],
             "gloss": 0.509,
             "metallic": 0.23
         },
-        "8525": {
+        "9231": {
             "color": [51, 111, 51, 255],
             "gloss": 0.509,
             "metallic": 0.23
         },
-        "9930": {
+        "10661": {
             "color": [51, 94, 94, 255],
             "gloss": 0.509,
             "metallic": 0.23

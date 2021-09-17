@@ -1,0 +1,334 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Wargaming </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> gb91_super_conqueror </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/british/GB91_Super_Conqueror/_skin/GB91_Super_Conqueror_3Dst/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> FAR </lodDist>
+			<bufferPrefs> largeTank </bufferPrefs>
+			<textureSet> germany_02 </textureSet>
+			<size> 0.500000 0.800000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.518130 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -1.550000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> false </isLeft>
+				<template> WD_R </template>
+				<radius> 0.137708 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 4 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.239513 </radius>
+				<count> 8 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> WD_L </template>
+				<radius> 0.137708 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 4 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.239513 </radius>
+				<count> 8 </count>
+			</group>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.428109 </radius>
+				<syncAngle> 18.947399 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R5 </name>
+				<radius> 0.441854 </radius>
+				<syncAngle> 18.947399 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.428109 </radius>
+				<syncAngle> 18.947399 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L5 </name>
+				<radius> 0.441854 </radius>
+				<syncAngle> 18.947399 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L5 </drivingWheels>
+		<hullPosition> 0.000000 1.216030 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 8 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.060000 </minOffset>
+				<maxOffset> 0.060000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 8 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.060000 </minOffset>
+				<maxOffset> 0.060000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> -0.023700 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.100000 </maxAmplitude>
+			<maxOffset> 0.100000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+				<offset> -0.071000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 1.700000 </backwardElastK>
+				<offset> -0.071000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.071000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 2.200000 </backwardElastK>
+				<offset> -0.071000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L4 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 2.500000 </backwardElastK>
+				<offset> -0.071000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+				<offset> -0.071000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 1.700000 </backwardElastK>
+				<offset> -0.071000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.071000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 2.200000 </backwardElastK>
+				<offset> -0.071000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R4 </name>
+				<elasticity> 1100.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.700000 </forwardElastK>
+				<backwardElastK> 2.500000 </backwardElastK>
+				<offset> -0.071000 </offset>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/british/GB91_Super_Conqueror/track/segment.model </segmentModelLeft>
+			<segmentModelRight> vehicles/british/GB91_Super_Conqueror/track/segment.model </segmentModelRight>
+			<left> vehicles/british/GB91_Super_Conqueror/track/left.track </left>
+			<right> vehicles/british/GB91_Super_Conqueror/track/right.track </right>
+			<segmentLength> 0.125000 </segmentLength>
+			<segmentOffset> 0.059000 </segmentOffset>
+			<lodDist> SPLINE_TRACK </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals>
+			<decal>
+				<transform>
+					<row0> 5.473530 -0.000000 0.000000 </row0>
+					<row1> 0.000000 1.350000 0.000000 </row1>
+					<row2> -0.000000 0.000000 9.526370 </row2>
+					<row3> 0.000000 0.000000 0.000000 </row3>
+				</transform>
+			</decal>
+		</AODecals>
+		<soundID> uk:Chassis_GB91_Super_Conqueror </soundID>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/british/GB91_Super_Conqueror/_skin/GB91_Super_Conqueror_3Dst/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> 2.097600 0.041189 3.342440 </rayStart>
+				<rayEnd> 1.897600 0.041159 3.342440 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.240000 </size>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 HP_Track_Exhaus_2 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/british/GB91_Super_Conqueror/_skin/GB91_Super_Conqueror_3Dst/normal/lod0/Turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> -1.448460 0.771244 0.072415 </rayStart>
+				<rayEnd> -1.368270 0.717669 0.045993 </rayEnd>
+				<rayUp> 0.039354 0.989169 0.141409 </rayUp>
+				<size> 0.270000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> 1.542650 0.735847 0.096940 </rayStart>
+				<rayEnd> 1.382260 0.628694 0.044096 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.260000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34000 </slotId>
+				<rayStart> -0.945373 0.613631 0.938154 </rayStart>
+				<rayEnd> -0.903477 0.583861 0.896746 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.640000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34001 </slotId>
+				<rayStart> 0.945373 0.613631 0.938154 </rayStart>
+				<rayEnd> 0.903477 0.583861 0.896746 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.640000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/british/GB91_Super_Conqueror/_skin/GB91_Super_Conqueror_3Dst/normal/lod0/Gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> -0.001196 0.011570 3.898460 </rayStart>
+				<rayEnd> 0.163085 -0.024247 3.892740 </rayEnd>
+				<rayUp> 0.119000 0.000000 0.000000 </rayUp>
+				<applyToFabric> false </applyToFabric>
+				<size> 0.705000 </size>
+			</slot>
+		</customizationSlots>
+		<soundID> uk:_120mm_Gun_L1A1 </soundID>
+	</gun>
+	<engine>
+		<soundID> uk:Rolls_Royce_Griffon </soundID>
+	</engine>
+</root>

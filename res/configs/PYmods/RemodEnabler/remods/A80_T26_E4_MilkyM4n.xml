@@ -1,0 +1,336 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: MilkyM4n </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> a80_t26_e4_superpershing </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/remods/milkym4n/A80_T26_E4_SuperPershing/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> FAR </lodDist>
+			<bufferPrefs> largeTank </bufferPrefs>
+			<textureSet> germany_01 </textureSet>
+			<size> 0.440000 0.620000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.397000 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> 2.000000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> false </isLeft>
+				<template> WD_R </template>
+				<radius> 0.178976 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 5 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.336834 </radius>
+				<count> 6 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> WD_L </template>
+				<radius> 0.178976 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 5 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.336834 </radius>
+				<count> 6 </count>
+			</group>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.347702 </radius>
+				<syncAngle> 27.692301 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R6 </name>
+				<radius> 0.353029 </radius>
+				<syncAngle> 27.692301 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.347702 </radius>
+				<syncAngle> 27.692301 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L6 </name>
+				<radius> 0.353029 </radius>
+				<syncAngle> 27.692301 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L6 </drivingWheels>
+		<hullPosition> 0.000000 1.070320 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 6 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.050000 </minOffset>
+				<maxOffset> 0.100000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 6 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.050000 </minOffset>
+				<maxOffset> 0.100000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> -0.013700 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.100000 </maxAmplitude>
+			<maxOffset> 0.100000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R4 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R5 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L4 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L5 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.910000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.025000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.800000 </forwardElastK>
+				<backwardElastK> 1.250000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.800000 </forwardElastK>
+				<backwardElastK> 1.250000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 0.810000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1050.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 0.810000 </backwardElastK>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/remods/milkym4n/A80_T26_E4_SuperPershing/track/segment.model </segmentModelLeft>
+			<segmentModelRight> vehicles/remods/milkym4n/A80_T26_E4_SuperPershing/track/segment.model </segmentModelRight>
+			<left> vehicles/remods/milkym4n/A80_T26_E4_SuperPershing/track/left.track </left>
+			<right> vehicles/remods/milkym4n/A80_T26_E4_SuperPershing/track/right.track </right>
+			<segmentLength> 0.160000 </segmentLength>
+			<segmentOffset> 0.086000 </segmentOffset>
+			<lodDist> MEDIUM </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals/>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/remods/milkym4n/A80_T26_E4_SuperPershing/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> -0.790056 0.119613 2.808535 </rayStart>
+				<rayEnd> -0.790056 0.080058 2.785509 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.280000 </size>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 HP_Track_Exhaus_2 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/remods/milkym4n/A80_T26_E4_SuperPershing/normal/lod0/Turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> -0.868557 0.601453 -1.658340 </rayStart>
+				<rayEnd> -0.479743 0.578396 -1.567290 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.260000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34000 </slotId>
+				<rayStart> -0.879678 0.651943 -1.039610 </rayStart>
+				<rayEnd> -0.765574 0.639689 -1.004540 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.680000 </size>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> 0.861838 0.630377 -1.636170 </rayStart>
+				<rayEnd> 0.478520 0.602132 -1.525430 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.260000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34001 </slotId>
+				<rayStart> 0.903361 0.638695 -1.018060 </rayStart>
+				<rayEnd> 0.791261 0.632551 -0.975690 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.680000 </size>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/remods/milkym4n/A80_T26_E4_SuperPershing/normal/lod0/Gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> 0.000000 0.000000 2.027000 </rayStart>
+				<rayEnd> 0.176179 -0.031356 2.787060 </rayEnd>
+				<rayUp> 0.100000 0.097000 4.000000 </rayUp>
+				<size> 0.481000 </size>
+			</slot>
+		</customizationSlots>
+	</gun>
+</root>

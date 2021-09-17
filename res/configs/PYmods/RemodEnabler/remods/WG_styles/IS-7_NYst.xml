@@ -1,0 +1,550 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Wargaming </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> r45_is-7 </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/russian/R45_IS-7/_skins/NYst/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> FAR </lodDist>
+			<bufferPrefs> mediumTank </bufferPrefs>
+			<textureSet> ussr_01 </textureSet>
+			<size> 0.620000 0.820000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.409170 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -1.500000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.387565 </radius>
+				<count> 7 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.387565 </radius>
+				<count> 7 </count>
+			</group>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.319471 </radius>
+				<syncAngle> 25.714001 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L1 </name>
+				<radius> 0.432380 </radius>
+				<syncAngle> 25.714001 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.319471 </radius>
+				<syncAngle> 25.714001 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R1 </name>
+				<radius> 0.432380 </radius>
+				<syncAngle> 25.714001 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L1 </drivingWheels>
+		<hullPosition> 0.000000 0.896721 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 7 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.070000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 7 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.070000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> 0.005000 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.100000 </maxAmplitude>
+			<maxOffset> 0.100000 </maxOffset>
+			<gravity> -9.000000 </gravity>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.175000 </offset>
+				<rightSibling> Track_VT_L1 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.100000 </backwardElastK>
+				<offset> -0.144000 </offset>
+				<leftSibling> Track_VT_L0 </leftSibling>
+				<rightSibling> Track_VT_L2 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.200000 </backwardElastK>
+				<offset> -0.207000 </offset>
+				<leftSibling> Track_VT_L1 </leftSibling>
+				<rightSibling> Track_VT_L3 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.300000 </backwardElastK>
+				<offset> -0.163000 </offset>
+				<leftSibling> Track_VT_L2 </leftSibling>
+				<rightSibling> Track_VT_L4 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L4 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.400000 </backwardElastK>
+				<offset> -0.210000 </offset>
+				<leftSibling> Track_VT_L3 </leftSibling>
+				<rightSibling> Track_VT_L5 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L5 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+				<offset> -0.163000 </offset>
+				<leftSibling> Track_VT_L4 </leftSibling>
+				<rightSibling> Track_VT_L6 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L6 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.600000 </backwardElastK>
+				<offset> -0.210000 </offset>
+				<leftSibling> Track_VT_L5 </leftSibling>
+				<rightSibling> Track_VT_L7 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L7 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.700000 </backwardElastK>
+				<offset> -0.163000 </offset>
+				<leftSibling> Track_VT_L6 </leftSibling>
+				<rightSibling> Track_VT_L8 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L8 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.800000 </backwardElastK>
+				<offset> -0.210000 </offset>
+				<leftSibling> Track_VT_L7 </leftSibling>
+				<rightSibling> Track_VT_L9 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L9 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.163000 </offset>
+				<leftSibling> Track_VT_L8 </leftSibling>
+				<rightSibling> Track_VT_L10 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L10 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.210000 </offset>
+				<leftSibling> Track_VT_L9 </leftSibling>
+				<rightSibling> Track_VT_L11 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L11 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.163000 </offset>
+				<leftSibling> Track_VT_L10 </leftSibling>
+				<rightSibling> Track_VT_L12 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L12 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.210000 </offset>
+				<leftSibling> Track_VT_L11 </leftSibling>
+				<rightSibling> Track_VT_L13 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L13 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.153000 </offset>
+				<leftSibling> Track_VT_L12 </leftSibling>
+				<rightSibling> Track_VT_L14 </rightSibling>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L14 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.242000 </offset>
+				<leftSibling> Track_VT_L13 </leftSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<offset> -0.049000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<offset> -0.049000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<offset> -0.018000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<offset> -0.018000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.175000 </offset>
+				<rightSibling> Track_VT_R1 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.100000 </backwardElastK>
+				<offset> -0.144000 </offset>
+				<leftSibling> Track_VT_R0 </leftSibling>
+				<rightSibling> Track_VT_R2 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.200000 </backwardElastK>
+				<offset> -0.207000 </offset>
+				<leftSibling> Track_VT_R1 </leftSibling>
+				<rightSibling> Track_VT_R3 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.300000 </backwardElastK>
+				<offset> -0.163000 </offset>
+				<leftSibling> Track_VT_R2 </leftSibling>
+				<rightSibling> Track_VT_R4 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R4 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.400000 </backwardElastK>
+				<offset> -0.210000 </offset>
+				<leftSibling> Track_VT_R3 </leftSibling>
+				<rightSibling> Track_VT_R5 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R5 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+				<offset> -0.163000 </offset>
+				<leftSibling> Track_VT_R4 </leftSibling>
+				<rightSibling> Track_VT_R6 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R6 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.600000 </backwardElastK>
+				<offset> -0.210000 </offset>
+				<leftSibling> Track_VT_R5 </leftSibling>
+				<rightSibling> Track_VT_R7 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R7 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.700000 </backwardElastK>
+				<offset> -0.163000 </offset>
+				<leftSibling> Track_VT_R6 </leftSibling>
+				<rightSibling> Track_VT_R8 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R8 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.800000 </backwardElastK>
+				<offset> -0.210000 </offset>
+				<leftSibling> Track_VT_R7 </leftSibling>
+				<rightSibling> Track_VT_R9 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R9 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.163000 </offset>
+				<leftSibling> Track_VT_R8 </leftSibling>
+				<rightSibling> Track_VT_R10 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R10 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.210000 </offset>
+				<leftSibling> Track_VT_R9 </leftSibling>
+				<rightSibling> Track_VT_R11 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R11 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.163000 </offset>
+				<leftSibling> Track_VT_R10 </leftSibling>
+				<rightSibling> Track_VT_R12 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R12 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.210000 </offset>
+				<leftSibling> Track_VT_R11 </leftSibling>
+				<rightSibling> Track_VT_R13 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R13 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.153000 </offset>
+				<leftSibling> Track_VT_R12 </leftSibling>
+				<rightSibling> Track_VT_R14 </rightSibling>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R14 </name>
+				<elasticity> 1000.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.680000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.242000 </offset>
+				<leftSibling> Track_VT_R13 </leftSibling>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/russian/R45_IS-7/_skins/NYst/track/segment.model </segmentModelLeft>
+			<segmentModelRight> vehicles/russian/R45_IS-7/_skins/NYst/track/segment.model </segmentModelRight>
+			<left> vehicles/russian/R45_IS-7/track/left.track </left>
+			<right> vehicles/russian/R45_IS-7/track/right.track </right>
+			<segmentLength> 0.150000 </segmentLength>
+			<segmentOffset> 0.135000 </segmentOffset>
+			<lodDist> SPLINE_TRACK </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals>
+			<decal>
+				<transform>
+					<row0> 5.077200 -0.000000 -0.000000 </row0>
+					<row1> 0.000000 1.345080 0.000000 </row1>
+					<row2> 0.000000 0.000000 9.184900 </row2>
+					<row3> 0.000000 -0.000000 -0.000000 </row3>
+				</transform>
+			</decal>
+		</AODecals>
+		<soundID> ussr:IS-7 </soundID>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/russian/R45_IS-7/_skins/NYst/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> 1.274350 0.576770 2.157060 </rayStart>
+				<rayEnd> 1.205060 0.407196 2.076780 </rayEnd>
+				<rayUp> -0.640257 0.145306 -0.754292 </rayUp>
+				<size> 0.320000 </size>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 HP_Track_Exhaus_2 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/russian/R45_IS-7/_skins/NYst/normal/lod0/Turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> -1.352700 0.455485 -0.832794 </rayStart>
+				<rayEnd> -1.037720 0.210212 -0.807875 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.320000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34000 </slotId>
+				<rayStart> -1.399560 0.464738 -0.079311 </rayStart>
+				<rayEnd> -1.093710 0.207294 -0.066606 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.820000 </size>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> 1.370720 0.435089 -0.727015 </rayStart>
+				<rayEnd> 1.059620 0.185155 -0.699771 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.320000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34001 </slotId>
+				<rayStart> 1.413090 0.450333 0.018825 </rayStart>
+				<rayEnd> 1.107340 0.192511 0.024309 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.820000 </size>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/russian/R45_IS-7/_skins/NYst/normal/lod0/Gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> 0.000000 0.052781 1.804020 </rayStart>
+				<rayEnd> 0.320126 -0.066358 1.798260 </rayEnd>
+				<rayUp> 0.122000 0.000000 0.000000 </rayUp>
+				<size> 0.683000 </size>
+			</slot>
+		</customizationSlots>
+		<soundID> ussr:_130mm_S-70 </soundID>
+	</gun>
+	<engine>
+		<soundID> ussr:M_50TI </soundID>
+	</engine>
+</root>

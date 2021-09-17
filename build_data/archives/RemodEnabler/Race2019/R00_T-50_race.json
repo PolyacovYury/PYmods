@@ -2,7 +2,7 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/RemodEnabler/remods/Race2019/R00_T-50_race.json": "res/configs/PYmods/RemodEnabler/remods/Race2019/R00_T-50_race.json",
+        "mods/configs/PYmods/RemodEnabler/remods/Race2019/R00_T-50_race.xml": "res/configs/PYmods/RemodEnabler/remods/Race2019/R00_T-50_race.xml",
         "mods/{GAME_VERSION}/RemodEnabler_remods/Race2019/R00_T-50_race.wotmod": "build/wotmods/RemodEnabler_remods/Race2019/R00_T-50_race.wotmod"
     }
 }

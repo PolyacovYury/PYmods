@@ -186,7 +186,7 @@ class ConfigInterface(PYmodsConfigInterface):
                     continue
                 self.lampsData[newID] = new_data = {}
                 new_data['type'] = 'model'
-                for key in ('root', 'preRotate', 'postRotate', 'position', 'mode') + self.teams:
+                for key in ('root', 'preRotate', 'postRotate', 'position', 'mode', 'include', 'exclude') + self.teams:
                     new_data[key] = data[key]
                 new_data['path'] = self.data['DebugPath']
                 if self.data['Debug'] and not quiet:
@@ -200,6 +200,7 @@ class ConfigInterface(PYmodsConfigInterface):
         self.lampsVisible = not self.lampsVisible
         if self.lampsVisible:
             sendPanelMessage(self.i18n['UI_activLamps'])
+            self.readData(not self.data['Debug'])
             self.readCurrentSettings(not self.data['Debug'])
             for vehicleID in BigWorld.player().arena.vehicles:
                 vEntity = BigWorld.entity(vehicleID)

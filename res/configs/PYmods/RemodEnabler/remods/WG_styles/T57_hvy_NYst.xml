@@ -1,0 +1,357 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Wargaming </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> a67_t57_58 </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/american/A67_T57_58/_skins/NYst/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> FAR </lodDist>
+			<bufferPrefs> largeTank </bufferPrefs>
+			<textureSet> t97 </textureSet>
+			<size> 0.600000 0.750000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.473510 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -2.500000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> true </isLeft>
+				<template> WD_L </template>
+				<radius> 0.165862 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 6 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.326626 </radius>
+				<count> 7 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> WD_R </template>
+				<radius> 0.165862 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 6 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.326626 </radius>
+				<count> 7 </count>
+			</group>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.326626 </radius>
+				<syncAngle> 32.727200 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L7 </name>
+				<radius> 0.334498 </radius>
+				<syncAngle> 32.727200 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.326626 </radius>
+				<syncAngle> 32.727200 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R7 </name>
+				<radius> 0.334498 </radius>
+				<syncAngle> 32.727200 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L7 </drivingWheels>
+		<hullPosition> 0.000000 1.270520 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 7 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.060000 </minOffset>
+				<maxOffset> 0.060000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 7 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.060000 </minOffset>
+				<maxOffset> 0.060000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> -0.003900 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.070000 </maxAmplitude>
+			<maxOffset> 0.070000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.400000 </backwardElastK>
+				<offset> -0.054000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+				<offset> -0.019000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.600000 </backwardElastK>
+				<offset> -0.019000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.700000 </backwardElastK>
+				<offset> -0.019000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L4 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.800000 </backwardElastK>
+				<offset> -0.019000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L5 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.019000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L6 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.054000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.400000 </backwardElastK>
+				<offset> -0.054000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.500000 </backwardElastK>
+				<offset> -0.019000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.600000 </backwardElastK>
+				<offset> -0.019000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.700000 </backwardElastK>
+				<offset> -0.019000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R4 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.800000 </backwardElastK>
+				<offset> -0.019000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R5 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 1.900000 </backwardElastK>
+				<offset> -0.019000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R6 </name>
+				<elasticity> 1200.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.750000 </forwardElastK>
+				<backwardElastK> 2.000000 </backwardElastK>
+				<offset> -0.054000 </offset>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/american/A67_T57_58/track/segment1.model </segmentModelLeft>
+			<segmentModelRight> vehicles/american/A67_T57_58/track/segment1.model </segmentModelRight>
+			<segment2ModelLeft> vehicles/american/A67_T57_58/track/segment2.model </segment2ModelLeft>
+			<segment2ModelRight> vehicles/american/A67_T57_58/track/segment2.model </segment2ModelRight>
+			<left> vehicles/american/A67_T57_58/track/left.track </left>
+			<right> vehicles/american/A67_T57_58/track/right.track </right>
+			<segmentLength> 0.178000 </segmentLength>
+			<segmentOffset> 0.321000 </segmentOffset>
+			<segment2Offset> 0.081000 </segment2Offset>
+			<lodDist> SPLINE_TRACK </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals>
+			<decal>
+				<transform>
+					<row0> 5.101210 -0.000000 0.000000 </row0>
+					<row1> 0.000000 1.785280 0.000000 </row1>
+					<row2> 0.000000 0.000000 8.296310 </row2>
+					<row3> -0.000000 0.000000 0.000000 </row3>
+				</transform>
+			</decal>
+		</AODecals>
+		<soundID> usa:Chassis_T57_58 </soundID>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/american/A67_T57_58/_skins/NYst/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> -0.001544 0.104001 3.215060 </rayStart>
+				<rayEnd> -0.001544 -0.073525 3.122950 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.300000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 14000 </slotId>
+				<rayStart> 0.040604 0.378946 2.891370 </rayStart>
+				<rayEnd> 0.033995 -0.000219 2.764150 </rayEnd>
+				<rayUp> 0.180777 -0.008692 -0.983486 </rayUp>
+				<size> 0.750000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie/>
+			<nodes> HP_Track_Exhaus_1 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/american/A67_T57_58/_skins/NYst/normal/lod0/Turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> 1.630660 0.402561 0.130481 </rayStart>
+				<rayEnd> 1.268640 0.253536 0.048474 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.300000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> -1.630660 0.402561 0.130481 </rayStart>
+				<rayEnd> -1.268640 0.253536 0.048474 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.300000 </size>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/american/A67_T57_58/_skins/NYst/normal/lod0/Gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> 0.000024 -0.046854 4.343700 </rayStart>
+				<rayEnd> -0.011001 -0.060130 4.343130 </rayEnd>
+				<rayUp> 0.105000 0.000000 0.000000 </rayUp>
+				<size> 0.800000 </size>
+			</slot>
+		</customizationSlots>
+		<soundID> usa:_120mm_Gun_T179 </soundID>
+	</gun>
+	<engine>
+		<soundID> usa:Continental_AV_1790_5C </soundID>
+	</engine>
+</root>

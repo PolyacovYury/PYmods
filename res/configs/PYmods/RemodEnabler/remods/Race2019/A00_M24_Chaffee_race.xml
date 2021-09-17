@@ -1,0 +1,318 @@
+<root>
+	<message> &#208;&#144;&#208;&#178;&#209;&#130;&#208;&#190;&#209;&#128;: Wargaming </message>
+	<player> true </player>
+	<ally> false </ally>
+	<enemy> false </enemy>
+	<whitelist> a34_m24_chaffee </whitelist>
+	<chassis>
+		<models>
+			<undamaged> vehicles/remods/Race2019/A00_M24_Chaffee_race/normal/lod0/Chassis.model </undamaged>
+		</models>
+		<traces>
+			<lodDist> FAR </lodDist>
+			<bufferPrefs> smallTank </bufferPrefs>
+			<textureSet> usa_a23 </textureSet>
+			<size> 0.440000 0.600000 </size>
+		</traces>
+		<topRightCarryingPoint> 1.229220 2.500000 </topRightCarryingPoint>
+		<tracks>
+			<lodDist> MEDIUM_TRACK </lodDist>
+			<leftMaterial> track_mat_L_skinned </leftMaterial>
+			<rightMaterial> track_mat_R_skinned </rightMaterial>
+			<textureScale> -3.400000 </textureScale>
+		</tracks>
+		<wheels>
+			<lodDist> MEDIUM </lodDist>
+			<group>
+				<isLeft> false </isLeft>
+				<template> WD_R </template>
+				<radius> 0.165410 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> false </isLeft>
+				<template> W_R </template>
+				<radius> 0.340487 </radius>
+				<count> 5 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> WD_L </template>
+				<radius> 0.165410 </radius>
+				<startIndex> 1 </startIndex>
+				<count> 3 </count>
+			</group>
+			<group>
+				<isLeft> true </isLeft>
+				<template> W_L </template>
+				<radius> 0.340487 </radius>
+				<count> 5 </count>
+			</group>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R0 </name>
+				<radius> 0.286072 </radius>
+				<syncAngle> 27.692301 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L0 </name>
+				<radius> 0.286072 </radius>
+				<syncAngle> 27.692301 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> false </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_R4 </name>
+				<radius> 0.309528 </radius>
+				<syncAngle> 27.692301 </syncAngle>
+			</wheel>
+			<wheel>
+				<isLeft> true </isLeft>
+				<isLeading> true </isLeading>
+				<name> WD_L4 </name>
+				<radius> 0.309528 </radius>
+				<syncAngle> 27.692301 </syncAngle>
+			</wheel>
+		</wheels>
+		<drivingWheels> WD_L0 WD_L4 </drivingWheels>
+		<hullPosition> 0.000000 0.954509 0.000000 </hullPosition>
+		<groundNodes>
+			<group>
+				<template> Track_L </template>
+				<startIndex> 0 </startIndex>
+				<count> 5 </count>
+				<isLeft> true </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.070000 </maxOffset>
+			</group>
+			<group>
+				<template> Track_R </template>
+				<startIndex> 0 </startIndex>
+				<count> 5 </count>
+				<isLeft> false </isLeft>
+				<minOffset> -0.100000 </minOffset>
+				<maxOffset> 0.070000 </maxOffset>
+			</group>
+		</groundNodes>
+		<trackThickness> 0.005000 </trackThickness>
+		<trackNodes>
+			<maxAmplitude> 0.026000 </maxAmplitude>
+			<maxOffset> 0.026000 </maxOffset>
+			<gravity> -9.800000 </gravity>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R0 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 0.710000 </backwardElastK>
+				<offset> -0.053000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L0 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.710000 </forwardElastK>
+				<backwardElastK> 1.020000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R1 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.800000 </forwardElastK>
+				<backwardElastK> 0.900000 </backwardElastK>
+				<offset> -0.053000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R2 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.600000 </forwardElastK>
+				<backwardElastK> 0.790000 </backwardElastK>
+				<offset> -0.053000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VT_R3 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.400000 </forwardElastK>
+				<backwardElastK> 0.790000 </backwardElastK>
+				<offset> -0.053000 </offset>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R0 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 0.710000 </forwardElastK>
+				<backwardElastK> 1.020000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VD_L1 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 0.600000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> false </isLeft>
+				<name> Track_VD_R1 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.500000 </forwardElastK>
+				<backwardElastK> 0.600000 </backwardElastK>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L0 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 2.000000 </forwardElastK>
+				<backwardElastK> 0.710000 </backwardElastK>
+				<offset> -0.053000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L1 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.800000 </forwardElastK>
+				<backwardElastK> 0.900000 </backwardElastK>
+				<offset> -0.053000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L2 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.600000 </forwardElastK>
+				<backwardElastK> 0.790000 </backwardElastK>
+				<offset> -0.053000 </offset>
+			</node>
+			<node>
+				<isLeft> true </isLeft>
+				<name> Track_VT_L3 </name>
+				<elasticity> 1009.000000 </elasticity>
+				<damping> 2.000000 </damping>
+				<forwardElastK> 1.400000 </forwardElastK>
+				<backwardElastK> 0.790000 </backwardElastK>
+				<offset> -0.053000 </offset>
+			</node>
+		</trackNodes>
+		<splineDesc>
+			<segmentModelLeft> vehicles/remods/Race2019/A00_M24_Chaffee_race/track/segment.model </segmentModelLeft>
+			<segmentModelRight> vehicles/remods/Race2019/A00_M24_Chaffee_race/track/segment.model </segmentModelRight>
+			<segment2ModelLeft> vehicles/remods/Race2019/A00_M24_Chaffee_race/track/segment1.model </segment2ModelLeft>
+			<segment2ModelRight> vehicles/remods/Race2019/A00_M24_Chaffee_race/track/segment1.model </segment2ModelRight>
+			<left> vehicles/remods/Race2019/A00_M24_Chaffee_race/track/left.track </left>
+			<right> vehicles/remods/Race2019/A00_M24_Chaffee_race/track/right.track </right>
+			<segmentLength> 0.132000 </segmentLength>
+			<segmentOffset> 0.113445 </segmentOffset>
+			<segment2Offset> 0.066000 </segment2Offset>
+			<lodDist> SPLINE_TRACK </lodDist>
+			<atlas>
+				<UTiles> 1 </UTiles>
+				<VTiles> 1 </VTiles>
+			</atlas>
+		</splineDesc>
+		<AODecals>
+			<decal>
+				<transform>
+					<row0> 3.295840 0.000000 0.000000 </row0>
+					<row1> 0.000000 1.431760 0.000000 </row1>
+					<row2> 0.000000 0.000000 5.097660 </row2>
+					<row3> 0.000000 0.000000 -0.000000 </row3>
+				</transform>
+			</decal>
+		</AODecals>
+		<soundID> usa:Chassis_M24_Chaffee_2 </soundID>
+	</chassis>
+	<hull>
+		<models>
+			<undamaged> vehicles/remods/Race2019/A00_M24_Chaffee_race/normal/lod0/Hull.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> clan </slotType>
+				<slotId> 10000 </slotId>
+				<rayStart> -0.003108 0.260262 1.943650 </rayStart>
+				<rayEnd> -0.003116 0.249876 1.937650 </rayEnd>
+				<rayUp> 0.000000 0.000000 -1.000000 </rayUp>
+				<size> 0.300000 </size>
+			</slot>
+		</customizationSlots>
+		<exhaust>
+			<pixie> gas_small </pixie>
+			<nodes> HP_Track_Exhaus_1 HP_Track_Exhaus_2 </nodes>
+		</exhaust>
+	</hull>
+	<turret>
+		<models>
+			<undamaged> vehicles/remods/Race2019/A00_M24_Chaffee_race/normal/lod0/Turret_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33000 </slotId>
+				<rayStart> 0.942603 0.523177 -0.036585 </rayStart>
+				<rayEnd> 0.763369 0.434821 -0.028313 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<isMirrored> true </isMirrored>
+				<size> 0.300000 </size>
+			</slot>
+			<slot>
+				<slotType> player </slotType>
+				<slotId> 33001 </slotId>
+				<rayStart> -0.939679 0.541415 0.050630 </rayStart>
+				<rayEnd> -0.761521 0.451803 0.065777 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.300000 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34000 </slotId>
+				<rayStart> -0.835874 0.428503 -0.635283 </rayStart>
+				<rayEnd> -0.660194 0.349368 -0.581670 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.551948 </size>
+			</slot>
+			<slot>
+				<slotType> inscription </slotType>
+				<slotId> 34001 </slotId>
+				<rayStart> 0.835874 0.428503 -0.635283 </rayStart>
+				<rayEnd> 0.660194 0.349368 -0.581670 </rayEnd>
+				<rayUp> 0.000000 1.000000 0.000000 </rayUp>
+				<size> 0.551948 </size>
+			</slot>
+		</customizationSlots>
+	</turret>
+	<gun>
+		<models>
+			<undamaged> vehicles/remods/Race2019/A00_M24_Chaffee_race/normal/lod0/Gun_01.model </undamaged>
+		</models>
+		<customizationSlots>
+			<slot>
+				<slotType> insigniaOnGun </slotType>
+				<slotId> 49000 </slotId>
+				<rayStart> -0.000000 -0.000039 1.323730 </rayStart>
+				<rayEnd> -0.251642 -0.071475 1.315190 </rayEnd>
+				<rayUp> 0.058000 0.000000 0.000000 </rayUp>
+				<size> 0.400000 </size>
+				<hideIfDamaged> true </hideIfDamaged>
+			</slot>
+		</customizationSlots>
+		<soundID> usa:_75mm_Gun_M17 </soundID>
+	</gun>
+	<engine>
+		<soundID> usa:Wright_Continental_R-975C4L </soundID>
+	</engine>
+</root>
