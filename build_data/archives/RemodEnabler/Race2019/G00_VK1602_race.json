@@ -2,7 +2,7 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/RemodEnabler/remods/Race2019/G00_VK1602_race.json": "res/configs/PYmods/RemodEnabler/remods/Race2019/G00_VK1602_race.json",
+        "mods/configs/PYmods/RemodEnabler/remods/Race2019/G00_VK1602_race.xml": "res/configs/PYmods/RemodEnabler/remods/Race2019/G00_VK1602_race.xml",
         "mods/{GAME_VERSION}/RemodEnabler_remods/Race2019/G00_VK1602_race.wotmod": "build/wotmods/RemodEnabler_remods/Race2019/G00_VK1602_race.wotmod"
     }
 }

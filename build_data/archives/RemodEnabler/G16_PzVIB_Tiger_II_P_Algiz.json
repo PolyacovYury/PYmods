@@ -2,7 +2,7 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
-        "mods/configs/PYmods/RemodEnabler/remods/g16_pzvib_tiger_ii_P_Algiz.json": "res/configs/PYmods/RemodEnabler/remods/g16_pzvib_tiger_ii_P_Algiz.json",
+        "mods/configs/PYmods/RemodEnabler/remods/g16_pzvib_tiger_ii_P_Algiz.xml": "res/configs/PYmods/RemodEnabler/remods/g16_pzvib_tiger_ii_P_Algiz.xml",
         "mods/{GAME_VERSION}/RemodEnabler_remods/A_Equipment_textures.wotmod": "build/wotmods/RemodEnabler_remods/A_Equipment_textures.wotmod",
         "mods/{GAME_VERSION}/RemodEnabler_remods/Algiz_shared_textures.wotmod": "build/wotmods/RemodEnabler_remods/Algiz_shared_textures.wotmod",
         "mods/{GAME_VERSION}/RemodEnabler_remods/G16_PzVIB_Tiger_II_P_Algiz.wotmod": "build/wotmods/RemodEnabler_remods/G16_PzVIB_Tiger_II_P_Algiz.wotmod"
