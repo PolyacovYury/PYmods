@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import BigWorld
 import SoundGroups
 from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod, events
 from PYmodsCore.config.interfaces.Simple import ConfigNoInterface
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
+from gui.battle_control import avatar_getter
 
 
 class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
@@ -22,29 +24,30 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
         pass
 
 
-_config = ConfigInterface()
-statistic_mod = Analytics(_config.ID, _config.version, 'UA-76792179-12')
+g_config = ConfigInterface()
+statistic_mod = Analytics(g_config.ID, g_config.version, 'UA-76792179-12')
 
 
 @events.PlayerAvatar.startGUI.after
 def new_startGUI(*_, **__):
-    _config.currentPercent = 100
+    g_config.currentPercent = 100
 
 
 @events.PlayerAvatar.destroyGUI.before
 def new_destroyGUI(*_, **__):
-    _config.currentPercent = None
+    g_config.currentPercent = None
 
 
 @overrideMethod(DamagePanelMeta.DamagePanelMeta, 'as_updateHealthS')
 def new_updateHealth(base, self, healthStr, progress):
     base(self, healthStr, progress)
-    if _config.currentPercent is None:
+    p = BigWorld.player()
+    if g_config.currentPercent is None or avatar_getter.getPlayerVehicleID(p) != avatar_getter.getVehicleIDAttached(p):
         return
     for percentage in (10, 25, 50):
         if not progress:
             break
-        if progress <= percentage < _config.currentPercent:
-            SoundGroups.g_instance.playSound2D(_config.data['%spercent' % percentage])
+        if progress <= percentage < g_config.currentPercent:
+            SoundGroups.g_instance.playSound2D(g_config.data['%spercent' % percentage])
             break
-    _config.currentPercent = progress
+    g_config.currentPercent = progress
