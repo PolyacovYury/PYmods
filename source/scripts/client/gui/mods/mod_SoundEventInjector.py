@@ -125,7 +125,7 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
                 if orig is not None:
                     print self.LOG, 'changing type of reload effect %s. Might cause problems!' % sname
                 orig, desc = None, reloadType(sect, effData['type'])
-            desc_slots = chain.from_iterable(getattr(cls, '__slots__', ()) for cls in reloadType.__mro__)
+            desc_slots = list(chain.from_iterable(getattr(cls, '__slots__', ()) for cls in reloadType.__mro__))
             for slot in desc_slots:
                 if slot == '_intuitionOverrides':
                     continue
