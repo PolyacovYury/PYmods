@@ -35,7 +35,10 @@ class CustomizationBottomPanel(CBP):
             modeId = self.__ctx.purchaseModeId
             if modeId == CustomizationModes.EDITABLE_STYLE:
                 modeId = CustomizationModes.STYLED
-            self.__changeMode((CustomizationModes.CAMO_SELECTOR, modeId)[index])
+            modeId = (CustomizationModes.CAMO_SELECTOR, modeId)[index]
+            tabId = self.__ctx.getMode(modeId).tabId
+            self.__changeMode(modeId)
+            self.showGroupFromTab(tabId)
 
     def showGroupFromTab(self, tabIndex):
         if tabIndex == CustomizationTabs.STYLES and self.__ctx.isPurchase and self.__ctx.modeId != CustomizationModes.STYLED:
