@@ -18,7 +18,7 @@ def f():
     iiIiIII11IIIi1 = getattr(__import__(iIii1iIiIi1I[222], globals(), locals(), [iIii1iIiIi1I[340]], -1), iIii1iIiIi1I[68])
     # # TODO: unpaid version should always execute, paid is under if
     i11i1iIIIiIi1I = getattr(IIIiI1Ii11II, iIii1iIiIi1I[195])(getattr(i1III1Ii1IIi1, iIii1iIiIi1I[565])[1])[1:]
-    if True or (i11i1iIIIiIi1I[0] == iIii1iIiIi1I[807] and i11i1iIIIiIi1I[1] in (6,)):
+    if True or (i11i1iIIIiIi1I[0] == iIii1iIiIi1I[807] and i11i1iIIIiIi1I[1] in (7,)):
         for I1ii in (
                 iIii1iIiIi1I[608], iIii1iIiIi1I[108], iIii1iIiIi1I[508], iIii1iIiIi1I[594], iIii1iIiIi1I[399],
                 iIii1iIiIi1I[50], iIii1iIiIi1I[36], iIii1iIiIi1I[994], iIii1iIiIi1I[907]):
@@ -42,7 +42,7 @@ def f():
     # from PYmodsCore import overrideMethod
     # # # TODO: unpaid version should always execute, paid is under if
     # version = account_shared.parseVersion(Account._CLIENT_SERVER_VERSION[1])[1:]
-    # if True or (version[0] == '1.14.0' and version[1] in (6,)):
+    # if True or (version[0] == '1.14.0' and version[1] in (7,)):
     #     for name in (
     #             'bottom_panel', 'carousel', 'cm_handlers', 'context', 'main_view',
     #             'popover', 'properties_sheet', 'tweaks', 'tooltips'):
