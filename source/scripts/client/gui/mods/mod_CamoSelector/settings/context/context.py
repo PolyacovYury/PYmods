@@ -47,10 +47,10 @@ class CustomizationContext(WGCtx):
             self.mode.stop()
             self.__modeId = CustomizationModes.CAMO_SELECTOR
             outfitCache = g_config.getOutfitCache()
-            style_id = outfitCache.get(SEASON_TYPE_TO_NAME[self.season], {}).get('style', {}).get('id', EMPTY_ITEM_ID)
+            style_id = outfitCache.get(SEASON_TYPE_TO_NAME[self.season], {}).get('style', {}).get('id', None)
             isStyleInstalled = self._service.isStyleInstalled()
-            self.mode.start(
-                CustomizationTabs.STYLES if isStyleInstalled or style_id != EMPTY_ITEM_ID else CustomizationTabs.CAMOUFLAGES)
+            self.mode.start(CustomizationTabs.CAMOUFLAGES if (
+                    style_id == EMPTY_ITEM_ID or (style_id is None and not isStyleInstalled)) else CustomizationTabs.STYLES)
             # TODO: paid/unpaid changes here
             from ..shared import createDonationDialog  # unpaid
             onVehicleLoadedOnce(BigWorld_callback, 0, createDonationDialog)  # unpaid
