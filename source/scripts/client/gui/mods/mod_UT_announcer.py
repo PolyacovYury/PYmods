@@ -236,8 +236,7 @@ class FlashController(object):
         self.ID = ID
         self.texts = []
         self.callbacks = []
-        self.isTextAdding = False
-        self.isTextRemoving = False
+        self.isTextAnimating = False
         self.setup()
         COMPONENT_EVENT.UPDATED += self.__updatePosition
 
@@ -284,9 +283,10 @@ class FlashController(object):
     def addText(self, text):
         if not (_config.data['enabled'] and _config.data['textLength']):
             return
-        if self.isTextAdding:
+        if self.isTextAnimating:
             BigWorld_callback(0.1, self.addText, text)
             return
+        self.isTextAnimating = True
         LOG_NOTE('adding text: ' + text)
         styleConf = _config.data['textStyle']
         text = '<font size="%s" face="%s" color="%s"><p align="center">%s</p></font>' % (
@@ -301,15 +301,13 @@ class FlashController(object):
         g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'alpha': 1.0}, {'duration': 0.5})
         if _config.data['textBackground']['enabled']:
             g_guiFlash.updateComponent(self.ID + '.image%s' % idx, {'alpha': 1.0}, {'duration': 0.5})
-        self.isTextAdding = True
-        BigWorld_callback(0.5, self.onTextAddingComplete)
+        BigWorld_callback(0.5, self.onTextAdded)
         self.callbacks.append(BigWorld_callback(_config.data['delay'] + 0.5, self.removeFirstText))
 
-    def onTextAddingComplete(self):
-        self.isTextAdding = False
+    def onTextAdded(self):
+        self.isTextAnimating = False
 
-    def onTextRemovalComplete(self):
-        self.isTextRemoving = False
+    def onTextRemoved(self):
         bgConf = _config.data['textBackground']
         height = bgConf['height']
         for idx in xrange(len(self.texts)):
@@ -320,9 +318,10 @@ class FlashController(object):
         idx = len(self.texts)
         if idx:
             self.removeBox(idx)
+        self.isTextAnimating = False
 
     def removeFirstText(self):
-        if self.isTextRemoving:
+        if self.isTextAnimating:
             BigWorld_callback(0.1, self.removeFirstText)
             return
         if self.texts:
@@ -336,7 +335,7 @@ class FlashController(object):
             except StandardError:
                 traceback.print_exc()
             del self.callbacks[0]
-        self.isTextRemoving = True
+        self.isTextAnimating = True
         bgConf = _config.data['textBackground']
         g_guiFlash.updateComponent(self.ID + '.text0', {'alpha': 0.0}, {'duration': 0.5})
         g_guiFlash.updateComponent(self.ID + '.image0', {'alpha': 0.0}, {'duration': 0.5})
@@ -344,7 +343,7 @@ class FlashController(object):
             g_guiFlash.updateComponent(self.ID + '.text%s' % idx, {'y': bgConf['height'] * (idx - 1)}, {'duration': 0.5})
             if bgConf['enabled']:
                 g_guiFlash.updateComponent(self.ID + '.image%s' % idx, {'y': bgConf['height'] * (idx - 1)}, {'duration': 0.5})
-        BigWorld_callback(0.5, self.onTextRemovalComplete)
+        BigWorld_callback(0.5, self.onTextRemoved)
 
 
 flashController = None
