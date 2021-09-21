@@ -14,7 +14,7 @@ from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.shared.utils.requesters.ItemsRequester import RequestCriteria
 from items import vehicles
 from items.components.c11n_constants import EMPTY_ITEM_ID, SeasonType
-from .shared import CSComparisonKey, getGroupName, getItemSeason
+from .shared import CSComparisonKey, getCriteria, getGroupName, getItemSeason
 from .. import g_config
 # noinspection PyUnresolvedReferences
 from ..constants import CUSTOM_GROUP_NAME
@@ -121,15 +121,9 @@ class CarouselCache(WGCache):
         purchaseRequirement = createCustomizationBaseRequestCriteria(
             g_currentVehicle.item, self.__eventsCache.questsProgress, self.__ctx.getMode().getAppliedItems()
         ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI())
-        # TODO: paid/unpaid changes here
-        moddedRequirement = (  # unpaid
-                REQ_CRITERIA.CUSTOMIZATION.PRICE_GROUP(CUSTOM_GROUP_NAME)  # unpaid
-                ^ (REQ_CRITERIA.IN_CD_LIST(self.__ctx.getMode(CustomizationModes.CAMO_SELECTOR).getAppliedItems())
-                   | ~REQ_CRITERIA.ITEM_TYPES(GUI_ITEM_TYPE.INSIGNIA))  # unpaid
-                ^ (purchaseRequirement | REQ_CRITERIA.CUSTOM(lambda _item: _item.buyCount > 0)))  # unpaid
-        # moddedRequirement = REQ_CRITERIA.CUSTOM(lambda _i: (  # paid
-        #         _i.descriptor.parentGroup is not None and  # paid, bomb
-        #         (_i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item))))  # paid
+        moddedRequirement = REQ_CRITERIA.CUSTOM(lambda _i: (
+                _i.descriptor.parentGroup is not None and
+                (_i.itemTypeID != GUI_ITEM_TYPE.STYLE or not _i.modelsSet or _i.mayInstall(g_currentVehicle.item))))
         itemTypes = []
         for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
             if vehicleHasSlot(slotType):
@@ -152,7 +146,9 @@ class CarouselCache(WGCache):
 
         customModeTabs = CustomizationTabs.MODES[CustomizationModes.CUSTOM]
         for idx, sortedItems in enumerate((
-                sorted(purchaseItems, key=CSComparisonKey(True)), sorted(moddedItems, key=CSComparisonKey(False)))):
+                sorted(purchaseItems, key=CSComparisonKey(True, None)),
+                sorted(moddedItems, key=CSComparisonKey(False, getCriteria(self.__ctx)))
+        )):
             for item in sortedItems:
                 tabId = ITEM_TYPE_TO_TAB[item.itemTypeID]
                 modeId = CustomizationModes.CAMO_SELECTOR if idx else (

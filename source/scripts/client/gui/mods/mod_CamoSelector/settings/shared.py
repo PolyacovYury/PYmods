@@ -7,7 +7,8 @@ from CurrentVehicle import g_currentVehicle
 from async import async, await
 from frameworks.wulf import WindowLayer
 from functools import partial
-from gui.customization.shared import AREA_ID_BY_REGION
+from gui.customization.constants import CustomizationModes
+from gui.customization.shared import AREA_ID_BY_REGION, createCustomizationBaseRequestCriteria
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl.backport import text
 from gui.impl.dialogs import dialogs
@@ -17,6 +18,7 @@ from gui.impl.pub.dialog_window import DialogButtons as DButtons
 from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.personality import ServicesLocator as SL
+from gui.shared.utils.requesters import REQ_CRITERIA
 from items.components.c11n_constants import ItemTags, MAX_PROJECTION_DECALS_PER_AREA, ProjectionDecalFormTags, SeasonType
 from items.vehicles import g_cache, getItemByCompactDescr
 from vehicle_outfit.outfit import Area
@@ -90,9 +92,19 @@ def nationName(nationID):
     return text(R.strings.vehicle_customization.repaint.dyn(nations.NAMES[nationID] + '_base_color')())
 
 
-def CSComparisonKey(isPurchase, item=None):
+# noinspection PyUnusedLocal,PyUnreachableCode
+def getCriteria(ctx):  # TODO: paid/unpaid here
+    # return REQ_CRITERIA.EMPTY  # paid
+    return ((createCustomizationBaseRequestCriteria(
+        g_currentVehicle.item, g_currentVehicle.item.eventsCache.questsProgress, ctx.getMode().getAppliedItems()
+    ) | REQ_CRITERIA.CUSTOM(lambda _item: not _item.isHiddenInUI()))
+            ^ REQ_CRITERIA.CUSTOMIZATION.PRICE_GROUP(CUSTOM_GROUP_NAME)
+            ^ REQ_CRITERIA.IN_CD_LIST(ctx.getMode(CustomizationModes.CAMO_SELECTOR).getAppliedItems()))
+
+
+def CSComparisonKey(isPurchase, criteria, item=None):
     if item is None:
-        return partial(CSComparisonKey, isPurchase)
+        return partial(CSComparisonKey, isPurchase, criteria)
     tags, is3D, isVictim, clan, texName = item.tags, False, False, False, ''
     nat_count, vehicles = len(_getNations(item)), _getVehicles(item)
     if item.itemTypeID == GUI_ITEM_TYPE.STYLE:
@@ -110,8 +122,8 @@ def CSComparisonKey(isPurchase, item=None):
                 texName = texName.rsplit('/', 1)[-1]
     order = TYPES_ORDER if isPurchase else (GUI_ITEM_TYPE.STYLE,) + tuple(i for i in TYPES_ORDER if i != GUI_ITEM_TYPE.STYLE)
     return (
-        order.index(item.itemTypeID) if item.itemTypeID in order else -1, ItemTags.NATIONAL_EMBLEM not in tags,
-        not is3D, isVictim, item.priceGroup == CUSTOM_GROUP_NAME, nat_count == 0,
+        order.index(item.itemTypeID) if item.itemTypeID in order else -1, (criteria and not criteria(item)),
+        ItemTags.NATIONAL_EMBLEM not in tags, not is3D, isVictim, item.priceGroup == CUSTOM_GROUP_NAME, nat_count == 0,
         (not (clan or vehicles), not clan, not vehicles) if not nat_count else (clan, nat_count != 1),
         getGroupName(item, isPurchase), item.customizationDisplayType(), texName, item.isRare(),
         0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), item.id)

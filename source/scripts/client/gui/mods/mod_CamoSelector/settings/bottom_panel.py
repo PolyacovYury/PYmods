@@ -20,12 +20,14 @@ from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.utils.functions import makeTooltip
 from shared_utils import first
-from .shared import CSComparisonKey
+from .shared import CSComparisonKey, getCriteria
 from .. import g_config
 from ..constants import VIEW_ALIAS
 
 
 class CustomizationBottomPanel(CBP):
+    criteria = None
+
     def _populate(self):
         CBP._populate(self)
         self.app.loadView(SFViewLoadParams('PY_CS_carousel_UI'))
@@ -82,11 +84,20 @@ class CustomizationBottomPanel(CBP):
             'rightEnabled': bool(self._carouselDP.getVisibleTabsForPurchase())
         })
 
-    def __setBottomPanelBillData(self, *_):
+    def __setBottomPanelBillData(self, *a, **k):
         # noinspection PyUnresolvedReferences
-        CBP._CustomizationBottomPanel__setBottomPanelBillData(self, *_)
+        CBP._CustomizationBottomPanel__setBottomPanelBillData(self, *a, **k)
         BigWorld_callback(0, self.__showBill if self.__ctx.isOutfitsModified() else self.__hideBill)
         BigWorld_callback(0, self.as_setItemsPopoverBtnEnabledS, not self.__ctx.mode.isOutfitsEmpty())
+
+    def as_setBottomPanelPriceStateS(self, data):
+        self.criteria = getCriteria(self.__ctx)
+        data['buyBtnEnabled'] &= all(
+            self.criteria(self.service.getItemByCD(itemCD))
+            for itemCD in self.__ctx.getMode(CustomizationModes.CAMO_SELECTOR).getAppliedItems(False))
+        if not data['buyBtnEnabled'] and self.__ctx.isOutfitsModified():
+            data['buyBtnTooltip'] = g_config.i18n['flashCol_freeVersion_tooltip']
+        return super(CustomizationBottomPanel, self).as_setBottomPanelPriceStateS(data)
 
     def _carouseItemWrapper(self, itemCD):
         VO = CBP._carouseItemWrapper(self, itemCD)
@@ -96,8 +107,11 @@ class CustomizationBottomPanel(CBP):
         if self.__ctx.isPurchase:
             VO['isDarked'] = VO['isAlreadyUsed']
             return VO
+        if not self.criteria:
+            self.criteria = getCriteria(self.__ctx)
         item = self.service.getItemByCD(itemCD)
-        VO['locked'] = VO['isAlreadyUsed'] = VO['isDarked'] = False
+        VO['locked'] = VO['isDarked'] = False
+        VO['isAlreadyUsed'] = not self.criteria(item)
         VO['showEditBtnHint'] = True
         VO['showEditableHint'] = VO['editBtnEnabled'] = False
         VO['rentalInfoText'] = VO['editableIcon'] = VO['tooltip'] = ''
@@ -139,7 +153,7 @@ class CustomizationBottomPanel(CBP):
     def __scrollToNewItem(self):
         if self.__ctx.isPurchase:
             itemTypes = CustomizationTabs.ITEM_TYPES[self.__ctx.mode.tabId]
-            newItems = sorted(g_currentVehicle.item.getNewC11nItems(self.itemsCache.items), key=CSComparisonKey(True))
+            newItems = sorted(g_currentVehicle.item.getNewC11nItems(self.itemsCache.items), key=CSComparisonKey(True, None))
             for item in newItems:
                 if item.itemTypeID in itemTypes and item.season & self.__ctx.season:
                     return self.__scrollToItem(item.intCD, immediately=True)

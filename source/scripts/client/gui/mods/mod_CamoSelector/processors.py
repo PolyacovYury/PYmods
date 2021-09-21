@@ -212,9 +212,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
         itemRequirement = ((createCustomizationBaseRequestCriteria(
             g_currentVehicle.item, g_currentVehicle.item.eventsCache.questsProgress, ()
         ) if g_currentVehicle.item else REQ_CRITERIA.EMPTY) | REQ_CRITERIA.CUSTOM(
-            lambda _item: not _item.isHiddenInUI() and _item.buyCount > 0)) ^ REQ_CRITERIA.CUSTOM(
-            lambda _i: (_i.priceGroup == CUSTOM_GROUP_NAME)
-        )
+            lambda _item: _item.buyCount > 0)) ^ REQ_CRITERIA.CUSTOMIZATION.PRICE_GROUP(CUSTOM_GROUP_NAME)
         requirement = lambda itemID: itemRequirement(g_currentVehicle.itemsCache.items.getItem(
             GUI_ITEM_TYPE.CUSTOMIZATION, CustomizationType.CAMOUFLAGE, itemID))
     random.seed(vID)
