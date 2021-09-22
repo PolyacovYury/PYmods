@@ -235,7 +235,6 @@ class FlashController(object):
     def __init__(self, ID):
         self.ID = ID
         self.texts = []
-        self.callbacks = []
         self.isTextAnimating = False
         self.setup()
         COMPONENT_EVENT.UPDATED += self.__updatePosition
@@ -302,7 +301,7 @@ class FlashController(object):
         if _config.data['textBackground']['enabled']:
             g_guiFlash.updateComponent(self.ID + '.image%s' % idx, {'alpha': 1.0}, {'duration': 0.5})
         BigWorld_callback(0.5, self.onTextAdded)
-        self.callbacks.append(BigWorld_callback(_config.data['delay'] + 0.5, self.removeFirstText))
+        BigWorld_callback(_config.data['delay'] + 0.5, self.removeFirstText)
 
     def onTextAdded(self):
         self.isTextAnimating = False
@@ -327,14 +326,6 @@ class FlashController(object):
         if self.texts:
             LOG_NOTE('removing first text')
             del self.texts[0]
-        if self.callbacks:
-            try:
-                BigWorld.cancelCallback(self.callbacks[0])
-            except ValueError:
-                pass
-            except StandardError:
-                traceback.print_exc()
-            del self.callbacks[0]
         self.isTextAnimating = True
         bgConf = _config.data['textBackground']
         g_guiFlash.updateComponent(self.ID + '.text0', {'alpha': 0.0}, {'duration': 0.5})
