@@ -1,6 +1,5 @@
 from collections import OrderedDict, namedtuple
 
-from items.components.shared_components import EmblemSlot
 from items.readers.shared_readers import __customizationSlotIdRanges as customizationSlotIdRanges
 from vehicle_systems.tankStructure import TankPartNames
 from .json_update import migrateSettings
@@ -20,6 +19,7 @@ SplineConfig = namedtuple('SplineConfig', (
     'segment2ModelLeft', 'segment2ModelRight', 'segment2Offset', 'atlasUTiles', 'atlasVTiles'))
 NodesAndGroups = namedtuple('NodesAndGroups', ('nodes', 'groups'))
 chassis_params = ('traces', 'tracks', 'wheels', 'groundNodes', 'trackNodes', 'splineDesc', 'trackParams', 'trackSplineParams')
+EmblemSlot = namedtuple('EmblemSlot', ('rayStart', 'rayEnd', 'rayUp', 'size', 'hideIfDamaged', 'type', 'isMirrored', 'isUVProportional', 'emblemId', 'slotId', 'applyToFabric'))
 defaultEmblemSlot = EmblemSlot(
     [0, 0, 0], [0, 0, 0], [0, 0, 0], 0.0, False, 'clan', False, True, None, 0, True)
 
