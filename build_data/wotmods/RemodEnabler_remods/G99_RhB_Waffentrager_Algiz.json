@@ -3,6 +3,8 @@
     "ext": ".wotmod",
     "files": {
         "res/vehicles/remods/G99_RhB_Waffentrager/**": "res/res/vehicles/remods/G99_RhB_Waffentrager/**",
-        "res/vehicles/remods/Tracks/**": "res/res/vehicles/remods/Tracks/**"
+        "res/vehicles/remods/Tracks/Hetzer_track_AM.dds": "res/res/vehicles/remods/Tracks/Hetzer_track_AM.dds",
+        "res/vehicles/remods/Tracks/Hetzer_track_ANM.dds": "res/res/vehicles/remods/Tracks/Hetzer_track_ANM.dds",
+        "res/vehicles/remods/Tracks/Hetzer_track_GMM.dds": "res/res/vehicles/remods/Tracks/Hetzer_track_GMM.dds"
     }
 }

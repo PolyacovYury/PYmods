@@ -66,6 +66,15 @@
         "res/vehicles/remods/Text/panther2_infra_am.dds": "res/res/vehicles/remods/Text/panther2_infra_am.dds",
         "res/vehicles/remods/Text/panther2_infra_anm.dds": "res/res/vehicles/remods/Text/panther2_infra_anm.dds",
         "res/vehicles/remods/Text/panther2_infra_ao.dds": "res/res/vehicles/remods/Text/panther2_infra_ao.dds",
-        "res/vehicles/remods/Text/panther2_infra_gmm.dds": "res/res/vehicles/remods/Text/panther2_infra_gmm.dds"
+        "res/vehicles/remods/Text/panther2_infra_gmm.dds": "res/res/vehicles/remods/Text/panther2_infra_gmm.dds",
+        "res/vehicles/remods/Tracks/E100_Track_AM.dds": "res/res/vehicles/remods/Tracks/E100_Track_AM.dds",
+        "res/vehicles/remods/Tracks/E100_Track_ANM.dds": "res/res/vehicles/remods/Tracks/E100_Track_ANM.dds",
+        "res/vehicles/remods/Tracks/E100_Track_GMM.dds": "res/res/vehicles/remods/Tracks/E100_Track_GMM.dds",
+        "res/vehicles/remods/Tracks/Gg_26_800_300_track_AM.dds": "res/res/vehicles/remods/Tracks/Gg_26_800_300_track_AM.dds",
+        "res/vehicles/remods/Tracks/Gg_26_800_300_track_AM_hd.dds": "res/res/vehicles/remods/Tracks/Gg_26_800_300_track_AM_hd.dds",
+        "res/vehicles/remods/Tracks/Gg_26_800_300_track_ANM.dds": "res/res/vehicles/remods/Tracks/Gg_26_800_300_track_ANM.dds",
+        "res/vehicles/remods/Tracks/Gg_26_800_300_track_ANM_hd.dds": "res/res/vehicles/remods/Tracks/Gg_26_800_300_track_ANM_hd.dds",
+        "res/vehicles/remods/Tracks/Gg_26_800_300_track_GMM.dds": "res/res/vehicles/remods/Tracks/Gg_26_800_300_track_GMM.dds",
+        "res/vehicles/remods/Tracks/Gg_26_800_300_track_GMM_hd.dds": "res/res/vehicles/remods/Tracks/Gg_26_800_300_track_GMM_hd.dds"
     }
 }
