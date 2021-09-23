@@ -83,11 +83,14 @@ def applyModelDesc(vDesc, modelDesc, outfit, playerName):
 
 @overrideMethod(CommonTankAppearance, 'prerequisites')
 def new_prerequisites(base, self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k):
+    self.damageState.update(health, isCrewActive, False)
     if g_config.data['enabled']:
+        modelDesc, playerName = getModelDescInfo(vID, typeDescriptor, 'battle')
+        if self.damageState.isCurrentModelDamaged:
+            modelDesc = None
         self._CommonTankAppearance__typeDesc = typeDescriptor
         self._CommonTankAppearance__vID = vID
         outfit = self._prepareOutfit(outfitCD)
-        modelDesc, playerName = getModelDescInfo(vID, typeDescriptor, 'battle')
         applyModelDesc(typeDescriptor, modelDesc, outfit, playerName)
         outfitCD = outfit.pack().makeCompDescr()
     return base(self, typeDescriptor, vID, health, isCrewActive, isTurretDetached, outfitCD, *a, **k)
@@ -97,6 +100,8 @@ def new_prerequisites(base, self, typeDescriptor, vID, health, isCrewActive, isT
 def new_onRequestModelsRefresh(base, self, *a, **k):
     if g_config.data['enabled']:
         modelDesc, playerName = getModelDescInfo(self.id, self.typeDescriptor, 'battle')
+        if self.damageState.isCurrentModelDamaged:
+            modelDesc = None
         applyModelDesc(self.typeDescriptor, modelDesc, self.outfit, playerName)
     return base(self, *a, **k)
 
@@ -105,12 +110,14 @@ def new_onRequestModelsRefresh(base, self, *a, **k):
 def new_startBuild(base, self, vDesc, vState):
     if g_config.data['enabled']:
         modelDesc, playerName = getModelDescInfo(self.id, vDesc, 'hangar')
-        view = SL.appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOBBY_CUSTOMIZATION))
-        if view is not None:
-            if modelDesc is not None and vDesc.chassis.modelsSets.get('RemodEnabler_modelDesc', None) is not None:
-                SystemMessages.pushMessage(g_config.i18n['UI_install_customization'], SystemMessages.SM_TYPE.Warning)
+        if vState != 'undamaged':
             modelDesc = None
-            vDesc.chassis.modelsSets.pop('RemodEnabler_modelDesc', None)
+        else:
+            view = SL.appLoader.getDefLobbyApp().containerManager.getViewByKey(ViewKey(VIEW_ALIAS.LOBBY_CUSTOMIZATION))
+            if view is not None:
+                if modelDesc is not None and vDesc.chassis.modelsSets.get('RemodEnabler_modelDesc', None) is not None:
+                    SystemMessages.pushMessage(g_config.i18n['UI_install_customization'], SystemMessages.SM_TYPE.Warning)
+                modelDesc = None
         applyModelDesc(vDesc, modelDesc, self.outfit, playerName)
     return base(self, vDesc, vState)
 
