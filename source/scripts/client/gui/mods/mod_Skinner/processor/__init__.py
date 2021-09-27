@@ -69,10 +69,11 @@ def vDesc_process(vehicleID, vDesc, is_hangar, modelsSet, processCrash):
                 print partName
         xmlName = descr.name.split(':')[1].lower()
         modelsSetDir = modelsSet
-        if modelsSet != 'default':
-            vehNation, vehName, _, modelsSetDir = descr.chassis.modelsSets[modelsSet].undamaged.split('/')[1:5]
+        modelPath = descr.chassis.modelsSets[modelsSet].undamaged
+        if modelPath.count('/') > 5:
+            vehNation, vehName, _, modelsSetDir = modelPath.split('/')[1:5]
         else:
-            vehNation, vehName = descr.chassis.models.undamaged.split('/')[1:3]
+            vehNation, vehName = modelPath.split('/')[1:3]
         vehDefNation = descr.chassis.hitTester.bspModelName.split('/')[1]
         if not g_config.skinsData['whitelists']:
             return debugOutput(xmlName, vehName, playerName, modelsSetDir)
