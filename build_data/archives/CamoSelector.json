@@ -4,6 +4,7 @@
     "files": {
         "mods/configs/PYmods/CamoSelector/CamoSelector.json": "res/configs/PYmods/CamoSelector/CamoSelector.json",
         "mods/configs/PYmods/CamoSelector/camouflages/": "",
+        "mods/configs/PYmods/CamoSelector/disabledVehicles.json": "res/configs/PYmods/CamoSelector/disabledVehicles.json",
         "mods/configs/PYmods/CamoSelector/i18n/en.json": "res/configs/PYmods/CamoSelector/i18n/en.json",
         "mods/configs/PYmods/CamoSelector/i18n/ru.json": "res/configs/PYmods/CamoSelector/i18n/ru.json",
         "mods/configs/PYmods/CamoSelector/settings.json": "res/configs/PYmods/CamoSelector/settings.json",

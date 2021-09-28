@@ -186,7 +186,7 @@ class ConfigInterface(PYmodsConfigInterface):
         for name in self.allowed_names:
             self.readConfigDir(quiet, recursive=True, dir_name=name + 's', error_not_exist=False, ext='.xml')
         settings = loadJson(self.ID, 'settings', {}, self.configPath)
-        self.disabledVehicles = settings.setdefault('disable', self.disabledVehicles)
+        self.disabledVehicles = loadJson(self.ID, 'disabledVehicles', [], self.configPath)
         for k, v in settings.setdefault('remap', {}).items():
             self.camo_settings['remap'][int(k)] = v
         custom_settings = settings.setdefault('custom', {})
@@ -263,7 +263,7 @@ class ConfigInterface(PYmodsConfigInterface):
         for itemsKey, itemsSettings in currentSettings.items():
             for name, itemSettings in itemsSettings.items():
                 self.camo_settings[itemsKey].setdefault(name, {}).update(itemSettings)
-        loadJson(self.ID, 'settings', dict(self.camo_settings, **{'disable': self.disabledVehicles}), self.configPath, True)
+        loadJson(self.ID, 'settings', self.camo_settings, self.configPath, True)
 
     def migrateConfigs(self):
         camoData = {}

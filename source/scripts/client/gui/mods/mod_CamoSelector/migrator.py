@@ -66,7 +66,6 @@ def migrateOutfitsCache(self):
 def migrateRemapSettings(self, camoData):
     camouflages = g_cache.customization20().camouflages
     settings = loadJson(self.ID, 'settings', {}, self.configPath)
-    settings.setdefault('disable', self.disabledVehicles)
     conf = settings.setdefault('remap', {})
     for camoName in conf.keys():
         camoConf = conf.pop(camoName)

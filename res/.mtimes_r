@@ -141,13 +141,14 @@
 1293829200|configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-03/texture.dds
 1625724961|configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-damaged/data.xml
 1293829200|configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-damaged/texture.dds
+1632845368|configs/PYmods/CamoSelector/disabledVehicles.json
 1632231889|configs/PYmods/CamoSelector/i18n/en.json
 1632231897|configs/PYmods/CamoSelector/i18n/ru.json
 1625712873|configs/PYmods/CamoSelector/paints/by Algiz/Anthrazitgrau RAL 7016/data.xml
 1625712885|configs/PYmods/CamoSelector/paints/by Algiz/Dunkelgelb RAL 7028/data.xml
 1625712897|configs/PYmods/CamoSelector/paints/by Algiz/Olivgrun RAL 6003/data.xml
 1625712906|configs/PYmods/CamoSelector/paints/by Algiz/Rotbraun RAL 8012/data.xml
-1555788088|configs/PYmods/CamoSelector/settings.json
+1632845229|configs/PYmods/CamoSelector/settings.json
 1627387534|configs/PYmods/HangarCollision/HangarCollision.json
 1627387752|configs/PYmods/HangarCollision/i18n/en.json
 1627387752|configs/PYmods/HangarCollision/i18n/ru.json
