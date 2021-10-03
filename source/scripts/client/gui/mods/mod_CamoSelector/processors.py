@@ -273,7 +273,7 @@ def processRandomCamouflages(outfit, seasonName, seasonCache, processTurret, vID
     random.seed()
 
 
-def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, isPlayerVehicle=True, vID=None):
+def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, isPlayerVehicle=True, vID=None, clean=False):
     nationName, vehicleName = vDesc.name.split(':')
     try:
         isTurretCustomizable = isTurretCustom(vDesc)
@@ -283,7 +283,7 @@ def applyOutfitInfo(outfit, seasonName, vDesc, randomCache, isPlayerVehicle=True
         isTurretCustomizable = False
     if isPlayerVehicle:
         vehCache = g_config.outfitCache.get(nationName, {}).get(vehicleName, {})
-        outfit = applyOutfitCache(vDesc, outfit, seasonName, vehCache.get(seasonName, {}))
+        outfit = applyOutfitCache(vDesc, outfit, seasonName, vehCache.get(seasonName, {}), clean)
         deleteEmpty(vehCache, isTurretCustomizable)
         loadJson(g_config.ID, 'outfitCache', g_config.outfitCache, g_config.configPath, True)
     if g_config.data['doRandom'] and (g_config.data['fillEmptySlots'] or hasNoCamo(outfit)):
@@ -353,7 +353,7 @@ def new_prepareOutfit(base, self, *a, **kw):
         outfit = createEmptyOutfit(vDesc)
     seasonName = SEASON_TYPE_TO_NAME[SeasonType.fromArenaKind(BigWorld.player().arena.arenaType.vehicleCamouflageKind)]
     return applyOutfitInfo(outfit, seasonName, vDesc, g_config.arenaCamoCache.setdefault(
-        self.id, {}), self.id == BigWorld.player().playerVehicleID, self.id)
+        self.id, {}), self.id == BigWorld.player().playerVehicleID, self.id, bool(outfit.pack().insignias))
 
 
 @overrideMethod(PlayerAvatar, 'onBecomePlayer')
