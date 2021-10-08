@@ -1,7 +1,0 @@
-#!/bin/sh
-if [[ -d $(git rev-parse --git-path rebase-merge)\
-      || -d $(git rev-parse --git-path rebase-apply) ]]; then
-    echo "Rebase in progress, compilation skipped"
-else
-    start debug &
-fi

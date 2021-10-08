@@ -1,0 +1,3 @@
+[submodule "build_tools"]
+	path = build_tools
+	url = https://github.com/OpenMods-WoT/build_tools
