@@ -14,7 +14,7 @@ import ResMgr
 import SoundGroups
 import os
 import traceback
-from PYmodsCore import BigWorld_callback, PYmodsConfigInterface, Analytics, overrideMethod, events
+from OpenModsCore import BigWorld_callback, SimpleConfigInterface, Analytics, overrideMethod, events
 from collections import OrderedDict
 from constants import ARENA_PERIOD, ARENA_GUI_TYPE
 from debug_utils import LOG_ERROR
@@ -25,7 +25,7 @@ from gui.shared.personality import ServicesLocator
 from string import Template
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def __init__(self):
         self.timerSounds = (
             'sndStart', 'snd5min', 'snd3min', 'snd2min', 'snd1min', 'snd30sec', 'snd10sec', 'snd5sec', 'sndFinish')
@@ -45,7 +45,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '2.4.2 (%(file_compile_date)s)'
-        self.author += ' (orig by locastan)'
+        self.author = 'by Polyacov_Yury (orig by locastan)'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         # noinspection SpellCheckingInspection
         self.data = {
             'enabled': True, 'battleTimer': True, 'firstOption': 4, 'allKill': 2,

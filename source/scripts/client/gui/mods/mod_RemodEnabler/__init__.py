@@ -1,6 +1,6 @@
 __modID__ = '%(mod_ID)s'
 __date__ = '%(file_compile_date)s'
-from PYmodsCore import Analytics
+from OpenModsCore import Analytics
 from config import g_config
 
 try:

@@ -2,7 +2,7 @@ import BigWorld
 import SoundGroups
 import itertools
 import nations
-from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics
+from OpenModsCore import Analytics, SimpleConfigInterface, overrideMethod
 from collections import namedtuple
 from debug_utils import LOG_ERROR
 from gui.battle_control import avatar_getter
@@ -15,7 +15,7 @@ VoiceMode.__new__.__defaults__ = (None, False, False)
 MusicMode = namedtuple('MusicMode', 'name, tag')
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     VOICE_PREVIEW = itertools.cycle(('wwsound_mode_preview01', 'wwsound_mode_preview02', 'wwsound_mode_preview03'))
 
     def __init__(self):
@@ -67,6 +67,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.1.2 (%(file_compile_date)s)'
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.data = {'enabled': True, 'voice': 0, 'music': 0}
         # noinspection SpellCheckingInspection
         self.i18n = {

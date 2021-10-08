@@ -5,8 +5,7 @@ import SoundGroups
 import nations
 import traceback
 from Avatar import PlayerAvatar
-from PYmodsCore import Analytics, PYmodsConfigInterface, overrideMethod
-from PYmodsCore.config.interfaces.Simple import ConfigNoInterface
+from OpenModsCore import Analytics, ConfigNoInterface, SimpleConfigInterface, overrideMethod
 from ReloadEffect import ReloadEffectsType, _AutoReloadDesc, _BarrelReloadDesc, _DualGunReloadDesc, _SimpleReloadDesc
 from gui.IngameSoundNotifications import IngameSoundNotifications
 from helpers.EffectsList import ImpactNames, KeyPoint, _SoundEffectDesc, _TracerSoundEffectDesc
@@ -26,7 +25,7 @@ modifiers = {
     'clipShellLoadT': (lambda x: x * 1000.0), 'almostCompleteT': (lambda x: x * 1000.0)}
 
 
-class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
+class ConfigInterface(ConfigNoInterface, SimpleConfigInterface):
     def __init__(self):
         self.confList = set()
         self.effectsXmlPath = _VEHICLE_TYPE_XML_PATH + 'common/gun_effects.xml'
@@ -36,6 +35,8 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.3.2 (%(file_compile_date)s)'
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
         self.data = {
             'engines': {}, 'guns': {}, 'gun_effects': {}, 'gun_reload_effects': {}, 'shot_effects': {},
             'sound_notifications': {}}

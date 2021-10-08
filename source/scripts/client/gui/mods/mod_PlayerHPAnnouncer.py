@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import BigWorld
 import SoundGroups
-from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod, events
-from PYmodsCore.config.interfaces.Simple import ConfigNoInterface
+from OpenModsCore import Analytics, ConfigNoInterface, SimpleConfigInterface, overrideMethod, events
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 from gui.battle_control import avatar_getter
 
 
-class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
+class ConfigInterface(ConfigNoInterface, SimpleConfigInterface):
     def __init__(self):
         self.currentPercent = None
         super(ConfigInterface, self).__init__()
@@ -15,6 +14,8 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.0.1 (%(file_compile_date)s)'
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
         self.data = {'10percent': 'PlayerHPAnnouncer_10',
                      '25percent': 'PlayerHPAnnouncer_25',
                      '50percent': 'PlayerHPAnnouncer_50'}

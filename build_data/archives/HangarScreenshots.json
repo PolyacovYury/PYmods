@@ -13,6 +13,6 @@
         "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/HangarScreenshots.wotmod": "build/wotmods/PYmods/HangarScreenshots.wotmod",
-        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod"
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod"
     }
 }

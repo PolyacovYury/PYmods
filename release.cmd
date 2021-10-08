@@ -1,1 +1,2 @@
-call build_tools/release.cmd
+start build_tools\release.cmd
+exit

@@ -4,7 +4,7 @@ import math
 import BigWorld
 import Keys
 import Math
-from PYmodsCore import PYmodsConfigInterface, loadJson, overrideMethod, checkKeys, Analytics
+from OpenModsCore import Analytics, SimpleConfigInterface, loadJson, overrideMethod, checkKeys
 from gui import SystemMessages
 from gui.ClientHangarSpace import hangarCFG
 from gui.Scaleform.framework import WindowLayer
@@ -14,7 +14,7 @@ from helpers import dependency
 from skeletons.gui.shared.utils import IHangarSpace
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def __init__(self):
         self.cameraPos = []
         super(ConfigInterface, self).__init__()
@@ -22,7 +22,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.1.1 (%(file_compile_date)s)'
-        self.author += ' (thx to Chirimen, alphasave1)'
+        self.author = 'by Polyacov_Yury (thx to Chirimen, alphasave1)'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.defaultKeys = {'togglekey': [Keys.KEY_F11], 'camkey': [Keys.KEY_F12]}
         self.data = {'enabled': True,
                      'UIVisible': True,

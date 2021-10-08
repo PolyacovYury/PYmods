@@ -5,10 +5,10 @@ import Math
 import os
 import traceback
 from Avatar import PlayerAvatar
-from PYmodsCore import (
-    BigWorld_callback, PYmodsConfigInterface, overrideMethod, checkKeys, sendPanelMessage, Analytics, events,
+from OpenModsCore import (
+    BigWorld_callback, SimpleConfigInterface, overrideMethod, checkKeys, sendPanelMessage, Analytics, events,
 )
-from PYmodsCore.config import smart_update
+from OpenModsCore.config import smart_update
 from Vehicle import Vehicle
 from gui import SystemMessages
 from math import copysign
@@ -17,7 +17,7 @@ from vehicle_systems.CompoundAppearance import CompoundAppearance
 from vehicle_systems.tankStructure import TankNodeNames as TankNodes, TankPartNames as TankParts
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     listToTuple = classmethod(lambda cls, seq: seq if not isinstance(seq, list) else tuple(cls.listToTuple(x) for x in seq))
 
     def __init__(self):
@@ -35,6 +35,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '3.0.0 (%(file_compile_date)s)'
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.defaultKeys = {'hotkey': [Keys.KEY_F12]}
         self.data = {
             'enabled': True, 'enableAtStartup': True, 'hotkey': self.defaultKeys['hotkey'], 'enableMessage': True,

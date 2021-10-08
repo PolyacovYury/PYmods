@@ -1,5 +1,5 @@
 import BigWorld
-from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics, events
+from OpenModsCore import Analytics, SimpleConfigInterface, overrideMethod, events
 from constants import ARENA_GUI_TYPE
 from functools import partial
 from gui.Scaleform.daapi.view.battle.shared.crosshair.plugins import VehicleStatePlugin
@@ -13,7 +13,7 @@ from messenger.proto.bw_chat2.battle_chat_cmd import _ReceivedCmdDecorator
 from threading import Thread
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def __init__(self):
         self.friends = None
         events.LobbyView.populate.after(lambda *_, **__: Thread(target=self.onHangarInit).start())
@@ -22,6 +22,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.1.0 (%(file_compile_date)s)'
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         # noinspection LongLine
         self.data = {
             'enabled': True, 'removeNicknames': 0,

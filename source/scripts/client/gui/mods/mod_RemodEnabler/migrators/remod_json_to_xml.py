@@ -4,7 +4,7 @@ from math import degrees
 import Math
 import ResMgr
 import nations
-from PYmodsCore import remDups
+from OpenModsCore import remDups
 from items import _xml
 from items.components import chassis_components as cc, shared_components
 from items.components.component_constants import ALLOWED_EMBLEM_SLOTS as AES

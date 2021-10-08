@@ -9,6 +9,6 @@
         "mods/configs/PYmods/PYmodsGUI/i18n/ru.json": "res/configs/PYmods/PYmodsGUI/i18n/ru.json",
         "mods/configs/PYmods/PYmodsGUI/icon.png": "res/configs/PYmods/PYmodsGUI/icon.png",
         "mods/{GAME_VERSION}/PYmods/IngameGUITextTweaks.wotmod": "build/wotmods/PYmods/IngameGUITextTweaks.wotmod",
-        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod"
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod"
     }
 }

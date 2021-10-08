@@ -6,8 +6,8 @@ import math_utils
 import string
 import traceback
 from Event import SafeEvent
-from PYmodsCore import (
-    PYmodsConfigInterface, loadJson, config, checkKeys, pickRandomPart, Analytics, overrideMethod, sendChatMessage, events)
+from OpenModsCore import (
+    SimpleConfigInterface, loadJson, config, checkKeys, pickRandomPart, Analytics, overrideMethod, sendChatMessage, events)
 from Vehicle import Vehicle
 from collections import OrderedDict
 from constants import ARENA_BONUS_TYPE
@@ -25,7 +25,7 @@ from helpers import isPlayerAvatar
 from messenger import MessengerEntry
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def __init__(self):
         self.configMeta = {}
         self.commands = OrderedDict()
@@ -40,7 +40,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '2.2.2 (%(file_compile_date)s)'
-        self.author += ' (orig by locastan/tehHedger/TRJ_VoRoN)'
+        self.author = 'by Polyacov_Yury (orig by locastan/tehHedger/TRJ_VoRoN)'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.defaultKeys = {'mapMenu_key': [Keys.KEY_LALT]}
         self.data = {'enabled': True,
                      'mapMenu_key': self.defaultKeys['mapMenu_key'],

@@ -11,7 +11,7 @@
         "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
         "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
-        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
         "mods/{GAME_VERSION}/PYmods/VoiceOverrider.wotmod": "build/wotmods/PYmods/VoiceOverrider.wotmod"
     }
 }

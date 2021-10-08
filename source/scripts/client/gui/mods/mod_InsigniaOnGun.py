@@ -1,14 +1,17 @@
 import BigWorld
-from PYmodsCore import overrideMethod, PYmodsConfigInterface, Analytics
+from OpenModsCore import Analytics, SimpleConfigInterface, overrideMethod
 from VehicleStickers import VehicleStickers
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.0.0 (%(file_compile_date)s)'
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.data = {
             'enabled': True,
             'enableHangar': True, 'replaceHangar': False, 'hangar': 3,

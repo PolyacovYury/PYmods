@@ -12,7 +12,7 @@
         "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/HangarPainter.wotmod": "build/wotmods/PYmods/HangarPainter.wotmod",
-        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
         "mods/{GAME_VERSION}/PYmods/i18n_Loader.wotmod": "build/wotmods/PYmods/i18n_Loader.wotmod"
     }
 }

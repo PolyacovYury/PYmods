@@ -4,7 +4,7 @@ import math_utils
 import os
 import traceback
 from Avatar import PlayerAvatar
-from PYmodsCore import overrideMethod
+from OpenModsCore import overrideMethod
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems import model_assembler
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames

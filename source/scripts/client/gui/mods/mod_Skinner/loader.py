@@ -11,7 +11,7 @@ import glob
 import os
 import shutil
 import traceback
-from PYmodsCore import BigWorld_callback, remDups, loadJson, events, curCV
+from OpenModsCore import BigWorld_callback, remDups, loadJson, events, curCV
 from account_helpers.settings_core.settings_constants import GAME
 from adisp import AdispException, async, process
 from async import await, async as async2
@@ -206,7 +206,7 @@ def iterSection(sect, numbers=True, depth=1, filters=(None,)):
 @process
 def checkSkinFiles(callback):
     texReplaced = False
-    vehSkins = {}
+    vehSkins = dict()  # {} is a Dict[str, str] for some reason
     CRC32cache = g_config.skinsCache['CRC32']
     skinsPath = 'vehicles/skins/textures/'
     rootSect = ResMgr.openSection(skinsPath)
@@ -344,7 +344,7 @@ def unpackVehDir(vehSkins, nation, vehName, to_process, crash_tex, dirName, dirS
         return
     is_crash = dirName == 'crash'
     for skinName in (('white_crash',) if is_crash else
-                     vehSkins.get('/'.join((nation, vehName) + style[1:]).lower(), [])):
+                     vehSkins.get('/'.join((nation, vehName) + style[1:]).lower(), ())):
         ext = ('.model', '.visual', '.visual_processed', '.vt')
         if is_crash:
             ext = ext[:-1]
