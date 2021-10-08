@@ -4,6 +4,7 @@
     "files": {
         "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",
         "mods/configs/PYmods/PYmodsGUI/i18n/ru.json": "res/configs/PYmods/PYmodsGUI/i18n/ru.json",
+        "mods/configs/PYmods/PYmodsGUI/icon.png": "res/configs/PYmods/PYmodsGUI/icon.png",
         "mods/configs/PYmods/ShowVehicle/ShowVehicle.json": "res/configs/PYmods/ShowVehicle/ShowVehicle.json",
         "mods/configs/PYmods/ShowVehicle/i18n/en.json": "res/configs/PYmods/ShowVehicle/i18n/en.json",
         "mods/configs/PYmods/ShowVehicle/i18n/ru.json": "res/configs/PYmods/ShowVehicle/i18n/ru.json",

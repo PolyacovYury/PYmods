@@ -1,5 +1,3 @@
-import Event
-import traceback
 from constants import DEFAULT_LANGUAGE
 from ..template_builders import DummyTemplateBuilder
 
@@ -7,7 +5,7 @@ from ..template_builders import DummyTemplateBuilder
 class DummyConfigInterface(object):
     modSettingsContainers = {}
     isMSAOpen = property(lambda self: getattr(self.modSettingsContainers.get(self.modSettingsID), 'isMSAOpen', False))
-    MSAInstance = property(lambda self: getattr(self.modSettingsContainers.get(self.modSettingsID), 'API', None))
+    MSAInstance = property(lambda self: self.modSettingsContainers.get(self.modSettingsID))
 
     def __init__(self):
         """Declaration for attribute placeholders, all attributes should be defined in init(), getData() and loadLang()"""
@@ -55,8 +53,8 @@ class DummyConfigInterface(object):
         return self.createTemplate()
 
     @property
-    def containerClass(self):
-        return DummySettingContainer
+    def container_i18n(self):
+        return {}
 
     def migrateConfigs(self):
         """
@@ -167,47 +165,3 @@ class DummyConfBlockInterface(DummyConfigInterface):
 
     def onButtonPress(self, vName, value, blockID=None):
         pass
-
-
-class DummySettingContainer(object):
-    def __init__(self, ID, modsGroup):
-        self.modsGroup = modsGroup
-        self.ID = ID
-        self.langPath = ''
-        self.iconPath = 'scripts/client/%s.png' % self.ID
-        self.lang = DEFAULT_LANGUAGE
-        self.i18n = {}
-        self.onMSAPopulate = Event.Event()
-        self.onMSADestroy = Event.Event()
-        self.isMSAWindowOpen = False
-        self.MSAHandlers = {}
-        self.init()
-        try:
-            from helpers import getClientLanguage
-            newLang = str(getClientLanguage()).lower()
-            if newLang != self.lang:
-                self.lang = newLang
-        except StandardError:
-            traceback.print_exc()
-        self.loadLang()
-
-    def init(self):
-        pass
-
-    def loadLang(self):
-        pass
-
-    def MSAPopulate(self, callback):
-        self.isMSAWindowOpen = True
-        self.onMSAPopulate()
-        callback()
-
-    def MSADispose(self):
-        self.isMSAWindowOpen = False
-        self.onMSADestroy()
-
-    def MSAApply(self, alias, *a, **kw):
-        self.MSAHandlers[alias]['apply'](*a, **kw)
-
-    def MSAButton(self, alias, *a, **kw):
-        self.MSAHandlers[alias]['button'](*a, **kw)

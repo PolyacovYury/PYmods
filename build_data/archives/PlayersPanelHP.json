@@ -4,6 +4,7 @@
     "files": {
         "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",
         "mods/configs/PYmods/PYmodsGUI/i18n/ru.json": "res/configs/PYmods/PYmodsGUI/i18n/ru.json",
+        "mods/configs/PYmods/PYmodsGUI/icon.png": "res/configs/PYmods/PYmodsGUI/icon.png",
         "mods/configs/PYmods/PlayersPanelHP/PlayersPanelHP.json": "res/configs/PYmods/PlayersPanelHP/PlayersPanelHP.json",
         "mods/configs/PYmods/PlayersPanelHP/i18n/en.json": "res/configs/PYmods/PlayersPanelHP/i18n/en.json",
         "mods/configs/PYmods/PlayersPanelHP/i18n/ru.json": "res/configs/PYmods/PlayersPanelHP/i18n/ru.json",

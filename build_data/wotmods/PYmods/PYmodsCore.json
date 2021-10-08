@@ -30,7 +30,6 @@
         "res/scripts/client/PYmodsCore/utils/chat.pyc": "build/scripts/client/PYmodsCore/utils/chat.pyc",
         "res/scripts/client/PYmodsCore/utils/game.pyc": "build/scripts/client/PYmodsCore/utils/game.pyc",
         "res/scripts/client/PYmodsCore/utils/iter.pyc": "build/scripts/client/PYmodsCore/utils/iter.pyc",
-        "res/scripts/client/PYmodsCore/utils/monkeypatch.pyc": "build/scripts/client/PYmodsCore/utils/monkeypatch.pyc",
-        "res/scripts/client/PYmodsGUI.png": "res/res/scripts/client/PYmodsGUI.png"
+        "res/scripts/client/PYmodsCore/utils/monkeypatch.pyc": "build/scripts/client/PYmodsCore/utils/monkeypatch.pyc"
     }
 }

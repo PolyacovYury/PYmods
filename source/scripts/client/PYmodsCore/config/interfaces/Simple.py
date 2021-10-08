@@ -1,12 +1,12 @@
 import ResMgr
 import os
 import traceback
-from .Dummy import DummyConfigInterface, DummyConfBlockInterface, DummySettingContainer
+from .Dummy import DummyConfigInterface, DummyConfBlockInterface
 from ..json_reader import loadJson, loadJsonOrdered
 from ..template_builders import TemplateBuilder
 from ..utils import smart_update, processHotKeys
 
-__all__ = ['ConfigInterface', 'ConfBlockInterface', 'SettingContainer']
+__all__ = ['ConfigInterface', 'ConfBlockInterface']
 
 
 class ConfigBase(object):
@@ -36,10 +36,6 @@ class ConfigBase(object):
 
     def createTB(self):
         return TemplateBuilder(self.data, self.i18n)
-
-    @property
-    def containerClass(self):
-        return SettingContainer
 
     def readConfigDir(
             self, quiet, recursive=False, dir_name='configs', error_not_exist=True, make_dir=True, ordered=False,
@@ -189,9 +185,3 @@ class ConfBlockInterface(ConfigBase, DummyConfBlockInterface):
     def load(self):
         DummyConfBlockInterface.load(self)
         ConfigBase.load(self)
-
-
-class SettingContainer(DummySettingContainer):
-    def loadLang(self):
-        smart_update(self.i18n, loadJson(
-            self.ID, self.lang, self.i18n, 'mods/configs/%s/%s/i18n/' % (self.modsGroup, self.ID)))
