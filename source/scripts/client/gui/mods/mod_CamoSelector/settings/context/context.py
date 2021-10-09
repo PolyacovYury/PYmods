@@ -2,7 +2,7 @@ from collections import OrderedDict
 from contextlib import contextmanager
 
 import adisp
-from PYmodsCore import BigWorld_callback, overrideMethod
+from OpenModsCore import BigWorld_callback, overrideMethod
 from async import async, await, await_callback
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationModes, CustomizationTabs

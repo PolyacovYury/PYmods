@@ -2,7 +2,7 @@
 import nations
 import os
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import Analytics, PYmodsConfigInterface, loadJson, overrideMethod, refreshCurrentVehicle
+from OpenModsCore import Analytics, SimpleConfigInterface, loadJson, overrideMethod, refreshCurrentVehicle
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from items import _xml as ix, makeIntCompactDescrByID as makeCD, vehicles as iv
 from items.components import c11n_components as cc, c11n_constants as consts, shared_components as sc
@@ -11,7 +11,7 @@ from . import __date__, __modID__, migrator
 from .constants import CUSTOM_GROUP_NAME, SEASON_NAME_TO_TYPE, STARTER_ITEM_ID
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def __init__(self):
         self.disabledVehicles = []
         self.camoForSeason = {}
@@ -53,7 +53,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = __modID__
         self.version = '3.1.0 (%s)' % __date__
-        self.author += ' (thx to tratatank, Blither!)'
+        self.author = 'by Polyacov_Yury (thx to tratatank, Blither!)'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.data = {
             'enabled': True, 'doRandom': True, 'useBought': True, 'hangarCamoKind': 0, 'fullAlpha': False,
             'disableWithDefault': False, 'fillEmptySlots': True, 'uniformOutfit': False}

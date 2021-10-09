@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from PYmodsCore import BigWorld_callback
+from OpenModsCore import BigWorld_callback
 from frameworks.wulf import WindowLayer
 from gui import makeHtmlString
 from gui.Scaleform.daapi.view.lobby.customization.popovers import C11nPopoverItemData

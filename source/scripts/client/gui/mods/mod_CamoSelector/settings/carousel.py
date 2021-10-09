@@ -1,5 +1,5 @@
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import overrideMethod
+from OpenModsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import (
     CarouselCache as WGCache, CarouselData, CustomizationBookmarkVO, CustomizationCarouselDataProvider as WGCarouselDP,
     FilterTypes, ItemsData, _logger,

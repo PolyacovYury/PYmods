@@ -1,5 +1,5 @@
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import overrideMethod
+from OpenModsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization import shared as sh
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView as WGMainView, _logger
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, checkSlotsFilling

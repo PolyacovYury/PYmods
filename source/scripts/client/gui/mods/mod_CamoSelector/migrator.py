@@ -1,5 +1,5 @@
 import os
-from PYmodsCore import loadJson
+from OpenModsCore import loadJson
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from helpers import dependency

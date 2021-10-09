@@ -1,5 +1,5 @@
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import overrideMethod
+from OpenModsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_properties_sheet import (
     CustomizationCamoSwatchVO, CustomizationPropertiesSheet as WGPropertiesSheet,
 )

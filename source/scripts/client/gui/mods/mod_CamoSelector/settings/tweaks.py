@@ -1,4 +1,4 @@
-from PYmodsCore import BigWorld_callback, overrideMethod
+from OpenModsCore import BigWorld_callback, overrideMethod
 from account_helpers.AccountSettings import AccountSettings, CUSTOMIZATION_SECTION
 from gui.Scaleform.daapi.view.lobby.customization import (
     customization_inscription_controller as ic, customization_style_info as si,

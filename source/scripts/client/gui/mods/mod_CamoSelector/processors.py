@@ -4,7 +4,7 @@ from Account import Account
 from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from HeroTank import _HeroTankAppearance
-from PYmodsCore import loadJson, overrideMethod
+from OpenModsCore import loadJson, overrideMethod
 from PlatoonTank import _PlatoonTankAppearance
 from copy import deepcopy
 from gui import g_tankActiveCamouflage

@@ -1,5 +1,5 @@
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import BigWorld_callback, overrideMethod
+from OpenModsCore import BigWorld_callback, overrideMethod
 from frameworks.wulf import WindowLayer as WL
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import __getIcon as getIcon

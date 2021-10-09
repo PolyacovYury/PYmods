@@ -1,7 +1,7 @@
 from copy import deepcopy
 
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import BigWorld_callback, loadJson
+from OpenModsCore import BigWorld_callback, loadJson
 from adisp import async
 from constants import CLIENT_COMMAND_SOURCES
 from gui import SystemMessages

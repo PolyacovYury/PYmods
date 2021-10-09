@@ -1,4 +1,4 @@
-from PYmodsCore import overrideMethod
+from OpenModsCore import overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_cm_handlers import CustomizationItemCMHandler as WGCMHandler
 from gui.Scaleform.genConsts.SEASONS_CONSTANTS import SEASONS_CONSTANTS
 from gui.shared.gui_items import GUI_ITEM_TYPE

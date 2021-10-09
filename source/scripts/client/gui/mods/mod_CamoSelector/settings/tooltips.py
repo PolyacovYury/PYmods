@@ -1,5 +1,5 @@
 import copy
-from PYmodsCore import overrideMethod, remDups
+from OpenModsCore import overrideMethod, remDups
 from gui.Scaleform.daapi.view.lobby.customization.tooltips import ElementTooltip
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE

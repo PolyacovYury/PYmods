@@ -1,45 +1,48 @@
 # noinspection SpellCheckingInspection,PyArgumentEqualDefault
 def f():
-    iIii1iIiIi1I = dict(
-        [(iIii1iIiIi1I[0] ^ 174, ''.join(map(chr, [
-            int((bin(iIii1iIiIi1I)[2:].rjust(8, "0"))[::-1], 2) for iIii1iIiIi1I in iIii1iIiIi1I[1]])))
-         for iIii1iIiIi1I in __import__('marshal').loads(
-            'eNq9Vb9LW1EUznsprbU2VFreWFAwSEkzOGRyKiVIkQyuFXESUlCkhGyl0OFBiyA4BNHi0CFDhwyC+QMivCFD6JTN1cHBQeQND4f63cv9Dic8SSCY'
-            '5XDuved85/e5n+cymcyif0+qu+CmwRlyBNIGiUHyID2QDu8qIE0CbIObAZcDCSnSc3LVL+TkoUG8OqF+Zu+5p+D2QGrkCjzOULjnO7tlQhVJYsaR'
-            'aNfq9KVEqF/gXlGuQoCcdrxIx5uMIyEX8KHphC38BcIqMImhTnFXOWS5SMdhjK+DPKEHdcpJqBKleFrWyAZgZ2g9rFxeBTPoWpMi6wz1JbhZcB8I'
-            'eglypYMpUTchaMiHEh0P+dqnjU3/8W2cea4TpbShan6DbIW3IPyaKCIS6lwNH4PqPO/E09gFaK19zzproibIAQEiXfglaoS6tIa70S0l0+1N1NqC'
-            'P8lMvh939e3D3YGRbOjZ/wcRz60ve7fiubtb3h3i7nnKFi0q0NS1uYAaTemVETNoUcu5iKzaKretEbnWye5r4d/gnhEl1pxeKFZjjhG1CSppSqgm'
-            '+/Saune+sxbpqkoLvNV5XoO1F9SQzR/ozZ/XfVrRUaLSNpORroLxoKV/Nfk/juFuQJMdTsAByB+QryDvKNLlwyf2sxyTlLsu8W4cnjWOrbf4UCks'
-            'aegZPNVrPVAtb0ET7xFAvwH0DTMk6Rz4sQ3yRspfJn3QGbEtspM3+RHNsMxPqUWoGss48BUZlC29ZNrUyFM45NAJXsoI2QdZeGWSE75G42ajNtpw'
-            'jipnU/c367pO/uRIj58AJCP+zufcXD+Ggv4H5uPklw=='.decode('base64').decode('zlib'))])
-    i1III1Ii1IIi1 = __import__(iIii1iIiIi1I[109])
-    IIIiI1Ii11II = __import__(iIii1iIiIi1I[772])
-    Ii11IIii1I = getattr(__import__(iIii1iIiIi1I[746], globals(), locals(), [iIii1iIiIi1I[429]], -1), iIii1iIiIi1I[467])
-    iiIiIII11IIIi1 = getattr(__import__(iIii1iIiIi1I[222], globals(), locals(), [iIii1iIiIi1I[340]], -1), iIii1iIiIi1I[68])
+    i1i1II1iI1IIiI = dict(
+        [(i1i1II1iI1IIiI[0] ^ 33, ''.join(map(chr, [
+            int((bin(i1i1II1iI1IIiI)[2:].rjust(8, "0"))[::-1], 2) for i1i1II1iI1IIiI in i1i1II1iI1IIiI[1]])))
+         for i1i1II1iI1IIiI in __import__('marshal').loads(
+            'eNq9lrFrFFEQxnfPQ43RRVGuEcSkOIKGLSyOFFYiV1hcZWcQbIS7IgE5thEsAm5lo0VKEYuVNBYp7g+4YotTD2xiYZ9CSMAgK2zlzXvs7zGXp54Y'
+            'rvmYfffm++bNzJt3D5aCIFipTaD7c4IrZ8TaEsiBQuC9QCIQ47F5amJFYqV/9eiWAmOBBh4dgUygCelNIb0t1j4s2wJ9gREahqAFwWN0DekAjyab'
+            'DUSab4NPw3LIDy342sBrfs0JbcwBC3QN30MkY9YKUtLXuXJpMmFc43PGfTZ1H8KJdUWs4f/GN5xR8r5InhbrBeEaa5XP82z+LNYiJxrQFq4jEkrm'
+            'StupzmFZztGns+blgrTURarfwS3SGrFuhrGnbTPA0X8kBzE9lHGiPR39V4llAfHUI+6ph/V9KkKhWD9Y+xRUa33WrkuG6rAkitlu2ZIwpDLdI50I'
+            's3kX8SbHH+oLlkEVSlSXxLqDkLm637RHC77Sc4lb3DI3S/bQ2JmDxl1JyWXdUj3y0kA31915C48UcUaazW6Cm8vay6BSy/UkTHUr945fg+m7usxa'
+            'qifXPmrP5nq2XjjPs73j+s3wuryRRKzSzylzqOB1yXQOcj1ADem6wNQFy/WMjTzjta2Z6zxAf85BXec+9oTmirLu+lmsszr6gghcVJEeUGthNV4j'
+            'PSeL4+Faj6u1aqQNOLTLS/mbZ9b6HhBkrutW6BeMoli3R7VqfLXZHHteulKXIvFQPReqBpuH9P0rgbcCTwRusGXED/foYvdZetZG8B1VfFb8e1Cd'
+            'Y+o1GP/DJbFUX/gz5imUhW3dSLu6pRpq6FtSKcqJky7UTuztWZ7nP55fHXPpBA=='.decode('base64').decode('zlib'))])
+    iI11ii1II = __import__(i1i1II1iI1IIiI[726])
+    iI = __import__(i1i1II1iI1IIiI[846])
+    iI1IiI1IiIi1 = getattr(
+        __import__(i1i1II1iI1IIiI[778], globals(), locals(), [i1i1II1iI1IIiI[490]], -1), i1i1II1iI1IIiI[259])
+    IIiI1iII1i1I = getattr(
+        __import__(i1i1II1iI1IIiI[552], globals(), locals(), [i1i1II1iI1IIiI[231]], -1), i1i1II1iI1IIiI[1014])
     # # TODO: unpaid version should always execute, paid is under if
-    i11i1iIIIiIi1I = getattr(IIIiI1Ii11II, iIii1iIiIi1I[195])(getattr(i1III1Ii1IIi1, iIii1iIiIi1I[565])[1])[1:]
-    if True or (i11i1iIIIiIi1I[0] == iIii1iIiIi1I[807] and i11i1iIIIiIi1I[1] in (9, 10)):
-        for I1ii in (
-                iIii1iIiIi1I[608], iIii1iIiIi1I[108], iIii1iIiIi1I[508], iIii1iIiIi1I[594], iIii1iIiIi1I[399],
-                iIii1iIiIi1I[50], iIii1iIiIi1I[36], iIii1iIiIi1I[994], iIii1iIiIi1I[907]):
-            __import__(getattr(__name__, iIii1iIiIi1I[310])(iIii1iIiIi1I[486])[0] + iIii1iIiIi1I[638] + I1ii)
+    i1iiiiiI111iIII = getattr(iI, i1i1II1iI1IIiI[208])(getattr(iI11ii1II, i1i1II1iI1IIiI[676])[1])[1:]
+    if True or (i1iiiiiI111iIII[0] == i1i1II1iI1IIiI[373] and i1iiiiiI111iIII[1] in (9, 10)):
+        for iiiIIi111ii1iiI in (
+                i1i1II1iI1IIiI[576], i1i1II1iI1IIiI[204], i1i1II1iI1IIiI[240], i1i1II1iI1IIiI[555], i1i1II1iI1IIiI[570],
+                i1i1II1iI1IIiI[281], i1i1II1iI1IIiI[812], i1i1II1iI1IIiI[493], i1i1II1iI1IIiI[101]):
+            __import__(
+                getattr(__name__, i1i1II1iI1IIiI[1018])(i1i1II1iI1IIiI[346])[0] + i1i1II1iI1IIiI[236] + iiiIIi111ii1iiI)
     else:
-        print iIii1iIiIi1I[883], i11i1iIIIiIi1I
+        print i1i1II1iI1IIiI[897], i1iiiiiI111iIII
 
-        # noinspection PyArgumentEqualDefault
-        @iiIiIII11IIIi1(Ii11IIii1I, iIii1iIiIi1I[545])
-        def IiIIiIIIIii1II(base, I1i, *a, **k):
-            i11IiI1IIi = getattr(
-                __import__(iIii1iIiIi1I[131], globals(), locals(), [iIii1iIiIi1I[163]], -1), iIii1iIiIi1I[718])
-            (I1I, I1iIIi1II1II) = map(getattr, ([__import__(
-                iIii1iIiIi1I[283], globals(), locals(), [iIii1iIiIi1I[651], iIii1iIiIi1I[943]], 1)] * 2),
-                [iIii1iIiIi1I[456], iIii1iIiIi1I[977]])
-            I1iIIi1II1II(i11IiI1IIi, 0, I1I, i11i1iIIIiIi1I)
-            return base(I1i, *a, **k)
+        # noinspection SpellCheckingInspection,PyArgumentEqualDefault
+        @IIiI1iII1i1I(iI1IiI1IiIi1, i1i1II1iI1IIiI[513])
+        def Ii11iI11Iii1111(base, IiI1iIIi1II, *a, **k):
+            I11iiIIII1111I1 = getattr(
+                __import__(i1i1II1iI1IIiI[931], globals(), locals(), [i1i1II1iI1IIiI[288]], -1), i1i1II1iI1IIiI[392])
+            (I1iIiIiiiiiI, IIIi1II) = map(getattr, ([__import__(
+                i1i1II1iI1IIiI[390], globals(), locals(), [i1i1II1iI1IIiI[331], i1i1II1iI1IIiI[869]], 1)] * 2),
+                [i1i1II1iI1IIiI[176], i1i1II1iI1IIiI[863]])
+            IIIi1II(I11iiIIII1111I1, 0, I1iIiIiiiiiI, i1iiiiiI111iIII)
+            return base(IiI1iIIi1II, *a, **k)
     # import Account
     # import account_shared
     # from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
-    # from PYmodsCore import overrideMethod
+    # from OpenModsCore import overrideMethod
     # # # TODO: unpaid version should always execute, paid is under if
     # version = account_shared.parseVersion(Account._CLIENT_SERVER_VERSION[1])[1:]
     # if True or (version[0] == '1.14.0' and version[1] in (9, 10)):
@@ -52,7 +55,7 @@ def f():
     #
     #     @overrideMethod(CustomizationContext, 'init')
     #     def new_init(base, self, *a, **k):
-    #         from PYmodsCore import BigWorld_callback
+    #         from OpenModsCore import BigWorld_callback
     #         from .shared import createVersionDialog, onVehicleLoadedOnce
     #         onVehicleLoadedOnce(BigWorld_callback, 0, createVersionDialog, version)
     #         return base(self, *a, **k)
