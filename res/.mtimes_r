@@ -350,6 +350,7 @@
 1498837233|configs/PYmods/LampLights/models/SpotSphere/sphere.visual
 1556331126|configs/PYmods/PYmodsGUI/i18n/en.json
 1556331176|configs/PYmods/PYmodsGUI/i18n/ru.json
+1633718978|configs/PYmods/PYmodsGUI/icon.png
 1582966840|configs/PYmods/PlayerHPAnnouncer/PlayerHPAnnouncer.json
 1570568434|configs/PYmods/PlayersPanelHP/PlayersPanelHP.json
 1549800862|configs/PYmods/PlayersPanelHP/i18n/en.json
@@ -541,7 +542,6 @@
 1504959762|meta/GO_tracer.xml
 1504959762|meta/GO_voice.xml
 1504959762|meta/GO_voice_18+.xml
-1500578886|meta/PYmodsCore.xml
 1460012256|res/Axes/Axes.model
 1460012256|res/Axes/Axes.primitives
 1472916630|res/Axes/Axes.visual
@@ -561,7 +561,6 @@
 1484430188|res/gui/flash/RemodEnabler.png
 1484430188|res/gui/flash/Skinner.png
 1545255824|res/res.md
-1465562036|res/scripts/client/PYmodsGUI.png
 1479780730|res/scripts/client/gui/mods/mod_UT_announcer.png
 1632149996|wotmods/gambiter.guiflash_0.3.9.wotmod
 1603192366|wotmods/izeberg.modsettingsapi_1.3.1.wotmod

@@ -3,7 +3,7 @@ import Event
 import Math
 import math_utils
 from HangarVehicle import HangarVehicle
-from PYmodsCore import overrideMethod, refreshCurrentVehicle
+from OpenModsCore import overrideMethod, refreshCurrentVehicle
 from VehicleGunRotator import MatrixAnimator
 from common_tank_appearance import CommonTankAppearance
 from gui import SystemMessages

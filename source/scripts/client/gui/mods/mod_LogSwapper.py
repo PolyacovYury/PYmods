@@ -1,4 +1,4 @@
-from PYmodsCore import Analytics
+from OpenModsCore import Analytics
 from gui.Scaleform.daapi.view.battle.shared.damage_log_panel import DamageLogPanel
 
 DamageLogPanel._updateTopLog, DamageLogPanel._updateBottomLog = DamageLogPanel._updateBottomLog, DamageLogPanel._updateTopLog

@@ -1,4 +1,4 @@
-from PYmodsCore import loadJson, remDups
+from OpenModsCore import loadJson, remDups
 
 
 def migrateSettings(g_config, old_data, new_data):

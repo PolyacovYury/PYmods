@@ -10,12 +10,13 @@
         "mods/configs/PYmods/Horns/i18n/ru.json": "res/configs/PYmods/Horns/i18n/ru.json",
         "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",
         "mods/configs/PYmods/PYmodsGUI/i18n/ru.json": "res/configs/PYmods/PYmodsGUI/i18n/ru.json",
+        "mods/configs/PYmods/PYmodsGUI/icon.png": "res/configs/PYmods/PYmodsGUI/icon.png",
         "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
         "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/BanksLoader.wotmod": "build/wotmods/PYmods/BanksLoader.wotmod",
         "mods/{GAME_VERSION}/PYmods/Horns.wotmod": "build/wotmods/PYmods/Horns.wotmod",
-        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
         "mods/{GAME_VERSION}/_aaa_BanksLoader_audioMods.wotmod": "build/wotmods/_aaa_BanksLoader_audioMods.wotmod"
     }
 }

@@ -4,18 +4,23 @@ import Keys
 import Math
 import material_kinds
 import math_utils
-from PYmodsCore import PYmodsConfigInterface, checkKeys, overrideMethod
+from OpenModsCore import SimpleConfigInterface, checkKeys, overrideMethod
 from gui import SystemMessages as SM
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems.tankStructure import TankPartNames
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def __init__(self):
         self.collisionMode = 0
         super(ConfigInterface, self).__init__()
 
     def init(self):
+        self.ID = '%(mod_ID)s'
+        self.version = '1.0.0 (%(file_compile_date)s)'
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.defaultKeys = {
             'CollisionHotkey': [Keys.KEY_F4, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]
         }

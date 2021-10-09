@@ -1,7 +1,7 @@
 # coding=utf-8
 import BigWorld
-from . import api
-from ..config.interfaces import DummyConfigInterface, PYmodsSettingContainer
+from OpenModsCore.delayed import api
+from OpenModsCore.config.interfaces import DummyConfigInterface
 
 
 class ConfigInterface(DummyConfigInterface):
@@ -23,10 +23,6 @@ class ConfigInterface(DummyConfigInterface):
         self.modSettingsID = 'PYmodsGUI'
         self.i18n = {}
         super(ConfigInterface, self).init()
-
-    @property
-    def containerClass(self):
-        return PYmodsSettingContainer
 
     def loadLang(self):
         # noinspection SpellCheckingInspection
@@ -93,6 +89,11 @@ class ConfigInterface(DummyConfigInterface):
             BigWorld.wg_openWebBrowser(link)
 
 
+def delayed():
+    global g_config
+    if api.MSA_Orig is not None and 'PYmodsGUI' in ConfigInterface.modSettingsContainers:
+        g_config = ConfigInterface()
+
+
 g_config = None
-if api.MSA_Orig is not None and 'PYmodsGUI' in ConfigInterface.modSettingsContainers:
-    g_config = ConfigInterface()
+BigWorld.callback(0, delayed)

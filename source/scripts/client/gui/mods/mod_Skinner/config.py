@@ -2,8 +2,8 @@
 import BigWorld
 import Keys
 import ResMgr
-from PYmodsCore import PYmodsConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, objToDict
-from PYmodsCore.delayed import showI18nDialog, g_modsListApi
+from OpenModsCore import SimpleConfigInterface, refreshCurrentVehicle, checkKeys, loadJson, remDups, objToDict
+from OpenModsCore.delayed import showI18nDialog, g_modsListApi
 from gui import SystemMessages
 from gui.Scaleform.framework import ScopeTemplates, ViewSettings, WindowLayer, g_entitiesFactories
 from gui.Scaleform.framework.entities.abstract.AbstractWindowView import AbstractWindowView
@@ -14,7 +14,7 @@ from skeletons.gui.shared.utils import IHangarSpace
 from . import __date__, __modID__
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     hangarSpace = dependency.descriptor(IHangarSpace)
     # noinspection PyUnusedLocal
     defaultSkinConfig = property(lambda self: {
@@ -38,12 +38,19 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = __modID__
         self.version = '1.2.1 (%s)' % __date__
-        self.defaultKeys = {'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
-                            'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]}
-        self.data = {'enabled': True,
-                     'isDebug': True,
-                     'DynamicSkinHotkey': self.defaultKeys['DynamicSkinHotkey'],
-                     'ChangeViewHotkey': self.defaultKeys['ChangeViewHotkey']}
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
+        self.defaultKeys = {
+            'DynamicSkinHotkey': [Keys.KEY_F1, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]],
+            'ChangeViewHotkey': [Keys.KEY_F2, [Keys.KEY_LCONTROL, Keys.KEY_RCONTROL]]
+        }
+        self.data = {
+            'enabled': True,
+            'isDebug': True,
+            'DynamicSkinHotkey': self.defaultKeys['DynamicSkinHotkey'],
+            'ChangeViewHotkey': self.defaultKeys['ChangeViewHotkey']
+        }
         self.i18n = {
             'UI_description': 'Skinner',
             'UI_flash_header': 'Skins setup',
@@ -102,7 +109,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_mode': '<b>Skinner:</b>\nCurrent display mode: ',
             'UI_mode_player': 'player tank preview',
             'UI_mode_ally': 'ally tank preview',
-            'UI_mode_enemy': 'enemy tank preview'}
+            'UI_mode_enemy': 'enemy tank preview',
+        }
         super(ConfigInterface, self).init()
 
     def createTemplate(self):

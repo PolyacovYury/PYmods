@@ -1,0 +1,6 @@
+[submodule "build_tools"]
+	path = build_tools
+	url = https://github.com/OpenMods-WoT/build_tools
+[submodule "core"]
+	path = core
+	url = https://github.com/OpenMods-WoT/core/

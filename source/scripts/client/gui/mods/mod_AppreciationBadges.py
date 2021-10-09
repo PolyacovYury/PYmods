@@ -1,7 +1,7 @@
 import ResMgr
 import os
 import traceback
-from PYmodsCore import overrideMethod, remDups, Analytics
+from OpenModsCore import overrideMethod, remDups, Analytics
 from gui.Scaleform.locale.RES_ICONS import RES_ICONS
 from gui.battle_control.arena_info.arena_vos import VehicleArenaInfoVO
 from gui.battle_results.reusable.avatars import AvatarsInfo

@@ -8,7 +8,7 @@
         "mods/configs/PYmods/SoundEventInjector/configs/": "",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/BanksLoader.wotmod": "build/wotmods/PYmods/BanksLoader.wotmod",
-        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
         "mods/{GAME_VERSION}/PYmods/SoundEventInjector.wotmod": "build/wotmods/PYmods/SoundEventInjector.wotmod",
         "mods/{GAME_VERSION}/_aaa_BanksLoader_audioMods.wotmod": "build/wotmods/_aaa_BanksLoader_audioMods.wotmod"
     }

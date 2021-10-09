@@ -1,6 +1,6 @@
 import copy
 
-from PYmodsCore import overrideMethod
+from OpenModsCore import overrideMethod
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.components import shared_components
 from vehicle_systems import camouflages

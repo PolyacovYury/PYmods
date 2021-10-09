@@ -1,6 +1,6 @@
 ﻿import Event
 import copy
-from PYmodsCore.config import smart_update
+from OpenModsCore.config import smart_update
 from gui.Scaleform.framework import g_entitiesFactories, ViewSettings, WindowLayer, ScopeTemplates
 from gui.Scaleform.framework.entities.View import View
 from gui.Scaleform.framework.managers.loaders import SFViewLoadParams

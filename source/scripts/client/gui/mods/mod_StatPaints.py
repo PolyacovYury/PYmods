@@ -7,7 +7,7 @@ import threading
 import traceback
 import urllib2
 from ClientArena import ClientArena
-from PYmodsCore import Analytics, BigWorld_callback, PYmodsConfigInterface, overrideMethod
+from OpenModsCore import Analytics, BigWorld_callback, SimpleConfigInterface, overrideMethod
 from gui.Scaleform.battle_entry import BattleEntry
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.components.c11n_components import PaintItem
@@ -27,7 +27,7 @@ class CustomPaint(PaintItem):
         self.metallic = metallic
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def __init__(self):
         self.paintItems = {}
         self.dossier = {}
@@ -39,27 +39,32 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.2.1 (%(file_compile_date)s)'
-        self.data = {'enabled': True,
-                     'ignorePresentPaints': True,
-                     'removeCamouflages': True,
-                     'paint_player_chassis': False,
-                     'paint_player_hull': False,
-                     'paint_player_turret': True,
-                     'paint_player_gun': True,
-                     'paint_ally_chassis': False,
-                     'paint_ally_hull': False,
-                     'paint_ally_turret': True,
-                     'paint_ally_gun': True,
-                     'paint_enemy_chassis': False,
-                     'paint_enemy_hull': False,
-                     'paint_enemy_turret': True,
-                     'paint_enemy_gun': True,
-                     'scale': {'2020': {'color': [133, 30, 27, 255], 'gloss': 0.509, 'metallic': 0.203},
-                               '4185': {'color': [119, 84, 19, 255], 'gloss': 0.509, 'metallic': 0.23},
-                               '6340': {'color': [118, 106, 20, 255], 'gloss': 0.509, 'metallic': 0.23},
-                               '8525': {'color': [51, 111, 51, 255], 'gloss': 0.509, 'metallic': 0.23},
-                               '9930': {'color': [51, 94, 94, 255], 'gloss': 0.509, 'metallic': 0.23},
-                               '99999': {'color': [75, 47, 79, 255], 'gloss': 0.509, 'metallic': 0.23}}}
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
+        self.data = {
+            'enabled': True,
+            'ignorePresentPaints': True,
+            'removeCamouflages': True,
+            'paint_player_chassis': False,
+            'paint_player_hull': False,
+            'paint_player_turret': True,
+            'paint_player_gun': True,
+            'paint_ally_chassis': False,
+            'paint_ally_hull': False,
+            'paint_ally_turret': True,
+            'paint_ally_gun': True,
+            'paint_enemy_chassis': False,
+            'paint_enemy_hull': False,
+            'paint_enemy_turret': True,
+            'paint_enemy_gun': True,
+            'scale': {
+                '2020': {'color': [133, 30, 27, 255], 'gloss': 0.509, 'metallic': 0.203},
+                '4185': {'color': [119, 84, 19, 255], 'gloss': 0.509, 'metallic': 0.23},
+                '6340': {'color': [118, 106, 20, 255], 'gloss': 0.509, 'metallic': 0.23},
+                '8525': {'color': [51, 111, 51, 255], 'gloss': 0.509, 'metallic': 0.23},
+                '9930': {'color': [51, 94, 94, 255], 'gloss': 0.509, 'metallic': 0.23},
+                '99999': {'color': [75, 47, 79, 255], 'gloss': 0.509, 'metallic': 0.23}}}
         self.i18n = {
             'UI_description': 'Statistics vehicle painter',
             'UI_setting_empty_text': '',

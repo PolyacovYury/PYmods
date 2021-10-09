@@ -2,7 +2,7 @@ import BigWorld
 import Math
 import math_utils
 import traceback
-from PYmodsCore import events, overrideMethod
+from OpenModsCore import events, overrideMethod
 from Vehicle import Vehicle
 from adisp import async, process
 from functools import partial

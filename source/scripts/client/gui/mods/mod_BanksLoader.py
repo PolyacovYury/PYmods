@@ -5,8 +5,7 @@ import glob
 import os
 import traceback
 import zipfile
-from PYmodsCore import PYmodsConfigInterface, remDups, Analytics, events, curCV
-from PYmodsCore.config.interfaces.Simple import ConfigNoInterface
+from OpenModsCore import ConfigNoInterface, SimpleConfigInterface, remDups, Analytics, events, curCV
 from async import await, async
 from frameworks.wulf import WindowLayer
 from gui.impl.dialogs import dialogs
@@ -16,7 +15,7 @@ from gui.shared.personality import ServicesLocator as SL
 from helpers import getClientVersion
 
 
-class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
+class ConfigInterface(ConfigNoInterface, SimpleConfigInterface):
     def __init__(self):
         self.editedBanks = {'create': [], 'delete': [], 'memory': [], 'move': [], 'remap': set(), 'wotmod': [], 'section': []}
         self.version_changed = False
@@ -27,7 +26,8 @@ class ConfigInterface(ConfigNoInterface, PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.5.1 (%(file_compile_date)s)'
-        self.author += ' and Ekspoint'
+        self.author = 'by Polyacov_Yury and Ekspoint'
+        self.modsGroup = 'PYmods'
         self.data = {
             'defaultPool': 36, 'lowEnginePool': 10, 'memoryLimit': 250, 'streamingPool': 8, 'IOPoolSize': 8,
             'max_voices': 110, 'debug': False}

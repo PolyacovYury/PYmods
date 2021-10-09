@@ -1,5 +1,5 @@
 import os
-from PYmodsCore import curCV
+from OpenModsCore import curCV
 from items.components.shared_components import ModelStatesPaths
 from vehicle_systems.tankStructure import TankPartNames
 from .. import g_config

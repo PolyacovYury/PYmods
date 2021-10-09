@@ -21,6 +21,7 @@ def readCamouflage(xmlCtx, section, item):
         item.camouflage = shared_readers.readCamouflage(xmlCtx, section, 'camouflage', default=sc.DEFAULT_CAMOUFLAGE)
 
 
+# noinspection PyUnusedLocal
 def getOrigItem(xmlCtx, section, itemTypeName):
     soundID = section.readString('soundID', '')
     if ':' not in soundID:
