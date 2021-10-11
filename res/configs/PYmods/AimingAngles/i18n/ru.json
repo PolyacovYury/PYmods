@@ -1,0 +1,21 @@
+﻿{
+    "UI_setting_horizontal_0": "Выключен",
+    "UI_setting_horizontal_1": "Уголок",
+    "UI_setting_horizontal_2": "Квадратная скобка",
+    "UI_setting_horizontal_3": "Большой полукруг",
+    "UI_setting_horizontal_4": "Полукруг",
+    "UI_setting_horizontal_5": "\"Octagon\"",
+    "UI_setting_horizontal_6": "ktulho",
+    "UI_setting_horizontal_text": "Вид горизонтальных маркеров",
+    "UI_setting_horizontal_tooltip": "Вид маркеров слева и справа от прицела, показывающих крайние положения углов горизонтального наведения.\n\n<img src='img://gui/AimingAngles/1/Left.png'> <img src='img://gui/AimingAngles/1/Right.png'>\t<img src='img://gui/AimingAngles/2/Left.png'> <img src='img://gui/AimingAngles/2/Right.png'>\t<img src='img://gui/AimingAngles/3/Left.png'> <img src='img://gui/AimingAngles/3/Right.png'>\t<img src='img://gui/AimingAngles/4/Left.png'> <img src='img://gui/AimingAngles/4/Right.png'>\t<img src='img://gui/AimingAngles/5/Left.png'> <img src='img://gui/AimingAngles/5/Right.png'>\t<img src='img://gui/AimingAngles/6/Left.png'> <img src='img://gui/AimingAngles/6/Right.png'>",
+    "UI_setting_vertical_0": "Выключен",
+    "UI_setting_vertical_1": "Вертикальная черта",
+    "UI_setting_vertical_2": "Точка",
+    "UI_setting_vertical_3": "Треугольник",
+    "UI_setting_vertical_4": "Диод",
+    "UI_setting_vertical_5": "\"Octagon\"",
+    "UI_setting_vertical_6": "ktulho",
+    "UI_setting_vertical_text": "Вид вертикальных маркеров",
+    "UI_setting_vertical_tooltip": "Вид маркеров сверху и снизу от прицела, показывающих крайние положения углов вертикального наведения.\n\n<img src='img://gui/AimingAngles/1/Bottom.png'>\t<img src='img://gui/AimingAngles/2/Bottom.png'>\t<img src='img://gui/AimingAngles/3/Bottom.png'>\t<img src='img://gui/AimingAngles/4/Bottom.png'>\t<img src='img://gui/AimingAngles/5/Bottom.png'>\t<img src='img://gui/AimingAngles/6/Bottom.png'>",
+    "name": "УГН и УВН"
+}
