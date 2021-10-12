@@ -1,0 +1,21 @@
+﻿{
+    "UI_setting_horizontal_0": "Disabled",
+    "UI_setting_horizontal_1": "Corners",
+    "UI_setting_horizontal_2": "Square brackets",
+    "UI_setting_horizontal_3": "Large semicircle",
+    "UI_setting_horizontal_4": "Semicircle",
+    "UI_setting_horizontal_5": "\"Octagon\"",
+    "UI_setting_horizontal_6": "ktulho",
+    "UI_setting_horizontal_text": "Horizontal marker type",
+    "UI_setting_horizontal_tooltip": "Type of markers to the left and right of the crosshair showing horizontal edge positions of your gun.\n\n<img src='img://gui/AimingAngles/1/Left.png'> <img src='img://gui/AimingAngles/1/Right.png'>\t<img src='img://gui/AimingAngles/2/Left.png'> <img src='img://gui/AimingAngles/2/Right.png'>\t<img src='img://gui/AimingAngles/3/Left.png'> <img src='img://gui/AimingAngles/3/Right.png'>\t<img src='img://gui/AimingAngles/4/Left.png'> <img src='img://gui/AimingAngles/4/Right.png'>\t<img src='img://gui/AimingAngles/5/Left.png'> <img src='img://gui/AimingAngles/5/Right.png'>\t<img src='img://gui/AimingAngles/6/Left.png'> <img src='img://gui/AimingAngles/6/Right.png'>",
+    "UI_setting_vertical_0": "Disabled",
+    "UI_setting_vertical_1": "Vertical dash",
+    "UI_setting_vertical_2": "Dot",
+    "UI_setting_vertical_3": "Triangle",
+    "UI_setting_vertical_4": "Diode",
+    "UI_setting_vertical_5": "\"Octagon\"",
+    "UI_setting_vertical_6": "ktulho",
+    "UI_setting_vertical_text": "Vertical marker type",
+    "UI_setting_vertical_tooltip": "Type of markers above and below the crosshair showing vertical edge positions of your gun.\n\n<img src='img://gui/AimingAngles/1/Bottom.png'>\t<img src='img://gui/AimingAngles/2/Bottom.png'>\t<img src='img://gui/AimingAngles/3/Bottom.png'>\t<img src='img://gui/AimingAngles/4/Bottom.png'>\t<img src='img://gui/AimingAngles/5/Bottom.png'>\t<img src='img://gui/AimingAngles/6/Bottom.png'>",
+    "name": "Aiming Angles"
+}

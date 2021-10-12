@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/gui/AimingAngles/**": "res/res/gui/AimingAngles/**",
+        "res/scripts/client/gui/mods/mod_AimingAngles.pyc": "build/scripts/client/gui/mods/mod_AimingAngles.pyc"
+    }
+}

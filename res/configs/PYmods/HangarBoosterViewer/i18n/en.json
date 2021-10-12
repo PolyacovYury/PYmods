@@ -1,0 +1,5 @@
+﻿{
+    "UI_setting_hideAvailableBooster_text": "Hide available booster icon and quantity",
+    "UI_setting_hideAvailableBooster_tooltip": "Hides default plus icon and \"99+\" of available boosters.",
+    "name": "Hangar Booster Viewer"
+}
