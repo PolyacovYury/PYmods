@@ -1,8 +1,0 @@
-﻿{
-    "Dare_rising": {
-        "ally": true,
-        "enemy": true,
-        "random_mode": 1,
-        "season": ["winter", "summer", "desert"]
-    }
-}
