@@ -4,7 +4,6 @@
 	import flash.text.TextField;
 	import net.wg.data.constants.generated.LAYER_NAMES;
 	import net.wg.gui.battle.random.views.BattlePage;
-	import net.wg.gui.battle.views.BaseBattlePage;
 	import net.wg.gui.components.containers.MainViewContainer;
 	import net.wg.infrastructure.base.AbstractView;
 	import net.wg.infrastructure.managers.impl.ContainerManagerBase;
@@ -19,7 +18,7 @@
 		public var py_log:Function;
 		public var py_update:Function;
 		
-		private var viewPage:BaseBattlePage;
+		private var viewPage:BattlePage;
 		
 		private var configs:Object = {};
 		private var textFields:Object = {};
@@ -39,7 +38,7 @@
 				parent.removeChild(this);
 				var viewContainer:MainViewContainer = (App.containerMgr as ContainerManagerBase).getContainer(LAYER_NAMES.LAYER_ORDER.indexOf(LAYER_NAMES.VIEWS)) as MainViewContainer;
 				viewContainer.setFocusedView(viewContainer.getTopmostView());
-				viewPage = viewContainer.getChildByName(NAME_MAIN) as BaseBattlePage;
+				viewPage = viewContainer.getChildByName(NAME_MAIN) as BattlePage;
 			}
 			catch (error:Error)
 			{
@@ -110,7 +109,7 @@
 			var config:Object = null;
 			var shadow:Object = null;
 			
-			var playersPanel:* = (viewPage as BattlePage).playersPanel;
+			var playersPanel:* = viewPage.playersPanel;
 			
 			playersPanelHolder = playersPanel.listLeft.getHolderByVehicleID(data['vehicleID']);
 			if(!playersPanelHolder)

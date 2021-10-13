@@ -3,11 +3,11 @@ import Keys
 import bisect
 from AvatarInputHandler.DynamicCameras.SniperCamera import SniperCamera
 from AvatarInputHandler.control_modes import SniperControlMode
-from PYmodsCore import PYmodsConfigInterface, overrideMethod, Analytics, checkKeys
+from OpenModsCore import Analytics, SimpleConfigInterface, overrideMethod, checkKeys
 from vehicle_systems.tankStructure import TankPartNames
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def __init__(self):
         self.vehicleVisible = True
         super(ConfigInterface, self).__init__()
@@ -15,7 +15,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.1.0 (%(file_compile_date)s)'
-        self.author += ' (formerly by l3VGV, supported by KL1SK)'
+        self.author = 'by Polyacov_Yury (formerly by l3VGV, supported by KL1SK)'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.defaultKeys = {'hotkey': [Keys.KEY_F11]}
         self.data = {
             'enabled': True, 'enableBeforeBattle': True, 'hideTurret': False, 'changeZoom': True, 'zoomValue': 0.8,

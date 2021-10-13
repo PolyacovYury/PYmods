@@ -1,5 +1,5 @@
 from CurrentVehicle import g_currentVehicle
-from PYmodsCore import PYmodsConfigInterface, overrideMethod
+from OpenModsCore import SimpleConfigInterface, overrideMethod
 from adisp import process
 from debug_utils import LOG_ERROR
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE
@@ -28,10 +28,13 @@ credits_tiers = (50, 25)
 decal_order = ('battles', 'frags', 'BonusBattles', 'marksOfMastery', 'mainGun', 'BrothersInArms',)
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.0.0 (%(file_compile_date)s)'
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.data = {
             'enabled': True, 'showCompatibles': True,
             'removeFromOther_devices': True, 'removeFromOther_customization': True,
@@ -208,8 +211,8 @@ def item_tier(item):
 def new_sort(base, self, a, b, *_a, **k):
     if not (g_config.data['enabled'] and g_config.data['sort_personalReserves']):
         return base(self, a, b, *_a, **k)
-    return int(a.count <= 1) or cmp(item_tier(a), item_tier(b)) or cmp(BOOSTERS_ORDERS[a.boosterType], BOOSTERS_ORDERS[b.boosterType]) or cmp(
-        b.effectTime, a.effectTime)
+    return int(a.count <= 1) or cmp(item_tier(a), item_tier(b)) or cmp(
+        BOOSTERS_ORDERS[a.boosterType], BOOSTERS_ORDERS[b.boosterType]) or cmp(b.effectTime, a.effectTime)
 
 
 @overrideMethod(ProgressiveItemsView, '_getPossibleItemsForVehicle')

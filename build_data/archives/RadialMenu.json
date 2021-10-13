@@ -4,6 +4,7 @@
     "files": {
         "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",
         "mods/configs/PYmods/PYmodsGUI/i18n/ru.json": "res/configs/PYmods/PYmodsGUI/i18n/ru.json",
+        "mods/configs/PYmods/PYmodsGUI/icon.png": "res/configs/PYmods/PYmodsGUI/icon.png",
         "mods/configs/PYmods/RadialMenu/RadialMenu.json": "res/configs/PYmods/RadialMenu/RadialMenu.json",
         "mods/configs/PYmods/RadialMenu/i18n/en.json": "res/configs/PYmods/RadialMenu/i18n/en.json",
         "mods/configs/PYmods/RadialMenu/i18n/ru.json": "res/configs/PYmods/RadialMenu/i18n/ru.json",
@@ -31,7 +32,7 @@
         "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
         "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
-        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
         "mods/{GAME_VERSION}/PYmods/RadialMenu.wotmod": "build/wotmods/PYmods/RadialMenu.wotmod"
     }
 }

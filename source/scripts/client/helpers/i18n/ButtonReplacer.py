@@ -2,14 +2,14 @@
 import BigWorld
 import re
 import traceback
-from PYmodsCore import PYmodsConfigInterface, remDups, pickRandomPart, Analytics, overrideMethod
-from PYmodsCore.config import smart_update
+from OpenModsCore import SimpleConfigInterface, remDups, pickRandomPart, Analytics, overrideMethod
+from OpenModsCore.config import smart_update
 from PlayerEvents import g_playerEvents
 from debug_utils import LOG_ERROR, LOG_WARNING
 from frameworks.wulf.resource_manager import ResourceManager
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def __init__(self):
         self.textCache = {}
         self.textId = {}
@@ -20,6 +20,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '2.3.0 (%(file_compile_date)s)'
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.data = {'enabled': True, 'updateAfterBattle': True}
         self.i18n = {
             'UI_description': 'Button Replacer',

@@ -3,11 +3,13 @@ import BigWorld
 import Keys
 import Vehicle
 import traceback
-from PYmodsCore import BigWorld_callback, Sound, PYmodsConfigInterface, pickRandomPart, sendChatMessage, checkKeys, Analytics
+from OpenModsCore import (
+    Analytics, BigWorld_callback, SimpleConfigInterface, Sound, checkKeys, pickRandomPart, sendChatMessage,
+)
 from gui.battle_control import avatar_getter
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def __init__(self):
         self.lastRandID = {'ally': -1, 'enemy': -1, 'default': -1}
         self.hornSoundEvent = None
@@ -17,6 +19,9 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '2.4.1 (%(file_compile_date)s)'
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.defaultKeys = {'hotkey': [Keys.KEY_G]}
         self.data = {'enabled': True,
                      'event': 4,

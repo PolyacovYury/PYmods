@@ -1,9 +1,0 @@
-<settings>
-    <paint>
-        <userString>Rotbraun RAL 8012</userString>
-        <texture>	gui/maps/vehicles/repaints/czech_color_05.png	</texture>
-        <color>	80 35 9 255	</color>
-        <gloss>	0.5	</gloss>
-        <metallic>	0.13	</metallic>
-    </paint>
-</settings>

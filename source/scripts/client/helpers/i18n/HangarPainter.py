@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import BigWorld
-import json
 import re
 import traceback
 import urllib2
-from PYmodsCore import PYmodsConfigInterface, loadJson, config, Analytics, overrideMethod
+from OpenModsCore import Analytics, SimpleConfigInterface, config, loadJson, overrideMethod
 from debug_utils import LOG_ERROR
 
 
-class ConfigInterface(PYmodsConfigInterface):
+class ConfigInterface(SimpleConfigInterface):
     def __init__(self):
         self.backupData = {}
         self.blacklists = {}
@@ -17,12 +16,17 @@ class ConfigInterface(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.2.0.2 (%(file_compile_date)s)'
-        self.data = {'enabled': True,
-                     'debug': True,
-                     'debugColour': True,
-                     'debugBegin': 0,
-                     'crewColour': True,
-                     'colour': '66CC00'}
+        self.author = 'by Polyacov_Yury'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
+        self.data = {
+            'enabled': True,
+            'debug': True,
+            'debugColour': True,
+            'debugBegin': 0,
+            'crewColour': True,
+            'colour': '66CC00',
+        }
         self.i18n = {
             'UI_description': 'Hangar Painter',
             'UI_setting_colourCheck_text': 'Hangar texts colour:',
@@ -40,7 +44,8 @@ class ConfigInterface(PYmodsConfigInterface):
             'UI_restart_reason_modDisabled': 'mod was disabled',
             'UI_restart_reason_modEnabled': 'mod was enabled',
             'UI_restart_restart': 'Restart',
-            'UI_restart_shutdown': 'Shutdown'}
+            'UI_restart_shutdown': 'Shutdown',
+        }
         super(ConfigInterface, self).init()
 
     def createTemplate(self):
@@ -83,7 +88,7 @@ class ConfigInterface(PYmodsConfigInterface):
         if toggled:
             reasons.append(self.i18n['UI_restart_reason_mod' + ('Enabled' if self.data['enabled'] else 'Disabled')])
         dialogText = self.i18n['UI_restart_text'].format(reason='; '.join(reasons))
-        from PYmodsCore.delayed import showConfirmDialog
+        from OpenModsCore.delayed import showConfirmDialog
         showConfirmDialog(self.i18n['UI_restart_header'], dialogText,
                           [self.i18n['UI_restart_%s' % act] for act in ('restart', 'shutdown')], self.onRestartConfirmed)
 

@@ -7,6 +7,7 @@
         "mods/configs/PYmods/BanksLoader/i18n/ru.json": "res/configs/PYmods/BanksLoader/i18n/ru.json",
         "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",
         "mods/configs/PYmods/PYmodsGUI/i18n/ru.json": "res/configs/PYmods/PYmodsGUI/i18n/ru.json",
+        "mods/configs/PYmods/PYmodsGUI/icon.png": "res/configs/PYmods/PYmodsGUI/icon.png",
         "mods/configs/PYmods/UT_announcer/UT_announcer.json": "res/configs/PYmods/UT_announcer/UT_announcer.json",
         "mods/configs/PYmods/UT_announcer/i18n/en.json": "res/configs/PYmods/UT_announcer/i18n/en.json",
         "mods/configs/PYmods/UT_announcer/i18n/ru.json": "res/configs/PYmods/UT_announcer/i18n/ru.json",
@@ -15,7 +16,7 @@
         "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/BanksLoader.wotmod": "build/wotmods/PYmods/BanksLoader.wotmod",
-        "mods/{GAME_VERSION}/PYmods/PYmodsCore.wotmod": "build/wotmods/PYmods/PYmodsCore.wotmod",
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
         "mods/{GAME_VERSION}/PYmods/UT_announcer.wotmod": "build/wotmods/PYmods/UT_announcer.wotmod",
         "mods/{GAME_VERSION}/PYmods/UT_announcer_bank_Andre_V.wotmod": "build/wotmods/PYmods/UT_announcer_bank_Andre_V.wotmod",
         "mods/{GAME_VERSION}/_aaa_BanksLoader_audioMods.wotmod": "build/wotmods/_aaa_BanksLoader_audioMods.wotmod"

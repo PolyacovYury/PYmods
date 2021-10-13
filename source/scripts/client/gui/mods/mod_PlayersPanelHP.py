@@ -4,7 +4,7 @@ import Keys
 import math
 import traceback
 from Avatar import PlayerAvatar
-from PYmodsCore import PYmodsConfigInterface, Analytics, overrideMethod, checkKeys
+from OpenModsCore import Analytics, SimpleConfigInterface, overrideMethod, checkKeys
 from Vehicle import Vehicle
 from constants import ARENA_GUI_TYPE
 from gui.Scaleform.daapi.view.battle.shared.minimap.plugins import ArenaVehiclesPlugin
@@ -13,7 +13,7 @@ from helpers import dependency
 from skeletons.gui.battle_session import IBattleSessionProvider
 
 
-class PlayersPanelController(PYmodsConfigInterface):
+class PlayersPanelController(SimpleConfigInterface):
     vCache = property(lambda self: self.__vCache)
 
     sessionProvider = dependency.descriptor(IBattleSessionProvider)
@@ -27,7 +27,9 @@ class PlayersPanelController(PYmodsConfigInterface):
     def init(self):
         self.ID = '%(mod_ID)s'
         self.version = '1.2.1 (%(file_compile_date)s)'
-        self.author = 'by PolarFox (forked %s)' % self.author
+        self.author = 'by PolarFox (forked by Polyacov_Yury)'
+        self.modsGroup = 'PYmods'
+        self.modSettingsID = 'PYmodsGUI'
         self.defaultKeys = {'toggle_key': [[Keys.KEY_LALT, Keys.KEY_RALT]]}
         self.data = {'enabled': True, 'textFields': {}, 'mode': 0, 'toggle_key': self.defaultKeys['toggle_key']}
         self.i18n = {

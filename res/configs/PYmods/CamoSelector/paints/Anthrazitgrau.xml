@@ -1,9 +1,0 @@
-<settings>
-    <paint>
-        <userString>Anthrazitgrau RAL 7016</userString>
-        <texture>	gui/maps/vehicles/repaints/czech_color_04.png	</texture>
-        <color>	60 60 60 255	</color>
-        <gloss>	0.5	</gloss>
-        <metallic>	0.23	</metallic>
-    </paint>
-</settings>

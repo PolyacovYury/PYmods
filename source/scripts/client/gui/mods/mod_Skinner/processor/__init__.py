@@ -1,7 +1,7 @@
 import BigWorld
 import traceback
 from DetachedTurret import DetachedTurret
-from PYmodsCore import BigWorld_callback, overrideMethod
+from OpenModsCore import BigWorld_callback, overrideMethod
 from common_tank_appearance import CommonTankAppearance
 from gui import SystemMessages
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance

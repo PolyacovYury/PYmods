@@ -38,7 +38,9 @@ source/scripts:
     /mods:
       __init__.py - stub file for client.mods package
       CameraNode.py - obsolete mod loader
-    /PYmodsCore - a good ol' code dump with inter-mod classes and functions
 ```
-After cloning it is recommended to run `python source\scripts\mtimestore.py -r` and read and follow instructions in
-res/res/res.md file, otherwise correct buildage of the mods is not guaranteed.
+After cloning, it is recommended to:
+ - copy all files in `build_tools/hooks` into `.git/hooks`
+ - run `py -2 build_tools/mtimestore.py -r`
+ - read and follow instructions in res/res/res.md file
+otherwise correct building of the mods is not guaranteed.

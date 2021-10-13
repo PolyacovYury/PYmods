@@ -1,9 +1,0 @@
-#!/bin/bash
-cp hooks/* .git/hooks/
-git rev-parse -q --verify MERGE_HEAD > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-    py -2 source/scripts/compile/mtimestore.py -s
-    git add '*.mtimes*'
-else
-    py -2 source/scripts/compile/mtimestore.py -r
-fi
