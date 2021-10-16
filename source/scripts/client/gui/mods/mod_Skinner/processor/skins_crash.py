@@ -5,11 +5,11 @@ from vehicle_systems.tankStructure import TankPartNames
 from .. import g_config
 
 
-def apply(vDesc, modelsSet):
+def apply(vDesc, modelsSet, isCrashed):
     parts = []
     if g_config.present_crash_tex['track']:
         parts.append(TankPartNames.CHASSIS)
-    if g_config.present_crash_tex['tank']:
+    if isCrashed and g_config.present_crash_tex['tank']:
         parts += TankPartNames.ALL[1:]
     for partName in parts:
         part = getattr(vDesc, partName)
