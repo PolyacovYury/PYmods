@@ -3,9 +3,10 @@ from OpenModsCore import SimpleConfigInterface, overrideMethod
 from adisp import process
 from debug_utils import LOG_ERROR
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE
-from gui import SystemMessages
+from gui import GUI_NATIONS_ORDER_INDEX, SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.customization_cm_handlers import CustomizationItemCMHandler
 from gui.Scaleform.daapi.view.lobby.customization.shared import removeItemsFromOutfit
+from gui.Scaleform.daapi.view.lobby.hangar.carousels.basic.carousel_data_provider import HangarCarouselDataProvider
 from gui.Scaleform.daapi.view.lobby.storage import StorageCategoryPersonalReservesView
 from gui.Scaleform.daapi.view.lobby.tank_setup import OptDeviceItemContextMenu
 from gui.goodies.goodie_items import BOOSTERS_ORDERS
@@ -13,6 +14,7 @@ from gui.impl.backport import text
 from gui.impl.gen import R
 from gui.impl.lobby.customization.progressive_items_view.progressive_items_view import ProgressiveItemsView
 from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER_INDICES
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
 from gui.shared.gui_items.processors.common import OutfitApplier
 from gui.shared.tooltips.contexts import ModuleContext
@@ -39,6 +41,7 @@ class ConfigInterface(SimpleConfigInterface):
             'enabled': True, 'showCompatibles': True,
             'removeFromOther_devices': True, 'removeFromOther_customization': True,
             'sort_progressionDecals': True, 'sort_personalReserves': True,
+            'sort_vehicleCarousel': False,
         }
         self.i18n = {
             'name': 'Hangar GUI Tweaks',
@@ -60,9 +63,12 @@ class ConfigInterface(SimpleConfigInterface):
             'UI_setting_sort_personalReserves_tooltip': (
                 'This setting changes sorting priority of personal reserves from type-tier-time to tier-type-time.\n'
                 'In other words, all the best personal reserves are displayed first.'),
-            'UI_setting_sort_progressionDecals_text': 'Change sorting of progression decals in Customization view',
+            'UI_setting_sort_progressionDecals_text': 'Change sorting of progression decals in Exterior view',
             'UI_setting_sort_progressionDecals_tooltip': (
                 'This setting changes sorting order of progression decals to make easier ones appear first in the list.'),
+            'UI_setting_sort_vehicleCarousel_text': 'Change sorting of vehicles in Hangar carousel',
+            'UI_setting_sort_vehicleCarousel_tooltip': (
+                'This setting changes sorting order of vehicles to make higher tiers appear first in the list.'),
         }
         super(ConfigInterface, self).init()
 
@@ -77,6 +83,7 @@ class ConfigInterface(SimpleConfigInterface):
             'column2': [
                 self.tb.createControl('removeFromOther_customization'),
                 self.tb.createControl('sort_progressionDecals'),
+                self.tb.createControl('sort_vehicleCarousel'),
             ]}
 
 
@@ -227,3 +234,21 @@ def new_getPossibleItemsForVehicle(_, self):
             next((j for j, tag in enumerate(decal_order) if tag in i.progression.levels[1]['conditions'][0]['path'][1]), 100),
             i.id
         ) if g_config.data['enabled'] and g_config.data['sort_progressionDecals'] else i.id))]
+
+
+@overrideMethod(HangarCarouselDataProvider, '_vehicleComparisonKey')
+def new_vehicleComparisonKey(base, cls, vehicle):
+    if not (g_config.data['enabled'] and g_config.data['sort_vehicleCarousel']):
+        return base(cls, vehicle)
+    return (
+        not vehicle.isInInventory,
+        vehicle.isOnlyForClanWarsBattles,
+        not vehicle.isEvent,
+        not vehicle.isOnlyForBattleRoyaleBattles,
+        -vehicle.level,
+        vehicle.isPremium,
+        not vehicle.isFavorite,
+        GUI_NATIONS_ORDER_INDEX[vehicle.nationName],
+        VEHICLE_TYPES_ORDER_INDICES[vehicle.type],
+        tuple(vehicle.buyPrices.itemPrice.price.iterallitems(byWeight=True)),
+        vehicle.userName)
