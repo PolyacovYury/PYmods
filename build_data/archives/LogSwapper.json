@@ -2,8 +2,8 @@
     "enabled": true,
     "ext": ".zip",
     "files": {
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
-        "mods/{GAME_VERSION}/PYmods/LogSwapper.wotmod": "build/wotmods/PYmods/LogSwapper.wotmod",
-        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod"
+        "mods/{GAME_VERSION}/PYmods/LogSwapper.wotmod": "build/wotmods/PYmods/LogSwapper.wotmod"
     }
 }

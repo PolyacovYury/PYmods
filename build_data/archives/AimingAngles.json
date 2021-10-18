@@ -13,6 +13,7 @@
         "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
         "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
         "mods/{GAME_VERSION}/PYmods/AimingAngles.wotmod": "build/wotmods/PYmods/AimingAngles.wotmod",
-        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod"
+        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/PYmods/PY_support_links.wotmod": "build/wotmods/PYmods/PY_support_links.wotmod"
     }
 }

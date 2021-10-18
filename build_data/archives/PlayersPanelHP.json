@@ -11,10 +11,11 @@
         "mods/configs/PYmods/PlayersPanelHP/icons/hp_alive_l.png": "res/configs/PYmods/PlayersPanelHP/icons/hp_alive_l.png",
         "mods/configs/PYmods/PlayersPanelHP/icons/hp_alive_r.png": "res/configs/PYmods/PlayersPanelHP/icons/hp_alive_r.png",
         "mods/configs/PYmods/PlayersPanelHP/icons/hp_bg.png": "res/configs/PYmods/PlayersPanelHP/icons/hp_bg.png",
-        "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
         "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
-        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
         "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
+        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/PYmods/PY_support_links.wotmod": "build/wotmods/PYmods/PY_support_links.wotmod",
         "mods/{GAME_VERSION}/PYmods/PlayersPanelAPI.wotmod": "build/wotmods/PYmods/PlayersPanelAPI.wotmod",
         "mods/{GAME_VERSION}/PYmods/PlayersPanelHP.wotmod": "build/wotmods/PYmods/PlayersPanelHP.wotmod"
     }
