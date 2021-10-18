@@ -1,4 +1,6 @@
 ﻿{
+    "UI_setting_filter_vehicleCarousel_normal_text": "Add \"Not researched\" vehicle filter into Hangar carousel",
+    "UI_setting_filter_vehicleCarousel_normal_tooltip": "This setting adds a new filter button into vehicle filter popover that shows only non-elite vehicles.",
     "UI_setting_removeFromOther_customization_text": "Add option to remove a customization from other vehicle",
     "UI_setting_removeFromOther_customization_tooltip": "This setting adds a context menu option to take off the customization item from another vehicle.\nThe option is only added for items that can't be installed on current vehicle without removing it from another one.",
     "UI_setting_removeFromOther_devices_text": "Add option to remove an optional device from other vehicle",
