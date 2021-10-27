@@ -1,0 +1,9 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
+        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/PYmods/BigTextConsumablesPanel.wotmod": "build/wotmods/PYmods/BigTextConsumablesPanel.wotmod"
+    }
+}
