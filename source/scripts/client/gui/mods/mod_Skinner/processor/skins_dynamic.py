@@ -5,6 +5,7 @@ import os
 import traceback
 from Avatar import PlayerAvatar
 from OpenModsCore import overrideMethod
+from common_tank_appearance import CommonTankAppearance
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems import model_assembler
 from vehicle_systems.tankStructure import TankNodeNames, TankPartNames
@@ -65,6 +66,12 @@ def switchDynamicPartsVisible(model, visible):
 def new_setupModel(base, self, buildIdx):
     base(self, buildIdx)
     switchDynamicPartsVisible(self.compoundModel, g_config.dynamicSkinEnabled and g_config.collisionMode != 2)
+
+
+@overrideMethod(CommonTankAppearance, '_setupModels')
+def new_setupModels(base, self, *a, **k):
+    base(self, *a, **k)
+    switchDynamicPartsVisible(self.compoundModel, False)
 
 
 @overrideMethod(PlayerAvatar, 'targetFocus')

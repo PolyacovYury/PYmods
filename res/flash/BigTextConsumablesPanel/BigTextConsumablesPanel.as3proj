@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project version="2">
+  <!-- Output SWF options -->
+  <output>
+    <movie outputType="Application" />
+    <movie input="" />
+    <movie path="..\BigTextConsumablesPanel.swf" />
+    <movie fps="30" />
+    <movie width="800" />
+    <movie height="600" />
+    <movie version="21" />
+    <movie minorVersion="0" />
+    <movie platform="Flash Player" />
+    <movie background="#FFFFFF" />
+  </output>
+  <!-- Other classes to be compiled into your SWF -->
+  <classpaths>
+    <class path="..\swc" />
+    <class path="src" />
+    <class path="res" />
+  </classpaths>
+  <!-- Build options -->
+  <build>
+    <option accessible="False" />
+    <option advancedTelemetry="False" />
+    <option allowSourcePathOverlap="False" />
+    <option benchmark="False" />
+    <option es="False" />
+    <option inline="True" />
+    <option locale="" />
+    <option loadConfig="" />
+    <option optimize="True" />
+    <option omitTraces="True" />
+    <option showActionScriptWarnings="True" />
+    <option showBindingWarnings="True" />
+    <option showInvalidCSS="True" />
+    <option showDeprecationWarnings="True" />
+    <option showUnusedTypeSelectorWarnings="True" />
+    <option strict="True" />
+    <option useNetwork="True" />
+    <option useResourceBundleMetadata="True" />
+    <option warnings="True" />
+    <option verboseStackTraces="False" />
+    <option linkReport="" />
+    <option loadExterns="" />
+    <option staticLinkRSL="False" />
+    <option additional="" />
+    <option compilerConstants="" />
+    <option minorVersion="" />
+  </build>
+  <!-- SWC Include Libraries -->
+  <includeLibraries>
+    <element path="src" />
+  </includeLibraries>
+  <!-- SWC Libraries -->
+  <libraryPaths>
+    <!-- example: <element path="..." /> -->
+  </libraryPaths>
+  <!-- External Libraries -->
+  <externalLibraryPaths>
+    <element path="lib\base_app-1.0-SNAPSHOT.swc" />
+    <element path="lib\battle.swc" />
+    <element path="lib\common_i18n_library-1.0-SNAPSHOT.swc" />
+    <element path="lib\common-1.0-SNAPSHOT.swc" />
+    <element path="lib\gui_base-1.0-SNAPSHOT.swc" />
+    <element path="lib\gui_battle-1.0-SNAPSHOT.swc" />
+    <element path="lib\gui_lobby-1.0-SNAPSHOT.swc" />
+    <element path="lib\lobby.swc" />
+    <element path="..\swc\base_app-1.0-SNAPSHOT.swc" />
+    <element path="..\swc\battle.swc" />
+    <element path="..\swc\common_i18n_library-1.0-SNAPSHOT.swc" />
+    <element path="..\swc\common-1.0-SNAPSHOT.swc" />
+    <element path="..\swc\gui_base-1.0-SNAPSHOT.swc" />
+    <element path="..\swc\gui_battle-1.0-SNAPSHOT.swc" />
+    <element path="..\swc\gui_lobby-1.0-SNAPSHOT.swc" />
+    <element path="..\swc\lobby.swc" />
+  </externalLibraryPaths>
+  <!-- Runtime Shared Libraries -->
+  <rslPaths>
+    <!-- example: <element path="..." /> -->
+  </rslPaths>
+  <!-- Intrinsic Libraries -->
+  <intrinsics>
+    <!-- example: <element path="..." /> -->
+  </intrinsics>
+  <!-- Assets to embed into the output SWF -->
+  <library>
+    <!-- example: <asset path="..." id="..." update="..." glyphs="..." mode="..." place="..." sharepoint="..." /> -->
+  </library>
+  <!-- Class files to compile (other referenced classes will automatically be included) -->
+  <compileTargets>
+    <compile path="src\polyacov_yury\views\battle\BigTextConsumablesPanel.as" />
+  </compileTargets>
+  <!-- Paths to exclude from the Project Explorer tree -->
+  <hiddenPaths>
+    <hidden path="obj" />
+  </hiddenPaths>
+  <!-- Executed before build -->
+  <preBuildCommand />
+  <!-- Executed after build -->
+  <postBuildCommand alwaysRun="False" />
+  <!-- Other project options -->
+  <options>
+    <option showHiddenPaths="True" />
+    <option testMovie="Default" />
+    <option testMovieCommand="" />
+  </options>
+  <!-- Plugin storage -->
+  <storage />
+</project>

@@ -158,9 +158,9 @@
 1627387534|configs/PYmods/HangarCollision/HangarCollision.json
 1627387752|configs/PYmods/HangarCollision/i18n/en.json
 1627387752|configs/PYmods/HangarCollision/i18n/ru.json
-1626961773|configs/PYmods/HangarGUITweaks/HangarGUITweaks.json
-1626961780|configs/PYmods/HangarGUITweaks/i18n/en.json
-1626961776|configs/PYmods/HangarGUITweaks/i18n/ru.json
+1634519914|configs/PYmods/HangarGUITweaks/HangarGUITweaks.json
+1634525160|configs/PYmods/HangarGUITweaks/i18n/en.json
+1634525160|configs/PYmods/HangarGUITweaks/i18n/ru.json
 1518009620|configs/PYmods/HangarPainter/HangarPainter.json
 1549376036|configs/PYmods/HangarPainter/i18n/en.json
 1549376036|configs/PYmods/HangarPainter/i18n/ru.json
@@ -356,7 +356,7 @@
 1498837233|configs/PYmods/LampLights/models/SpotSphere/sphere.visual
 1556331126|configs/PYmods/PYmodsGUI/i18n/en.json
 1556331176|configs/PYmods/PYmodsGUI/i18n/ru.json
-1633718978|configs/PYmods/PYmodsGUI/icon.png
+1465562036|configs/PYmods/PYmodsGUI/icon.png
 1582966840|configs/PYmods/PlayerHPAnnouncer/PlayerHPAnnouncer.json
 1570568434|configs/PYmods/PlayersPanelHP/PlayersPanelHP.json
 1549800862|configs/PYmods/PlayersPanelHP/i18n/en.json
@@ -487,11 +487,14 @@
 1632392454|configs/PYmods/VoiceOverrider/i18n/en.json
 1632392307|configs/PYmods/VoiceOverrider/i18n/ru.json
 1471690378|configs/PYmods/i18nDebugger/i18nDebugger.xml
+1635359299|flash/BigTextConsumablesPanel.swf
+1635351673|flash/BigTextConsumablesPanel/BigTextConsumablesPanel.as3proj
+1635359297|flash/BigTextConsumablesPanel/src/polyacov_yury/views/battle/BigTextConsumablesPanel.as
 1613576394|flash/CamoSelector_carousel.swf
 1613561960|flash/CamoSelector_carousel/CamoSelector_carousel.as3proj
 1613576116|flash/CamoSelector_carousel/src/polyacov_yury/views/lobby/CamoSelector_carousel.as
 1613568068|flash/CamoSelector_carousel/src/polyacov_yury/views/lobby/FixedCarouselLayoutController.as
-1602759771|flash/PlayersPanelAPI.swf
+1635338922|flash/PlayersPanelAPI.swf
 1592037066|flash/PlayersPanelAPI/PlayersPanelAPI.as3proj
 1602759765|flash/PlayersPanelAPI/src/polyacov_yury/views/battle/PlayersPanelAPI.as
 1631814946|flash/RemodEnabler.swf

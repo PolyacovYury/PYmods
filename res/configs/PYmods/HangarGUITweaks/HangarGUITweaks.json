@@ -4,5 +4,6 @@
     "removeFromOther_devices": true,
     "showCompatibles": true,
     "sort_personalReserves": true,
-    "sort_progressionDecals": true
+    "sort_progressionDecals": true,
+    "sort_vehicleCarousel": false
 }

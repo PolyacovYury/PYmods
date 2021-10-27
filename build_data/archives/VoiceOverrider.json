@@ -8,10 +8,11 @@
         "mods/configs/PYmods/VoiceOverrider/VoiceOverrider.json": "res/configs/PYmods/VoiceOverrider/VoiceOverrider.json",
         "mods/configs/PYmods/VoiceOverrider/i18n/en.json": "res/configs/PYmods/VoiceOverrider/i18n/en.json",
         "mods/configs/PYmods/VoiceOverrider/i18n/ru.json": "res/configs/PYmods/VoiceOverrider/i18n/ru.json",
-        "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
         "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
-        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
         "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
+        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/PYmods/PY_support_links.wotmod": "build/wotmods/PYmods/PY_support_links.wotmod",
         "mods/{GAME_VERSION}/PYmods/VoiceOverrider.wotmod": "build/wotmods/PYmods/VoiceOverrider.wotmod"
     }
 }
