@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/scripts/client/gui/mods/mod_BigTextConsumablesPanel.pyc": "build/scripts/client/gui/mods/mod_BigTextConsumablesPanel.pyc",
+        "res/gui/flash/BigTextConsumablesPanel.swf": "res/flash/BigTextConsumablesPanel.swf"
+    }
+}
