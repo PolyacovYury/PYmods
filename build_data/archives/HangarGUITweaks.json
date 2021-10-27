@@ -10,8 +10,9 @@
         "mods/configs/PYmods/PYmodsGUI/icon.png": "res/configs/PYmods/PYmodsGUI/icon.png",
         "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
         "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
         "mods/{GAME_VERSION}/PYmods/HangarGUITweaks.wotmod": "build/wotmods/PYmods/HangarGUITweaks.wotmod",
-        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod"
+        "mods/{GAME_VERSION}/PYmods/PY_support_links.wotmod": "build/wotmods/PYmods/PY_support_links.wotmod"
     }
 }

@@ -1,22 +1,30 @@
 from CurrentVehicle import g_currentVehicle
 from OpenModsCore import SimpleConfigInterface, overrideMethod
+from account_helpers.AccountSettings import CAROUSEL_FILTER_2, DEFAULT_VALUES, KEY_FILTERS
 from adisp import process
 from debug_utils import LOG_ERROR
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE
-from gui import SystemMessages
+from gui import GUI_NATIONS_ORDER_INDEX, SystemMessages
+from gui.Scaleform import getButtonsAssetPath
+from gui.Scaleform.daapi.view.common.filter_popover import TankCarouselFilterPopover, _SECTION
+from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_filter import BasicCriteriesGroup
 from gui.Scaleform.daapi.view.lobby.customization.customization_cm_handlers import CustomizationItemCMHandler
 from gui.Scaleform.daapi.view.lobby.customization.shared import removeItemsFromOutfit
+from gui.Scaleform.daapi.view.lobby.hangar.carousels.basic.carousel_data_provider import HangarCarouselDataProvider
 from gui.Scaleform.daapi.view.lobby.storage import StorageCategoryPersonalReservesView
 from gui.Scaleform.daapi.view.lobby.tank_setup import OptDeviceItemContextMenu
 from gui.goodies.goodie_items import BOOSTERS_ORDERS
+from gui.impl import backport
 from gui.impl.backport import text
 from gui.impl.gen import R
 from gui.impl.lobby.customization.progressive_items_view.progressive_items_view import ProgressiveItemsView
 from gui.shared.gui_items import GUI_ITEM_TYPE
+from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER_INDICES
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
 from gui.shared.gui_items.processors.common import OutfitApplier
 from gui.shared.tooltips.contexts import ModuleContext
 from gui.shared.utils.decorators import process as process_waiting
+from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.requesters import REQ_CRITERIA
 from items import vehicles
 from items.components.c11n_constants import CUSTOM_STYLE_POOL_ID, CustomizationType, SeasonType
@@ -26,6 +34,7 @@ misc_xp_tiers = (300, 200, 100, 50)
 tank_xp_tiers = (100, 50, 25)
 credits_tiers = (50, 25)
 decal_order = ('battles', 'frags', 'BonusBattles', 'marksOfMastery', 'mainGun', 'BrothersInArms',)
+DEFAULT_VALUES[KEY_FILTERS][CAROUSEL_FILTER_2]['normal'] = False
 
 
 class ConfigInterface(SimpleConfigInterface):
@@ -39,6 +48,7 @@ class ConfigInterface(SimpleConfigInterface):
             'enabled': True, 'showCompatibles': True,
             'removeFromOther_devices': True, 'removeFromOther_customization': True,
             'sort_progressionDecals': True, 'sort_personalReserves': True,
+            'sort_vehicleCarousel': False, 'filter_vehicleCarousel_normal': True,
         }
         self.i18n = {
             'name': 'Hangar GUI Tweaks',
@@ -60,9 +70,15 @@ class ConfigInterface(SimpleConfigInterface):
             'UI_setting_sort_personalReserves_tooltip': (
                 'This setting changes sorting priority of personal reserves from type-tier-time to tier-type-time.\n'
                 'In other words, all the best personal reserves are displayed first.'),
-            'UI_setting_sort_progressionDecals_text': 'Change sorting of progression decals in Customization view',
+            'UI_setting_sort_progressionDecals_text': 'Change sorting of progression decals in Exterior view',
             'UI_setting_sort_progressionDecals_tooltip': (
                 'This setting changes sorting order of progression decals to make easier ones appear first in the list.'),
+            'UI_setting_sort_vehicleCarousel_text': 'Change sorting of vehicles in Hangar carousel',
+            'UI_setting_sort_vehicleCarousel_tooltip': (
+                'This setting changes sorting order of vehicles to make higher tiers appear first in the list.'),
+            'UI_setting_filter_vehicleCarousel_normal_text': 'Add "Not researched" vehicle filter into Hangar carousel',
+            'UI_setting_filter_vehicleCarousel_normal_tooltip': (
+                'This setting adds a new filter button into vehicle filter popover that shows only non-elite vehicles.'),
         }
         super(ConfigInterface, self).init()
 
@@ -77,6 +93,8 @@ class ConfigInterface(SimpleConfigInterface):
             'column2': [
                 self.tb.createControl('removeFromOther_customization'),
                 self.tb.createControl('sort_progressionDecals'),
+                self.tb.createControl('sort_vehicleCarousel'),
+                self.tb.createControl('filter_vehicleCarousel_normal'),
             ]}
 
 
@@ -227,3 +245,52 @@ def new_getPossibleItemsForVehicle(_, self):
             next((j for j, tag in enumerate(decal_order) if tag in i.progression.levels[1]['conditions'][0]['path'][1]), 100),
             i.id
         ) if g_config.data['enabled'] and g_config.data['sort_progressionDecals'] else i.id))]
+
+
+@overrideMethod(HangarCarouselDataProvider, '_vehicleComparisonKey')
+def new_vehicleComparisonKey(base, _, vehicle):
+    if not (g_config.data['enabled'] and g_config.data['sort_vehicleCarousel']):
+        return base(vehicle)
+    return (
+        not vehicle.isInInventory,
+        vehicle.isOnlyForClanWarsBattles,
+        not vehicle.isEvent,
+        not vehicle.isOnlyForBattleRoyaleBattles,
+        -vehicle.level,
+        vehicle.isPremium,
+        not vehicle.isFavorite,
+        GUI_NATIONS_ORDER_INDEX[vehicle.nationName],
+        VEHICLE_TYPES_ORDER_INDICES[vehicle.type],
+        tuple(vehicle.buyPrices.itemPrice.price.iterallitems(byWeight=True)),
+        vehicle.userName)
+
+
+@overrideMethod(TankCarouselFilterPopover, '_generateMapping')
+def new_generateMapping(base, _, *a, **k):
+    mapping = base(*a, **k)
+    if not (g_config.data['enabled'] and g_config.data['filter_vehicleCarousel_normal']):
+        return mapping
+    mapping[_SECTION.SPECIALS].insert(2, 'normal')
+    return mapping
+
+
+@overrideMethod(TankCarouselFilterPopover, '_getInitialVO')
+def new_getInitialVO(base, self, filters, *a, **k):
+    dataVO = base(self, filters, *a, **k)
+    if not (g_config.data['enabled'] and g_config.data['filter_vehicleCarousel_normal']):
+        return dataVO
+    dataVO['specials'][2] = {
+        'value': getButtonsAssetPath('XpIcon'),
+        'tooltip': makeTooltip(backport.text(R.strings.menu.shop.menu.module.extra.locked.name())),
+        'selected': filters.get('normal', False),
+        'enabled': True}
+    return dataVO
+
+
+@overrideMethod(BasicCriteriesGroup, 'update')
+def new_update(base, self, filters, *a, **k):
+    base(self, filters, *a, **k)
+    if not (g_config.data['enabled'] and g_config.data['filter_vehicleCarousel_normal']):
+        return
+    if not filters['elite'] and not filters['premium'] and filters.get('normal', False):
+        self._criteria |= ~REQ_CRITERIA.VEHICLE.ELITE

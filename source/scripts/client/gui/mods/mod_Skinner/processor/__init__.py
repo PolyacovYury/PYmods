@@ -44,7 +44,7 @@ def debugOutput(xmlName, vehName, playerName, modelsSet, staticSkin=None, dynami
         print header, 'processed.'
 
 
-def vDesc_process(vehicleID, vDesc, is_hangar, modelsSet, processCrash):
+def vDesc_process(vehicleID, vDesc, is_hangar, modelsSet, isCrashed):
     if is_hangar:
         team = g_config.currentTeam
         playerName = None
@@ -79,11 +79,9 @@ def vDesc_process(vehicleID, vDesc, is_hangar, modelsSet, processCrash):
             return debugOutput(xmlName, vehName, playerName, modelsSetDir)
         message, staticSkin, dynamicSkin = None, None, None
         if vehNation == vehDefNation:
-            if processCrash:
-                vDesc.chassis.modelsSets['Skinner_dynamicData'] = []
-                if any(g_config.present_crash_tex.values()):
-                    skins_crash.apply(descr, modelsSet)
-            else:
+            descr.chassis.modelsSets['Skinner_dynamicData'] = []
+            skins_crash.apply(descr, modelsSet, isCrashed)
+            if not isCrashed:
                 staticSkin, dynamicSkin = skins_find(vehName, modelsSetDir, team)
                 if dynamicSkin is not None:
                     skins_dynamic.apply(descr, modelsSet, dynamicSkin)
