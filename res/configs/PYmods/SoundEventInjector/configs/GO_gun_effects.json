@@ -1495,8 +1495,8 @@
             },
             "effects": {
                 "shotSound": {
-                    "wwsoundPC": ["gun_12_25mm_GO"],
-                    "wwsoundNPC": ["nps_gun_12_25mm"]
+                    "wwsoundPC": ["gun_20_45mm_GO"],
+                    "wwsoundNPC": ["nps_gun_20_45mm"]
                 }
             }
         },
@@ -1519,8 +1519,8 @@
             },
             "effects": {
                 "shotSound": {
-                    "wwsoundPC": ["gun_12_25mm_GO"],
-                    "wwsoundNPC": ["nps_gun_12_25mm"]
+                    "wwsoundPC": ["gun_20_45mm_GO"],
+                    "wwsoundNPC": ["nps_gun_20_45mm"]
                 }
             }
         },
