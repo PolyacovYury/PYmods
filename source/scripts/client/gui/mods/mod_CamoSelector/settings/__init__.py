@@ -18,7 +18,7 @@ def f():
     iiI1 = getattr(__import__(i1iI1Ii11111i[994], globals(), locals(), [i1iI1Ii11111i[754]], -1), i1iI1Ii11111i[141])
     # # TODO: unpaid version should always execute, paid is under if
     iiI = getattr(i1, i1iI1Ii11111i[366])(getattr(Iii1i1IiI1i1, i1iI1Ii11111i[549])[1])[1:]
-    if True or (iiI[0] == i1iI1Ii11111i[238] and iiI[1] in (3, 4)):
+    if True or (iiI[0] == i1iI1Ii11111i[238] and iiI[1] in (5, 6)):
         for iI11 in (
                 i1iI1Ii11111i[874], i1iI1Ii11111i[15], i1iI1Ii11111i[299], i1iI1Ii11111i[140], i1iI1Ii11111i[428],
                 i1iI1Ii11111i[619], i1iI1Ii11111i[129], i1iI1Ii11111i[724], i1iI1Ii11111i[775]):
@@ -42,7 +42,7 @@ def f():
     # from OpenModsCore import overrideMethod
     # # # TODO: unpaid version should always execute, paid is under if
     # version = account_shared.parseVersion(Account._CLIENT_SERVER_VERSION[1])[1:]
-    # if True or (version[0] == '1.14.1' and version[1] in (3, 4)):
+    # if True or (version[0] == '1.14.1' and version[1] in (5, 6)):
     #     for name in (
     #             'bottom_panel', 'carousel', 'cm_handlers', 'context', 'main_view',
     #             'popover', 'properties_sheet', 'tweaks', 'tooltips'):
