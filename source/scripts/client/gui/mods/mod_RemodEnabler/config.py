@@ -44,7 +44,7 @@ class ConfigInterface(SimpleConfigInterface):
         }
         self.data = {
             'enabled': True,
-            'isDebug': True,
+            'isDebug': False,
             'ChangeViewHotkey': self.defaultKeys['ChangeViewHotkey'],
             'SwitchRemodHotkey': self.defaultKeys['SwitchRemodHotkey']
         }
