@@ -71,8 +71,8 @@ def new_getRank(base, *a, **kw):
     return result
 
 
-@overrideMethod(CompoundAppearance, '_createStickers')
-def new_createStickers(base, self, *a, **kw):
+@overrideMethod(CompoundAppearance, '__updateInsigniaSticker')
+def new_updateInsigniaSticker(base, self, *a, **kw):
     vehicle = self._vehicle
     if not vehicle or not config.data['enabled']:
         return base(self, *a, **kw)
@@ -85,10 +85,7 @@ def new_createStickers(base, self, *a, **kw):
             insigniaRank = config.data['ally']
     elif config.data['enableEnemy'] and (config.data['replaceEnemy'] or not origRank):
         insigniaRank = config.data['enemy']
-    vehicleStickers = VehicleStickers(self.typeDescriptor, insigniaRank, self.outfit)
-    clanID = BigWorld.player().arena.vehicles[self.id]['clanDBID']
-    vehicleStickers.setClanID(clanID)
-    return vehicleStickers
+    self.vehicleStickers.setInsigniaRank(insigniaRank)
 
 
 config = ConfigInterface()
