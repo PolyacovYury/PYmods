@@ -22,18 +22,17 @@ from .. import g_config
 def debugOutput(xmlName, vehName, playerName, modelsSet, modelDesc):
     if not g_config.data['isDebug']:
         return
-    info = ''
-    header = g_config.LOG, '%s (%s)' % (xmlName, vehName)
+    print g_config.LOG, xmlName,
+    text = '(%s)' % vehName
     if playerName is not None:
-        header += ', player: ' + playerName
+        text += ', player: ' + playerName
     if modelsSet != 'default':
-        header += ', modelsSet: ' + modelsSet
-    if modelDesc is not None:
-        info = 'modelDesc: ' + modelDesc.name
-    if info:
-        print header, 'processed:', info
+        text += ', modelsSet: ' + modelsSet
+    print text,
+    if modelDesc:
+        print 'processed: modelDesc:', modelDesc.name
     else:
-        print header, 'processed.'
+        print 'processed.'
 
 
 def getModelDescInfo(vehicleID, vDesc, mode):

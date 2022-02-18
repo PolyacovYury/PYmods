@@ -79,14 +79,11 @@ class ConfigInterface(SimpleConfigInterface):
     def load(self):
         super(ConfigInterface, self).load()
         g_guiFlash.createComponent(self.ID + '_1bg', COMPONENT_TYPE.IMAGE, {
-            "x": 74, "y": 51, "width": 440, "height": 40, 'image': '../HangarBoosterViewer/bg/0.png'
-        }, False, True)
+            "x": 74, "y": 51, 'image': '../HangarBoosterViewer/bg/0.png'}, False, True)
         g_guiFlash.createComponent(self.ID + '_2icons', COMPONENT_TYPE.LABEL, {
-            "x": 85, "y": 28, "width": 440, "height": 60, 'text': ''
-        }, False, True)
+            "x": 85, "y": 28, 'text': ''}, False, True)
         g_guiFlash.createComponent(self.ID + '_3timer', COMPONENT_TYPE.LABEL, {
-            "x": 120, "y": 69, "width": 330, "height": 40,
-            "shadow": {"alpha": 75, "blur": 3, "color": "0x0000CD", "strength": 1}, 'text': ''
+            "x": 120, "y": 69, "shadow": {"alpha": 75, "blur": 3, "color": "0x0000CD", "strength": 1}, 'text': ''
         }, False, True)
 
     def update(self):
