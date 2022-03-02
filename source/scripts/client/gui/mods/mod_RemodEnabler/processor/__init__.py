@@ -131,10 +131,11 @@ def new_populate(base, self, *a, **kw):
 
 class SimpleTurretRotator(WGRotator):
     def __init__(
-            self, compoundModel=None, currTurretYaw=0.0, _=Math.Vector3(0.0, 0.0, 0.0), __=0.0,
+            self, compoundModel=None, currTurretYaw=0.0, _=Math.Vector3(0.0, 0.0, 0.0), turretPitch=0.0,
             easingCls=math_utils.Easing.linearEasing):
         self.__isStarted = False
         self.__turretYaw = self.__targetTurretYaw = currTurretYaw
+        self.__turretPitch = turretPitch
         self.__rotationTime = 0.0
         self.__timerID = None
         self.__turretMatrixAnimator = MatrixAnimator()
@@ -151,7 +152,10 @@ class SimpleTurretRotator(WGRotator):
 
     def __updateTurretMatrix(self, yaw, time):
         m = Math.Matrix()
-        m.setRotateY(yaw)
+        m.setRotateX(self.__turretPitch)
+        yawMatrix = Math.Matrix()
+        yawMatrix.setRotateY(yaw)
+        m.preMultiply(yawMatrix)
         self.__turretMatrixAnimator.update(m, time)
         self.__turretYaw = yaw
 
