@@ -1,3 +1,4 @@
+import Event
 from CurrentVehicle import g_currentVehicle
 from OpenModsCore import BigWorld_callback, overrideMethod
 from frameworks.wulf import WindowLayer as WL
@@ -31,6 +32,15 @@ class CustomizationBottomPanel(CBP):
     def _populate(self):
         CBP._populate(self)
         self.app.loadView(SFViewLoadParams('PY_CS_carousel_UI'))
+
+    def _dispose(self):
+        CamoSelector_carousel.onCarouselDispose()
+        CBP._dispose(self)
+
+    def as_setCarouselDataS(self, data):
+        result = CBP.as_setCarouselDataS(self, data)
+        CamoSelector_carousel.onSetCarouselData()
+        return result
 
     def switchMode(self, index):
         if index != 2:
@@ -184,18 +194,21 @@ class CustomizationBottomPanel(CBP):
 
 
 class CamoSelector_carousel(View):
+    onSetCarouselData = Event.Event()
+    onCarouselDispose = Event.Event()
+
     def _populate(self):
         View._populate(self)
-        BigWorld_callback(0, self.destroy)
-        BigWorld_callback(0, self.app.containerManager.getContainer(WL.SUB_VIEW).getView()._MainView__bottomPanel.resetFilter)
+        self.onSetCarouselData += self.onSetCarouselDataS
+        self.onCarouselDispose += self.destroy
 
-    @staticmethod
-    def py_log(*args):
-        for arg in args:
-            print arg
-            # print dir(arg)
-            if hasattr(arg, 'toDict'):
-                print arg.toDict()
+    def onSetCarouselDataS(self):
+        return self.flashObject.onSetCarouselData() if self._isDAAPIInited() else None
+
+    def _dispose(self):
+        self.onSetCarouselData.clear()
+        self.onCarouselDispose.clear()
+        View._dispose(self)
 
 
 # noinspection PyArgumentList
