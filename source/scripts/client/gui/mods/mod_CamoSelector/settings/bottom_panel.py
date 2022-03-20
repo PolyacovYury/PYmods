@@ -201,6 +201,7 @@ class CamoSelector_carousel(View):
         View._populate(self)
         self.onSetCarouselData += self.onSetCarouselDataS
         self.onCarouselDispose += self.destroy
+        BigWorld_callback(0, self.app.containerManager.getContainer(WL.SUB_VIEW).getView()._MainView__bottomPanel.resetFilter)
 
     def onSetCarouselDataS(self):
         return self.flashObject.onSetCarouselData() if self._isDAAPIInited() else None
