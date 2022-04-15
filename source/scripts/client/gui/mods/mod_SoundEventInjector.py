@@ -8,7 +8,7 @@ from Avatar import PlayerAvatar
 from OpenModsCore import Analytics, ConfigNoInterface, SimpleConfigInterface, overrideMethod
 from ReloadEffect import ReloadEffectsType, _AutoReloadDesc, _BarrelReloadDesc, _DualGunReloadDesc, _SimpleReloadDesc
 from gui.IngameSoundNotifications import IngameSoundNotifications
-from helpers.EffectsList import ImpactNames, KeyPoint, _SoundEffectDesc, _TracerSoundEffectDesc
+from helpers.EffectsList import ImpactNames, KeyPoint, _NodeSoundEffectDesc, _SoundEffectDesc
 from items.components.sound_components import WWTripleSoundConfig as SoundConfig
 from items.vehicles import VehicleType, _VEHICLE_TYPE_XML_PATH, __readEffectsTimeLine as readEffectsTimeLine, g_cache
 from itertools import chain
@@ -181,10 +181,10 @@ class ConfigInterface(ConfigNoInterface, SimpleConfigInterface):
             for effType in (x for x in ('projectile',) if x in effData):
                 typeData = effData[effType]
                 for effectDesc in res[effType][2]._EffectsList__effectDescList:
-                    if isinstance(effectDesc, _TracerSoundEffectDesc):
+                    if isinstance(effectDesc, _NodeSoundEffectDesc):
                         effectDesc._soundName = tuple(
                             tuple(filter(None, (typeData.get(key),))) or effectDesc._soundName[idx]
-                            for idx, key in enumerate(('wwsoundPC', 'wwsoundNPC')))
+                            for idx, key in enumerate(('wwsoundPC', 'wwsoundNPC', 'wwsoundStopPC', 'wwsoundStopNPC')))
             for effType in (x for x in (tuple(x + 'Hit' for x in EFFECT_MATERIALS) + (
                     'armorBasicRicochet', 'armorRicochet', 'armorResisted', 'armorHit', 'armorCriticalHit')) if x in effData):
                 typeData = effData[effType]
@@ -252,7 +252,7 @@ def new_vehicleType_init(base, self, *args, **kwargs):
 @overrideMethod(PlayerAvatar, '__initGUI')  # overrides initGUI instead of readConfigs because ProTanki
 def new_initGUI(base, self):
     result = base(self)
-    events = self.soundNotifications._IngameSoundNotifications__events
+    events = self.soundNotifications._events
     new_categories = {'fx': 'fxEvent', 'voice': 'infEvent'}
     new_additional = {
         'fxEvent': {'cooldownFx': 0},
@@ -296,7 +296,7 @@ def new_playFX(___, self, eventName, vehicleID, position, *_, **__):
     cooldown = self._IngameSoundNotifications__fxCooldowns
     if eventName in cooldown and cooldown[eventName]:
         return
-    eventData = self._IngameSoundNotifications__events.get(eventName, None)
+    eventData = self._events.get(eventName, None)
     if 'fxEvent' not in eventData or not self.isCategoryEnabled('fx'):
         return
     if float(eventData.get('cooldownFx', 0)) > 0:

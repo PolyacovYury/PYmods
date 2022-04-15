@@ -74,7 +74,7 @@ def new_getRank(base, *a, **kw):
 @overrideMethod(CompoundAppearance, '__updateInsigniaSticker')
 def new_updateInsigniaSticker(base, self, *a, **kw):
     vehicle = self._vehicle
-    if not vehicle or not config.data['enabled']:
+    if not vehicle or not self.vehicleStickers or not config.data['enabled']:
         return base(self, *a, **kw)
     insigniaRank = origRank = vehicle.publicInfo['marksOnGun']
     if vehicle.isPlayerVehicle:
