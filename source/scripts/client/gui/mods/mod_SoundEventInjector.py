@@ -34,7 +34,7 @@ class ConfigInterface(ConfigNoInterface, SimpleConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.3.2 (%(file_compile_date)s)'
+        self.version = '1.3.3 (%(file_compile_date)s)'
         self.author = 'by Polyacov_Yury'
         self.modsGroup = 'PYmods'
         self.data = {
@@ -252,7 +252,7 @@ def new_vehicleType_init(base, self, *args, **kwargs):
 @overrideMethod(PlayerAvatar, '__initGUI')  # overrides initGUI instead of readConfigs because ProTanki
 def new_initGUI(base, self):
     result = base(self)
-    events = self.soundNotifications._IngameSoundNotifications__events
+    events = self.soundNotifications._events
     new_categories = {'fx': 'fxEvent', 'voice': 'infEvent'}
     new_additional = {
         'fxEvent': {'cooldownFx': 0},
