@@ -44,7 +44,7 @@ class ConfigInterface(SimpleConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '2.4.2 (%(file_compile_date)s)'
+        self.version = '2.4.3 (%(file_compile_date)s)'
         self.author = 'by Polyacov_Yury (orig by locastan)'
         self.modsGroup = 'PYmods'
         self.modSettingsID = 'PYmodsGUI'
@@ -670,7 +670,7 @@ def new_readConfigs(base, self):
     base(self)
     if not _config.data['enabled'] or not _config.data['disStand']:
         return
-    eventsData = self._IngameSoundNotifications__events
+    eventsData = self._events
     for eventName in ('enemy_killed_by_player', 'enemy_killed'):
         event = eventsData.get(eventName, {})
         for category in ('infEvent', 'fxEvent'):
