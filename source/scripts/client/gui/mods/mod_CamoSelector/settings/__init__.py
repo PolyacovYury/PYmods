@@ -18,7 +18,7 @@ def f():
     I1iIIIiii = getattr(__import__(II1iII[110], globals(), locals(), [II1iII[352]], -1), II1iII[683])
     # # TODO: unpaid version should always execute, paid is under if
     IiII1iIi111iIii = getattr(Ii, II1iII[359])(getattr(IIi1I1I1I, II1iII[354])[1])[1:]
-    if True or (IiII1iIi111iIii[0] == II1iII[782] and IiII1iIi111iIii[1] in list(range(3))):
+    if True or (IiII1iIi111iIii[0] == II1iII[782] and IiII1iIi111iIii[1] in list(range(10))):
         for IIIIIIi in (
                 II1iII[337], II1iII[522], II1iII[312], II1iII[569], II1iII[846],
                 II1iII[408], II1iII[139], II1iII[516], II1iII[355]):
