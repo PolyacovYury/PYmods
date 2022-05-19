@@ -670,7 +670,7 @@ def new_readConfigs(base, self):
     base(self)
     if not _config.data['enabled'] or not _config.data['disStand']:
         return
-    eventsData = self._IngameSoundNotifications__events
+    eventsData = self._events
     for eventName in ('enemy_killed_by_player', 'enemy_killed'):
         event = eventsData.get(eventName, {})
         for category in ('infEvent', 'fxEvent'):
