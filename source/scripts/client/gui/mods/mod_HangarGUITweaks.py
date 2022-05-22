@@ -1,6 +1,6 @@
 from CurrentVehicle import g_currentVehicle
 from OpenModsCore import SimpleConfigInterface, overrideMethod
-from account_helpers.AccountSettings import CAROUSEL_FILTER_2, DEFAULT_VALUES, KEY_FILTERS
+from account_helpers.AccountSettings import CAROUSEL_FILTER_CLIENT_1, DEFAULT_VALUES, KEY_FILTERS
 from adisp import process
 from debug_utils import LOG_ERROR
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE
@@ -18,10 +18,12 @@ from gui.impl import backport
 from gui.impl.backport import text
 from gui.impl.gen import R
 from gui.impl.lobby.customization.progressive_items_view.progressive_items_view import ProgressiveItemsView
+from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER_INDICES
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
 from gui.shared.gui_items.processors.common import OutfitApplier
+from gui.shared.items_parameters.params_cache import _ParamsCache, _getVehicleSuitablesByType
 from gui.shared.tooltips.contexts import ModuleContext
 from gui.shared.utils.decorators import process as process_waiting
 from gui.shared.utils.functions import makeTooltip
@@ -34,7 +36,7 @@ misc_xp_tiers = (300, 200, 100, 50)
 tank_xp_tiers = (100, 50, 25)
 credits_tiers = (50, 25)
 decal_order = ('battles', 'frags', 'BonusBattles', 'marksOfMastery', 'mainGun', 'BrothersInArms',)
-DEFAULT_VALUES[KEY_FILTERS][CAROUSEL_FILTER_2]['normal'] = False
+DEFAULT_VALUES[KEY_FILTERS][CAROUSEL_FILTER_CLIENT_1]['normal'] = False
 
 
 class ConfigInterface(SimpleConfigInterface):
@@ -107,6 +109,25 @@ def new_getStatsConfiguration(base, self, item):
     if g_config.data['enabled'] and g_config.data['showCompatibles']:
         value.showCompatibles = True
     return value
+
+
+@overrideMethod(_ParamsCache, 'getComponentVehiclesNames')
+def getComponentVehiclesNames(base, self, typeCompactDescr):
+    if not (g_config.data['enabled'] and g_config.data['showCompatibles']):
+        return base(self, typeCompactDescr)
+    itemTypeIdx, nationIdx, _ = vehicles.parseIntCompactDescr(typeCompactDescr)
+    getter = vehicles.g_cache.vehicle
+    result = []
+    for itemID in vehicles.g_list.getList(nationIdx).iterkeys():
+        vehicleType = getter(nationIdx, itemID)
+        components = _getVehicleSuitablesByType(vehicleType, itemTypeIdx)
+        filtered = [item for item in components if item.compactDescr == typeCompactDescr]
+        if filtered:
+            vehicleName = vehicleType.userString
+            if components[0] == filtered[0]:
+                vehicleName = text_styles.discountText(vehicleName)
+            result.append(vehicleName)
+    return result
 
 
 @overrideMethod(CustomizationItemCMHandler, '_generateOptions')
