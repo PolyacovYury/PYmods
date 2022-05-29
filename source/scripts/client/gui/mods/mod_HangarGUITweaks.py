@@ -20,7 +20,7 @@ from gui.impl.gen import R
 from gui.impl.lobby.customization.progressive_items_view.progressive_items_view import ProgressiveItemsView
 from gui.shared.formatters import text_styles
 from gui.shared.gui_items import GUI_ITEM_TYPE
-from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER_INDICES
+from gui.shared.gui_items.Vehicle import VEHICLE_TYPES_ORDER_INDICES, Vehicle
 from gui.shared.gui_items.items_actions import factory as ActionsFactory
 from gui.shared.gui_items.processors.common import OutfitApplier
 from gui.shared.items_parameters.params_cache import _ParamsCache, _getVehicleSuitablesByType
@@ -28,6 +28,7 @@ from gui.shared.tooltips.contexts import ModuleContext
 from gui.shared.utils.decorators import process as process_waiting
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.requesters import REQ_CRITERIA
+from gui.veh_post_progression.models.progression import PostProgressionCompletion
 from items import vehicles
 from items.components.c11n_constants import CUSTOM_STYLE_POOL_ID, CustomizationType, SeasonType
 
@@ -315,3 +316,10 @@ def new_update(base, self, filters, *a, **k):
         return
     if not filters['elite'] and not filters['premium'] and filters.get('normal', False):
         self._criteria |= ~REQ_CRITERIA.VEHICLE.ELITE
+
+
+@overrideMethod(Vehicle, 'isFullyElite')
+def new_isFullyElite(base, self):
+    return (base(self)
+            and (not self.postProgressionAvailability(True).result
+                 or self.postProgression.getCompletion() == PostProgressionCompletion.FULL))
