@@ -74,7 +74,7 @@ def vDesc_process(vehicleID, vDesc, is_hangar, modelsSet, isCrashed):
             vehNation, vehName, _, modelsSetDir = modelPath.split('/')[1:5]
         else:
             vehNation, vehName = modelPath.split('/')[1:3]
-        vehDefNation = descr.hitTesters.chassis.bspModelName.split('/')[1]
+        vehDefNation = descr.chassis.hitTester.bspModelName.split('/')[1]
         if not g_config.skinsData['whitelists']:
             return debugOutput(xmlName, vehName, playerName, modelsSetDir)
         message, staticSkin, dynamicSkin = None, None, None

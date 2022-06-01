@@ -122,7 +122,7 @@ def new_setupModel(base, self, buildIdx):
         for partName in TankPartNames.ALL:
             modelName = ''
             try:
-                modelName = getattr(vDesc.hitTesters, partName).bspModelName
+                modelName = getattr(vDesc, partName).hitTester.bspModelName
                 model = BigWorld.Model(modelName)
                 model.visible = False
                 self.modifiedModelsDesc[partName] = {'model': model, 'matrix': None}
