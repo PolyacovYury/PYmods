@@ -14,7 +14,7 @@ import ResMgr
 import SoundGroups
 import os
 import traceback
-from OpenModsCore import BigWorld_callback, SimpleConfigInterface, Analytics, overrideMethod, events
+from OpenModsCore import BigWorld_callback, SimpleConfigInterface, Analytics, find_attr, overrideMethod, events
 from collections import OrderedDict
 from constants import ARENA_PERIOD, ARENA_GUI_TYPE
 from debug_utils import LOG_ERROR
@@ -646,7 +646,7 @@ def new_setCurrentTimeLeft(base, self, totalTime):
         soundMgr.addToQueue(events_by_time[totalTime])
 
 
-def onArenaVehicleKilled(victimID, killerID, _, reason):
+def onArenaVehicleKilled(victimID, killerID, _, reason, *__, **___):
     if not _config.data['enabled']:
         return
     if not hasattr(BigWorld.player().arena, 'UT'):
@@ -670,7 +670,7 @@ def new_readConfigs(base, self):
     base(self)
     if not _config.data['enabled'] or not _config.data['disStand']:
         return
-    eventsData = self._events
+    eventsData = find_attr(self, 'events')
     for eventName in ('enemy_killed_by_player', 'enemy_killed'):
         event = eventsData.get(eventName, {})
         for category in ('infEvent', 'fxEvent'):

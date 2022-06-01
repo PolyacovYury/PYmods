@@ -324,13 +324,13 @@ def buildSkeleton(vehicleID, vEntity, caller):
             fakeModels[nodeName] = wheel = createFakeModel()
             hullRoot.node('', node).attach(wheel)
 
-    chassis_bbox_min, chassis_bbox_max, _ = vDesc.hitTesters.chassis.bbox
-    hull_bbox_min, hull_bbox_max, _ = vDesc.hitTesters.hull.bbox
+    chassis_bbox_min, chassis_bbox_max, _ = vDesc.chassis.hitTester.bbox
+    hull_bbox_min, hull_bbox_max, _ = vDesc.hull.hitTester.bbox
     turret_pos_on_hull = vDesc.hull.turretPositions[0]
-    turret_bbox_max = vDesc.hitTesters.turret.bbox[1]
+    turret_bbox_max = vDesc.turret.hitTester.bbox[1]
     gun_pos_on_turret = vDesc.turret.gunPosition
     gun_pos_on_hull = gun_pos_on_turret + turret_pos_on_hull
-    gun_bbox_max = vDesc.hitTesters.gun.bbox[1]
+    gun_bbox_max = vDesc.gun.hitTester.bbox[1]
 
     hullLocalCenterY = (hull_bbox_min.y + hull_bbox_max.y) / 2.0
     hullLocalCenterZ = (hull_bbox_min.z + hull_bbox_max.z) / 2.0
