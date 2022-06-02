@@ -109,6 +109,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
 
     def onWindowClose(self):
         self.callMethod.clear()
+        BigWorld.callback(0.1, BigWorld.wg_bringWindowToForeground)
         if self.restart:
             self.call_restart()
         elif self.doLogin:
@@ -447,6 +448,7 @@ def before_Login_populate(*_, **__):
 @events.LoginView.populate.after
 def new_Login_populate(self, *_, **__):
     if not SkinnerLoading.need_check():
+        BigWorld.callback(0.1, BigWorld.wg_bringWindowToForeground)
         return
     self.as_setDefaultValuesS({
         'loginName': '', 'pwd': '', 'memberMe': self._loginMode.rememberUser,

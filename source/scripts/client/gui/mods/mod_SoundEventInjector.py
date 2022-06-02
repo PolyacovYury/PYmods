@@ -5,7 +5,7 @@ import SoundGroups
 import nations
 import traceback
 from Avatar import PlayerAvatar
-from OpenModsCore import Analytics, ConfigNoInterface, SimpleConfigInterface, overrideMethod
+from OpenModsCore import Analytics, ConfigNoInterface, SimpleConfigInterface, find_attr, overrideMethod
 from ReloadEffect import ReloadEffectsType, _AutoReloadDesc, _BarrelReloadDesc, _DualGunReloadDesc, _SimpleReloadDesc
 from gui.IngameSoundNotifications import IngameSoundNotifications
 from helpers.EffectsList import ImpactNames, KeyPoint, _SoundEffectDesc, _TracerSoundEffectDesc
@@ -252,7 +252,7 @@ def new_vehicleType_init(base, self, *args, **kwargs):
 @overrideMethod(PlayerAvatar, '__initGUI')  # overrides initGUI instead of readConfigs because ProTanki
 def new_initGUI(base, self):
     result = base(self)
-    events = self.soundNotifications._IngameSoundNotifications__events
+    events = find_attr(self.soundNotifications, 'events')
     new_categories = {'fx': 'fxEvent', 'voice': 'infEvent'}
     new_additional = {
         'fxEvent': {'cooldownFx': 0},
@@ -296,7 +296,7 @@ def new_playFX(___, self, eventName, vehicleID, position, *_, **__):
     cooldown = self._IngameSoundNotifications__fxCooldowns
     if eventName in cooldown and cooldown[eventName]:
         return
-    eventData = self._IngameSoundNotifications__events.get(eventName, None)
+    eventData = find_attr(self, 'events').get(eventName, None)
     if 'fxEvent' not in eventData or not self.isCategoryEnabled('fx'):
         return
     if float(eventData.get('cooldownFx', 0)) > 0:

@@ -1,0 +1,10 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
+        "mods/{GAME_VERSION}/PYmods/AllQuestsProgresses.wotmod": "build/wotmods/PYmods/AllQuestsProgresses.wotmod",
+        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/PYmods/PY_support_links.wotmod": "build/wotmods/PYmods/PY_support_links.wotmod"
+    }
+}
