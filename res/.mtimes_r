@@ -486,6 +486,9 @@
 1577042299|configs/PYmods/VoiceOverrider/VoiceOverrider.json
 1632392454|configs/PYmods/VoiceOverrider/i18n/en.json
 1632392307|configs/PYmods/VoiceOverrider/i18n/ru.json
+1658039192|configs/PYmods/color_messages/color_messages.json
+1658043807|configs/PYmods/color_messages/i18n/en.json
+1658043900|configs/PYmods/color_messages/i18n/ru.json
 1471690378|configs/PYmods/i18nDebugger/i18nDebugger.xml
 1635359299|flash/BigTextConsumablesPanel.swf
 1635351673|flash/BigTextConsumablesPanel/BigTextConsumablesPanel.as3proj

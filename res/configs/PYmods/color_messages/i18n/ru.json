@@ -1,0 +1,12 @@
+﻿{
+    "UI_description": "Цветные сообщения о результатах боя",
+    "UI_setting_color_credits_text": "Текущий цвет <font color='#%(color)s'>кредитов</font>: #%(color)s",
+    "UI_setting_color_credits_tooltip": "Этот цвет будет применён на все значения кредитов в результатах боя.\n\n%(example)s",
+    "UI_setting_color_credits_tooltip_header_text": "Цвет кредитов:",
+    "UI_setting_color_header_text": "Текущий цвет <font color='#%(color)s'>заголовков</font>: #%(color)s",
+    "UI_setting_color_header_tooltip": "Этот цвет будет применён на все заголовки результатов боя.\n\n%(example)s",
+    "UI_setting_color_header_tooltip_header_text": "Цвет заголовков:",
+    "UI_setting_color_xp_text": "Текущий цвет <font color='#%(color)s'>опыта</font>: #%(color)s",
+    "UI_setting_color_xp_tooltip": "Этот цвет будет применён на все значения опыта в результатах боя.\n\n%(example)s",
+    "UI_setting_color_xp_tooltip_header_text": "Цвет опыта:"
+}

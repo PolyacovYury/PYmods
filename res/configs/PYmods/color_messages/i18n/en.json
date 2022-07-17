@@ -1,0 +1,12 @@
+﻿{
+    "UI_description": "Colored Battle Result Messages",
+    "UI_setting_color_credits_text": "Current <font color='#%(color)s'>credits</font> color: #%(color)s",
+    "UI_setting_color_credits_tooltip": "This color will be applied to all battle result credits values.\n\n%(example)s",
+    "UI_setting_color_credits_tooltip_header_text": "Credits color:",
+    "UI_setting_color_header_text": "Current <font color='#%(color)s'>header</font> color: #%(color)s",
+    "UI_setting_color_header_tooltip": "This color will be applied to all battle result headers.\n\n%(example)s",
+    "UI_setting_color_header_tooltip_header_text": "Header color:",
+    "UI_setting_color_xp_text": "Current <font color='#%(color)s'>xp</font> color: #%(color)s",
+    "UI_setting_color_xp_tooltip": "This color will be applied to all battle result xp values.\n\n%(example)s",
+    "UI_setting_color_xp_tooltip_header_text": "XP color:"
+}
