@@ -1,24 +1,28 @@
 from functools import partial
 
 import BigWorld
+from AvatarInputHandler.DynamicCameras.ArcadeCamera import ArcadeCamera
+from AvatarInputHandler.DynamicCameras.ArtyCamera import ArtyCamera
+from AvatarInputHandler.DynamicCameras.SniperCamera import SniperCamera
+from AvatarInputHandler.DynamicCameras.StrategicCamera import StrategicCamera
+from account_helpers.settings_core import settings_constants
 from gambiter import g_guiFlash
 from gambiter.flash import COMPONENT_ALIGN as GF_ALIGN, COMPONENT_TYPE as GF_TYPE
 from gui.Scaleform.daapi.view.battle.shared.crosshair import plugins
 from Avatar import PlayerAvatar
 from AvatarInputHandler import AvatarInputHandler, MapCaseMode
-from AvatarInputHandler.AimingSystems.ArcadeAimingSystem import ArcadeAimingSystem
-from AvatarInputHandler.AimingSystems.SniperAimingSystem import SniperAimingSystem
-from AvatarInputHandler.AimingSystems.StrategicAimingSystem import StrategicAimingSystem
 from AvatarInputHandler.cameras import FovExtended
 from OpenModsCore import SimpleConfigInterface, overrideMethod
 from Vehicle import Vehicle
 from account_helpers.settings_core.options import InterfaceScaleSetting
 from aih_constants import CTRL_MODE_NAME
 import math
+from gui.shared.personality import ServicesLocator as SL
 
 ARCADE_MODE = 'arc'
 SNIPER_MODE = 'sn'
 STRATEGIC_MODE = 'str'
+ARTY_MODE = 'arty'
 SHIFT = 0.0775
 COUNT_STEPS = 3.0
 STEP = 1.0 / COUNT_STEPS
@@ -57,6 +61,7 @@ class FlashController(SimpleConfigInterface):
         self.old_gunAnglesPacked = 0
         self.turretPitch = 0.0
         self.gunJointPitch = 0.0
+        self.rotation = 0.0
         super(FlashController, self).__init__()
         overrideMethod(AvatarInputHandler, 'onControlModeChanged', self.AvatarInputHandler_onControlModeChanged)
         overrideMethod(InterfaceScaleSetting, 'setSystemValue', self.InterfaceScaleSetting_setSystemValue)
@@ -64,20 +69,24 @@ class FlashController(SimpleConfigInterface):
         overrideMethod(plugins, '_makeSettingsVO', self.plugins_makeSettingsVO)
         overrideMethod(MapCaseMode, 'activateMapCase', self.anglesAiming_activateMapCase)
         overrideMethod(MapCaseMode, 'turnOffMapCase', self.anglesAiming_turnOffMapCase)
-        overrideMethod(ArcadeAimingSystem, 'enable', self.ArcadeAimingSystem_enable)
-        overrideMethod(SniperAimingSystem, 'enable', self.SniperAimingSystem_enable)
-        overrideMethod(StrategicAimingSystem, 'enable', self.StrategicAimingSystem_enable)
+        overrideMethod(ArcadeCamera, 'enable', self.ArcadeAimingSystem_enable)
+        overrideMethod(SniperCamera, 'enable', self.SniperAimingSystem_enable)
+        overrideMethod(ArtyCamera, 'enable', self.ArtyAimingSystem_enable)
+        overrideMethod(StrategicCamera, 'enable', self.StrategicAimingSystem_enable)
+        overrideMethod(StrategicCamera, '__cameraUpdate', self.StrategicAimingSystem_cameraUpdate)
         overrideMethod(Vehicle, '_Vehicle__onAppearanceReady', self.Vehicle__onAppearanceReady)
         overrideMethod(Vehicle, '_Vehicle__onVehicleDeath', self.Vehicle__onVehicleDeath)
         overrideMethod(Vehicle, 'set_gunAnglesPacked', self.set_gunAnglesPacked)
         overrideMethod(FovExtended, 'setFovByMultiplier', self.setFovByMultiplier)
-        g_guiFlash.createComponent(self.ID + '_L', GF_TYPE.IMAGE, {
+        g_guiFlash.createComponent(self.ID, GF_TYPE.PANEL, {
+            'x': 0, 'y': 0, 'alignX': GF_ALIGN.CENTER, 'alignY': GF_ALIGN.CENTER, 'width': 0, 'height': 0, 'limit': False})
+        g_guiFlash.createComponent(self.ID + '.L', GF_TYPE.IMAGE, {
             'alignX': GF_ALIGN.CENTER, 'alignY': GF_ALIGN.CENTER, 'limit': False})
-        g_guiFlash.createComponent(self.ID + '_R', GF_TYPE.IMAGE, {
+        g_guiFlash.createComponent(self.ID + '.R', GF_TYPE.IMAGE, {
             'alignX': GF_ALIGN.CENTER, 'alignY': GF_ALIGN.CENTER, 'limit': False})
-        g_guiFlash.createComponent(self.ID + '_lo', GF_TYPE.IMAGE, {
+        g_guiFlash.createComponent(self.ID + '.lo', GF_TYPE.IMAGE, {
             'x': 0, 'alignX': GF_ALIGN.CENTER, 'alignY': GF_ALIGN.CENTER, 'limit': False})
-        g_guiFlash.createComponent(self.ID + '_hi', GF_TYPE.IMAGE, {
+        g_guiFlash.createComponent(self.ID + '.hi', GF_TYPE.IMAGE, {
             'x': 0, 'alignX': GF_ALIGN.CENTER, 'alignY': GF_ALIGN.CENTER, 'limit': False})
 
     def init(self):
@@ -135,18 +144,23 @@ class FlashController(SimpleConfigInterface):
             ]}
 
     def updateHor(self):
+        rotation = 0
+        if self.aimMode == STRATEGIC_MODE:
+            if SL.settingsCore.getSetting(settings_constants.SPGAim.SPG_STRATEGIC_CAM_MODE) == 0:
+                rotation = self.rotation
+        g_guiFlash.updateComponent(self.ID, {'rotation': rotation}, {'duration': 0.05})
         marker = self.data['horizontal']
         if not marker:
-            g_guiFlash.updateComponent(self.ID + '_L', {'image': ''})
-            g_guiFlash.updateComponent(self.ID + '_R', {'image': ''})
+            g_guiFlash.updateComponent(self.ID + '.L', {'image': ''})
+            g_guiFlash.updateComponent(self.ID + '.R', {'image': ''})
             return
         y = self.aim_y()
         L = self.anglesAiming_left()
         R = self.anglesAiming_right()
-        g_guiFlash.updateComponent(self.ID + '_L', {
+        g_guiFlash.updateComponent(self.ID + '.L', {
             'x': L, 'y': y, 'image': '../AimingAngles/%s/Left%s.png' % (
                 marker, ('_limit' if L > -5 else ''))}, {'duration': 0.05})
-        g_guiFlash.updateComponent(self.ID + '_R', {
+        g_guiFlash.updateComponent(self.ID + '.R', {
             'x': R, 'y': y, 'image': '../AimingAngles/%s/Right%s.png' % (
                 marker, ('_limit' if R < 5 else ''))}, {'duration': 0.05})
 
@@ -157,15 +171,15 @@ class FlashController(SimpleConfigInterface):
         self.updateHor()
         marker = self.data['vertical']
         if not marker:
-            g_guiFlash.updateComponent(self.ID + '_lo', {'image': ''})
-            g_guiFlash.updateComponent(self.ID + '_hi', {'image': ''})
+            g_guiFlash.updateComponent(self.ID + '.lo', {'image': ''})
+            g_guiFlash.updateComponent(self.ID + '.hi', {'image': ''})
             return
         lo = self.anglesAiming_bottom(12)
         hi = self.anglesAiming_top(-12)
-        g_guiFlash.updateComponent(self.ID + '_lo', {
+        g_guiFlash.updateComponent(self.ID + '.lo', {
             'y': lo, 'alpha': max(350 - lo, 0) / 100.0, 'image': '../AimingAngles/%s/Bottom%s.png' % (
                 marker, ('_limit' if not int(lo - self.yVert - 12) else ''))}, {'duration': 0.05})
-        g_guiFlash.updateComponent(self.ID + '_hi', {
+        g_guiFlash.updateComponent(self.ID + '.hi', {
             'y': hi, 'alpha': max(350 + hi, 0) / 100.0, 'image': '../AimingAngles/%s/Top%s.png' % (
                 marker, ('_limit' if not int(hi - self.yVert + 12) else ''))}, {'duration': 0.05})
 
@@ -176,13 +190,20 @@ class FlashController(SimpleConfigInterface):
             if base_self._AvatarInputHandler__isArenaStarted:
                 if eMode == CTRL_MODE_NAME.ARCADE:
                     self.y = - BigWorld.screenHeight() * SHIFT
+                    self.yVert = - BigWorld.screenHeight() * SHIFT
                     self.aimMode = ARCADE_MODE
-                elif eMode in [CTRL_MODE_NAME.SNIPER, CTRL_MODE_NAME.DUAL_GUN]:
+                elif eMode in {CTRL_MODE_NAME.SNIPER, CTRL_MODE_NAME.DUAL_GUN}:
                     self.y = 0.0
+                    self.yVert = 0.0
                     self.aimMode = SNIPER_MODE
-                elif eMode in [CTRL_MODE_NAME.ARTY, CTRL_MODE_NAME.STRATEGIC]:
+                elif eMode == CTRL_MODE_NAME.STRATEGIC:
                     self.y = 0.0
+                    self.yVert = 0.0
                     self.aimMode = STRATEGIC_MODE
+                elif eMode == CTRL_MODE_NAME.ARTY:
+                    self.y = 0.0
+                    self.yVert = 0.0
+                    self.aimMode = ARTY_MODE
                 else:
                     self.aimMode = None
             if oldAimMMode != self.aimMode:
@@ -203,6 +224,7 @@ class FlashController(SimpleConfigInterface):
             if not base_self.isVehicleAlive:
                 return
             self.y = - BigWorld.screenHeight() * SHIFT
+            self.yVert = - BigWorld.screenHeight() * SHIFT
             self.aimMode = ARCADE_MODE
             self.ON_AIM_MODE()
         finally:
@@ -268,7 +290,6 @@ class FlashController(SimpleConfigInterface):
     def ArcadeAimingSystem_enable(self, base, *a, **k):
         result = base(*a, **k)
         try:
-            self.yVert = - BigWorld.screenHeight() * 0.0775
             self.updateCoordinates()
         finally:
             return result
@@ -276,7 +297,13 @@ class FlashController(SimpleConfigInterface):
     def SniperAimingSystem_enable(self, base, *a, **k):
         result = base(*a, **k)
         try:
-            self.yVert = 0
+            self.updateCoordinates()
+        finally:
+            return result
+
+    def ArtyAimingSystem_enable(self, base, *a, **k):
+        result = base(*a, **k)
+        try:
             self.updateCoordinates()
         finally:
             return result
@@ -284,7 +311,18 @@ class FlashController(SimpleConfigInterface):
     def StrategicAimingSystem_enable(self, base, *a, **k):
         result = base(*a, **k)
         try:
-            self.yVert = 0
+            self.updateCoordinates()
+        finally:
+            return result
+
+    def StrategicAimingSystem_cameraUpdate(self, base, base_self, *a, **k):
+        result = base(base_self, *a, **k)
+        try:
+            vehicle = BigWorld.player().getVehicleAttached()
+            diff = base_self.aimingSystem.planePosition - vehicle.position
+            rotation = math.degrees(math.atan2(diff.x, diff.z))
+            if rotation != self.rotation:
+                self.rotation = rotation
             self.updateCoordinates()
         finally:
             return result
