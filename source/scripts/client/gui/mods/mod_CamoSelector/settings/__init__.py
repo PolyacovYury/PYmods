@@ -1,52 +1,49 @@
 # noinspection SpellCheckingInspection,PyArgumentEqualDefault
 def f():
-    i1111iIi1iiI111 = dict(
-        [(i1111iIi1iiI111[0] ^ 176, ''.join(map(chr, [
-            int((bin(i1111iIi1iiI111)[2:].rjust(8, "0"))[::-1], 2) for i1111iIi1iiI111 in i1111iIi1iiI111[1]])))
-         for i1111iIi1iiI111 in __import__('marshal').loads(
-            'eNq9lj2IE0EUx3f3gh8oi1/ETjmLEES2sEhlo0VAi7Ox0kO0ESJyhYQtLSzWQhstYqFcIXjlFRaxP3CLFIvViVhrIWJxyCKpzJthfnNvHTCil+bP'
-            '25n3/u9r9s3cWI6iqJvMYPBoaSbtF+mhQAnUApsCuUCGxTGRToi0hUrlVKzZWGAkcFOgYHeESg5BrXwMNgROaZe3JcgU5TX0VgDD3GHjDZIhbWPb'
-            'gfTlDLv7RHoiMET6pj6t8lriylTOGfN6PJMOUo2CII3ZlDxGEHzH9pbYHhEpJcGaT595pgkqmCuS3lCFsPQXIxdaSmgNvkC3rO0LKUTsKmTXnku4'
-            'LZ3gSLtclg4eFmlH55HTLdpjo/dnY8UpW6qTseubz7JQeruafE38HqdvXqXQzburC1sFDusZ1oxtj90veHudOG/ezDO3ISghMBvnsSj0Ke5QsBwz'
-            'X4hL8SJze7C0yNxOSyWPmixhllgGX/Wx6EE1hcWnYKDPmtndxsfTeO99CH33HOe5YB4Y+gnV8AUr9Sg1EawKNH6wUk/bNDBo+5q5FZidocPQ0o3K'
-            'AqH5Dq6S6nUmww/WLsvaAZ1RTVQ+0tTFYs3u8YtnbjDuOtnbWvlq5EZzqudk4K6wFp+E/hAZjWmtnyU5CfZ+L5hl+UlupR5Btb4W6a81e88k7KOc'
-            'Ba7Pqe5qHqD6LFRtlLf4354JvBK4L3AWlQkbV/h//ec0sDaBb8fxWecfyaNxiVR/MXgs1eNoD6739v+7cd4lC3/xfBDpAhNpE6ohTWnMIcNyR6cw'
-            'xqKDckE1PF/gIWI3/EXQB9bZLf+1GsP5HlTz6tnSvU3caSr++KJtvpYC74hf6lDqKA=='.decode('base64').decode('zlib'))])
-    II11IiIi11 = __import__(i1111iIi1iiI111[823])
-    iIi1II1 = __import__(i1111iIi1iiI111[519])
-    i1I11Ii11I = getattr(
-        __import__(i1111iIi1iiI111[103], globals(), locals(), [i1111iIi1iiI111[162]], -1), i1111iIi1iiI111[629])
-    II1I = getattr(__import__(i1111iIi1iiI111[934], globals(), locals(), [i1111iIi1iiI111[977]], -1), i1111iIi1iiI111[59])
-    # # TODO: unpaid version should always execute, paid is under if
-    I1111IiIi = getattr(iIi1II1, i1111iIi1iiI111[873])(getattr(II11IiIi11, i1111iIi1iiI111[853])[1])[1:]
-    if True or (I1111IiIi[0] == i1111iIi1iiI111[556] and I1111IiIi[1] in list(range(9))):
-        for i1II1IiiIi1IiIi in (
-                i1111iIi1iiI111[864], i1111iIi1iiI111[584], i1111iIi1iiI111[363], i1111iIi1iiI111[734], i1111iIi1iiI111[302],
-                i1111iIi1iiI111[255], i1111iIi1iiI111[464], i1111iIi1iiI111[476], i1111iIi1iiI111[761]):
-            __import__(
-                getattr(__name__, i1111iIi1iiI111[241])(i1111iIi1iiI111[746])[0] + i1111iIi1iiI111[555] + i1II1IiiIi1IiIi)
-    else:
-        print i1111iIi1iiI111[161], I1111IiIi
+    iIi = dict(
+        [(iIi[0] ^ 17, ''.join(map(chr, [
+            int((bin(iIi)[2:].rjust(8, "0"))[::-1], 2) for iIi in iIi[1]])))
+         for iIi in __import__('marshal').loads(
+            'eNq9Vj1rFFEUnd1ZYsSwRCJjEwQthhDCFCkWAlYWK4hMYxlRixDIFhayBNKmGFKkSrFgY5FimkAICvsDVphIhAWbFDZ2FhYpgkwxEMie93zncocJ'
+            'WdFsc7g7791zv+/b1Yee5y3UR7DxGtItSNuAjJADDgGbgIgazdpIakJKrtXYKABDQECNGJACQpIejXDhHqQBWYZkMcx9QA/wilQRv+W0O9A/I1p7'
+            'oOP45o+kGUjnJizeM2ofyRLSF2FmCJbqPlNiTt+SKib0SJWSPqV/gbL2J89IScAkGuPLgD3APuAdYJFXTnjwDNDRP4uKbyfkO3d81rhJ0xSkXUCX'
+            '0jx/zvDye89lss04ooriFcxzwjybHLRItY9MTrOlpF9y3RYltY7vuliqcFU9rMax7wI0Tp7xijF56gzZy59RipqL3H77CmmJlUkYZc7E0kkrZTol'
+            'JqyXgAYbZFMPU18nTLq9rZkbFV03rBiNhm7CqMI1zqVxzYb6CeHfhfSEpD8Bv3QwLeoWuoItQlvvjVPaWEHh53gQ63qIa53ro3zEb2I8dz5baz8m'
+            'au0LrYmaMAckyHRVl6mR6LqFHFjpF1lGq94krb3gHI2x5d/Ubr6RBvX/ttafQioNZ08/IvO+2wy/+e0CHtzWoxvr+a14t6zuVt3tP1kUOYMWtaZe'
+            'UNNI7CwPYr0E0woPUoZfeqJTtR4s/Y7vIuozIklJwe0jzGfU/V53qzkb82F+DukONeTpCPTTEeoGjnVK5tgHpSoM/2K6LdXaTTzvB5P/x3MM6TGH'
+            '7pBUXT5ZpVEzLOt6PvrUCHk5YZ6Fr6Ij7IGsyDbhA0+zf81Gd7xeG/feJe9Q6Qw='.decode('base64').decode('zlib'))])
 
-        # noinspection SpellCheckingInspection,PyArgumentEqualDefault
-        @II1I(i1I11Ii11I, i1111iIi1iiI111[295])
-        def i1I11I11I1II1(base, Ii111, *a, **k):
-            I1I111ii111I = getattr(
-                __import__(i1111iIi1iiI111[913], globals(), locals(), [i1111iIi1iiI111[289]], -1), i1111iIi1iiI111[687])
-            (iIIi1II1I1I111, I1II1i111IiiI11) = map(
+    IIi = __import__(iIi[78])
+    I111i1IiI1i = __import__(iIi[287])
+    IIi11IiIi1i = getattr(__import__(iIi[214], globals(), locals(), [iIi[673]], -1), iIi[698])
+    I11 = getattr(__import__(iIi[960], globals(), locals(), [iIi[262]], -1), iIi[373])
+    # # TODO: unpaid version should always execute, paid is under if
+    iiIiiiIIii = getattr(I111i1IiI1i, iIi[514])(getattr(IIi, iIi[543])[1])[1:]
+    if True or (iiIiiiIIii[0] == iIi[63] and iiIiiiIIii[1] in list(range(9))):
+        for Ii in (
+                iIi[136], iIi[435], iIi[93], iIi[715], iIi[921],
+                iIi[891], iIi[281], iIi[982], iIi[616]):
+            __import__(getattr(__name__, iIi[748])(iIi[781])[0] + iIi[722] + Ii)
+    else:
+        print iIi[218], iiIiiiIIii
+
+        @I11(IIi11IiIi1i, iIi[86])
+        def i1iII1iI1iiIii1(base, Ii1, *a, **k):
+            IiI1III1 = getattr(__import__(iIi[723], globals(), locals(), [iIi[369]], -1), iIi[674])
+            (I1iIii1iI1I, I11iIii11I111i) = map(
                 getattr,
-                ([__import__(
-                    i1111iIi1iiI111[423], globals(), locals(), [i1111iIi1iiI111[996], i1111iIi1iiI111[974]], 1)] * 2),
-                [i1111iIi1iiI111[498], i1111iIi1iiI111[533]])
-            I1II1i111IiiI11(I1I111ii111I, 0, iIIi1II1I1I111, I1111IiIi)
-            return base(Ii111, *a, **k)
+                ([__import__(iIi[834], globals(), locals(), [iIi[296], iIi[74]], 1)] * 2),
+                [iIi[462], iIi[473]])
+            I11iIii11I111i(IiI1III1, 0, I1iIii1iI1I, iiIiiiIIii)
+            return base(Ii1, *a, **k)
+
     # import Account
     # import account_shared
     # from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
     # from OpenModsCore import overrideMethod
     # # # TODO: unpaid version should always execute, paid is under if
     # version = account_shared.parseVersion(Account._CLIENT_SERVER_VERSION[1])[1:]
-    # if True or (version[0] == '1.17.1' and version[1] in list(range(9))):
+    # if True or (version[0] == '1.18.0' and version[1] in list(range(9))):
     #     for name in (
     #             'bottom_panel', 'carousel', 'cm_handlers', 'context', 'main_view',
     #             'popover', 'properties_sheet', 'tweaks', 'tooltips'):
