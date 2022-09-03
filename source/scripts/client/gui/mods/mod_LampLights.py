@@ -470,15 +470,14 @@ def buildLamp(data, node):
     for k in keys:
         setattr(lamp, k, data[k])
     lamp.source = node
-    if not isinstance(data['colour'][0], tuple):
-        lamp.colour = data['colour']
-        return lamp
     if data['type'] == 'spotLight':
-        lamp.colour = data['colour'][0][1]
         return lamp
+    colour_data = data['colour']
+    if not isinstance(data['colour'][0], tuple):
+        colour_data = [(0.0, colour_data)]
     colorAnimator = Math.Vector4Animation()
-    colorAnimator.keyframes = data['colour']
-    colorAnimator.duration = data['colour'][-1][0]
+    colorAnimator.keyframes = [(ts, Math.Vector4(clr)) for ts, clr in colour_data]
+    colorAnimator.duration = colour_data[-1][0]
     lamp.colorAnimator = colorAnimator
     return lamp
 
