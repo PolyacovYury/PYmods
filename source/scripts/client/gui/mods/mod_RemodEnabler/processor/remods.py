@@ -1,5 +1,6 @@
 import copy
 
+import Math
 from OpenModsCore import overrideMethod
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from items.components import shared_components
@@ -60,7 +61,7 @@ def apply(vDesc, modelDesc, outfit):
                         continue
                 if attr == 'slotsAnchors':
                     remodAttr = vehicleAttr + remodAttr
-                if remodAttr == 'void':
+                if isinstance(remodAttr, str) and remodAttr == 'void':
                     remodAttr = emptyAttr
                 setattr(vehiclePart, attr, remodAttr)
     if modelDesc.chassis.AODecals:
@@ -81,3 +82,11 @@ def updateFashions(base, appearance):
     if not appearance.isAlive or not all(list(appearance.fashions)) or not modelDesc:
         return
     camouflages.setMaterialsVisibility(appearance, modelDesc.outfit['hide_materials'], False)
+
+
+@overrideMethod(Math.Matrix, '__deepcopy__')
+def new_deepcopy(base, self, memo):
+    try:
+        return base(self, memo)
+    except TypeError:
+        return base(self)
