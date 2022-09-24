@@ -31,8 +31,9 @@ class MainView(WGMainView):
                     g_currentVehicle.itemsCache.items, itemTypes, season, itemsFilter)
         self.as_setNotificationCountersS([seasonCounters[season] for season in SEASONS_ORDER])
 
-    def onPressClearBtn(self):
-        WGMainView.onPressClearBtn(self)
+    def __onCustomizationClear(self):
+        # noinspection PyUnresolvedReferences
+        WGMainView._MainView__onCustomizationClear(self)
         self.__ctx.cancelChanges()
 
     def __needsSpecialLabel(self):

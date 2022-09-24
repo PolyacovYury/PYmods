@@ -107,7 +107,7 @@ class CustomizationContext(WGCtx):
             with self.overrideMode(modeId):
                 if not self.isPurchase or (purchaseItems or WGCtx.isOutfitsModified(self)):
                     yield self.mode.applyItems(purchaseItems, self.isModeChanged)
-        self.__onCacheResync()
+        self.__onCacheResync(-1, {})
         self._itemsCache.onSyncCompleted += self.__onCacheResync
         callback(None)
 

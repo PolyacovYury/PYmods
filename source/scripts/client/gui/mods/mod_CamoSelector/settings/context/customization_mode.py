@@ -180,19 +180,34 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
             self._ctx.refreshOutfit(season)
         self._events.onItemsRemoved()
 
-    def removeItemsFromSeason(self, season=None, filterMethod=None, refresh=True):
+    def removeItemsFromSeason(self, season=None, filterMethod=None, refresh=True, revertToPrevious=False):
         season = season or self.season  # called from above and prop sheet to clean projection decals
         outfit = self._modifiedOutfits[season]
+        originalOutfit = self._originalOutfits[season]
         for intCD, _, regionIdx, container, _ in outfit.itemsFull():
             item = self._service.getItemByCD(intCD)
             if filterMethod is None or filterMethod(item):
                 areaId = container.getAreaID()
                 slotType = ITEM_TYPE_TO_SLOT_TYPE[item.itemTypeID]
                 slotId = C11nId(areaId, slotType, regionIdx)
-                self.removeItem(slotId, season, refresh=False)
+                if revertToPrevious:
+                    container = originalOutfit.getContainer(areaId)
+                    slotData = container.slotFor(item.itemTypeID).getSlotData(regionIdx)
+                    if slotData.intCD:
+                        self.installItem(slotData.intCD, slotId, season, refresh=False)
+                    else:
+                        self.removeItem(slotId, season, refresh=False)
+                else:
+                    self.removeItem(slotId, season, refresh=False)
         if refresh:
             self._ctx.refreshOutfit(season)
             self._events.onItemsRemoved()
+
+    def isOutfitsHasLockedItems(self):
+        return False
+
+    def getOutfitsLockedItemsCount(self):
+        return 0
 
     def removeStyle(self, intCD):
         if self.modifiedStyle is not None and self.modifiedStyle.intCD == intCD:
