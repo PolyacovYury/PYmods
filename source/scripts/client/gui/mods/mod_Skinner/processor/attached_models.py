@@ -4,7 +4,7 @@ import math_utils
 import traceback
 from OpenModsCore import events, overrideMethod
 from Vehicle import Vehicle
-from adisp import async, process
+from adisp import adisp_async, adisp_process
 from functools import partial
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems.CompoundAppearance import CompoundAppearance
@@ -12,7 +12,7 @@ from vehicle_systems.CompoundAppearance import CompoundAppearance
 dynamic_db = {}
 
 
-@process
+@adisp_process
 def create(vehicleID, mod, mode, models):
     resList = []
     vehEntry = dynamic_db.setdefault(vehicleID, {})
@@ -39,7 +39,7 @@ def create(vehicleID, mod, mode, models):
                 data['models'][modelPath] = {'model': None, 'nodeName': nodeName}
                 data.update({'loaded': False})
                 resList.append(modelPath)
-    resourceRefs = yield async(lambda callback: BigWorld.loadResourceListBG(tuple(resList), callback))()
+    resourceRefs = yield adisp_async(lambda callback: BigWorld.loadResourceListBG(tuple(resList), callback))()
     if vehicleID not in dynamic_db:
         return
     data['loaded'] = True

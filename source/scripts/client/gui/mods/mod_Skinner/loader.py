@@ -13,8 +13,8 @@ import shutil
 import traceback
 from OpenModsCore import BigWorld_callback, remDups, loadJson, events, curCV
 from account_helpers.settings_core.settings_constants import GAME
-from adisp import AdispException, async, process
-from async import await, async as async2
+from adisp import AdispException, adisp_async, adisp_process
+from wg_async import wg_await, wg_async as async2
 from gui import GUI_SETTINGS
 from gui.Scaleform.daapi.settings.views import VIEW_ALIAS
 from gui.Scaleform.daapi.view.battle.classic.battle_end_warning_panel import _WWISE_EVENTS
@@ -119,7 +119,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
     @staticmethod
     @async2
     def call_restart():
-        result = yield await(dialogs.showSimple(
+        result = yield wg_await(dialogs.showSimple(
             WarningDialogBuilder().setFormattedTitle(g_config.i18n['UI_restart_header'])
             .setFormattedMessage(g_config.i18n['UI_restart_text'])
             .addButton(DialogButtons.PURCHASE, None, True, rawLabel=g_config.i18n['UI_restart_button_restart'])
@@ -128,7 +128,7 @@ class SkinnerLoading(LoginQueueWindowMeta):
         BigWorld.savePreferences()
         BigWorld.restartGame() if result else BigWorld.quit()
 
-    @process
+    @adisp_process
     def loadSkins(self):
         jobStartTime = time.time()
         pr = None
@@ -203,8 +203,8 @@ def iterSection(sect, numbers=True, depth=1, filters=(None,)):
             yield sub + (sect[sub[-1]],)
 
 
-@async
-@process
+@adisp_async
+@adisp_process
 def checkSkinFiles(callback):
     texReplaced = False
     vehSkins = dict()  # {} is a Dict[str, str] for some reason
@@ -253,8 +253,8 @@ def checkSkinFiles(callback):
     delay_call(callback, texReplaced, vehSkins)
 
 
-@async
-@process
+@adisp_async
+@adisp_process
 def deleteModelFiles(rootPath, callback):
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_clean'])
     SkinnerLoading.callMethod('addLine', g_config.i18n['UI_loading_skins_clean'])
@@ -273,8 +273,8 @@ def deleteModelFiles(rootPath, callback):
     delay_call(callback)
 
 
-@async
-@process
+@adisp_async
+@adisp_process
 def checkMeta(texReplaced, callback):
     lastVersion = g_config.skinsCache['version']
     clientIsNew = getClientVersion() != lastVersion
@@ -304,8 +304,8 @@ def checkMeta(texReplaced, callback):
     delay_call(callback, found and (clientIsNew or skinsModelsMissing or texReplaced))
 
 
-@async
-@process
+@adisp_async
+@adisp_process
 def unpackModels(vehSkins, callback):
     SkinnerLoading.callMethod('updateTitle', g_config.i18n['UI_loading_header_models_unpack'])
     SoundGroups.g_instance.playSound2D(_WWISE_EVENTS.APPEAR)
@@ -315,7 +315,7 @@ def unpackModels(vehSkins, callback):
         x: ResMgr.isFile('vehicles/skins/textures/white_crash/all/all/%s_crash.dds' % x) for x in ('track', 'tank')}
     if any(present_crash_tex):
         to_process += ('crash',)
-    for nation, nationSect in iterSection(  # idk about any else, it also pretty much doesn't matter
+    for nation, nationSect in iterSection(  # IDK about any else, it also pretty much doesn't matter
             ResMgr.openSection('vehicles'), False, filters=((lambda x: '.' not in x and x not in ('skins', 'remods')),)):
         SkinnerLoading.callMethod('addBar', g_config.i18n['UI_loading_unpacking'] % ('vehicles/' + nation))
         for vehLen, vehNum, vehName, vehSect in iterSection(nationSect):
@@ -328,8 +328,8 @@ def unpackModels(vehSkins, callback):
     delay_call(callback)
 
 
-@async
-@process
+@adisp_async
+@adisp_process
 def unpackVehDir(vehSkins, nation, vehName, to_process, crash_tex, dirName, dirSect, style, callback):
     if dirName.startswith('_') and '.' not in dirName:
         if style:

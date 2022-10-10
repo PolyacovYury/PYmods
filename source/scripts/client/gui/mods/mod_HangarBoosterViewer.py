@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
-from collections import OrderedDict
-
 import BigWorld
 from Account import PlayerAccount
-from OpenModsCore import ConfigNoInterface, SimpleConfigInterface, overrideMethod
+from OpenModsCore import SimpleConfigInterface, overrideMethod
+from collections import OrderedDict
 from gambiter import g_guiFlash
 from gambiter.flash import COMPONENT_TYPE
 from gui.Scaleform.daapi.view.lobby.hangar.Hangar import Hangar
 from gui.Scaleform.daapi.view.meta.LobbyHeaderMeta import LobbyHeaderMeta
-from gui.Scaleform.locale.MENU import MENU
-from gui.goodies.goodie_items import _BOOSTER_TYPE_NAMES
 from gui.shared.personality import ServicesLocator as SL
 from gui.shared.utils.requesters.ItemsRequester import REQ_CRITERIA
-from helpers import time_utils
-from helpers.i18n import makeString as _ms
 from shared_utils import safeCancelCallback
 
 BOOSTER_ICON_EMPTY = 'img://gui/maps/icons/filters/empty.png'

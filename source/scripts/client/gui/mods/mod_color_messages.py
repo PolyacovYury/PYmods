@@ -66,7 +66,7 @@ g_config = ConfigInterface()
 def new_format(base, self, ctx, *a, **k):
     orig_message = self.source['message']
     try:
-        only = ctx.pop('color_messages_only', ())
+        only = (ctx or {}).pop('color_messages_only', ())
         for color_type, mask in (('header', 'E9E2BF'), ('xp', 'C8C8B5'), ('credits', 'C5CFCF')):
             if only and color_type not in only:
                 continue
