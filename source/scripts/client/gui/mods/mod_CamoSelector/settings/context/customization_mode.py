@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from CurrentVehicle import g_currentVehicle
 from OpenModsCore import BigWorld_callback, loadJson
-from adisp import async
+from adisp import adisp_async
 from constants import CLIENT_COMMAND_SOURCES
 from gui import SystemMessages
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext
@@ -343,7 +343,7 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
             multiSlot = outfit.getContainer(slotId.areaId).slotFor(slotId.slotType)
             multiSlot.remove(slotId.regionIdx)
 
-    @async
+    @adisp_async
     def _applyItems(self, purchaseItems, isModeChanged, callback):
         self.applySettings()
         vDesc = g_currentVehicle.item.descriptor

@@ -3,11 +3,11 @@ from contextlib import contextmanager
 
 import adisp
 from OpenModsCore import BigWorld_callback, overrideMethod
-from async import async, await, await_callback
+from wg_async import wg_async, wg_await, await_callback
 from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationModes, CustomizationTabs
 from gui.customization.shared import SEASON_TYPE_TO_NAME
-from gui.shared.utils.decorators import process
+from gui.shared.utils.decorators import adisp_process
 from items.components.c11n_constants import EMPTY_ITEM_ID
 from .customization_mode import CustomMode as CamoSelectorMode
 from ..shared import createConfirmDialog, onVehicleLoadedOnce
@@ -72,12 +72,12 @@ class CustomizationContext(WGCtx):
         finally:
             self.__modeId = modeId
 
-    @async
+    @wg_async
     def changeModeWithProgressionDecal(self, itemCD, level):
         goToEditableStyle = self.canEditStyle(itemCD)
         result = True
         if self.modeId in (CustomizationModes.STYLED, CustomizationModes.EDITABLE_STYLE) and not goToEditableStyle:
-            result = yield await(createConfirmDialog('flashCol_progressionDecal_changeMode'))
+            result = yield wg_await(createConfirmDialog('flashCol_progressionDecal_changeMode'))
         if not result:
             return
         if self.isPurchase:
@@ -97,8 +97,8 @@ class CustomizationContext(WGCtx):
         mode = self.__modes[self.__purchaseModeId]
         return mode.getPurchaseItems() if mode.isOutfitsModified() else []
 
-    @adisp.async
-    @process('customizationApply')
+    @adisp.adisp_async
+    @adisp_process('customizationApply')
     def applyItems(self, purchaseItems, callback):
         self._itemsCache.onSyncCompleted -= self.__onCacheResync
         self.mode.unselectItem()

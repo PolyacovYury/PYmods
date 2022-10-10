@@ -4,7 +4,7 @@ import os
 import re
 from BWUtil import AsyncReturn
 from CurrentVehicle import g_currentVehicle
-from async import async, await
+from wg_async import wg_async, wg_await
 from frameworks.wulf import WindowLayer
 from functools import partial
 from gui.customization.constants import CustomizationModes
@@ -158,17 +158,17 @@ def getGroupName(item, isPurchase=False):
     return group
 
 
-@async
+@wg_async
 def createConfirmDialog(key):
     builder = WarningDialogBuilder().setFormattedMessage(
         g_config.i18n[key + '_message']).setFormattedTitle(g_config.i18n[key + '_title'])
     _setupButtonsBasedOnRes(builder, R.strings.dialogs.common.confirm)  # the most convenient
     subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
-    result = yield await(dialogs.showSimple(builder.build(parent=subview)))
+    result = yield wg_await(dialogs.showSimple(builder.build(parent=subview)))
     raise AsyncReturn(result)
 
 
-@async
+@wg_async
 def createDonationDialog():
     if hasattr(createDonationDialog, 'shown'):
         return
@@ -178,14 +178,14 @@ def createDonationDialog():
     for ID, key in (DButtons.PURCHASE, 'patreon'), (DButtons.RESEARCH, 'boosty'), (DButtons.CANCEL, 'close'):
         builder.addButton(ID, None, ID == DButtons.PURCHASE, rawLabel=g_config.i18n['flash_freeVersion_button_%s' % key])
     subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
-    result = yield await(dialogs.show(builder.build(parent=subview)))
+    result = yield wg_await(dialogs.show(builder.build(parent=subview)))
     if result.result == DButtons.PURCHASE:
         BigWorld.wg_openWebBrowser('https://www.patreon.com/polyacov_yury/')
     elif result.result == DButtons.RESEARCH:
         BigWorld.wg_openWebBrowser('https://boosty.to/polyacov_yury/')
 
 
-@async
+@wg_async
 def createVersionDialog(version):
     if hasattr(createVersionDialog, 'shown'):
         return
@@ -196,7 +196,7 @@ def createVersionDialog(version):
     for ID, key in (DButtons.PURCHASE, 'patreon'), (DButtons.RESEARCH, 'boosty'), (DButtons.CANCEL, 'close'):
         builder.addButton(ID, None, ID == DButtons.PURCHASE, rawLabel=g_config.i18n['flash_wrongVersion_button_%s' % key])
     subview = SL.appLoader.getDefLobbyApp().containerManager.getContainer(WindowLayer.SUB_VIEW).getView()
-    result = yield await(dialogs.show(builder.build(parent=subview)))
+    result = yield wg_await(dialogs.show(builder.build(parent=subview)))
     if result.result == DButtons.PURCHASE:
         BigWorld.wg_openWebBrowser('https://www.patreon.com/polyacov_yury/')
     elif result.result == DButtons.RESEARCH:
