@@ -281,7 +281,7 @@ class CustomMode(WGCustomMode, ItemSettingsRemap):
         for season in SeasonType.COMMON_SEASONS:
             seasonName = SEASON_TYPE_TO_NAME[season]
             seasonCache = vehCache.get(seasonName, {})
-            outfit = applyOutfitCache(vDesc, baseOutfits[season], seasonName, seasonCache, False)
+            outfit = applyOutfitCache(vDesc, baseOutfits[season].copy(), seasonName, seasonCache, False)
             self._originalOutfits[season] = outfit
             self.__originalStyles[season] = getStyleFromId(outfit.id) if outfit.id else None
             outfit = applyOutfitCache(vDesc, outfit, seasonName, self._cache.get(seasonName, {}))
