@@ -2,12 +2,12 @@ import nations
 from CurrentVehicle import g_currentVehicle
 from OpenModsCore import SimpleConfigInterface, overrideMethod
 from account_helpers.AccountSettings import CAROUSEL_FILTER_CLIENT_1, DEFAULT_VALUES, KEY_FILTERS
-from adisp import process
+from adisp import adisp_process
 from debug_utils import LOG_ERROR
 from goodies.goodie_constants import GOODIE_RESOURCE_TYPE
 from gui import GUI_NATIONS_ORDER_INDEX, SystemMessages
 from gui.Scaleform import getButtonsAssetPath
-from gui.Scaleform.daapi.view.common.filter_popover import TankCarouselFilterPopover, _SECTION
+from gui.Scaleform.daapi.view.common.filter_popover import TankCarouselFilterPopover, FILTER_SECTION
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_data_provider import CarouselDataProvider
 from gui.Scaleform.daapi.view.common.vehicle_carousel.carousel_filter import BasicCriteriesGroup
 from gui.Scaleform.daapi.view.lobby.customization.customization_cm_handlers import CustomizationItemCMHandler
@@ -28,7 +28,7 @@ from gui.shared.gui_items.items_actions import factory as ActionsFactory
 from gui.shared.gui_items.processors.common import OutfitApplier
 from gui.shared.items_parameters.params_cache import _ParamsCache, _getVehicleSuitablesByType
 from gui.shared.tooltips.contexts import ModuleContext
-from gui.shared.utils.decorators import process as process_waiting
+from gui.shared.utils.decorators import adisp_process as process_waiting
 from gui.shared.utils.functions import makeTooltip
 from gui.shared.utils.requesters import REQ_CRITERIA
 from gui.veh_post_progression.models.progression import PostProgressionCompletion
@@ -235,7 +235,7 @@ def new_generateOptions(base, self, ctx, *a, **k):
 
 
 @overrideMethod(OptDeviceItemContextMenu, 'onOptionSelect')
-@process
+@adisp_process
 def new_onOptionSelect(base, self, optionId, *a, **k):
     if not optionId.startswith(REMOVE_FROM_OTHER):
         base(self, optionId, *a, **k)
@@ -310,9 +310,9 @@ def new_generateMapping(base, _, *a, **k):
     if not g_config.data['enabled']:
         return mapping
     if g_config.data['filter_vehicleCarousel_normal']:
-        mapping[_SECTION.SPECIALS].insert(2, 'normal')
+        mapping[FILTER_SECTION.SPECIALS].insert(2, 'normal')
     if g_config.data['filter_vehicleCarousel_alliance']:
-        mapping[_SECTION.NATIONS] += nations.ALLIANCES_TAGS_ORDER
+        mapping[FILTER_SECTION.NATIONS] += nations.ALLIANCES_TAGS_ORDER
     return mapping
 
 
