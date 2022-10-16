@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/audioww/G_I_Joe/Baroness/inbattle_communication_pc.bnk": "res/res/audioww/G_I_Joe/Baroness/inbattle_communication_pc.bnk",
+        "res/audioww/G_I_Joe/Baroness/voiceover.bnk": "res/res/audioww/G_I_Joe/Baroness/voiceover.bnk"
+    }
+}
