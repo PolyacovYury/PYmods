@@ -1,8 +1,0 @@
-﻿{
-    "enabled": true,
-    "ext": ".wotmod",
-    "files": {
-        "res/gui/HangarBoosterViewer/**": "res/res/gui/HangarBoosterViewer/**",
-        "res/scripts/client/gui/mods/mod_HangarBoosterViewer.pyc": "build/scripts/client/gui/mods/mod_HangarBoosterViewer.pyc"
-    }
-}
