@@ -1,5 +1,7 @@
 import BigWorld
 from OpenModsCore import find_attr, overrideMethod
+from account_helpers.settings_core.options import QuestsProgressViewType
+from account_helpers.settings_core.settings_constants import QUESTS_PROGRESS
 from constants import ARENA_PERIOD
 from gui.Scaleform.daapi.view.battle.classic.full_stats import FullStatsComponent
 from gui.Scaleform.daapi.view.battle.shared.battle_timers import PreBattleTimer
@@ -26,7 +28,8 @@ def as_updateProgressTrackingS(base, self, data):
     for quest in data['trackingData']:
         quest['fullMissionName'] = questName
         quest['selected'] = True
-        quest['eyeBtnVisible'] = find_attr(self, 'isProgressTrackingEnabled')
+        quest['eyeBtnVisible'] = find_attr(
+            self, 'settingsCore').getSetting(QUESTS_PROGRESS.VIEW_TYPE) == QuestsProgressViewType.TYPE_STANDARD
     return base(self, data)
 
 

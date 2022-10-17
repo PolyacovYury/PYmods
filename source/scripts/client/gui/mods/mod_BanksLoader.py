@@ -6,7 +6,7 @@ import os
 import traceback
 import zipfile
 from OpenModsCore import ConfigNoInterface, SimpleConfigInterface, remDups, Analytics, events, curCV
-from async import await, async
+from wg_async import wg_await, wg_async
 from frameworks.wulf import WindowLayer
 from gui.impl.dialogs import dialogs
 from gui.impl.dialogs.builders import WarningDialogBuilder
@@ -58,7 +58,7 @@ class ConfigInterface(ConfigNoInterface, SimpleConfigInterface):
         self.suppress_old_mod()
         self.checkConfigs()
 
-    @async
+    @wg_async
     def tryRestart(self, *_, **__):
         if self.was_declined:
             return
@@ -80,7 +80,7 @@ class ConfigInterface(ConfigNoInterface, SimpleConfigInterface):
             parent = SL.appLoader.getApp().containerManager.getContainer(WindowLayer.VIEW).getView()
         except (AttributeError, TypeError):
             parent = None
-        result = yield await(dialogs.show(builder.build(parent)))
+        result = yield wg_await(dialogs.show(builder.build(parent)))
         if result.result == DButtons.PURCHASE:
             print self.LOG, 'client restart confirmed.'
             BigWorld.savePreferences()

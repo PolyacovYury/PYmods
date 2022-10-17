@@ -1,6 +1,5 @@
 import BigWorld
 from OpenModsCore import Analytics, SimpleConfigInterface, overrideMethod
-from VehicleStickers import VehicleStickers
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from vehicle_systems.CompoundAppearance import CompoundAppearance
 

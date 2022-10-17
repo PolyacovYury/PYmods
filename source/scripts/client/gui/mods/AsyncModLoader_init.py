@@ -4,7 +4,7 @@ import string
 import traceback
 
 import ResMgr
-from adisp import process
+from adisp import adisp_process
 from constants import IS_DEVELOPMENT
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from shared_utils import awaitNextFrame, forEach
@@ -49,7 +49,7 @@ def _findValidMODs(path=None, package=None):
         _loadMods(path, package)
 
 
-@process
+@adisp_process
 def _loadMods(path=None, package=None, view=None):
     _mods.clear()
     path = path or __path__[0]
