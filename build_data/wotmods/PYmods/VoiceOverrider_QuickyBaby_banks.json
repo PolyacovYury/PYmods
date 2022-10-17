@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/audioww/bloggers/QuickyBaby/inbattle_communication_pc.bnk": "res/res/audioww/bloggers/QuickyBaby/inbattle_communication_pc.bnk",
+        "res/audioww/bloggers/QuickyBaby/voiceover.bnk": "res/res/audioww/bloggers/QuickyBaby/voiceover.bnk"
+    }
+}

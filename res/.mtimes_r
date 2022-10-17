@@ -152,9 +152,6 @@
 1625712897|configs/PYmods/CamoSelector/paints/by Algiz/Olivgrun RAL 6003/data.xml
 1625712906|configs/PYmods/CamoSelector/paints/by Algiz/Rotbraun RAL 8012/data.xml
 1632845229|configs/PYmods/CamoSelector/settings.json
-1633980551|configs/PYmods/HangarBoosterViewer/HangarBoosterViewer.json
-1633986236|configs/PYmods/HangarBoosterViewer/i18n/en.json
-1633986773|configs/PYmods/HangarBoosterViewer/i18n/ru.json
 1627387534|configs/PYmods/HangarCollision/HangarCollision.json
 1627387752|configs/PYmods/HangarCollision/i18n/en.json
 1627387752|configs/PYmods/HangarCollision/i18n/ru.json
@@ -484,8 +481,8 @@
 1556367257|configs/PYmods/UT_announcer/i18n/en.json
 1521708229|configs/PYmods/UT_announcer/i18n/ru.json
 1577042299|configs/PYmods/VoiceOverrider/VoiceOverrider.json
-1632392454|configs/PYmods/VoiceOverrider/i18n/en.json
-1632392307|configs/PYmods/VoiceOverrider/i18n/ru.json
+1665970748|configs/PYmods/VoiceOverrider/i18n/en.json
+1665971285|configs/PYmods/VoiceOverrider/i18n/ru.json
 1658039192|configs/PYmods/color_messages/color_messages.json
 1658043807|configs/PYmods/color_messages/i18n/en.json
 1658043900|configs/PYmods/color_messages/i18n/ru.json
@@ -610,22 +607,6 @@
 1519691530|res/gui/AppreciationBadges/a_badge_1005654291.png
 1519691530|res/gui/AppreciationBadges/a_badge_4260379.png
 1519691530|res/gui/AppreciationBadges/a_badge_508211276.png
-1630917284|res/gui/HangarBoosterViewer/active/booster_credits.png
-1630917284|res/gui/HangarBoosterViewer/active/booster_crew_xp.png
-1630917284|res/gui/HangarBoosterViewer/active/booster_fl_xp.png
-1630917284|res/gui/HangarBoosterViewer/active/booster_free_xp.png
-1630917284|res/gui/HangarBoosterViewer/active/booster_xp.png
-1630917284|res/gui/HangarBoosterViewer/bg/0.png
-1630917284|res/gui/HangarBoosterViewer/bg/1.png
-1630917284|res/gui/HangarBoosterViewer/bg/2.png
-1630917284|res/gui/HangarBoosterViewer/bg/3.png
-1630917284|res/gui/HangarBoosterViewer/bg/4.png
-1630917284|res/gui/HangarBoosterViewer/bg/5.png
-1630917284|res/gui/HangarBoosterViewer/clan/booster_credits.png
-1630917284|res/gui/HangarBoosterViewer/clan/booster_crew_xp.png
-1630917284|res/gui/HangarBoosterViewer/clan/booster_fl_xp.png
-1630917284|res/gui/HangarBoosterViewer/clan/booster_free_xp.png
-1630917284|res/gui/HangarBoosterViewer/clan/booster_xp.png
 1484596662|res/gui/flash/CamoSelector.png
 1625706368|res/gui/flash/CamoSelector/desert.png
 1625706368|res/gui/flash/CamoSelector/desert16x16.png
@@ -639,4 +620,4 @@
 1479780730|res/scripts/client/gui/mods/mod_UT_announcer.png
 1653738176|wotmods/gambiter.guiflash_0.4.4.wotmod
 1661925772|wotmods/izeberg.modsettingsapi_1.5.4.wotmod
-1661349621|wotmods/poliroid.modslistapi_1.4.1.wotmod
+1665507493|wotmods/poliroid.modslistapi_1.4.2.wotmod

@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/audioww/G_I_Joe/Cover_Girl/inbattle_communication_pc.bnk": "res/res/audioww/G_I_Joe/Cover_Girl/inbattle_communication_pc.bnk",
+        "res/audioww/G_I_Joe/Cover_Girl/voiceover.bnk": "res/res/audioww/G_I_Joe/Cover_Girl/voiceover.bnk"
+    }
+}

@@ -57,6 +57,18 @@ class ConfigInterface(SimpleConfigInterface):
             VoiceMode('krieger21_en', 'krieger21'),
             VoiceMode('krieger21_ru', 'krieger21_ru'),
             VoiceMode('krieger21_cn', 'krieger21_cn'),
+            VoiceMode('yha_crew', 'yha_crew'),
+            VoiceMode('celebrity2022_en', 'celebrity2022_en'),
+            VoiceMode('celebrity2022_ru', 'celebrity2022_ru'),
+            VoiceMode('quickyBaby', 'quickyBaby'),
+            VoiceMode('baroness22', 'baroness22'),
+            VoiceMode('coverGirl22', 'coverGirl22'),
+            VoiceMode('villanelle22_en', 'villanelle22_en'),
+            VoiceMode('villanelle22_ru', 'villanelle22_ru'),
+            VoiceMode('villanelle22_cn', 'villanelle22_cn'),
+            VoiceMode('ermelinda22_en', 'ermelinda22_en'),
+            VoiceMode('ermelinda22_ru', 'ermelinda22_ru'),
+            VoiceMode('ermelinda22_cn', 'ermelinda22_cn'),
         ]
         self.music_modes = [
             MusicMode('default', 'default'),
@@ -133,9 +145,21 @@ class ConfigInterface(SimpleConfigInterface):
             'UI_setting_voice_elisa21_en': 'WT-21: Elisa Day (EN)',
             'UI_setting_voice_elisa21_ru': 'WT-21: Elisa Day (RU)',
             'UI_setting_voice_elisa21_cn': 'WT-21: Elisa Day (CN)',
-            'UI_setting_voice_krieger21_en': 'WT-21: Max fon Krieger (EN)',
-            'UI_setting_voice_krieger21_ru': 'WT-21: Max fon Krieger (RU)',
-            'UI_setting_voice_krieger21_cn': 'WT-21: Max fon Krieger (CN)',
+            'UI_setting_voice_krieger21_en': 'WT-21: Max von Krieger (EN)',
+            'UI_setting_voice_krieger21_ru': 'WT-21: Max von Krieger (RU)',
+            'UI_setting_voice_krieger21_cn': 'WT-21: Max von Krieger (CN)',
+            'UI_setting_voice_yha_crew': 'Year Hare Affair (CN)',
+            'UI_setting_voice_celebrity2022_en': 'Arnold Schwarzenegger (EN)',
+            'UI_setting_voice_celebrity2022_ru': 'Arnold Schwarzenegger (RU)',
+            'UI_setting_voice_quickyBaby': 'QuickyBaby (EN)',
+            'UI_setting_voice_baroness22': 'G.I.Joe: Baroness (EN)',
+            'UI_setting_voice_coverGirl22': 'G.I.Joe: Cover Girl (EN)',
+            'UI_setting_voice_villanelle22_en': 'WT-22: Villanelle Rapière (EN)',
+            'UI_setting_voice_villanelle22_ru': 'WT-22: Villanelle Rapière (RU)',
+            'UI_setting_voice_villanelle22_cn': 'WT-22: Villanelle Rapière (CN)',
+            'UI_setting_voice_ermelinda22_en': 'WT-22: Ermelinda Jung (EN)',
+            'UI_setting_voice_ermelinda22_ru': 'WT-22: Ermelinda Jung (RU)',
+            'UI_setting_voice_ermelinda22_cn': 'WT-22: Ermelinda Jung (CN)',
         }
         super(ConfigInterface, self).init()
 
@@ -145,7 +169,7 @@ class ConfigInterface(SimpleConfigInterface):
             'enabled': self.data['enabled'],
             'column1': [
                 self.tb.createOptions(
-                    'voice', [self.i18n['UI_setting_voice_%s' % mode.name] for mode in self.voice_modes],
+                    'voice', [self.i18n.get('UI_setting_voice_%s' % mode.name, mode.name) for mode in self.voice_modes],
                     button={'iconSource': '../maps/icons/buttons/sound.png'}),
             ],
             'column2': [
