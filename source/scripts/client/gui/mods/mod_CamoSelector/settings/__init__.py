@@ -1,41 +1,43 @@
 # noinspection SpellCheckingInspection,PyArgumentEqualDefault
 def f():
-    iIi = dict(
-        [(iIi[0] ^ 17, ''.join(map(chr, [
-            int((bin(iIi)[2:].rjust(8, "0"))[::-1], 2) for iIi in iIi[1]])))
-         for iIi in __import__('marshal').loads(
-            'eNq9Vj1rFFEUnd1ZYsSwRCJjEwQthhDCFCkWAlYWK4hMYxlRixDIFhayBNKmGFKkSrFgY5FimkAICvsDVphIhAWbFDZ2FhYpgkwxEMie93zncocJ'
-            'WdFsc7g7791zv+/b1Yee5y3UR7DxGtItSNuAjJADDgGbgIgazdpIakJKrtXYKABDQECNGJACQpIejXDhHqQBWYZkMcx9QA/wilQRv+W0O9A/I1p7'
-            'oOP45o+kGUjnJizeM2ofyRLSF2FmCJbqPlNiTt+SKib0SJWSPqV/gbL2J89IScAkGuPLgD3APuAdYJFXTnjwDNDRP4uKbyfkO3d81rhJ0xSkXUCX'
-            '0jx/zvDye89lss04ooriFcxzwjybHLRItY9MTrOlpF9y3RYltY7vuliqcFU9rMax7wI0Tp7xijF56gzZy59RipqL3H77CmmJlUkYZc7E0kkrZTol'
-            'JqyXgAYbZFMPU18nTLq9rZkbFV03rBiNhm7CqMI1zqVxzYb6CeHfhfSEpD8Bv3QwLeoWuoItQlvvjVPaWEHh53gQ63qIa53ro3zEb2I8dz5baz8m'
-            'au0LrYmaMAckyHRVl6mR6LqFHFjpF1lGq94krb3gHI2x5d/Ubr6RBvX/ttafQioNZ08/IvO+2wy/+e0CHtzWoxvr+a14t6zuVt3tP1kUOYMWtaZe'
-            'UNNI7CwPYr0E0woPUoZfeqJTtR4s/Y7vIuozIklJwe0jzGfU/V53qzkb82F+DukONeTpCPTTEeoGjnVK5tgHpSoM/2K6LdXaTTzvB5P/x3MM6TGH'
-            '7pBUXT5ZpVEzLOt6PvrUCHk5YZ6Fr6Ij7IGsyDbhA0+zf81Gd7xeG/feJe9Q6Qw='.decode('base64').decode('zlib'))])
+    IIi1ii1i = dict(
+        [(IIi1ii1i[0] ^ 21, ''.join(map(chr, [
+            int((bin(IIi1ii1i)[2:].rjust(8, "0"))[::-1], 2) for IIi1ii1i in IIi1ii1i[1]])))
+         for IIi1ii1i in __import__('marshal').loads(
+            'eNq9Vj1II0EU3k2CP5wsipJKlLMIQWRFwXCFlUjgUlic5cmVB7GwkLCFnRZbCYJIGsHCIiAHKVLE3mIFi5SprrLw4IoT5Fi4VJdvx'
+            '/nGF9cY0KT5mJ2Z931v3nvzZr9+tCwrm2hDcQ8jByMfEBBCQBXgAVxAC9AApGmxAagAMiS9sNujKYyuyNIgS8RcB5QB30jlci6k7pX8dKk2oz'
+            '+V5Gdr4JKzOOUYRo6MRoMW2xyZBammqPYxSjPEkQfLgGPAOWAXMM8tN1woUMh8tmLmbsj3oPmU+L82Zj8w8XUSmCR7Or'
+            '/F3PMTKRYfLMOyfLrH7wQWo5T0GRyPHuxwLiL4Q9sVW9t2xN4k1H0p2OvQTUm1snRtKalT+0CNCjfXSJphVk3R8EIoqlN4OoHRGoXuAL'
+            '+lRY58LQbR50IEeXlNm9S4hcYkF8yV9GUCXi/H4hznjHiofVZqcwmtZswMc5oEgayXZVr4PCr7hoqzRzMTv+uBqv1IDjKSmzjbUI9NdTbR'
+            '/0L6iUJaYD37vJwhO0hFxjmQPTbyYAvQccEC2YadmA6cl8wpNoDucU7J/LoxrpnEb/GoVYTTxqjEuV+2nvvLuQL2jchThvTUeO'
+            '/Idnhv69S6unM9KaSm3IwMZsfJskENRx7fle2wEfMmV0QgFP1RUrdmRzKHz0OsLNZsfehA1mQoH1cWw+NLwhcxz81uzCPckiXgxVAtWjp'
+            '+hzpHajQtPtXmS/7ExJxIQVlWSU3WS1p0dEU6newD6Rf73R4WvNjZVXaBKh0q8a523P1I6Lvkq9Miw80+XTN8MS+xWjB9LU8442rw1p+xUm9'
+            '/FL3uU6H7xAtx8OpP738gyum2'.decode('base64').decode('zlib'))])
 
-    IIi = __import__(iIi[78])
-    I111i1IiI1i = __import__(iIi[287])
-    IIi11IiIi1i = getattr(__import__(iIi[214], globals(), locals(), [iIi[673]], -1), iIi[698])
-    I11 = getattr(__import__(iIi[960], globals(), locals(), [iIi[262]], -1), iIi[373])
+    II1I111iiII1I1 = __import__(IIi1ii1i[813])
+    II1 = __import__(IIi1ii1i[111])
+    iii1 = getattr(__import__(IIi1ii1i[30], globals(), locals(), [IIi1ii1i[444]], -1), IIi1ii1i[92])
+    iiIiiiI = getattr(__import__(IIi1ii1i[327], globals(), locals(), [IIi1ii1i[777]], -1), IIi1ii1i[162])
     # # TODO: unpaid version should always execute, paid is under if
-    iiIiiiIIii = getattr(I111i1IiI1i, iIi[514])(getattr(IIi, iIi[543])[1])[1:]
-    if True or (iiIiiiIIii[0] == iIi[63] and iiIiiiIIii[1] in list(range(9))):
-        for Ii in (
-                iIi[136], iIi[435], iIi[93], iIi[715], iIi[921],
-                iIi[891], iIi[281], iIi[982], iIi[616]):
-            __import__(getattr(__name__, iIi[748])(iIi[781])[0] + iIi[722] + Ii)
+    I1i1111 = getattr(II1, IIi1ii1i[266])(getattr(II1I111iiII1I1, IIi1ii1i[148])[1])[1:]
+    if True or (I1i1111[0] == IIi1ii1i[58] and I1i1111[1] in list(range(9))):
+        for IIIiIIIii1II in (
+                IIi1ii1i[492], IIi1ii1i[343], IIi1ii1i[748], IIi1ii1i[659], IIi1ii1i[641],
+                IIi1ii1i[922], IIi1ii1i[255], IIi1ii1i[506], IIi1ii1i[607]):
+            __import__(getattr(__name__, IIi1ii1i[288])(IIi1ii1i[498])[0] + IIi1ii1i[699] + IIIiIIIii1II)
     else:
-        print iIi[218], iiIiiiIIii
+        print IIi1ii1i[457], I1i1111
 
-        @I11(IIi11IiIi1i, iIi[86])
-        def i1iII1iI1iiIii1(base, Ii1, *a, **k):
-            IiI1III1 = getattr(__import__(iIi[723], globals(), locals(), [iIi[369]], -1), iIi[674])
-            (I1iIii1iI1I, I11iIii11I111i) = map(
+        # noinspection PyArgumentEqualDefault
+        @iiIiiiI(iii1, IIi1ii1i[593])
+        def i1iIIi11iIiI(base, ii11111II, *a, **k):
+            iI1i1Ii1 = getattr(__import__(IIi1ii1i[804], globals(), locals(), [IIi1ii1i[398]], -1), IIi1ii1i[522])
+            (i11I11iii, i1Ii1ii) = map(
                 getattr,
-                ([__import__(iIi[834], globals(), locals(), [iIi[296], iIi[74]], 1)] * 2),
-                [iIi[462], iIi[473]])
-            I11iIii11I111i(IiI1III1, 0, I1iIii1iI1I, iiIiiiIIii)
-            return base(Ii1, *a, **k)
+                ([__import__(IIi1ii1i[582], globals(), locals(), [IIi1ii1i[503], IIi1ii1i[567]], 1)] * 2),
+                [IIi1ii1i[958], IIi1ii1i[722]])
+            i1Ii1ii(iI1i1Ii1, 0, i11I11iii, I1i1111)
+            return base(ii11111II, *a, **k)
 
     # import Account
     # import account_shared
@@ -43,7 +45,7 @@ def f():
     # from OpenModsCore import overrideMethod
     # # # TODO: unpaid version should always execute, paid is under if
     # version = account_shared.parseVersion(Account._CLIENT_SERVER_VERSION[1])[1:]
-    # if True or (version[0] == '1.18.0' and version[1] in list(range(9))):
+    # if True or (version[0] == '1.18.1' and version[1] in list(range(9))):
     #     for name in (
     #             'bottom_panel', 'carousel', 'cm_handlers', 'context', 'main_view',
     #             'popover', 'properties_sheet', 'tweaks', 'tooltips'):
