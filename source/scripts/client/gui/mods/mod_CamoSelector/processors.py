@@ -4,7 +4,7 @@ from Account import Account
 from Avatar import PlayerAvatar
 from CurrentVehicle import g_currentPreviewVehicle, g_currentVehicle
 from HeroTank import _HeroTankAppearance
-from OpenModsCore import BigWorld_callback, loadJson, overrideMethod
+from OpenModsCore import loadJson, overrideMethod
 from PlatoonTank import _PlatoonTankAppearance
 from copy import deepcopy
 from gui import g_tankActiveCamouflage
@@ -14,7 +14,6 @@ from gui.Scaleform.daapi.view.lobby.customization.shared import (
 from gui.customization.shared import C11N_ITEM_TYPE_MAP, SEASON_TYPE_TO_NAME, __isTurretCustomizable as isTurretCustom
 from gui.hangar_vehicle_appearance import HangarVehicleAppearance
 from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_INDICES, GUI_ITEM_TYPE_NAMES
-from gui.shared.utils.HangarSpace import _execute_after_hangar_space_inited
 from items.components.c11n_constants import CustomizationType, EMPTY_ITEM_ID, ItemTags, SeasonType
 from items.customizations import CustomizationOutfit, EmptyComponent, InsigniaComponent, createNationalEmblemComponents
 from items.vehicles import g_cache
@@ -368,8 +367,3 @@ def new_onBecomePlayer(base, self):
     base(self)
     g_config.hangarCamoCache.clear(), g_config.collectCamouflageData()
     g_config.teamCamo = dict.fromkeys(('ally', 'enemy'))
-
-
-@overrideMethod(_execute_after_hangar_space_inited)
-def delayCall(base, self, *a, **k):
-    BigWorld_callback(0, base, self, *a, **k)
