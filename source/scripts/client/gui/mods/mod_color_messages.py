@@ -1,4 +1,5 @@
 from OpenModsCore import SimpleConfigInterface, overrideMethod
+from collections import defaultdict
 from gui.impl import backport
 from helpers import i18n
 from messenger import g_settings
@@ -40,16 +41,15 @@ class ConfigInterface(SimpleConfigInterface):
         for ix in ('header', 'xp', 'credits'):
             color_control = self.tb.createControl('color_%s' % ix, self.tb.types.ColorChoice)
             color_control['text'] = self.tb.getLabel('color_%s_tooltip_header' % ix)
-            win = 'battleVictoryResult'
             # noinspection SpellCheckingInspection
-            color_control['tooltip'] %= {'color': self.data['color_%s' % ix], 'example': g_settings.msgTemplates.format(win, {
+            ctx = defaultdict(str)
+            ctx.update({
                 'color_messages_only': (ix,),
                 'arenaName': i18n.makeString('#arenas:02_malinovka/name'),
                 'vehicleNames': i18n.makeString('#germany_vehicles:Maus_short'),
-                'xp': backport.getIntegralFormat(1234), 'credits': 56789,
-                'xpEx': '', 'battlePassProgress': '', 'crystalStr': '', 'gold': '', 'eventCoinStr': '', 'bpcoinStr': '',
-                'creditsEx': '', 'rankedProgress': '', 'rankedBonusBattles': '', 'achieves': '', 'badges': '', 'lock': '',
-                'quests': '', 'piggyBank': '', 'platformCurrencyStr': ''})['message']}
+                'xp': backport.getIntegralFormat(1234), 'credits': 56789})
+            color_control['tooltip'] %= {'color': self.data['color_%s' % ix], 'example': g_settings.msgTemplates.format(
+                'battleVictoryResult', ctx)['message']}
             controls.append(color_control)
         return {
             'modDisplayName': self.i18n['UI_description'],
