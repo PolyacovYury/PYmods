@@ -4,10 +4,10 @@ import Keys
 import Math
 import math
 from OpenModsCore import Analytics, SimpleConfigInterface, checkKeys, loadJson, overrideMethod
-from cgf_components.hangar_camera_manager import HangarCameraManager
 from gui import SystemMessages
 from gui.ClientHangarSpace import hangarCFG
 from gui.Scaleform.framework import WindowLayer
+from gui.hangar_cameras.hangar_camera_manager import HangarCameraManager
 from gui.shared.personality import ServicesLocator
 from helpers import dependency
 from skeletons.gui.shared.utils import IHangarSpace
@@ -98,7 +98,7 @@ def toggleHangarUI(visible):
 
 
 @overrideMethod(HangarCameraManager)
-def handleLobbyViewMouseEvent(base, *args, **kwargs):
+def updateCameraByMouseMove(base, *args, **kwargs):
     if config.data['UIVisible'] or not config.cameraPos or config.data['currentCamPos'] == len(
             config.cameraPos) or not config.data['lockCamera']:
         base(*args, **kwargs)
