@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/{GAME_VERSION}/PYmods/VoiceOverrider_banks/T-1000.wotmod": "build/wotmods/PYmods/VoiceOverrider_banks/T-1000.wotmod"
+    }
+}
