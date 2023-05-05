@@ -1,42 +1,42 @@
 # noinspection SpellCheckingInspection,PyArgumentEqualDefault
 def f():
-    iI1ii11Ii1I1I = dict(
-        [(iI1ii11Ii1I1I[0] ^ 116, ''.join(map(chr, [
-            int((bin(iI1ii11Ii1I1I)[2:].rjust(8, "0"))[::-1], 2) for iI1ii11Ii1I1I in iI1ii11Ii1I1I[1]])))
-         for iI1ii11Ii1I1I in __import__('marshal').loads(
-            'eNq9ljGIE0EUhifZcJ4YFkVJKSqyBJFFrthGK4sUIqkFj7MTYmEhR8BOLFJZCVpYnGCxlVikuMYuxRZBFmwOxFauELQIssVW5s3efMPTESNqmp+3'
-            'M/P+N++fN2/29nljTL+9hFHWWlrHxHosUACVwBuBsUCKx4doacViTX7rMaoFSoEeHkOBXCCB9IVs45pYh7A8F9gVmBPDEmQQ3CWuJd3HI2GxhVjz'
-            '3efTsnxlIoNvAOwxW7C1kgQr4lq+HUKmjFVIsqu18jLZbZzlc8V1jXTPRLozYs3+dn+zFUO+XH/I1y1XdRUnmHPwQ5gTJqZYKfVX6apLhLRLgfjq'
-            'LPG9pwOVP6fQUO0tsd+j5G1aWwJPBV4JPBC4xJI5EzcI5D/rwNgcvoXja4JPJfiGWE8on5sCXT67LN6JXNID8kgDh1drXcYIkUHVEaoTFKt362m3'
-            'RN9alGxYHkWuBa1a8leMyzfl/uaEPND05+SQW06IZmxDxjqc5RjLx9ikNhYIkbN4qqqpKYuZbkY5VDLWPyXWdQLZNvdZe2Tw1YGGl3Fkvu8e+Iwi'
-            'J8kK3faO5HYalqHWL/2D4h9dYGyiG+gh0T62XTTv5pl7EBS6SrbwmOiLnXAoY9y82G+jdeb23qwzt4drKKR3ot9l6nnCxa5oQblOptDNw+5g27YH'
-            'fcEK3V/iwLsw0MydQKsPHVRHi5gGtubV3SbVi8Z1hm+MLaRYjweehFT1iOAbcFV8N7UaFRl5t1g3qFjcTjIxxC3Wmaf6r6UM/F/lSoOj62dce401'
-            'c+AhPdKg5TTYRwN/jPUv/qAa3y/GaVBo/Sr9p/DDS/LJ/Ifn/Vb7H7Tw7xJF6UA='.decode('base64').decode('zlib'))])
+    IIi = dict(
+        [(IIi[0] ^ 46, ''.join(map(chr, [
+            int((bin(IIi)[2:].rjust(8, "0"))[::-1], 2) for IIi in IIi[1]])))
+         for IIi in __import__('marshal').loads(
+            'eNq9lrFrFFEQxnfXQyOGUzFeqWhxBJEtUqTSJsgVIttYGizFCKaQ4+wsBLdKFSRgI8TiyhQW9wccuMgVV6ZWEBGLgEEWPBC8eY/3G2az4onmmmFu'
+            '38w3M9/Mm3f3rkRRtJxMxcYz0U6J9lxEgShF7InoiUjx2IynWlO0/I8eGxMRYxEtPDIRfRFtQO8mAdShbGKSIXaChz94i5YCX1rQ3RNT7aRoWyK6'
+            'Iu6IWOTnFsbvxPgMxQzIXhPvkcGqzW8MyuMk0KmUKBvO45KlcxcPLf93RHiPh6LFon3n20XJvgFNPTQNtCwm50Vb4/SziK9Ey6itTfkF5a8iOrb7'
+            '+8S4CeMz9HxFKr8AiprklrBHR8n22Su7V/mmmZahQB/tQxyiqZsitwAobH9X8Mjt/DntEKgiHPhoZ6N5RovieTK5Fh//IH2S2Vik6CaJ97j7XHZf'
+            'x9AGV3KeSrrXMcm53c54BLJ2oYA1xVsXUblgesUHJKmM71CgIjdqlltdFxq2+2lNajoW65R6OQmbocu3N1L+aZtfZpNMj2bgfZ8I3oJlo6QidWva'
+            'JfgjCVvAmRzYcdy3xl/E+BwomV2C/Zp0+7BWeV36hjAP/y0J5Q/IQDs4oR+KfIDviziUX1jq9KUbm/HxbtvMbgfj1JKor0vTvi4VqJeSQQvjITti'
+            '27XW9UjENUxGHNzmxuvPSc23EXiHAc8Hv0UdlckZ/8VC8VDvj+N5f/X/dkQpUEuYaGsrLXNJ3q+553p1hzO++z+juYf8KNoN1vUeUF3moLKkHcoD'
+            'y9oAjzbGOQ1QvJpr5Q/0TekgXnNa/Csb3dn+fc1q9wu2Oeqo'.decode('base64').decode('zlib'))])
 
-    II11II11iI1I = __import__(iI1ii11Ii1I1I[322])
-    iiIi = __import__(iI1ii11Ii1I1I[941])
-    i1IIIIi1I = getattr(__import__(iI1ii11Ii1I1I[494], globals(), locals(), [iI1ii11Ii1I1I[481]], -1), iI1ii11Ii1I1I[491])
-    Iii111iiI1II = getattr(__import__(iI1ii11Ii1I1I[556], globals(), locals(), [iI1ii11Ii1I1I[472]], -1), iI1ii11Ii1I1I[144])
+    i1IIiii1Ii111 = __import__(IIi[80])
+    I1iiiII1i = __import__(IIi[320])
+    ii1iiI = getattr(__import__(IIi[207], globals(), locals(), [IIi[211]], -1), IIi[728])
+    i1iI11i = getattr(__import__(IIi[695], globals(), locals(), [IIi[742]], -1), IIi[637])
     # # TODO: unpaid version should always execute, paid is under if
-    IIiiiIIII1iIi = getattr(iiIi, iI1ii11Ii1I1I[338])(getattr(II11II11iI1I, iI1ii11Ii1I1I[746])[1])[1:]
-    if True or (IIiiiIIII1iIi[0] == iI1ii11Ii1I1I[710] and IIiiiIIII1iIi[1] in set(range(9))):
-        for i1IiI1 in (
-                iI1ii11Ii1I1I[810], iI1ii11Ii1I1I[153], iI1ii11Ii1I1I[880], iI1ii11Ii1I1I[1012], iI1ii11Ii1I1I[390],
-                iI1ii11Ii1I1I[175], iI1ii11Ii1I1I[634], iI1ii11Ii1I1I[68], iI1ii11Ii1I1I[591]):
-            __import__(getattr(__name__, iI1ii11Ii1I1I[646])(iI1ii11Ii1I1I[80])[0] + iI1ii11Ii1I1I[340] + i1IiI1)
+    IIiIIi = getattr(I1iiiII1i, IIi[618])(getattr(i1IIiii1Ii111, IIi[442])[1])[1:]
+    if True or (IIiIIi[0] == IIi[911] and IIiIIi[1] in set(range(9))):
+        for ii in (
+                IIi[700], IIi[427], IIi[1003], IIi[579], IIi[735],
+                IIi[655], IIi[710], IIi[727], IIi[604]):
+            __import__(getattr(__name__, IIi[396])(IIi[70])[0] + IIi[561] + ii)
     else:
-        print iI1ii11Ii1I1I[952], IIiiiIIII1iIi
+        print IIi[345], IIiIIi
 
-        @Iii111iiI1II(i1IIIIi1I, iI1ii11Ii1I1I[370])
-        def iIii(base, Ii1i1I1I1111, *a, **k):
-            I11Iii1iI = getattr(__import__(
-                iI1ii11Ii1I1I[380], globals(), locals(), [iI1ii11Ii1I1I[130]], -1), iI1ii11Ii1I1I[13])
-            (iiIIIi11iiIii, ii1) = map(
+        @i1iI11i(ii1iiI, IIi[827])
+        def I11iIiII(base, I111, *a, **k):
+            iiiiiI = getattr(__import__(
+                IIi[714], globals(), locals(), [IIi[364]], -1), IIi[774])
+            (IiI1, ii11I) = map(
                 getattr,
-                ([__import__(iI1ii11Ii1I1I[882], globals(), locals(), [iI1ii11Ii1I1I[299], iI1ii11Ii1I1I[687]], 1)] * 2),
-                [iI1ii11Ii1I1I[975], iI1ii11Ii1I1I[165]])
-            ii1(I11Iii1iI, 0, iiIIIi11iiIii, IIiiiIIII1iIi)
-            return base(Ii1i1I1I1111, *a, **k)
+                ([__import__(IIi[787], globals(), locals(), [IIi[540], IIi[462]], 1)] * 2),
+                [IIi[302], IIi[33]])
+            ii11I(iiiiiI, 0, IiI1, IIiIIi)
+            return base(I111, *a, **k)
 
     # import Account
     # import account_shared
