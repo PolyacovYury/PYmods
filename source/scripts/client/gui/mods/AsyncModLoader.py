@@ -1,65 +1,42 @@
-import weakref
+import game_loading_bindings
 
 import BigWorld
-import GUI
-from frameworks.state_machine import State, ConditionTransition
-from gameplay.delegator import GameplayLogic
-from gameplay.machine import BattleReplayMachine
-from gui.Scaleform.daapi.view.external_components import ExternalFlashComponent, ExternalFlashSettings
-from gui.Scaleform.daapi.view.meta.GameLoadingMeta import GameLoadingMeta
-from gui.Scaleform.genConsts.ROOT_SWF_CONSTANTS import ROOT_SWF_CONSTANTS
+import re
+import weakref
+from frameworks.state_machine import State, StateFlags, StringEventTransition
+from functools import partial
+from gameplay.machine import GameplayStateMachine
 from gui.app_loader.observers import AppLoaderObserver
 from gui.app_loader.settings import APP_NAME_SPACE
-from gui.app_loader.spaces import IntroVideoSpace
+from gui.game_loading.loading import getLoader
+from gui.game_loading.resources.cdn.models import LocalSlideModel
 from gui.shared.personality import ServicesLocator as SL
-from gui.shared.utils import graphics
 from gui.shared.utils.decorators import ReprInjector
-from helpers import getFullClientVersion, getClientOverride, uniprof, dependency
+from helpers import dependency
 from skeletons.gameplay import IGameplayLogic
-from skeletons.gui.app_loader import IGlobalSpace, ApplicationStateID
+from skeletons.gui.app_loader import IGlobalSpace
 
 
 class _const:
     stateID = 'async.game_loading'
-    finished = 'async.game_loading.finished'
-    alias = 'AsyncModLoader'
+    done = 'async.game_loading.done'
 
 
-def _new_start(self):
-    machine = self._GameplayLogic__machine
-    self._GameplayLogic__adaptor.startListening()
-    machine.configure()
-    if isinstance(machine, BattleReplayMachine):  # sadly, impossible. zero clue why.
-        return machine.start()
-    start_state = machine.getChildByIndex(0)
-    loading = start_state.loading
-    async_loading = State(stateID=_const.stateID)
-    for transition in loading.getTransitions():
-        targets = transition.getTargets()
-        if isinstance(transition, ConditionTransition):
-            condition = transition._ConditionTransition__condition
-        loading.removeTransition(transition)
-        async_loading.addTransition(transition)
-        if isinstance(transition, ConditionTransition):
-            # noinspection PyUnboundLocalVariable,PyDunderSlots,PyUnresolvedReferences
-            transition._ConditionTransition__condition = condition
-        for target in targets:
-            transition.setTarget(target)
-    loading.addTransition(ConditionTransition(lambda _: True), target=async_loading)
-    start_state.addChildState(async_loading)
+def _new_configure_gameplay(machine):
+    _old_configure_gameplay(machine)
+    async_loading = State(stateID=_const.stateID, flags=StateFlags.INITIAL)
+    offline_state = SL.gameplay._GameplayLogic__machine.offline
+    offline_state.login._State__flags = StateFlags.UNDEFINED
+    async_loading.addTransition(StringEventTransition(_const.done), target=offline_state.login)
+    offline_state.addChildState(async_loading)
     machine.connect(_AsyncLoaderObserver(_const.stateID, weakref.proxy(SL.appLoader)))
-    machine.start()
 
 
-def new_showGUI(self, appFactory, appNS, appState):
-    old_showGUI(self, appFactory, appNS, appState)
-    if appState == ApplicationStateID.INITIALIZED:
-        appFactory.goToIntroVideo(appNS)
-
-
-old_showGUI = IntroVideoSpace.showGUI
-IntroVideoSpace.showGUI = new_showGUI
-GameplayLogic.start = _new_start
+def _new_configure_game_loading(machine):
+    playerLoadingState = machine.getChildByIndex(3)
+    playerLoadingProgressMixinState = playerLoadingState.getChildByIndex(1)
+    playerLoadingProgressMixinState._settings.startPercent = 0
+    playerLoadingProgressMixinState._setInitialProgress()
 
 
 @ReprInjector.simple()
@@ -70,13 +47,12 @@ class _AsyncLoaderSpace(IGlobalSpace):
         return 8
 
     def showGUI(self, appFactory, appNS, appState):
-        if appState != ApplicationStateID.INITIALIZING or appNS != APP_NAME_SPACE.SF_LOBBY:
+        if appNS != APP_NAME_SPACE.SF_LOBBY:
             return
-        loader = _AsyncLoaderView()
-        loader.active(True)
+        loader = _AsyncLoaderTracker()
         # noinspection PyUnresolvedReferences
         from gui.mods import _loadMods
-        _loadMods(view=loader)
+        _loadMods(game_loader=loader)
 
 
 class _AsyncLoaderObserver(AppLoaderObserver):
@@ -86,42 +62,32 @@ class _AsyncLoaderObserver(AppLoaderObserver):
         self._proxy.changeSpace(_AsyncLoaderSpace())
 
 
-class _AsyncLoaderView(ExternalFlashComponent, GameLoadingMeta):
+class _AsyncLoaderTracker:
     gameplay = dependency.descriptor(IGameplayLogic)
 
     def __init__(self):
         self.__errorFiles = []
-        super(_AsyncLoaderView, self).__init__(ExternalFlashSettings(
-            'gameLoading', 'gameLoadingApp.swf', 'root.main', ROOT_SWF_CONSTANTS.GAME_LOADING_REGISTER_CALLBACK))
-        self.createExternalComponent()
-
-    @uniprof.regionDecorator(label=_const.stateID, scope='enter')
-    def afterCreate(self):
-        super(_AsyncLoaderView, self).afterCreate()
-        self.as_setLocaleS(getClientOverride())
-        self.as_setVersionS(getFullClientVersion())
-        self.as_setInfoS('')
-        self.as_setProgressS(0)
-        self._updateStage()
-        from gui import g_guiResetters
-        g_guiResetters.add(self._updateStage)
-
-    @uniprof.regionDecorator(label=_const.stateID, scope='exit')
-    def _dispose(self):
-        from gui import g_guiResetters
-        g_guiResetters.discard(self._updateStage)
-        BigWorld.callback(0, self.gameplay.tick)
-        super(_AsyncLoaderView, self)._dispose()
+        from helpers.i18n import makeString
+        self._status_user_string = re.sub(r'<[^>]+>', '', makeString(
+            '#system_messages:vehiclePostProgression/buyPairModification/title'))
+        game_loading_bindings.setStatusText(self._status_user_string)
 
     def setProgress(self, progress):
-        self.as_setProgressS(progress)
+        game_loading_bindings.setProgress(progress, 100)
 
     def addError(self, fileName):
         self.__errorFiles.append(fileName)
-        self.as_setInfoS('<br>'.join(
-            "<font face='$FieldFont' color='#DD7700' size='16'>Mod import failed: %s</font>" % x for x in self.__errorFiles))
+        slide_state = getLoader().getChildByIndex(1).mainState
+        slide_state._image = LocalSlideModel(
+            slide_state.lastShownImage.imageRelativePath, slide_state.lastShownImage.vfx,
+            "Mod%s import failed:" % (('s' if len(self.__errorFiles) > 1 else ''),), ', '.join(map(str, self.__errorFiles)),
+            slide_state.lastShownImage.minShowTimeSec, slide_state.lastShownImage.transition)
+        slide_state._view(slide_state.lastShownImage)
 
-    def _updateStage(self):
-        width, height = GUI.screenResolution()
-        scaleLength = len(graphics.getInterfaceScalesList([width, height]))
-        self.as_updateStageS(width, height, scaleLength - 1)
+    def close(self):
+        BigWorld.callback(0, partial(self.gameplay.postStateEvent, _const.done))
+
+
+_old_configure_gameplay = GameplayStateMachine.configure
+GameplayStateMachine.configure = _new_configure_gameplay
+_new_configure_game_loading(getLoader())
