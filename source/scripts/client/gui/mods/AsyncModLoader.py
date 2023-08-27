@@ -14,8 +14,7 @@ from gui.shared.personality import ServicesLocator as SL
 from gui.shared.utils.decorators import ReprInjector
 from helpers import dependency
 from skeletons.gameplay import IGameplayLogic
-from skeletons.gui.app_loader import IGlobalSpace
-
+from skeletons.gui.app_loader import IGlobalSpace, ApplicationStateID
 
 class _const:
     stateID = 'async.game_loading'
@@ -47,7 +46,7 @@ class _AsyncLoaderSpace(IGlobalSpace):
         return 8
 
     def showGUI(self, appFactory, appNS, appState):
-        if appNS != APP_NAME_SPACE.SF_LOBBY:
+        if appNS != APP_NAME_SPACE.SF_LOBBY or appState != ApplicationStateID.INITIALIZED:
             return
         loader = _AsyncLoaderTracker()
         # noinspection PyUnresolvedReferences
