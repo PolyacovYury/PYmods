@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/audioww/mosfilm/Balbes/inbattle_communication_pc.bnk": "res/res/audioww/mosfilm/Balbes/inbattle_communication_pc.bnk",
+        "res/audioww/mosfilm/Balbes/voiceover.bnk": "res/res/audioww/mosfilm/Balbes/voiceover.bnk"
+    }
+}

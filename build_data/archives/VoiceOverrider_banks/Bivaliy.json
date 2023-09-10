@@ -1,0 +1,7 @@
+{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/{GAME_VERSION}/PYmods/VoiceOverrider_banks/Bivaliy.wotmod": "build/wotmods/PYmods/VoiceOverrider_banks/Bivaliy.wotmod"
+    }
+}
