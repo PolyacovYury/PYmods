@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/audioww/mosfilm/Bivaliy/inbattle_communication_pc.bnk": "res/res/audioww/mosfilm/Bivaliy/inbattle_communication_pc.bnk",
+        "res/audioww/mosfilm/Bivaliy/voiceover.bnk": "res/res/audioww/mosfilm/Bivaliy/voiceover.bnk"
+    }
+}

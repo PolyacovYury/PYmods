@@ -85,6 +85,10 @@ class ConfigInterface(SimpleConfigInterface):
             VoiceMode('commander_bp_Vasilisa', 'commander_bp_Vasilisa'),
             VoiceMode('commander_bp_Kashchei', 'commander_bp_Kashchei'),
             VoiceMode('commander_bp_BabaYaga', 'commander_bp_BabaYaga'),
+            VoiceMode('handOfBlood', 'handOfBlood'),
+            VoiceMode('commander_mosfilm_Trus', 'commander_mosfilm_Trus'),
+            VoiceMode('commander_mosfilm_Balbes', 'commander_mosfilm_Balbes'),
+            VoiceMode('commander_mosfilm_Bivaliy', 'commander_mosfilm_Bivaliy'),
         ]
         self.music_modes = [
             MusicMode('default', 'default'),
@@ -191,6 +195,10 @@ class ConfigInterface(SimpleConfigInterface):
             'UI_setting_voice_commander_bp_Vasilisa': 'Vasilisa Beautiful (RU)',
             'UI_setting_voice_commander_bp_Kashchei': 'Koschei Immortal (RU)',
             'UI_setting_voice_commander_bp_BabaYaga': 'Baba Yaga (RU)',
+            'UI_setting_voice_handOfBlood': 'HandOfBlood (DE)',
+            'UI_setting_voice_commander_mosfilm_Trus': 'Trus (RU)',
+            'UI_setting_voice_commander_mosfilm_Balbes': 'Balbes (RU)',
+            'UI_setting_voice_commander_mosfilm_Bivaliy': 'Bivaliy (RU)',
         }
         super(ConfigInterface, self).init()
 
