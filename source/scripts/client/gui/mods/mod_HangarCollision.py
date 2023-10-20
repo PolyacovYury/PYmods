@@ -98,18 +98,18 @@ def clearCollision(self):
 @overrideMethod(HangarVehicleAppearance, 'refresh')
 def new_refresh(base, self, *args, **kwargs):
     clearCollision(self)
-    base(self, *args, **kwargs)
+    return base(self, *args, **kwargs)
 
 
 @overrideMethod(HangarVehicleAppearance, 'recreate')
 def new_recreate(base, self, *args, **kwargs):
     clearCollision(self)
-    base(self, *args, **kwargs)
+    return base(self, *args, **kwargs)
 
 
 @overrideMethod(HangarVehicleAppearance, '__setupModel')
-def new_setupModel(base, self, buildIdx):
-    base(self, buildIdx)
+def new_setupModel(base, self, buildIdx, *args, **kwargs):
+    base(self, buildIdx, *args, **kwargs)
     if not g_config.data['enabled']:
         return
     if g_config.collisionMode:

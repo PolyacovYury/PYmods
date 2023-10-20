@@ -58,26 +58,26 @@ else:
 
 
     @overrideMethod(AvatarsInfo, 'getAvatarInfo')
-    def new_AI_getAvatarInfo(base, self, dbID):
-        result = base(self, dbID)
+    def new_AI_getAvatarInfo(base, self, dbID, *args, **kwargs):
+        result = base(self, dbID, *args, **kwargs)
         if dbID in g_badges:
             result._AvatarInfo__badge = g_badges[dbID]
         return result
 
 
     @overrideMethod(Badge, 'getBadgeVO')
-    def new_getBadgeVO(base, self, size, extraData=None, shortIconName=False):
+    def new_getBadgeVO(base, self, size, extraData=None, shortIconName=False, *args, **kwargs):
         if self.getIconPostfix().startswith('a_badge_'):
             shortIconName = False
             if extraData is not None and 'isAtlasSource' in extraData:
                 extraData['isAtlasSource'] = False
-        return base(self, size, extraData, shortIconName)
+        return base(self, size, extraData, shortIconName, *args, **kwargs)
 
 
     @overrideMethod(RES_ICONS, 'getBadgeIcon')
-    def new_getBadgeIcon(base, _, size, value):
+    def new_getBadgeIcon(base, _, size, value, *args, **kwargs):
         if isinstance(value, int) or not value.startswith('a_badge_'):
-            return base(size, value)
+            return base(size, value, *args, **kwargs)
         outcome = '../AppreciationBadges/%s.png' % value
         normOutcome = os.path.normpath('gui/flash/' + outcome).replace(os.sep, '/')
         if ResMgr.openSection(normOutcome) is None:

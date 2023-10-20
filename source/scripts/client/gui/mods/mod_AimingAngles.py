@@ -211,15 +211,15 @@ class FlashController(SimpleConfigInterface):
         finally:
             return result
 
-    def InterfaceScaleSetting_setSystemValue(self, base, base_self, value):
+    def InterfaceScaleSetting_setSystemValue(self, base, base_self, value, *args, **kwargs):
         try:
             self.y = - BigWorld.screenHeight() * SHIFT if self.aimMode == ARCADE_MODE else 0.0
             self.ON_AIM_MODE()
         finally:
-            return base(base_self, value)
+            return base(base_self, value, *args, **kwargs)
 
-    def Vehicle_onEnterWorld(self, base, base_self, prereqs):
-        result = base(base_self, prereqs)
+    def Vehicle_onEnterWorld(self, base, base_self, prereqs, *args, **kwargs):
+        result = base(base_self, prereqs, *args, **kwargs)
         try:
             if not base_self.isVehicleAlive:
                 return

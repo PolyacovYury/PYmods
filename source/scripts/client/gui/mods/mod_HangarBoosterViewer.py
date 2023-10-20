@@ -125,7 +125,7 @@ g_config = ConfigInterface()
 
 
 @overrideMethod(LobbyHeaderMeta, 'as_setBoosterDataS')
-def as_setBoosterDataS(base, self, data):
+def as_setBoosterDataS(base, self, data, *args, **kwargs):
     try:
         if not g_config.data['enabled']:
             return
@@ -138,7 +138,7 @@ def as_setBoosterDataS(base, self, data):
             data['boosterBg'] = BOOSTER_ICON_EMPTY
             data['boosterText'] = ''
     finally:
-        return base(self, data)
+        return base(self, data, *args, **kwargs)
 
 
 @overrideMethod(PlayerAccount, 'onArenaCreated')

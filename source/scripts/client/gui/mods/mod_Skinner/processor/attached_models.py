@@ -138,15 +138,15 @@ def new_oVHC(base, self, *a, **k):
 
 
 @overrideMethod(Vehicle, 'startVisual')
-def new_startVisual(base, self):
-    base(self)
+def new_startVisual(base, self, *args, **kwargs):
+    base(self, *args, **kwargs)
     if self.isStarted and self.isAlive():
         BigWorld.callback(0.1, partial(attach, self.id))
 
 
 @overrideMethod(HangarVehicleAppearance, '__setupModel')
-def new_setupModel(base, self, buildIdx):
-    base(self, buildIdx)
+def new_setupModel(base, self, buildIdx, *args, **kwargs):
+    base(self, buildIdx, *args, **kwargs)
     attach(self.id)
 
 

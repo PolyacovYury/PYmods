@@ -67,9 +67,9 @@ analytics = Analytics(config.ID, config.version, 'UA-76792179-20')
 
 
 @overrideMethod(SniperCamera, '__showVehicle')
-def new_SniperCamera__showVehicle(base, self, visible, changing=False):
+def new_SniperCamera__showVehicle(base, self, visible, changing=False, *args, **kwargs):
     if not config.data['enabled']:
-        return base(self, visible)
+        return base(self, visible, *args, **kwargs)
 
     zoom, zooms, exposures = config.data['zoomValue'], self._cfg['zooms'], self._SniperCamera__dynamicCfg['zoomExposure']
     if config.vehicleVisible:
@@ -113,16 +113,16 @@ def setGunVisible(visible):
 
 
 @overrideMethod(SniperControlMode, 'handleKeyEvent')
-def new_SniperControlMode_handleKeyEvent(base, self, isDown, key, mods, event=None):
+def new_SniperControlMode_handleKeyEvent(base, self, isDown, key, mods, event=None, *args, **kwargs):
     if config.data['enabled'] and isDown and checkKeys(config.data['hotkey'], key):
         config.vehicleVisible = not config.vehicleVisible
         self._cam._SniperCamera__showVehicle(config.vehicleVisible, True)
-    return base(self, isDown, key, mods, event)
+    return base(self, isDown, key, mods, event, *args, **kwargs)
 
 
 @overrideMethod(SniperCamera, '__getZooms')
-def new_SniperCamera_getZooms(base, self):
-    zooms = base(self)
+def new_SniperCamera_getZooms(base, self, *args, **kwargs):
+    zooms = base(self, *args, **kwargs)
     if not self._cfg['increasedZoom'] and config.data['zoomValue'] in zooms:
         zooms.append(self._cfg['zooms'][3])
     return zooms

@@ -187,8 +187,8 @@ def delayedHooks():
         return base(self, data)
 
     @overrideMethod(TankmanSkillListField, '_getValue')
-    def new_tankmanSkill_getValue(base, self):
-        result = base(self)
+    def new_tankmanSkill_getValue(base, self, *args, **kwargs):
+        result = base(self, *args, **kwargs)
         if _config.data['enabled']:
             for skill in result:
                 skill['label'] = "<font color='#%s'>%s</font>" % (_config.data['colour'], skill['label'])
@@ -197,8 +197,8 @@ def delayedHooks():
     @overrideMethod(ToolTipAttrField, '_getValue')
     @overrideMethod(TankmanRoleLevelField, '_getValue')
     @overrideMethod(TankmanCurrentVehicleAttrField, '_getValue')
-    def new_tankmanAttr_getValue(base, self):
-        result = base(self)
+    def new_tankmanAttr_getValue(base, self, *args, **kwargs):
+        result = base(self, *args, **kwargs)
         if _config.data['enabled'] and self._name in ('name', 'rank', 'role', 'efficiencyRoleLevel', 'currentVehicleName'):
             return "<font color='#%s'>%s</font>" % (_config.data['colour'], result)
         return result
