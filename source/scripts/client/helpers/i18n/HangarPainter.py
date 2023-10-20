@@ -158,7 +158,6 @@ def i18n_hook_makeString(key, *args, **kw):
 
 def delayedHooks():
     from gui.Scaleform.daapi.view.dialogs import I18nDialogMeta
-    from gui.Scaleform.daapi.view.lobby.hangar.Crew import Crew
     from gui.shared.tooltips.tankman import TankmanSkillListField, ToolTipAttrField, TankmanRoleLevelField, \
         TankmanCurrentVehicleAttrField
 
@@ -169,22 +168,6 @@ def delayedHooks():
             for key in self._messageCtx:
                 if isinstance(self._messageCtx[key], basestring):
                     self._messageCtx[key] = TAG_RE.sub('', self._messageCtx[key])
-
-    @overrideMethod(Crew, 'as_tankmenResponseS')
-    def new_as_tankmenResponseS(base, self, data):
-        if _config.data['enabled']:
-            from CurrentVehicle import g_currentVehicle
-            vehicle = g_currentVehicle.item
-            for tankmanData in data['tankmen']:
-                for key in tankmanData:
-                    if (key in ('firstName', 'lastName', 'fullName', 'rank') and _config.data['crewColour']
-                            or key in ('role',)
-                            or key in ('vehicleType',) and tankmanData[key] == vehicle.shortUserName):
-                        tankmanData[key] = "<font color='#%s'>%s</font>" % (_config.data['colour'], tankmanData[key])
-            for roleData in data['roles']:
-                for key in ('role', 'vehicleType'):
-                    roleData[key] = "<font color='#%s'>%s</font>" % (_config.data['colour'], roleData[key])
-        return base(self, data)
 
     @overrideMethod(TankmanSkillListField, '_getValue')
     def new_tankmanSkill_getValue(base, self, *args, **kwargs):
