@@ -251,8 +251,8 @@ def new_vehicleType_init(base, self, *args, **kwargs):
 
 
 @overrideMethod(PlayerAvatar, '__initGUI')  # overrides initGUI instead of readConfigs because ProTanki
-def new_initGUI(base, self):
-    result = base(self)
+def new_initGUI(base, self, *args, **kwargs):
+    result = base(self, *args, **kwargs)
     events = find_attr(self.soundNotifications, 'events')
     new_categories = {'fx': 'fxEvent', 'voice': 'infEvent'}
     new_additional = {
@@ -317,7 +317,7 @@ def new_playFX(___, self, eventName, vehicleID, position, *_, **__):
 
 
 @overrideMethod(PlayerAvatar, 'updateVehicleGunReloadTime')
-def updateVehicleGunReloadTime(base, self, vehicleID, timeLeft, baseTime):
+def updateVehicleGunReloadTime(base, self, vehicleID, timeLeft, baseTime, *args, **kwargs):
     if (self._PlayerAvatar__prevGunReloadTimeLeft != timeLeft and timeLeft == 0.0
             and not self.guiSessionProvider.shared.vehicleState.isInPostmortem):
         try:
@@ -325,7 +325,7 @@ def updateVehicleGunReloadTime(base, self, vehicleID, timeLeft, baseTime):
                 SoundGroups.g_instance.playSound2D(g_config.data['sound_notifications']['gun_reloaded']['fx'])
         except StandardError:
             traceback.print_exc()
-    base(self, vehicleID, timeLeft, baseTime)
+    base(self, vehicleID, timeLeft, baseTime, *args, **kwargs)
 
 
 g_config = ConfigInterface()

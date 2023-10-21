@@ -151,8 +151,8 @@ except StandardError:
     traceback.print_exc()
 else:
     @overrideMethod(ArenaVehiclesPlugin, '_setInAoI')
-    def new_setInAoI(base, self, entry, isInAoI):
-        result = base(self, entry, isInAoI)
+    def new_setInAoI(base, self, entry, isInAoI, *args, **kwargs):
+        result = base(self, entry, isInAoI, *args, **kwargs)
         try:
             for vehicleID, entry2 in self._entries.iteritems():
                 if entry == entry2 and isInAoI:
@@ -166,8 +166,8 @@ else:
 
 
     @overrideMethod(PlayerAvatar, 'vehicle_onAppearanceReady')
-    def new_vehicle_onAppearanceReady(base, self, vehicle):
-        result = base(self, vehicle)
+    def new_vehicle_onAppearanceReady(base, self, vehicle, *args, **kwargs):
+        result = base(self, vehicle, *args, **kwargs)
         try:
             vehicleID = vehicle.id
             g_config.validateCache(vehicleID)

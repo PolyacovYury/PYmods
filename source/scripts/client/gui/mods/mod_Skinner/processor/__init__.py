@@ -136,7 +136,7 @@ def new_prepareModelAssembler(base, self, *a, **k):
 
 
 @overrideMethod(HangarVehicleAppearance, '__startBuild')
-def new_startBuild(base, self, vDesc, vState):
+def new_startBuild(base, self, vDesc, vState, *args, **kwargs):
     if g_config.data['enabled'] and vDesc.chassis.modelsSets.get('RemodEnabler_modelDesc', None) is None:
         vDesc_process(self.id, vDesc, True, self.outfit.modelsSet or 'default', vState != 'undamaged')
-    return base(self, vDesc, vState)
+    return base(self, vDesc, vState, *args, **kwargs)

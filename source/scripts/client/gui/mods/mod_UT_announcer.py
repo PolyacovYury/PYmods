@@ -635,8 +635,8 @@ def destroyBattle(self, *_, **__):
 
 
 @overrideMethod(BattleEndWarningPanel, 'setTotalTime')
-def new_setCurrentTimeLeft(base, self, totalTime):
-    base(self, totalTime)
+def new_setCurrentTimeLeft(base, self, totalTime, *args, **kwargs):
+    base(self, totalTime, *args, **kwargs)
     if not _config.data['enabled']:
         return
     period = BigWorld.player().arena.period
@@ -657,17 +657,17 @@ def onArenaVehicleKilled(victimID, killerID, _, reason, *__, **___):
 
 
 @overrideMethod(DamagePanelMeta.DamagePanelMeta, 'as_setVehicleDestroyedS')
-def new_onVehicleDestroyed(base, self):
+def new_onVehicleDestroyed(base, self, *args, **kwargs):
     if _config.data['enabled'] and not hasattr(BigWorld.player().arena, 'UT'):
         initial()
         checkSquadMan()
         BigWorld.player().arena.killerCallBackId = BigWorld_callback(0.5, checkOwnKiller)
-    base(self)
+    return base(self, *args, **kwargs)
 
 
 @overrideMethod(IngameSoundNotifications.IngameSoundNotifications, '__readConfigs')
-def new_readConfigs(base, self):
-    base(self)
+def new_readConfigs(base, self, *args, **kwargs):
+    base(self, *args, **kwargs)
     if not _config.data['enabled'] or not _config.data['disStand']:
         return
     eventsData = find_attr(self, 'events')

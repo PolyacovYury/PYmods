@@ -275,8 +275,8 @@ analytics = Analytics(g_config.ID, g_config.version, 'UA-76792179-22')
 
 
 @overrideMethod(SpecialSoundCtrl, 'setPlayerVehicle')
-def new_setPlayerVehicle(base, self, vehiclePublicInfo, isPlayerVehicle):
-    base(self, vehiclePublicInfo, isPlayerVehicle)
+def new_setPlayerVehicle(base, self, vehiclePublicInfo, isPlayerVehicle, *args, **kwargs):
+    base(self, vehiclePublicInfo, isPlayerVehicle, *args, **kwargs)
     arena = avatar_getter.getArena()
     if not g_config.data['enabled'] or arena is None:
         return

@@ -35,8 +35,9 @@ def apply(vDesc, modelsSet, skinName):
 @overrideMethod(model_assembler, 'prepareCompoundAssembler')
 def prepareCompoundAssembler(
         base, vehicleDesc, modelsSetParams, spaceID, isTurretDetached=False, lodIdx=model_assembler._DEFAULT_LOD_INDEX,
-        skipMaterials=False, renderMode=None):
-    result = base(vehicleDesc, modelsSetParams, spaceID, isTurretDetached, lodIdx, skipMaterials, renderMode)
+        skipMaterials=False, renderMode=None, *args, **kwargs):
+    result = base(
+        vehicleDesc, modelsSetParams, spaceID, isTurretDetached, lodIdx, skipMaterials, renderMode, *args, **kwargs)
     data = vehicleDesc.chassis.modelsSets.get('Skinner_dynamicData', ())
     for partName, nodeName, modelPath, needs_scale in data if modelsSetParams.state == 'undamaged' else ():
         scaleMatrix = math_utils.createIdentityMatrix()
@@ -63,8 +64,8 @@ def switchDynamicPartsVisible(model, visible):
 
 
 @overrideMethod(HangarVehicleAppearance, '__setupModel')
-def new_setupModel(base, self, buildIdx):
-    base(self, buildIdx)
+def new_setupModel(base, self, buildIdx, *args, **kwargs):
+    base(self, buildIdx, *args, **kwargs)
     switchDynamicPartsVisible(self.compoundModel, g_config.dynamicSkinEnabled and g_config.collisionMode != 2)
 
 
@@ -75,18 +76,18 @@ def new_setupModels(base, self, *a, **k):
 
 
 @overrideMethod(PlayerAvatar, 'targetFocus')
-def new_targetFocus(base, self, entity):
+def new_targetFocus(base, self, entity, *args, **kwargs):
     for vehicle in self.vehicles:
         try:
             switchDynamicPartsVisible(vehicle.model, vehicle.id == entity.id)
         except StandardError:
             traceback.print_exc()
-    base(self, entity)
+    return base(self, entity, *args, **kwargs)
 
 
 @overrideMethod(PlayerAvatar, 'targetBlur')
-def new_targetBlur(base, self, prevEntity):
-    base(self, prevEntity)
+def new_targetBlur(base, self, prevEntity, *args, **kwargs):
+    base(self, prevEntity, *args, **kwargs)
     for vehicle in self.vehicles:
         try:
             switchDynamicPartsVisible(vehicle.model, False)

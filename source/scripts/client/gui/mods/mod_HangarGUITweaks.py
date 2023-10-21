@@ -115,17 +115,17 @@ g_config = ConfigInterface()
 
 
 @overrideMethod(ModuleContext, 'getStatsConfiguration')
-def new_getStatsConfiguration(base, self, item):
-    value = base(self, item)
+def new_getStatsConfiguration(base, self, item, *args, **kwargs):
+    value = base(self, item, *args, **kwargs)
     if g_config.data['enabled'] and g_config.data['showCompatibles']:
         value.showCompatibles = True
     return value
 
 
 @overrideMethod(_ParamsCache, 'getComponentVehiclesNames')
-def getComponentVehiclesNames(base, self, typeCompactDescr):
+def getComponentVehiclesNames(base, self, typeCompactDescr, *args, **kwargs):
     if not (g_config.data['enabled'] and g_config.data['showCompatibles']):
-        return base(self, typeCompactDescr)
+        return base(self, typeCompactDescr, *args, **kwargs)
     itemTypeIdx, nationIdx, _ = vehicles.parseIntCompactDescr(typeCompactDescr)
     getter = vehicles.g_cache.vehicle
     result = []
@@ -142,8 +142,8 @@ def getComponentVehiclesNames(base, self, typeCompactDescr):
 
 
 @overrideMethod(CustomizationItemCMHandler, '_generateOptions')
-def new_generateOptions(base, self, ctx=None):
-    result = base(self, ctx)
+def new_generateOptions(base, self, ctx=None, *args, **kwargs):
+    result = base(self, ctx, *args, **kwargs)
     _ctx = self._CustomizationItemCMHandler__ctx
     if not (g_config.data['enabled'] and g_config.data['removeFromOther_customization']):
         return result
@@ -171,9 +171,9 @@ def new_generateOptions(base, self, ctx=None):
 
 @overrideMethod(CustomizationItemCMHandler, 'onOptionSelect')
 @process_waiting('customizationApply')
-def new_onOptionSelect(base, self, optionId):
+def new_onOptionSelect(base, self, optionId, *args, **kwargs):
     if not optionId.startswith(REMOVE_FROM_OTHER):
-        base(self, optionId)
+        base(self, optionId, *args, **kwargs)
         return
     vehicleCD = int(optionId.split('_')[1])
     item = self._item
@@ -267,7 +267,7 @@ def new_sort(base, self, a, b, *_a, **k):
 
 
 @overrideMethod(ProgressiveItemsView, '_getPossibleItemsForVehicle')
-def new_getPossibleItemsForVehicle(_, self):
+def new_getPossibleItemsForVehicle(_, self, *_args, **_kwargs):
     if not g_config.data['enabled'] or not g_config.data['sort_progressionDecals']:
         return
     customizationCache = vehicles.g_cache.customization20()
@@ -283,13 +283,13 @@ def new_getPossibleItemsForVehicle(_, self):
 
 
 @overrideMethod(CarouselDataProvider, '_vehicleComparisonKey')
-def _vehicleComparisonKey(base, cls, vehicle):
+def _vehicleComparisonKey(base, cls, vehicle, *args, **kwargs):
     if not (
             g_config.data['enabled'] and g_config.data['sort_vehicleCarousel']
             and issubclass(cls, HangarCarouselDataProvider)):
         if getattr(base, '__func__', None) is None:  # idiot-proof
-            return base(vehicle)
-        return base.__func__(cls, vehicle)
+            return base(vehicle, *args, **kwargs)
+        return base.__func__(cls, vehicle, *args, **kwargs)
     return (
         not vehicle.isInInventory,
         vehicle.isOnlyForClanWarsBattles,
@@ -380,7 +380,7 @@ def new_update(base, self, filters, *a, **k):
 
 
 @overrideMethod(Vehicle, 'isFullyElite')
-def new_isFullyElite(base, self):
-    return (base(self)
+def new_isFullyElite(base, self, *args, **kwargs):
+    return (base(self, *args, **kwargs)
             and (not self.postProgressionAvailability(True).result
                  or self.postProgression.getCompletion() == PostProgressionCompletion.FULL))

@@ -139,8 +139,8 @@ def onAvatarBecomeNonPlayer(*_, **__):
         g_config.textCache.clear()
 
 
-def new_construct(base, self):
-    block = base(self)
+def new_construct(base, self, *args, **kwargs):
+    block = base(self, *args, **kwargs)
     from gui.Scaleform.locale.RES_ICONS import RES_ICONS
     from gui.shared.formatters import text_styles, icons
     from gui.shared.items_parameters import formatters as params_formatters, bonus_helper
@@ -160,18 +160,18 @@ def new_construct(base, self):
     return block
 
 
-def new_setModuleInfoS(base, self, moduleInfo):
+def new_setModuleInfoS(base, self, moduleInfo, *args, **kwargs):
     if 'description' in moduleInfo:
         moduleInfo['description'] = re.sub(r'<[^>]*>', '', moduleInfo['description'])
-    base(self, moduleInfo)
+    base(self, moduleInfo, *args, **kwargs)
 
 
 @overrideMethod(ResourceManager, 'getTranslatedText')
-def getTranslatedText(base, self, resourceID):
+def getTranslatedText(base, self, resourceID, *args, **kwargs):
     from gui.impl import backport
     full_key = backport.msgid(resourceID)
     if not full_key:
-        return base(self, resourceID)
+        return base(self, resourceID, *args, **kwargs)
     from helpers import i18n
     key = full_key.lower().partition('#tips:')[2]
     if not key:
