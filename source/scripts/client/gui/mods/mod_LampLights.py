@@ -371,9 +371,13 @@ def buildSkeleton(vehicleID, vEntity, caller):
         if cornerMatrix is None:
             cornerMatrix = matrixFromNode(compoundModel, invertedHullMatrix, nodeName.replace('Up', ''))
         if cornerMatrix is None:  # wheeled
-            wheel_center = max(wheelNodes[('L', 'R')[x > 0]].values(), key=lambda m: m.translation.z * z_sign)
-            offset = (localHullMatrix.translation.y + wheel_center.translation.y) / (2 ** 0.5)
-            cornerMatrix = createTranslationMatrix(wheel_center.translation + Math.Vector3(0, offset, offset * z_sign))
+            wheel_nodes = wheelNodes[('L', 'R')[x > 0]].values()
+            if wheel_nodes:
+                wheel_center = max(wheel_nodes, key=lambda m: m.translation.z * z_sign)
+                offset = (localHullMatrix.translation.y + wheel_center.translation.y) / (2 ** 0.5)
+                cornerMatrix = createTranslationMatrix(wheel_center.translation + Math.Vector3(0, offset, offset * z_sign))
+            else:
+                cornerMatrix = createTranslationMatrix((x, 0, z))
         hullRoot.node('', cornerMatrix).attach(corner)
 
         fakeModels['collide_' + nodeName] = collide = createFakeModel()
