@@ -117,7 +117,7 @@ class PlayersPanelController(SimpleConfigInterface):
     def updateHealth(self, vehicleID, newHealth=-1):
         if vehicleID not in self.__hpCache or newHealth == -1:
             vehicle = BigWorld.player().arena.vehicles.get(vehicleID)
-            maxHealth = vehicle['vehicleType'].maxHealth if vehicle['vehicleType'] is not None else -1
+            maxHealth = vehicle['vehicleType'].maxHealth if vehicle and vehicle['vehicleType'] else -1
             self.__hpCache[vehicleID] = {'current': self.getVehicleHealth(vehicleID), 'max': maxHealth}
         else:
             health = newHealth if newHealth > 0 else 0
