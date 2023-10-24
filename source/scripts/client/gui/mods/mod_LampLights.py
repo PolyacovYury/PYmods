@@ -240,16 +240,26 @@ def matrixFromNode(model, rootMatrix, nodeName):
     return createTranslationMatrix(rootMatrix.applyPoint(node.position))
 
 
-def findWheelNodes(model, rootMatrix):
+def findWheelNodes(model, invertedHullMatrix):
     result = {'L': {}, 'R': {}}
     for side, nodes in result.items():
         for template in ('W_' + side, 'WD_' + side):
             wheelsCount = 0
-            while True:
+            while wheelsCount < 40:  # pretty reasonable assumption, no?
                 nodeName = template + str(wheelsCount)
-                node = matrixFromNode(model, rootMatrix, nodeName)
+                if g_config.data['Debug']:
+                    print g_config.LOG, 'looking for wheel:', nodeName
+                node = matrixFromNode(model, invertedHullMatrix, nodeName)
                 if node is None:
+                    if g_config.data['Debug']:
+                        print g_config.LOG, 'wheel not found, stopping'
                     break
+                if node.translation.lengthSquared < 0.1:  # that happened, yes
+                    if g_config.data['Debug']:
+                        print g_config.LOG, 'wheel matrix is at the center of the vehicle, stopping'
+                    break
+                if g_config.data['Debug']:
+                    print g_config.LOG, 'wheel found:', node
                 nodes[nodeName] = node
                 wheelsCount += 1
     return result
@@ -298,6 +308,8 @@ def createLamps(vehicleID, caller, count=20):
 
 
 def buildSkeleton(vehicleID, vEntity, caller):
+    if g_config.data['Debug']:
+        print g_config.LOG, 'call from', caller, 'started building skeleton for', vehicleID
     g_config.fakeModelsStorage[vehicleID] = fakeModels = {}
     vDesc = vEntity.typeDescriptor
     compoundModel = vEntity.model
@@ -312,13 +324,21 @@ def buildSkeleton(vehicleID, vEntity, caller):
     globalHullMatrix = Math.Matrix()
     globalHullMatrix.set(invertedHullMatrix)
     globalHullMatrix.invert()
+    if g_config.data['Debug']:
+        print g_config.LOG, 'calculated matrices'
 
     for partName in (TankParts.HULL, TankParts.GUN):
         fakeModels[partName] = part = createFakeModel()
         compoundModel.node(partName).attach(part)
+        if g_config.data['Debug']:
+            print g_config.LOG, 'created', partName
     hullRoot = fakeModels[TankParts.HULL]
 
+    if g_config.data['Debug']:
+        print g_config.LOG, 'looking for wheels'
     wheelNodes = findWheelNodes(compoundModel, invertedHullMatrix)
+    if g_config.data['Debug']:
+        print g_config.LOG, 'found wheels'
     for nodes in wheelNodes.values():
         for nodeName, node in nodes.items():
             fakeModels[nodeName] = wheel = createFakeModel()
@@ -439,21 +459,24 @@ def applyLamps(vehicleID, vEntity, wheelNodes, caller):
                 names = [name]
             for fullName in names:
                 for nodeName in nodes:
+                    fullNameWithNode = fullName
                     parentNode = nodeName
-                    isRoot = fullName.count('/') == 1
+                    isRoot = fullNameWithNode.count('/') == 1
                     if not isRoot:
-                        parent, _, tail = fullName.rpartition('/')
+                        parent, _, tail = fullNameWithNode.rpartition('/')
                         parentNode = parent + ':' + nodeName
-                        fullName = parentNode + '/' + tail
+                        fullNameWithNode = parentNode + '/' + tail
                     elif len(nodes) != 1:
-                        fullName += ':' + nodeName
-                    if parentNode not in fakeModels:  # if isRoot: this is never called
+                        fullNameWithNode += ':' + nodeName
+                    if parentNode not in fakeModels:  # implies `not isRoot`
                         fakeModels[parentNode] = parentModel = createFakeModel()
                         lamps[parentNode.rpartition(':')[0]][0].node(nodeName).attach(parentModel)
+                    if g_config.data['Debug']:
+                        print g_config.LOG, 'creating', fullNameWithNode, 'for', vName, 'with ID', vehicleID
                     fakeNode = fakeModels[parentNode].node('', computeTransform(data))
                     lamp = buildLamp(data, fakeNode)
                     setLampVisible(lamp, g_config.lampsVisible and data['mode'] == 'constant')
-                    lamps[fullName] = (lamp, data['mode'])
+                    lamps[fullNameWithNode] = (lamp, data['mode'])
 
         except StandardError:
             print g_config.LOG, 'error in', caller, 'while processing', name, 'for', vName
