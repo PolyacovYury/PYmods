@@ -106,7 +106,7 @@ def new_onRequestModelsRefresh(base, self, *a, **k):
 
 
 @overrideMethod(HangarVehicleAppearance, '__startBuild')
-def new_startBuild(base, self, vDesc, vState):
+def new_startBuild(base, self, vDesc, vState, *args, **kwargs):
     if g_config.data['enabled']:
         modelDesc, playerName = getModelDescInfo(self.id, vDesc, 'hangar')
         if vState != 'undamaged':
@@ -118,7 +118,7 @@ def new_startBuild(base, self, vDesc, vState):
                     SystemMessages.pushMessage(g_config.i18n['UI_install_customization'], SystemMessages.SM_TYPE.Warning)
                 modelDesc = None
         applyModelDesc(vDesc, modelDesc, self.outfit, playerName)
-    return base(self, vDesc, vState)
+    return base(self, vDesc, vState, *args, **kwargs)
 
 
 @overrideMethod(MainView, '_populate')

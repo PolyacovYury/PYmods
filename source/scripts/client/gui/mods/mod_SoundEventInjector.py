@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from itertools import chain
+
 import BigWorld
 import ResMgr
 import SoundGroups
@@ -11,7 +13,6 @@ from gui.IngameSoundNotifications import IngameSoundNotifications
 from helpers.EffectsList import ImpactNames, KeyPoint, _SoundEffectDesc, _TracerSoundEffectDesc
 from items.components.sound_components import WWTripleSoundConfig as SoundConfig
 from items.vehicles import VehicleType, _VEHICLE_TYPE_XML_PATH, __readEffectsTimeLine as readEffectsTimeLine, g_cache
-from itertools import chain
 from material_kinds import EFFECT_MATERIALS
 
 reloadTypes = {
@@ -95,10 +96,10 @@ class ConfigInterface(ConfigNoInterface, SimpleConfigInterface):
 
     def injectEffects(self):
         for sname, effData in self.data['gun_effects'].iteritems():
-            if sname not in g_cache._gunEffects:
-                g_cache._gunEffects[sname] = readEffectsTimeLine(
+            if sname not in g_cache.gunEffects:
+                g_cache.gunEffects[sname] = readEffectsTimeLine(
                     ((None, self.effectsXmlPath), effData['origin']), self.effectsXml[effData['origin']])
-            effectDesc = g_cache._gunEffects[sname]
+            effectDesc = g_cache.gunEffects[sname]
             if 'timeline' in effData:
                 for keyPointName, timePoint in effData['timeline'].iteritems():
                     for keyPoint in effectDesc.keyPoints:
@@ -220,13 +221,13 @@ class ConfigInterface(ConfigNoInterface, SimpleConfigInterface):
         is_new_list = isinstance(effectsData, (list, tuple))
         if is_old_list != is_new_list:
             if is_new_list:
-                gun.effects = g_cache._gunEffects.get(effectsData[0], gun.effects)
+                gun.effects = g_cache.gunEffects.get(effectsData[0], gun.effects)
             else:
                 print self.LOG, 'item %s needs %s effects as list but one string was provided. Skipping...' % (
                     gun.name, len(gun.effects))
             return
         if not is_new_list:
-            gun.effects = g_cache._gunEffects.get(effectsData, gun.effects)
+            gun.effects = g_cache.gunEffects.get(effectsData, gun.effects)
             return
         if len(gun.effects) != len(effectsData):
             print self.LOG, 'item %s needs %s effects as list but %s were provided. Skipping...' % (
@@ -234,7 +235,7 @@ class ConfigInterface(ConfigNoInterface, SimpleConfigInterface):
             return
         effects = []
         for effectName in effectsData:
-            gun_effect = g_cache._gunEffects.get(effectName)
+            gun_effect = g_cache.gunEffects.get(effectName)
             if gun_effect is None:
                 print self.LOG, 'gun effect', effectName, 'not found'
             else:
@@ -250,8 +251,8 @@ def new_vehicleType_init(base, self, *args, **kwargs):
 
 
 @overrideMethod(PlayerAvatar, '__initGUI')  # overrides initGUI instead of readConfigs because ProTanki
-def new_initGUI(base, self):
-    result = base(self)
+def new_initGUI(base, self, *args, **kwargs):
+    result = base(self, *args, **kwargs)
     events = find_attr(self.soundNotifications, 'events')
     new_categories = {'fx': 'fxEvent', 'voice': 'infEvent'}
     new_additional = {
@@ -316,7 +317,7 @@ def new_playFX(___, self, eventName, vehicleID, position, *_, **__):
 
 
 @overrideMethod(PlayerAvatar, 'updateVehicleGunReloadTime')
-def updateVehicleGunReloadTime(base, self, vehicleID, timeLeft, baseTime):
+def updateVehicleGunReloadTime(base, self, vehicleID, timeLeft, baseTime, *args, **kwargs):
     if (self._PlayerAvatar__prevGunReloadTimeLeft != timeLeft and timeLeft == 0.0
             and not self.guiSessionProvider.shared.vehicleState.isInPostmortem):
         try:
@@ -324,7 +325,7 @@ def updateVehicleGunReloadTime(base, self, vehicleID, timeLeft, baseTime):
                 SoundGroups.g_instance.playSound2D(g_config.data['sound_notifications']['gun_reloaded']['fx'])
         except StandardError:
             traceback.print_exc()
-    base(self, vehicleID, timeLeft, baseTime)
+    base(self, vehicleID, timeLeft, baseTime, *args, **kwargs)
 
 
 g_config = ConfigInterface()

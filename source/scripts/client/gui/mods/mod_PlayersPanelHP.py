@@ -117,7 +117,7 @@ class PlayersPanelController(SimpleConfigInterface):
     def updateHealth(self, vehicleID, newHealth=-1):
         if vehicleID not in self.__hpCache or newHealth == -1:
             vehicle = BigWorld.player().arena.vehicles.get(vehicleID)
-            maxHealth = vehicle['vehicleType'].maxHealth if vehicle['vehicleType'] is not None else -1
+            maxHealth = vehicle['vehicleType'].maxHealth if vehicle and vehicle['vehicleType'] else -1
             self.__hpCache[vehicleID] = {'current': self.getVehicleHealth(vehicleID), 'max': maxHealth}
         else:
             health = newHealth if newHealth > 0 else 0
@@ -151,8 +151,8 @@ except StandardError:
     traceback.print_exc()
 else:
     @overrideMethod(ArenaVehiclesPlugin, '_setInAoI')
-    def new_setInAoI(base, self, entry, isInAoI):
-        result = base(self, entry, isInAoI)
+    def new_setInAoI(base, self, entry, isInAoI, *args, **kwargs):
+        result = base(self, entry, isInAoI, *args, **kwargs)
         try:
             for vehicleID, entry2 in self._entries.iteritems():
                 if entry == entry2 and isInAoI:
@@ -166,8 +166,8 @@ else:
 
 
     @overrideMethod(PlayerAvatar, 'vehicle_onAppearanceReady')
-    def new_vehicle_onAppearanceReady(base, self, vehicle):
-        result = base(self, vehicle)
+    def new_vehicle_onAppearanceReady(base, self, vehicle, *args, **kwargs):
+        result = base(self, vehicle, *args, **kwargs)
         try:
             vehicleID = vehicle.id
             g_config.validateCache(vehicleID)

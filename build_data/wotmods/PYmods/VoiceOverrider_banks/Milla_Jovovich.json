@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/audioww/cel_23_en/voiceover.bnk": "res/res/audioww/cel_23_en/voiceover.bnk"
+    }
+}

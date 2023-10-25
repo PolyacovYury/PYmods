@@ -364,8 +364,8 @@
 1556367257|configs/PYmods/UT_announcer/i18n/en.json
 1521708229|configs/PYmods/UT_announcer/i18n/ru.json
 1577042299|configs/PYmods/VoiceOverrider/VoiceOverrider.json
-1665970748|configs/PYmods/VoiceOverrider/i18n/en.json
-1665971285|configs/PYmods/VoiceOverrider/i18n/ru.json
+1694372935|configs/PYmods/VoiceOverrider/i18n/en.json
+1694372935|configs/PYmods/VoiceOverrider/i18n/ru.json
 1658039192|configs/PYmods/color_messages/color_messages.json
 1658043807|configs/PYmods/color_messages/i18n/en.json
 1658043900|configs/PYmods/color_messages/i18n/ru.json
@@ -493,5 +493,5 @@
 1545255824|res/res.md
 1479780730|res/scripts/client/gui/mods/mod_UT_announcer.png
 1653738176|wotmods/gambiter.guiflash_0.4.4.wotmod
-1661925772|wotmods/izeberg.modsettingsapi_1.5.4.wotmod
-1665507493|wotmods/poliroid.modslistapi_1.4.2.wotmod
+1678227764|wotmods/izeberg.modsettingsapi_1.5.4.wotmod
+1678224112|wotmods/me.poliroid.modslistapi_1.4.4.wotmod

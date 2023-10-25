@@ -1,10 +1,11 @@
+from functools import partial
+
+import ResMgr
 import importlib
 import os
 import string
 import traceback
-
-import ResMgr
-from adisp import adisp_process
+from adisp import adisp_async, adisp_process
 from constants import IS_DEVELOPMENT
 from debug_utils import LOG_DEBUG, LOG_ERROR
 from shared_utils import awaitNextFrame, forEach
@@ -50,7 +51,7 @@ def _findValidMODs(path=None, package=None):
 
 
 @adisp_process
-def _loadMods(path=None, package=None, view=None):
+def _loadMods(path=None, package=None, game_loader=None):
     _mods.clear()
     path = path or __path__[0]
     package = package or __package__
@@ -61,9 +62,10 @@ def _loadMods(path=None, package=None, view=None):
         return
     modsList = set(filter(_isValidMOD, map(string.lower, modsFolder.keys())))
     modsNum = float(len(modsList))
+    idx = 0
     for idx, scriptName in enumerate(modsList):
-        if view:
-            view.setProgress(idx / modsNum)
+        if game_loader:
+            game_loader.setProgress(int(50 + 50.0 * idx / modsNum))
             yield awaitNextFrame()
         mod = None
         try:
@@ -75,13 +77,19 @@ def _loadMods(path=None, package=None, view=None):
             success = False
             print 'Could not import gui mod', scriptName
             traceback.print_exc()
-            if view:
-                view.addError(os.path.basename(mod.__file__) if mod else scriptName)
+            if game_loader:
+                game_loader.addError(os.path.basename(mod.__file__) if mod else scriptName)
                 yield awaitNextFrame()
     import BigWorld
+    if game_loader:
+        if success:
+            game_loader.setProgress(100)
+            yield awaitNextFrame()
+            BigWorld.callback(0, game_loader.close)
+            return
+        while idx > 0:
+            idx -= 1
+            game_loader.setProgress(int(100 * idx / modsNum))
+            yield adisp_async(lambda callback: BigWorld.callback(0.025, partial(callback, None)))()
     if not success:
         BigWorld.callback(0, BigWorld.quit)
-    elif view:
-        view.setProgress(1)
-        yield awaitNextFrame()
-        BigWorld.callback(0, view.close)

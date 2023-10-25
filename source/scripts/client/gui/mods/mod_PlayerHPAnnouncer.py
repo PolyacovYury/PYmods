@@ -40,8 +40,8 @@ def new_destroyGUI(*_, **__):
 
 
 @overrideMethod(DamagePanelMeta.DamagePanelMeta, 'as_updateHealthS')
-def new_updateHealth(base, self, healthStr, progress):
-    base(self, healthStr, progress)
+def new_updateHealth(base, self, healthStr, progress, *args, **kwargs):
+    base(self, healthStr, progress, *args, **kwargs)
     p = BigWorld.player()
     if g_config.currentPercent is None or avatar_getter.getPlayerVehicleID(p) != avatar_getter.getVehicleIDAttached(p):
         return

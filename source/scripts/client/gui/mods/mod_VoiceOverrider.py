@@ -1,6 +1,7 @@
+import itertools
+
 import BigWorld
 import SoundGroups
-import itertools
 import nations
 from OpenModsCore import Analytics, SimpleConfigInterface, overrideMethod
 from collections import namedtuple
@@ -69,6 +70,25 @@ class ConfigInterface(SimpleConfigInterface):
             VoiceMode('ermelinda22_en', 'ermelinda22_en'),
             VoiceMode('ermelinda22_ru', 'ermelinda22_ru'),
             VoiceMode('ermelinda22_cn', 'ermelinda22_cn'),
+            VoiceMode('witches_commander_en', 'witches_commander_en'),
+            VoiceMode('witches_commander_ru', 'witches_commander_ru'),
+            VoiceMode('witches_commander_cn', 'witches_commander_cn'),
+            VoiceMode('witches_crew_en', 'witches_crew_en'),
+            VoiceMode('witches_crew_ru', 'witches_crew_ru'),
+            VoiceMode('witches_crew_cn', 'witches_crew_cn'),
+            VoiceMode('celebrity2023_en', 'celebrity2023_en'),
+            VoiceMode('commander_bph_2022_1', 'commander_bph_2022_1'),
+            VoiceMode('commander_bph_2022_2', 'commander_bph_2022_2'),
+            VoiceMode('commander_bph_2022_3', 'commander_bph_2022_3'),
+            VoiceMode('commander_bph_2022_4', 'commander_bph_2022_4'),
+            VoiceMode('commander_bp_IvanCarevich', 'commander_bp_IvanCarevich'),
+            VoiceMode('commander_bp_Vasilisa', 'commander_bp_Vasilisa'),
+            VoiceMode('commander_bp_Kashchei', 'commander_bp_Kashchei'),
+            VoiceMode('commander_bp_BabaYaga', 'commander_bp_BabaYaga'),
+            VoiceMode('handOfBlood', 'handOfBlood'),
+            VoiceMode('commander_mosfilm_Trus', 'commander_mosfilm_Trus'),
+            VoiceMode('commander_mosfilm_Balbes', 'commander_mosfilm_Balbes'),
+            VoiceMode('commander_mosfilm_Bivaliy', 'commander_mosfilm_Bivaliy'),
         ]
         self.music_modes = [
             MusicMode('default', 'default'),
@@ -160,6 +180,25 @@ class ConfigInterface(SimpleConfigInterface):
             'UI_setting_voice_ermelinda22_en': 'WT-22: Ermelinda Jung (EN)',
             'UI_setting_voice_ermelinda22_ru': 'WT-22: Ermelinda Jung (RU)',
             'UI_setting_voice_ermelinda22_cn': 'WT-22: Ermelinda Jung (CN)',
+            'UI_setting_voice_witches_commander_en': 'Witches: Commander (EN)',
+            'UI_setting_voice_witches_commander_ru': 'witches: Commander (RU)',
+            'UI_setting_voice_witches_commander_cn': 'witches: Commander (CN)',
+            'UI_setting_voice_witches_crew_en': 'Witches: Crew (EN)',
+            'UI_setting_voice_witches_crew_ru': 'Witches: Crew (RU)',
+            'UI_setting_voice_witches_crew_cn': 'Witches: Crew (CN)',
+            'UI_setting_voice_celebrity2023_en': 'Milla Jovovich (EN)',
+            'UI_setting_voice_commander_bph_2022_1': 'T-800 (EN)',
+            'UI_setting_voice_commander_bph_2022_2': 'John Connor (EN)',
+            'UI_setting_voice_commander_bph_2022_3': 'Sarah Connor (EN)',
+            'UI_setting_voice_commander_bph_2022_4': 'T-1000 (EN)',
+            'UI_setting_voice_commander_bp_IvanCarevich': 'Ivan Tsarevich (RU)',
+            'UI_setting_voice_commander_bp_Vasilisa': 'Vasilisa Beautiful (RU)',
+            'UI_setting_voice_commander_bp_Kashchei': 'Koschei Immortal (RU)',
+            'UI_setting_voice_commander_bp_BabaYaga': 'Baba Yaga (RU)',
+            'UI_setting_voice_handOfBlood': 'HandOfBlood (DE)',
+            'UI_setting_voice_commander_mosfilm_Trus': 'Trus (RU)',
+            'UI_setting_voice_commander_mosfilm_Balbes': 'Balbes (RU)',
+            'UI_setting_voice_commander_mosfilm_Bivaliy': 'Bivaliy (RU)',
         }
         super(ConfigInterface, self).init()
 
@@ -236,8 +275,8 @@ analytics = Analytics(g_config.ID, g_config.version, 'UA-76792179-22')
 
 
 @overrideMethod(SpecialSoundCtrl, 'setPlayerVehicle')
-def new_setPlayerVehicle(base, self, vehiclePublicInfo, isPlayerVehicle):
-    base(self, vehiclePublicInfo, isPlayerVehicle)
+def new_setPlayerVehicle(base, self, vehiclePublicInfo, isPlayerVehicle, *args, **kwargs):
+    base(self, vehiclePublicInfo, isPlayerVehicle, *args, **kwargs)
     arena = avatar_getter.getArena()
     if not g_config.data['enabled'] or arena is None:
         return

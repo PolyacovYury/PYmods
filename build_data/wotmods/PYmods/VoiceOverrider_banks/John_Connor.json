@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/audioww/BPH22/BPH_en_US_Hero_01/voiceover.bnk": "res/res/audioww/BPH22/BPH_en_US_Hero_01/voiceover.bnk"
+    }
+}
