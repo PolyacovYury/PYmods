@@ -1,5 +1,5 @@
 from CurrentVehicle import g_currentVehicle
-from OpenModsCore import overrideMethod
+from OpenModsCore import find_attr, overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization import shared as sh
 from gui.Scaleform.daapi.view.lobby.customization.main_view import MainView as WGMainView, _logger
 from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationTabs, checkSlotsFilling
@@ -69,9 +69,9 @@ class MainView(WGMainView):
         if not isVehicleCanBeCustomized(g_currentVehicle.item, slotType):
             return ''
         if slotType == GUI_ITEM_TYPE.INSIGNIA:
+            rank = find_attr(self.hangarSpace.space.getVehicleEntity().appearance, 'getThisVehicleDossierInsigniaRank')()
             insignia_text = text(R.strings.achievements.marksOnGun0()) + ': ' + text(
-                R.strings.achievements.marksOnGun.descr.param.label.num(
-                    self.hangarSpace.space.getVehicleEntity().appearance._getThisVehicleDossierInsigniaRank())())
+                R.strings.achievements.marksOnGun.descr.param.label.num(rank)())
             return text_styles.bonusPreviewText(g_config.color_compat(insignia_text))
         typeName = GUI_ITEM_TYPE_NAMES[slotType]
         slotsCount, filledSlotsCount = checkSlotsFilling(self.__ctx.mode.currentOutfit, slotType)

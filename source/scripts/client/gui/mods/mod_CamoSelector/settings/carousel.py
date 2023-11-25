@@ -1,5 +1,5 @@
 from CurrentVehicle import g_currentVehicle
-from OpenModsCore import overrideMethod
+from OpenModsCore import find_attr, overrideMethod
 from gui.Scaleform.daapi.view.lobby.customization.customization_carousel import (
     CarouselCache as WGCache, CarouselData, CustomizationBookmarkVO, CustomizationCarouselDataProvider as WGCarouselDP,
     FilterTypes, ItemsData, _logger,
@@ -128,7 +128,7 @@ class CarouselCache(WGCache):
         for tabId, slotType in CustomizationTabs.SLOT_TYPES.iteritems():
             if vehicleHasSlot(slotType):
                 itemTypes.extend(CustomizationTabs.ITEM_TYPES[tabId])
-        if self.__ctx._hangarSpace.space.getVehicleEntity().appearance._getThisVehicleDossierInsigniaRank():
+        if find_attr(self.__ctx._hangarSpace.space.getVehicleEntity().appearance, 'getThisVehicleDossierInsigniaRank')():
             itemTypes.append(GUI_ITEM_TYPE.INSIGNIA)
         purchaseItems = []
         moddedItems = []
