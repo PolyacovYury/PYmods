@@ -1,0 +1,465 @@
+﻿{
+    "message": "Beals",
+    "player": true,
+    "ally": false,
+    "enemy": false,
+    "whitelist": ["it08_progetto_m40_mod_65"],
+    "chassis": {
+        "undamaged": "vehicles/italy/It08_Progetto_M40_mod_65/_skin/It08_Progetto_M40_mod_65_3Dst/normal/lod0/Chassis.model",
+        "traces": {
+            "lodDist": 70.0,
+            "bufferPrefs": "mediumTank",
+            "textureSet": "usa_01",
+            "centerOffset": 1.2493599653244019,
+            "size": [0.41999998688697815, 0.6399999856948853],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": -3.0,
+            "pairsCount": 1
+        },
+        "wheels": {
+            "groups": [
+                {
+                    "isLeft": true,
+                    "template": "WD_L",
+                    "count": 5,
+                    "startIndex": 1,
+                    "radius": 0.10021699965000153
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 5,
+                    "startIndex": 0,
+                    "radius": 0.3800159990787506
+                },
+                {
+                    "isLeft": false,
+                    "template": "WD_R",
+                    "count": 5,
+                    "startIndex": 1,
+                    "radius": 0.09993620216846466
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 5,
+                    "startIndex": 0,
+                    "radius": 0.3800159990787506
+                }
+            ],
+            "wheels": [
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.25029000639915466,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.3275350034236908,
+                    "nodeName": "WD_L6",
+                    "isLeading": true,
+                    "leadingSyncAngle": 32.727298736572266,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.25029000639915466,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.3277460038661957,
+                    "nodeName": "WD_R6",
+                    "isLeading": true,
+                    "leadingSyncAngle": 32.727298736572266,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                }
+            ]
+        },
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": false,
+                    "minOffset": -0.10000000149011612,
+                    "maxOffset": 0.07000000029802322,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 5,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": true,
+                    "minOffset": -0.10000000149011612,
+                    "maxOffset": 0.07000000029802322,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 5,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.6000000238418579,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.6000000238418579,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 2.0,
+                    "backwardElasticityCoeff": 0.8999999761581421
+                },
+                {
+                    "name": "Track_VD_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 2.0,
+                    "backwardElasticityCoeff": 0.8999999761581421
+                },
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.5,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.6000000238418579,
+                    "backwardElasticityCoeff": 1.7000000476837158
+                },
+                {
+                    "name": "Track_VT_L2",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.7000000476837158
+                },
+                {
+                    "name": "Track_VT_L3",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.800000011920929,
+                    "backwardElasticityCoeff": 1.899999976158142
+                },
+                {
+                    "name": "Track_VT_L4",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.8999999761581421,
+                    "backwardElasticityCoeff": 1.899999976158142
+                },
+                {
+                    "name": "Track_VT_L5",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 2.0
+                },
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.5,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.6000000238418579,
+                    "backwardElasticityCoeff": 1.7000000476837158
+                },
+                {
+                    "name": "Track_VT_R2",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.7000000476837158
+                },
+                {
+                    "name": "Track_VT_R3",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.800000011920929,
+                    "backwardElasticityCoeff": 1.899999976158142
+                },
+                {
+                    "name": "Track_VT_R4",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.8999999761581421,
+                    "backwardElasticityCoeff": 1.899999976158142
+                },
+                {
+                    "name": "Track_VT_R5",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 2.0
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentModelSets": {
+                "left": "vehicles/italy/It08_Progetto_M40_mod_65/track/segment1.model",
+                "right": "vehicles/italy/It08_Progetto_M40_mod_65/track/segment1.model",
+                "secondLeft": "vehicles/italy/It08_Progetto_M40_mod_65/track/segment2.model",
+                "secondRight": "vehicles/italy/It08_Progetto_M40_mod_65/track/segment2.model"
+            },
+            "leftDesc": [
+                [
+                    "vehicles/italy/It08_Progetto_M40_mod_65/track/left.track",
+                    0,
+                    0.15828900039196014,
+                    0.11973699927330017,
+                    0.08815789967775345
+                ]
+            ],
+            "rightDesc": [
+                [
+                    "vehicles/italy/It08_Progetto_M40_mod_65/track/right.track",
+                    0,
+                    0.15828900039196014,
+                    0.11973699927330017,
+                    0.08815789967775345
+                ]
+            ],
+            "lodDist": 50.0,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1
+        },
+        "trackSplineParams": {
+            "thickness": -0.005798819940537214,
+            "maxAmplitude": 0.05000000074505806,
+            "maxOffset": 0.05000000074505806,
+            "gravity": -9.800000190734863
+        },
+        "leveredSuspension": null,
+        "chassisLodDistance": 70.0,
+        "hullPosition": [0.0, 0.9645500183105469, 0.0],
+        "AODecals": [
+            [
+                [3.837970018386841, 0.0004138209915254265, 6.70000008540228e-05],
+                [0.00020194599346723408, 1.3421000242233276, -0.010525399819016457],
+                [0.00010321599984308705, -0.02864919975399971, 7.5327301025390625],
+                [-0.0, 0.0, -1.9999999949504854e-06]
+            ]
+        ],
+        "soundID": "Chassis_It08_Progetto_M40_mod_65",
+        "emblemSlots": []
+    },
+    "hull": {
+        "undamaged": "vehicles/italy/It08_Progetto_M40_mod_65/_skin/It08_Progetto_M40_mod_65_3Dst/normal/lod0/Hull.model",
+        "exhaust": {
+            "pixie": "",
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [0.10244999825954437, 0.48837798833847046, 2.2919600009918213],
+                "rayEnd": [0.10245099663734436, 0.2969619929790497, 2.2339999675750732],
+                "rayUp": [0.0, 0.0, -1.0],
+                "size": 0.4000000059604645,
+                "hideIfDamaged": false,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 10000,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/italy/It08_Progetto_M40_mod_65/_skin/It08_Progetto_M40_mod_65_3Dst/normal/lod0/Turret_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [-1.1197600364685059, 0.5811300277709961, 0.040073201060295105],
+                "rayEnd": [-0.9394789934158325, 0.4977160096168518, 0.016857799142599106],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.30000001192092896,
+                "hideIfDamaged": true,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 33000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [1.0826799869537354, 0.5476019978523254, -0.31438300013542175],
+                "rayEnd": [0.9616219997406006, 0.4951319992542267, -0.3104409873485565],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.30000001192092896,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 33001,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [-0.9353880286216736, 0.6482440233230591, -0.8902390003204346],
+                "rayEnd": [-0.8184670209884644, 0.48599401116371155, -0.8886439800262451],
+                "rayUp": [0.8066070079803467, 0.5910890102386475, -6.399999983841553e-05],
+                "size": 0.6000000238418579,
+                "hideIfDamaged": false,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 34000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [1.048699975013733, 0.4552760124206543, -1.6793099641799927],
+                "rayEnd": [0.885703980922699, 0.3490529954433441, -1.6329699754714966],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.6000000238418579,
+                "hideIfDamaged": false,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 34001,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/italy/It08_Progetto_M40_mod_65/_skin/It08_Progetto_M40_mod_65_3Dst/normal/lod0/Gun_01.model",
+        "soundID": "Cannone_da_105_51_M68",
+        "drivenJoints": {},
+        "emblemSlots": [
+            {
+                "rayStart": [0.02105809934437275, -0.010496599599719048, 3.685920000076294],
+                "rayEnd": [0.04551120102405548, -0.023615799844264984, 3.6842501163482666],
+                "rayUp": [0.07900000363588333, 0.0, 0.0],
+                "size": 0.6000000238418579,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 49000,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "engine": {
+        "soundID": "Mitsubishi_10ZF"
+    }
+}

@@ -1,0 +1,655 @@
+﻿{
+    "message": "Beals",
+    "player": true,
+    "ally": false,
+    "enemy": false,
+    "whitelist": ["g72_jagdpz_e100"],
+    "chassis": {
+        "undamaged": "vehicles/german/G72_JagdPz_E100/_skins/G72_JagdPz_E100_3Dst/normal/lod0/Chassis.model",
+        "traces": {
+            "lodDist": 120.0,
+            "bufferPrefs": "largeTank",
+            "textureSet": "germany_02",
+            "centerOffset": 1.5468000173568726,
+            "size": [0.47999998927116394, 1.0399999618530273],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": -1.600000023841858,
+            "pairsCount": 1
+        },
+        "wheels": {
+            "groups": [],
+            "wheels": [
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.497857004404068,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 40.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.34346500039100647,
+                    "nodeName": "WD_R1",
+                    "isLeading": true,
+                    "leadingSyncAngle": 40.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.48208901286125183,
+                    "nodeName": "W_R0",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.4784049987792969,
+                    "nodeName": "W_R1",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.48208901286125183,
+                    "nodeName": "W_R2",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.4784049987792969,
+                    "nodeName": "W_R3",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.48208901286125183,
+                    "nodeName": "W_R4",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.4784049987792969,
+                    "nodeName": "W_R5",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.48208901286125183,
+                    "nodeName": "W_R6",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.4784049987792969,
+                    "nodeName": "W_R7",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.497857004404068,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 40.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.34346500039100647,
+                    "nodeName": "WD_L1",
+                    "isLeading": true,
+                    "leadingSyncAngle": 40.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.48208901286125183,
+                    "nodeName": "W_L0",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.4784049987792969,
+                    "nodeName": "W_L1",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.48208901286125183,
+                    "nodeName": "W_L2",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.4784049987792969,
+                    "nodeName": "W_L3",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.48208901286125183,
+                    "nodeName": "W_L4",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.4784049987792969,
+                    "nodeName": "W_L5",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.48208901286125183,
+                    "nodeName": "W_L6",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.4784049987792969,
+                    "nodeName": "W_L7",
+                    "isLeading": false,
+                    "leadingSyncAngle": 60.0,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                }
+            ]
+        },
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": true,
+                    "minOffset": -0.05999999865889549,
+                    "maxOffset": 0.07999999821186066,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 8,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": false,
+                    "minOffset": -0.05999999865889549,
+                    "maxOffset": 0.07999999821186066,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 8,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 0.699999988079071
+                },
+                {
+                    "name": "Track_VD_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 0.699999988079071
+                },
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": "Track_VT_L1",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 2.0,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_L0",
+                    "rightNodeName": "Track_VT_L2",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.899999976158142,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_L2",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_L1",
+                    "rightNodeName": "Track_VT_L3",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.7999999523162842,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_L3",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_L2",
+                    "rightNodeName": "Track_VT_L4",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.7000000476837158,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_L4",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_L3",
+                    "rightNodeName": "Track_VT_L5",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.600000023841858,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_L5",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_L4",
+                    "rightNodeName": "Track_VT_L6",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.5,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_L6",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_L5",
+                    "rightNodeName": "Track_VT_L7",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.399999976158142,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_L7",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_L6",
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.2999999523162842,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": "Track_VT_R1",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 2.0,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_R0",
+                    "rightNodeName": "Track_VT_R2",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.899999976158142,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_R2",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_R1",
+                    "rightNodeName": "Track_VT_R3",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.7999999523162842,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_R3",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_R2",
+                    "rightNodeName": "Track_VT_R4",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.7000000476837158,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_R4",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_R3",
+                    "rightNodeName": "Track_VT_R5",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.600000023841858,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_R5",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_R4",
+                    "rightNodeName": "Track_VT_R6",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.5,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_R6",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_R5",
+                    "rightNodeName": "Track_VT_R7",
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.399999976158142,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                },
+                {
+                    "name": "Track_VT_R7",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": "Track_VT_R6",
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.2999999523162842,
+                    "backwardElasticityCoeff": 0.6000000238418579
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentModelSets": {
+                "left": "vehicles/german/G72_JagdPz_E100/track/segment_1.model",
+                "right": "vehicles/german/G72_JagdPz_E100/track/segment_1.model",
+                "secondLeft": "vehicles/german/G72_JagdPz_E100/track/segment_2.model",
+                "secondRight": "vehicles/german/G72_JagdPz_E100/track/segment_2.model"
+            },
+            "leftDesc": [
+                [
+                    "vehicles/german/G72_JagdPz_E100/track/left.track",
+                    0,
+                    0.30000001192092896,
+                    0.20200000703334808,
+                    0.1550000011920929
+                ]
+            ],
+            "rightDesc": [
+                [
+                    "vehicles/german/G72_JagdPz_E100/track/right.track",
+                    0,
+                    0.30000001192092896,
+                    0.20200000703334808,
+                    0.1550000011920929
+                ]
+            ],
+            "lodDist": 50.0,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1
+        },
+        "trackSplineParams": {
+            "thickness": -0.033799998462200165,
+            "maxAmplitude": 0.07999999821186066,
+            "maxOffset": 0.07999999821186066,
+            "gravity": -9.800000190734863
+        },
+        "leveredSuspension": null,
+        "chassisLodDistance": 70.0,
+        "hullPosition": [0.0, 1.123610019683838, 0.0],
+        "AODecals": [
+            [
+                [5.744369983673096, -0.0, -0.0],
+                [-0.0, 1.7248300313949585, 0.0],
+                [-0.0, 0.0, 9.1673002243042],
+                [-0.0, 0.0, 0.0]
+            ]
+        ],
+        "soundID": "Chassis_JagdPz_E100",
+        "emblemSlots": []
+    },
+    "hull": {
+        "undamaged": "vehicles/german/G72_JagdPz_E100/_skins/G72_JagdPz_E100_3Dst/normal/lod0/Hull.model",
+        "exhaust": {
+            "pixie": "",
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [1.167930006980896, 0.8248339891433716, 3.301500082015991],
+                "rayEnd": [1.1679799556732178, 0.4489850103855133, 3.164609909057617],
+                "rayUp": [0.0, 0.0, -1.0],
+                "size": 0.3199999928474426,
+                "hideIfDamaged": false,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 10000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [-1.3585799932479858, 1.8344999551773071, -3.5037999153137207],
+                "rayEnd": [-0.9840840101242065, 1.6939500570297241, -3.5038299560546875],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.3199999928474426,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 13000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [1.3585799932479858, 1.8344999551773071, -3.5037999153137207],
+                "rayEnd": [0.9840840101242065, 1.6939500570297241, -3.5038299560546875],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.3199999928474426,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 13001,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [-0.9329969882965088, 0.6272979974746704, 3.750760078430176],
+                "rayEnd": [-0.9329969882965088, 0.2709220051765442, 3.569089889526367],
+                "rayUp": [0.0, 0.0, -1.0],
+                "size": 0.800000011920929,
+                "hideIfDamaged": false,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 14000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [2.3273799419403076, 0.1844010055065155, 1.7806700468063354],
+                "rayEnd": [1.9486600160598755, 0.05564520135521889, 1.7806700468063354],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.800000011920929,
+                "hideIfDamaged": false,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 14001,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/german/G72_JagdPz_E100/_skins/G72_JagdPz_E100_3Dst/normal/lod0/Turret_01.model",
+        "emblemSlots": []
+    },
+    "gun": {
+        "undamaged": "vehicles/german/G72_JagdPz_E100/_skins/G72_JagdPz_E100_3Dst/normal/lod0/Gun_01.model",
+        "soundID": "_170mm_PaK_K72",
+        "drivenJoints": {},
+        "emblemSlots": [
+            {
+                "rayStart": [-0.000691074994392693, -0.014869200065732002, 5.794489860534668],
+                "rayEnd": [0.06337039917707443, -0.055459801107645035, 5.790629863739014],
+                "rayUp": [0.13899999856948853, 0.0, 0.0],
+                "size": 0.7269999980926514,
+                "hideIfDamaged": true,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 49000,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "engine": {
+        "soundID": "Maybach_HL_234P60"
+    }
+}

@@ -1,0 +1,479 @@
+﻿{
+    "message": "Beals",
+    "player": true,
+    "ally": false,
+    "enemy": false,
+    "whitelist": ["a120_m48a5"],
+    "chassis": {
+        "undamaged": "vehicles/american/A120_M48A5/_skins/battlepass2020/normal/lod0/Chassis.model",
+        "traces": {
+            "lodDist": 120.0,
+            "bufferPrefs": "largeTank",
+            "textureSet": "usa_02",
+            "centerOffset": 1.4759600162506104,
+            "size": [0.699999988079071, 0.9900000095367432],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": -1.3300000429153442,
+            "pairsCount": 1
+        },
+        "wheels": {
+            "groups": [
+                {
+                    "isLeft": true,
+                    "template": "WD_L",
+                    "count": 5,
+                    "startIndex": 1,
+                    "radius": 0.17949000000953674
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 4,
+                    "startIndex": 0,
+                    "radius": 0.32966700196266174
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 2,
+                    "startIndex": 4,
+                    "radius": 0.327565997838974
+                },
+                {
+                    "isLeft": false,
+                    "template": "WD_R",
+                    "count": 5,
+                    "startIndex": 1,
+                    "radius": 0.17949000000953674
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 4,
+                    "startIndex": 0,
+                    "radius": 0.32966700196266174
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 2,
+                    "startIndex": 4,
+                    "radius": 0.327565997838974
+                }
+            ],
+            "wheels": [
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.32763999700546265,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 32.727298736572266,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.3481749892234802,
+                    "nodeName": "WD_L6",
+                    "isLeading": true,
+                    "leadingSyncAngle": 32.727298736572266,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.32763999700546265,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 32.727298736572266,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.3481749892234802,
+                    "nodeName": "WD_R6",
+                    "isLeading": true,
+                    "leadingSyncAngle": 32.727298736572266,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                }
+            ]
+        },
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": true,
+                    "minOffset": -0.05999999865889549,
+                    "maxOffset": 0.05999999865889549,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 6,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": false,
+                    "minOffset": -0.05999999865889549,
+                    "maxOffset": 0.05999999865889549,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 6,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": -0.09099999815225601,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": -0.041999999433755875,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.899999976158142
+                },
+                {
+                    "name": "Track_VT_L2",
+                    "isLeft": true,
+                    "initialOffset": -0.041999999433755875,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 2.0999999046325684
+                },
+                {
+                    "name": "Track_VT_L3",
+                    "isLeft": true,
+                    "initialOffset": -0.041999999433755875,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_L4",
+                    "isLeft": true,
+                    "initialOffset": -0.041999999433755875,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 2.299999952316284
+                },
+                {
+                    "name": "Track_VT_L5",
+                    "isLeft": true,
+                    "initialOffset": -0.09099999815225601,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 2.5
+                },
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 1.5,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VD_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 2.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 1.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": -0.09099999815225601,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": -0.041999999433755875,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.899999976158142
+                },
+                {
+                    "name": "Track_VT_R2",
+                    "isLeft": false,
+                    "initialOffset": -0.041999999433755875,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 2.0999999046325684
+                },
+                {
+                    "name": "Track_VT_R3",
+                    "isLeft": false,
+                    "initialOffset": -0.041999999433755875,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_R4",
+                    "isLeft": false,
+                    "initialOffset": -0.041999999433755875,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 2.299999952316284
+                },
+                {
+                    "name": "Track_VT_R5",
+                    "isLeft": false,
+                    "initialOffset": -0.09099999815225601,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1300.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 2.5
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentModelSets": {
+                "left": "vehicles/american/A120_M48A5/track/segment_1.model",
+                "right": "vehicles/american/A120_M48A5/track/segment_1.model",
+                "secondLeft": "vehicles/american/A120_M48A5/track/segment_2.model",
+                "secondRight": "vehicles/american/A120_M48A5/track/segment_2.model"
+            },
+            "leftDesc": [
+                [
+                    "vehicles/american/A120_M48A5/track/left.track",
+                    0,
+                    0.15600000321865082,
+                    0.40799999237060547,
+                    0.0729999989271164
+                ]
+            ],
+            "rightDesc": [
+                [
+                    "vehicles/american/A120_M48A5/track/right.track",
+                    0,
+                    0.15600000321865082,
+                    0.40799999237060547,
+                    0.0729999989271164
+                ]
+            ],
+            "lodDist": 50.0,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1
+        },
+        "trackSplineParams": {
+            "thickness": -0.004699999932199717,
+            "maxAmplitude": 0.10000000149011612,
+            "maxOffset": 0.10000000149011612,
+            "gravity": -9.800000190734863
+        },
+        "leveredSuspension": null,
+        "chassisLodDistance": 70.0,
+        "hullPosition": [0.0, 1.175570011138916, 0.0],
+        "AODecals": [
+            [
+                [4.719220161437988, -0.0, -0.0],
+                [-0.0, 1.8856899738311768, 0.0],
+                [-0.0, 0.0, 7.799600124359131],
+                [-0.0, 0.0, -7.000000096013537e-06]
+            ]
+        ],
+        "soundID": "Chassis_A120_M48A5",
+        "emblemSlots": []
+    },
+    "hull": {
+        "undamaged": "vehicles/american/A120_M48A5/_skins/battlepass2020/normal/lod0/Hull.model",
+        "exhaust": {
+            "pixie": "",
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [-0.4802339971065521, 0.32706698775291443, 2.659140110015869],
+                "rayEnd": [-0.4436120092868805, 0.14433099329471588, 2.5865700244903564],
+                "rayUp": [0.0, 0.0, -1.0],
+                "size": 0.30000001192092896,
+                "hideIfDamaged": true,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 10000,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/american/A120_M48A5/_skins/battlepass2020/normal/lod0/Turret_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [1.2222399711608887, 0.7505509853363037, -0.5550550222396851],
+                "rayEnd": [1.0291399955749512, 0.7061110138893127, -0.5279859900474548],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.2199999988079071,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 33000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [-0.9080939888954163, 0.5820260047912598, -1.8130600452423096],
+                "rayEnd": [-0.7677779793739319, 0.5745090246200562, -1.670740008354187],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.2800000011920929,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 33001,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [1.1014599800109863, 0.3233970105648041, 0.7954040169715881],
+                "rayEnd": [0.7830179929733276, 0.21951699256896973, 0.5767899751663208],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.6800000071525574,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 34000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [-1.0218499898910522, 0.2974280118942261, 0.7407529950141907],
+                "rayEnd": [-0.8626260161399841, 0.24548600614070892, 0.6314420104026794],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.6800000071525574,
+                "hideIfDamaged": false,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 34001,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/american/A120_M48A5/_skins/battlepass2020/normal/lod0/Gun_01.model",
+        "soundID": "_105mm_Gun_M68",
+        "drivenJoints": {},
+        "emblemSlots": [
+            {
+                "rayStart": [1.9999999949504854e-06, -0.09653960168361664, 2.055180072784424],
+                "rayEnd": [-0.018721800297498703, -0.17301200330257416, 2.055180072784424],
+                "rayUp": [0.13300000131130219, 0.0, 0.0],
+                "size": 0.492000013589859,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 49000,
+                "applyToFabric": false
+            }
+        ]
+    },
+    "engine": {
+        "soundID": "Continental_AV-1790-7B"
+    }
+}

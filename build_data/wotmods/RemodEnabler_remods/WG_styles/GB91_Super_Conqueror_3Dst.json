@@ -1,0 +1,443 @@
+﻿{
+    "message": "Beals",
+    "player": true,
+    "ally": false,
+    "enemy": false,
+    "whitelist": ["gb91_super_conqueror"],
+    "chassis": {
+        "undamaged": "vehicles/british/GB91_Super_Conqueror/_skin/GB91_Super_Conqueror_3Dst/normal/lod0/Chassis.model",
+        "traces": {
+            "lodDist": 120.0,
+            "bufferPrefs": "largeTank",
+            "textureSet": "germany_02",
+            "centerOffset": 1.5181299448013306,
+            "size": [0.5, 0.800000011920929],
+            "activePostmortem": false
+        },
+        "tracks": {
+            "lodDist": 90.0,
+            "leftMaterial": "track_mat_L_skinned",
+            "rightMaterial": "track_mat_R_skinned",
+            "textureScale": -1.5499999523162842,
+            "pairsCount": 1
+        },
+        "wheels": {
+            "groups": [
+                {
+                    "isLeft": false,
+                    "template": "WD_R",
+                    "count": 4,
+                    "startIndex": 1,
+                    "radius": 0.13770799338817596
+                },
+                {
+                    "isLeft": false,
+                    "template": "W_R",
+                    "count": 8,
+                    "startIndex": 0,
+                    "radius": 0.23951299488544464
+                },
+                {
+                    "isLeft": true,
+                    "template": "WD_L",
+                    "count": 4,
+                    "startIndex": 1,
+                    "radius": 0.13770799338817596
+                },
+                {
+                    "isLeft": true,
+                    "template": "W_L",
+                    "count": 8,
+                    "startIndex": 0,
+                    "radius": 0.23951299488544464
+                }
+            ],
+            "wheels": [
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.42810899019241333,
+                    "nodeName": "WD_R0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 18.947399139404297,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": false,
+                    "radius": 0.44185400009155273,
+                    "nodeName": "WD_R5",
+                    "isLeading": true,
+                    "leadingSyncAngle": 18.947399139404297,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.42810899019241333,
+                    "nodeName": "WD_L0",
+                    "isLeading": true,
+                    "leadingSyncAngle": 18.947399139404297,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                },
+                {
+                    "index": null,
+                    "isLeft": true,
+                    "radius": 0.44185400009155273,
+                    "nodeName": "WD_L5",
+                    "isLeading": true,
+                    "leadingSyncAngle": 18.947399139404297,
+                    "hitTester": null,
+                    "materials": {},
+                    "position": [0.0, 0.0, 0.0]
+                }
+            ]
+        },
+        "groundNodes": {
+            "nodes": [],
+            "groups": [
+                {
+                    "isLeft": true,
+                    "minOffset": -0.05999999865889549,
+                    "maxOffset": 0.05999999865889549,
+                    "nodesTemplate": "Track_L",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 8,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                },
+                {
+                    "isLeft": false,
+                    "minOffset": -0.05999999865889549,
+                    "maxOffset": 0.05999999865889549,
+                    "nodesTemplate": "Track_R",
+                    "affectedWheelsTemplate": null,
+                    "nodesCount": 8,
+                    "startIndex": 0,
+                    "collisionSamplesCount": 1,
+                    "hasLiftMode": false
+                }
+            ],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "trackNodes": {
+            "nodes": [
+                {
+                    "name": "Track_VT_L0",
+                    "isLeft": true,
+                    "initialOffset": -0.07100000232458115,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VD_R0",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.5,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VT_L1",
+                    "isLeft": true,
+                    "initialOffset": -0.07100000232458115,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.7000000476837158
+                },
+                {
+                    "name": "Track_VT_L2",
+                    "isLeft": true,
+                    "initialOffset": -0.07100000232458115,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.899999976158142
+                },
+                {
+                    "name": "Track_VT_L3",
+                    "isLeft": true,
+                    "initialOffset": -0.07100000232458115,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 2.200000047683716
+                },
+                {
+                    "name": "Track_VT_L4",
+                    "isLeft": true,
+                    "initialOffset": -0.07100000232458115,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 2.5
+                },
+                {
+                    "name": "Track_VD_L0",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 1.5,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VD_L1",
+                    "isLeft": true,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 2.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VD_R1",
+                    "isLeft": false,
+                    "initialOffset": 0.0,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 2.0,
+                    "backwardElasticityCoeff": 1.0
+                },
+                {
+                    "name": "Track_VT_R0",
+                    "isLeft": false,
+                    "initialOffset": -0.07100000232458115,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.5
+                },
+                {
+                    "name": "Track_VT_R1",
+                    "isLeft": false,
+                    "initialOffset": -0.07100000232458115,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.7000000476837158
+                },
+                {
+                    "name": "Track_VT_R2",
+                    "isLeft": false,
+                    "initialOffset": -0.07100000232458115,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 1.899999976158142
+                },
+                {
+                    "name": "Track_VT_R3",
+                    "isLeft": false,
+                    "initialOffset": -0.07100000232458115,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 2.200000047683716
+                },
+                {
+                    "name": "Track_VT_R4",
+                    "isLeft": false,
+                    "initialOffset": -0.07100000232458115,
+                    "leftNodeName": null,
+                    "rightNodeName": null,
+                    "damping": 2.0,
+                    "elasticity": 1100.0,
+                    "forwardElasticityCoeff": 0.699999988079071,
+                    "backwardElasticityCoeff": 2.5
+                }
+            ],
+            "groups": [],
+            "activePostmortem": false,
+            "lodSettings": null
+        },
+        "splineDesc": {
+            "segmentModelSets": {
+                "left": "vehicles/british/GB91_Super_Conqueror/track/segment.model",
+                "right": "vehicles/british/GB91_Super_Conqueror/track/segment.model",
+                "secondLeft": null,
+                "secondRight": null
+            },
+            "leftDesc": [
+                [
+                    "vehicles/british/GB91_Super_Conqueror/track/left.track",
+                    0,
+                    0.125,
+                    0.05900000035762787,
+                    0.0
+                ]
+            ],
+            "rightDesc": [
+                [
+                    "vehicles/british/GB91_Super_Conqueror/track/right.track",
+                    0,
+                    0.125,
+                    0.05900000035762787,
+                    0.0
+                ]
+            ],
+            "lodDist": 50.0,
+            "atlasUTiles": 1,
+            "atlasVTiles": 1
+        },
+        "trackSplineParams": {
+            "thickness": -0.02370000071823597,
+            "maxAmplitude": 0.10000000149011612,
+            "maxOffset": 0.10000000149011612,
+            "gravity": -9.800000190734863
+        },
+        "leveredSuspension": null,
+        "chassisLodDistance": 70.0,
+        "hullPosition": [0.0, 1.2160300016403198, 0.0],
+        "AODecals": [
+            [
+                [5.473529815673828, -0.0, 0.0],
+                [0.0, 1.350000023841858, 0.0],
+                [-0.0, 0.0, 9.52637004852295],
+                [0.0, 0.0, 0.0]
+            ]
+        ],
+        "soundID": "Chassis_GB91_Super_Conqueror",
+        "emblemSlots": []
+    },
+    "hull": {
+        "undamaged": "vehicles/british/GB91_Super_Conqueror/_skin/GB91_Super_Conqueror_3Dst/normal/lod0/Hull.model",
+        "exhaust": {
+            "pixie": "",
+            "nodes": ["HP_Track_Exhaus_1", "HP_Track_Exhaus_2"]
+        },
+        "emblemSlots": [
+            {
+                "rayStart": [2.097599983215332, 0.04118869826197624, 3.342439889907837],
+                "rayEnd": [1.8976000547409058, 0.041158899664878845, 3.342439889907837],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.23999999463558197,
+                "hideIfDamaged": false,
+                "type": "clan",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 10000,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "turret": {
+        "undamaged": "vehicles/british/GB91_Super_Conqueror/_skin/GB91_Super_Conqueror_3Dst/normal/lod0/Turret_01.model",
+        "emblemSlots": [
+            {
+                "rayStart": [-1.4484599828720093, 0.7712439894676208, 0.07241470366716385],
+                "rayEnd": [-1.3682700395584106, 0.7176690101623535, 0.04599349945783615],
+                "rayUp": [0.03935420140624046, 0.9891690015792847, 0.1414089947938919],
+                "size": 0.27000001072883606,
+                "hideIfDamaged": true,
+                "type": "player",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 33000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [1.5426499843597412, 0.735846996307373, 0.09693960100412369],
+                "rayEnd": [1.3822599649429321, 0.6286939978599548, 0.04409569874405861],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.25999999046325684,
+                "hideIfDamaged": false,
+                "type": "player",
+                "isMirrored": true,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 33001,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [-0.945372998714447, 0.613631010055542, 0.9381539821624756],
+                "rayEnd": [-0.9034770131111145, 0.5838609933853149, 0.8967459797859192],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.6399999856948853,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 34000,
+                "applyToFabric": true
+            },
+            {
+                "rayStart": [0.945372998714447, 0.613631010055542, 0.9381539821624756],
+                "rayEnd": [0.9034770131111145, 0.5838609933853149, 0.8967459797859192],
+                "rayUp": [0.0, 1.0, 0.0],
+                "size": 0.6399999856948853,
+                "hideIfDamaged": true,
+                "type": "inscription",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 34001,
+                "applyToFabric": true
+            }
+        ]
+    },
+    "gun": {
+        "undamaged": "vehicles/british/GB91_Super_Conqueror/_skin/GB91_Super_Conqueror_3Dst/normal/lod0/Gun_01.model",
+        "soundID": "_120mm_Gun_L1A1",
+        "drivenJoints": {},
+        "emblemSlots": [
+            {
+                "rayStart": [-0.0011955800000578165, 0.0115703996270895, 3.8984599113464355],
+                "rayEnd": [0.1630849987268448, -0.02424740046262741, 3.89274001121521],
+                "rayUp": [0.11900000274181366, 0.0, 0.0],
+                "size": 0.7049999833106995,
+                "hideIfDamaged": false,
+                "type": "insigniaOnGun",
+                "isMirrored": false,
+                "isUVProportional": true,
+                "emblemId": null,
+                "slotId": 49000,
+                "applyToFabric": false
+            }
+        ]
+    },
+    "engine": {
+        "soundID": "Rolls_Royce_Griffon"
+    }
+}
