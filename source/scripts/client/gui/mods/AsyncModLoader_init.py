@@ -33,9 +33,10 @@ def sendEvent(eventName, *args, **kwargs):
 
 def _callModMethod(mod, methodName, *args, **kwargs):
     try:
-        return getattr(mod, methodName)(*args, **kwargs)
+        method = getattr(mod, methodName)
     except AttributeError:
-        pass
+        return None
+    return method(*args, **kwargs)
 
 
 def _isValidMOD(scriptName):
