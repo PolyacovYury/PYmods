@@ -1,14 +1,16 @@
+from itertools import ifilter
+
 import BigWorld
 import nations
 import os
 import re
 from BWUtil import AsyncReturn
 from CurrentVehicle import g_currentVehicle
-from wg_async import wg_async, wg_await
+from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS, ServerSettingsManager
 from frameworks.wulf import WindowLayer
 from functools import partial
 from gui.customization.constants import CustomizationModes
-from gui.customization.shared import AREA_ID_BY_REGION, createCustomizationBaseRequestCriteria
+from gui.customization.shared import AREA_ID_BY_REGION, createCustomizationBaseRequestCriteria, isVehicleCanBeCustomized
 from gui.hangar_cameras.hangar_camera_common import CameraRelatedEvents
 from gui.impl.backport import text
 from gui.impl.dialogs import dialogs
@@ -19,9 +21,12 @@ from gui.shared import EVENT_BUS_SCOPE, g_eventBus
 from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.personality import ServicesLocator as SL
 from gui.shared.utils.requesters import REQ_CRITERIA
+from helpers import dependency
 from items.components.c11n_constants import ItemTags, MAX_PROJECTION_DECALS_PER_AREA, ProjectionDecalFormTags, SeasonType
 from items.vehicles import g_cache, getItemByCompactDescr
+from skeletons.account_helpers.settings_core import ISettingsCore
 from vehicle_outfit.outfit import Area
+from wg_async import wg_async, wg_await
 from .. import g_config
 from ..constants import CUSTOM_GROUP_NAME, SEASON_NAME_TO_TYPE, TYPES_ORDER, insignia_names
 
@@ -234,3 +239,28 @@ def isSlotLocked(outfit, slotId):
     return any(
         len(_filledRegions) >= limit and slotId.regionIdx not in _filledRegions
         for areaId, _filledRegions in filledRegions.items() if areaId in areaIds)
+
+
+@dependency.replace_none_kwargs(settingsCore=ISettingsCore)
+def getEditableStylesExtraNotificationCounter(styles=None, settingsCore=None):
+    vehicle = g_currentVehicle.item
+    serverSettings = settingsCore.serverSettings
+    masks = ServerSettingsManager.SECTIONS[SETTINGS_SECTIONS.ONCE_ONLY_HINTS].masks
+    masks['CustomizationEditableStylesHint'] = 24
+    masks['C11nProgressionRequiredStylesHint'] = 25
+    if not serverSettings.getOnceOnlyHintsSetting('CustomizationEditableStylesHint'):
+        itemsFilter = lambda item: item.isEditable
+    elif not serverSettings.getOnceOnlyHintsSetting('C11nProgressionRequiredStylesHint'):
+        itemsFilter = lambda item: item.isProgressionRequiredCanBeEdited(vehicle.intCD)
+    else:
+        return 0
+    if styles is not None:
+        if any(ifilter(itemsFilter, styles)):
+            return 1
+        return 0
+    if isVehicleCanBeCustomized(vehicle, GUI_ITEM_TYPE.STYLE, itemsFilter=itemsFilter):
+        return 1
+    else:
+        return 0
+
+

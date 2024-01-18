@@ -1,11 +1,12 @@
 import Event
 from CurrentVehicle import g_currentVehicle
 from OpenModsCore import BigWorld_callback, overrideMethod
+from account_helpers.settings_core.ServerSettingsManager import SETTINGS_SECTIONS, ServerSettingsManager
 from frameworks.wulf import WindowLayer as WL
 from gui.Scaleform.daapi.view.lobby.customization.customization_bottom_panel import CustomizationBottomPanel as CBP
 from gui.Scaleform.daapi.view.lobby.customization.customization_item_vo import __getIcon as getIcon
 from gui.Scaleform.daapi.view.lobby.customization.shared import (
-    CustomizationTabs, checkSlotsFilling, getEditableStylesExtraNotificationCounter, getItemTypesAvailableForVehicle,
+    CustomizationTabs, checkSlotsFilling, getItemTypesAvailableForVehicle,
 )
 from gui.Scaleform.framework import ScopeTemplates as ST, ViewSettings, g_entitiesFactories
 from gui.Scaleform.framework.entities.View import View
@@ -21,7 +22,8 @@ from gui.shared.gui_items import GUI_ITEM_TYPE, GUI_ITEM_TYPE_NAMES
 from gui.shared.gui_items.gui_item_economics import ITEM_PRICE_EMPTY
 from gui.shared.utils.functions import makeTooltip
 from shared_utils import first
-from .shared import CSComparisonKey, getCriteria
+from tutorial.hints_manager import HINT_SHOWN_STATUS
+from .shared import CSComparisonKey, getCriteria, getEditableStylesExtraNotificationCounter
 from .. import g_config
 from ..constants import VIEW_ALIAS
 
@@ -179,8 +181,32 @@ class CustomizationBottomPanel(CBP):
         if not self.__ctx.isPurchase:
             # noinspection PyArgumentEqualDefault
             return self.__onEditableStylesHintsHidden(record=False)
-        # noinspection PyUnresolvedReferences
-        return CBP._CustomizationBottomPanel__onEditableStylesHintsShown(self)
+        masks = ServerSettingsManager.SECTIONS[SETTINGS_SECTIONS.ONCE_ONLY_HINTS].masks
+        masks['CustomizationEditableStylesHint'] = 24
+        masks['C11nProgressionRequiredStylesHint'] = 25
+
+        if not self.__serverSettings.getOnceOnlyHintsSetting('CustomizationEditableStylesHint'):
+            for intCD in self._carouselDP.collection:
+                item = self.service.getItemByCD(intCD)
+                if item.itemTypeID != GUI_ITEM_TYPE.STYLE:
+                    return
+                if item.canBeEditedForVehicle(g_currentVehicle.item.intCD):
+                    self.as_setEditableStyleHintVisibilityS(True)
+                    return item.intCD
+
+            self.__onEditableStylesHintsHidden(record=False)
+        elif not self.__serverSettings.getOnceOnlyHintsSetting('C11nProgressionRequiredStylesHint'):
+            for intCD in self._carouselDP.collection:
+                item = self.service.getItemByCD(intCD)
+                if item.itemTypeID != GUI_ITEM_TYPE.STYLE:
+                    return
+                if item.isProgressionRequiredCanBeEdited(g_currentVehicle.item.intCD):
+                    self.as_setEditableProgressionRequiredStyleHintVisibilityS(True)
+                    return item.intCD
+
+            self.__onEditableStylesHintsHidden(record=False)
+        else:
+            self.__onEditableStylesHintsHidden(record=False)
 
     def __updateStageSwitcherVisibility(self):
         newVisibility = False
@@ -191,6 +217,49 @@ class CustomizationBottomPanel(CBP):
         if self.__stageSwitcherVisibility != newVisibility:
             self.__stageSwitcherVisibility = newVisibility
             self.as_setStageSwitcherVisibilityS(self.__stageSwitcherVisibility)
+
+    def __onEditableStylesHintsHidden(self, record=False):
+        self.as_setEditableStyleHintVisibilityS(False)
+        self.as_setEditableProgressionRequiredStyleHintVisibilityS(False)
+        if not record:
+            return
+        masks = ServerSettingsManager.SECTIONS[SETTINGS_SECTIONS.ONCE_ONLY_HINTS].masks
+        masks['CustomizationEditableStylesHint'] = 24
+        masks['C11nProgressionRequiredStylesHint'] = 25
+        if (
+                self.__serverSettings.getOnceOnlyHintsSetting('CustomizationEditableStylesHint')
+                and self.__serverSettings.getOnceOnlyHintsSetting('C11nProgressionRequiredStylesHint')):
+            return
+        editable = None
+        editableProgressionRequired = None
+        styles = self._carouselDP.getCarouselData(modeId=CustomizationModes.STYLED, tabId=CustomizationTabs.STYLES)
+        for intCD in styles:
+            item = self.service.getItemByCD(intCD)
+            if item.itemTypeID != GUI_ITEM_TYPE.STYLE:
+                break
+            if item.isEditable:
+                editable = item
+                if editable.isProgressionRequiredCanBeEdited(g_currentVehicle.item.intCD):
+                    editableProgressionRequired = editable
+                    break
+
+        settings = {}
+        if editable is not None:
+            settings['CustomizationEditableStylesHint'] = HINT_SHOWN_STATUS
+        if editableProgressionRequired is not None:
+            settings['C11nProgressionRequiredStylesHint'] = HINT_SHOWN_STATUS
+        if settings:
+            self.__serverSettings.setOnceOnlyHintsSettings(settings)
+
+    def as_setEditableStyleHintVisibilityS(self, value):
+        if self._isDAAPIInited():
+            func = getattr(self.flashObject, 'as_setEditableStyleHintVisibility', None)
+            return func and func(value)
+
+    def as_setEditableProgressionRequiredStyleHintVisibilityS(self, value):
+        if self._isDAAPIInited():
+            func = getattr(self.flashObject, 'as_setEditableProgressionRequiredStyleHintVisibility', None)
+            return func and func(value)
 
 
 class CamoSelector_carousel(View):
