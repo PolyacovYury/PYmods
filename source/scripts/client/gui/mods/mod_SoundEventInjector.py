@@ -12,7 +12,8 @@ from ReloadEffect import ReloadEffectsType, _AutoReloadDesc, _BarrelReloadDesc, 
 from gui.IngameSoundNotifications import IngameSoundNotifications
 from helpers.EffectsList import ImpactNames, KeyPoint, _SoundEffectDesc, _TracerSoundEffectDesc
 from items.components.sound_components import WWTripleSoundConfig as SoundConfig
-from items.vehicles import VehicleType, _VEHICLE_TYPE_XML_PATH, __readEffectsTimeLine as readEffectsTimeLine, g_cache
+from items.vehicles import VEHICLE_MODE_FILE_SUFFIX, VehicleType, _VEHICLE_TYPE_XML_PATH, \
+    __readEffectsTimeLine as readEffectsTimeLine, g_cache
 from material_kinds import EFFECT_MATERIALS
 
 reloadTypes = {
@@ -204,10 +205,11 @@ class ConfigInterface(ConfigNoInterface, SimpleConfigInterface):
             if itemData:
                 s = item.sounds.getEvents()
                 item.sounds = SoundConfig('', itemData.get('wwsoundPC', s[0]), itemData.get('wwsoundNPC', s[1]))
+        vehicle_type_name = vehicleType.name + VEHICLE_MODE_FILE_SUFFIX[vehicleType.mode]
         for item in (i for turrets in vehicleType.turrets for turret in turrets for i in turret.guns):
             nationID = item.id[0]
-            if vehicleType.name in self.data['guns']:
-                itemData = self.data['guns'][vehicleType.name].get(item.name)
+            if vehicle_type_name in self.data['guns']:
+                itemData = self.data['guns'][vehicle_type_name].get(item.name)
             else:
                 itemData = self.data['guns'].get(nations.NAMES[nationID], {}).get(item.name)
             if itemData:
