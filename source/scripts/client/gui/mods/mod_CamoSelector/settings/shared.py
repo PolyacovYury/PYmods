@@ -131,7 +131,7 @@ def CSComparisonKey(isPurchase, criteria, item=None):
         ItemTags.NATIONAL_EMBLEM not in tags, not is3D, isVictim, item.priceGroup == CUSTOM_GROUP_NAME, nat_count == 0,
         (not (clan or vehicles), not clan, not vehicles) if not nat_count else (clan, nat_count != 1),
         getGroupName(item, isPurchase), item.customizationDisplayType(), texName, item.isRare(),
-        0 if not hasattr(item, 'formfactor') else ProjectionDecalFormTags.ALL.index(item.formfactor), item.id)
+        ProjectionDecalFormTags.ALL.index(item.formfactor) if getattr(item, 'formfactor', None) else 0, item.id)
 
 
 def getGroupName(item, isPurchase=False):
@@ -262,5 +262,3 @@ def getEditableStylesExtraNotificationCounter(styles=None, settingsCore=None):
         return 1
     else:
         return 0
-
-
