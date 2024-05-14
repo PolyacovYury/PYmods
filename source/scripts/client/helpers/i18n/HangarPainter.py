@@ -158,8 +158,17 @@ def i18n_hook_makeString(key, *args, **kw):
 
 def delayedHooks():
     from gui.Scaleform.daapi.view.dialogs import I18nDialogMeta
-    from gui.shared.tooltips.tankman import TankmanSkillListField, ToolTipAttrField, TankmanRoleLevelField, \
-        TankmanCurrentVehicleAttrField
+    from gui.shared.tooltips import ToolTipAttrField
+    from gui.shared.tooltips.tankman import TankmanSkillListField
+    try:
+        from gui.shared.tooltips.tankman import TankmanRoleLevelField, TankmanCurrentVehicleAttrField
+    except ImportError:
+        class Dummy:
+            _name = None
+            _getValue = lambda *_, **__: None
+
+        TankmanRoleLevelField = Dummy
+        TankmanCurrentVehicleAttrField = Dummy
 
     @overrideMethod(I18nDialogMeta, '__init__')
     def new_I18nDialog_init(base, self, *args, **kwargs):
