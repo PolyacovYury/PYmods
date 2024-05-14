@@ -6,12 +6,13 @@ from gui.shared.gui_items import GUI_ITEM_TYPE
 from gui.shared.tooltips import formatters
 from items.vehicles import getItemByCompactDescr
 from .shared import fixIconPath, getInsigniaUserName
+from .. import g_config
 
 
 @overrideMethod(ElementTooltip, '_packItemBlocks')
 def _packItemBlocks(base, self, statsConfig, *a, **k):
     ctx = self._ElementTooltip__ctx
-    if ctx and not ctx.isPurchase:
+    if g_config.data['enabled'] and ctx and not ctx.isPurchase:
         statsConfig.buyPrice = False
         statsConfig.sellPrice = False
         statsConfig.inventoryCount = False
@@ -61,4 +62,4 @@ def _packSuitableBlock(base, self, *a, **k):
 @overrideMethod(ElementTooltip, '_packSpecialBlock')
 def _packBlock(base, self, *a, **k):
     ctx = self._ElementTooltip__ctx
-    return None if ctx and not ctx.isPurchase else base(self, *a, **k)
+    return None if g_config.data['enabled'] and ctx and not ctx.isPurchase else base(self, *a, **k)
