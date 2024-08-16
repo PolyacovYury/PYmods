@@ -3,7 +3,10 @@ import Keys
 import bisect
 from AvatarInputHandler.DynamicCameras.SniperCamera import SniperCamera
 from AvatarInputHandler.control_modes import SniperControlMode
-from OpenModsCore import Analytics, SimpleConfigInterface, overrideMethod, checkKeys
+from OpenModsCore import Analytics, SimpleConfigInterface, checkKeys, find_attr, overrideMethod
+from gui.Scaleform.daapi.view.battle.shared.crosshair import CrosshairPanelContainer
+from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
+from helpers import i18n
 from vehicle_systems.tankStructure import TankPartNames
 
 
@@ -71,8 +74,9 @@ def new_SniperCamera__showVehicle(base, self, visible, changing=False, *args, **
     if not config.data['enabled']:
         return base(self, visible, *args, **kwargs)
 
-    zoom, zooms, exposures = config.data['zoomValue'], self._cfg['zooms'], self._SniperCamera__dynamicCfg['zoomExposure']
-    if config.vehicleVisible:
+    zoom = self._SniperCamera__aimingSystem.overrideZoom(config.data['zoomValue'])
+    zooms, exposures = self._cfg['zooms'], self._SniperCamera__dynamicCfg['zoomExposure']
+    if config.vehicleVisible and config.data['changeZoom']:
         if zoom not in zooms:
             bisect.insort(zooms, zoom)
         if 0.7 not in exposures:
@@ -85,13 +89,13 @@ def new_SniperCamera__showVehicle(base, self, visible, changing=False, *args, **
 
     if changing:  # config.vehicleVisible == visible
         setGunVisible(not visible)
-        return base(self, visible)
+        return base(self, visible, *args, **kwargs)
     elif visible:
         setGunVisible(visible)
-        return base(self, visible)
+        return base(self, visible, *args, **kwargs)
     visible = config.vehicleVisible
     setGunVisible(not visible)
-    return base(self, visible)
+    return base(self, visible, *args, **kwargs)
 
 
 def setGunVisible(visible):
@@ -105,7 +109,7 @@ def setGunVisible(visible):
     if config.data['hideTurret']:
         parts = (TankPartNames.TURRET,) + parts
     for part in parts:
-        partHandleNotFoundErrorCode = 4294967295L
+        partHandleNotFoundErrorCode = 0xFFFFFFFFL
         partHandle = model.findPartHandleByNode(model.node(part))
         if partHandle == partHandleNotFoundErrorCode:
             continue
@@ -126,3 +130,11 @@ def new_SniperCamera_getZooms(base, self, *args, **kwargs):
     if not self._cfg['increasedZoom'] and config.data['zoomValue'] in zooms:
         zooms.append(self._cfg['zooms'][3])
     return zooms
+
+
+@overrideMethod(CrosshairPanelContainer, 'as_setZoomS')
+def new_CrosshairPanelContainer_as_setZoomS(base, self, zoomStr):
+    if not zoomStr:
+        zoomFactor = find_attr(self, '__zoomFactor')
+        zoomStr = (i18n.makeString(INGAME_GUI.AIM_ZOOM).replace('%(zoom)d', '%(zoom)s')) % {'zoom': round(zoomFactor, 2)}
+    return base(self, zoomStr)
