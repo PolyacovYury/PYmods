@@ -189,10 +189,10 @@ g_config = ConfigInterface()
 analytics = Analytics(g_config.ID, g_config.version, 'UA-76792179-15')
 
 
-@overrideMethod(ClientArena, '__onVehicleListUpdate')
+@overrideMethod(ClientArena, '__init__')
 def new__onVehicleListUpdate(base, self, *args, **kwargs):
     base(self, *args, **kwargs)
-    g_config.loadStats()
+    self.onNewVehicleListReceived += g_config.loadStats
 
 
 @overrideMethod(BattleEntry, 'beforeDelete')

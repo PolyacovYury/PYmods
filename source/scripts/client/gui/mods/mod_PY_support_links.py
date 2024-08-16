@@ -63,9 +63,7 @@ class ConfigInterface(DummyConfigInterface):
                 ] + [
                     make_button(_id)
                     for _id in ('patreon', 'boosty')
-                ],
-            'column2':
-                [
+                ] + [
                     self.tb.createLabel('donation'),
                 ] + [
                     make_button(_id)
@@ -75,7 +73,9 @@ class ConfigInterface(DummyConfigInterface):
                 ] + [
                     make_button(_id)
                     for _id in ('streamlabs_yt', 'streamlabs_twitch')
-                ]}
+                ],
+            'column2': []
+        }
 
     def onApplySettings(self, settings):
         pass
