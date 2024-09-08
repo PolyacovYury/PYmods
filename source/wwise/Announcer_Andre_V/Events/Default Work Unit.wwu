@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" SchemaVersion="97">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" PersistMode="Standalone">
+			<ChildrenList>
+				<Folder Name="Announcer_Andre_V" ID="{BA18F912-1A34-4A56-BE3C-C73866FEC4F4}" ShortID="12859275">
+					<ChildrenList>
+						<Event Name="t1min" ID="{B520E50A-6266-44B2-9822-4B7EAFEE8BAA}">
+							<ChildrenList>
+								<Action Name="" ID="{5EFAAAFF-2782-494B-AAD6-177280C04E85}" ShortID="213287102">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="1mins" ID="{0CA1396A-8C69-4D63-91F2-A5D2C0EC86C5}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="t3min" ID="{8FE7665E-5E1F-4373-9EC8-70A0179404E3}">
+							<ChildrenList>
+								<Action Name="" ID="{849E3983-3030-4A1E-ACB7-F3EF356988B3}" ShortID="512633479">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="3mins" ID="{154AE280-BA42-4812-91E1-F1ECD91100C1}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="t5min" ID="{4BF6C791-65BB-48E2-B967-38FF4088AE89}">
+							<ChildrenList>
+								<Action Name="" ID="{BA164C5A-6B8A-48CE-96FE-45C1C334C135}" ShortID="406561464">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="5mins" ID="{D1DA64F3-53DD-4AE7-9E59-4A6B48264F27}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="t5secs" ID="{4603F1C5-8F92-41CE-AE93-62DDA0F133CD}">
+							<ChildrenList>
+								<Action Name="" ID="{E344899F-4D31-4EF0-94F3-E6D306A40B77}" ShortID="626254036">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="5secs" ID="{ECA247AF-1921-4F8A-85D1-A823922CE291}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="t30secs" ID="{983C4708-DE93-471E-A217-3C957074D093}">
+							<ChildrenList>
+								<Action Name="" ID="{6D3CA26F-E4AC-4D86-B827-E367B00ADAD3}" ShortID="300786367">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="30secs" ID="{3F39E4EB-E9CB-4506-9F43-306D19E23749}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="doublekill" ID="{31771AEB-EF85-4A31-9ABB-5710CE9F7863}">
+							<ChildrenList>
+								<Action Name="" ID="{05E712DF-6041-49A7-91E0-2DD54B4F9A35}" ShortID="316896393">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="doublekill" ID="{365DB40B-C8C3-4B68-8EB4-340FF60D7037}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="firstblood" ID="{38B46821-53C0-49A0-BE3B-BF389ACECA73}">
+							<ChildrenList>
+								<Action Name="" ID="{846852BD-8CC5-4D0E-907E-15D177E78EAB}" ShortID="543672966">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="firstblood" ID="{13548B5F-3E67-41D3-9903-0AA067EE7BE0}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="godlike" ID="{3E7B9AC3-2639-41C4-9EA9-48B926489AC0}">
+							<ChildrenList>
+								<Action Name="" ID="{FD5F6A3E-0417-41EC-AA9C-DF89D885B837}" ShortID="195696649">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="godlike" ID="{538F6DBD-B8E1-45F7-9570-92A87AEBE8B0}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="kamikaze" ID="{F1AA1F41-FB53-4ACF-BC6C-26CDB2373F11}">
+							<ChildrenList>
+								<Action Name="" ID="{BCA6A322-70F8-49B4-81AA-09E49D01464C}" ShortID="192427719">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="kamikaze" ID="{5F678BE8-0146-48F4-AD61-603F1C6F7314}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="killingspree" ID="{E55A50A6-AC88-4994-B5E3-2E70156E4F39}">
+							<ChildrenList>
+								<Action Name="" ID="{734206A5-C236-4122-98F6-E077AC49CCFC}" ShortID="591969630">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="killingspree" ID="{110C1109-3D26-464D-9C6C-AF321AB973EF}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="monsterkill" ID="{69F30D7C-1C57-4986-AB8D-736FB60CAC4F}">
+							<ChildrenList>
+								<Action Name="" ID="{D0F57FD6-4F62-478C-AA52-B577DCAA2358}" ShortID="620826913">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="monsterkill" ID="{C4A3412C-5426-45C4-866C-F40010EEC07E}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="multikill" ID="{E1A69A4E-F5E9-405B-BCCA-4795E1ED3F71}">
+							<ChildrenList>
+								<Action Name="" ID="{0C5028DC-2611-4819-8CEC-DB49E5734428}" ShortID="114394176">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="multikill" ID="{7513CCB4-6B0F-4B2C-B13C-4BC76EAE8B58}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="rampage" ID="{E56F8CEA-745B-4BD6-A054-171E196E6BBD}">
+							<ChildrenList>
+								<Action Name="" ID="{64DC063A-4062-4D8A-ABA9-287FE62BAE56}" ShortID="711339992">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="rampage" ID="{433EE0F3-AABC-49C4-98E0-629B868186E8}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="triplekill" ID="{AD0485F5-2A99-463C-8713-5AD24AB83B2E}">
+							<ChildrenList>
+								<Action Name="" ID="{8090586B-E771-4F32-A253-1D73913505AC}" ShortID="493235340">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="triplekill" ID="{1CFEDAC2-3C6F-49F7-B1DD-C66D6B0532D0}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="ultrakill" ID="{16F0F6FC-A0D2-4982-BAFD-2256B39C921F}">
+							<ChildrenList>
+								<Action Name="" ID="{CA249C6F-2EC4-4E89-A21C-3BBFAE373EAB}" ShortID="712947248">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="ultrakill" ID="{C61EAFF7-15C2-48B2-84B5-282647C6DBA8}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="unstoppable" ID="{BEB2E823-71D6-4327-81DA-A9D522E75479}">
+							<ChildrenList>
+								<Action Name="" ID="{E1781947-2DDB-4C66-8530-C09B3D5566B5}" ShortID="748999482">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="unstoppable" ID="{E29ACCBB-C3AC-4F6A-8F75-F7D9BD10739F}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="t2min" ID="{4216D41C-E225-449E-8F54-B33C9C79BB9A}">
+							<ChildrenList>
+								<Action Name="" ID="{8C60CB8B-9050-4A25-A126-A5A76814B9D7}" ShortID="919503837">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="2mins" ID="{F91DF616-79EA-47D9-A418-B6805A6CBE2D}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="massacre" ID="{FF505C73-9464-42EB-B502-4A30669F48B4}">
+							<ChildrenList>
+								<Action Name="" ID="{65826975-0E80-4BFD-A9DD-154E5D28ADFF}" ShortID="333897002">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="massacre" ID="{85586D46-9404-47A5-B009-293FABE7A40F}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="ramkill" ID="{588EBD90-C7E9-4D19-92EC-B9A4BC111520}">
+							<ChildrenList>
+								<Action Name="" ID="{54FCBB85-75A4-4D25-990E-DAC9047CF056}" ShortID="256882131">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="ramkill" ID="{A003C90A-47FE-4A97-9C08-FF7360F7EFEF}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="topgun" ID="{0557171F-C451-4177-A9E9-9D0DB2A585D8}">
+							<ChildrenList>
+								<Action Name="" ID="{EDE49EF4-E924-4F2A-9321-D5F703FF4F13}" ShortID="848808434">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="topgun" ID="{4F166ADC-5879-4507-8F49-FB19DC01B15E}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="megakill" ID="{C425CB6C-65EF-4E47-8CB3-C362EE1ECE82}">
+							<ChildrenList>
+								<Action Name="" ID="{2B86F2A0-680E-489B-A2BE-A4C657D478FA}" ShortID="1032988936">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="megakill" ID="{DADC3F50-C74C-4AE7-B885-6839832E9990}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="flakmaster" ID="{0566A361-08BF-4D90-B751-B09C9BC7B116}">
+							<ChildrenList>
+								<Action Name="" ID="{88D3E55F-249F-4198-9258-48422E149559}" ShortID="307527503">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="flakmaster" ID="{7B7C72A8-030B-465F-80D8-E7D84FDBAE5A}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="unreal" ID="{53EBC52F-9C65-4520-8F5E-31A989CA3ECE}">
+							<ChildrenList>
+								<Action Name="" ID="{9833E53F-01A9-4DC9-886F-F4A0F47577C6}" ShortID="742326144">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="unreal" ID="{06BD273D-CBFB-44ED-8847-1A4D8FDF8C36}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="payback" ID="{5987AE35-215D-452A-8C1A-D992AA521DA1}">
+							<ChildrenList>
+								<Action Name="" ID="{B862DD13-7232-4857-9F79-7F52D7082B31}" ShortID="455153117">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="payback" ID="{983B9F58-8630-4F0C-B50E-578FE10A3869}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="eradication" ID="{EA9892EF-789A-40B3-B8F9-C2FE11D5E748}">
+							<ChildrenList>
+								<Action Name="" ID="{3649B39F-2D85-40E5-ACC5-8C5469985F6F}" ShortID="1001235235">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="eradication" ID="{7EEA28B5-44A4-4B11-9C75-026477E346AD}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="extermination" ID="{38E340E9-F791-412A-B8AD-DC9AE5F8A1C2}">
+							<ChildrenList>
+								<Action Name="" ID="{2B7FA91E-63AD-4000-A14E-194EA0E368D8}" ShortID="1006288216">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="extermination" ID="{19357EF6-9E17-44A5-B86F-66C3B014A93B}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="denied" ID="{6609DA57-2215-4EB5-8566-CE7BE56E3CC0}">
+							<ChildrenList>
+								<Action Name="" ID="{899B5E12-23CA-478C-BA04-A83AB6024A40}" ShortID="523262241">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="denied" ID="{BCA5C7E3-9F3E-48CC-94CC-BAD929B2F9D2}" WorkUnitID="{A707B396-FFE4-4520-B584-5067C9A90AD1}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

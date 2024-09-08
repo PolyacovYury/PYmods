@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{4F24F58E-234E-4FD9-BE39-EAC388BF7B5D}" SchemaVersion="97">
+	<AudioObjects>
+		<WorkUnit Name="Default Work Unit" ID="{4F24F58E-234E-4FD9-BE39-EAC388BF7B5D}" PersistMode="Standalone">
+			<ChildrenList>
+				<ActorMixer Name="gui" ID="{33E9D709-C657-4204-A6F1-C65DB185773C}" ShortID="764062703">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<RTPCList>
+								<RTPC Name="" ID="{8D7903A6-5BF2-489F-9974-EF8CF77E3E1A}" ShortID="950954367">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_gui" ID="{F1D26C63-DA04-4016-9408-59E8497686DA}" WorkUnitID="{0B8F5F0B-37B5-4D1F-BC9C-8BB05E301D4C}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{2124D19C-B6F2-4F83-9651-159D95B0D2F4}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{03EE123D-AB8A-40EC-8F21-ECB5DDD93F98}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8F79A428-3234-483F-BA76-DA4EB5863308}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<Folder Name="horns" ID="{6510396C-456E-4D2A-8495-751756808019}" ShortID="1009007084">
+							<ChildrenList>
+								<Sound Name="6horn" ID="{614A1338-B501-4D69-BAC9-AD3E5B8B9F36}" ShortID="223540733">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{03EE123D-AB8A-40EC-8F21-ECB5DDD93F98}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8F79A428-3234-483F-BA76-DA4EB5863308}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="6horn" ID="{67D3F981-2582-4F3A-8E10-75334DE02041}">
+											<Language>SFX</Language>
+											<AudioFile>6horn.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="975178514"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="6horn" ID="{67D3F981-2582-4F3A-8E10-75334DE02041}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="7horn" ID="{460E303C-2C5B-4D4C-A4BF-D2BBA6258B1F}" ShortID="306781350">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{03EE123D-AB8A-40EC-8F21-ECB5DDD93F98}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8F79A428-3234-483F-BA76-DA4EB5863308}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="7horn" ID="{304B69F0-7369-4F62-A020-F7C119814B6E}">
+											<Language>SFX</Language>
+											<AudioFile>7horn.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="30041529"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="7horn" ID="{304B69F0-7369-4F62-A020-F7C119814B6E}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="8horn" ID="{BD259A68-4E9C-4D80-8827-C5E34D2BA1F3}" ShortID="823691937">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{03EE123D-AB8A-40EC-8F21-ECB5DDD93F98}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8F79A428-3234-483F-BA76-DA4EB5863308}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="8horn" ID="{4EEB58F0-17AA-4692-836E-0BE83D9538E2}">
+											<Language>SFX</Language>
+											<AudioFile>8horn.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="138016081"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="8horn" ID="{4EEB58F0-17AA-4692-836E-0BE83D9538E2}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="5horn" ID="{40E51CA0-BA18-43EC-BE0D-09176FF1E2D0}" ShortID="81514195">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{03EE123D-AB8A-40EC-8F21-ECB5DDD93F98}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8F79A428-3234-483F-BA76-DA4EB5863308}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="5horn" ID="{C3DFD9B9-B08C-4CBA-AE65-C2A450996237}">
+											<Language>SFX</Language>
+											<AudioFile>5horn.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="1013813182"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="5horn" ID="{C3DFD9B9-B08C-4CBA-AE65-C2A450996237}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="4horn" ID="{46765451-3B4E-4D10-9311-37F9909DA45D}" ShortID="8189903">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{03EE123D-AB8A-40EC-8F21-ECB5DDD93F98}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8F79A428-3234-483F-BA76-DA4EB5863308}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="4horn" ID="{68F42CCF-DC96-4839-BB93-00F0E9130744}">
+											<Language>SFX</Language>
+											<AudioFile>4horn.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="272810037"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="4horn" ID="{68F42CCF-DC96-4839-BB93-00F0E9130744}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="3horn" ID="{09E216E5-D8D7-4F05-9518-AD80E9A9BB13}" ShortID="926817070">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{03EE123D-AB8A-40EC-8F21-ECB5DDD93F98}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8F79A428-3234-483F-BA76-DA4EB5863308}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="3horn" ID="{FAC249F5-4CAD-4A25-B602-A90ED6548AED}">
+											<Language>SFX</Language>
+											<AudioFile>3horn.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="611458152"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="3horn" ID="{FAC249F5-4CAD-4A25-B602-A90ED6548AED}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="2horn" ID="{0A53314C-B037-4625-91A2-0CDA1996D163}" ShortID="963588577">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{03EE123D-AB8A-40EC-8F21-ECB5DDD93F98}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8F79A428-3234-483F-BA76-DA4EB5863308}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="2horn" ID="{D06DC70A-870F-4575-B5C3-B7B1100D7B47}">
+											<Language>SFX</Language>
+											<AudioFile>2horn.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="814321988"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="2horn" ID="{D06DC70A-870F-4575-B5C3-B7B1100D7B47}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="1horn" ID="{4FAE329E-B51B-4AA6-9C05-1CAB335B7B62}" ShortID="398907615">
+									<PropertyList>
+										<Property Name="IsLoopingEnabled" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{03EE123D-AB8A-40EC-8F21-ECB5DDD93F98}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{8F79A428-3234-483F-BA76-DA4EB5863308}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="1horn" ID="{6AAE79B8-6162-479E-9F2A-2A7A5ACB859B}">
+											<Language>SFX</Language>
+											<AudioFile>1horn.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="859359199"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="1horn" ID="{6AAE79B8-6162-479E-9F2A-2A7A5ACB859B}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+						</Folder>
+					</ChildrenList>
+				</ActorMixer>
+			</ChildrenList>
+		</WorkUnit>
+	</AudioObjects>
+</WwiseDocument>

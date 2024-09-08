@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{22EEF783-73AC-4AAB-8706-E7B410AE9DFD}" SchemaVersion="97">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{22EEF783-73AC-4AAB-8706-E7B410AE9DFD}" PersistMode="Standalone">
+			<ChildrenList>
+				<Folder Name="horns" ID="{B8867AF2-72A6-4AF0-AC4A-56F8BF0ADA11}" ShortID="349464300">
+					<ChildrenList>
+						<Event Name="event_2horn" ID="{444CCF52-2B9E-4A02-A81C-3D441743AF3F}">
+							<ChildrenList>
+								<Action Name="" ID="{B0FAA883-8E7F-49E4-B447-72C75C961D1B}" ShortID="195246538">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="2horn" ID="{0A53314C-B037-4625-91A2-0CDA1996D163}" WorkUnitID="{4F24F58E-234E-4FD9-BE39-EAC388BF7B5D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="event_1horn" ID="{62F1E054-F310-4F8E-9825-CE3AEF9933F0}">
+							<ChildrenList>
+								<Action Name="" ID="{1D4EAF39-E3B3-4FCB-8A19-6B9E2082FF9D}" ShortID="338792444">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="1horn" ID="{4FAE329E-B51B-4AA6-9C05-1CAB335B7B62}" WorkUnitID="{4F24F58E-234E-4FD9-BE39-EAC388BF7B5D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="event_3horn" ID="{A4097D96-D3CD-4917-BEA4-BD2DA03AEAF5}">
+							<ChildrenList>
+								<Action Name="" ID="{622CA4C4-F8A5-4C28-9AE1-B61B2BDBB7A3}" ShortID="795718482">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="3horn" ID="{09E216E5-D8D7-4F05-9518-AD80E9A9BB13}" WorkUnitID="{4F24F58E-234E-4FD9-BE39-EAC388BF7B5D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="event_6horn" ID="{3C799877-B938-468C-84CC-DFB1DB28BABA}">
+							<ChildrenList>
+								<Action Name="" ID="{FC0CA79F-DDDC-4A61-82A6-92DB3C6CA2BC}" ShortID="811694677">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="6horn" ID="{614A1338-B501-4D69-BAC9-AD3E5B8B9F36}" WorkUnitID="{4F24F58E-234E-4FD9-BE39-EAC388BF7B5D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="event_8horn" ID="{428A7F7A-7EFF-4F7F-9269-F40E830065F9}">
+							<ChildrenList>
+								<Action Name="" ID="{89D20EB3-4E1C-4418-824F-56EF7ECF5AE5}" ShortID="1073577226">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="8horn" ID="{BD259A68-4E9C-4D80-8827-C5E34D2BA1F3}" WorkUnitID="{4F24F58E-234E-4FD9-BE39-EAC388BF7B5D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="event_4horn" ID="{4D3E3D44-14F0-4D27-A578-9988CD001328}">
+							<ChildrenList>
+								<Action Name="" ID="{9B28D413-CAA6-47A1-BA0A-293AA194AAA6}" ShortID="648328703">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="4horn" ID="{46765451-3B4E-4D10-9311-37F9909DA45D}" WorkUnitID="{4F24F58E-234E-4FD9-BE39-EAC388BF7B5D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="event_5horn" ID="{BE4DC281-A81D-4C97-A693-717FA279D18C}">
+							<ChildrenList>
+								<Action Name="" ID="{55A9CAF7-08EA-43CD-9A0E-2C747A7DF62E}" ShortID="82036622">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="5horn" ID="{40E51CA0-BA18-43EC-BE0D-09176FF1E2D0}" WorkUnitID="{4F24F58E-234E-4FD9-BE39-EAC388BF7B5D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="event_7horn" ID="{576C93A9-872F-4DE9-8FAF-AE7B8B3B84AD}">
+							<ChildrenList>
+								<Action Name="" ID="{C235AE83-5F44-46ED-9706-4A721A0BF4CD}" ShortID="928272666">
+									<PropertyList>
+										<Property Name="ActionType" Type="int16" Value="1"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Target">
+											<ObjectRef Name="7horn" ID="{460E303C-2C5B-4D4C-A4BF-D2BBA6258B1F}" WorkUnitID="{4F24F58E-234E-4FD9-BE39-EAC388BF7B5D}"/>
+										</Reference>
+									</ReferenceList>
+								</Action>
+							</ChildrenList>
+						</Event>
+					</ChildrenList>
+				</Folder>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="12" SoundbankVersion="135">
+	<RootPaths>
+		<ProjectRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\horns\</ProjectRoot>
+		<SourceFilesRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\horns\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\horns\GeneratedSoundBanks\Windows\</SoundBanksRoot>
+		<ExternalSourcesInputFile></ExternalSourcesInputFile>
+		<ExternalSourcesOutputRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\horns\GeneratedSoundBanks\Windows</ExternalSourcesOutputRoot>
+	</RootPaths>
+	<DialogueEvents/>
+	<StreamedFiles/>
+	<MediaFilesNotInAnyBank/>
+	<SoundBanks>
+		<SoundBank Id="1355168291" Language="SFX">
+			<ObjectPath>Init</ObjectPath>
+			<ShortName>Init</ShortName>
+			<Path>Init.bnk</Path>
+		</SoundBank>
+		<SoundBank Id="4173622173" Language="SFX">
+			<ObjectPath>\SoundBanks\Default Work Unit\horns</ObjectPath>
+			<ShortName>horns</ShortName>
+			<Path>horns.bnk</Path>
+			<IncludedEvents>
+				<Event Id="3710241232" Name="event_1horn" ObjectPath="\Events\Default Work Unit\horns\event_1horn">
+					<IncludedMemoryFiles>
+						<File Id="859359199" Language="SFX">
+							<ShortName>1horn.wav</ShortName>
+							<Path>SFX\1horn_92A7C46F.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1858339087" Name="event_2horn" ObjectPath="\Events\Default Work Unit\horns\event_2horn">
+					<IncludedMemoryFiles>
+						<File Id="814321988" Language="SFX">
+							<ShortName>2horn.wav</ShortName>
+							<Path>SFX\2horn_92A7C46F.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="4137884458" Name="event_3horn" ObjectPath="\Events\Default Work Unit\horns\event_3horn">
+					<IncludedMemoryFiles>
+						<File Id="611458152" Language="SFX">
+							<ShortName>3horn.wav</ShortName>
+							<Path>SFX\3horn_92A7C46F.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="166698281" Name="event_4horn" ObjectPath="\Events\Default Work Unit\horns\event_4horn">
+					<IncludedMemoryFiles>
+						<File Id="272810037" Language="SFX">
+							<ShortName>4horn.wav</ShortName>
+							<Path>SFX\4horn_92A7C46F.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2854640380" Name="event_5horn" ObjectPath="\Events\Default Work Unit\horns\event_5horn">
+					<IncludedMemoryFiles>
+						<File Id="1013813182" Language="SFX">
+							<ShortName>5horn.wav</ShortName>
+							<Path>SFX\5horn_92A7C46F.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3209552315" Name="event_6horn" ObjectPath="\Events\Default Work Unit\horns\event_6horn">
+					<IncludedMemoryFiles>
+						<File Id="975178514" Language="SFX">
+							<ShortName>6horn.wav</ShortName>
+							<Path>SFX\6horn_92A7C46F.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1204472854" Name="event_7horn" ObjectPath="\Events\Default Work Unit\horns\event_7horn">
+					<IncludedMemoryFiles>
+						<File Id="30041529" Language="SFX">
+							<ShortName>7horn.wav</ShortName>
+							<Path>SFX\7horn_92A7C46F.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="660015077" Name="event_8horn" ObjectPath="\Events\Default Work Unit\horns\event_8horn">
+					<IncludedMemoryFiles>
+						<File Id="138016081" Language="SFX">
+							<ShortName>8horn.wav</ShortName>
+							<Path>SFX\8horn_92A7C46F.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+			</IncludedEvents>
+			<GameParameters>
+				<GameParameter Id="3348539219" Name="RTPC_ext_menu_volume_gui" ObjectPath="\Game Parameters\Settings\RTPC_ext_menu_volume_gui"/>
+			</GameParameters>
+		</SoundBank>
+	</SoundBanks>
+</SoundBanksInfo>

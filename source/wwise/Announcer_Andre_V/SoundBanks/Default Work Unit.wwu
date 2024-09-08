@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{00DBAD8D-5909-4D92-90D3-1ABCCA6B5256}" SchemaVersion="97">
+	<SoundBanks>
+		<WorkUnit Name="Default Work Unit" ID="{00DBAD8D-5909-4D92-90D3-1ABCCA6B5256}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundBank Name="Announcer_Andre_V" ID="{E2E437C2-9760-4E66-B250-3C871CD1BD4C}">
+					<ObjectInclusionList>
+						<ObjectRef Name="multikill" ID="{E1A69A4E-F5E9-405B-BCCA-4795E1ED3F71}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="eradication" ID="{EA9892EF-789A-40B3-B8F9-C2FE11D5E748}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="extermination" ID="{38E340E9-F791-412A-B8AD-DC9AE5F8A1C2}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="topgun" ID="{0557171F-C451-4177-A9E9-9D0DB2A585D8}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="godlike" ID="{3E7B9AC3-2639-41C4-9EA9-48B926489AC0}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="t5secs" ID="{4603F1C5-8F92-41CE-AE93-62DDA0F133CD}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="massacre" ID="{FF505C73-9464-42EB-B502-4A30669F48B4}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="unstoppable" ID="{BEB2E823-71D6-4327-81DA-A9D522E75479}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="t3min" ID="{8FE7665E-5E1F-4373-9EC8-70A0179404E3}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="t2min" ID="{4216D41C-E225-449E-8F54-B33C9C79BB9A}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="t1min" ID="{B520E50A-6266-44B2-9822-4B7EAFEE8BAA}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="unreal" ID="{53EBC52F-9C65-4520-8F5E-31A989CA3ECE}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="payback" ID="{5987AE35-215D-452A-8C1A-D992AA521DA1}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="triplekill" ID="{AD0485F5-2A99-463C-8713-5AD24AB83B2E}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="t30secs" ID="{983C4708-DE93-471E-A217-3C957074D093}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="t5min" ID="{4BF6C791-65BB-48E2-B967-38FF4088AE89}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="ultrakill" ID="{16F0F6FC-A0D2-4982-BAFD-2256B39C921F}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="monsterkill" ID="{69F30D7C-1C57-4986-AB8D-736FB60CAC4F}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="killingspree" ID="{E55A50A6-AC88-4994-B5E3-2E70156E4F39}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="firstblood" ID="{38B46821-53C0-49A0-BE3B-BF389ACECA73}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="doublekill" ID="{31771AEB-EF85-4A31-9ABB-5710CE9F7863}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="kamikaze" ID="{F1AA1F41-FB53-4ACF-BC6C-26CDB2373F11}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="rampage" ID="{E56F8CEA-745B-4BD6-A054-171E196E6BBD}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="ramkill" ID="{588EBD90-C7E9-4D19-92EC-B9A4BC111520}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="flakmaster" ID="{0566A361-08BF-4D90-B751-B09C9BC7B116}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="megakill" ID="{C425CB6C-65EF-4E47-8CB3-C362EE1ECE82}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="denied" ID="{6609DA57-2215-4EB5-8566-CE7BE56E3CC0}" WorkUnitID="{2E04FF5E-2BFF-4E7A-90FF-00DC36537746}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+			</ChildrenList>
+		</WorkUnit>
+	</SoundBanks>
+</WwiseDocument>

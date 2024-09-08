@@ -1,0 +1,61 @@
+Event	ID	Name			Wwise Object Path	Notes
+	117611218	t5secs			\Default Work Unit\Announcer_Andre_V\t5secs	
+	368603808	payback			\Default Work Unit\Announcer_Andre_V\payback	
+	487948164	unreal			\Default Work Unit\Announcer_Andre_V\unreal	
+	734291041	t2min			\Default Work Unit\Announcer_Andre_V\t2min	
+	736660908	denied			\Default Work Unit\Announcer_Andre_V\denied	
+	738930270	eradication			\Default Work Unit\Announcer_Andre_V\eradication	
+	887867080	multikill			\Default Work Unit\Announcer_Andre_V\multikill	
+	1027147012	topgun			\Default Work Unit\Announcer_Andre_V\topgun	
+	1250913367	firstblood			\Default Work Unit\Announcer_Andre_V\firstblood	
+	1571361248	unstoppable			\Default Work Unit\Announcer_Andre_V\unstoppable	
+	1611658976	godlike			\Default Work Unit\Announcer_Andre_V\godlike	
+	1873981316	extermination			\Default Work Unit\Announcer_Andre_V\extermination	
+	1903276836	kamikaze			\Default Work Unit\Announcer_Andre_V\kamikaze	
+	2233416765	monsterkill			\Default Work Unit\Announcer_Andre_V\monsterkill	
+	2524505920	t5min			\Default Work Unit\Announcer_Andre_V\t5min	
+	2696617643	ramkill			\Default Work Unit\Announcer_Andre_V\ramkill	
+	2756207098	rampage			\Default Work Unit\Announcer_Andre_V\rampage	
+	3069637574	t3min			\Default Work Unit\Announcer_Andre_V\t3min	
+	3103184737	triplekill			\Default Work Unit\Announcer_Andre_V\triplekill	
+	3219824994	massacre			\Default Work Unit\Announcer_Andre_V\massacre	
+	3494939554	killingspree			\Default Work Unit\Announcer_Andre_V\killingspree	
+	3650570114	doublekill			\Default Work Unit\Announcer_Andre_V\doublekill	
+	3723440080	t30secs			\Default Work Unit\Announcer_Andre_V\t30secs	
+	3917831853	ultrakill			\Default Work Unit\Announcer_Andre_V\ultrakill	
+	3919288209	flakmaster			\Default Work Unit\Announcer_Andre_V\flakmaster	
+	3923507956	t1min			\Default Work Unit\Announcer_Andre_V\t1min	
+	4197942055	megakill			\Default Work Unit\Announcer_Andre_V\megakill	
+
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	1978220576	RTPC_ext_menu_volume_voice			\Settings\RTPC_ext_menu_volume_voice	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	3550311	multikill	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\multikill_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\multikill\multikill		47255
+	17136219	2	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\2_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\2mins\2		54382
+	161322350	1min	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\1min_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\1mins\1min		61635
+	199571713	unstoppable	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\unstoppable_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\unstoppable\unstoppable		42523
+	289037618	payback	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\payback_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\payback\payback		22046
+	291012441	flakmaster	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\flakmaster_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\flakmaster\flakmaster		29108
+	393814797	ultrakill	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\ultrakill_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\ultrakill\ultrakill		43134
+	402087458	denied	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\denied_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\denied\denied		21413
+	405546158	eradication	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\eradication_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\eradication\eradication		22126
+	461714287	doublekill	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\doublekill_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\doublekill\doublekill		32982
+	508799931	rampage	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\rampage_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\rampage\rampage		40847
+	531184359	roadkill	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\roadkill_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\ramkill\roadkill		23763
+	560226022	3min	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\3min_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\3mins\3min		54962
+	562946238	killingspree	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\killingspree_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\killingspree\killingspree		38048
+	575934023	firstblood	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\firstblood_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\firstblood\firstblood		33601
+	613947228	outstanding	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\outstanding_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\kamikaze\outstanding		27285
+	617776055	hitandrun	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\hitandrun_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\massacre\hitandrun		21328
+	659314688	extermination	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\extermination_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\extermination\extermination		21172
+	710033493	triplekill	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\triplekill_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\triplekill\triplekill		36669
+	807066795	topgun	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\topgun_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\topgun\topgun		20626
+	821723290	pancake	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\pancake_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\unreal\pancake		19594
+	851774888	godlike	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\godlike_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\godlike\godlike		38282
+	910188567	30secs	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\30secs_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\30secs\30secs		64298
+	939755231	5_minute_warning	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\5_minute_warning_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\5mins\5_minute_warning		65730
+	952741918	monsterkill	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\monsterkill_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\monsterkill\monsterkill		56782
+	957804029	mutualdestruction	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\mutualdestruction_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\megakill\mutualdestruction		34864
+	1068440989	5secs	D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\SFX\5secs_BE64E651.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\Announcer_Andre_V\5secs\5secs		105223
+

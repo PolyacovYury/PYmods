@@ -1,0 +1,14 @@
+Event	ID	Name			Wwise Object Path	Notes
+	543198145	PlayerHPAnnouncer_50			\Default Work Unit\PlayerHPAnnouncer_50	
+	559975857	PlayerHPAnnouncer_25			\Default Work Unit\PlayerHPAnnouncer_25	
+	610308621	PlayerHPAnnouncer_10			\Default Work Unit\PlayerHPAnnouncer_10	
+
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	257494316	RTPC_ext_menu_volume_master			\Settings\RTPC_ext_menu_volume_master	
+	1978220576	RTPC_ext_menu_volume_voice			\Settings\RTPC_ext_menu_volume_voice	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	85875852	#L_base_02	D:\Code\Pycharm Python\WoT_mods\WWISE\PlayerHPAnnouncer\.cache\Windows\SFX\#L_base_02_22E84134.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\#L_base_02		31653
+	671388639	#L_base_03	D:\Code\Pycharm Python\WoT_mods\WWISE\PlayerHPAnnouncer\.cache\Windows\SFX\#L_base_03_22E84134.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\#L_base_03		29812
+	683627647	#L_base_01	D:\Code\Pycharm Python\WoT_mods\WWISE\PlayerHPAnnouncer\.cache\Windows\SFX\#L_base_01_22E84134.wem		\Actor-Mixer Hierarchy\Default Work Unit\voice\#L_base_01		60473
+
