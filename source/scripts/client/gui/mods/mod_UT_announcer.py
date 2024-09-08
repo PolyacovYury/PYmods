@@ -15,7 +15,7 @@ import SoundGroups
 import os
 import traceback
 from OpenModsCore import BigWorld_callback, SimpleConfigInterface, Analytics, find_attr, overrideMethod, events
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from constants import ARENA_PERIOD, ARENA_GUI_TYPE
 from debug_utils import LOG_ERROR
 from gui import IngameSoundNotifications
@@ -407,7 +407,8 @@ def killCheck(frags):
 
 def initial():
     BigWorld.player().arena.UT = {
-        'squadMan': [0, 0], 'killer': [0, 0], 'ownKiller': 0, 'BiA': False, 'Crucial': False, 'BiAFail': False}
+        'squadMan': [0, 0], 'killer': [0, 0], 'ownKiller': 0, 'BiA': False, 'Crucial': False, 'BiAFail': False,
+        'frags': defaultdict(int)}
 
 
 def checkSquadMan():
@@ -449,16 +450,16 @@ def callTextInit(newText, targetID, attackerID, squadManID):
 def checkSquadKills(targetID, attackerID, reason):
     arena = BigWorld.player().arena
     LOG_NOTE('Check Squad Kills:', targetID, attackerID, reason)
-    cStats = arena._ClientArena__statistics
+    fragsCache = arena.UT['frags']
     if not arena.vehicles[BigWorld.player().playerVehicleID]['prebattleID'] or 'opponents' in arena.extraData or not \
             arena.UT['squadMan'][0]:
         LOG_NOTE('Player not in a Platoon. Returning.')
         firstCheck(targetID, attackerID, reason, True, None)
         return
     else:
-        squadFrags = cStats[BigWorld.player().playerVehicleID]['frags'] + cStats[arena.UT['squadMan'][0]]['frags']
+        squadFrags = fragsCache[BigWorld.player().playerVehicleID] + fragsCache[arena.UT['squadMan'][0]]
         if arena.UT['squadMan'][1]:
-            squadFrags += cStats[arena.UT['squadMan'][1]]['frags']
+            squadFrags += fragsCache[arena.UT['squadMan'][1]]
         LOG_NOTE('Squad frags:', squadFrags)
         if squadFrags >= 12:
             if arena.UT['Crucial']:
@@ -470,9 +471,9 @@ def checkSquadKills(targetID, attackerID, reason):
                 killCheck(50)
         if arena.UT['BiA'] or arena.UT['BiAFail']:
             LOG_NOTE('Squad check complete.')
-        elif cStats[BigWorld.player().playerVehicleID]['frags'] < 3 or cStats[arena.UT['squadMan'][0]]['frags'] < 3:
+        elif fragsCache[BigWorld.player().playerVehicleID] < 3 or fragsCache[arena.UT['squadMan'][0]] < 3:
             LOG_NOTE('Player or SquadMan 1 not 3 kills.')
-        elif arena.UT['squadMan'][1] and cStats[arena.UT['squadMan'][1]]['frags'] < 3:
+        elif arena.UT['squadMan'][1] and fragsCache[arena.UT['squadMan'][1]] < 3:
             LOG_NOTE('SquadMan 2 not 3 kills.')
         else:
             callTextInit(_config.i18n['UI_message_bia'], targetID, attackerID, None)
@@ -576,8 +577,9 @@ def firstCheck(targetID, attackerID, reason, squadChecked, killerID):
         callTextInit(_config.i18n['UI_message_%s' % ('kamikaze' if isKamikaze else 'ramKill')], targetID, attackerID, None)
         LOG_NOTE(('Kamikaze' if isKamikaze else 'Ram kill') + ' detected!', targetID, attackerID)
         killCheck(30 if isKamikaze else 20)
-    cStats = arena._ClientArena__statistics
-    origFrags = frags = cStats.get(attackerID)['frags']
+    fragsCache = arena.UT['frags']
+    origFrags = frags = fragsCache[attackerID]
+    LOG_NOTE('Frags count from internal state for attacker with ID %s: %s' % (attackerID, frags))
     if frags > 1:
         checkMedals = True
         if arena.guiType in (ARENA_GUI_TYPE.EPIC_RANDOM, ARENA_GUI_TYPE.EPIC_RANDOM_TRAINING):
@@ -599,7 +601,7 @@ def firstCheck(targetID, attackerID, reason, squadChecked, killerID):
             LOG_NOTE('Medal checked frags:', frags)
             killCheck(origFrags)
         elif attacker['isPlayer'] or _config.data['allKill'] and (
-                _config.data['allKill'] == 2 or cStats[player.playerVehicleID]['frags'] <= origFrags):
+                _config.data['allKill'] == 2 or fragsCache[player.playerVehicleID] <= origFrags):
             LOG_NOTE('Calling normal killCheck function.', targetID, attackerID)
             LOG_NOTE('frags:', origFrags)
             killCheck(origFrags)
@@ -618,6 +620,7 @@ def checkOwnKiller():
 @events.PlayerAvatar.startGUI.after
 def startBattle(self, *_, **__):
     self.arena.onVehicleKilled += onArenaVehicleKilled
+    self.arena.onNewStatisticsReceived += onArenaNewStatisticsReceived
     if not _config.data['enabled']:
         return
     LOG_NOTE('startBattle')
@@ -631,6 +634,7 @@ def startBattle(self, *_, **__):
 
 @events.PlayerAvatar.destroyGUI.before
 def destroyBattle(self, *_, **__):
+    self.arena.onNewStatisticsReceived -= onArenaNewStatisticsReceived
     self.arena.onVehicleKilled -= onArenaVehicleKilled
 
 
@@ -652,8 +656,16 @@ def onArenaVehicleKilled(victimID, killerID, _, reason, *__, **___):
     if not hasattr(BigWorld.player().arena, 'UT'):
         initial()
     LOG_NOTE('A Vehicle got Killed (targetID, attackerID, reason):', victimID, killerID, reason)
+    BigWorld.player().arena.UT['frags'][killerID] += 1
     checkSquadMan()
     firstCheck(victimID, killerID, reason, False, None)
+
+
+def onArenaNewStatisticsReceived():
+    arena = BigWorld.player().arena
+    if not hasattr(arena, 'UT'):
+        initial()
+    arena.UT['frags'].update((vehicleID, stats['frags']) for vehicleID, stats in arena.statistics.items())
 
 
 @overrideMethod(DamagePanelMeta.DamagePanelMeta, 'as_setVehicleDestroyedS')

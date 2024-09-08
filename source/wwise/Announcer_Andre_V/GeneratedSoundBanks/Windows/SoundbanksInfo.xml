@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="12" SoundbankVersion="135">
+	<RootPaths>
+		<ProjectRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\</ProjectRoot>
+		<SourceFilesRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\GeneratedSoundBanks\Windows\</SoundBanksRoot>
+		<ExternalSourcesInputFile></ExternalSourcesInputFile>
+		<ExternalSourcesOutputRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\Announcer_Andre_V\GeneratedSoundBanks\Windows</ExternalSourcesOutputRoot>
+	</RootPaths>
+	<DialogueEvents/>
+	<StreamedFiles/>
+	<MediaFilesNotInAnyBank/>
+	<SoundBanks>
+		<SoundBank Id="1355168291" Language="SFX">
+			<ObjectPath>Init</ObjectPath>
+			<ShortName>Init</ShortName>
+			<Path>Init.bnk</Path>
+		</SoundBank>
+		<SoundBank Id="4271746376" Language="SFX">
+			<ObjectPath>\SoundBanks\Default Work Unit\Announcer_Andre_V</ObjectPath>
+			<ShortName>Announcer_Andre_V</ShortName>
+			<Path>Announcer_Andre_V.bnk</Path>
+			<IncludedEvents>
+				<Event Id="736660908" Name="denied" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\denied">
+					<IncludedMemoryFiles>
+						<File Id="402087458" Language="SFX">
+							<ShortName>denied.wav</ShortName>
+							<Path>SFX\denied_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3650570114" Name="doublekill" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\doublekill">
+					<IncludedMemoryFiles>
+						<File Id="461714287" Language="SFX">
+							<ShortName>doublekill.wav</ShortName>
+							<Path>SFX\doublekill_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="738930270" Name="eradication" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\eradication">
+					<IncludedMemoryFiles>
+						<File Id="405546158" Language="SFX">
+							<ShortName>eradication.wav</ShortName>
+							<Path>SFX\eradication_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1873981316" Name="extermination" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\extermination">
+					<IncludedMemoryFiles>
+						<File Id="659314688" Language="SFX">
+							<ShortName>extermination.wav</ShortName>
+							<Path>SFX\extermination_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1250913367" Name="firstblood" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\firstblood">
+					<IncludedMemoryFiles>
+						<File Id="575934023" Language="SFX">
+							<ShortName>firstblood.wav</ShortName>
+							<Path>SFX\firstblood_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3919288209" Name="flakmaster" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\flakmaster">
+					<IncludedMemoryFiles>
+						<File Id="291012441" Language="SFX">
+							<ShortName>flakmaster.wav</ShortName>
+							<Path>SFX\flakmaster_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1611658976" Name="godlike" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\godlike">
+					<IncludedMemoryFiles>
+						<File Id="851774888" Language="SFX">
+							<ShortName>godlike.wav</ShortName>
+							<Path>SFX\godlike_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1903276836" Name="kamikaze" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\kamikaze">
+					<IncludedMemoryFiles>
+						<File Id="613947228" Language="SFX">
+							<ShortName>outstanding.wav</ShortName>
+							<Path>SFX\outstanding_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3494939554" Name="killingspree" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\killingspree">
+					<IncludedMemoryFiles>
+						<File Id="562946238" Language="SFX">
+							<ShortName>killingspree.wav</ShortName>
+							<Path>SFX\killingspree_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3219824994" Name="massacre" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\massacre">
+					<IncludedMemoryFiles>
+						<File Id="617776055" Language="SFX">
+							<ShortName>hitandrun.wav</ShortName>
+							<Path>SFX\hitandrun_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="4197942055" Name="megakill" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\megakill">
+					<IncludedMemoryFiles>
+						<File Id="957804029" Language="SFX">
+							<ShortName>mutualdestruction.wav</ShortName>
+							<Path>SFX\mutualdestruction_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2233416765" Name="monsterkill" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\monsterkill">
+					<IncludedMemoryFiles>
+						<File Id="952741918" Language="SFX">
+							<ShortName>monsterkill.wav</ShortName>
+							<Path>SFX\monsterkill_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="887867080" Name="multikill" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\multikill">
+					<IncludedMemoryFiles>
+						<File Id="3550311" Language="SFX">
+							<ShortName>multikill.wav</ShortName>
+							<Path>SFX\multikill_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="368603808" Name="payback" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\payback">
+					<IncludedMemoryFiles>
+						<File Id="289037618" Language="SFX">
+							<ShortName>payback.wav</ShortName>
+							<Path>SFX\payback_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2696617643" Name="ramkill" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\ramkill">
+					<IncludedMemoryFiles>
+						<File Id="531184359" Language="SFX">
+							<ShortName>roadkill.wav</ShortName>
+							<Path>SFX\roadkill_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2756207098" Name="rampage" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\rampage">
+					<IncludedMemoryFiles>
+						<File Id="508799931" Language="SFX">
+							<ShortName>rampage.wav</ShortName>
+							<Path>SFX\rampage_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3923507956" Name="t1min" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\t1min">
+					<IncludedMemoryFiles>
+						<File Id="161322350" Language="SFX">
+							<ShortName>1min.wav</ShortName>
+							<Path>SFX\1min_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="734291041" Name="t2min" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\t2min">
+					<IncludedMemoryFiles>
+						<File Id="17136219" Language="SFX">
+							<ShortName>2.wav</ShortName>
+							<Path>SFX\2_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3723440080" Name="t30secs" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\t30secs">
+					<IncludedMemoryFiles>
+						<File Id="910188567" Language="SFX">
+							<ShortName>30secs.wav</ShortName>
+							<Path>SFX\30secs_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3069637574" Name="t3min" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\t3min">
+					<IncludedMemoryFiles>
+						<File Id="560226022" Language="SFX">
+							<ShortName>3min.wav</ShortName>
+							<Path>SFX\3min_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="2524505920" Name="t5min" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\t5min">
+					<IncludedMemoryFiles>
+						<File Id="939755231" Language="SFX">
+							<ShortName>5_minute_warning.wav</ShortName>
+							<Path>SFX\5_minute_warning_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="117611218" Name="t5secs" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\t5secs">
+					<IncludedMemoryFiles>
+						<File Id="1068440989" Language="SFX">
+							<ShortName>5secs.wav</ShortName>
+							<Path>SFX\5secs_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1027147012" Name="topgun" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\topgun">
+					<IncludedMemoryFiles>
+						<File Id="807066795" Language="SFX">
+							<ShortName>topgun.wav</ShortName>
+							<Path>SFX\topgun_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3103184737" Name="triplekill" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\triplekill">
+					<IncludedMemoryFiles>
+						<File Id="710033493" Language="SFX">
+							<ShortName>triplekill.wav</ShortName>
+							<Path>SFX\triplekill_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="3917831853" Name="ultrakill" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\ultrakill">
+					<IncludedMemoryFiles>
+						<File Id="393814797" Language="SFX">
+							<ShortName>ultrakill.wav</ShortName>
+							<Path>SFX\ultrakill_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="487948164" Name="unreal" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\unreal">
+					<IncludedMemoryFiles>
+						<File Id="821723290" Language="SFX">
+							<ShortName>pancake.wav</ShortName>
+							<Path>SFX\pancake_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="1571361248" Name="unstoppable" ObjectPath="\Events\Default Work Unit\Announcer_Andre_V\unstoppable">
+					<IncludedMemoryFiles>
+						<File Id="199571713" Language="SFX">
+							<ShortName>unstoppable.wav</ShortName>
+							<Path>SFX\unstoppable_BE64E651.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+			</IncludedEvents>
+			<GameParameters>
+				<GameParameter Id="1978220576" Name="RTPC_ext_menu_volume_voice" ObjectPath="\Game Parameters\Settings\RTPC_ext_menu_volume_voice"/>
+			</GameParameters>
+		</SoundBank>
+	</SoundBanks>
+</SoundBanksInfo>

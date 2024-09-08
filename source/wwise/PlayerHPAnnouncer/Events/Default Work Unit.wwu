@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{71BE71E5-4A21-4640-91F9-BD22CDB5DD71}" SchemaVersion="97">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{71BE71E5-4A21-4640-91F9-BD22CDB5DD71}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="PlayerHPAnnouncer_25" ID="{53442F0A-1557-463F-A3B4-F4CC0578AAA8}">
+					<ChildrenList>
+						<Action Name="" ID="{A3B2E15B-F08E-4086-B15F-B4227160C05A}" ShortID="231006393">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+								<Property Name="Inclusion" Type="bool">
+									<ValueList>
+										<Value>False</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Hero_R_I'm_hit" ID="{4BDC3390-54AB-48F1-BA17-6707D5094607}" WorkUnitID="{FA285E43-4236-4619-BD1B-CB35D4DE01C1}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{62662ED3-DC09-4488-BD43-D20E4AD4B2E6}" ShortID="150734411">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+								<Property Name="Inclusion" Type="bool">
+									<ValueList>
+										<Value>False</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="El_R_I'm_hit" ID="{46DD5315-2DA5-492C-BC73-417D6251DAD7}" WorkUnitID="{FA285E43-4236-4619-BD1B-CB35D4DE01C1}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{066F9FAD-728A-4EC5-A587-B2459A0E3BC2}" ShortID="540684061">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="#L_base_02" ID="{DD6E6B70-4AFB-4D7B-A7E6-51D3F67DDA6E}" WorkUnitID="{FA285E43-4236-4619-BD1B-CB35D4DE01C1}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="PlayerHPAnnouncer_10" ID="{EF2833BA-11FF-4BE7-9014-B3ECF8C74743}">
+					<ChildrenList>
+						<Action Name="" ID="{9AF7D5C4-3584-4A6B-83DD-64C8C83AD2D7}" ShortID="295311786">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+								<Property Name="Inclusion" Type="bool">
+									<ValueList>
+										<Value>False</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Hero_R_ejecting" ID="{353AB1F3-B3BD-4803-8380-5B6A6A678C1C}" WorkUnitID="{FA285E43-4236-4619-BD1B-CB35D4DE01C1}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{CEB69D82-8A7D-4CAB-8C4D-020B866C3146}" ShortID="89848684">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+								<Property Name="Inclusion" Type="bool">
+									<ValueList>
+										<Value>False</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="El_R_ejecting" ID="{565CD314-BACE-44DE-85CF-D3F713B76DAD}" WorkUnitID="{FA285E43-4236-4619-BD1B-CB35D4DE01C1}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{81E12C99-67AB-4FBE-A2E2-9211412F6241}" ShortID="350835050">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="#L_base_01" ID="{7CC94909-0484-46EC-AA46-EDA5D471B193}" WorkUnitID="{FA285E43-4236-4619-BD1B-CB35D4DE01C1}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="PlayerHPAnnouncer_50" ID="{121519FF-6D05-4F8E-84D4-4A228D642FEF}">
+					<ChildrenList>
+						<Action Name="" ID="{97A72288-F637-4A1C-8938-7CE73634F8D2}" ShortID="28581040">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+								<Property Name="Inclusion" Type="bool">
+									<ValueList>
+										<Value>False</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="Hero_R_ship_damaged" ID="{21AC3CAF-C6D0-407F-AE99-8E70302E06D4}" WorkUnitID="{FA285E43-4236-4619-BD1B-CB35D4DE01C1}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{D815FCCF-7493-4802-AEDD-2B9FC09B0360}" ShortID="23996462">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+								<Property Name="Inclusion" Type="bool">
+									<ValueList>
+										<Value>False</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="El_R_ship_damaged" ID="{CB5891F1-1211-4FCA-845B-D97ED8A92042}" WorkUnitID="{FA285E43-4236-4619-BD1B-CB35D4DE01C1}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+						<Action Name="" ID="{84DA87E0-EB0D-41B9-8255-86664279845C}" ShortID="808169732">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="1"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="#L_base_03" ID="{FF8CAD33-D597-4B68-ABC9-5DAB70E9614A}" WorkUnitID="{FA285E43-4236-4619-BD1B-CB35D4DE01C1}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

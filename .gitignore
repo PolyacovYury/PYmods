@@ -1,11 +1,14 @@
 .idea/
 .scannerwork
+**/.backup/
 release/
 res/res/vehicles/
 res/res/audioww/
 res/flash/swc/
 res/flash/**/obj/
 *.tmp
+*.validationcache
+*.wsettings
 
 
 # Created by .ignore support plugin (hsz.mobi)
