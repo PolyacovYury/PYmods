@@ -1,4 +1,5 @@
 ﻿{
+    "name": "Переключатель внутриигрового голосового оповещения и музыки"
     "UI_setting_music_default": "Стандартная",
     "UI_setting_music_offspring": "The Offspring",
     "UI_setting_music_sabaton": "Sabaton",
@@ -41,16 +42,16 @@
     "UI_setting_voice_celebrity2023_en": "Милла Йовович (EN)",
     "UI_setting_voice_cobra": "G.I.Joe: Кобра",
     "UI_setting_voice_commander_bp_BabaYaga": "Баба Яга (RU)",
-    "UI_setting_voice_commander_bp_IvanCarevich": "Иван Царевич (RU)",
-    "UI_setting_voice_commander_bp_Kashchei": "Кощей Бессмертный (RU)",
-    "UI_setting_voice_commander_bp_Vasilisa": "Василиса Прекрасная (RU)",
     "UI_setting_voice_commander_bph_2022_1": "T-800 (EN)",
     "UI_setting_voice_commander_bph_2022_2": "Джон Коннор (EN)",
     "UI_setting_voice_commander_bph_2022_3": "Сара Коннор (EN)",
     "UI_setting_voice_commander_bph_2022_4": "T-1000 (EN)",
-    "UI_setting_voice_commander_mosfilm_Trus": "Трус (RU)",
+    "UI_setting_voice_commander_bp_IvanCarevich": "Иван Царевич (RU)",
+    "UI_setting_voice_commander_bp_Kashchei": "Кощей Бессмертный (RU)",
+    "UI_setting_voice_commander_bp_Vasilisa": "Василиса Прекрасная (RU)",
     "UI_setting_voice_commander_mosfilm_Balbes": "Балбес (RU)",
     "UI_setting_voice_commander_mosfilm_Bivaliy": "Бывалый (RU)",
+    "UI_setting_voice_commander_mosfilm_Trus": "Трус (RU)",
     "UI_setting_voice_coverGirl22": "G.I.Joe: Девушка с Обложки (EN)",
     "UI_setting_voice_default_female": "Стандартный: женский",
     "UI_setting_voice_default_male": "Стандартный: мужской",
@@ -77,8 +78,8 @@
     "UI_setting_voice_quickyBaby": "QuickyBaby (EN)",
     "UI_setting_voice_racer_en": "Гонщик (EN)",
     "UI_setting_voice_racer_ru": "Гонщик (RU)",
-    "UI_setting_voice_sabaton": "Sabaton",
     "UI_setting_voice_sabaton21": "Sabaton 2.0",
+    "UI_setting_voice_sabaton": "Sabaton",
     "UI_setting_voice_text": "Режим голосового оповещения",
     "UI_setting_voice_valkyrie_female": "Valkyrie Chronicles: женский",
     "UI_setting_voice_valkyrie_male": "Valkyrie Chronicles: мужской",
@@ -92,5 +93,4 @@
     "UI_setting_voice_witches_crew_en": "Ведьмы: Экипаж (EN)",
     "UI_setting_voice_witches_crew_ru": "Ведьмы: Экипаж (RU)",
     "UI_setting_voice_yha_crew": "Year Hare Affair (CN)",
-    "name": "Переключатель внутриигрового голосового оповещения и музыки"
 }
