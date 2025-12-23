@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/paints/by Algiz/**": "res/configs/PYmods/CamoSelector/paints/by Algiz/**.xml"
+    }
+}

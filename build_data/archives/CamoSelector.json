@@ -1,0 +1,19 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/CamoSelector.json": "res/configs/PYmods/CamoSelector/CamoSelector.json",
+        "mods/configs/PYmods/CamoSelector/camouflages/": "",
+        "mods/configs/PYmods/CamoSelector/disabledVehicles.json": "res/configs/PYmods/CamoSelector/disabledVehicles.json",
+        "mods/configs/PYmods/CamoSelector/i18n/en.json": "res/configs/PYmods/CamoSelector/i18n/en.json",
+        "mods/configs/PYmods/CamoSelector/i18n/ru.json": "res/configs/PYmods/CamoSelector/i18n/ru.json",
+        "mods/configs/PYmods/CamoSelector/settings.json": "res/configs/PYmods/CamoSelector/settings.json",
+        "mods/configs/PYmods/PYmodsGUI/i18n/en.json": "res/configs/PYmods/PYmodsGUI/i18n/en.json",
+        "mods/configs/PYmods/PYmodsGUI/i18n/ru.json": "res/configs/PYmods/PYmodsGUI/i18n/ru.json",
+        "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
+        "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
+        "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",
+        "mods/{GAME_VERSION}/PYmods/CamoSelector.wotmod": "build/wotmods/PYmods/CamoSelector.wotmod",
+        "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod"
+    }
+}

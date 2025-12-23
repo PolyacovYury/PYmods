@@ -1,0 +1,19 @@
+<settings xmlns:ussr="ussr" xmlns:germany="germany" xmlns:usa="usa" xmlns:china="china" xmlns:france="france" xmlns:uk="uk" xmlns:japan="japan" xmlns:czech="czech" xmlns:sweden="sweden">
+    <ally> true </ally>
+    <enemy> false </enemy>
+    <random_enabled> true </random_enabled>
+    <random_team> true </random_team>
+    <season> winter summer desert </season>
+    <texture>../mods/configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo02_ally/texture.dds</texture>
+    <palettes>
+        <palette>
+            <c0>240 230 220 255</c0>
+            <c1>8 121 173 255</c1>
+            <c2>6 53 97 255</c2>
+            <c3>255 255 255 15</c3>
+        </palette>
+    </palettes>
+    <tiling>
+        <all>2 2 0 0</all>
+    </tiling>
+</settings>

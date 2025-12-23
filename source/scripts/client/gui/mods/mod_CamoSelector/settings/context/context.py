@@ -1,0 +1,135 @@
+from collections import OrderedDict
+from contextlib import contextmanager
+
+import adisp
+from OpenModsCore import BigWorld_callback, overrideMethod
+from wg_async import wg_async, wg_await, await_callback
+from gui.Scaleform.daapi.view.lobby.customization.context.context import CustomizationContext as WGCtx
+from gui.Scaleform.daapi.view.lobby.customization.shared import CustomizationModes, CustomizationTabs
+from gui.customization.shared import SEASON_TYPE_TO_NAME
+from gui.shared.utils.decorators import adisp_process
+from items.components.c11n_constants import EMPTY_ITEM_ID
+from .customization_mode import CustomMode as CamoSelectorMode
+from ..shared import createConfirmDialog, onVehicleLoadedOnce
+from ... import g_config
+
+
+class CustomizationContext(WGCtx):
+    def __init__(self):
+        WGCtx.__init__(self)
+        self.__modes = OrderedDict(self.__modes)  # make sure that we get updated last
+        self.__modes[CustomizationModes.CAMO_SELECTOR] = CamoSelectorMode(self)
+        self.__purchaseModeId = None
+
+    @property
+    def isPurchase(self):
+        return self.modeId != CustomizationModes.CAMO_SELECTOR
+
+    @property
+    def purchaseModeId(self):
+        return self.__purchaseModeId
+
+    def getMode(self, modeId=None):
+        return self.__modes[modeId or self.purchaseModeId]
+
+    @property
+    def isItemsOnAnotherVeh(self):
+        return self.isPurchase and self.__isItemsOnAnotherVeh
+
+    @property
+    def isModeChanged(self):
+        return self.isPurchase and self.modeId != self.startModeId
+
+    def init(self, season=None, modeId=None, tabId=None):
+        WGCtx.init(self, season, modeId, tabId)
+        self.__purchaseModeId = self.modeId
+        if modeId is None and tabId is None:
+            self.mode.stop()
+            self.__modeId = CustomizationModes.CAMO_SELECTOR
+            outfitCache = g_config.getOutfitCache()
+            style_id = outfitCache.get(SEASON_TYPE_TO_NAME[self.season], {}).get('style', {}).get('id', None)
+            isStyleInstalled = self._service.isStyleInstalled()
+            self.mode.start(CustomizationTabs.CAMOUFLAGES if (
+                    style_id == EMPTY_ITEM_ID or (style_id is None and not isStyleInstalled)) else CustomizationTabs.STYLES)
+            # TODO: paid/unpaid changes here
+            from ..shared import createDonationDialog  # unpaid
+            onVehicleLoadedOnce(BigWorld_callback, 0, createDonationDialog)  # unpaid
+        self.refreshOutfit()
+        onVehicleLoadedOnce(BigWorld_callback, 0, self.refreshOutfit)
+
+    def changeMode(self, modeId, tabId=None, source=None):
+        if modeId != CustomizationModes.CAMO_SELECTOR:
+            self.__purchaseModeId = modeId
+        WGCtx.changeMode(self, modeId, tabId, source)
+        onVehicleLoadedOnce(BigWorld_callback, 0, self.refreshOutfit)
+
+    @contextmanager
+    def overrideMode(self, desired=CustomizationModes.CAMO_SELECTOR):
+        modeId = self.modeId
+        self.__modeId = desired
+        try:
+            yield
+        finally:
+            self.__modeId = modeId
+
+    @wg_async
+    def changeModeWithProgressionDecal(self, itemCD, level):
+        goToEditableStyle = self.canEditStyle(itemCD)
+        result = True
+        if self.modeId in (CustomizationModes.STYLED, CustomizationModes.EDITABLE_STYLE) and not goToEditableStyle:
+            result = yield wg_await(createConfirmDialog('flashCol_progressionDecal_changeMode'))
+        if not result:
+            return
+        if self.isPurchase:
+            WGCtx.changeModeWithProgressionDecal(self, itemCD)
+        else:
+            self.mode.changeTab(CustomizationTabs.PROJECTION_DECALS)
+        yield await_callback(lambda callback: onVehicleLoadedOnce(BigWorld_callback, 0, callback, None))()
+        item = self._service.getItemByCD(itemCD)
+        self.events.onGetItemBackToHand(item, level, scrollToItem=True)
+        if not self.isPurchase:
+            return
+        noveltyCount = self._vehicle.getC11nItemNoveltyCounter(proxy=self._itemsCache.items, item=item)
+        if noveltyCount:
+            BigWorld_callback(0, self.resetItemsNovelty, [item.intCD])
+
+    def getPurchaseItems(self):
+        mode = self.__modes[self.__purchaseModeId]
+        return mode.getPurchaseItems() if mode.isOutfitsModified() else []
+
+    @adisp.adisp_async
+    @adisp_process('customizationApply')
+    def applyItems(self, purchaseItems, callback):
+        self._itemsCache.onSyncCompleted -= self.__onCacheResync
+        self.mode.unselectItem()
+        self.mode.unselectSlot()
+        for modeId in (self.__purchaseModeId, CustomizationModes.CAMO_SELECTOR):
+            with self.overrideMode(modeId):
+                if not self.isPurchase or (purchaseItems or WGCtx.isOutfitsModified(self)):
+                    yield self.mode.applyItems(purchaseItems, self.isModeChanged)
+        self.__onCacheResync(-1, {})
+        self._itemsCache.onSyncCompleted += self.__onCacheResync
+        callback(None)
+
+    def cancelChanges(self):
+        for mode in self.__modes.values():
+            if mode.isInited:
+                mode.cancelChanges()
+        self.__purchaseModeId = self.__startModeId
+        if self.isPurchase:
+            self.changeMode(self.__purchaseModeId)
+        self.refreshOutfit()
+
+    def isOutfitsModified(self):
+        result = False
+        for modeId in (self.__purchaseModeId, CustomizationModes.CAMO_SELECTOR):
+            with self.overrideMode(modeId):
+                result |= WGCtx.isOutfitsModified(self)
+        return result
+
+
+@overrideMethod(WGCtx, '__new__')
+def new(base, cls, *a, **kw):
+    if not g_config.data['enabled']:
+        return base(cls, *a, **kw)
+    return base(CustomizationContext, *a, **kw)

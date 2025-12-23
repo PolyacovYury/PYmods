@@ -1,0 +1,7 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/camouflages/WGL/NAVI/**": "res/configs/PYmods/CamoSelector/camouflages/WGL/NAVI/**"
+    }
+}

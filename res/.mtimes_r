@@ -35,6 +35,123 @@
 1526568635|configs/PYmods/ButtonReplacer/icons/PY_player_messages/overturn.png
 1371747494|configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming.png
 1388325336|configs/PYmods/ButtonReplacer/icons/PY_player_messages/ramming_rock.png
+1519746349|configs/PYmods/CamoSelector/CamoSelector.json
+1625724913|configs/PYmods/CamoSelector/camouflages/WGL/AM60/data.xml
+1471935961|configs/PYmods/CamoSelector/camouflages/WGL/AM60/texture.dds
+1625724913|configs/PYmods/CamoSelector/camouflages/WGL/Apex/data.xml
+1471856341|configs/PYmods/CamoSelector/camouflages/WGL/Apex/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/Arcade/data.xml
+1443588146|configs/PYmods/CamoSelector/camouflages/WGL/Arcade/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/BlackTeam/data.xml
+1444206816|configs/PYmods/CamoSelector/camouflages/WGL/BlackTeam/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/BrainStorm/data.xml
+1453349562|configs/PYmods/CamoSelector/camouflages/WGL/BrainStorm/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/BrainStorm_new/data.xml
+1475561735|configs/PYmods/CamoSelector/camouflages/WGL/BrainStorm_new/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/Carpe_Diem/data.xml
+1475561735|configs/PYmods/CamoSelector/camouflages/WGL/Carpe_Diem/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/DING/data.xml
+1469773024|configs/PYmods/CamoSelector/camouflages/WGL/DING/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/Dare_rising/data.xml
+1496022698|configs/PYmods/CamoSelector/camouflages/WGL/Dare_rising/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/Deja_Vu/data.xml
+1471856458|configs/PYmods/CamoSelector/camouflages/WGL/Deja_Vu/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/Elevate/data.xml
+1496022698|configs/PYmods/CamoSelector/camouflages/WGL/Elevate/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/GoHard/data.xml
+1482447839|configs/PYmods/CamoSelector/camouflages/WGL/GoHard/texture.dds
+1715726051|configs/PYmods/CamoSelector/camouflages/WGL/Green/data.xml
+1293829200|configs/PYmods/CamoSelector/camouflages/WGL/Green/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/Gunrunners/data.xml
+1483419794|configs/PYmods/CamoSelector/camouflages/WGL/Gunrunners/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/HellRaizers/data.xml
+1453818102|configs/PYmods/CamoSelector/camouflages/WGL/HellRaizers/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/IMPACT_GAMING/data.xml
+1475561735|configs/PYmods/CamoSelector/camouflages/WGL/IMPACT_GAMING/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/KAZNA/data.xml
+1444195834|configs/PYmods/CamoSelector/camouflages/WGL/KAZNA/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/KungFu/data.xml
+1446018194|configs/PYmods/CamoSelector/camouflages/WGL/KungFu/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/LOL_Team/data.xml
+1432734208|configs/PYmods/CamoSelector/camouflages/WGL/LOL_Team/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/NAVI/data.xml
+1453372400|configs/PYmods/CamoSelector/camouflages/WGL/NAVI/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/NAVI_new/data.xml
+1475561735|configs/PYmods/CamoSelector/camouflages/WGL/NAVI_new/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/NSS/data.xml
+1444226538|configs/PYmods/CamoSelector/camouflages/WGL/NSS/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/NSS_new/data.xml
+1475561735|configs/PYmods/CamoSelector/camouflages/WGL/NSS_new/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/Neo/data.xml
+1446004408|configs/PYmods/CamoSelector/camouflages/WGL/Neo/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/Oops/data.xml
+1469773354|configs/PYmods/CamoSelector/camouflages/WGL/Oops/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/Pries/data.xml
+1453363634|configs/PYmods/CamoSelector/camouflages/WGL/Pries/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/Rival/data.xml
+1471856467|configs/PYmods/CamoSelector/camouflages/WGL/Rival/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/RoX_KiS/data.xml
+1453818420|configs/PYmods/CamoSelector/camouflages/WGL/RoX_KiS/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/SWIFT/data.xml
+1469774452|configs/PYmods/CamoSelector/camouflages/WGL/SWIFT/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/SWIFT_new/data.xml
+1469774452|configs/PYmods/CamoSelector/camouflages/WGL/SWIFT_new/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/TORNADO/data.xml
+1480669013|configs/PYmods/CamoSelector/camouflages/WGL/TORNADO/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/TopTier/data.xml
+1484028972|configs/PYmods/CamoSelector/camouflages/WGL/TopTier/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/UNIQUE/data.xml
+1483536278|configs/PYmods/CamoSelector/camouflages/WGL/UNIQUE/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/UTOPIA/data.xml
+1482366598|configs/PYmods/CamoSelector/camouflages/WGL/UTOPIA/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/Valence/data.xml
+1484032384|configs/PYmods/CamoSelector/camouflages/WGL/Valence/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/WePlay/data.xml
+1453375036|configs/PYmods/CamoSelector/camouflages/WGL/WePlay/texture.dds
+1625724915|configs/PYmods/CamoSelector/camouflages/WGL/WhiteTeam/data.xml
+1444206816|configs/PYmods/CamoSelector/camouflages/WGL/WhiteTeam/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/eClipse/data.xml
+1471856460|configs/PYmods/CamoSelector/camouflages/WGL/eClipse/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/eSuba/data.xml
+1446415712|configs/PYmods/CamoSelector/camouflages/WGL/eSuba/texture.dds
+1625724914|configs/PYmods/CamoSelector/camouflages/WGL/o7/data.xml
+1471856465|configs/PYmods/CamoSelector/camouflages/WGL/o7/texture.dds
+1625724936|configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_ally/data.xml
+1476106400|configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_ally/texture.dds
+1625724936|configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_enemy/data.xml
+1476106400|configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_enemy/texture.dds
+1625724936|configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo01_ally/data.xml
+1473691767|configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo01_ally/texture.dds
+1625724936|configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo01_enemy/data.xml
+1473691673|configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo01_enemy/texture.dds
+1625724936|configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo02_ally/data.xml
+1476129170|configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo02_ally/texture.dds
+1625724936|configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo02_enemy/data.xml
+1476129170|configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo02_enemy/texture.dds
+1625724960|configs/PYmods/CamoSelector/camouflages/by VX3X3V/40t-d/data.xml
+1293829200|configs/PYmods/CamoSelector/camouflages/by VX3X3V/40t-d/texture.dds
+1625724960|configs/PYmods/CamoSelector/camouflages/by VX3X3V/40t-s/data.xml
+1293829200|configs/PYmods/CamoSelector/camouflages/by VX3X3V/40t-s/texture.dds
+1625724960|configs/PYmods/CamoSelector/camouflages/by VX3X3V/40t-w/data.xml
+1293829200|configs/PYmods/CamoSelector/camouflages/by VX3X3V/40t-w/texture.dds
+1625724961|configs/PYmods/CamoSelector/camouflages/by VX3X3V/PIXEL/data.xml
+1293829200|configs/PYmods/CamoSelector/camouflages/by VX3X3V/PIXEL/texture.dds
+1625724960|configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-01/data.xml
+1293829200|configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-01/texture.dds
+1625724960|configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-02/data.xml
+1293829200|configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-02/texture.dds
+1625724960|configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-03/data.xml
+1293829200|configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-03/texture.dds
+1625724961|configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-damaged/data.xml
+1293829200|configs/PYmods/CamoSelector/camouflages/by VX3X3V/clan-damaged/texture.dds
+1723834225|configs/PYmods/CamoSelector/disabledVehicles.json
+1632231889|configs/PYmods/CamoSelector/i18n/en.json
+1632231897|configs/PYmods/CamoSelector/i18n/ru.json
+1625712873|configs/PYmods/CamoSelector/paints/by Algiz/Anthrazitgrau RAL 7016/data.xml
+1625712885|configs/PYmods/CamoSelector/paints/by Algiz/Dunkelgelb RAL 7028/data.xml
+1625712897|configs/PYmods/CamoSelector/paints/by Algiz/Olivgrun RAL 6003/data.xml
+1625712906|configs/PYmods/CamoSelector/paints/by Algiz/Rotbraun RAL 8012/data.xml
+1632845229|configs/PYmods/CamoSelector/settings.json
 1627387534|configs/PYmods/HangarCollision/HangarCollision.json
 1627387752|configs/PYmods/HangarCollision/i18n/en.json
 1627387752|configs/PYmods/HangarCollision/i18n/ru.json
@@ -373,6 +490,9 @@
 1635359299|flash/BigTextConsumablesPanel.swf
 1635351673|flash/BigTextConsumablesPanel/BigTextConsumablesPanel.as3proj
 1635359297|flash/BigTextConsumablesPanel/src/polyacov_yury/views/battle/BigTextConsumablesPanel.as
+1647748341|flash/CamoSelector_carousel.swf
+1647746860|flash/CamoSelector_carousel/CamoSelector_carousel.as3proj
+1647748338|flash/CamoSelector_carousel/src/polyacov_yury/views/lobby/CamoSelector_carousel.as
 1635338922|flash/PlayersPanelAPI.swf
 1592037066|flash/PlayersPanelAPI/PlayersPanelAPI.as3proj
 1602759765|flash/PlayersPanelAPI/src/polyacov_yury/views/battle/PlayersPanelAPI.as
@@ -488,6 +608,12 @@
 1519691530|res/gui/AppreciationBadges/a_badge_4260379.png
 1519691530|res/gui/AppreciationBadges/a_badge_508211276.png
 1484596662|res/gui/flash/CamoSelector.png
+1625706368|res/gui/flash/CamoSelector/desert.png
+1625706368|res/gui/flash/CamoSelector/desert16x16.png
+1625706368|res/gui/flash/CamoSelector/summer.png
+1625706368|res/gui/flash/CamoSelector/summer16x16.png
+1625706368|res/gui/flash/CamoSelector/winter.png
+1625706368|res/gui/flash/CamoSelector/winter16x16.png
 1484430188|res/gui/flash/RemodEnabler.png
 1484430188|res/gui/flash/Skinner.png
 1545255824|res/res.md
