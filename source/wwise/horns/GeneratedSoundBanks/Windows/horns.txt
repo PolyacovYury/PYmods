@@ -1,0 +1,23 @@
+Event	ID	Name			Wwise Object Path	Notes
+	166698281	event_4horn			\Default Work Unit\horns\event_4horn	
+	660015077	event_8horn			\Default Work Unit\horns\event_8horn	
+	1204472854	event_7horn			\Default Work Unit\horns\event_7horn	
+	1858339087	event_2horn			\Default Work Unit\horns\event_2horn	
+	2854640380	event_5horn			\Default Work Unit\horns\event_5horn	
+	3209552315	event_6horn			\Default Work Unit\horns\event_6horn	
+	3710241232	event_1horn			\Default Work Unit\horns\event_1horn	
+	4137884458	event_3horn			\Default Work Unit\horns\event_3horn	
+
+Game Parameter	ID	Name			Wwise Object Path	Notes
+	3348539219	RTPC_ext_menu_volume_gui			\Settings\RTPC_ext_menu_volume_gui	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	30041529	7horn	D:\Code\Pycharm Python\WoT_mods\WWISE\horns\.cache\Windows\SFX\7horn_92A7C46F.wem		\Actor-Mixer Hierarchy\Default Work Unit\gui\horns\7horn		13464
+	138016081	8horn	D:\Code\Pycharm Python\WoT_mods\WWISE\horns\.cache\Windows\SFX\8horn_92A7C46F.wem		\Actor-Mixer Hierarchy\Default Work Unit\gui\horns\8horn		8896
+	272810037	4horn	D:\Code\Pycharm Python\WoT_mods\WWISE\horns\.cache\Windows\SFX\4horn_92A7C46F.wem		\Actor-Mixer Hierarchy\Default Work Unit\gui\horns\4horn		33116
+	611458152	3horn	D:\Code\Pycharm Python\WoT_mods\WWISE\horns\.cache\Windows\SFX\3horn_92A7C46F.wem		\Actor-Mixer Hierarchy\Default Work Unit\gui\horns\3horn		54373
+	814321988	2horn	D:\Code\Pycharm Python\WoT_mods\WWISE\horns\.cache\Windows\SFX\2horn_92A7C46F.wem		\Actor-Mixer Hierarchy\Default Work Unit\gui\horns\2horn		13464
+	859359199	1horn	D:\Code\Pycharm Python\WoT_mods\WWISE\horns\.cache\Windows\SFX\1horn_92A7C46F.wem		\Actor-Mixer Hierarchy\Default Work Unit\gui\horns\1horn		11651
+	975178514	6horn	D:\Code\Pycharm Python\WoT_mods\WWISE\horns\.cache\Windows\SFX\6horn_92A7C46F.wem		\Actor-Mixer Hierarchy\Default Work Unit\gui\horns\6horn		11585
+	1013813182	5horn	D:\Code\Pycharm Python\WoT_mods\WWISE\horns\.cache\Windows\SFX\5horn_92A7C46F.wem		\Actor-Mixer Hierarchy\Default Work Unit\gui\horns\5horn		8828
+

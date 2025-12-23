@@ -1,0 +1,29 @@
+﻿{
+    "enabled": true,
+    "ext": ".wotmod",
+    "files": {
+        "res/gui/flash/CamoSelector/**": "res/res/gui/flash/CamoSelector/**",
+        "res/gui/flash/CamoSelector_carousel.swf": "res/flash/CamoSelector_carousel.swf",
+        "res/scripts/client/gui/mods/mod_CamoSelector.pyc": "build/scripts/client/gui/mods/mod_CamoSelector.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/__init__.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/__init__.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/config.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/config.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/constants.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/constants.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/migrator.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/migrator.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/processors.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/processors.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/__init__.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/__init__.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/bottom_panel.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/bottom_panel.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/carousel.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/carousel.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/cm_handlers.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/cm_handlers.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/__init__.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/__init__.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/context.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/context.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/customization_mode.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/customization_mode.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/context/item_remap.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/context/item_remap.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/main_view.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/popover.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/popover.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/properties_sheet.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/shared.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/stage_switcher.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/stage_switcher.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/tooltips.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/tooltips.pyc",
+        "res/scripts/client/gui/mods/mod_CamoSelector/settings/tweaks.pyc": "build/scripts/client/gui/mods/mod_CamoSelector/settings/tweaks.pyc"
+    }
+}

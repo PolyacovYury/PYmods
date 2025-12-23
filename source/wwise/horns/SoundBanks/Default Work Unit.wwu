@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{A4AC5395-D8B4-42C5-BFD6-8AE495007A44}" SchemaVersion="97">
+	<SoundBanks>
+		<WorkUnit Name="Default Work Unit" ID="{A4AC5395-D8B4-42C5-BFD6-8AE495007A44}" PersistMode="Standalone">
+			<ChildrenList>
+				<SoundBank Name="horns" ID="{5BA9EC2B-0A28-471D-845B-ED377634DC32}">
+					<ObjectInclusionList>
+						<ObjectRef Name="event_6horn" ID="{3C799877-B938-468C-84CC-DFB1DB28BABA}" WorkUnitID="{22EEF783-73AC-4AAB-8706-E7B410AE9DFD}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="event_3horn" ID="{A4097D96-D3CD-4917-BEA4-BD2DA03AEAF5}" WorkUnitID="{22EEF783-73AC-4AAB-8706-E7B410AE9DFD}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="event_2horn" ID="{444CCF52-2B9E-4A02-A81C-3D441743AF3F}" WorkUnitID="{22EEF783-73AC-4AAB-8706-E7B410AE9DFD}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="event_5horn" ID="{BE4DC281-A81D-4C97-A693-717FA279D18C}" WorkUnitID="{22EEF783-73AC-4AAB-8706-E7B410AE9DFD}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="event_4horn" ID="{4D3E3D44-14F0-4D27-A578-9988CD001328}" WorkUnitID="{22EEF783-73AC-4AAB-8706-E7B410AE9DFD}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="event_7horn" ID="{576C93A9-872F-4DE9-8FAF-AE7B8B3B84AD}" WorkUnitID="{22EEF783-73AC-4AAB-8706-E7B410AE9DFD}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="event_8horn" ID="{428A7F7A-7EFF-4F7F-9269-F40E830065F9}" WorkUnitID="{22EEF783-73AC-4AAB-8706-E7B410AE9DFD}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="event_1horn" ID="{62F1E054-F310-4F8E-9825-CE3AEF9933F0}" WorkUnitID="{22EEF783-73AC-4AAB-8706-E7B410AE9DFD}" Origin="Manual" Filter="7"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
+			</ChildrenList>
+		</WorkUnit>
+	</SoundBanks>
+</WwiseDocument>

@@ -1,1 +1,2 @@
-E:\Games\World_of_Tanks
+E:\Games\World_of_Tanks\mods\1.28.0.0
+E:\Games\World_of_Tanks_EU\mods\1.26.0.0

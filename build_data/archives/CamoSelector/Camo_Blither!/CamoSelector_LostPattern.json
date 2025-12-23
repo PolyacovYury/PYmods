@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_ally/**": "res/configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_ally/**",
+        "mods/configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_enemy/**": "res/configs/PYmods/CamoSelector/camouflages/by Blither!/LostPattern_enemy/**"
+    }
+}

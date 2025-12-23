@@ -1,0 +1,8 @@
+﻿{
+    "enabled": true,
+    "ext": ".zip",
+    "files": {
+        "mods/configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo01_ally/**": "res/configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo01_ally/**",
+        "mods/configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo01_enemy/**": "res/configs/PYmods/CamoSelector/camouflages/by Blither!/TeamsCamo01_enemy/**"
+    }
+}

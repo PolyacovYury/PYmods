@@ -1,0 +1,166 @@
+<settings xmlns:ussr="ussr" xmlns:germany="germany" xmlns:usa="usa" xmlns:china="china" xmlns:france="france" xmlns:uk="uk" xmlns:japan="japan" xmlns:czech="czech" xmlns:sweden="sweden">
+    <ally> true </ally>
+    <enemy> true </enemy>
+    <random_enabled> true </random_enabled>
+    <random_team> true </random_team>
+    <season> winter summer desert </season>
+    <texture> ../mods/configs/PYmods/CamoSelector/camouflages/WGL/Apex/texture.dds </texture>
+    <palettes>
+        <palette>
+            <c0> 164 165 167 200 </c0>
+            <c1> 255 105 40 200 </c1>
+            <c2> 7 34 63 200 </c2>
+            <c3> 0 0 0 0 </c3>
+        </palette>
+    </palettes>
+    <tiling>
+        <all>2 2 0 0</all>
+
+        <china:Ch01_Type59>	3	3	0	0	</china:Ch01_Type59>
+        <china:Ch03_WZ-111>	3.75	3.75	0	0	</china:Ch03_WZ-111>
+        <china:Ch05_T34_2>	6.75	6.75	0	0	</china:Ch05_T34_2>
+        <china:Ch18_WZ-120>	4.95	5.1	0	0	</china:Ch18_WZ-120>
+        <china:Ch12_111_1_2_3>	7.5	7.5	0	0	</china:Ch12_111_1_2_3>
+        <china:Ch11_110>	6	6	0	0	</china:Ch11_110>
+        <china:Ch17_WZ131_1_WZ132>	6.75	6.75	0	0	</china:Ch17_WZ131_1_WZ132>
+        <china:Ch19_121>	7.5	7.5	0	0	</china:Ch19_121>
+        <china:Ch14_T34_3>	7.2	6.75	0	0	</china:Ch14_T34_3>
+        <china:Ch22_113>	3.45	3.45	0	0	</china:Ch22_113>
+        <china:Ch23_112>	3	3	0	0	</china:Ch23_112>
+        <china:Ch26_59_Patton>	6.45	6.45	0	0	</china:Ch26_59_Patton>
+
+        <france:F18_Bat_Chatillon25t>	4.5	4.5	0	0	</france:F18_Bat_Chatillon25t>
+        <france:F08_AMX_50_100>	4.05	4.05	0	0	</france:F08_AMX_50_100>
+        <france:F17_AMX_13_90>	2.25	2.25	0	0	</france:F17_AMX_13_90>
+        <france:F10_AMX_50B>	2.25	2.25	0	0	</france:F10_AMX_50B>
+        <france:F25_Lorraine155_51>	6.3	6.3	0	0	</france:F25_Lorraine155_51>
+        <france:F37_AMX50_Foch>	3.75	3.75	0	0	</france:F37_AMX50_Foch>
+        <france:F09_AMX_50_120>	5.55	5.55	0	0	</france:F09_AMX_50_120>
+        <france:F38_Bat_Chatillon155_58>	4.8	4.8	0	0	</france:F38_Bat_Chatillon155_58>
+        <france:F64_AMX_50Fosh_155>	4.8	4.8	0	0	</france:F64_AMX_50Fosh_155>
+        <france:F65_FCM_50t>	3	3	0	0	</france:F65_FCM_50t>
+        <france:F67_Bat_Chatillon155_55>	6.6	6.6	0	0	</france:F67_Bat_Chatillon155_55>
+        <france:F68_AMX_Chasseur_de_char_46>	3	3	0	0	</france:F68_AMX_Chasseur_de_char_46>
+        <france:F71_AMX_30_prototype>	4.5	4.5	0	0	</france:F71_AMX_30_prototype>
+        <france:F72_AMX_30>	4.95	4.95	0	0	</france:F72_AMX_30>
+        <france:F73_M4A1_Revalorise>	3	3	0	0	</france:F73_M4A1_Revalorise>
+        <france:F36_AMX_AC_Mle1948>	4.5	4.5	0	0	</france:F36_AMX_AC_Mle1948>
+        <france:F75_Char_de_25t>	2.25	2.25	0	0	</france:F75_Char_de_25t>
+        <france:F74_AMX_M4_1949>	5.25	5.25	0	0	</france:F74_AMX_M4_1949>
+
+        <germany:G42_Maus>	4.95	4.95	0	0	</germany:G42_Maus>
+        <germany:G56_E-100>	5.1	5.1	0	0	</germany:G56_E-100>
+        <germany:G61_G_E>	6	6	0	0	</germany:G61_G_E>
+        <germany:G72_JagdPz_E100>	3	3	0	0	</germany:G72_JagdPz_E100>
+        <germany:G73_E50_Ausf_M>	5.25	5.25	0	0	</germany:G73_E50_Ausf_M>
+        <germany:G89_Leopard1>	4.5	4.5	0	0	</germany:G89_Leopard1>
+        <germany:G105_T-55_NVA_DDR>	5.25	5.25	0	0	</germany:G105_T-55_NVA_DDR>
+        <germany:G121_Grille_15_L63>	9	9	0	0	</germany:G121_Grille_15_L63>
+        <germany:G44_JagdTiger>	3	3	0	0	</germany:G44_JagdTiger>
+        <germany:G45_G_Tiger>	6.9	6.9	0	0	</germany:G45_G_Tiger>
+        <germany:G54_E-50>	5.25	5.25	0	0	</germany:G54_E-50>
+        <germany:G55_E-75>	5.25	4.5	0	0	</germany:G55_E-75>
+        <germany:G58_VK4502P>	4.5	4.5	0	0	</germany:G58_VK4502P>
+        <germany:G91_Pro_Ag_A>	4.5	4.5	0	0	</germany:G91_Pro_Ag_A>
+        <germany:G97_Waffentrager_IV>	6.9	6.9	0	0	</germany:G97_Waffentrager_IV>
+        <germany:G16_PzVIB_Tiger_II>	3.75	3.75	0	0	</germany:G16_PzVIB_Tiger_II>
+        <germany:G67_VK4502A>	4.5	4.5	0	0	</germany:G67_VK4502A>
+        <germany:G71_JagdPantherII>	3.3	3	0	0	</germany:G71_JagdPantherII>
+        <germany:G94_GW_Tiger_P>	6.75	6.75	0	0	</germany:G94_GW_Tiger_P>
+        <germany:G99_RhB_Waffentrager>	4.5	4.5	0	0	</germany:G99_RhB_Waffentrager>
+        <germany:G37_Ferdinand>	4.5	4.5	0	0	</germany:G37_Ferdinand>
+        <germany:G51_Lowe>	3.75	3.75	0	0	</germany:G51_Lowe>
+        <germany:G64_Panther_II>	3.75	3.75	0	0	</germany:G64_Panther_II>
+        <germany:G65_JagdTiger_SdKfz_185>	4.5	4.5	0	0	</germany:G65_JagdTiger_SdKfz_185>
+        <germany:G88_Indien_Panzer>	4.5	4.5	0	0	</germany:G88_Indien_Panzer>
+        <germany:G106_PzKpfwPanther_AusfF>	3	3	0	0	</germany:G106_PzKpfwPanther_AusfF>
+        <germany:G112_KanonenJagdPanzer>	4.5	4.5	0	0	</germany:G112_KanonenJagdPanzer>
+        <germany:G119_Panzer58>	3	3	0	0	</germany:G119_Panzer58>
+        <germany:G103_RU_251>	2.1	2.1	0	0	</germany:G103_RU_251>
+
+        <uk:GB32_Tortoise>	6	6	0	0	</uk:GB32_Tortoise>
+        <uk:GB11_Caernarvon>	6	6	0	0	</uk:GB11_Caernarvon>
+        <uk:GB12_Conqueror>	2.55	2.55	0	0	</uk:GB12_Conqueror>
+        <uk:GB24_Centurion_Mk3>	5.85	5.85	0	0	</uk:GB24_Centurion_Mk3>
+        <uk:GB23_Centurion>	4.8	6.3	0	0	</uk:GB23_Centurion>
+        <uk:GB13_FV215b>	5.85	5.85	0	0	</uk:GB13_FV215b>
+        <uk:GB48_FV215b_183>	5.55	5.85	0	0	</uk:GB48_FV215b_183>
+        <uk:GB30_FV3805>	5.55	5.55	0	0	</uk:GB30_FV3805>
+        <uk:GB79_FV206>	5.55	5.55	0	0	</uk:GB79_FV206>
+        <uk:GB31_Conqueror_Gun>	3	3	0	0	</uk:GB31_Conqueror_Gun>
+        <uk:GB83_FV4005>	4.5	4.5	0	0	</uk:GB83_FV4005>
+        <uk:GB81_FV4004>	4.8	4.8	0	0	</uk:GB81_FV4004>
+        <uk:GB80_Charioteer>	4.95	4.95	0	0	</uk:GB80_Charioteer>
+        <uk:GB86_Centurion_Action_X>	3	3	0	0	</uk:GB86_Centurion_Action_X>
+        <uk:GB72_AT15>	3.6	3.6	0	0	</uk:GB72_AT15>
+
+        <usa:A12_T32>	5.25	3.75	0	0	</usa:A12_T32>
+        <usa:A14_T30>	4.5	4.5	0	0	</usa:A14_T30>
+        <usa:A13_T34_hvy>	5.25	5.25	0	0	</usa:A13_T34_hvy>
+        <usa:A38_T92>	6	6	0	0	</usa:A38_T92>
+        <usa:A67_T57_58>	4.5	4.5	0	0	</usa:A67_T57_58>
+        <usa:A69_T110E5>	9	9	0	0	</usa:A69_T110E5>
+        <usa:A83_T110E4>	3	3	0	0	</usa:A83_T110E4>
+        <usa:A120_M48A5>	4.5	4.5	0	0	</usa:A120_M48A5>
+        <usa:A85_T110E3>	6	6	0	0	</usa:A85_T110E3>
+        <usa:A39_T28>	6	6	0	0	</usa:A39_T28>
+        <usa:A40_T95>	5.1	5.1	0	0	</usa:A40_T95>
+        <usa:A63_M46_Patton>	2.7	2.7	0	0	</usa:A63_M46_Patton>
+        <usa:A66_M103>	4.5	4.5	0	0	</usa:A66_M103>
+        <usa:A88_M53_55>	4.5	4.5	0	0	</usa:A88_M53_55>
+        <usa:A89_T54E1>	4.5	4.5	0	0	</usa:A89_T54E1>
+        <usa:A35_Pershing>	3.75	3.75	0	0	</usa:A35_Pershing>
+        <usa:A37_M40M43>	6	6	0	0	</usa:A37_M40M43>
+        <usa:A68_T28_Prototype>	10.5	10.5	0	0	</usa:A68_T28_Prototype>
+        <usa:A90_T69>	4.5	4.5	0	0	</usa:A90_T69>
+        <usa:A100_T49>	2.4	2.4	0	0	</usa:A100_T49>
+        <usa:A45_M6A2E1>	6	6	0	0	</usa:A45_M6A2E1>
+        <usa:A80_T26_E4_SuperPershing>	4.5	4.5	0	0	</usa:A80_T26_E4_SuperPershing>
+
+        <ussr:R19_IS-3>	4.5	4.5	0	0	</ussr:R19_IS-3>
+        <ussr:R45_IS-7>	4.5	4.5	0	0	</ussr:R45_IS-7>
+        <ussr:R52_Object_261>	6	6	0	0	</ussr:R52_Object_261>
+        <ussr:R87_T62A>	2.7	2.7	0	0	</ussr:R87_T62A>
+        <ussr:R88_Object268>	4.5	4.5	0	0	</ussr:R88_Object268>
+        <ussr:R90_IS_4M>	4.5	4.5	0	0	</ussr:R90_IS_4M>
+        <ussr:R93_Object263>	6.75	6.75	0	0	</ussr:R93_Object263>
+        <ussr:R96_Object_430>	3.15	3.15	0	0	</ussr:R96_Object_430>
+        <ussr:R97_Object_140>	4.5	4.5	0	0	</ussr:R97_Object_140>
+        <ussr:R40_T-54>	4.5	4.5	0	0	</ussr:R40_T-54>
+        <ussr:R51_Object_212>	6	6	0	0	</ussr:R51_Object_212>
+        <ussr:R53_Object_704>	4.2	4.2	0	0	</ussr:R53_Object_704>
+        <ussr:R63_ST_I>	5.25	5.25	0	0	</ussr:R63_ST_I>
+        <ussr:R75_SU122_54>	6	6	0	0	</ussr:R75_SU122_54>
+        <ussr:R81_IS8>	2.25	2.25	0	0	</ussr:R81_IS8>
+        <ussr:R104_Object_430_II>	4.5	4.5	0	0	</ussr:R104_Object_430_II>
+        <ussr:R20_T-44>	4.95	3.45	0	0	</ussr:R20_T-44>
+        <ussr:R27_SU-14>	4.5	4.5	0	0	</ussr:R27_SU-14>
+        <ussr:R47_ISU-152>	4.5	4.5	0	0	</ussr:R47_ISU-152>
+        <ussr:R54_KV-5>	3.75	3.75	0	0	</ussr:R54_KV-5>
+        <ussr:R60_Object416>	4.05	4.05	0	0	</ussr:R60_Object416>
+        <ussr:R61_Object252>	4.35	4.5	0	0	</ussr:R61_Object252>
+        <ussr:R73_KV4>	4.5	4.5	0	0	</ussr:R73_KV4>
+        <ussr:R109_T54S>	4.35	4.5	0	0	</ussr:R109_T54S>
+        <ussr:R58_SU-101>	3.9	3.9	0	0	</ussr:R58_SU-101>
+        <ussr:R112_T54_45>	1.5	1.5	0	0	</ussr:R112_T54_45>
+
+        <japan:J25_Type_4>	4.5	4.5	0	0	</japan:J25_Type_4>
+        <japan:J20_Type_2605>	5.4	5.4	0	0	</japan:J20_Type_2605>
+        <japan:J16_ST_B1>	4.5	4.5	0	0	</japan:J16_ST_B1>
+        <japan:J14_Type_61>	6	6	0	0	</japan:J14_Type_61>
+        <japan:J13_STA_1>	4.95	4.95	0	0	</japan:J13_STA_1>
+        <japan:J27_O_I_120>	1.95	1.95	0	0	</japan:J27_O_I_120>
+        <japan:J18_STA_2_3>	6	6	0	0	</japan:J18_STA_2_3>
+
+        <czech:Cz04_T50_51>	7.5	7.5	0	0	</czech:Cz04_T50_51>
+        <czech:Cz02_TVP_T50>	6	6	0	0	</czech:Cz02_TVP_T50>
+        <czech:Cz07_TVP_46>	6	6	0	0	</czech:Cz07_TVP_46>
+
+        <sweden:S16_Kranvagn>	1.2	1.2	0	0	</sweden:S16_Kranvagn>
+        <sweden:S11_Strv_103B>	1.2	1.2	0	0	</sweden:S11_Strv_103B>
+        <sweden:S10_Strv_103_0_Series>	1.05	1.05	0	0	</sweden:S10_Strv_103_0_Series>
+        <sweden:S17_EMIL_1952_E2>	1.8	1.8	0	0	</sweden:S17_EMIL_1952_E2>
+        <sweden:S18_EMIL_1951_E1>	1.95	1.95	0	0	</sweden:S18_EMIL_1951_E1>
+        <sweden:S21_UDES_03>	3.75	3.75	0	0	</sweden:S21_UDES_03>
+    </tiling>
+</settings>

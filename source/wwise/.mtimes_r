@@ -1,0 +1,848 @@
+﻿1603632607|Announcer_Andre_V/Actor-Mixer Hierarchy/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Attenuations/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Audio Devices/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Control Surface Sessions/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Conversion Settings/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Conversion Settings/Factory Conversion Settings.wwu
+1603632535|Announcer_Andre_V/Dynamic Dialogue/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Effects/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Effects/Factory Effects.wwu
+1603632535|Announcer_Andre_V/Events/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Game Parameters/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Game Parameters/Settings.wwu
+1694336377|Announcer_Andre_V/GeneratedSoundBanks/Windows/Announcer_Andre_V.bnk
+1694336377|Announcer_Andre_V/GeneratedSoundBanks/Windows/Announcer_Andre_V.txt
+1694336377|Announcer_Andre_V/GeneratedSoundBanks/Windows/Init.bnk
+1694336377|Announcer_Andre_V/GeneratedSoundBanks/Windows/Init.txt
+1694336377|Announcer_Andre_V/GeneratedSoundBanks/Windows/PluginInfo.xml
+1694336377|Announcer_Andre_V/GeneratedSoundBanks/Windows/SoundbanksInfo.xml
+1603632535|Announcer_Andre_V/Interactive Music Hierarchy/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Master-Mixer Hierarchy/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Mixing Sessions/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Modulators/Default Work Unit.wwu
+1477230216|Announcer_Andre_V/Originals/SFX/10.akd
+1477230216|Announcer_Andre_V/Originals/SFX/10.wav
+1477230223|Announcer_Andre_V/Originals/SFX/1009829012.akd
+1477230223|Announcer_Andre_V/Originals/SFX/1009829012.wav
+1476436505|Announcer_Andre_V/Originals/SFX/101461845.akd
+1476436505|Announcer_Andre_V/Originals/SFX/101461845.wav
+1477230227|Announcer_Andre_V/Originals/SFX/1048779845.akd
+1477230227|Announcer_Andre_V/Originals/SFX/1048779845.wav
+1477230226|Announcer_Andre_V/Originals/SFX/11.akd
+1477230226|Announcer_Andre_V/Originals/SFX/11.wav
+1476436506|Announcer_Andre_V/Originals/SFX/116424268.akd
+1476436506|Announcer_Andre_V/Originals/SFX/116424268.wav
+1476436506|Announcer_Andre_V/Originals/SFX/137323617.akd
+1476436506|Announcer_Andre_V/Originals/SFX/137323617.wav
+1477230187|Announcer_Andre_V/Originals/SFX/138588136.akd
+1477230187|Announcer_Andre_V/Originals/SFX/138588136.wav
+1476436504|Announcer_Andre_V/Originals/SFX/13874557.akd
+1476436504|Announcer_Andre_V/Originals/SFX/13874557.wav
+1476436506|Announcer_Andre_V/Originals/SFX/157594322.akd
+1476436506|Announcer_Andre_V/Originals/SFX/157594322.wav
+1476436506|Announcer_Andre_V/Originals/SFX/163525107.akd
+1476436506|Announcer_Andre_V/Originals/SFX/163525107.wav
+1477230188|Announcer_Andre_V/Originals/SFX/174064246.akd
+1477230188|Announcer_Andre_V/Originals/SFX/174064246.wav
+1477230188|Announcer_Andre_V/Originals/SFX/175302886.akd
+1477230188|Announcer_Andre_V/Originals/SFX/175302886.wav
+1476436507|Announcer_Andre_V/Originals/SFX/184907559.akd
+1476436507|Announcer_Andre_V/Originals/SFX/184907559.wav
+1487050743|Announcer_Andre_V/Originals/SFX/1min.akd
+1487050743|Announcer_Andre_V/Originals/SFX/1min.wav
+1457856626|Announcer_Andre_V/Originals/SFX/1min/1min.akd
+1457856626|Announcer_Andre_V/Originals/SFX/1min/1min.wav
+1460397623|Announcer_Andre_V/Originals/SFX/1mins.akd
+1460397623|Announcer_Andre_V/Originals/SFX/1mins.wav
+1487052547|Announcer_Andre_V/Originals/SFX/2.akd
+1487052547|Announcer_Andre_V/Originals/SFX/2.wav
+1477230189|Announcer_Andre_V/Originals/SFX/218297143.akd
+1477230189|Announcer_Andre_V/Originals/SFX/218297143.wav
+1476436507|Announcer_Andre_V/Originals/SFX/220648787.akd
+1476436507|Announcer_Andre_V/Originals/SFX/220648787.wav
+1476436507|Announcer_Andre_V/Originals/SFX/224213298.akd
+1476436507|Announcer_Andre_V/Originals/SFX/224213298.wav
+1476436507|Announcer_Andre_V/Originals/SFX/237770936.akd
+1476436507|Announcer_Andre_V/Originals/SFX/237770936.wav
+1476436508|Announcer_Andre_V/Originals/SFX/255141046.akd
+1476436508|Announcer_Andre_V/Originals/SFX/255141046.wav
+1476436508|Announcer_Andre_V/Originals/SFX/276749409.akd
+1476436508|Announcer_Andre_V/Originals/SFX/276749409.wav
+1477230183|Announcer_Andre_V/Originals/SFX/28126206.akd
+1477230183|Announcer_Andre_V/Originals/SFX/28126206.wav
+1476436508|Announcer_Andre_V/Originals/SFX/281777382.akd
+1476436508|Announcer_Andre_V/Originals/SFX/281777382.wav
+1476436509|Announcer_Andre_V/Originals/SFX/290652831.akd
+1476436509|Announcer_Andre_V/Originals/SFX/290652831.wav
+1476436509|Announcer_Andre_V/Originals/SFX/291293061.akd
+1476436509|Announcer_Andre_V/Originals/SFX/291293061.wav
+1476436509|Announcer_Andre_V/Originals/SFX/296607377.akd
+1476436509|Announcer_Andre_V/Originals/SFX/296607377.wav
+1477230195|Announcer_Andre_V/Originals/SFX/3.akd
+1477230195|Announcer_Andre_V/Originals/SFX/3.wav
+1477230192|Announcer_Andre_V/Originals/SFX/302862873.akd
+1477230192|Announcer_Andre_V/Originals/SFX/302862873.wav
+1487050743|Announcer_Andre_V/Originals/SFX/30secs.akd
+1487050743|Announcer_Andre_V/Originals/SFX/30secs.wav
+1457856628|Announcer_Andre_V/Originals/SFX/30secs/30secs.akd
+1457856628|Announcer_Andre_V/Originals/SFX/30secs/30secs.wav
+1476436509|Announcer_Andre_V/Originals/SFX/325271226.akd
+1476436509|Announcer_Andre_V/Originals/SFX/325271226.wav
+1477230183|Announcer_Andre_V/Originals/SFX/3296035.akd
+1477230183|Announcer_Andre_V/Originals/SFX/3296035.wav
+1476436510|Announcer_Andre_V/Originals/SFX/332363351.akd
+1476436510|Announcer_Andre_V/Originals/SFX/332363351.wav
+1476436510|Announcer_Andre_V/Originals/SFX/335408822.akd
+1476436510|Announcer_Andre_V/Originals/SFX/335408822.wav
+1477230194|Announcer_Andre_V/Originals/SFX/342565218.akd
+1477230194|Announcer_Andre_V/Originals/SFX/342565218.wav
+1476436510|Announcer_Andre_V/Originals/SFX/344140079.akd
+1476436510|Announcer_Andre_V/Originals/SFX/344140079.wav
+1476436510|Announcer_Andre_V/Originals/SFX/351872605.akd
+1476436510|Announcer_Andre_V/Originals/SFX/351872605.wav
+1476436511|Announcer_Andre_V/Originals/SFX/362020134.akd
+1476436511|Announcer_Andre_V/Originals/SFX/362020134.wav
+1477230196|Announcer_Andre_V/Originals/SFX/369090511.akd
+1477230196|Announcer_Andre_V/Originals/SFX/369090511.wav
+1476436511|Announcer_Andre_V/Originals/SFX/371452361.akd
+1476436511|Announcer_Andre_V/Originals/SFX/371452361.wav
+1476436504|Announcer_Andre_V/Originals/SFX/39191611.akd
+1476436504|Announcer_Andre_V/Originals/SFX/39191611.wav
+1487050743|Announcer_Andre_V/Originals/SFX/3min.akd
+1487050743|Announcer_Andre_V/Originals/SFX/3min.wav
+1457856626|Announcer_Andre_V/Originals/SFX/3min/3min.akd
+1457856626|Announcer_Andre_V/Originals/SFX/3min/3min.wav
+1460397623|Announcer_Andre_V/Originals/SFX/3mins.akd
+1460397623|Announcer_Andre_V/Originals/SFX/3mins.wav
+1477230196|Announcer_Andre_V/Originals/SFX/4.akd
+1477230196|Announcer_Andre_V/Originals/SFX/4.wav
+1477230197|Announcer_Andre_V/Originals/SFX/409968790.akd
+1477230197|Announcer_Andre_V/Originals/SFX/409968790.wav
+1476439515|Announcer_Andre_V/Originals/SFX/423869169.akd
+1476439515|Announcer_Andre_V/Originals/SFX/423869169.wav
+1477230198|Announcer_Andre_V/Originals/SFX/425648949.akd
+1477230198|Announcer_Andre_V/Originals/SFX/425648949.wav
+1476436511|Announcer_Andre_V/Originals/SFX/434667202.akd
+1476436511|Announcer_Andre_V/Originals/SFX/434667202.wav
+1476436511|Announcer_Andre_V/Originals/SFX/435494162.akd
+1476436511|Announcer_Andre_V/Originals/SFX/435494162.wav
+1476436511|Announcer_Andre_V/Originals/SFX/438597951.akd
+1476436511|Announcer_Andre_V/Originals/SFX/438597951.wav
+1477230199|Announcer_Andre_V/Originals/SFX/448913141.akd
+1477230199|Announcer_Andre_V/Originals/SFX/448913141.wav
+1476436512|Announcer_Andre_V/Originals/SFX/451769047.akd
+1476436512|Announcer_Andre_V/Originals/SFX/451769047.wav
+1477230183|Announcer_Andre_V/Originals/SFX/45783129.akd
+1477230183|Announcer_Andre_V/Originals/SFX/45783129.wav
+1476436512|Announcer_Andre_V/Originals/SFX/460770903.akd
+1476436512|Announcer_Andre_V/Originals/SFX/460770903.wav
+1477230200|Announcer_Andre_V/Originals/SFX/463342388.akd
+1477230200|Announcer_Andre_V/Originals/SFX/463342388.wav
+1476436512|Announcer_Andre_V/Originals/SFX/483670448.akd
+1476436512|Announcer_Andre_V/Originals/SFX/483670448.wav
+1477230201|Announcer_Andre_V/Originals/SFX/497222233.akd
+1477230201|Announcer_Andre_V/Originals/SFX/497222233.wav
+1477230200|Announcer_Andre_V/Originals/SFX/5.akd
+1477230200|Announcer_Andre_V/Originals/SFX/5.wav
+1477230202|Announcer_Andre_V/Originals/SFX/503508492.akd
+1477230202|Announcer_Andre_V/Originals/SFX/503508492.wav
+1477230202|Announcer_Andre_V/Originals/SFX/506081889.akd
+1477230202|Announcer_Andre_V/Originals/SFX/506081889.wav
+1477230204|Announcer_Andre_V/Originals/SFX/531556371.akd
+1477230204|Announcer_Andre_V/Originals/SFX/531556371.wav
+1477230205|Announcer_Andre_V/Originals/SFX/538079215.akd
+1477230205|Announcer_Andre_V/Originals/SFX/538079215.wav
+1477230205|Announcer_Andre_V/Originals/SFX/541806917.akd
+1477230205|Announcer_Andre_V/Originals/SFX/541806917.wav
+1477230205|Announcer_Andre_V/Originals/SFX/543411264.akd
+1477230205|Announcer_Andre_V/Originals/SFX/543411264.wav
+1477230206|Announcer_Andre_V/Originals/SFX/547125760.akd
+1477230206|Announcer_Andre_V/Originals/SFX/547125760.wav
+1477230206|Announcer_Andre_V/Originals/SFX/548928831.akd
+1477230206|Announcer_Andre_V/Originals/SFX/548928831.wav
+1476436513|Announcer_Andre_V/Originals/SFX/555490362.akd
+1476436513|Announcer_Andre_V/Originals/SFX/555490362.wav
+1477230207|Announcer_Andre_V/Originals/SFX/581425809.akd
+1477230207|Announcer_Andre_V/Originals/SFX/581425809.wav
+1477230207|Announcer_Andre_V/Originals/SFX/582763700.akd
+1477230207|Announcer_Andre_V/Originals/SFX/582763700.wav
+1477230184|Announcer_Andre_V/Originals/SFX/58326770.akd
+1477230184|Announcer_Andre_V/Originals/SFX/58326770.wav
+1477230207|Announcer_Andre_V/Originals/SFX/590384308.akd
+1477230207|Announcer_Andre_V/Originals/SFX/590384308.wav
+1477230207|Announcer_Andre_V/Originals/SFX/597645224.akd
+1477230207|Announcer_Andre_V/Originals/SFX/597645224.wav
+1487050743|Announcer_Andre_V/Originals/SFX/5_minute_warning.akd
+1487050743|Announcer_Andre_V/Originals/SFX/5_minute_warning.wav
+1460397624|Announcer_Andre_V/Originals/SFX/5mins.akd
+1460397624|Announcer_Andre_V/Originals/SFX/5mins.wav
+1457856626|Announcer_Andre_V/Originals/SFX/5mins/5mins.akd
+1457856626|Announcer_Andre_V/Originals/SFX/5mins/5mins.wav
+1487050743|Announcer_Andre_V/Originals/SFX/5secs.akd
+1487050743|Announcer_Andre_V/Originals/SFX/5secs.wav
+1457856627|Announcer_Andre_V/Originals/SFX/5secs/5secs.akd
+1457856627|Announcer_Andre_V/Originals/SFX/5secs/5secs.wav
+1476436504|Announcer_Andre_V/Originals/SFX/60046150.akd
+1476436504|Announcer_Andre_V/Originals/SFX/60046150.wav
+1477230208|Announcer_Andre_V/Originals/SFX/614187347.akd
+1477230208|Announcer_Andre_V/Originals/SFX/614187347.wav
+1477230209|Announcer_Andre_V/Originals/SFX/620300080.akd
+1477230209|Announcer_Andre_V/Originals/SFX/620300080.wav
+1477230209|Announcer_Andre_V/Originals/SFX/633964777.akd
+1477230209|Announcer_Andre_V/Originals/SFX/633964777.wav
+1477230210|Announcer_Andre_V/Originals/SFX/640492977.akd
+1477230210|Announcer_Andre_V/Originals/SFX/640492977.wav
+1477230210|Announcer_Andre_V/Originals/SFX/651658747.akd
+1477230210|Announcer_Andre_V/Originals/SFX/651658747.wav
+1477303233|Announcer_Andre_V/Originals/SFX/657033052.akd
+1477303233|Announcer_Andre_V/Originals/SFX/657033052.wav
+1477230211|Announcer_Andre_V/Originals/SFX/662210840.akd
+1477230211|Announcer_Andre_V/Originals/SFX/662210840.wav
+1477230211|Announcer_Andre_V/Originals/SFX/681643586.akd
+1477230211|Announcer_Andre_V/Originals/SFX/681643586.wav
+1477230184|Announcer_Andre_V/Originals/SFX/68592018.akd
+1477230184|Announcer_Andre_V/Originals/SFX/68592018.wav
+1477230212|Announcer_Andre_V/Originals/SFX/687418410.akd
+1477230212|Announcer_Andre_V/Originals/SFX/687418410.wav
+1477230206|Announcer_Andre_V/Originals/SFX/7.akd
+1477230206|Announcer_Andre_V/Originals/SFX/7.wav
+1477230212|Announcer_Andre_V/Originals/SFX/702572013.akd
+1477230212|Announcer_Andre_V/Originals/SFX/702572013.wav
+1476436514|Announcer_Andre_V/Originals/SFX/741639761.akd
+1476436514|Announcer_Andre_V/Originals/SFX/741639761.wav
+1476436504|Announcer_Andre_V/Originals/SFX/74661092.akd
+1476436504|Announcer_Andre_V/Originals/SFX/74661092.wav
+1476436515|Announcer_Andre_V/Originals/SFX/796319709.akd
+1476436515|Announcer_Andre_V/Originals/SFX/796319709.wav
+1477230214|Announcer_Andre_V/Originals/SFX/8.akd
+1477230214|Announcer_Andre_V/Originals/SFX/8.wav
+1476436504|Announcer_Andre_V/Originals/SFX/81991347.akd
+1476436504|Announcer_Andre_V/Originals/SFX/81991347.wav
+1477230216|Announcer_Andre_V/Originals/SFX/838437034.akd
+1477230216|Announcer_Andre_V/Originals/SFX/838437034.wav
+1477230217|Announcer_Andre_V/Originals/SFX/859987885.akd
+1477230217|Announcer_Andre_V/Originals/SFX/859987885.wav
+1476436515|Announcer_Andre_V/Originals/SFX/860826359.akd
+1476436515|Announcer_Andre_V/Originals/SFX/860826359.wav
+1476436505|Announcer_Andre_V/Originals/SFX/86500485.akd
+1476436505|Announcer_Andre_V/Originals/SFX/86500485.wav
+1476436505|Announcer_Andre_V/Originals/SFX/87561804.akd
+1476436505|Announcer_Andre_V/Originals/SFX/87561804.wav
+1477230218|Announcer_Andre_V/Originals/SFX/885005486.akd
+1477230218|Announcer_Andre_V/Originals/SFX/885005486.wav
+1477230218|Announcer_Andre_V/Originals/SFX/888059378.akd
+1477230218|Announcer_Andre_V/Originals/SFX/888059378.wav
+1476436505|Announcer_Andre_V/Originals/SFX/89003872.akd
+1476436505|Announcer_Andre_V/Originals/SFX/89003872.wav
+1477230219|Announcer_Andre_V/Originals/SFX/916869284.akd
+1477230219|Announcer_Andre_V/Originals/SFX/916869284.wav
+1477230221|Announcer_Andre_V/Originals/SFX/950099003.akd
+1477230221|Announcer_Andre_V/Originals/SFX/950099003.wav
+1477230185|Announcer_Andre_V/Originals/SFX/95631824.akd
+1477230185|Announcer_Andre_V/Originals/SFX/95631824.wav
+1476436516|Announcer_Andre_V/Originals/SFX/966889000.akd
+1476436516|Announcer_Andre_V/Originals/SFX/966889000.wav
+1477230185|Announcer_Andre_V/Originals/SFX/98741286.akd
+1477230185|Announcer_Andre_V/Originals/SFX/98741286.wav
+1477159884|Announcer_Andre_V/Originals/SFX/Bris_ann_hero_selection_04_ru.akd
+1477159884|Announcer_Andre_V/Originals/SFX/Bris_ann_hero_selection_04_ru.wav
+1477159885|Announcer_Andre_V/Originals/SFX/Bris_ann_quit_02_ru.akd
+1477159885|Announcer_Andre_V/Originals/SFX/Bris_ann_quit_02_ru.wav
+1477214943|Announcer_Andre_V/Originals/SFX/First Blood.akd
+1477214943|Announcer_Andre_V/Originals/SFX/First Blood.wav
+1477214942|Announcer_Andre_V/Originals/SFX/Killing Spree.akd
+1477214942|Announcer_Andre_V/Originals/SFX/Killing Spree.wav
+1464854529|Announcer_Andre_V/Originals/SFX/L_2mins.akd
+1464854529|Announcer_Andre_V/Originals/SFX/L_2mins.wav
+1477214942|Announcer_Andre_V/Originals/SFX/Mega Kill.akd
+1477214942|Announcer_Andre_V/Originals/SFX/Mega Kill.wav
+1477214942|Announcer_Andre_V/Originals/SFX/Monster Kill.akd
+1477214942|Announcer_Andre_V/Originals/SFX/Monster Kill.wav
+1477159889|Announcer_Andre_V/Originals/SFX/Wicked Sick.akd
+1477159889|Announcer_Andre_V/Originals/SFX/Wicked Sick.wav
+1458211664|Announcer_Andre_V/Originals/SFX/combine.akd
+1458211664|Announcer_Andre_V/Originals/SFX/combine.wav
+1457856628|Announcer_Andre_V/Originals/SFX/combine/combine1.akd
+1457856628|Announcer_Andre_V/Originals/SFX/combine/combine1.wav
+1457856628|Announcer_Andre_V/Originals/SFX/combine/combine2.akd
+1457856628|Announcer_Andre_V/Originals/SFX/combine/combine2.wav
+1457856628|Announcer_Andre_V/Originals/SFX/combine/combine3.akd
+1457856628|Announcer_Andre_V/Originals/SFX/combine/combine3.wav
+1457856628|Announcer_Andre_V/Originals/SFX/combine1.akd
+1457856628|Announcer_Andre_V/Originals/SFX/combine1.wav
+1457856628|Announcer_Andre_V/Originals/SFX/combine2.akd
+1457856628|Announcer_Andre_V/Originals/SFX/combine2.wav
+1457856628|Announcer_Andre_V/Originals/SFX/combine3.akd
+1457856628|Announcer_Andre_V/Originals/SFX/combine3.wav
+1460281340|Announcer_Andre_V/Originals/SFX/combine_13.akd
+1460281340|Announcer_Andre_V/Originals/SFX/combine_13.wav
+1487050743|Announcer_Andre_V/Originals/SFX/denied.akd
+1487050743|Announcer_Andre_V/Originals/SFX/denied.wav
+1457857003|Announcer_Andre_V/Originals/SFX/denied/denied.akd
+1457857003|Announcer_Andre_V/Originals/SFX/denied/denied.wav
+1477214943|Announcer_Andre_V/Originals/SFX/double.akd
+1477214943|Announcer_Andre_V/Originals/SFX/double.wav
+1477214943|Announcer_Andre_V/Originals/SFX/double2.akd
+1477214943|Announcer_Andre_V/Originals/SFX/double2.wav
+1460397624|Announcer_Andre_V/Originals/SFX/doublekill 1.akd
+1460397624|Announcer_Andre_V/Originals/SFX/doublekill 1.wav
+1466082930|Announcer_Andre_V/Originals/SFX/doublekill 2.akd
+1466082930|Announcer_Andre_V/Originals/SFX/doublekill 2.wav
+1460397624|Announcer_Andre_V/Originals/SFX/doublekill 3.akd
+1460397624|Announcer_Andre_V/Originals/SFX/doublekill 3.wav
+1487050744|Announcer_Andre_V/Originals/SFX/doublekill.akd
+1487050744|Announcer_Andre_V/Originals/SFX/doublekill.wav
+1457856629|Announcer_Andre_V/Originals/SFX/doublekill/doublekill1.akd
+1457856629|Announcer_Andre_V/Originals/SFX/doublekill/doublekill1.wav
+1457856629|Announcer_Andre_V/Originals/SFX/doublekill/doublekill2.akd
+1457856629|Announcer_Andre_V/Originals/SFX/doublekill/doublekill2.wav
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill/doublekill3.akd
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill/doublekill3.wav
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill/doublekill4.akd
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill/doublekill4.wav
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill/doublekill5.akd
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill/doublekill5.wav
+1457856631|Announcer_Andre_V/Originals/SFX/doublekill/doublekill6.akd
+1457856631|Announcer_Andre_V/Originals/SFX/doublekill/doublekill6.wav
+1457856631|Announcer_Andre_V/Originals/SFX/doublekill/doublekill7.akd
+1457856631|Announcer_Andre_V/Originals/SFX/doublekill/doublekill7.wav
+1457856629|Announcer_Andre_V/Originals/SFX/doublekill1.akd
+1457856629|Announcer_Andre_V/Originals/SFX/doublekill1.wav
+1457856629|Announcer_Andre_V/Originals/SFX/doublekill2.akd
+1457856629|Announcer_Andre_V/Originals/SFX/doublekill2.wav
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill3.akd
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill3.wav
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill4.akd
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill4.wav
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill5.akd
+1457856630|Announcer_Andre_V/Originals/SFX/doublekill5.wav
+1457856631|Announcer_Andre_V/Originals/SFX/doublekill6.akd
+1457856631|Announcer_Andre_V/Originals/SFX/doublekill6.wav
+1457856631|Announcer_Andre_V/Originals/SFX/doublekill7.akd
+1457856631|Announcer_Andre_V/Originals/SFX/doublekill7.wav
+1466082933|Announcer_Andre_V/Originals/SFX/eagleeye 15.akd
+1466082933|Announcer_Andre_V/Originals/SFX/eagleeye 15.wav
+1458211666|Announcer_Andre_V/Originals/SFX/eagleeye.akd
+1458211666|Announcer_Andre_V/Originals/SFX/eagleeye.wav
+1457856606|Announcer_Andre_V/Originals/SFX/eagleeye/eagleeye1.akd
+1457856606|Announcer_Andre_V/Originals/SFX/eagleeye/eagleeye1.wav
+1457856606|Announcer_Andre_V/Originals/SFX/eagleeye/eagleeye2.akd
+1457856606|Announcer_Andre_V/Originals/SFX/eagleeye/eagleeye2.wav
+1457856607|Announcer_Andre_V/Originals/SFX/eagleeye/eagleeye3.akd
+1457856607|Announcer_Andre_V/Originals/SFX/eagleeye/eagleeye3.wav
+1457856607|Announcer_Andre_V/Originals/SFX/eagleeye/eagleeye4.akd
+1457856607|Announcer_Andre_V/Originals/SFX/eagleeye/eagleeye4.wav
+1457856606|Announcer_Andre_V/Originals/SFX/eagleeye1.akd
+1457856606|Announcer_Andre_V/Originals/SFX/eagleeye1.wav
+1457856606|Announcer_Andre_V/Originals/SFX/eagleeye2.akd
+1457856606|Announcer_Andre_V/Originals/SFX/eagleeye2.wav
+1457856607|Announcer_Andre_V/Originals/SFX/eagleeye3.akd
+1457856607|Announcer_Andre_V/Originals/SFX/eagleeye3.wav
+1457856607|Announcer_Andre_V/Originals/SFX/eagleeye4.akd
+1457856607|Announcer_Andre_V/Originals/SFX/eagleeye4.wav
+1460281344|Announcer_Andre_V/Originals/SFX/enemy_killed14.akd
+1460281344|Announcer_Andre_V/Originals/SFX/enemy_killed14.wav
+1460281352|Announcer_Andre_V/Originals/SFX/enemy_killed28.akd
+1460281352|Announcer_Andre_V/Originals/SFX/enemy_killed28.wav
+1460281334|Announcer_Andre_V/Originals/SFX/enemy_killed_by_player14.akd
+1460281334|Announcer_Andre_V/Originals/SFX/enemy_killed_by_player14.wav
+1460281342|Announcer_Andre_V/Originals/SFX/enemy_killed_by_player8.akd
+1460281342|Announcer_Andre_V/Originals/SFX/enemy_killed_by_player8.wav
+1487050744|Announcer_Andre_V/Originals/SFX/eradication.akd
+1487050744|Announcer_Andre_V/Originals/SFX/eradication.wav
+1457856607|Announcer_Andre_V/Originals/SFX/eradication/eradication1.akd
+1457856607|Announcer_Andre_V/Originals/SFX/eradication/eradication1.wav
+1457856608|Announcer_Andre_V/Originals/SFX/eradication/eradication4.akd
+1457856608|Announcer_Andre_V/Originals/SFX/eradication/eradication4.wav
+1457856608|Announcer_Andre_V/Originals/SFX/eradication/eradication5.akd
+1457856608|Announcer_Andre_V/Originals/SFX/eradication/eradication5.wav
+1457856607|Announcer_Andre_V/Originals/SFX/eradication1.akd
+1457856607|Announcer_Andre_V/Originals/SFX/eradication1.wav
+1457856608|Announcer_Andre_V/Originals/SFX/eradication4.akd
+1457856608|Announcer_Andre_V/Originals/SFX/eradication4.wav
+1457856608|Announcer_Andre_V/Originals/SFX/eradication5.akd
+1457856608|Announcer_Andre_V/Originals/SFX/eradication5.wav
+1487050744|Announcer_Andre_V/Originals/SFX/extermination.akd
+1487050744|Announcer_Andre_V/Originals/SFX/extermination.wav
+1457856609|Announcer_Andre_V/Originals/SFX/extermination/extermination1.akd
+1457856609|Announcer_Andre_V/Originals/SFX/extermination/extermination1.wav
+1457856609|Announcer_Andre_V/Originals/SFX/extermination/extermination2.akd
+1457856609|Announcer_Andre_V/Originals/SFX/extermination/extermination2.wav
+1457856609|Announcer_Andre_V/Originals/SFX/extermination/extermination3.akd
+1457856609|Announcer_Andre_V/Originals/SFX/extermination/extermination3.wav
+1457856610|Announcer_Andre_V/Originals/SFX/extermination/extermination4.akd
+1457856610|Announcer_Andre_V/Originals/SFX/extermination/extermination4.wav
+1457856609|Announcer_Andre_V/Originals/SFX/extermination1.akd
+1457856609|Announcer_Andre_V/Originals/SFX/extermination1.wav
+1457856609|Announcer_Andre_V/Originals/SFX/extermination2.akd
+1457856609|Announcer_Andre_V/Originals/SFX/extermination2.wav
+1457856609|Announcer_Andre_V/Originals/SFX/extermination3.akd
+1457856609|Announcer_Andre_V/Originals/SFX/extermination3.wav
+1457856610|Announcer_Andre_V/Originals/SFX/extermination4.akd
+1457856610|Announcer_Andre_V/Originals/SFX/extermination4.wav
+1466082931|Announcer_Andre_V/Originals/SFX/firstblood 1.akd
+1466082931|Announcer_Andre_V/Originals/SFX/firstblood 1.wav
+1460397624|Announcer_Andre_V/Originals/SFX/firstblood 2.akd
+1460397624|Announcer_Andre_V/Originals/SFX/firstblood 2.wav
+1460397624|Announcer_Andre_V/Originals/SFX/firstblood 3.akd
+1460397624|Announcer_Andre_V/Originals/SFX/firstblood 3.wav
+1460397624|Announcer_Andre_V/Originals/SFX/firstblood 4.akd
+1460397624|Announcer_Andre_V/Originals/SFX/firstblood 4.wav
+1460397624|Announcer_Andre_V/Originals/SFX/firstblood 5.akd
+1460397624|Announcer_Andre_V/Originals/SFX/firstblood 5.wav
+1487050744|Announcer_Andre_V/Originals/SFX/firstblood.akd
+1487050744|Announcer_Andre_V/Originals/SFX/firstblood.wav
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood/firstblood1.akd
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood/firstblood1.wav
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood/firstblood2.akd
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood/firstblood2.wav
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood/firstblood3.akd
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood/firstblood3.wav
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood1.akd
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood1.wav
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood2.akd
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood2.wav
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood3.akd
+1457856610|Announcer_Andre_V/Originals/SFX/firstblood3.wav
+1487050744|Announcer_Andre_V/Originals/SFX/flakmaster.akd
+1487050744|Announcer_Andre_V/Originals/SFX/flakmaster.wav
+1457856611|Announcer_Andre_V/Originals/SFX/flakmaster/flakmaster.akd
+1457856611|Announcer_Andre_V/Originals/SFX/flakmaster/flakmaster.wav
+1460397624|Announcer_Andre_V/Originals/SFX/godlike 1.akd
+1460397624|Announcer_Andre_V/Originals/SFX/godlike 1.wav
+1466082933|Announcer_Andre_V/Originals/SFX/godlike 10.akd
+1466082933|Announcer_Andre_V/Originals/SFX/godlike 10.wav
+1460397624|Announcer_Andre_V/Originals/SFX/godlike 2.akd
+1460397624|Announcer_Andre_V/Originals/SFX/godlike 2.wav
+1460397624|Announcer_Andre_V/Originals/SFX/godlike 3.akd
+1460397624|Announcer_Andre_V/Originals/SFX/godlike 3.wav
+1460397625|Announcer_Andre_V/Originals/SFX/godlike 4.akd
+1460397625|Announcer_Andre_V/Originals/SFX/godlike 4.wav
+1460397625|Announcer_Andre_V/Originals/SFX/godlike 5.akd
+1460397625|Announcer_Andre_V/Originals/SFX/godlike 5.wav
+1487050744|Announcer_Andre_V/Originals/SFX/godlike.akd
+1487050744|Announcer_Andre_V/Originals/SFX/godlike.wav
+1457856611|Announcer_Andre_V/Originals/SFX/godlike/godlike1.akd
+1457856611|Announcer_Andre_V/Originals/SFX/godlike/godlike1.wav
+1457856611|Announcer_Andre_V/Originals/SFX/godlike/godlike2.akd
+1457856611|Announcer_Andre_V/Originals/SFX/godlike/godlike2.wav
+1457856612|Announcer_Andre_V/Originals/SFX/godlike/godlike3.akd
+1457856612|Announcer_Andre_V/Originals/SFX/godlike/godlike3.wav
+1457856612|Announcer_Andre_V/Originals/SFX/godlike/godlike4.akd
+1457856612|Announcer_Andre_V/Originals/SFX/godlike/godlike4.wav
+1457856612|Announcer_Andre_V/Originals/SFX/godlike/godlike5.akd
+1457856612|Announcer_Andre_V/Originals/SFX/godlike/godlike5.wav
+1457856611|Announcer_Andre_V/Originals/SFX/godlike1.akd
+1457856611|Announcer_Andre_V/Originals/SFX/godlike1.wav
+1457856611|Announcer_Andre_V/Originals/SFX/godlike2.akd
+1457856611|Announcer_Andre_V/Originals/SFX/godlike2.wav
+1457856612|Announcer_Andre_V/Originals/SFX/godlike3.akd
+1457856612|Announcer_Andre_V/Originals/SFX/godlike3.wav
+1457856612|Announcer_Andre_V/Originals/SFX/godlike4.akd
+1457856612|Announcer_Andre_V/Originals/SFX/godlike4.wav
+1457856612|Announcer_Andre_V/Originals/SFX/godlike5.akd
+1457856612|Announcer_Andre_V/Originals/SFX/godlike5.wav
+1487050744|Announcer_Andre_V/Originals/SFX/hitandrun.akd
+1487050744|Announcer_Andre_V/Originals/SFX/hitandrun.wav
+1457856613|Announcer_Andre_V/Originals/SFX/hitandrun/hitandrun.akd
+1457856613|Announcer_Andre_V/Originals/SFX/hitandrun/hitandrun.wav
+1458211666|Announcer_Andre_V/Originals/SFX/jackhammer.akd
+1458211666|Announcer_Andre_V/Originals/SFX/jackhammer.wav
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer/jackhammer1.akd
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer/jackhammer1.wav
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer/jackhammer2.akd
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer/jackhammer2.wav
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer/jackhammer3.akd
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer/jackhammer3.wav
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer1.akd
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer1.wav
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer2.akd
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer2.wav
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer3.akd
+1457856613|Announcer_Andre_V/Originals/SFX/jackhammer3.wav
+1460281352|Announcer_Andre_V/Originals/SFX/jackhammer_12.akd
+1460281352|Announcer_Andre_V/Originals/SFX/jackhammer_12.wav
+1460397625|Announcer_Andre_V/Originals/SFX/kamikaze 1.akd
+1460397625|Announcer_Andre_V/Originals/SFX/kamikaze 1.wav
+1460397625|Announcer_Andre_V/Originals/SFX/kamikaze 2.akd
+1460397625|Announcer_Andre_V/Originals/SFX/kamikaze 2.wav
+1460397625|Announcer_Andre_V/Originals/SFX/kamikaze 3.akd
+1460397625|Announcer_Andre_V/Originals/SFX/kamikaze 3.wav
+1460397625|Announcer_Andre_V/Originals/SFX/kamikaze 4.akd
+1460397625|Announcer_Andre_V/Originals/SFX/kamikaze 4.wav
+1477214943|Announcer_Andre_V/Originals/SFX/kamikaze.akd
+1477214943|Announcer_Andre_V/Originals/SFX/kamikaze.wav
+1457856614|Announcer_Andre_V/Originals/SFX/kamikaze/kamikaze.akd
+1457856614|Announcer_Andre_V/Originals/SFX/kamikaze/kamikaze.wav
+1460397625|Announcer_Andre_V/Originals/SFX/killingspree 1.akd
+1460397625|Announcer_Andre_V/Originals/SFX/killingspree 1.wav
+1460397625|Announcer_Andre_V/Originals/SFX/killingspree 2.akd
+1460397625|Announcer_Andre_V/Originals/SFX/killingspree 2.wav
+1460397625|Announcer_Andre_V/Originals/SFX/killingspree 3.akd
+1460397625|Announcer_Andre_V/Originals/SFX/killingspree 3.wav
+1460397625|Announcer_Andre_V/Originals/SFX/killingspree 4.akd
+1460397625|Announcer_Andre_V/Originals/SFX/killingspree 4.wav
+1466082931|Announcer_Andre_V/Originals/SFX/killingspree 7.akd
+1466082931|Announcer_Andre_V/Originals/SFX/killingspree 7.wav
+1487050745|Announcer_Andre_V/Originals/SFX/killingspree.akd
+1487050745|Announcer_Andre_V/Originals/SFX/killingspree.wav
+1457856614|Announcer_Andre_V/Originals/SFX/killingspree/killingspree1.akd
+1457856614|Announcer_Andre_V/Originals/SFX/killingspree/killingspree1.wav
+1457856614|Announcer_Andre_V/Originals/SFX/killingspree/killingspree2.akd
+1457856614|Announcer_Andre_V/Originals/SFX/killingspree/killingspree2.wav
+1457856614|Announcer_Andre_V/Originals/SFX/killingspree1.akd
+1457856614|Announcer_Andre_V/Originals/SFX/killingspree1.wav
+1457856614|Announcer_Andre_V/Originals/SFX/killingspree2.akd
+1457856614|Announcer_Andre_V/Originals/SFX/killingspree2.wav
+1477214942|Announcer_Andre_V/Originals/SFX/massacre.akd
+1477214942|Announcer_Andre_V/Originals/SFX/massacre.wav
+1460397626|Announcer_Andre_V/Originals/SFX/monsterkill 1.akd
+1460397626|Announcer_Andre_V/Originals/SFX/monsterkill 1.wav
+1460397626|Announcer_Andre_V/Originals/SFX/monsterkill 2.akd
+1460397626|Announcer_Andre_V/Originals/SFX/monsterkill 2.wav
+1460397626|Announcer_Andre_V/Originals/SFX/monsterkill 3.akd
+1460397626|Announcer_Andre_V/Originals/SFX/monsterkill 3.wav
+1460397626|Announcer_Andre_V/Originals/SFX/monsterkill 4.akd
+1460397626|Announcer_Andre_V/Originals/SFX/monsterkill 4.wav
+1466082931|Announcer_Andre_V/Originals/SFX/monsterkill 6.akd
+1466082931|Announcer_Andre_V/Originals/SFX/monsterkill 6.wav
+1487050745|Announcer_Andre_V/Originals/SFX/monsterkill.akd
+1487050745|Announcer_Andre_V/Originals/SFX/monsterkill.wav
+1457856614|Announcer_Andre_V/Originals/SFX/monsterkill/monsterkill1.akd
+1457856614|Announcer_Andre_V/Originals/SFX/monsterkill/monsterkill1.wav
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill/monsterkill2.akd
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill/monsterkill2.wav
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill/monsterkill3.akd
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill/monsterkill3.wav
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill/monsterkill4.akd
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill/monsterkill4.wav
+1457856616|Announcer_Andre_V/Originals/SFX/monsterkill/monsterkill5.akd
+1457856616|Announcer_Andre_V/Originals/SFX/monsterkill/monsterkill5.wav
+1457856614|Announcer_Andre_V/Originals/SFX/monsterkill1.akd
+1457856614|Announcer_Andre_V/Originals/SFX/monsterkill1.wav
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill2.akd
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill2.wav
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill3.akd
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill3.wav
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill4.akd
+1457856615|Announcer_Andre_V/Originals/SFX/monsterkill4.wav
+1457856616|Announcer_Andre_V/Originals/SFX/monsterkill5.akd
+1457856616|Announcer_Andre_V/Originals/SFX/monsterkill5.wav
+1460397626|Announcer_Andre_V/Originals/SFX/multikill 1.akd
+1460397626|Announcer_Andre_V/Originals/SFX/multikill 1.wav
+1460397626|Announcer_Andre_V/Originals/SFX/multikill 2.akd
+1460397626|Announcer_Andre_V/Originals/SFX/multikill 2.wav
+1460397626|Announcer_Andre_V/Originals/SFX/multikill 3.akd
+1460397626|Announcer_Andre_V/Originals/SFX/multikill 3.wav
+1466082933|Announcer_Andre_V/Originals/SFX/multikill 5.akd
+1466082933|Announcer_Andre_V/Originals/SFX/multikill 5.wav
+1487050745|Announcer_Andre_V/Originals/SFX/multikill.akd
+1487050745|Announcer_Andre_V/Originals/SFX/multikill.wav
+1457856616|Announcer_Andre_V/Originals/SFX/multikill/multikill1.akd
+1457856616|Announcer_Andre_V/Originals/SFX/multikill/multikill1.wav
+1457856616|Announcer_Andre_V/Originals/SFX/multikill/multikill2.akd
+1457856616|Announcer_Andre_V/Originals/SFX/multikill/multikill2.wav
+1457856616|Announcer_Andre_V/Originals/SFX/multikill/multikill3.akd
+1457856616|Announcer_Andre_V/Originals/SFX/multikill/multikill3.wav
+1457856617|Announcer_Andre_V/Originals/SFX/multikill/multikill4.akd
+1457856617|Announcer_Andre_V/Originals/SFX/multikill/multikill4.wav
+1457856617|Announcer_Andre_V/Originals/SFX/multikill/multikill5.akd
+1457856617|Announcer_Andre_V/Originals/SFX/multikill/multikill5.wav
+1457856617|Announcer_Andre_V/Originals/SFX/multikill/multikill6.akd
+1457856617|Announcer_Andre_V/Originals/SFX/multikill/multikill6.wav
+1457856616|Announcer_Andre_V/Originals/SFX/multikill1.akd
+1457856616|Announcer_Andre_V/Originals/SFX/multikill1.wav
+1457856616|Announcer_Andre_V/Originals/SFX/multikill2.akd
+1457856616|Announcer_Andre_V/Originals/SFX/multikill2.wav
+1457856616|Announcer_Andre_V/Originals/SFX/multikill3.akd
+1457856616|Announcer_Andre_V/Originals/SFX/multikill3.wav
+1457856617|Announcer_Andre_V/Originals/SFX/multikill4.akd
+1457856617|Announcer_Andre_V/Originals/SFX/multikill4.wav
+1457856617|Announcer_Andre_V/Originals/SFX/multikill5.akd
+1457856617|Announcer_Andre_V/Originals/SFX/multikill5.wav
+1457856617|Announcer_Andre_V/Originals/SFX/multikill6.akd
+1457856617|Announcer_Andre_V/Originals/SFX/multikill6.wav
+1487050745|Announcer_Andre_V/Originals/SFX/mutualdestruction.akd
+1487050745|Announcer_Andre_V/Originals/SFX/mutualdestruction.wav
+1458211666|Announcer_Andre_V/Originals/SFX/nicecatch.akd
+1458211666|Announcer_Andre_V/Originals/SFX/nicecatch.wav
+1487050745|Announcer_Andre_V/Originals/SFX/outstanding.akd
+1487050745|Announcer_Andre_V/Originals/SFX/outstanding.wav
+1487050745|Announcer_Andre_V/Originals/SFX/pancake.akd
+1487050745|Announcer_Andre_V/Originals/SFX/pancake.wav
+1487050745|Announcer_Andre_V/Originals/SFX/payback.akd
+1487050745|Announcer_Andre_V/Originals/SFX/payback.wav
+1457856618|Announcer_Andre_V/Originals/SFX/payback/payback1.akd
+1457856618|Announcer_Andre_V/Originals/SFX/payback/payback1.wav
+1457856618|Announcer_Andre_V/Originals/SFX/payback/payback2.akd
+1457856618|Announcer_Andre_V/Originals/SFX/payback/payback2.wav
+1457856618|Announcer_Andre_V/Originals/SFX/payback1.akd
+1457856618|Announcer_Andre_V/Originals/SFX/payback1.wav
+1457856618|Announcer_Andre_V/Originals/SFX/payback2.akd
+1457856618|Announcer_Andre_V/Originals/SFX/payback2.wav
+1460281336|Announcer_Andre_V/Originals/SFX/perforator 14.akd
+1460281336|Announcer_Andre_V/Originals/SFX/perforator 14.wav
+1458211668|Announcer_Andre_V/Originals/SFX/perforator.akd
+1458211668|Announcer_Andre_V/Originals/SFX/perforator.wav
+1457856619|Announcer_Andre_V/Originals/SFX/perforator/perforator1.akd
+1457856619|Announcer_Andre_V/Originals/SFX/perforator/perforator1.wav
+1457856619|Announcer_Andre_V/Originals/SFX/perforator/perforator2.akd
+1457856619|Announcer_Andre_V/Originals/SFX/perforator/perforator2.wav
+1457856619|Announcer_Andre_V/Originals/SFX/perforator/perforator3.akd
+1457856619|Announcer_Andre_V/Originals/SFX/perforator/perforator3.wav
+1457856619|Announcer_Andre_V/Originals/SFX/perforator1.akd
+1457856619|Announcer_Andre_V/Originals/SFX/perforator1.wav
+1457856619|Announcer_Andre_V/Originals/SFX/perforator2.akd
+1457856619|Announcer_Andre_V/Originals/SFX/perforator2.wav
+1457856619|Announcer_Andre_V/Originals/SFX/perforator3.akd
+1457856619|Announcer_Andre_V/Originals/SFX/perforator3.wav
+1477214942|Announcer_Andre_V/Originals/SFX/ramkil.akd
+1477214942|Announcer_Andre_V/Originals/SFX/ramkil.wav
+1476441709|Announcer_Andre_V/Originals/SFX/ramkill.akd
+1476441709|Announcer_Andre_V/Originals/SFX/ramkill.wav
+1457856620|Announcer_Andre_V/Originals/SFX/ramkill/ramkill1.akd
+1457856620|Announcer_Andre_V/Originals/SFX/ramkill/ramkill1.wav
+1457856620|Announcer_Andre_V/Originals/SFX/ramkill/ramkill2.akd
+1457856620|Announcer_Andre_V/Originals/SFX/ramkill/ramkill2.wav
+1457856620|Announcer_Andre_V/Originals/SFX/ramkill1.akd
+1457856620|Announcer_Andre_V/Originals/SFX/ramkill1.wav
+1457856620|Announcer_Andre_V/Originals/SFX/ramkill2.akd
+1457856620|Announcer_Andre_V/Originals/SFX/ramkill2.wav
+1460397626|Announcer_Andre_V/Originals/SFX/rampage 1.akd
+1460397626|Announcer_Andre_V/Originals/SFX/rampage 1.wav
+1460397626|Announcer_Andre_V/Originals/SFX/rampage 2.akd
+1460397626|Announcer_Andre_V/Originals/SFX/rampage 2.wav
+1460397626|Announcer_Andre_V/Originals/SFX/rampage 3.akd
+1460397626|Announcer_Andre_V/Originals/SFX/rampage 3.wav
+1466082932|Announcer_Andre_V/Originals/SFX/rampage 8.akd
+1466082932|Announcer_Andre_V/Originals/SFX/rampage 8.wav
+1487050745|Announcer_Andre_V/Originals/SFX/rampage.akd
+1487050745|Announcer_Andre_V/Originals/SFX/rampage.wav
+1457856620|Announcer_Andre_V/Originals/SFX/rampage/rampage1.akd
+1457856620|Announcer_Andre_V/Originals/SFX/rampage/rampage1.wav
+1457856621|Announcer_Andre_V/Originals/SFX/rampage/rampage2.akd
+1457856621|Announcer_Andre_V/Originals/SFX/rampage/rampage2.wav
+1457856621|Announcer_Andre_V/Originals/SFX/rampage/rampage3.akd
+1457856621|Announcer_Andre_V/Originals/SFX/rampage/rampage3.wav
+1457856621|Announcer_Andre_V/Originals/SFX/rampage/rampage4.akd
+1457856621|Announcer_Andre_V/Originals/SFX/rampage/rampage4.wav
+1457856620|Announcer_Andre_V/Originals/SFX/rampage1.akd
+1457856620|Announcer_Andre_V/Originals/SFX/rampage1.wav
+1457856621|Announcer_Andre_V/Originals/SFX/rampage2.akd
+1457856621|Announcer_Andre_V/Originals/SFX/rampage2.wav
+1457856621|Announcer_Andre_V/Originals/SFX/rampage3.akd
+1457856621|Announcer_Andre_V/Originals/SFX/rampage3.wav
+1457856621|Announcer_Andre_V/Originals/SFX/rampage4.akd
+1457856621|Announcer_Andre_V/Originals/SFX/rampage4.wav
+1487050745|Announcer_Andre_V/Originals/SFX/roadkill.akd
+1487050745|Announcer_Andre_V/Originals/SFX/roadkill.wav
+1460281320|Announcer_Andre_V/Originals/SFX/stormtechnology 11.akd
+1460281320|Announcer_Andre_V/Originals/SFX/stormtechnology 11.wav
+1487050745|Announcer_Andre_V/Originals/SFX/topgun.akd
+1487050745|Announcer_Andre_V/Originals/SFX/topgun.wav
+1477214942|Announcer_Andre_V/Originals/SFX/triple.akd
+1477214942|Announcer_Andre_V/Originals/SFX/triple.wav
+1460397626|Announcer_Andre_V/Originals/SFX/triplekill 1.akd
+1460397626|Announcer_Andre_V/Originals/SFX/triplekill 1.wav
+1460397626|Announcer_Andre_V/Originals/SFX/triplekill 2.akd
+1460397626|Announcer_Andre_V/Originals/SFX/triplekill 2.wav
+1466082931|Announcer_Andre_V/Originals/SFX/triplekill 3.akd
+1466082931|Announcer_Andre_V/Originals/SFX/triplekill 3.wav
+1487050746|Announcer_Andre_V/Originals/SFX/triplekill.akd
+1487050746|Announcer_Andre_V/Originals/SFX/triplekill.wav
+1457856621|Announcer_Andre_V/Originals/SFX/triplekill/triplekill1.akd
+1457856621|Announcer_Andre_V/Originals/SFX/triplekill/triplekill1.wav
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill/triplekill2.akd
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill/triplekill2.wav
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill/triplekill3.akd
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill/triplekill3.wav
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill/triplekill4.akd
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill/triplekill4.wav
+1457856623|Announcer_Andre_V/Originals/SFX/triplekill/triplekill5.akd
+1457856623|Announcer_Andre_V/Originals/SFX/triplekill/triplekill5.wav
+1457856623|Announcer_Andre_V/Originals/SFX/triplekill/triplekill6.akd
+1457856623|Announcer_Andre_V/Originals/SFX/triplekill/triplekill6.wav
+1457856621|Announcer_Andre_V/Originals/SFX/triplekill1.akd
+1457856621|Announcer_Andre_V/Originals/SFX/triplekill1.wav
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill2.akd
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill2.wav
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill3.akd
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill3.wav
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill4.akd
+1457856622|Announcer_Andre_V/Originals/SFX/triplekill4.wav
+1457856623|Announcer_Andre_V/Originals/SFX/triplekill5.akd
+1457856623|Announcer_Andre_V/Originals/SFX/triplekill5.wav
+1457856623|Announcer_Andre_V/Originals/SFX/triplekill6.akd
+1457856623|Announcer_Andre_V/Originals/SFX/triplekill6.wav
+1477214943|Announcer_Andre_V/Originals/SFX/ultra.akd
+1477214943|Announcer_Andre_V/Originals/SFX/ultra.wav
+1460397626|Announcer_Andre_V/Originals/SFX/ultrakill 1.akd
+1460397626|Announcer_Andre_V/Originals/SFX/ultrakill 1.wav
+1460397627|Announcer_Andre_V/Originals/SFX/ultrakill 2.akd
+1460397627|Announcer_Andre_V/Originals/SFX/ultrakill 2.wav
+1460397627|Announcer_Andre_V/Originals/SFX/ultrakill 3.akd
+1460397627|Announcer_Andre_V/Originals/SFX/ultrakill 3.wav
+1466082932|Announcer_Andre_V/Originals/SFX/ultrakill 4.akd
+1466082932|Announcer_Andre_V/Originals/SFX/ultrakill 4.wav
+1487050746|Announcer_Andre_V/Originals/SFX/ultrakill.akd
+1487050746|Announcer_Andre_V/Originals/SFX/ultrakill.wav
+1457856623|Announcer_Andre_V/Originals/SFX/ultrakill/ultrakill1.akd
+1457856623|Announcer_Andre_V/Originals/SFX/ultrakill/ultrakill1.wav
+1457856623|Announcer_Andre_V/Originals/SFX/ultrakill/ultrakill2.akd
+1457856623|Announcer_Andre_V/Originals/SFX/ultrakill/ultrakill2.wav
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill/ultrakill3.akd
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill/ultrakill3.wav
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill/ultrakill4.akd
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill/ultrakill4.wav
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill/ultrakill5.akd
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill/ultrakill5.wav
+1457856623|Announcer_Andre_V/Originals/SFX/ultrakill1.akd
+1457856623|Announcer_Andre_V/Originals/SFX/ultrakill1.wav
+1457856623|Announcer_Andre_V/Originals/SFX/ultrakill2.akd
+1457856623|Announcer_Andre_V/Originals/SFX/ultrakill2.wav
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill3.akd
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill3.wav
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill4.akd
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill4.wav
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill5.akd
+1457856624|Announcer_Andre_V/Originals/SFX/ultrakill5.wav
+1477214943|Announcer_Andre_V/Originals/SFX/unreal.akd
+1477214943|Announcer_Andre_V/Originals/SFX/unreal.wav
+1460397627|Announcer_Andre_V/Originals/SFX/unstoppable 1.akd
+1460397627|Announcer_Andre_V/Originals/SFX/unstoppable 1.wav
+1460397627|Announcer_Andre_V/Originals/SFX/unstoppable 2.akd
+1460397627|Announcer_Andre_V/Originals/SFX/unstoppable 2.wav
+1460397627|Announcer_Andre_V/Originals/SFX/unstoppable 3.akd
+1460397627|Announcer_Andre_V/Originals/SFX/unstoppable 3.wav
+1466082932|Announcer_Andre_V/Originals/SFX/unstoppable 9.akd
+1466082932|Announcer_Andre_V/Originals/SFX/unstoppable 9.wav
+1487050746|Announcer_Andre_V/Originals/SFX/unstoppable.akd
+1487050746|Announcer_Andre_V/Originals/SFX/unstoppable.wav
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable/unstoppable1.akd
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable/unstoppable1.wav
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable/unstoppable2.akd
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable/unstoppable2.wav
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable/unstoppable3.akd
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable/unstoppable3.wav
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable1.akd
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable1.wav
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable2.akd
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable2.wav
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable3.akd
+1457856625|Announcer_Andre_V/Originals/SFX/unstoppable3.wav
+1477321790|Announcer_Andre_V/Originals/WavAnalysis.cache
+1603632535|Announcer_Andre_V/Presets/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Presets/Factory Spatial Audio.wwu
+1603632535|Announcer_Andre_V/Queries/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Queries/Factory Queries.wwu
+1603632535|Announcer_Andre_V/SoundBanks/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Soundcaster Sessions/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/States/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Switches/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Triggers/Default Work Unit.wwu
+1603632535|Announcer_Andre_V/Virtual Acoustics/Default Work Unit.wwu
+1694336321|Announcer_Andre_V/wwise_project.wproj
+1603472414|PlayerHPAnnouncer/Actor-Mixer Hierarchy/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Attenuations/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Audio Devices/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Control Surface Sessions/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Conversion Settings/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Conversion Settings/Factory Conversion Settings.wwu
+1603472414|PlayerHPAnnouncer/Dynamic Dialogue/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Effects/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Effects/Factory Effects.wwu
+1603472414|PlayerHPAnnouncer/Events/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Game Parameters/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Game Parameters/Settings.wwu
+1694336504|PlayerHPAnnouncer/GeneratedSoundBanks/Windows/Init.bnk
+1694336504|PlayerHPAnnouncer/GeneratedSoundBanks/Windows/Init.txt
+1694336504|PlayerHPAnnouncer/GeneratedSoundBanks/Windows/PlayerHPAnnouncer.bnk
+1694336504|PlayerHPAnnouncer/GeneratedSoundBanks/Windows/PlayerHPAnnouncer.txt
+1694336504|PlayerHPAnnouncer/GeneratedSoundBanks/Windows/PluginInfo.xml
+1694336504|PlayerHPAnnouncer/GeneratedSoundBanks/Windows/SoundbanksInfo.xml
+1603472414|PlayerHPAnnouncer/Interactive Music Hierarchy/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Master-Mixer Hierarchy/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Mixing Sessions/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Modulators/Default Work Unit.wwu
+1582968454|PlayerHPAnnouncer/Originals/SFX/#L_base_01.akd
+1582968454|PlayerHPAnnouncer/Originals/SFX/#L_base_01.wav
+1582968472|PlayerHPAnnouncer/Originals/SFX/#L_base_02.akd
+1582968472|PlayerHPAnnouncer/Originals/SFX/#L_base_02.wav
+1582970322|PlayerHPAnnouncer/Originals/SFX/#L_base_03.akd
+1582970322|PlayerHPAnnouncer/Originals/SFX/#L_base_03.wav
+1095074260|PlayerHPAnnouncer/Originals/SFX/El_R_I'm_hit.akd
+1095074260|PlayerHPAnnouncer/Originals/SFX/El_R_I'm_hit.wav
+1095074260|PlayerHPAnnouncer/Originals/SFX/El_R_ejecting.akd
+1095074260|PlayerHPAnnouncer/Originals/SFX/El_R_ejecting.wav
+1095074260|PlayerHPAnnouncer/Originals/SFX/El_R_ship_damaged.akd
+1095074260|PlayerHPAnnouncer/Originals/SFX/El_R_ship_damaged.wav
+1093958568|PlayerHPAnnouncer/Originals/SFX/Hero_R_I'm_hit.akd
+1093958568|PlayerHPAnnouncer/Originals/SFX/Hero_R_I'm_hit.wav
+1093958568|PlayerHPAnnouncer/Originals/SFX/Hero_R_ejecting.akd
+1093958568|PlayerHPAnnouncer/Originals/SFX/Hero_R_ejecting.wav
+1093958568|PlayerHPAnnouncer/Originals/SFX/Hero_R_ship_damaged.akd
+1093958568|PlayerHPAnnouncer/Originals/SFX/Hero_R_ship_damaged.wav
+1694336500|PlayerHPAnnouncer/PlayerHPAnnouncer.wproj
+1603472414|PlayerHPAnnouncer/Presets/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Presets/Factory Spatial Audio.wwu
+1603472414|PlayerHPAnnouncer/Queries/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Queries/Factory Queries.wwu
+1603472414|PlayerHPAnnouncer/SoundBanks/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Soundcaster Sessions/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/States/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Switches/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Triggers/Default Work Unit.wwu
+1603472414|PlayerHPAnnouncer/Virtual Acoustics/Default Work Unit.wwu
+1603632356|horns/Actor-Mixer Hierarchy/Default Work Unit.wwu
+1603632308|horns/Attenuations/Default Work Unit.wwu
+1603632308|horns/Audio Devices/Default Work Unit.wwu
+1603632308|horns/Control Surface Sessions/Default Work Unit.wwu
+1603632308|horns/Conversion Settings/Default Work Unit.wwu
+1603632308|horns/Conversion Settings/Factory Conversion Settings.wwu
+1603632308|horns/Dynamic Dialogue/Default Work Unit.wwu
+1603632308|horns/Effects/Default Work Unit.wwu
+1603632308|horns/Events/Default Work Unit.wwu
+1603632308|horns/Game Parameters/Default Work Unit.wwu
+1603632308|horns/Game Parameters/Settings.wwu
+1694336481|horns/GeneratedSoundBanks/Windows/Init.bnk
+1694336481|horns/GeneratedSoundBanks/Windows/Init.txt
+1694336481|horns/GeneratedSoundBanks/Windows/PluginInfo.xml
+1694336481|horns/GeneratedSoundBanks/Windows/SoundbanksInfo.xml
+1694336481|horns/GeneratedSoundBanks/Windows/horns.bnk
+1694336481|horns/GeneratedSoundBanks/Windows/horns.txt
+1603632308|horns/Interactive Music Hierarchy/Default Work Unit.wwu
+1603632308|horns/Master-Mixer Hierarchy/Default Work Unit.wwu
+1603632308|horns/Mixing Sessions/Default Work Unit.wwu
+1603632308|horns/Modulators/Default Work Unit.wwu
+1466286876|horns/Originals/SFX/1horn.akd
+1466286876|horns/Originals/SFX/1horn.wav
+1466286876|horns/Originals/SFX/2horn.akd
+1466286876|horns/Originals/SFX/2horn.wav
+1466286876|horns/Originals/SFX/3horn.akd
+1466286876|horns/Originals/SFX/3horn.wav
+1466286876|horns/Originals/SFX/4horn.akd
+1466286876|horns/Originals/SFX/4horn.wav
+1466286876|horns/Originals/SFX/5horn.akd
+1466286876|horns/Originals/SFX/5horn.wav
+1466286876|horns/Originals/SFX/6horn.akd
+1466286876|horns/Originals/SFX/6horn.wav
+1466286876|horns/Originals/SFX/7horn.akd
+1466286876|horns/Originals/SFX/7horn.wav
+1460737783|horns/Originals/SFX/86828027.akd
+1466286876|horns/Originals/SFX/8horn.akd
+1466286876|horns/Originals/SFX/8horn.wav
+1453743640|horns/Originals/SFX/sixthSense/standart.akd
+1453743640|horns/Originals/SFX/sixthSense/standart.wav
+1453743353|horns/Originals/SFX/sixthSense/timer.akd
+1453743353|horns/Originals/SFX/sixthSense/timer.wav
+1466527381|horns/Originals/WavAnalysis.cache
+1603632308|horns/Presets/Default Work Unit.wwu
+1603632308|horns/Presets/Factory Spatial Audio.wwu
+1603632308|horns/Queries/Default Work Unit.wwu
+1603632308|horns/SoundBanks/Default Work Unit.wwu
+1603632308|horns/Soundcaster Sessions/Default Work Unit.wwu
+1603632308|horns/States/Default Work Unit.wwu
+1603632308|horns/Switches/Default Work Unit.wwu
+1603632308|horns/Triggers/Default Work Unit.wwu
+1603632308|horns/Virtual Acoustics/Default Work Unit.wwu
+1694336478|horns/wwise_project.wproj

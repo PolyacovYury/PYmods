@@ -29,7 +29,7 @@
         "mods/configs/PYmods/RadialMenu/skins/mooseyaka.json": "res/configs/PYmods/RadialMenu/skins/mooseyaka.json",
         "mods/configs/PYmods/RadialMenu/skins/nagibator_dna.json": "res/configs/PYmods/RadialMenu/skins/nagibator_dna.json",
         "mods/configs/PYmods/RadialMenu/skins/tehHedger.json": "res/configs/PYmods/RadialMenu/skins/tehHedger.json",
-        "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
+        "mods/{GAME_VERSION}/*modssettingsapi*": "res/wotmods/*modssettingsapi*",
         "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
         "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
         "mods/{GAME_VERSION}/PYmods/AppreciationBadges.wotmod": "build/wotmods/PYmods/AppreciationBadges.wotmod",

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="12" SoundbankVersion="135">
+	<RootPaths>
+		<ProjectRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\PlayerHPAnnouncer\</ProjectRoot>
+		<SourceFilesRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\PlayerHPAnnouncer\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\PlayerHPAnnouncer\GeneratedSoundBanks\Windows\</SoundBanksRoot>
+		<ExternalSourcesInputFile></ExternalSourcesInputFile>
+		<ExternalSourcesOutputRoot>D:\Code\Pycharm Python\WoT_mods\WWISE\PlayerHPAnnouncer\GeneratedSoundBanks\Windows</ExternalSourcesOutputRoot>
+	</RootPaths>
+	<DialogueEvents/>
+	<StreamedFiles/>
+	<MediaFilesNotInAnyBank/>
+	<SoundBanks>
+		<SoundBank Id="142773271" Language="SFX">
+			<ObjectPath>\SoundBanks\Default Work Unit\PlayerHPAnnouncer</ObjectPath>
+			<ShortName>PlayerHPAnnouncer</ShortName>
+			<Path>PlayerHPAnnouncer.bnk</Path>
+			<IncludedEvents>
+				<Event Id="610308621" Name="PlayerHPAnnouncer_10" ObjectPath="\Events\Default Work Unit\PlayerHPAnnouncer_10">
+					<IncludedMemoryFiles>
+						<File Id="683627647" Language="SFX">
+							<ShortName>#L_base_01.wav</ShortName>
+							<Path>SFX\#L_base_01_22E84134.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="559975857" Name="PlayerHPAnnouncer_25" ObjectPath="\Events\Default Work Unit\PlayerHPAnnouncer_25">
+					<IncludedMemoryFiles>
+						<File Id="85875852" Language="SFX">
+							<ShortName>#L_base_02.wav</ShortName>
+							<Path>SFX\#L_base_02_22E84134.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="543198145" Name="PlayerHPAnnouncer_50" ObjectPath="\Events\Default Work Unit\PlayerHPAnnouncer_50">
+					<IncludedMemoryFiles>
+						<File Id="671388639" Language="SFX">
+							<ShortName>#L_base_03.wav</ShortName>
+							<Path>SFX\#L_base_03_22E84134.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+			</IncludedEvents>
+			<GameParameters>
+				<GameParameter Id="257494316" Name="RTPC_ext_menu_volume_master" ObjectPath="\Game Parameters\Settings\RTPC_ext_menu_volume_master"/>
+				<GameParameter Id="1978220576" Name="RTPC_ext_menu_volume_voice" ObjectPath="\Game Parameters\Settings\RTPC_ext_menu_volume_voice"/>
+			</GameParameters>
+		</SoundBank>
+		<SoundBank Id="1355168291" Language="SFX">
+			<ObjectPath>Init</ObjectPath>
+			<ShortName>Init</ShortName>
+			<Path>Init.bnk</Path>
+		</SoundBank>
+	</SoundBanks>
+</SoundBanksInfo>

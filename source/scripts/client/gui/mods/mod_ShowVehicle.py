@@ -3,7 +3,7 @@ import Keys
 import bisect
 from AvatarInputHandler.DynamicCameras.SniperCamera import SniperCamera
 from AvatarInputHandler.control_modes import SniperControlMode
-from OpenModsCore import Analytics, SimpleConfigInterface, checkKeys, find_attr, overrideMethod
+from OpenModsCore import Analytics, SimpleConfigInterface, checkKeys, overrideMethod
 from gui.Scaleform.daapi.view.battle.shared.crosshair import CrosshairPanelContainer
 from gui.Scaleform.locale.INGAME_GUI import INGAME_GUI
 from helpers import i18n
@@ -135,6 +135,6 @@ def new_SniperCamera_getZooms(base, self, *args, **kwargs):
 @overrideMethod(CrosshairPanelContainer, 'as_setZoomS')
 def new_CrosshairPanelContainer_as_setZoomS(base, self, zoomStr):
     if not zoomStr:
-        zoomFactor = find_attr(self, '__zoomFactor')
+        zoomFactor = self.getZoom()
         zoomStr = (i18n.makeString(INGAME_GUI.AIM_ZOOM).replace('%(zoom)d', '%(zoom)s')) % {'zoom': round(zoomFactor, 2)}
     return base(self, zoomStr)

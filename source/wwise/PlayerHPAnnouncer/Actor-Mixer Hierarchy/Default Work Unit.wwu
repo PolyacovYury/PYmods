@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{FA285E43-4236-4619-BD1B-CB35D4DE01C1}" SchemaVersion="97">
+	<AudioObjects>
+		<WorkUnit Name="Default Work Unit" ID="{FA285E43-4236-4619-BD1B-CB35D4DE01C1}" PersistMode="Standalone">
+			<ChildrenList>
+				<ActorMixer Name="ambient" ID="{31DEB516-B934-423D-BC08-DFAEDF45EAA7}" ShortID="269808319">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<RTPCList>
+								<RTPC Name="" ID="{F914AE49-6DB4-43F3-8CA4-D561D9CF0A22}" ShortID="1047468171">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_ambient" ID="{CE2577B3-7CC6-48EA-B0AD-18D8A9D2EE4D}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{5ECDD3C0-C012-4696-ABDE-D5F00C51D526}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+								<RTPC Name="" ID="{8824D1B0-E292-469A-B7C4-B3020A8FDEAF}" ShortID="213237333">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_master" ID="{B1624F64-4CA0-41D0-A573-C5FB0BA6DBDF}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{911FC88F-E630-46D3-94AF-355A4C931349}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+						</Reference>
+					</ReferenceList>
+				</ActorMixer>
+				<ActorMixer Name="gui" ID="{3A513806-73BE-440B-BE89-53F25BB42670}" ShortID="574701126">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<RTPCList>
+								<RTPC Name="" ID="{FBFE6497-4C3B-4A2C-8B6E-35C58304B6D9}" ShortID="736745872">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_master" ID="{B1624F64-4CA0-41D0-A573-C5FB0BA6DBDF}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{D49A17C1-0F60-44A3-927D-1B29449964BE}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+								<RTPC Name="" ID="{741528BB-4E3C-4F43-8475-0D731B401D64}" ShortID="188037149">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_gui" ID="{3F164236-AF41-4F9A-874C-7F61BDCC7423}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{651128E2-B10A-4143-953F-4C6A8144AE0B}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+						</Reference>
+					</ReferenceList>
+				</ActorMixer>
+				<ActorMixer Name="vehicles" ID="{9B7502B5-28F9-47FD-8C54-23FC185CAFD0}" ShortID="649584014">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<RTPCList>
+								<RTPC Name="" ID="{1BF8A088-AE09-492A-A52C-3C0A77CA231F}" ShortID="937192463">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_vehicles" ID="{294CE951-B878-4CEF-A5C6-668FA218E92F}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{E492EF1E-5E3E-4EC5-A348-3F807B000AC0}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+								<RTPC Name="" ID="{8084E1AB-9761-4A70-8F86-793CFDE545CD}" ShortID="889959486">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_master" ID="{B1624F64-4CA0-41D0-A573-C5FB0BA6DBDF}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{58CFFB19-D7BB-4C32-98D4-2DFF7037B73B}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+						</Reference>
+					</ReferenceList>
+				</ActorMixer>
+				<ActorMixer Name="voice" ID="{406B1A36-E7EE-49EB-B218-5481F7D8E3FD}" ShortID="477769185">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<RTPCList>
+								<RTPC Name="" ID="{F1DD8F13-C5ED-4796-B242-ACD3B9CBD023}" ShortID="765144838">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_master" ID="{B1624F64-4CA0-41D0-A573-C5FB0BA6DBDF}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{C18F5809-CDAF-452E-955A-6606A2CBFB8F}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+								<RTPC Name="" ID="{A10E2788-FA1B-4DC0-AB94-AE3499F88890}" ShortID="259197626">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_voice" ID="{3A232464-D135-4495-8DF1-A8E29722EBC4}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{484F8CF5-4B25-44F8-B001-DDE8235543FD}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<Sound Name="El_R_ejecting" ID="{565CD314-BACE-44DE-85CF-D3F713B76DAD}" ShortID="972185272">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="El_R_ejecting" ID="{C3E5221A-C0C5-431B-BDB5-0C0B58E430FD}">
+									<Language>SFX</Language>
+									<AudioFile>El_R_ejecting.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="633337636"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="El_R_ejecting" ID="{C3E5221A-C0C5-431B-BDB5-0C0B58E430FD}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="El_R_I'm_hit" ID="{46DD5315-2DA5-492C-BC73-417D6251DAD7}" ShortID="213691861">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="El_R_I'm_hit" ID="{44658105-23EB-4AFE-8BF3-6C828EA63DB1}">
+									<Language>SFX</Language>
+									<AudioFile>El_R_I'm_hit.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="590764314"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="El_R_I'm_hit" ID="{44658105-23EB-4AFE-8BF3-6C828EA63DB1}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="El_R_ship_damaged" ID="{CB5891F1-1211-4FCA-845B-D97ED8A92042}" ShortID="1005094902">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="El_R_ship_damaged" ID="{5845EBA3-7684-47C9-9569-047FC39711C7}">
+									<Language>SFX</Language>
+									<AudioFile>El_R_ship_damaged.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="461363851"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="El_R_ship_damaged" ID="{5845EBA3-7684-47C9-9569-047FC39711C7}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="#L_base_01" ID="{7CC94909-0484-46EC-AA46-EDA5D471B193}" ShortID="967841787">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="#L_base_01" ID="{28BCCFC9-EF75-44C4-9D07-B3DCCD66B212}">
+									<Language>SFX</Language>
+									<AudioFile>#L_base_01.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="683627647"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="#L_base_01" ID="{28BCCFC9-EF75-44C4-9D07-B3DCCD66B212}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="#L_base_02" ID="{DD6E6B70-4AFB-4D7B-A7E6-51D3F67DDA6E}" ShortID="6862434">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="#L_base_02" ID="{A85F6766-14FA-45F8-9713-8A77773B3E64}">
+									<Language>SFX</Language>
+									<AudioFile>#L_base_02.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="85875852"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="#L_base_02" ID="{A85F6766-14FA-45F8-9713-8A77773B3E64}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="Hero_R_ejecting" ID="{353AB1F3-B3BD-4803-8380-5B6A6A678C1C}" ShortID="869489968">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Hero_R_ejecting" ID="{D85C33DC-B1DF-46DA-82DD-3ECC5EAA3437}">
+									<Language>SFX</Language>
+									<AudioFile>Hero_R_ejecting.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="25554904"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Hero_R_ejecting" ID="{D85C33DC-B1DF-46DA-82DD-3ECC5EAA3437}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="Hero_R_I'm_hit" ID="{4BDC3390-54AB-48F1-BA17-6707D5094607}" ShortID="852973892">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Hero_R_I'm_hit" ID="{62994702-4892-420C-8993-C772C34A4FC2}">
+									<Language>SFX</Language>
+									<AudioFile>Hero_R_I'm_hit.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="557528639"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Hero_R_I'm_hit" ID="{62994702-4892-420C-8993-C772C34A4FC2}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="Hero_R_ship_damaged" ID="{21AC3CAF-C6D0-407F-AE99-8E70302E06D4}" ShortID="503620156">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Hero_R_ship_damaged" ID="{37CF0F71-291F-403B-9F0A-BD73964AC84C}">
+									<Language>SFX</Language>
+									<AudioFile>Hero_R_ship_damaged.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="582897273"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="Hero_R_ship_damaged" ID="{37CF0F71-291F-403B-9F0A-BD73964AC84C}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+						<Sound Name="#L_base_03" ID="{FF8CAD33-D597-4B68-ABC9-5DAB70E9614A}" ShortID="894644238">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="#L_base_03" ID="{4AAA8996-84F4-4D87-B4C7-590D6D0E62D8}">
+									<Language>SFX</Language>
+									<AudioFile>#L_base_03.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="671388639"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="#L_base_03" ID="{4AAA8996-84F4-4D87-B4C7-590D6D0E62D8}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</ActorMixer>
+				<ActorMixer Name="effects" ID="{3A9408E0-3680-4EC9-B801-3BC4F46C612B}" ShortID="287765328">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<RTPCList>
+								<RTPC Name="" ID="{0C451B05-07E6-48BC-9755-C01EE35AA678}" ShortID="599100635">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_master" ID="{B1624F64-4CA0-41D0-A573-C5FB0BA6DBDF}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{AD1CA799-3E34-4331-B63D-07DB2580FF05}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+								<RTPC Name="" ID="{4C456D6D-EAE0-484F-BE04-3495584EA5A0}" ShortID="918663292">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_effects" ID="{7C432C45-4FEE-453B-95FE-485ACAFDA188}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{9BBE7E88-F72E-4909-BF20-318591104B73}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+						</Reference>
+					</ReferenceList>
+				</ActorMixer>
+				<ActorMixer Name="music" ID="{DCAE4C70-49E0-442C-9F6F-D4FED07BBB4D}" ShortID="656770954">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<RTPCList>
+								<RTPC Name="" ID="{7219A215-10E3-44FF-BC9D-2972D53C9E6C}" ShortID="589072999">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_music" ID="{DC70A98B-A760-497D-8F83-51AE41254A65}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{C46B010A-D05A-4912-B2D3-E93BB9261A29}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+								<RTPC Name="" ID="{83F2175E-65AE-419E-9E1A-02361E53005C}" ShortID="970354672">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_master" ID="{B1624F64-4CA0-41D0-A573-C5FB0BA6DBDF}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{31D78330-8867-4BF2-AE26-E44C7DC93B82}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+						</Reference>
+					</ReferenceList>
+				</ActorMixer>
+				<ActorMixer Name="music_hangar" ID="{EC419CEF-2613-4AB2-B772-D1FB01B59F4D}" ShortID="576116004">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<RTPCList>
+								<RTPC Name="" ID="{D573660E-2112-4CBE-8DEC-B460E3E2427A}" ShortID="453160690">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_music_hangar" ID="{F0482A77-433D-4240-986F-8EA440E2658A}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{CD96521B-8289-4B78-AF22-C6B53F1F5127}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+								<RTPC Name="" ID="{6EB569FF-B08B-4F07-856A-B2E57B9C4319}" ShortID="873748197">
+									<ReferenceList>
+										<Reference Name="ControlInput">
+											<ObjectRef Name="RTPC_ext_menu_volume_master" ID="{B1624F64-4CA0-41D0-A573-C5FB0BA6DBDF}" WorkUnitID="{996061D4-DA0F-431C-A06E-3E781A65B999}"/>
+										</Reference>
+									</ReferenceList>
+									<Curve Name="" ID="{47FE3C6A-3059-4707-A27B-3538E955A8D6}">
+										<PropertyList>
+											<Property Name="Flags" Type="int32" Value="3"/>
+										</PropertyList>
+										<PointList>
+											<Point>
+												<XPos>0</XPos>
+												<YPos>-200</YPos>
+												<Flags>5</Flags>
+											</Point>
+											<Point>
+												<XPos>100</XPos>
+												<YPos>0</YPos>
+												<Flags>37</Flags>
+											</Point>
+										</PointList>
+									</Curve>
+								</RTPC>
+							</RTPCList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{CDB19FB4-078F-4DF8-962A-A6E8B5D993FE}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{540600AC-7A63-4F9D-B435-7B07D99E2050}"/>
+						</Reference>
+					</ReferenceList>
+				</ActorMixer>
+			</ChildrenList>
+		</WorkUnit>
+	</AudioObjects>
+</WwiseDocument>
